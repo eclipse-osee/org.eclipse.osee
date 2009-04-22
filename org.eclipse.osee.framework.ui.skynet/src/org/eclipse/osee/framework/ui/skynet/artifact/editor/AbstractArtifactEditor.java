@@ -21,6 +21,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactEditor extends FormEditor implements IDirtiableEditor {
+
    /*
     * (non-Javadoc)
     * 

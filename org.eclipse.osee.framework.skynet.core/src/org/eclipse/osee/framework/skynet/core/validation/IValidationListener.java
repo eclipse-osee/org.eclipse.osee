@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.skynet.core.validation;
 
-package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
-
-import java.util.List;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import java.util.logging.Level;
 
 /**
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public interface IAttributeXWidgetProvider {
+public interface IValidationListener {
 
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType);
+   public void onValidateMessage(String message, Level level);
 }

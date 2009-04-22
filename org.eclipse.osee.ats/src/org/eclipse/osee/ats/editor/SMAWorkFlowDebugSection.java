@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * @author Donald G. Dunne
@@ -82,17 +81,6 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
       // }
       // });
       return workComp;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#createPage(org.eclipse.swt.widgets.Composite)
-    */
-   @Override
-   protected Section createPage(Composite comp) throws OseeCoreException {
-      Section section = super.createPage(comp);
-      return section;
    }
 
    public void addDebug(String str) {

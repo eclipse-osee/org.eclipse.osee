@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -133,8 +134,8 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return false;
    }
 
-   public DynamicXWidgetLayout createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      dynamicXWidgetLayout.createBody(toolkit, parent, artifact, xModListener, isEditable);
+   public DynamicXWidgetLayout createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
 

@@ -264,7 +264,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       private final ITaskEditorProvider itaskEditorProvider;
       private final TaskEditor taskEditor;
-      private final SearchType searchType;      
+      private final SearchType searchType;
 
       public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
          super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...");
@@ -424,5 +424,4 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
       return tasks.iterator().next().getManHrsPerDayPreference();
    }
-
 }

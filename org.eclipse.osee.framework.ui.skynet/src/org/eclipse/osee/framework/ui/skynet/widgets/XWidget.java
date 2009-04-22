@@ -30,12 +30,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Abstract class for all widgets used in Wizards and Editors
  */
 public abstract class XWidget {
+
+   private IManagedForm managedForm;
 
    protected Label labelWidget = null;
    protected String label = "";
@@ -103,6 +107,30 @@ public abstract class XWidget {
          listener.widgetModified(this);
    }
 
+   public void setMessage(String messageText, int type, Control control) {
+      IManagedForm managedForm = getManagedForm();
+      if (managedForm != null) {
+         IMessageManager messageManager = managedForm.getMessageManager();
+         if (messageManager != null) {
+            messageManager.addMessage(this, messageText, null, type, control);
+         }
+      }
+   }
+
+   private IManagedForm getManagedForm() {
+      return managedForm;
+   }
+
+   public void setMessage(String messageText, int type) {
+      IManagedForm managedForm = getManagedForm();
+      if (managedForm != null) {
+         IMessageManager messageManager = managedForm.getMessageManager();
+         if (messageManager != null) {
+            messageManager.addMessage(this, messageText, null, type);
+         }
+      }
+   }
+
    public void setLabelError() {
       if (labelWidget == null || labelWidget.isDisposed()) {
          return;
@@ -139,13 +167,11 @@ public abstract class XWidget {
       }
    }
 
-   /**
-    * Create Widgets used to display label and entry for wizards and editors
-    */
-   public abstract void createWidgets(Composite parent, int horizontalSpan);
+   protected abstract void createWidgets(Composite parent, int horizontalSpan);
 
-   public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
-      this.toolkit = toolkit;
+   public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
+      this.toolkit = managedForm.getToolkit();
+      this.managedForm = managedForm;
       createWidgets(parent, horizontalSpan);
       adaptControls(toolkit);
    }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -44,6 +45,8 @@ public class XMultiXWidgetTextDam extends XMultiXWidgetDam {
       xTextWidget.setFillHorizontally(true);
       if (!xWidgets.contains(xTextWidget)) xWidgets.add(xTextWidget);
       xTextWidget.addXModifiedListener(xModifiedListener);
+
+      setMessage("What the?", IMessageProvider.ERROR, xTextWidget.getControl());
       return xTextWidget;
    }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact.editor;
+package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
@@ -50,8 +51,14 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
          typeStatusItem.setImage(artifact.getArtifactType().getImage());
          showInExplorerAction.setArtifact(artifact);
 
-         artifactEditor.getRelationsComposite().getTreeViewer().addSelectionChangedListener(
-               new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
+         //         ArtifactFormPage page = artifactEditor.getFormPage();
+         //         if (page != null) {
+         RelationsComposite composite = artifactEditor.getRelationsComposite();
+         if (composite != null) {
+            composite.getTreeViewer().addSelectionChangedListener(
+                  new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
+         }
+         //         }
       }
    }
 

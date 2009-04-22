@@ -11,12 +11,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
@@ -24,22 +27,33 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
  */
 public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvider {
 
+   private DynamicXWidgetLayoutData createDynamicXWidgetLayout(AttributeType attributeType) {
+      DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
+      defaultData.setName(attributeType.getName());
+      defaultData.setStorageName(attributeType.getName());
+      defaultData.setToolTip(attributeType.getTipText());
+      if (attributeType.getMinOccurrences() > 0) {
+         defaultData.getXOptionHandler().add(XOption.REQUIRED);
+      }
+      defaultData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
+      return defaultData;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider#getDynamicXWidgetLayoutData(org.eclipse.osee.framework.skynet.core.attribute.Attribute)
     */
    @Override
-   public DynamicXWidgetLayoutData getDynamicXWidgetLayoutData(AttributeType attributeType) {
-      int min = attributeType.getMinOccurrences();
-      int max = attributeType.getMaxOccurrences();
-      DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
-      defaultData.setName(attributeType.getName());
-      if (attributeType.getMinOccurrences() > 0) defaultData.getXOptionHandler().add(XOption.REQUIRED);
-      defaultData.setToolTip(attributeType.getTipText());
-      defaultData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
-      defaultData.setStorageName(attributeType.getName());
-      if (min == 1) defaultData.getXOptionHandler().add(XOption.REQUIRED);
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
+      int minOccurrence = attributeType.getMinOccurrences();
+      int maxOccurrence = attributeType.getMaxOccurrences();
+
+      List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
+
+      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType);
+      xWidgetLayoutData.add(defaultData);
+
       if (attributeType.getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
-         if (max == 1) {
+         if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
                   EnumeratedAttribute.getChoices(attributeType)) + ")");
          } else {
@@ -48,29 +62,31 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             defaultData.getXOptionHandler().add(XOption.VERTICAL_LABEL);
          }
       } else if (attributeType.getBaseAttributeClass().equals(StringAttribute.class)) {
-         if (max == 1) {
+         if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XTextDam");
          } else {
             defaultData.setXWidgetName("XMultiXWidgetTextDam");
-            System.err.println("How handle multiple text instances?");
          }
       } else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) {
-         if (min == 1) {
-            defaultData.setXWidgetName("XCheckBox");
+         if (minOccurrence == 1) {
+            defaultData.setXWidgetName("XCheckBoxDam");
          } else {
             defaultData.setXWidgetName("XComboBooleanDam");
          }
       } else if (attributeType.getBaseAttributeClass().equals(DateAttribute.class)) {
-         if (max <= 1) {
+         if (maxOccurrence <= 1) {
             defaultData.setXWidgetName("XDateDam");
          } else {
             defaultData.setXWidgetName("XLabelDam");
-            System.err.println("How handle multiple text instances?");
          }
+      } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+         defaultData.setXWidgetName("XTextDam");
+         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {
          defaultData.setXWidgetName("XLabelDam");
       }
-      return defaultData;
+      //      defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+      return xWidgetLayoutData;
    }
-
 }

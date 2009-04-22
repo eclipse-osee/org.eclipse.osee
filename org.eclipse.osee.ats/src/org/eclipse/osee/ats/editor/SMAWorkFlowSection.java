@@ -72,6 +72,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -99,7 +100,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private DynamicXWidgetLayout dynamicXWidgetLayout;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
-      super(parent, toolkit, style);
+      super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
       this.toolkit = toolkit;
       this.atsWorkPage = page;
       this.smaMgr = smaMgr;
@@ -110,41 +111,48 @@ public class SMAWorkFlowSection extends SectionPart {
             !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().getPriviledgedEditMode() == SMAEditor.PriviledgedEditMode.Global;
       isCurrentState = smaMgr.isCurrentState(page.getName());
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
-      createPage(parent);
    }
 
-   protected Section createPage(Composite parent) throws OseeCoreException {
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+    */
+   @Override
+   public void initialize(final IManagedForm form) {
+      super.initialize(form);
 
-      Section section = toolkit.createSection(parent, Section.TWISTIE | Section.TITLE_BAR);
-      section.setText(getCurrentStateTitle());
-      if (smaMgr.isCurrentState(atsWorkPage.getName())) section.setBackground(AtsPlugin.ACTIVE_COLOR);
-      section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
+      Section section = getSection();
+      try {
+         section.setText(getCurrentStateTitle());
 
-      mainComp = toolkit.createClientContainer(section, 2);
-      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
-      mainComp.layout();
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) section.setBackground(AtsPlugin.ACTIVE_COLOR);
+         section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
-      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, atsWorkPage.getName());
+         mainComp = toolkit.createClientContainer(section, 2);
+         mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+         // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
+         mainComp.layout();
 
-      Composite rightComp = toolkit.createContainer(mainComp, 1);
-      rightComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-      // rightComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
+         SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, atsWorkPage.getName());
 
-      Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
+         Composite rightComp = toolkit.createContainer(mainComp, 1);
+         rightComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+         // rightComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
 
-      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-      gridData.widthHint = 400;
-      workComp.setLayoutData(gridData);
+         Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
 
-      servicesArea = new ServicesArea(smaMgr);
-      servicesArea.createSidebarServices(rightComp, atsWorkPage, toolkit, this);
+         GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+         gridData.widthHint = 400;
+         workComp.setLayoutData(gridData);
 
-      section.layout();
-      section.setExpanded(smaMgr.isCurrentSectionExpanded(atsWorkPage.getName()));
+         servicesArea = new ServicesArea(smaMgr);
+         servicesArea.createSidebarServices(rightComp, atsWorkPage, toolkit, this);
 
-      return section;
+         section.layout();
+         section.setExpanded(smaMgr.isCurrentSectionExpanded(atsWorkPage.getName()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
@@ -182,7 +190,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Create main body
       dynamicXWidgetLayout =
-            atsWorkPage.createBody(toolkit, workComp, smaMgr.getSma(), xModListener, isEditable || isGlobalEditable);
+            atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
+                  isEditable || isGlobalEditable);
 
       // Check extenstion points for page creation
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {

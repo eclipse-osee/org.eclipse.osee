@@ -64,23 +64,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
    @Override
    protected void createFormContent(IManagedForm managedForm) {
-      fillBody(managedForm);
-      managedForm.refresh();
-   }
-
-   public void reflow() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            getManagedForm().reflow(true);
-         }
-      });
-   }
-
-   private void fillBody(IManagedForm managedForm) {
       ScrolledForm scrolledForm = managedForm.getForm();
       Composite body = scrolledForm.getBody();
       body.setLayout(ALayout.getZeroMarginLayout(1, true));
@@ -101,15 +84,28 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       try {
          if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
-            managedForm.addPart(new SectionPart(createParametersSection(body)));
+            managedForm.addPart(new SectionPart(createParametersSection(managedForm, body)));
          }
          managedForm.addPart(new SectionPart(createResultsSection(body)));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      managedForm.refresh();
    }
 
-   private Section createParametersSection(Composite body) {
+   public void reflow() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            getManagedForm().reflow(true);
+         }
+      });
+   }
+
+   private Section createParametersSection(IManagedForm managedForm, Composite body) {
       parameterSection = toolkit.createSection(body, Section.NO_TITLE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -144,7 +140,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, getXWidgetsXml());
          if (layoutDatas != null && !layoutDatas.isEmpty()) {
             dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
-            dynamicXWidgetLayout.createBody(toolkit, paramComp, null, null, true);
+            dynamicXWidgetLayout.createBody(managedForm, paramComp, null, null, true);
             parametersContainer.layout();
             parametersContainer.getParent().layout();
          }

@@ -67,9 +67,12 @@ public class XRadioButtons extends XWidget {
 
    public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
       createWidgets(parent, horizontalSpan);
-      for (XRadioButton button : xButtons)
+      for (XRadioButton button : xButtons) {
          toolkit.adapt(button.getControl(), true, true);
-      if (labelWidget != null) toolkit.adapt(labelWidget, true, true);
+      }
+      if (labelWidget != null) {
+         toolkit.adapt(labelWidget, true, true);
+      }
    }
 
    public void addButtons(String items[]) {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
@@ -33,6 +34,19 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.commands.ICommandService;
@@ -61,25 +75,18 @@ public class OpenWithContributionItem extends CompoundContributionItem {
     */
    @Override
    protected IContributionItem[] getContributionItems() {
-      ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-         if (artifacts != null && !artifacts.isEmpty()) {
-            try {
-               contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
-               //add separator between preview and edit commands
-               if (!contributionItems.isEmpty()) {
-                  contributionItems.add(new Separator());
-               }
-               contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      List<Artifact> artifacts = getSelectedArtifacts();
+      if (artifacts != null && !artifacts.isEmpty()) {
+         try {
+            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.PREVIEW));
+            //add separator between preview and edit commands
+            if (!contributionItems.isEmpty()) {
+               contributionItems.add(new Separator());
             }
+            contributionItems.addAll(getCommonContributionItems(artifacts, PresentationType.SPECIALIZED_EDIT));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
 
@@ -94,8 +101,10 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          if (render instanceof WordRenderer) {
             contributionItems.addAll(loadCommands(render, presentationType, WordRenderer.getImageDescriptor()));
          } else {
-            
-            contributionItems.addAll(loadCommands(render, presentationType,
+
+            contributionItems.addAll(loadCommands(
+                  render,
+                  presentationType,
                   render instanceof NativeRenderer && firstArtifact instanceof NativeArtifact ? SkynetActivator.getInstance().getImageDescriptorForProgram(
                         ((NativeArtifact) firstArtifact).getFileExtension()) : null));
          }
@@ -120,5 +129,116 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       }
 
       return contributionItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.action.ContributionItem#fill(org.eclipse.swt.widgets.ToolBar, int)
+    */
+   @Override
+   public void fill(final ToolBar parent, int index) {
+
+      final ToolItem toolItem = new ToolItem(parent, SWT.DROP_DOWN);
+      toolItem.setImage(SkynetGuiPlugin.getInstance().getImage("open.gif"));
+      toolItem.setToolTipText("Open the Artifact");
+
+      OpenWithToolItemListener listener = new OpenWithToolItemListener(parent);
+      toolItem.addListener(SWT.Selection, listener);
+      toolItem.setEnabled(listener.isPreviewMenuEnabled());
+   }
+
+   private List<Artifact> getSelectedArtifacts() {
+      IWorkbenchPage page = AWorkbench.getActivePage();
+      if (page != null) {
+         IWorkbenchPart part = page.getActivePart();
+         if (part != null) {
+            IWorkbenchPartSite site = part.getSite();
+            if (site != null) {
+               ISelectionProvider selectionProvider = site.getSelectionProvider();
+               if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+                  IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+                  return Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+               }
+            }
+         }
+      }
+      return Collections.emptyList();
+   }
+
+   private final class OpenWithToolItemListener implements Listener {
+      private Menu previewMenu;
+      private boolean isPreviewEnabled;
+
+      public OpenWithToolItemListener(ToolBar toolbar) {
+         createToolItemMenu(toolbar.getShell());
+         isPreviewEnabled = isPreviewMenuEnabled();
+      }
+
+      private void createToolItemMenu(Shell shell) {
+         List<Artifact> artifacts = getSelectedArtifacts();
+         previewMenu = new Menu(shell, SWT.POP_UP);
+         boolean previewable = false;
+         try {
+            if (artifacts != null && !artifacts.isEmpty()) {
+               Artifact artifact = artifacts.iterator().next();
+
+               if (RendererManager.getApplicableRenderers(PresentationType.PREVIEW, artifact, null).size() > 1) {
+                  previewable = true;
+               }
+
+               if (previewable) {
+                  if (OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.PREVIEW, artifacts)) {
+                     new MenuItem(previewMenu, SWT.SEPARATOR);
+                  }
+               }
+               OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
+
+      public boolean isPreviewMenuEnabled() {
+         boolean itemzEnabled = false;
+         for (MenuItem menuItems : previewMenu.getItems()) {
+            if (menuItems.isEnabled()) {
+               itemzEnabled = true;
+            }
+         }
+         return itemzEnabled;
+      }
+
+      @Override
+      public void handleEvent(Event event) {
+         Widget widget = event.widget;
+         if (widget instanceof ToolItem) {
+            ToolItem toolItem = (ToolItem) widget;
+            ToolBar toolBar = toolItem.getParent();
+
+            if (event.detail == SWT.ARROW) {
+               Rectangle rect = toolItem.getBounds();
+               Point pt = new Point(rect.x, rect.y + rect.height);
+               pt = toolBar.toDisplay(pt);
+               previewMenu.setLocation(pt.x, pt.y);
+               previewMenu.setVisible(true);
+            }
+            if (event.detail == 0) {
+               try {
+                  List<Artifact> artifacts = getSelectedArtifacts();
+                  if (artifacts != null && !artifacts.isEmpty()) {
+                     Artifact artifact = artifacts.iterator().next();
+                     if (isPreviewEnabled && artifact != null) {
+                        if (true) {
+                           RendererManager.previewInJob(artifact);
+                        } else {
+                           RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
+                        }
+                     }
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(ArtifactEditor.class, Level.SEVERE, ex.getMessage());
+               }
+            }
+         }
+      }
    }
 }

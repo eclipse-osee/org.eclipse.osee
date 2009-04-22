@@ -80,8 +80,7 @@ public class OverviewPage extends FormPage implements IActionable {
       for (Control control : parametersContainer.getChildren()) {
          control.dispose();
       }
-
-      dynamicXWidgetLayout.createBody(toolkit, parametersContainer, null, null, true);
+      dynamicXWidgetLayout.createBody(getManagedForm(), parametersContainer, null, null, true);
       parametersContainer.layout();
       parametersContainer.getParent().layout();
    }

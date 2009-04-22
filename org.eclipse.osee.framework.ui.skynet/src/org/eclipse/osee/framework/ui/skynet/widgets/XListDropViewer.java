@@ -28,7 +28,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
@@ -51,28 +50,19 @@ public class XListDropViewer extends XListViewer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createWidgets(org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.swt.widgets.Composite, int)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XListViewer#createWidgets(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
-      Menu popupMenu = definePopup(parent);
+   public void createWidgets(Composite parent, int horizontalSpan) {
+      Menu popupMenu = new Menu(parent);
       setMultiSelect(true);
       super.setListMenu(popupMenu);
-      super.createWidgets(toolkit, parent, horizontalSpan);
+      super.createWidgets(parent, horizontalSpan);
+      new XDragAndDrop();
       this.myTableViewer = super.getTableViewer();
-      defineMenus(popupMenu);
-   }
-
-   private Menu definePopup(Composite parent) {
-      Menu popupMenu = new Menu(parent);
-      return popupMenu;
-   }
-
-   private void defineMenus(Menu popupMenu) {
       //      popupMenu.addMenuListener(new MenuEnablingListener());
       createRemoveFromMenuItem(popupMenu);
       myTableViewer.getTable().setMenu(popupMenu);
-      return;
    }
 
    private void createRemoveFromMenuItem(Menu popupMenu) {
@@ -119,14 +109,6 @@ public class XListDropViewer extends XListViewer {
          updateListWidget();
       }
       notifyXModifiedListeners();
-   }
-
-   @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      super.createWidgets(parent, horizontalSpan);
-
-      // the viewer must be initialized first so the control is not null.
-      new XDragAndDrop();
    }
 
    @Override

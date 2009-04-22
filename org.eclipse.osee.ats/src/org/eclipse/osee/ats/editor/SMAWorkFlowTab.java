@@ -106,6 +106,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
     */
    @Override
    protected void createFormContent(IManagedForm managedForm) {
+      super.createFormContent(managedForm);
+
       this.managedForm = managedForm;
       try {
          scrolledForm = managedForm.getForm();
@@ -255,18 +257,18 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
             if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
             SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, toolkit, SWT.NONE, atsWorkPage, smaMgr);
+            managedForm.addPart(section);
             control = section.getMainComp();
             sections.add(section);
-            managedForm.addPart(section);
             pages.add(atsWorkPage);
          }
       }
 
       if (AtsPlugin.isAtsAdmin()) {
          SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr);
+         managedForm.addPart(section);
          control = section.getMainComp();
          sections.add(section);
-         managedForm.addPart(section);
          section.getSection().setExpanded(true);
       }
 
@@ -279,8 +281,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       managedForm.refresh();
-
    }
+
    private Control control = null;
 
    private void storeScrollLocation() {

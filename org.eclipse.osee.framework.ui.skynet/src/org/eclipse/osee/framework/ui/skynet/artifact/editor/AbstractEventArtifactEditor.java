@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,23 +33,27 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class AbstractEventArtifactEditor extends FormEditor implements IDirtiableEditor, IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener {
+public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor {
 
    private Artifact artifact;
+   private InternalEventHandler internalEventHandler;
 
    public AbstractEventArtifactEditor() {
       super();
-      OseeEventManager.addListener(this);
+      internalEventHandler = new InternalEventHandler();
+      OseeEventManager.addListener(internalEventHandler);
    }
 
    public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
+   }
+
+   private Artifact getLocalArtifact() {
+      return this.artifact;
    }
 
    /* (non-Javadoc)
@@ -58,132 +61,10 @@ public abstract class AbstractEventArtifactEditor extends FormEditor implements 
     */
    @Override
    public void onDirtied() {
-      abstractOnDirty();
+      onDirty();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
-            closeEditor();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
-    */
-   @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.Committed) {
-         if (artifact.getBranch().getBranchId() == branchId) {
-            closeEditor();
-         }
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
-    */
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      // TODO Auto-generated method stub
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.AccessControlEventType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
-   @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
-      try {
-         if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
-            if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
-               Displays.ensureInDisplayThread(new Runnable() {
-                  /* (non-Javadoc)
-                   * @see java.lang.Runnable#run()
-                   */
-                  @Override
-                  public void run() {
-                     setTitleImage(artifact.getImage());
-                  }
-               });
-            }
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener#handleArtifactModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
-   @Override
-   public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) {
-      if (!this.artifact.equals(artifact)) return;
-      if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
-         refreshDirtyArtifact();
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
-            closeEditor();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String)
-    */
-   @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
-      try {
-         if (link.getArtifactA().equals(artifact) || link.getArtifactB().equals(artifact)) {
-            refreshRelationsComposite();
-            onDirtied();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (!transData.isHasEvent(artifact)) {
-         return;
-      }
-      if (transData.isDeleted(artifact)) {
-         closeEditor();
-      }
-      if (transData.isRelAddedChangedDeleted(artifact)) {
-         refreshRelationsComposite();
-      }
-      if (transData.isChanged(artifact)) {
-         refreshDirtyArtifact();
-      }
-      onDirtied();
-
-   }
-
-   protected abstract void abstractOnDirty();
+   protected abstract void onDirty();
 
    protected abstract void checkEnabledTooltems();
 
@@ -191,5 +72,141 @@ public abstract class AbstractEventArtifactEditor extends FormEditor implements 
 
    protected abstract void closeEditor();
 
-   protected abstract void refreshRelationsComposite();
+   protected abstract void refreshRelations();
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.editor.FormEditor#dispose()
+    */
+   @Override
+   public void dispose() {
+      OseeEventManager.removeListener(internalEventHandler);
+      super.dispose();
+   }
+
+   private final class InternalEventHandler implements IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener {
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener#handleArtifactModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
+       */
+      @Override
+      public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) {
+         if (getLocalArtifact() != null && !getLocalArtifact().equals(artifact)) return;
+         if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
+            refreshDirtyArtifact();
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+       */
+      @Override
+      public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+         try {
+            Artifact localArtifact = getLocalArtifact();
+            if (loadedArtifacts.getLoadedArtifacts().contains(localArtifact)) {
+               closeEditor();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String)
+       */
+      @Override
+      public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
+         try {
+            Artifact localArtifact = getLocalArtifact();
+            if (link.getArtifactA().equals(localArtifact) || link.getArtifactB().equals(localArtifact)) {
+               refreshRelations();
+               onDirtied();
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+       */
+      @Override
+      public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+         Artifact localArtifact = getLocalArtifact();
+         if (!transData.isHasEvent(localArtifact)) {
+            return;
+         }
+         if (transData.isDeleted(localArtifact)) {
+            closeEditor();
+         }
+         if (transData.isRelAddedChangedDeleted(localArtifact)) {
+            refreshRelations();
+         }
+         if (transData.isChanged(localArtifact)) {
+            refreshDirtyArtifact();
+         }
+         onDirtied();
+
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+       */
+      @Override
+      public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+         try {
+            if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
+               closeEditor();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
+       */
+      @Override
+      public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+         if (branchModType == BranchEventType.Committed) {
+            if (getLocalArtifact().getBranch().getBranchId() == branchId) {
+               closeEditor();
+            }
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
+       */
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+         // TODO Auto-generated method stub
+
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.AccessControlEventType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+       */
+      @Override
+      public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
+         try {
+            if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
+               if (loadedArtifacts.getLoadedArtifacts().contains(getLocalArtifact())) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     /* (non-Javadoc)
+                      * @see java.lang.Runnable#run()
+                      */
+                     @Override
+                     public void run() {
+                        setTitleImage(getLocalArtifact().getImage());
+                     }
+                  });
+               }
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+   }
 }

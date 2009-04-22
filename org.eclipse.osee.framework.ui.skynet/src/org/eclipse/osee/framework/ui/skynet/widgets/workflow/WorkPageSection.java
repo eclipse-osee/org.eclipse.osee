@@ -45,7 +45,7 @@ public class WorkPageSection extends SectionPart {
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      page.createBody(toolkit, workComp, null, xModListener, true);
+      page.createBody(getManagedForm(), workComp, null, xModListener, true);
    }
 
    final XModifiedListener xModListener = new XModifiedListener() {

@@ -101,9 +101,6 @@
           id="org.eclipse.osee.framework.ui.skynet.preferences.ArbitrationServerPreferences"
           name="Arbitration Server">
     </page>
-    <handler
-          commandId="org.eclipse.osee.framework.ui.skynet.handler1">
-    </handler>
  </extension>
 
 	<extension point="org.eclipse.help.contexts">
@@ -179,9 +176,6 @@
 	</extension>
 	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
 		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory"/>
-	</extension>
-	<extension id="SrsProducer" name="SrsProducer" point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
-		<producer class="org.eclipse.osee.framework.ui.skynet.render.word.SrsProducer"/>
 	</extension>
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>

@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
+import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
@@ -93,45 +94,45 @@ public class XWidgetFactory {
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
             ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
          }
-      } else if (xWidgetName.equals("XMultiXWidgetTextDam"))
+      } else if (xWidgetName.equals("XMultiXWidgetTextDam")) {
          xWidget = new XMultiXWidgetTextDam(name);
-      else if (xWidgetName.equals("XInteger"))
+      } else if (xWidgetName.equals("XInteger")) {
          xWidget = new XInteger(name);
-      else if (xWidgetName.equals("XTextDam"))
+      } else if (xWidgetName.equals("XTextDam")) {
          xWidget = new XTextDam(name);
-      else if (xWidgetName.equals("XButton"))
+      } else if (xWidgetName.equals("XButton")) {
          xWidget = new XButton(name);
-      else if (xWidgetName.equals("XLabelDam"))
+      } else if (xWidgetName.equals("XLabelDam")) {
          xWidget = new XLabelDam(name);
-      else if (xWidgetName.equals("XMembersList")) {
+      } else if (xWidgetName.equals("XMembersList")) {
          try {
             xWidget = new XMembersList(name);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-      } else if (xWidgetName.equals("XMembersCombo"))
+      } else if (xWidgetName.equals("XMembersCombo")) {
          xWidget = new XMembersCombo(name);
-      else if (xWidgetName.equals("XDate"))
+      } else if (xWidgetName.equals("XDate")) {
          xWidget = new XDate(name);
-      else if (xWidgetName.equals("XMultiXWidgetTextDam"))
+      } else if (xWidgetName.equals("XMultiXWidgetTextDam")) {
          xWidget = new XMultiXWidgetTextDam(name);
-      else if (xWidgetName.equals("XFileSelectionDialog"))
+      } else if (xWidgetName.equals("XFileSelectionDialog")) {
          xWidget = new XFileTextWithSelectionDialog(name);
-      else if (xWidgetName.equals("XDirectorySelectionDialog"))
+      } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
          xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
-      else if (xWidgetName.equals("XDateDam"))
+      } else if (xWidgetName.equals("XDateDam")) {
          xWidget = new XDateDam(name);
-      else if (xWidgetName.equals("XTextResourceDropDam"))
+      } else if (xWidgetName.equals("XTextResourceDropDam")) {
          xWidget = new XTextResourceDropDam(name);
-      else if (xWidgetName.equals("XFloat"))
+      } else if (xWidgetName.equals("XFloat")) {
          xWidget = new XFloat(name);
-      else if (xWidgetName.equals("XFloatDam"))
+      } else if (xWidgetName.equals("XFloatDam")) {
          xWidget = new XFloatDam(name);
-      else if (xWidgetName.equals("XIntegerDam"))
-         xWidget = new org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam(name);
-      else if (xWidgetName.equals("XFileTextWithSelectionDialog"))
+      } else if (xWidgetName.equals("XIntegerDam")) {
+         xWidget = new XIntegerDam(name);
+      } else if (xWidgetName.equals("XFileTextWithSelectionDialog")) {
          xWidget = new XFileTextWithSelectionDialog(name);
-      else if (xWidgetName.equals("XLabel")) {
+      } else if (xWidgetName.equals("XLabel")) {
          String defaultValue = xWidgetLayoutData.getDefaultValue();
          if (Strings.isValid(defaultValue)) {
             xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
@@ -227,6 +228,7 @@ public class XWidgetFactory {
       } else {
          xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
       }
+
       if (xWidget instanceof XText) {
          ((XText) xWidget).addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
       }

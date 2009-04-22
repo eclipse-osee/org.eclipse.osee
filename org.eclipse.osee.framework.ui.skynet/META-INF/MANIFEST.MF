@@ -28,7 +28,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.birt.chart.engine,
  org.eclipse.jface.text,
- org.eclipse.zest.core
+ org.eclipse.zest.core,
+ org.eclipse.ui.views
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,

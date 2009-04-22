@@ -39,6 +39,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,8 +78,11 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       Composite attrComp = null;
+
+      final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
+
       if (toolkit != null)
          attrComp = toolkit.createComposite(parent);
       else
@@ -88,7 +92,9 @@ public class DynamicXWidgetLayout {
       attrComp.setLayout(layout);
       attrComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      if (toolkit != null) toolkit.adapt(attrComp);
+      if (toolkit != null) {
+         toolkit.adapt(attrComp);
+      }
 
       boolean inChildComposite = false;
       Composite childComp = null;
@@ -141,10 +147,7 @@ public class DynamicXWidgetLayout {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-         if (toolkit != null)
-            xWidget.createWidgets(toolkit, useComp, 2);
-         else
-            xWidget.createWidgets(useComp, 2);
+         xWidget.createWidgets(managedForm, useComp, 2);
          if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY) && (xWidget instanceof XText)) {
             GridData gd = new GridData(GridData.FILL_BOTH);
             gd.minimumHeight = 60;
