@@ -158,7 +158,7 @@
         class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         icon="images/branch.gif"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
-        name="New Branch Manager">
+        name="Branch Manager">
   </view>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
