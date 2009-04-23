@@ -108,6 +108,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
          columnText = stringBuilder.toString();
+      }
+      if (cCol.equals(BranchXViewerFactory.branch_short_name)) {
+         columnText = branch.getBranchShortName();
       } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
          columnText = String.valueOf(branch.getCreationDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
@@ -131,6 +134,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
          columnText = String.valueOf(transaction.getTransactionNumber());
+      }
+      if (cCol.equals(BranchXViewerFactory.branch_short_name)) {
+         columnText = "";
       } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
          columnText = String.valueOf(transaction.getTime());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
