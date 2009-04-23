@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -49,11 +51,19 @@ public class MessageSummaryNote {
 
       Composite composite = toolkit.createComposite(shell, toolkit.getBorderStyle());
       composite.setLayout(new GridLayout());
-      //      composite.setLayoutData(layoutData);
 
       FormText text = toolkit.createFormText(composite, true);
       configureFormText(form.getForm(), text);
       text.setText(getMessageSummary(messages), true, false);
+
+      text.addFocusListener(new FocusAdapter() {
+
+         @Override
+         public void focusLost(FocusEvent e) {
+            System.out.println("Lost");
+            shell.close();
+         }
+      });
       shell.setLocation(0, 0);
    }
 
@@ -76,7 +86,9 @@ public class MessageSummaryNote {
                IMessage message = messages[index];
                Control c = message.getControl();
                ((FormText) e.widget).getShell().dispose();
-               if (c != null) c.setFocus();
+               if (c != null) {
+                  c.setFocus();
+               }
             } catch (NumberFormatException ex) {
             }
          }
