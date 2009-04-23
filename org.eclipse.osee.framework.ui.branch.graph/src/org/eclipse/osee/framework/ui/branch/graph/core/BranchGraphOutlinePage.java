@@ -20,7 +20,6 @@ import org.eclipse.gef.editparts.ScalableRootEditPart;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -39,7 +38,6 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
    private Canvas overview;
    private ScalableRootEditPart rootEditPart;
    private Thumbnail thumbnail;
-   private XViewer viewer;
 
    public BranchGraphOutlinePage(ScalableRootEditPart rootEditPart) {
       super();
@@ -92,7 +90,7 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
    }
 
    public void setTreeContent(Object object) {
-      viewer.setInput(object);
+      //      viewer.setInput(object != null ? object : "Data not available");
    }
 
    public void init(IPageSite pageSite) {
