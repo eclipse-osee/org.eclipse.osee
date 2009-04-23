@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
@@ -22,18 +19,13 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewA
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
@@ -43,7 +35,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -86,7 +77,7 @@ public class ArtifactFormPage extends FormPage {
       addHeadingGradient(toolkit, form, true);
       addMessageDecoration(form);
 
-      int sectionStyle = Section.TITLE_BAR | Section.TWISTIE | Section.CLIENT_INDENT | SWT.WRAP;
+      int sectionStyle = Section.TITLE_BAR | Section.TWISTIE;
 
       sectionParts.add(new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
       sectionParts.add(new RelationsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
@@ -94,7 +85,11 @@ public class ArtifactFormPage extends FormPage {
 
       for (SectionPart part : sectionParts) {
          managedForm.addPart(part);
+         Section section = part.getSection();
+         section.marginWidth = 0;
+         section.marginHeight = 2;
       }
+      form.layout();
    }
 
    /* (non-Javadoc)
@@ -116,7 +111,7 @@ public class ArtifactFormPage extends FormPage {
                noteLocation.x += 10;
                noteLocation.y += 10;
 
-               MessageWithLinksNote note = new MessageWithLinksNote(getManagedForm(), title, (IMessage[]) href);
+               MessageSummaryNote note = new MessageSummaryNote(getManagedForm(), title, (IMessage[]) href);
                note.setLocation(noteLocation);
                note.open();
             }
@@ -210,93 +205,4 @@ public class ArtifactFormPage extends FormPage {
    public void refresh() {
    }
 
-   private final class MessageWithLinksNote {
-      private Shell shell;
-
-      public MessageWithLinksNote(IManagedForm managedForm, String title, IMessage[] messages) {
-         final ScrolledForm form = managedForm.getForm();
-         final FormToolkit toolkit = managedForm.getToolkit();
-
-         shell = new Shell(form.getShell(), SWT.ON_TOP | SWT.TOOL);
-         shell.setImage(getImage(form.getMessageType()));
-         shell.setText(title);
-         shell.setLayout(new FillLayout());
-
-         FormText text = toolkit.createFormText(shell, true);
-         configureFormText(form.getForm(), text);
-         text.setText(getMessageSummary(messages), true, false);
-         shell.setLocation(0, 0);
-      }
-
-      public void setLocation(Point point) {
-         shell.setLocation(point);
-      }
-
-      public void open() {
-         shell.pack();
-         shell.open();
-      }
-
-      private void configureFormText(final Form form, FormText text) {
-         text.addHyperlinkListener(new HyperlinkAdapter() {
-            public void linkActivated(HyperlinkEvent e) {
-               String is = (String) e.getHref();
-               try {
-                  int index = Integer.parseInt(is);
-                  IMessage[] messages = form.getChildrenMessages();
-                  IMessage message = messages[index];
-                  Control c = message.getControl();
-                  ((FormText) e.widget).getShell().dispose();
-                  if (c != null) c.setFocus();
-               } catch (NumberFormatException ex) {
-               }
-            }
-         });
-         text.setImage("error", getImage(IMessageProvider.ERROR));
-         text.setImage("warning", getImage(IMessageProvider.WARNING));
-         text.setImage("info", getImage(IMessageProvider.INFORMATION));
-      }
-
-      private Image getImage(int type) {
-         switch (type) {
-            case IMessageProvider.ERROR:
-               return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-            case IMessageProvider.WARNING:
-               return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
-            case IMessageProvider.INFORMATION:
-               return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
-         }
-         return null;
-      }
-
-      private String getMessageSummary(IMessage[] messages) {
-         StringWriter sw = new StringWriter();
-         PrintWriter pw = new PrintWriter(sw);
-         pw.println("<form>");
-         for (int i = 0; i < messages.length; i++) {
-            IMessage message = messages[i];
-            pw.print("<li vspace=\"false\" style=\"image\" indent=\"16\" value=\"");
-            switch (message.getMessageType()) {
-               case IMessageProvider.ERROR:
-                  pw.print("error");
-                  break;
-               case IMessageProvider.WARNING:
-                  pw.print("warning");
-                  break;
-               case IMessageProvider.INFORMATION:
-                  pw.print("info");
-                  break;
-            }
-            pw.print("\"> <a href=\"");
-            pw.print(i + "");
-            pw.print("\">");
-            if (message.getPrefix() != null) pw.print(message.getPrefix());
-            pw.print(message.getMessage());
-            pw.println("</a></li>");
-         }
-         pw.println("</form>");
-         pw.flush();
-         return sw.toString();
-      }
-   }
 }

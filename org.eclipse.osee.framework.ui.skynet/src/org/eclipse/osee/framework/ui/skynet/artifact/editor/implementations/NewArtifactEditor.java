@@ -309,7 +309,9 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
             }
          };
       } else if (adapter == IContentOutlinePage.class) {
-         return getOutlinePage();
+         ArtifactEditorOutlinePage page = getOutlinePage();
+         page.setInput(this);
+         return page;
       } else if (adapter == RelationsComposite.class) {
          return getFormPage().getRelationsComposite();
       }

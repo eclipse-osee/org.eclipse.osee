@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
@@ -45,14 +46,18 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      RelationsComposite sectionBody =
-            new RelationsComposite(getEditor(), section, SWT.NONE, getEditor().getEditorInput().getArtifact());
+      Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
+      sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      RelationsComposite relComposite =
+            new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
+      relComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
-      sectionBody.getTreeViewer().getTree().addTreeListener(new TreeListener() {
+      relComposite.getTreeViewer().getTree().addTreeListener(new TreeListener() {
 
          @Override
          public void treeCollapsed(TreeEvent e) {

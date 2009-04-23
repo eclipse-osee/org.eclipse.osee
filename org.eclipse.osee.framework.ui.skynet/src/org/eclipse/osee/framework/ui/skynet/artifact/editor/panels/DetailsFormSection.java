@@ -45,12 +45,16 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      FormText formText = toolkit.createFormText(section, false);
+      Composite composite = toolkit.createComposite(section, toolkit.getBorderStyle());
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      FormText formText = toolkit.createFormText(composite, false);
       formText.setText(getDetailsText(getEditorInput().getArtifact()), true, true);
       formText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      section.setClient(formText);
-      toolkit.paintBordersFor(section);
+      section.setClient(composite);
+      toolkit.paintBordersFor(composite);
    }
 
    private String getDetailsText(Artifact artifact) {

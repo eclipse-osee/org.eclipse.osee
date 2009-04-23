@@ -3,109 +3,104 @@
  */
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.Page;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePage {
-   private Composite composite;
-   private TreeViewer viewer;
+public class ArtifactEditorOutlinePage extends ContentOutlinePage {
+
+   private NewArtifactEditor editor;
 
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
     */
    @Override
    public void createControl(Composite parent) {
-      composite = new Composite(parent, SWT.BORDER);
-      composite.setLayout(new FillLayout(SWT.VERTICAL));
+      //      Composite composite = new Composite(parent, SWT.NONE);
+      //      GridLayout layout = new GridLayout();
+      //      layout.marginHeight = 10;
+      //      composite.setLayout(layout);
+      //      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      viewer = new TreeViewer(composite, SWT.BORDER | SWT.MULTI);
-      viewer.getTree().setLayoutData(new FillLayout(SWT.VERTICAL));
-      viewer.setContentProvider(new InternalContentProvider());
-      viewer.setLabelProvider(new InternalLabelProvider());
-      setInput("No Data Available");
+      super.createControl(parent);
+
+      Tree tree = getTreeViewer().getTree();
+      tree.setLayout(new FillLayout(SWT.VERTICAL));
+      getTreeViewer().setContentProvider(new InternalContentProvider());
+      getTreeViewer().setLabelProvider(new InternalLabelProvider());
+      setInput(editor != null ? editor : "No Input Available");
+
+      getSite().getActionBars().getToolBarManager().add(
+            new Action("Refresh", SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif")) {
+               public void run() {
+                  getTreeViewer().refresh();
+               }
+            });
+      getSite().getActionBars().getToolBarManager().update(true);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.ui.part.Page#getControl()
+    * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
     */
    @Override
-   public Control getControl() {
-      return composite;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.Page#setFocus()
-    */
-   @Override
-   public void setFocus() {
-      if (getControl() != null) {
-         getControl().setFocus();
+   public void selectionChanged(SelectionChangedEvent event) {
+      ISelection selection = event.getSelection();
+      if (selection instanceof IStructuredSelection) {
+         IStructuredSelection sSelection = (IStructuredSelection) selection;
+         if (!sSelection.isEmpty()) {
+            System.out.println("Outline Selection");
+         }
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-    */
-   @Override
-   public void addSelectionChangedListener(ISelectionChangedListener listener) {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-    */
-   @Override
-   public ISelection getSelection() {
-      return StructuredSelection.EMPTY;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-    */
-   @Override
-   public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-    */
-   @Override
-   public void setSelection(ISelection selection) {
-   }
-
-   public void setInput(Object editorInput) {
-      viewer.setInput(editorInput != null ? editorInput : "No Input Available");
+   public void setInput(Object input) {
+      if (input instanceof NewArtifactEditor) {
+         this.editor = (NewArtifactEditor) input;
+         if (getTreeViewer() != null) {
+            getTreeViewer().setInput(editor != null ? editor : "No Input Available");
+         }
+      }
    }
 
    public void refresh() {
-      viewer.refresh();
+      getTreeViewer().refresh();
    }
 
-   private final class InternalLabelProvider extends LabelProvider implements ITableLabelProvider {
-      public String getColumnText(Object obj, int index) {
-         return String.valueOf(obj);
+   private final class InternalLabelProvider extends LabelProvider {
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+       */
+      @Override
+      public String getText(Object element) {
+         if (element instanceof BaseArtifactEditorInput) {
+            return ((BaseArtifactEditorInput) element).getName();
+         } else if (element instanceof AttributeTypeContainer) {
+            return ((AttributeTypeContainer) element).setName;
+         }
+         return String.valueOf(element);
       }
 
       /* (non-Javadoc)
@@ -113,24 +108,17 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
        */
       @Override
       public Image getImage(Object element) {
-         if (element instanceof Artifact) {
-            return ((Artifact) element).getImage();
+         if (element instanceof BaseArtifactEditorInput) {
+            return ((BaseArtifactEditorInput) element).getImage();
+         } else if (element instanceof AttributeTypeContainer) {
+            String name = ((AttributeTypeContainer) element).setName;
+            if (name.contains("Available")) {
+               return SkynetGuiPlugin.getInstance().getImage("edit_artifact.gif");
+            } else {
+               return SkynetGuiPlugin.getInstance().getImage("remove.gif");
+            }
          } else if (element instanceof AttributeType) {
-            //            AttributeType type = (AttributeType) obj;
-            //            Class<?> clazz = type.getBaseAttributeClass();
-            //            ISharedImages.
-            return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-         }
-         return null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-       */
-      @Override
-      public Image getColumnImage(Object element, int columnIndex) {
-         if (columnIndex == 0) {
-            return getImage(element);
+            return SkynetGuiPlugin.getInstance().getImage("attribute.gif");
          }
          return null;
       }
@@ -157,20 +145,27 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
        */
       @Override
       public Object[] getChildren(Object element) {
-         if (element instanceof String) {
-            return new Object[] {element};
-         } else if (element instanceof ArtifactEditorInput) {
-            Artifact artifact = ((ArtifactEditorInput) element).getArtifact();
-            return new Object[] {artifact};
-         } else if (element instanceof Artifact) {
-            Artifact artifact = (Artifact) element;
+         List<Object> items = new ArrayList<Object>();
+
+         if (element instanceof NewArtifactEditor) {
+            BaseArtifactEditorInput editorInput = ((NewArtifactEditor) element).getEditorInput();
+            items.add(editorInput);
+         } else if (element instanceof BaseArtifactEditorInput) {
             try {
-               return artifact.getAttributeTypes().toArray();
+               Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
+               items.add(new AttributeTypeContainer("Available", AttributeTypeUtil.getTypesWithData(artifact)));
+               items.add(new AttributeTypeContainer("Types Remaining", AttributeTypeUtil.getEmptyTypes(artifact)));
             } catch (OseeCoreException ex) {
-               ex.printStackTrace();
+               items.add(Lib.exceptionToString(ex));
             }
+         } else if (element instanceof AttributeTypeContainer) {
+            return ((AttributeTypeContainer) element).types;
+         } else if (element instanceof AttributeType) {
+            System.out.println("Here");
+         } else if (element instanceof String) {
+            items.add(element);
          }
-         return null;
+         return items.toArray(new Object[items.size()]);
       }
 
       /* (non-Javadoc)
@@ -178,6 +173,12 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
        */
       @Override
       public Object getParent(Object element) {
+         if (element instanceof BaseArtifactEditorInput) {
+            return editor;
+         } else if (element instanceof String) {
+            return editor;
+         } else if (element instanceof AttributeType) {
+         }
          return null;
       }
 
@@ -188,9 +189,10 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
       public boolean hasChildren(Object element) {
          if (element instanceof String) {
             return false;
-         } else if (element instanceof ArtifactEditorInput) {
-            Artifact artifact = ((ArtifactEditorInput) element).getArtifact();
-            return artifact != null;
+         } else if (element instanceof BaseArtifactEditorInput) {
+            return ((BaseArtifactEditorInput) element).getArtifact() != null;
+         } else if (element instanceof AttributeTypeContainer) {
+            return ((AttributeTypeContainer) element).types.length > 0;
          } else if (element instanceof Artifact) {
             try {
                Artifact artifact = (Artifact) element;
@@ -208,6 +210,20 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
       @Override
       public Object[] getElements(Object inputElement) {
          return getChildren(inputElement);
+      }
+   }
+
+   private final static class AttributeTypeContainer {
+      private static final AttributeType[] EMPTY_TYPES = new AttributeType[0];
+      AttributeType[] types;
+      String setName;
+
+      AttributeTypeContainer(String setName, AttributeType... data) {
+         this.setName = setName;
+         this.types = data;
+         if (types == null) {
+            this.types = EMPTY_TYPES;
+         }
       }
    }
 

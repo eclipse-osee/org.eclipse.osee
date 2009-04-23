@@ -34,6 +34,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -48,6 +50,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
    public void contributeToToolBar(IToolBarManager manager) {
       manager.add(createAtsBugAction());
+      manager.add(new OpenOutlineAction());
       manager.add(new OpenHistoryAction());
       manager.add(new RevealInExplorerAction());
       manager.add(new Separator());
@@ -184,6 +187,23 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                   clipboard = null;
                }
             }
+         }
+      }
+   }
+
+   private final class OpenOutlineAction extends Action {
+      public OpenOutlineAction() {
+         super();
+         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("outline_co.gif"));
+         setToolTipText("Open Outline");
+      }
+
+      public void run() {
+         try {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                  "org.eclipse.ui.views.ContentOutline");
+         } catch (PartInitException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to open outline", ex);
          }
       }
    }

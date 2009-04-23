@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -22,11 +21,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.SWT;
@@ -36,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -75,7 +70,7 @@ public class AttributePropertiesBlock {
       createMasterPart(managedForm, sashForm);
       createDataPart(managedForm, sashForm);
       hookResizeListener();
-      sashForm.setWeights(new int[] {4, 16});
+      sashForm.setWeights(new int[] {6, 32});
       return sashForm;
    }
 
@@ -93,33 +88,35 @@ public class AttributePropertiesBlock {
 
       Section section = toolkit.createSection(parent, Section.DESCRIPTION);
       section.setText("Controls");
-      section.setDescription("List of attribute types to add");
+      section.setDescription("Drag between areas to add or remove attribute types");
       section.marginWidth = 0;
       section.marginHeight = 0;
 
       toolkit.createCompositeSeparator(section);
 
       Composite composite = toolkit.createComposite(section, SWT.WRAP);
-      GridLayout layout = new GridLayout(2, false);
-      layout.marginWidth = 2;
-      layout.marginHeight = 2;
+      GridLayout layout = new GridLayout(1, false);
+      layout.marginWidth = 0;
+      layout.marginHeight = 0;
       composite.setLayout(layout);
 
       Table table = toolkit.createTable(composite, SWT.NULL);
       table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
       toolkit.paintBordersFor(composite);
 
-      Button b = toolkit.createButton(composite, "Add...", SWT.PUSH);
-      b.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      //      Button b = toolkit.createButton(composite, "Add...", SWT.PUSH);
+      //      b.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       section.setClient(composite);
       final SectionPart spart = new SectionPart(section);
       managedForm.addPart(spart);
+
       TableViewer viewer = new TableViewer(table);
       viewer.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             managedForm.fireSelectionChanged(spart, event.getSelection());
          }
       });
+
       viewer.setContentProvider(new InternalContentProvider());
       viewer.setLabelProvider(new InternalLabelProvider());
       viewer.setInput(editor.getEditorInput());
@@ -156,7 +153,11 @@ public class AttributePropertiesBlock {
       public Object[] getElements(Object inputElement) {
          if (inputElement instanceof BaseArtifactEditorInput) {
             Artifact artifact = editor.getEditorInput().getArtifact();
-            return getEmptyTypes(artifact);
+            try {
+               return AttributeTypeUtil.getEmptyTypes(artifact);
+            } catch (OseeCoreException ex) {
+               // Do Nothing;
+            }
          }
          return new Object[0];
       }
@@ -165,21 +166,6 @@ public class AttributePropertiesBlock {
       }
 
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      }
-
-      protected AttributeType[] getEmptyTypes(Artifact artifact) {
-         List<AttributeType> items = new ArrayList<AttributeType>();
-         try {
-            for (AttributeType type : artifact.getAttributeTypes()) {
-               if (!type.getName().equals("Name") && artifact.getAttributes(type.getName()).isEmpty()) {
-                  items.add(type);
-               }
-            }
-            Collections.sort(items);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-         return items.toArray(new AttributeType[items.size()]);
       }
    }
 

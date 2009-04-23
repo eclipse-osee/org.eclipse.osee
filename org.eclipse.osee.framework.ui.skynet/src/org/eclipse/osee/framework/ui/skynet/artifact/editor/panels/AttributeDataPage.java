@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.resource.JFaceResources;
@@ -63,12 +61,16 @@ public class AttributeDataPage extends AbstractFormPart {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Artifact artifact = editor.getEditorInput().getArtifact();
-      for (AttributeType attributeType : getValidTypes(artifact)) {
-         if (false && attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-            //                     createCollapsibleAttributeDataComposite(parent, attributeType);
-         } else {
-            createAttributeTypeControls(composite, toolkit, artifact, attributeType);
+      try {
+         for (AttributeType attributeType : AttributeTypeUtil.getTypesWithData(artifact)) {
+            if (false && attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+               //            createCollapsibleAttributeDataComposite(parent, attributeType);
+            } else {
+               createAttributeTypeControls(composite, toolkit, artifact, attributeType);
+            }
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
 
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
@@ -106,6 +108,7 @@ public class AttributeDataPage extends AbstractFormPart {
          }
       }
    }
+
    private final class XWidgetValidationListener implements XModifiedListener {
       int count = 0;
 
@@ -163,26 +166,5 @@ public class AttributeDataPage extends AbstractFormPart {
          toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
       }
       return internalComposite;
-   }
-
-   private List<AttributeType> getValidTypes(Artifact artifact) {
-      List<AttributeType> attributeType = new ArrayList<AttributeType>();
-      try {
-         AttributeType nameType = null;
-         for (AttributeType type : artifact.getAttributeTypes()) {
-            if (type.getName().equals("Name")) {
-               nameType = type;
-            } else if (!artifact.getAttributes(type.getName()).isEmpty()) {
-               attributeType.add(type);
-            }
-         }
-         Collections.sort(attributeType);
-         if (nameType != null) {
-            attributeType.add(0, nameType);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return attributeType;
    }
 }

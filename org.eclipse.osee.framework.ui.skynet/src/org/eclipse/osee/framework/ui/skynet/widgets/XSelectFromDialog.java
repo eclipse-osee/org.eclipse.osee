@@ -81,7 +81,7 @@ public abstract class XSelectFromDialog<T> extends XText {
 
       Label label = getLabelWidget();
       if (label != null) {
-         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
+         label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       }
       super.createWidgets(composite, horizontalSpan, fillText);
       getStyledText().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
@@ -89,8 +89,8 @@ public abstract class XSelectFromDialog<T> extends XText {
       getStyledText().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Button button = new Button(composite, SWT.PUSH);
-      button.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
-      button.setText("Select...");
+      button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      button.setText("Set...");
       button.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
