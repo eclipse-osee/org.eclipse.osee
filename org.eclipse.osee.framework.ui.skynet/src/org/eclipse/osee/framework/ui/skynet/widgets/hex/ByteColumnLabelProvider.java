@@ -26,6 +26,7 @@ public class ByteColumnLabelProvider extends ColumnLabelProvider {
       this.column = column;
    }
 
+   @Override
    public String getToolTipText(Object element) {
       HexTableRow row = (HexTableRow) element;
       if (column < row.length) {
