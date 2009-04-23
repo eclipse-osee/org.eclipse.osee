@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor {
 
-   private Artifact artifact;
    private InternalEventHandler internalEventHandler;
 
    public AbstractEventArtifactEditor() {
@@ -48,12 +47,8 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       OseeEventManager.addListener(internalEventHandler);
    }
 
-   public void setArtifact(Artifact artifact) {
-      this.artifact = artifact;
-   }
-
-   private Artifact getLocalArtifact() {
-      return this.artifact;
+   private Artifact getArtifactFromEditorInput() {
+      return (Artifact) getEditorInput().getAdapter(Artifact.class);
    }
 
    /* (non-Javadoc)
@@ -89,7 +84,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
        */
       @Override
       public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) {
-         if (getLocalArtifact() != null && !getLocalArtifact().equals(artifact)) return;
+         if (getArtifactFromEditorInput() != null && !getArtifactFromEditorInput().equals(artifact)) return;
          if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
             refreshDirtyArtifact();
          }
@@ -101,7 +96,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
          try {
-            Artifact localArtifact = getLocalArtifact();
+            Artifact localArtifact = getArtifactFromEditorInput();
             if (loadedArtifacts.getLoadedArtifacts().contains(localArtifact)) {
                closeEditor();
             }
@@ -117,7 +112,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
          try {
-            Artifact localArtifact = getLocalArtifact();
+            Artifact localArtifact = getArtifactFromEditorInput();
             if (link.getArtifactA().equals(localArtifact) || link.getArtifactB().equals(localArtifact)) {
                refreshRelations();
                onDirtied();
@@ -132,7 +127,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
        */
       @Override
       public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-         Artifact localArtifact = getLocalArtifact();
+         Artifact localArtifact = getArtifactFromEditorInput();
          if (!transData.isHasEvent(localArtifact)) {
             return;
          }
@@ -155,7 +150,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
          try {
-            if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
+            if (loadedArtifacts.getLoadedArtifacts().contains(getArtifactFromEditorInput())) {
                closeEditor();
             }
          } catch (OseeCoreException ex) {
@@ -170,7 +165,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
          if (branchModType == BranchEventType.Committed) {
-            if (getLocalArtifact().getBranch().getBranchId() == branchId) {
+            if (getArtifactFromEditorInput().getBranch().getBranchId() == branchId) {
                closeEditor();
             }
          }
@@ -192,14 +187,14 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
          try {
             if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
-               if (loadedArtifacts.getLoadedArtifacts().contains(getLocalArtifact())) {
+               if (loadedArtifacts.getLoadedArtifacts().contains(getArtifactFromEditorInput())) {
                   Displays.ensureInDisplayThread(new Runnable() {
                      /* (non-Javadoc)
                       * @see java.lang.Runnable#run()
                       */
                      @Override
                      public void run() {
-                        setTitleImage(getLocalArtifact().getImage());
+                        setTitleImage(getArtifactFromEditorInput().getImage());
                      }
                   });
                }

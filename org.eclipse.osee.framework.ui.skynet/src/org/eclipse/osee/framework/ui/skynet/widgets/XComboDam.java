@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +42,7 @@ public class XComboDam extends XCombo implements IArtifactWidget {
    @Override
    public void saveToArtifact() throws OseeCoreException {
       try {
-         if (data == null || data.equals("")) {
+         if (!Strings.isValid(data)) {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             String enteredValue = get();

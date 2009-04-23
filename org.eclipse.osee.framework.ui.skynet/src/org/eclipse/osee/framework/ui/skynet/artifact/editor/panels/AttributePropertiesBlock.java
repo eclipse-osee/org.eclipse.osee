@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.GC;
@@ -58,9 +58,9 @@ import org.eclipse.ui.forms.widgets.Section;
 public class AttributePropertiesBlock {
 
    private SashForm sashForm;
-   private final ArtifactEditor editor;
+   private final NewArtifactEditor editor;
 
-   public AttributePropertiesBlock(ArtifactEditor editor) {
+   public AttributePropertiesBlock(NewArtifactEditor editor) {
       super();
       this.editor = editor;
    }
@@ -154,7 +154,7 @@ public class AttributePropertiesBlock {
 
    private final class InternalContentProvider implements IStructuredContentProvider {
       public Object[] getElements(Object inputElement) {
-         if (inputElement instanceof ArtifactEditorInput) {
+         if (inputElement instanceof BaseArtifactEditorInput) {
             Artifact artifact = editor.getEditorInput().getArtifact();
             return getEmptyTypes(artifact);
          }

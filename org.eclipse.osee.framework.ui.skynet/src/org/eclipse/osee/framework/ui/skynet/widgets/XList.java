@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
@@ -194,8 +193,6 @@ public class XList extends XWidget {
       listList.addSelectionListener(listListener);
       updateListWidget();
       listList.setEnabled(isEditable());
-
-      setMessage("Was Don here?", IMessageProvider.ERROR, getControl());
    }
 
    @Override

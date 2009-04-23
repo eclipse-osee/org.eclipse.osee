@@ -67,10 +67,6 @@ public class OldArtifactEditor extends AbstractEventArtifactEditor {
       editor = this;
    }
 
-   public RelationsComposite getRelationsComposite() {
-      return relationsComposite;
-   }
-
    @Override
    public boolean isDirty() {
       return reportIsDirty().isTrue();
@@ -271,13 +267,15 @@ public class OldArtifactEditor extends AbstractEventArtifactEditor {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (IActionable.class.equals(adapter)) {
+      if (adapter == IActionable.class) {
          return new IActionable() {
             @Override
             public String getActionDescription() {
                return "";
             }
          };
+      } else if (adapter == RelationsComposite.class) {
+         return relationsComposite;
       }
       return super.getAdapter(adapter);
    }

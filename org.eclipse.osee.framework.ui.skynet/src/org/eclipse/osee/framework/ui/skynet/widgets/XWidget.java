@@ -38,6 +38,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * Abstract class for all widgets used in Wizards and Editors
  */
 public abstract class XWidget {
+   public final static String XWIDGET_DATA_KEY = "xWidget";
 
    private IManagedForm managedForm;
 
@@ -107,27 +108,39 @@ public abstract class XWidget {
          listener.widgetModified(this);
    }
 
-   public void setMessage(String messageText, int type, Control control) {
-      IManagedForm managedForm = getManagedForm();
-      if (managedForm != null) {
-         IMessageManager messageManager = managedForm.getMessageManager();
-         if (messageManager != null) {
-            messageManager.addMessage(this, messageText, null, type, control);
-         }
-      }
-   }
-
    private IManagedForm getManagedForm() {
       return managedForm;
    }
 
+   protected IMessageManager getMessageManager() {
+      return getManagedForm() != null ? managedForm.getMessageManager() : null;
+   }
+
    public void setMessage(String messageText, int type) {
-      IManagedForm managedForm = getManagedForm();
-      if (managedForm != null) {
-         IMessageManager messageManager = managedForm.getMessageManager();
-         if (messageManager != null) {
-            messageManager.addMessage(this, messageText, null, type);
-         }
+      IMessageManager messageManager = getMessageManager();
+      if (messageManager != null) {
+         messageManager.addMessage(this, messageText, null, type);
+      }
+   }
+
+   public void setControlCausedMessage(String messageText, int type) {
+      IMessageManager messageManager = getMessageManager();
+      if (messageManager != null) {
+         messageManager.addMessage(this, messageText, null, type, getControl());
+      }
+   }
+
+   public void removeControlCausedMessage() {
+      IMessageManager messageManager = getMessageManager();
+      if (messageManager != null) {
+         messageManager.removeMessage(this, getControl());
+      }
+   }
+
+   public void removeMessage() {
+      IMessageManager messageManager = getMessageManager();
+      if (messageManager != null) {
+         messageManager.removeMessage(this);
       }
    }
 
@@ -174,6 +187,12 @@ public abstract class XWidget {
       this.managedForm = managedForm;
       createWidgets(parent, horizontalSpan);
       adaptControls(toolkit);
+
+      // Added to be able to operate on XWidget who create the control
+      Control internalControl = getControl();
+      if (internalControl != null) {
+         internalControl.setData(XWIDGET_DATA_KEY, this);
+      }
    }
 
    public void adaptControls(FormToolkit toolkit) {

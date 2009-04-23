@@ -155,11 +155,9 @@ public class XText extends XWidget {
             labelWidget.setToolTipText(toolTip);
          }
       }
-      if (fillVertically) {
-         sText = new StyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL);
-      } else {
-         sText = new StyledText(composite, SWT.BORDER | SWT.SINGLE);
-      }
+
+      sText = new StyledText(composite, getTextStyle());
+
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       if (verticalLabel)
          gd.horizontalSpan = horizontalSpan;
@@ -194,6 +192,11 @@ public class XText extends XWidget {
       sText.setEditable(editable);
       if (font != null) sText.setFont(font);
       parent.layout();
+   }
+
+   protected int getTextStyle() {
+      int styleBase = SWT.BORDER;
+      return styleBase | (fillVertically ? SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE);
    }
 
    public void addXTextSpellModifyDictionary(XTextSpellModifyDictionary modDict) {

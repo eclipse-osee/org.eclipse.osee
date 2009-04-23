@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
@@ -162,6 +163,18 @@ public class XWidgetFactory {
                throw new IllegalArgumentException(
                      "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
          }
+      } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
+         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+            String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (values.length > 0) {
+               XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
+               widget.setSelectableItems(Arrays.asList(values));
+               xWidget = widget;
+            } else
+               throw new IllegalArgumentException(
+                     "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
+         }
       } else if (xWidgetName.startsWith("XComboBooleanDam")) {
          xWidget = new XComboBooleanDam(name);
          XComboBooleanDam combo = new XComboBooleanDam(name);
@@ -217,8 +230,8 @@ public class XWidgetFactory {
             XList list = new XList(name);
             list.add(values);
             xWidget = list;
-            if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) list.setSelected(Arrays.asList(xWidgetLayoutData.getDefaultValue().split(
-                  ",")));
+            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(defaultValue)) list.setSelected(Arrays.asList(defaultValue.split(",")));
          } else
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
       } else if (xWidgetName.startsWith("XArtifactList")) {

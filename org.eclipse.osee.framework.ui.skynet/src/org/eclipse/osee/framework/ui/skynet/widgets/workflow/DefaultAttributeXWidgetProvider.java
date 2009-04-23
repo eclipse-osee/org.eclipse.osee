@@ -57,9 +57,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
                   EnumeratedAttribute.getChoices(attributeType)) + ")");
          } else {
-            defaultData.setXWidgetName("XListDam(" + Collections.toString(",",
-                  EnumeratedAttribute.getChoices(attributeType)) + ")");
-            defaultData.getXOptionHandler().add(XOption.VERTICAL_LABEL);
+            defaultData.setXWidgetName("XSelectFromMultiChoiceDam(" + Collections.toString(",",
+                  EnumeratedAttribute.getChoices(attributeType)) + ")");           
          }
       } else if (attributeType.getBaseAttributeClass().equals(StringAttribute.class)) {
          if (maxOccurrence == 1) {

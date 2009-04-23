@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,6 +21,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -29,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorActionBarContributor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.panels.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.panels.ArtifactFormPage;
@@ -44,9 +48,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  * @author Roberto E. Escobar
  */
 public class NewArtifactEditor extends AbstractEventArtifactEditor {
-   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
+   private static final String NEW_EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.NewArtifactEditor";
 
-   private Artifact artifact;
    private IActionContributor actionBarContributor;
    private ArtifactFormPage formPage;
    private ArtifactEditorOutlinePage outlinePage;
@@ -63,20 +66,11 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
-    */
-   @Override
-   protected void setInput(IEditorInput input) {
-      super.setInput(input);
-      this.artifact = ((ArtifactEditorInput) input).getArtifact();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.ui.part.EditorPart#getEditorInput()
     */
    @Override
-   public ArtifactEditorInput getEditorInput() {
-      return (ArtifactEditorInput) super.getEditorInput();
+   public BaseArtifactEditorInput getEditorInput() {
+      return (BaseArtifactEditorInput) super.getEditorInput();
    }
 
    /* (non-Javadoc)
@@ -119,6 +113,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    private Result computeIsDirty() {
+      Artifact artifact = getEditorInput().getArtifact();
       if (artifact.isDeleted()) return Result.FalseResult;
 
       try {
@@ -144,11 +139,15 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
+         getFormPage().showBusy(true);
+         Artifact artifact = getEditorInput().getArtifact();
          artifact.persistAttributesAndRelations();
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      } finally {
+         getFormPage().showBusy(false);
       }
    }
 
@@ -159,6 +158,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    public void dispose() {
       try {
          // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
+         Artifact artifact = getEditorInput().getArtifact();
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {
             try {
                artifact.reloadAttributesAndRelations();
@@ -232,11 +232,14 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
           */
          @Override
          public void run() {
+            Artifact artifact = getEditorInput().getArtifact();
             setPartName(getEditorInput().getName());
             setTitleImage(artifact.getImage());
             ArtifactFormPage page = getFormPage();
             if (page != null) {
+               page.showBusy(true);
                page.refresh();
+               page.showBusy(false);
             }
             ArtifactEditorOutlinePage outlinePage = getOutlinePage();
             if (outlinePage != null) {
@@ -276,7 +279,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    protected void addPages() {
       OseeContributionItem.addTo(this, true);
-
+      Artifact artifact = getEditorInput().getArtifact();
       setPartName(getEditorInput().getName());
       setTitleImage(artifact.getImage());
 
@@ -298,7 +301,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (IActionable.class.equals(adapter)) {
+      if (adapter == IActionable.class) {
          return new IActionable() {
             @Override
             public String getActionDescription() {
@@ -307,13 +310,15 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
          };
       } else if (adapter == IContentOutlinePage.class) {
          return getOutlinePage();
+      } else if (adapter == RelationsComposite.class) {
+         return getFormPage().getRelationsComposite();
       }
       return super.getAdapter(adapter);
    }
 
    protected ArtifactEditorOutlinePage getOutlinePage() {
       if (outlinePage == null) {
-         outlinePage = new ArtifactEditorOutlinePage(this);
+         outlinePage = new ArtifactEditorOutlinePage();
       }
       return outlinePage;
    }
@@ -338,5 +343,40 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
       public void setSelection(ISelection selection) {
          this.selection = selection;
       }
+   }
+
+   public static void editArtifacts(final Collection<Artifact> artifacts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               for (Artifact artifact : artifacts) {
+                  if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                           "The user " + UserManager.getUser() + " does not have read access to " + artifact);
+                  } else
+                     AWorkbench.getActivePage().openEditor(new NewArtifactEditorInput(artifact), NEW_EDITOR_ID);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+   }
+
+   public static void editArtifact(final Artifact artifact) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
+                        "The user " + UserManager.getUser() + " does not have read access to " + artifact);
+               } else if (artifact != null) {
+                  AWorkbench.getActivePage().openEditor(new NewArtifactEditorInput(artifact), NEW_EDITOR_ID);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
    }
 }

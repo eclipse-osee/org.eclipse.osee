@@ -212,10 +212,11 @@ public class DefaultArtifactRenderer implements IRenderer {
     */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
+      ArrayList<String> commandIds = new ArrayList<String>(2);
 
       if (presentationType == PresentationType.SPECIALIZED_EDIT) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.artifacteditor.command");
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command");
       }
 
       return commandIds;

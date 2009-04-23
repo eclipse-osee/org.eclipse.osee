@@ -62,6 +62,7 @@
   </extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
+		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.NewArtifactEditor" name="New Artifact Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
   <editor
@@ -911,6 +912,18 @@
       </enabledWhen>
    </handler>
    <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NewArtifactEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
       <enabledWhen>
@@ -1114,6 +1127,10 @@
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
+        icon="images/laser_16_16.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
         icon="images/laser_16_16.gif">
   </image>
   <image
@@ -1371,6 +1388,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
          name="Artifact Editor">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
+         name="New Artifact Editor">
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.wordeditor.command"

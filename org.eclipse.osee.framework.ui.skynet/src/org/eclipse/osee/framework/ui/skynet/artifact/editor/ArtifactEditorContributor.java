@@ -44,21 +44,17 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    @Override
    public void setActiveEditor(IEditorPart part) {
       super.setActiveEditor(part);
-      if (part instanceof ArtifactEditor) {
-         ArtifactEditor artifactEditor = (ArtifactEditor) part;
-         Artifact artifact = ((ArtifactEditorInput) artifactEditor.getEditorInput()).getArtifact();
+      Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
+      if (artifact != null) {
          typeStatusItem.setText(artifact.getArtifactType().getName());
          typeStatusItem.setImage(artifact.getArtifactType().getImage());
          showInExplorerAction.setArtifact(artifact);
 
-         //         ArtifactFormPage page = artifactEditor.getFormPage();
-         //         if (page != null) {
-         RelationsComposite composite = artifactEditor.getRelationsComposite();
+         RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
          if (composite != null) {
             composite.getTreeViewer().addSelectionChangedListener(
                   new SelectionCountChangeListener(this.getActionBars().getStatusLineManager()));
          }
-         //         }
       }
    }
 

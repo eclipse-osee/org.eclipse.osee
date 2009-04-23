@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
@@ -27,7 +27,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class RelationsFormSection extends ArtifactEditorFormSection {
 
-   public RelationsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public RelationsFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
 import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -28,7 +28,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class DetailsFormSection extends ArtifactEditorFormSection {
 
-   public DetailsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public DetailsFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
 

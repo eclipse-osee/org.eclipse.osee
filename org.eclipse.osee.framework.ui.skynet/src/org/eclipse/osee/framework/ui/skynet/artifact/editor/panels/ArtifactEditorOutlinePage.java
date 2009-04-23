@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -32,11 +31,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePage {
    private Composite composite;
    private TreeViewer viewer;
-   private AbstractArtifactEditor editor;
-
-   public ArtifactEditorOutlinePage(AbstractArtifactEditor editor) {
-      this.editor = editor;
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
@@ -50,7 +44,7 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
       viewer.getTree().setLayoutData(new FillLayout(SWT.VERTICAL));
       viewer.setContentProvider(new InternalContentProvider());
       viewer.setLabelProvider(new InternalLabelProvider());
-      viewer.setInput(editor.getEditorInput());
+      setInput("No Data Available");
    }
 
    /* (non-Javadoc)
@@ -102,7 +96,7 @@ public class ArtifactEditorOutlinePage extends Page implements IContentOutlinePa
    }
 
    public void setInput(Object editorInput) {
-      viewer.setInput(editorInput);
+      viewer.setInput(editorInput != null ? editorInput : "No Input Available");
    }
 
    public void refresh() {
