@@ -60,7 +60,6 @@ public class MessageSummaryNote {
 
          @Override
          public void focusLost(FocusEvent e) {
-            System.out.println("Lost");
             shell.close();
          }
       });

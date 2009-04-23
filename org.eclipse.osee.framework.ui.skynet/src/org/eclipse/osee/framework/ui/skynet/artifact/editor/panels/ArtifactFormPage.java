@@ -156,7 +156,6 @@ public class ArtifactFormPage extends FormPage {
 
    private void addArtifactInfoArea(FormToolkit toolkit, ScrolledForm form, boolean add) {
       if (add) {
-         //         toolkit.getBorderStyle()
          Composite infoArea = toolkit.createComposite(form.getForm().getBody(), SWT.WRAP);
          infoArea.setLayout(ALayout.getZeroMarginLayout(2, false));
          infoArea.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
@@ -168,8 +167,6 @@ public class ArtifactFormPage extends FormPage {
          text.setText(getArtifactShortInfo(), true, false);
          text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
          text.setToolTipText("The human readable id and database id for this artifact");
-
-         //         toolkit.paintBordersFor(infoArea);
       } else {
       }
    }
