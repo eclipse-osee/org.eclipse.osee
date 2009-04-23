@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.eclipse.osee.ote.core/help/toc.xml#tools" label="OSEE Branch Graph">                
+<toc label="OSEE Branch Graph">                
 		<topic href="help/oseeBranchGraph.html" label="OSEE Branch Graph">
 		</topic>
 	
