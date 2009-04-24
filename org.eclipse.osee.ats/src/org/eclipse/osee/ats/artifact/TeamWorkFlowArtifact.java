@@ -319,6 +319,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public String getHyperName() {
+      try {
+         return getEditorTitle();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return getTeamName();
    }
 

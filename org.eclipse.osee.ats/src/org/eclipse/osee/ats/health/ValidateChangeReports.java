@@ -195,7 +195,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                artifactForStore.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
       }
       // Retrieve current 
-      ChangeData currentChangeData = teamArt.getSmaMgr().getBranchMgr().getChangeData();
+      ChangeData currentChangeData = teamArt.getSmaMgr().getBranchMgr().getChangeDataFromEarliestTransactionId();
       // Store 
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists

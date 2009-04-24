@@ -269,7 +269,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.addPart(section);
          control = section.getMainComp();
          sections.add(section);
-         section.getSection().setExpanded(true);
       }
 
       atsBody.setFocus();

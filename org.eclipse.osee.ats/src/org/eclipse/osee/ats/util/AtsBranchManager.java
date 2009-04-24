@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleO
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
@@ -386,7 +387,7 @@ public class AtsBranchManager {
       return getWorkingBranch(includeArchived) != null;
    }
 
-   public Collection<ICommitConfigArtifact> getConfigArtifactsToCommitTo() throws OseeCoreException {
+   public Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo() throws OseeCoreException {
       Set<ICommitConfigArtifact> configObjects = new HashSet<ICommitConfigArtifact>();
       if (smaMgr.isTeamUsesVersions()) {
          if (smaMgr.getTargetedForVersion() != null) {
@@ -401,7 +402,7 @@ public class AtsBranchManager {
    }
 
    public boolean isAllObjectsToCommitToConfigured() throws OseeCoreException {
-      return getConfigArtifactsToCommitTo().size() == getBranchesToCommitTo().size();
+      return getConfigArtifactsConfiguredToCommitTo().size() == getBranchesToCommitTo().size();
    }
 
    public Collection<Branch> getBranchesLeftToCommit() throws OseeCoreException {
@@ -417,7 +418,7 @@ public class AtsBranchManager {
 
    public Collection<Branch> getBranchesToCommitTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
-      for (Object obj : getConfigArtifactsToCommitTo()) {
+      for (Object obj : getConfigArtifactsConfiguredToCommitTo()) {
          if ((obj instanceof VersionArtifact) && ((VersionArtifact) obj).getParentBranch() != null) {
             branches.add(((VersionArtifact) obj).getParentBranch());
          } else if ((obj instanceof TeamDefinitionArtifact) && ((TeamDefinitionArtifact) obj).getParentBranch() != null) {
@@ -730,12 +731,35 @@ public class AtsBranchManager {
    private static final Map<TransactionId, ChangeData> changeDataCacheForCommittedBranch =
          new HashMap<TransactionId, ChangeData>();
 
-   public ChangeData getChangeData() throws OseeCoreException {
+   public ChangeData getChangeDataFromEarliestTransactionId() throws OseeCoreException {
+      return getChangeData(null);
+   }
+
+   /**
+    * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
+    * 
+    * @param commitConfigArt that configures commit or null
+    * @return ChangeData
+    * @throws OseeCoreException
+    */
+   public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
+      if (commitConfigArt != null && commitConfigArt.getParentBranch() == null) {
+         throw new OseeArgumentException("Parent Branch not configured for " + commitConfigArt);
+      }
       ChangeData changeData = null;
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), null);
       } else if (smaMgr.getBranchMgr().isCommittedBranchExists()) {
-         TransactionId transactionId = getEarliestTransactionId();
+         TransactionId transactionId = null;
+         if (commitConfigArt == null) {
+            transactionId = getEarliestTransactionId();
+         } else {
+            for (TransactionId transId : getTransactionIds(false)) {
+               if (transId.getBranch() == commitConfigArt.getParentBranch()) {
+                  transactionId = transId;
+               }
+            }
+         }
          if (changeDataCacheForCommittedBranch.get(transactionId) == null) {
             changeDataCacheForCommittedBranch.put(transactionId, ChangeManager.getChangeDataPerTransaction(
                   transactionId, null));

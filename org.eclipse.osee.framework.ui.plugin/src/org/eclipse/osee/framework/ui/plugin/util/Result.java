@@ -44,10 +44,15 @@ public class Result {
       return !isTrue;
    }
 
+   public void setResult(boolean isTrue) {
+      this.isTrue = isTrue;
+   }
+
    public String getText() {
       return text;
    }
 
+   @Override
    public String toString() {
       return String.valueOf(isTrue()) + (getText().equals("") ? "" : " - \"" + getText() + "\"");
    }

@@ -73,13 +73,6 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
          }
       }
 
-      // Button button = toolkit.createButton(workComp, "Return to \"" + item.getState() + "\"",
-      // SWT.PUSH);
-      // button.addListener(SWT.MouseUp, new Listener() {
-      // public void handleEvent(Event event) {
-      // handleUnComplete(fItem.getState());
-      // }
-      // });
       return workComp;
    }
 

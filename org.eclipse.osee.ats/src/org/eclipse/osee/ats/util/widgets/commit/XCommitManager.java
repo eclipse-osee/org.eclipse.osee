@@ -232,7 +232,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       try {
          if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact) && xCommitManager.getContentProvider() != null) {
             Collection<ICommitConfigArtifact> configArtSet =
-                  teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsToCommitTo();
+                  teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
             xCommitManager.setInput(configArtSet);
          }
       } catch (Exception ex) {

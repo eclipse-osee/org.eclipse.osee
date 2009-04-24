@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -110,8 +110,10 @@ public class CreateActionArtifactChangeReportJob extends Job {
                      teamArt.getTeamDefinition().getDescriptiveName()));
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         VersionArtifact verArt = teamArt.getSmaMgr().getTargetedForVersion();
-         processTeam(teamArt, verArt.getDescriptiveName(), byAttribute, rd);
+         for (ICommitConfigArtifact commitConfigArt : teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
+            processTeam(teamArt, commitConfigArt.getParentBranch().getBranchShortName(), byAttribute, commitConfigArt,
+                  rd);
+         }
          x++;
 
          //          System.err.println("Developmental purposes only, don't release with this");
@@ -121,9 +123,9 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, XResultData rd) throws OseeCoreException {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
-      ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData();
+      ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.CHANGE)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);

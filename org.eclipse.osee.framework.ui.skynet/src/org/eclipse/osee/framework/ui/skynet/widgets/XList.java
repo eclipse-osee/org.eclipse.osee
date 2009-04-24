@@ -49,6 +49,7 @@ public class XList extends XWidget {
          this.name = name;
       }
 
+      @Override
       public String toString() {
          return name;
       }
@@ -90,7 +91,7 @@ public class XList extends XWidget {
    private Menu listMenu;
    private Composite parent;
    private Composite composite;
-   private Map<String, XListItem> items = new HashMap<String, XListItem>();
+   private final Map<String, XListItem> items = new HashMap<String, XListItem>();
    private int requiredMinSelected = 0;
    private int requiredMaxSelected = 0;
    private boolean grabHorizontal = false;
@@ -140,6 +141,7 @@ public class XList extends XWidget {
    /**
     * Create List Widgets. Widgets Created: List: horizonatalSpan takes up 2 columns; horizontalSpan must be >=2
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       this.parent = parent;
@@ -176,7 +178,7 @@ public class XList extends XWidget {
       }
 
       listList = new List(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
-      String array[] = (String[]) items.keySet().toArray(new String[items.size()]);
+      String array[] = items.keySet().toArray(new String[items.size()]);
       java.util.Arrays.sort(array);
       listList.setMenu(listMenu);
       listList.setItems(array);
@@ -193,6 +195,7 @@ public class XList extends XWidget {
       listList.addSelectionListener(listListener);
       updateListWidget();
       listList.setEnabled(isEditable());
+
    }
 
    @Override
@@ -203,12 +206,14 @@ public class XList extends XWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
+   @Override
    public void setFocus() {
    }
 
    /**
     * Don't need this since overriding toReport and toXml
     */
+   @Override
    public String getXmlData() {
       return "";
    }
@@ -216,6 +221,7 @@ public class XList extends XWidget {
    /**
     * Don't need this since overriding setFromXml
     */
+   @Override
    public void setXmlData(String str) {
       return;
    }
@@ -233,6 +239,7 @@ public class XList extends XWidget {
       notifyXModifiedListeners();
    }
 
+   @Override
    public void refresh() {
       updateListWidget();
    }
@@ -249,6 +256,7 @@ public class XList extends XWidget {
       return sel;
    }
 
+   @Override
    public void setFromXml(String xml) {
       Matcher inner, outter;
       String outterXml;
@@ -375,6 +383,7 @@ public class XList extends XWidget {
       updateListWidget();
    }
 
+   @Override
    public Result isValid() {
       if (!requiredEntry) return Result.TrueResult;
       int size = getSelected().size();
@@ -413,6 +422,7 @@ public class XList extends XWidget {
       }
    }
 
+   @Override
    public String getReportData() {
       String s = "\n";
       for (XListItem xItem : getSelected()) {
@@ -422,10 +432,12 @@ public class XList extends XWidget {
       return s;
    }
 
+   @Override
    public String toXml() {
       return toXml(xmlRoot, xmlSubRoot);
    }
 
+   @Override
    public String toXml(String xmlRoot, String xmlSubRoot) {
       String s = "<" + xmlRoot + ">\n";
       for (XListItem xItem : getSelected()) {
@@ -441,6 +453,7 @@ public class XList extends XWidget {
       return s;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, label + ": ") + "<dt><ul type=\"disc\">";
       for (XListItem xItem : getSelected()) {

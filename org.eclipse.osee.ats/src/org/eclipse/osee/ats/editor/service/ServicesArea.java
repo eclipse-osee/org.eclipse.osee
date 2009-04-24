@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -89,7 +90,7 @@ public class ServicesArea {
    public void loadToolbarServices(AtsWorkPage atsWorkPage) throws OseeCoreException {
       if (toolBarServices.size() == 0) {
          // Toolbar Services
-         if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranch())) {
+         if (atsWorkPage != null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranch())) {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
          }
