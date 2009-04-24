@@ -3,11 +3,19 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.messaging;
+package org.eclipse.osee.framework.messaging.internal;
 
 import java.util.Collection;
 import java.util.Properties;
-import org.eclipse.osee.framework.messaging.internal.Activator;
+import org.eclipse.osee.framework.messaging.ExceptionHandler;
+import org.eclipse.osee.framework.messaging.Message;
+import org.eclipse.osee.framework.messaging.MessageExchange;
+import org.eclipse.osee.framework.messaging.MessageId;
+import org.eclipse.osee.framework.messaging.MessageReceiveChannel;
+import org.eclipse.osee.framework.messaging.MessageSendChannel;
+import org.eclipse.osee.framework.messaging.ProtocolId;
+import org.eclipse.osee.framework.messaging.ReceiveListener;
+import org.eclipse.osee.framework.messaging.SendListener;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -16,11 +24,20 @@ import org.osgi.framework.BundleContext;
  */
 public class MessageExchangeImpl implements MessageExchange {
 
+   private ReceiveChannels receiveChannels;
+   private SendChannels sendChannels;
+
    public MessageExchangeImpl(){
       setupMessageReceiveChannelConsumption();
       setupMessageSendChannelConsumption();
    }
    
+   /**
+    * 
+    */
+   private void setupMessageSendChannelConsumption() {
+   }
+
    /**
     * 
     */
@@ -45,7 +62,7 @@ public class MessageExchangeImpl implements MessageExchange {
 
    @Override
    public void bind(MessageReceiveChannel receiveChannel) {
-      receiveChannels.add(sendChannel);
+      receiveChannels.add(receiveChannel);
    }
 
    @Override
@@ -74,10 +91,6 @@ public class MessageExchangeImpl implements MessageExchange {
       receiveChannels.dispose();
    }
 
-   @Override
-   public Collection<ProtocolId> getAllProtocolIds() {
-      return null;
-   }
 
    @Override
    public Collection<MessageReceiveChannel> getReceiveChannels() {
@@ -85,18 +98,8 @@ public class MessageExchangeImpl implements MessageExchange {
    }
 
    @Override
-   public Collection<ProtocolId> getRecieveProtocolIds() {
-      return null;
-   }
-
-   @Override
    public Collection<MessageSendChannel> getSendChannels() {
       return sendChannels.getAll();
-   }
-
-   @Override
-   public Collection<ProtocolId> getSendProtocolIds() {
-      return sendChannels.getAllProtocolIds();
    }
 
    @Override
@@ -116,7 +119,6 @@ public class MessageExchangeImpl implements MessageExchange {
 
    @Override
    public void start(ProtocolId id, Properties properties) {
-      sdfads
    }
 
    @Override

@@ -25,4 +25,15 @@ public class Activator implements BundleActivator {
 	   registration.unregister();
 	}
 
+   /**
+    * @return
+    */
+   public static Activator getInstance() {
+      return null;
+   }
+   
+   public BundleContext getContext(){
+      return null;
+   }
+
 }

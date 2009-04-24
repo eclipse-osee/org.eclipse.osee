@@ -15,4 +15,8 @@ public interface MessageReceiveChannel {
   
    public void registerMessageRecieveListener(MessageId messageId, ReceiveListener recieveHandler);
    public void unregisterMessageRecieveHandler(MessageId messageId, ReceiveListener recieveHandler);
+   /**
+    * @param messageId
+    */
+   public void addMessage(MessageId messageId);
 }
