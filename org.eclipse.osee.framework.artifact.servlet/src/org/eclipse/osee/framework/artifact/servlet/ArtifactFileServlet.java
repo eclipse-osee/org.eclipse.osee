@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,12 +43,25 @@ public class ArtifactFileServlet extends OseeHttpServlet {
       InputStream inputStream = null;
       boolean wasProcessed = false;
       try {
-         HttpArtifactFileInfo artifactFileInfo = new HttpArtifactFileInfo(request);
-         String uri = null;
-         if (artifactFileInfo.isBranchNameValid()) {
-            uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
+         HttpArtifactFileInfo artifactFileInfo = null;
+
+         String servletPath = request.getServletPath();
+         if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
+            ObjectPair<String, String> defaultArtifact = DefaultOseeArtifact.get();
+            if (defaultArtifact != null) {
+               artifactFileInfo = new HttpArtifactFileInfo(defaultArtifact.object1, null, defaultArtifact.object2);
+            }
          } else {
-            uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchId());
+            artifactFileInfo = new HttpArtifactFileInfo(request);
+         }
+
+         String uri = null;
+         if (artifactFileInfo != null) {
+            if (artifactFileInfo.isBranchNameValid()) {
+               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
+            } else {
+               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchId());
+            }
          }
          if (Strings.isValid(uri)) {
             IResourceLocator locator = Activator.getResourceLocatorManager().getResourceLocator(uri);

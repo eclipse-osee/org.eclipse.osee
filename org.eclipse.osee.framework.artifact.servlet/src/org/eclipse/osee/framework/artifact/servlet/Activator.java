@@ -27,6 +27,8 @@ public class Activator implements BundleActivator {
 
    private OseeHttpServiceTracker httpTracker;
    private OseeHttpServiceTracker httpTracker1;
+   private OseeHttpServiceTracker httpTracker2;
+   private OseeHttpServiceTracker httpTracker3;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
 
@@ -48,6 +50,12 @@ public class Activator implements BundleActivator {
 
       httpTracker1 = new OseeHttpServiceTracker(context, OseeServerContext.ARTIFACT_CONTEXT, ArtifactFileServlet.class);
       httpTracker1.open();
+
+      httpTracker2 = new OseeHttpServiceTracker(context, "", ArtifactFileServlet.class);
+      httpTracker2.open();
+
+      httpTracker3 = new OseeHttpServiceTracker(context, "index", ArtifactFileServlet.class);
+      httpTracker3.open();
    }
 
    /*
@@ -63,6 +71,16 @@ public class Activator implements BundleActivator {
       if (httpTracker1 != null) {
          httpTracker1.close();
          httpTracker1 = null;
+      }
+
+      if (httpTracker2 != null) {
+         httpTracker2.close();
+         httpTracker2 = null;
+      }
+
+      if (httpTracker3 != null) {
+         httpTracker3.close();
+         httpTracker3 = null;
       }
 
       if (resourceManagementTracker != null) {
