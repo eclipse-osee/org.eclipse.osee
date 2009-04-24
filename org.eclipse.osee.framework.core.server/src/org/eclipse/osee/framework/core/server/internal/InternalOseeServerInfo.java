@@ -84,12 +84,11 @@ class InternalOseeServerInfo extends OseeServerInfo {
       synchronized (updateFromStore) {
          checkVersionArgument(version);
          Set<String> supportedVersions = new HashSet<String>(Arrays.asList(getVersion()));
-         if (supportedVersions.add(version)) {
-            backingData.put(VERSION, supportedVersions.toArray(new String[supportedVersions.size()]));
-            updateFromStore.setValue(false);
-            writeToDataStore();
-            updateFromStore.setValue(true);
-         }
+         supportedVersions.add(version);
+         backingData.put(VERSION, supportedVersions.toArray(new String[supportedVersions.size()]));
+         updateFromStore.setValue(false);
+         writeToDataStore();
+         updateFromStore.setValue(true);
       }
    }
 
