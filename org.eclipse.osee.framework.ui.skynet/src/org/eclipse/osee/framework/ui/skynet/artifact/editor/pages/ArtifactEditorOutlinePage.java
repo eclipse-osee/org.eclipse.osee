@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
+package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;

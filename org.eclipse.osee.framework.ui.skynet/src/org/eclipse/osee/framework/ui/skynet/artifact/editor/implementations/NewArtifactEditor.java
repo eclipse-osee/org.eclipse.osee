@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifac
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.panels.ArtifactEditorOutlinePage;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.panels.ArtifactFormPage;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;

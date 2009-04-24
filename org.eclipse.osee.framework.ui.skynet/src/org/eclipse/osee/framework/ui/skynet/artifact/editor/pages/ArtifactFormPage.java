@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
+package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

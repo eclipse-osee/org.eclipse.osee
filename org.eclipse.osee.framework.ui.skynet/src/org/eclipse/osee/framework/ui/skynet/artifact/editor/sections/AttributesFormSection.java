@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
+package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -60,7 +61,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      AttributeDataPage detailsPage = new AttributeDataPage(getEditor());
+      AttributeFormPart detailsPage = new AttributeFormPart(getEditor());
       form.addPart(detailsPage);
       detailsPage.createContents(sectionBody);
       toolkit.getBorderStyle();

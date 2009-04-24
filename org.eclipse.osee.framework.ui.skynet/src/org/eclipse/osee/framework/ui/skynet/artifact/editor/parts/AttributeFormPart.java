@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact.editor.panels;
+package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -46,11 +47,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataPage extends AbstractFormPart {
+public class AttributeFormPart extends AbstractFormPart {
    private Font defaultLabelFont;
    private NewArtifactEditor editor;
 
-   public AttributeDataPage(NewArtifactEditor editor) {
+   public AttributeFormPart(NewArtifactEditor editor) {
       this.editor = editor;
    }
 
