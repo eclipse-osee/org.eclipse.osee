@@ -281,8 +281,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             @Override
             public void handleEvent(Event event) {
                try {
-                  branch = branchSelect.getData();
-                  if (branch != null) {
+                  Branch selectedBranch = branchSelect.getData();
+                  if (selectedBranch != null) {
+                     branch = selectedBranch;
                      explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
