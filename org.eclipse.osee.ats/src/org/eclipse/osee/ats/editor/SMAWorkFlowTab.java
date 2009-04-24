@@ -218,7 +218,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createBody(Composite body) throws OseeCoreException {
       atsBody = toolkit.createComposite(body);
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
-      atsBody.setLayout(ALayout.getZeroMarginLayout(1, false));
+      atsBody.setLayout(new GridLayout(1, false));
 
       Composite headerComp = toolkit.createComposite(atsBody);
       headerComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
