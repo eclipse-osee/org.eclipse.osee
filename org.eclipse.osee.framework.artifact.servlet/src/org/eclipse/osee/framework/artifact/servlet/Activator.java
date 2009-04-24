@@ -51,8 +51,8 @@ public class Activator implements BundleActivator {
       httpTracker1 = new OseeHttpServiceTracker(context, OseeServerContext.ARTIFACT_CONTEXT, ArtifactFileServlet.class);
       httpTracker1.open();
 
-      httpTracker2 = new OseeHttpServiceTracker(context, "", ArtifactFileServlet.class);
-      httpTracker2.open();
+//      httpTracker2 = new OseeHttpServiceTracker(context, "/", ArtifactFileServlet.class);
+//      httpTracker2.open();
 
       httpTracker3 = new OseeHttpServiceTracker(context, "index", ArtifactFileServlet.class);
       httpTracker3.open();
