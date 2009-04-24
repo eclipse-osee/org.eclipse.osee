@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.InvalidTaggerException
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
@@ -67,7 +67,7 @@ public class AttributeTaggerProviderManager implements IAttributeTaggerProviderM
    }
 
    @Override
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception {
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception {
       IAttributeTaggerProvider provider = getProvider(attributeData.getTaggerId());
       return provider.find(attributeData, toSearch, options);
    }

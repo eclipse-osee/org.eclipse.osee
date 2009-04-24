@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
+import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -100,13 +101,13 @@ public class AttributeDataStore {
       return query;
    }
 
-   private static String getQuery(final String baseQuery, final int branchId, final Options options) {
+   private static String getQuery(final String baseQuery, final int branchId, final SearchOptions options) {
       StringBuilder toReturn = new StringBuilder(baseQuery);
       if (branchId > -1) {
          toReturn.append(RESTRICT_BRANCH);
       }
       // txs1 is for attributes, txs2 is for artifact
-      if (options.getBoolean("include deleted")) {
+      if (options.getBoolean(SearchOptionsEnum.include_deleted.asStringOption())) {
          toReturn.append(" AND txs1.tx_current IN (1,3)");
       } else {
          toReturn.append(" AND txs1.tx_current = 1");
@@ -117,20 +118,20 @@ public class AttributeDataStore {
    public static void main(String[] args) {
       for (int index = 1; index < 13; index++) {
          System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new Options()));
+         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new SearchOptions()));
          System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new Options()));
+         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new SearchOptions()));
       }
 
       for (int index = 1; index < 13; index++) {
          System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new Options()));
+         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new SearchOptions()));
          System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new Options()));
+         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new SearchOptions()));
       }
    }
 
-   public static Set<AttributeData> getAttributesByTags(final int branchId, final Options options, final Collection<Long> tagData, final Collection<String> attributeTypes) throws OseeDataStoreException {
+   public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData, final Collection<String> attributeTypes) throws OseeDataStoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       AttributeJoinQuery attributeJoin = null;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();

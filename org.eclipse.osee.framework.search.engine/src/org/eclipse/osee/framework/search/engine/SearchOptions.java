@@ -15,11 +15,19 @@ import java.util.Properties;
 /**
  * @author Roberto E. Escobar
  */
-public class Options {
+public class SearchOptions {
+
+   public enum SearchOptionsEnum {
+      include_deleted, match_word_order, as_xml, find_all_locations;
+
+      public String asStringOption() {
+         return name().replaceAll("_", " ");
+      }
+   }
 
    private Properties properties;
 
-   public Options() {
+   public SearchOptions() {
       this.properties = new Properties();
    }
 

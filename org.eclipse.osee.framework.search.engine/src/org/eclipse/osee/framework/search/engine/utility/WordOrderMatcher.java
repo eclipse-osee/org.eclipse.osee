@@ -17,7 +17,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
+import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -27,7 +28,7 @@ public class WordOrderMatcher {
    private WordOrderMatcher() {
    }
 
-   public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, Options options) throws IOException {
+   public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, SearchOptions options) throws IOException {
       List<MatchLocation> matchLocations = new ArrayList<MatchLocation>();
       Reader reader = null;
       try {
@@ -74,7 +75,7 @@ public class WordOrderMatcher {
                      matchLocation.setEndPosition(charCount);
                      matchLocations.add(matchLocation.clone());
                      index = 0;
-                     if (!options.getBoolean("find all locations")) {
+                     if (!options.getBoolean(SearchOptionsEnum.find_all_locations.asStringOption())) {
                         break;
                      }
                   }

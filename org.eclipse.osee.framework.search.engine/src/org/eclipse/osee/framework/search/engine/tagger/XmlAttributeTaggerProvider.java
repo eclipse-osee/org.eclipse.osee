@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
    @Override
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception {
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception {
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {

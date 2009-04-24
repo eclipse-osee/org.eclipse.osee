@@ -28,7 +28,7 @@ public interface ISearchEngine {
     * @return search result
     * @throws Exception
     */
-   public SearchResult search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception;
+   public SearchResult search(String searchString, int branchId, SearchOptions options, String... attributeTypes) throws Exception;
 
    /**
     * Get statistics

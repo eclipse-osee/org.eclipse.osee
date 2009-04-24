@@ -17,8 +17,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.SearchResult;
+import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 
@@ -37,7 +38,7 @@ public class SearchEngine implements ISearchEngine {
     * @see org.eclipse.osee.framework.search.engine.ISearchEngine#search(java.lang.String, org.eclipse.osee.framework.search.engine.Options)
     */
    @Override
-   public SearchResult search(String searchString, int branchId, Options options, String... attributeTypes) throws Exception {
+   public SearchResult search(String searchString, int branchId, SearchOptions options, String... attributeTypes) throws Exception {
       SearchResult results = new SearchResult();
 
       long startTime = System.currentTimeMillis();
@@ -48,7 +49,7 @@ public class SearchEngine implements ISearchEngine {
       long timeAfterPass1 = System.currentTimeMillis() - startTime;
       long secondPass = System.currentTimeMillis();
 
-      boolean bypassSecondPass = !options.getBoolean("match word order");
+      boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
       if (bypassSecondPass) {
          for (AttributeData attributeData : tagMatches) {
             results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
 
 /**
  * @author Roberto E. Escobar
@@ -53,7 +53,7 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
       return longestQuery;
    }
 
-   public void addEntry(String queryString, int branchId, Options options, int found, long processingTime) {
+   public void addEntry(String queryString, int branchId, SearchOptions options, int found, long processingTime) {
       this.totalProcessed++;
       this.totalProcessingTime += processingTime;
       this.averageProcessingTime = totalProcessingTime / this.totalProcessed;

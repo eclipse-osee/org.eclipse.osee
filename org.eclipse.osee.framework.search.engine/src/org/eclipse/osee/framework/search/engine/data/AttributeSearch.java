@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 public final class AttributeSearch implements ITagCollector {
    private final String searchString;
    private final int branchId;
-   private final Options options;
+   private final SearchOptions options;
    private final Set<Long> tagStore;
    private final Set<String> attributeTypes;
 
-   public AttributeSearch(String searchString, int branchId, Options options, String... attributeTypes) {
+   public AttributeSearch(String searchString, int branchId, SearchOptions options, String... attributeTypes) {
       this.tagStore = new HashSet<Long>();
       this.branchId = branchId;
       this.searchString = searchString;

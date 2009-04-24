@@ -50,5 +50,5 @@ public interface IAttributeTaggerProviderManager {
     * @param options
     * @return match location
     */
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, Options options) throws Exception;
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception;
 }
