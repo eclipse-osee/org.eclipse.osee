@@ -17,6 +17,7 @@
    <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
    <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
+   <extension-point id="OseeValidator" name="OseeValidator" schema="schema/OseeValidator.exsd"/>
    
       <extension
             id="SkynetDbInit"

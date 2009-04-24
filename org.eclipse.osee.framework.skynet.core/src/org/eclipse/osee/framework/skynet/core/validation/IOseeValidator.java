@@ -10,17 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.validation;
 
-import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public interface IValidator {
+public interface IOseeValidator {
 
-   public String getFieldName();
+   public int getQualityOfService();
 
-   public String getMessage();
-
-   public Level getLevel();
-
-   public void setItemToValidate(Object object);
-
-   public boolean isValid();
+   public IStatus validate(Artifact artifact, Object proposedObject) throws OseeCoreException;
 }
