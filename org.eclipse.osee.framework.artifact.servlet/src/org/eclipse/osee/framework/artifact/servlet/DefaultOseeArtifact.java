@@ -39,7 +39,7 @@ public class DefaultOseeArtifact {
       if (!Strings.isValid(artifactGuid) || artifactBranchId < 1) {
          throw new OseeStateException(
                String.format(
-                     "OSEE default server page info not found. Ensure values exist in OseeInfo table for [%s] and [%s] keys.",
+                     "OSEE default server page not found. Ensure values exist in OseeInfo table for [%s] and [%s] keys.",
                      OSEE_DEFAULT_SERVER_PAGE_GUID_KEY, OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID));
       }
       return new ObjectPair<String, String>(artifactGuid, String.valueOf(artifactBranchId));
