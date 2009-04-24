@@ -64,20 +64,16 @@ public class ApplicationServerDataStore {
    static boolean deregisterWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
       try {
-         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
-            String address = applicationServerInfo.getServerAddress();
-            int port = applicationServerInfo.getPort();
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (String version : applicationServerInfo.getVersion()) {
-               data.add(new Object[] {address, port, version});
-            }
-            ConnectionHandler.runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
-            status = true;
-         } else {
-            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         String address = applicationServerInfo.getServerAddress();
+         int port = applicationServerInfo.getPort();
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (String version : applicationServerInfo.getVersion()) {
+            data.add(new Object[] {address, port, version});
          }
+         ConnectionHandler.runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
+         status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to deregister server from lookup table.", ex);
+         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
       }
       return status;
    }
@@ -85,23 +81,19 @@ public class ApplicationServerDataStore {
    static boolean registerWithDb(OseeServerInfo applicationServerInfo) {
       boolean status = false;
       try {
-         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
-            String serverId = applicationServerInfo.getServerId();
-            String address = applicationServerInfo.getServerAddress();
-            int port = applicationServerInfo.getPort();
-            Timestamp dateStarted = applicationServerInfo.getDateStarted();
-            int acceptingRequests = applicationServerInfo.isAcceptingRequests() ? 1 : 0;
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (String version : applicationServerInfo.getVersion()) {
-               data.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
-            }
-            ConnectionHandler.runBatchUpdate(INSERT_LOOKUP_TABLE, data);
-            status = true;
-         } else {
-            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         String serverId = applicationServerInfo.getServerId();
+         String address = applicationServerInfo.getServerAddress();
+         int port = applicationServerInfo.getPort();
+         Timestamp dateStarted = applicationServerInfo.getDateStarted();
+         int acceptingRequests = applicationServerInfo.isAcceptingRequests() ? 1 : 0;
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (String version : applicationServerInfo.getVersion()) {
+            data.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
          }
+         ConnectionHandler.runBatchUpdate(INSERT_LOOKUP_TABLE, data);
+         status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.WARNING, "Unable to register server into lookup table.", ex);
+         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
       }
       return status;
    }
@@ -165,17 +157,15 @@ public class ApplicationServerDataStore {
       Set<String> supportedVersions = new HashSet<String>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         if (ConnectionHandler.doesTableExist("osee_server_lookup")) {
-            chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
-            while (chStmt.next()) {
-               String version = chStmt.getString("version_id");
-               if (Strings.isValid(version)) {
-                  supportedVersions.add(version);
-               }
+         chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
+         while (chStmt.next()) {
+            String version = chStmt.getString("version_id");
+            if (Strings.isValid(version)) {
+               supportedVersions.add(version);
             }
-         } else {
-            OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
          }
+      } catch (Exception ex) {
+         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table is not initialized");
       } finally {
          chStmt.close();
       }
