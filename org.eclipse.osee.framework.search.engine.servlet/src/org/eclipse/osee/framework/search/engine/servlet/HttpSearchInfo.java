@@ -14,7 +14,8 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
-import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.SearchOptions;
+import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -23,10 +24,10 @@ class HttpSearchInfo {
 
    private final String branchId;
    private final String queryString;
-   private final Options options;
+   private final SearchOptions options;
    private final String[] attributeTypes;
 
-   public HttpSearchInfo(String branchId, Options options, String queryString, String... attributeTypes) {
+   public HttpSearchInfo(String branchId, SearchOptions options, String queryString, String... attributeTypes) {
       super();
       this.branchId = branchId;
       this.options = options;
@@ -46,7 +47,7 @@ class HttpSearchInfo {
       return Integer.parseInt(this.branchId);
    }
 
-   public Options getOptions() {
+   public SearchOptions getOptions() {
       return options;
    }
 
@@ -56,7 +57,7 @@ class HttpSearchInfo {
 
    @SuppressWarnings("unchecked")
    public static HttpSearchInfo loadFromGet(HttpServletRequest request) {
-      Options options = new Options();
+      SearchOptions options = new SearchOptions();
       String queryString = null;
       String branchId = null;
       String[] attributeTypes = null;
@@ -85,11 +86,11 @@ class HttpSearchInfo {
       PropertyStoreWriter propertyStoreWriter = new PropertyStoreWriter();
       propertyStoreWriter.load(propertyStore, request.getInputStream());
 
-      Options options = new Options();
-      options.put("include deleted", propertyStore.get("include deleted"));
-      options.put("match word order", propertyStore.get("match word order"));
-      options.put("as xml", propertyStore.get("as xml"));
-      options.put("find all locations", propertyStore.get("find all locations"));
+      SearchOptions options = new SearchOptions();
+      options.put(SearchOptionsEnum.include_deleted.asStringOption(), propertyStore.get("include deleted"));
+      options.put(SearchOptionsEnum.match_word_order.asStringOption(), propertyStore.get("match word order"));
+      options.put(SearchOptionsEnum.as_xml.asStringOption(), propertyStore.get("as xml"));
+      options.put(SearchOptionsEnum.find_all_locations.asStringOption(), propertyStore.get("find all locations"));
 
       return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),
             propertyStore.getArray("attributeType"));

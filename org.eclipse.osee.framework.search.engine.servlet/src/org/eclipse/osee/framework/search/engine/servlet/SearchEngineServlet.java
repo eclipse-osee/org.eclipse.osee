@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchResult;
+import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 import org.eclipse.osee.framework.search.engine.SearchResult.ArtifactMatch;
 
 /**
@@ -69,7 +70,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
          response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
          if (!results.isEmpty()) {
             long start = System.currentTimeMillis();
-            if (!searchInfo.getOptions().getBoolean("as xml")) {
+            if (!searchInfo.getOptions().getBoolean(SearchOptionsEnum.as_xml.asStringOption())) {
                sendAsDbJoin(response, results);
             } else {
                sendAsXml(response, results);
