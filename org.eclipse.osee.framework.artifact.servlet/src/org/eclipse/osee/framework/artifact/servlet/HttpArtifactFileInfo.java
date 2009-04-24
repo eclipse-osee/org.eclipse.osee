@@ -25,10 +25,14 @@ public class HttpArtifactFileInfo {
    private String branchName;
    private String branchId;
 
+   public HttpArtifactFileInfo(String guid, String branchName, String branchId) {
+      this.guid = guid;
+      this.branchName = branchName;
+      this.branchId = branchId;
+   }
+
    public HttpArtifactFileInfo(HttpServletRequest request) {
-      this.guid = request.getParameter(GUID_KEY);
-      this.branchName = request.getParameter(BRANCH_NAME_KEY);
-      this.branchId = request.getParameter(BRANCH_ID_KEY);
+      this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_ID_KEY));
    }
 
    public String getGuid() {
