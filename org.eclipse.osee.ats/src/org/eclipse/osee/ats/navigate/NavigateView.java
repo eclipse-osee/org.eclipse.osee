@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.plugin.util.AudioFile;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -37,6 +38,8 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -124,6 +127,25 @@ public class NavigateView extends ViewPart implements IActionable {
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       Label searchLabel = new Label(comp, SWT.NONE);
       searchLabel.setText("Search:");
+      searchLabel.addMouseListener(new MouseListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
+          */
+         @Override
+         public void mouseUp(MouseEvent mouseEvent) {
+         }
+
+         @Override
+         public void mouseDoubleClick(MouseEvent mouseEvent) {
+            if (mouseEvent.button == 3) {
+               AudioFile.processAudioFile(AtsPlugin.getInstance(), "support/OSEEDay.wav");
+            }
+         }
+
+         @Override
+         public void mouseDown(MouseEvent arg0) {
+         }
+      });
       GridData gridData = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gridData.heightHint = 15;
       this.searchArea = new Text(comp, SWT.SINGLE | SWT.BORDER);
