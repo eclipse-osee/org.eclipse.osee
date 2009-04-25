@@ -24,6 +24,7 @@ public class AudioFile {
          URL url = activator.getBundle().getEntry(filePath);
          as = new AudioStream(url.openStream());
          AudioPlayer.player.start(as);
+         Thread.sleep(2000);
       } catch (Exception ex) {
          OseeLog.log(activator.getClass(), Level.SEVERE, ex);
       } finally {
