@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -193,7 +194,7 @@ public class SMAWorkFlowSection extends SectionPart {
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
 
-      // Check extenstion points for page creation
+      // Check extension points for page creation
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          Result result = item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener, isEditable || isGlobalEditable);
          if (result.isFalse()) {
@@ -202,7 +203,12 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
-      new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      if (smaMgr.isTaskable()) {
+         new SMATaskInfoComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      }
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+         new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      }
 
       createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
 

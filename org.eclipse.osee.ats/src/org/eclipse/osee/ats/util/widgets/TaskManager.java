@@ -41,6 +41,20 @@ public class TaskManager {
       this.smaMgr = smaMgr;
    }
 
+   public String getStatus(String stateName) throws OseeCoreException {
+      int completed = 0, cancelled = 0, inWork = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts(stateName)) {
+         if (taskArt.isCompleted())
+            completed++;
+         else if (taskArt.isCancelled())
+            cancelled++;
+         else
+            inWork++;
+      }
+      return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
+            getTaskArtifacts(stateName).size(), inWork, completed, cancelled);
+   }
+
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
       return smaMgr.getSma().getRelatedArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class);
    }

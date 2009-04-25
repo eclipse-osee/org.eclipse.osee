@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -49,11 +50,12 @@ public class SMAReviewComposite extends Composite {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
-      setLayout(new GridLayout(1, true));
-      setLayoutData(new GridData(GridData.FILL_BOTH));
+      setLayout(new GridLayout(2, false));
+      setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Label label = new Label(parent, SWT.NONE);
+      Label label = new Label(this, SWT.NONE);
       label.setText("\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Reviews: ");
+      label.setToolTipText("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
       // If ATS Admin, allow right-click to auto-complete reviews
       if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
@@ -92,17 +94,21 @@ public class SMAReviewComposite extends Composite {
          });
       }
 
-      Composite workComp = toolkit.createContainer(parent, 1);
-      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      GridData gd = new GridData();
-      gd.horizontalIndent = 20;
-      workComp.setLayoutData(gd);
+      Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
+      if (revArts.size() == 0) {
+         (new Label(this, SWT.NONE)).setText("No Reviews Created");
+      } else {
+         Composite workComp = toolkit.createContainer(this, 1);
+         workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+         GridData gd = new GridData();
+         gd.horizontalIndent = 20;
+         gd.horizontalSpan = 2;
+         workComp.setLayoutData(gd);
 
-      // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
-      for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviews(forStateName)) {
-         createReviewHyperlink(workComp, toolkit, 2, revArt);
+         for (ReviewSMArtifact revArt : revArts) {
+            createReviewHyperlink(workComp, toolkit, 2, revArt);
+         }
       }
-
    }
 
    @Override
@@ -144,7 +150,7 @@ public class SMAReviewComposite extends Composite {
    private static void createReviewHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
-      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
       workComp.setLayout(ALayout.getZeroMarginLayout(3, false));
 
       Label imageLabel = new Label(workComp, SWT.NONE);
