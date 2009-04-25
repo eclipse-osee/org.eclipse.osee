@@ -171,7 +171,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          taskComposite.disposeTaskComposite();
       }
       if (relationsComposite != null) {
-         relationsComposite.disposeRelationsComposite();
+         relationsComposite.dispose();
       }
       if (metricsComposite != null) metricsComposite.disposeComposite();
 

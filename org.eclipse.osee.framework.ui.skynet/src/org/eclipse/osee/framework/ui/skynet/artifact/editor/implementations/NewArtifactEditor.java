@@ -114,12 +114,17 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
 
    private Result computeIsDirty() {
       Artifact artifact = getEditorInput().getArtifact();
-      if (artifact.isDeleted()) return Result.FalseResult;
-
+      if (artifact.isDeleted()) {
+         return Result.FalseResult;
+      }
       try {
-         if (artifact.isReadOnly()) return Result.FalseResult;
+         if (artifact.isReadOnly()) {
+            return Result.FalseResult;
+         }
          Result result = artifact.reportIsDirty(true);
-         if (result.isTrue()) return result;
+         if (result.isTrue()) {
+            return result;
+         }
 
          ArtifactFormPage page = getFormPage();
          if (page != null) {
@@ -129,7 +134,6 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-
       return Result.FalseResult;
    }
 
@@ -168,10 +172,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
          }
          ArtifactFormPage formPage = getFormPage();
          if (formPage != null) {
-            RelationsComposite composite = formPage.getRelationsComposite();
-            if (composite != null) {
-               composite.disposeRelationsComposite();
-            }
+            formPage.dispose();
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -291,7 +292,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
       }
    }
 
-   public ArtifactFormPage getFormPage() {
+   private ArtifactFormPage getFormPage() {
       return formPage;
    }
 

@@ -559,8 +559,10 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       });
    }
 
-   public void disposeRelationsComposite() {
+   @Override
+   public void dispose() {
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
    private void expandAll(IStructuredSelection selection) {

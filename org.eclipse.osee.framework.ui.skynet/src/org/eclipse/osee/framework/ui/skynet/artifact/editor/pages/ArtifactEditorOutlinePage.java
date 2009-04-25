@@ -39,12 +39,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
     */
    @Override
    public void createControl(Composite parent) {
-      //      Composite composite = new Composite(parent, SWT.NONE);
-      //      GridLayout layout = new GridLayout();
-      //      layout.marginHeight = 10;
-      //      composite.setLayout(layout);
-      //      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
       super.createControl(parent);
 
       Tree tree = getTreeViewer().getTree();
@@ -113,10 +107,10 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
             return ((BaseArtifactEditorInput) element).getImage();
          } else if (element instanceof AttributeTypeContainer) {
             String name = ((AttributeTypeContainer) element).setName;
-            if (name.contains("Available")) {
+            if (name.contains("Editting")) {
                return SkynetGuiPlugin.getInstance().getImage("edit_artifact.gif");
             } else {
-               return SkynetGuiPlugin.getInstance().getImage("remove.gif");
+               return SkynetGuiPlugin.getInstance().getImage("add.gif");
             }
          } else if (element instanceof AttributeType) {
             return SkynetGuiPlugin.getInstance().getImage("attribute.gif");
@@ -154,8 +148,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof BaseArtifactEditorInput) {
             try {
                Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
-               items.add(new AttributeTypeContainer("Available", AttributeTypeUtil.getTypesWithData(artifact)));
-               items.add(new AttributeTypeContainer("Types Remaining", AttributeTypeUtil.getEmptyTypes(artifact)));
+               items.add(new AttributeTypeContainer("Editting", AttributeTypeUtil.getTypesWithData(artifact)));
+               items.add(new AttributeTypeContainer("Additional", AttributeTypeUtil.getEmptyTypes(artifact)));
             } catch (OseeCoreException ex) {
                items.add(Lib.exceptionToString(ex));
             }

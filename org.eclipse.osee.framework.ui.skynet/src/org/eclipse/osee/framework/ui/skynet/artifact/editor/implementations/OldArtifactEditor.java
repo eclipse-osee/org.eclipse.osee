@@ -254,7 +254,7 @@ public class OldArtifactEditor extends AbstractEventArtifactEditor {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
-         relationsComposite.disposeRelationsComposite();
+         relationsComposite.dispose();
          super.dispose();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

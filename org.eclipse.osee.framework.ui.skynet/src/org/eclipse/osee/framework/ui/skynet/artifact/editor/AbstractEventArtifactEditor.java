@@ -103,7 +103,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-
       }
 
       /* (non-Javadoc)
@@ -141,7 +140,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
             refreshDirtyArtifact();
          }
          onDirtied();
-
       }
 
       /* (non-Javadoc)
@@ -156,7 +154,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-
       }
 
       /* (non-Javadoc)
@@ -177,7 +174,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
          // TODO Auto-generated method stub
-
       }
 
       /* (non-Javadoc)
@@ -186,7 +182,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       @Override
       public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
          try {
-            if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
+            if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsUnlocked) {
                if (loadedArtifacts.getLoadedArtifacts().contains(getArtifactFromEditorInput())) {
                   Displays.ensureInDisplayThread(new Runnable() {
                      /* (non-Javadoc)

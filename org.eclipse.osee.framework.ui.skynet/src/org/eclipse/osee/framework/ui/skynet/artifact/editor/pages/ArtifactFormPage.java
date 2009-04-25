@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
@@ -49,11 +52,16 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class ArtifactFormPage extends FormPage {
 
-   private List<SectionPart> sectionParts;
+   private enum SectionEnum {
+      Attributes, Relations, Details;
+   }
+
+   private Map<SectionEnum, SectionPart> sectionParts;
+   private FormText infoText;
 
    public ArtifactFormPage(FormEditor editor, String id, String title) {
       super(editor, id, title);
-      this.sectionParts = new ArrayList<SectionPart>();
+      this.sectionParts = new LinkedHashMap<SectionEnum, SectionPart>();
    }
 
    /* (non-Javadoc)
@@ -74,20 +82,22 @@ public class ArtifactFormPage extends FormPage {
       layout.horizontalSpacing = 20;
       form.getBody().setLayout(layout);
 
-      updateTitle(form, true);
-      updateImage(form, true);
-      addArtifactInfoArea(toolkit, form, true);
+      updateTitle(form);
+      updateImage(form);
+      updateArtifactInfoArea(toolkit, form, true);
       addToolBar(toolkit, form, true);
       addHeadingGradient(toolkit, form, true);
       addMessageDecoration(form);
 
       int sectionStyle = Section.TITLE_BAR | Section.TWISTIE;
 
-      sectionParts.add(new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
-      sectionParts.add(new RelationsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
-      sectionParts.add(new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
+      sectionParts.put(SectionEnum.Attributes, new AttributesFormSection(getEditor(), form.getBody(), toolkit,
+            sectionStyle));
+      sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
+            sectionStyle));
+      sectionParts.put(SectionEnum.Details, new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
 
-      for (SectionPart part : sectionParts) {
+      for (SectionPart part : sectionParts.values()) {
          managedForm.addPart(part);
          Section section = part.getSection();
          section.marginWidth = 0;
@@ -126,6 +136,7 @@ public class ArtifactFormPage extends FormPage {
 
    private void addToolBar(FormToolkit toolkit, ScrolledForm form, boolean add) {
       if (add) {
+         form.getToolBarManager().add(new RefreshAction());
          ((NewArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(form.getToolBarManager());
          form.getToolBarManager().update(true);
       } else {
@@ -134,19 +145,12 @@ public class ArtifactFormPage extends FormPage {
       form.reflow(true);
    }
 
-   private void updateTitle(ScrolledForm form, boolean addTitle) {
-      if (addTitle) {
-         form.setText(getEditorInput().getName());
-      } else {
-         form.setText(null);
-      }
+   private void updateTitle(ScrolledForm form) {
+      form.setText(getEditorInput().getName());
    }
 
-   private void updateImage(ScrolledForm form, boolean addImage) {
-      if (addImage)
-         form.setImage(getEditor().getEditorInput().getImage());
-      else
-         form.setImage(null);
+   private void updateImage(ScrolledForm form) {
+      form.setImage(getEditor().getEditorInput().getImage());
    }
 
    private String getArtifactShortInfo() {
@@ -158,7 +162,7 @@ public class ArtifactFormPage extends FormPage {
       return description;
    }
 
-   private void addArtifactInfoArea(FormToolkit toolkit, ScrolledForm form, boolean add) {
+   private void updateArtifactInfoArea(FormToolkit toolkit, ScrolledForm form, boolean add) {
       if (add) {
          Composite infoArea = toolkit.createComposite(form.getForm().getBody(), SWT.WRAP);
          infoArea.setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -167,11 +171,12 @@ public class ArtifactFormPage extends FormPage {
          Label label = toolkit.createLabel(infoArea, "", SWT.WRAP);
          label.setImage(MessageDialog.getImage(MessageDialog.DLG_IMG_MESSAGE_INFO));
 
-         FormText text = toolkit.createFormText(infoArea, false);
-         text.setText(getArtifactShortInfo(), true, false);
-         text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
-         text.setToolTipText("The human readable id and database id for this artifact");
+         infoText = toolkit.createFormText(infoArea, false);
+         infoText.setText(getArtifactShortInfo(), true, false);
+         infoText.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
+         infoText.setToolTipText("The human readable id and database id for this artifact");
       } else {
+         infoText.setText(getArtifactShortInfo(), true, false);
       }
    }
 
@@ -199,11 +204,56 @@ public class ArtifactFormPage extends FormPage {
       form.redraw();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.editor.FormPage#dispose()
+    */
+   @Override
+   public void dispose() {
+      for (SectionPart part : sectionParts.values()) {
+         part.dispose();
+      }
+      super.dispose();
+   }
+
    public RelationsComposite getRelationsComposite() {
+      SectionPart section = sectionParts.get(SectionEnum.Relations);
+      if (section instanceof RelationsFormSection) {
+         return ((RelationsFormSection) section).getRelationComposite();
+      }
       return null;
    }
 
    public void refresh() {
+      final ScrolledForm sForm = getManagedForm().getForm();
+      updateTitle(sForm);
+      updateImage(sForm);
+      updateArtifactInfoArea(getManagedForm().getToolkit(), sForm, false);
+      for (SectionPart part : sectionParts.values()) {
+         part.refresh();
+      }
+      getManagedForm().refresh();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.editor.FormPage#isDirty()
+    */
+   @Override
+   public boolean isDirty() {
+      // Computed from managedForm.isDirty
+      return super.isDirty();
+   }
+
+   private final class RefreshAction extends Action {
+
+      public RefreshAction() {
+         super();
+         ImageDescriptor refreshAction = SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif");
+         setImageDescriptor(refreshAction);
+         setToolTipText("Refresh Editor");
+      }
+
+      public void run() {
+         refresh();
+      }
+   }
 }

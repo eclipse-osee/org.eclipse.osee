@@ -28,6 +28,8 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class RelationsFormSection extends ArtifactEditorFormSection {
 
+   private RelationsComposite relationComposite;
+
    public RelationsFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
@@ -50,14 +52,14 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      RelationsComposite relComposite =
+      relationComposite =
             new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
-      relComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
-      relComposite.getTreeViewer().getTree().addTreeListener(new TreeListener() {
+      relationComposite.getTreeViewer().getTree().addTreeListener(new TreeListener() {
 
          @Override
          public void treeCollapsed(TreeEvent e) {
@@ -69,5 +71,31 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
             form.getForm().getBody().layout();
          }
       });
+   }
+
+   public RelationsComposite getRelationComposite() {
+      return relationComposite;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+    */
+   @Override
+   public void refresh() {
+      if (relationComposite != null && !relationComposite.isDisposed()) {
+         relationComposite.refresh();
+      }
+      super.refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
+    */
+   @Override
+   public void dispose() {
+      if (relationComposite != null && !relationComposite.isDisposed()) {
+         relationComposite.dispose();
+      }
+      super.dispose();
    }
 }
