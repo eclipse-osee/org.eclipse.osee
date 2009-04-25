@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
+import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldContentProvider;
@@ -91,10 +92,11 @@ import org.eclipse.ui.PlatformUI;
 public class TaskComposite extends Composite implements IActionable {
 
    private TaskXViewer taskXViewer;
-   private MenuItem filterCompletedMenuItem, selectionMetricsMenuItem;
+   private MenuItem filterCompletedMenuItem, filterMyAssigneeMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
    private Label extraInfoLabel;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
+   private WorldAssigneeFilter worldAssigneeFilter = null;
 
    /**
     * @param label
@@ -111,6 +113,11 @@ public class TaskComposite extends Composite implements IActionable {
 
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
+      try {
+         worldAssigneeFilter = new WorldAssigneeFilter();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          return;
@@ -158,8 +165,16 @@ public class TaskComposite extends Composite implements IActionable {
                      } else if (event.keyCode == 'f') {
                         if (filterCompletedMenuItem != null) {
                            filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
-                           handleFilterAction();
+                           handleCompletedFilterAction();
                         }
+                     } else if (event.keyCode == 'g') {
+                        filterMyAssigneeMenuItem.setSelection(!filterMyAssigneeMenuItem.getSelection());
+                        handleMyAssigneeFilterAction();
+                     } else if (event.keyCode == 'd') {
+                        filterMyAssigneeMenuItem.setSelection(!filterMyAssigneeMenuItem.getSelection());
+                        filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
+                        handleCompletedFilterAction();
+                        handleMyAssigneeFilterAction();
                      }
                   }
                } catch (OseeCoreException ex) {
@@ -190,7 +205,17 @@ public class TaskComposite extends Composite implements IActionable {
       return iXTaskViewer;
    }
 
-   public void handleFilterAction() {
+   public void handleMyAssigneeFilterAction() {
+      if (filterMyAssigneeMenuItem.getSelection()) {
+         taskXViewer.addFilter(worldAssigneeFilter);
+      } else {
+         taskXViewer.removeFilter(worldAssigneeFilter);
+      }
+      updateExtendedStatusString();
+      taskXViewer.refresh();
+   }
+
+   public void handleCompletedFilterAction() {
       if (filterCompletedMenuItem.getSelection()) {
          taskXViewer.addFilter(worldCompletedFilter);
       } else {
@@ -361,7 +386,16 @@ public class TaskComposite extends Composite implements IActionable {
       filterCompletedMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            handleFilterAction();
+            handleCompletedFilterAction();
+         }
+      });
+
+      filterMyAssigneeMenuItem = new MenuItem(menu, SWT.CHECK);
+      filterMyAssigneeMenuItem.setText("Filter My Assignee - Ctrl-G");
+      filterMyAssigneeMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleMyAssigneeFilterAction();
          }
       });
 
