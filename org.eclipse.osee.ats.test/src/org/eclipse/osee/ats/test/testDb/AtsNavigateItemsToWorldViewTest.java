@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -79,13 +80,13 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
       deleteAttributesForXColErrorTest(arts, "ats.User Community");
-      deleteAttributesForXColErrorTest(arts, "ats.Current State");
+      deleteAttributesForXColErrorTest(arts, "ats.Actionable Item");
       deleteAttributesForXColErrorTest(arts, "ats.Change Type");
    }
 
    public void testMyWorld() throws Exception {
-      runGeneralLoadingTest("My World", ActionArtifact.class, 6, null);
-      runGeneralXColTest(43, false);
+      runGeneralLoadingTest("My World", StateMachineArtifact.class, 11, null);
+      runGeneralXColTest(28, false);
    }
 
    public void testMyFavoritesAndMyRecentlyVisited() throws Exception {
@@ -147,7 +148,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       OseeLog.log(AtsPlugin.class, Level.INFO,
             "Testing User's items relating to " + DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
-      runGeneralLoadingTest(item, ActionArtifact.class, 4, DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest(item, StateMachineArtifact.class, 8, DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersReviews() throws Exception {
@@ -336,17 +337,6 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 0);
    }
-
-   //   public void testAttributeDeletion() throws Exception {
-   //      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
-   //      arts.clear();
-   //      NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
-   //      // delete an artifact, look for expected !Errors in the XCol
-   //      deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
-   //      deleteAttributesForXColErrorTest(arts, "ats.User Community");
-   //      deleteAttributesForXColErrorTest(arts, "ats.Current State");
-   //      deleteAttributesForXColErrorTest(arts, "ats.Change Type");
-   //   }
 
    public Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
