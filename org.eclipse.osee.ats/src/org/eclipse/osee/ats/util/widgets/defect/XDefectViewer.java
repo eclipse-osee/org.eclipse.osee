@@ -101,11 +101,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
       parentComposite = parent;
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -259,8 +259,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    }
 
    public void refreshActionEnablement() {
-      deleteDefectItem.setEnabled(editable && getSelectedDefectItems().size() > 0);
-      newDefectItem.setEnabled(editable);
+      deleteDefectItem.setEnabled(isEditable() && getSelectedDefectItems().size() > 0);
+      newDefectItem.setEnabled(isEditable());
    }
 
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
@@ -281,7 +281,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
       MenuItem item = new MenuItem(menu, SWT.PUSH);
       item.setText("Create Defects via simple list");
-      item.setEnabled(editable);
+      item.setEnabled(isEditable());
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -527,16 +527,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public void setEditor(IDirtiableEditor editor) {
       this.editor = editor;
-   }
-
-   @Override
-   public boolean isEditable() {
-      return editable;
-   }
-
-   @Override
-   public void setEditable(boolean editable) {
-      this.editable = editable;
    }
 
    public IReviewArtifact getReviewArt() {

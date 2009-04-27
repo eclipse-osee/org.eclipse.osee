@@ -272,7 +272,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (widget.getLabel().equals("Version")) {
          versionCombo = (XCombo) widget;
          versionCombo.getComboBox().setVisibleItemCount(25);
-         widget.getLabelWidget().setToolTipText("Select Team to populate Version list");
+         widget.setToolTip("Select Team to populate Version list");
       }
       if (widget.getLabel().equals("Team Definitions(s)")) {
          teamCombo = (XHyperlabelTeamDefinitionSelection) widget;

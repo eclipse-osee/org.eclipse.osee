@@ -83,11 +83,11 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -198,8 +198,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    }
 
    public void refreshActionEnablement() {
-      deleteUserRoleItem.setEnabled(editable && getSelectedUserRoleItems().size() > 0);
-      newUserRoleItem.setEnabled(editable);
+      deleteUserRoleItem.setEnabled(isEditable() && getSelectedUserRoleItems().size() > 0);
+      newUserRoleItem.setEnabled(isEditable());
    }
 
    public void loadTable() {
@@ -378,16 +378,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    public void setEditor(IDirtiableEditor editor) {
       this.editor = editor;
-   }
-
-   @Override
-   public boolean isEditable() {
-      return editable;
-   }
-
-   @Override
-   public void setEditable(boolean editable) {
-      this.editable = editable;
    }
 
    public IReviewArtifact getReviewArt() {

@@ -70,11 +70,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    public void createWidgets(Composite parent, int horizontalSpan) {
       setSMAMgr();
       if (horizontalSpan < 2) horizontalSpan = 2;
-      if (!label.equals("")) {
+      if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ": " + getWorkingBranchShortName() + " " + getStatus());
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -249,7 +249,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       if (labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
-      labelWidget.setText(label + ": " + getWorkingBranchShortName() + " " + getStatus());
+      labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
       try {
          if (smaMgr != null && smaMgr.getBranchMgr() != null) {
             if (createBranch != null) {

@@ -89,17 +89,17 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
       try {
          if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
-            labelWidget.setText(label + ": No working or committed branches available.");
+            labelWidget.setText(getLabel() + ": No working or committed branches available.");
          } else {
 
             Composite mainComp = new Composite(parent, SWT.BORDER);
@@ -109,7 +109,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
             createTaskActionBar(mainComp);
 
-            labelWidget.setText(label + ": ");// If ATS Admin, allow right-click to auto-complete reviews
+            labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
             if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   /* (non-Javadoc)
@@ -345,16 +345,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    public void setEditor(IDirtiableEditor editor) {
       this.editor = editor;
-   }
-
-   @Override
-   public boolean isEditable() {
-      return editable;
-   }
-
-   @Override
-   public void setEditable(boolean editable) {
-      this.editable = editable;
    }
 
    /* (non-Javadoc)
