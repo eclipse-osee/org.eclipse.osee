@@ -10,18 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Ryan D. Brooks
@@ -33,28 +24,6 @@ public class EnumeratedAttribute extends StringAttribute {
 
    public EnumeratedAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
-
-   }
-
-   public static List<String> getChoices(AttributeType attributeType) {
-      List<String> choices = new ArrayList<String>();
-      try {
-         Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
-         Element choicesElement = document.getDocumentElement();
-         NodeList enumerations = choicesElement.getElementsByTagName("Enum");
-
-         for (int i = 0; i < enumerations.getLength(); i++) {
-            choices.add(enumerations.item(i).getTextContent());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-      return choices;
-   }
-
-   public String[] getChoices() {
-      List<String> choices = EnumeratedAttribute.getChoices(getAttributeType());
-      return choices.toArray(new String[choices.size()]);
    }
 
    /* (non-Javadoc)

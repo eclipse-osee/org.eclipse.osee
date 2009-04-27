@@ -67,7 +67,7 @@ public class DbCellModifier implements ICellModifier {
          return stringValue;
       } else if (dbItem.isBems(property)) {
          try {
-            enumeratedValue.setChocies(UserManager.getUserNames());
+            enumeratedValue.setChoices(UserManager.getUserNames());
             User u = null;
             u = UserManager.getUserByUserId((String) obj);
             if (u != null) enumeratedValue.setValue(u.getName());

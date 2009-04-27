@@ -65,17 +65,17 @@ public class UniversalGroup {
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
+            ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 
    public static Artifact createTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       Collection<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
-                  ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
+                  ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
       if (artifacts.size() == 0) {
          Artifact art =
                ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, branch,
-                     ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME);
+                     ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME);
          art.persistAttributes();
          return art;
       }

@@ -17,7 +17,6 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -64,7 +63,7 @@ public class ArtifactQueryPerformanceTests extends TestCase {
 
    public void testGetArtifactByHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
+      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
       ArtifactQueryBuilder builder = new ArtifactQueryBuilder(art.getHumanReadableId(), common, true, FULL);
       long startTime = System.currentTimeMillis();
       Artifact result = builder.getOrCheckArtifact(QueryType.GET);
@@ -77,7 +76,7 @@ public class ArtifactQueryPerformanceTests extends TestCase {
 
    public void testGetArtifactsByHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
+      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
       List<String> hrids = new ArrayList<String>();
       List<Artifact> children = art.getChildren();
       for (Artifact child : children) {
@@ -95,7 +94,7 @@ public class ArtifactQueryPerformanceTests extends TestCase {
 
    public void testGetArtifactsByHRIDNoDeleted() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
+      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
       List<String> hrids = new ArrayList<String>();
       List<Artifact> children = art.getChildren();
       for (Artifact child : children) {

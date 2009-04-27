@@ -114,8 +114,8 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       }
       return userNames;
    }
-   
-   public static String getUserNameById(int userArtifactId){
+
+   public static String getUserNameById(int userArtifactId) {
       String name;
       try {
          User user = null;
@@ -140,6 +140,16 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");
       }
       return user;
+   }
+
+   public static boolean userExistsWithName(String name) throws OseeCoreException {
+      instance.ensurePopulated();
+      for (User tempUser : instance.userIdToUserCache.values()) {
+         if (tempUser.getDescriptiveName().equals(name)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**

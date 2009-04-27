@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -212,7 +211,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          ArtifactExplorer explorer =
                (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
                      IWorkbenchPage.VIEW_ACTIVATE);
-         explorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(inputBranch));
+         explorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
       } catch (Exception ex) {
          throw new RuntimeException(ex);
@@ -284,7 +283,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   Branch selectedBranch = branchSelect.getData();
                   if (selectedBranch != null) {
                      branch = selectedBranch;
-                     explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+                     explore(ArtifactQuery.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
                   OseeLog.log(getClass(), Level.SEVERE, ex);
@@ -476,7 +475,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
-               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch));
+               artifactExplorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);

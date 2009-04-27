@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
@@ -49,14 +49,14 @@ public class GroupListDialog extends ArtifactListDialog {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       try {
          for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
-            if (!art.getDescriptiveName().equals(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME)) {
+            if (!art.getDescriptiveName().equals(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME)) {
                arts.add(art);
             }
          }
          if (branchSelect != null && branchSelect.getSelectedBranch() != null && !branchSelect.getSelectedBranch().equals(
                BranchManager.getCommonBranch())) {
             for (Artifact art : UniversalGroup.getGroups(branchSelect.getSelectedBranch())) {
-               if (!art.getDescriptiveName().equals(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME)) {
+               if (!art.getDescriptiveName().equals(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME)) {
                   arts.add(art);
                }
             }

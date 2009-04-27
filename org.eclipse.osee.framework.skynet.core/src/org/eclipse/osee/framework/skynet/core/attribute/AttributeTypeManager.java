@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -28,10 +26,14 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Ryan D. Brooks
@@ -234,14 +236,29 @@ public class AttributeTypeManager {
       return attrBaseTypeId;
    }
 
-   public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      Set<String> names = new HashSet<String>();
-      AttributeType dad = getType(attributeName);
-      String str = dad.getValidityXml();
-      Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
-      while (m.find()) {
-         names.add(m.group(1));
+   public static Set<String> getEnumerationValues(AttributeType attributeType) {
+      Set<String> choices = new HashSet<String>();
+      try {
+         Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
+         Element choicesElement = document.getDocumentElement();
+
+         NodeList enumerations = choicesElement.getChildNodes();
+
+         for (int i = 0; i < enumerations.getLength(); i++) {
+            Node node = enumerations.item(i);
+            if (node.getLocalName().equals("Enum")) {
+               choices.add(node.getTextContent());
+            } else {
+               choices.add(node.getLocalName());
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
-      return names;
+      return choices;
+   }
+
+   public static Set<String> getEnumerationValues(String attributeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return getEnumerationValues(getType(attributeName));
    }
 }

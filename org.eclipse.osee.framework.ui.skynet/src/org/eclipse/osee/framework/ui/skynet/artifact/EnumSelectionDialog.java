@@ -54,8 +54,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       Set<String> options;
       try {
          options =
-               AttributeTypeManager.getValidEnumerationAttributeValues(attributeName,
-                     artifacts.iterator().next().getBranch());
+               AttributeTypeManager.getEnumerationValues(attributeName);
       } catch (OseeCoreException ex) {
          options = new HashSet<String>();
          options.add(ex.getLocalizedMessage());

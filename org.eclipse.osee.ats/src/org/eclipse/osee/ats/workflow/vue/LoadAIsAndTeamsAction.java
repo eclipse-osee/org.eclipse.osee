@@ -34,9 +34,7 @@ import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -159,15 +157,10 @@ public class LoadAIsAndTeamsAction {
    }
 
    private User getUserByName(String name, boolean create, SkynetTransaction transaction) throws OseeCoreException {
-      try {
-         return UserManager.getUserByName(name);
-      } catch (UserNotInDatabase ex) {
-         if (create) {
-            return UserManager.createUser(new OseeUser(name, name, "", true), transaction);
-         } else {
-            throw ex;
-         }
+      if (create && !UserManager.userExistsWithName(name)) {
+         return UserManager.createUser(new OseeUser(name, name, "", true), transaction);
       }
+      return UserManager.getUserByName(name);
    }
 
    private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {
@@ -306,13 +299,11 @@ public class LoadAIsAndTeamsAction {
          aia = AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction);
       } else {
          if (getOrCreate) {
-            try {
-               aia =
-                     (ActionableItemArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                           ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsPlugin.getAtsBranch());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing; will be created below
-            }
+
+            aia =
+                  (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(
+                        ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsPlugin.getAtsBranch());
+
          }
          if (aia == null) {
             aia =

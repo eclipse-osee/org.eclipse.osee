@@ -14,10 +14,13 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -65,8 +68,9 @@ public class ArtifactQuery {
       }
       return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
    }
+
    /**
-    * Check for existence of an artifact by id
+    * Checks for existence of an artifact by id
     * 
     * @param artId the id of the desired artifact
     * @param branch
@@ -120,6 +124,20 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(QueryType.GET);
+   }
+
+   /**
+    * Checks for existence of an artifact based on its type and name
+    * 
+    * @param artifactTypeName
+    * @param artifactName
+    * @param branch
+    * @return one artifact based on its type and name if it exists, otherwise null
+    * @throws OseeCoreException
+    */
+   public static Artifact checkArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(
+            QueryType.CHECK);
    }
 
    /**
@@ -178,7 +196,8 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getOrCheckArtifact(QueryType.GET);
+      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getOrCheckArtifact(
+            QueryType.GET);
    }
 
    /**
@@ -387,4 +406,35 @@ public class ArtifactQuery {
    public static Artifact reloadArtifactFromId(int artId, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
    }
+
+   public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws OseeCoreException {
+      Artifact root = ArtifactCache.getByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
+      if (root == null) {
+         root =
+               checkArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
+   
+         if (root == null) {
+            if (createIfNecessary) {
+               OseeLog.log(SkynetActivator.class, Level.INFO,
+                     "Created " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
+               root = ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch, ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME);
+               root.persistAttributes();
+   
+            } else {
+               throw new ArtifactDoesNotExist(
+                     "An artifact of type " + ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME + " named " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " was not found");
+            }
+         }
+   
+         ArtifactCache.putByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
+      }
+      return root;
+   }
+
+   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
+      return getDefaultHierarchyRootArtifact(branch, false);
+   }
+
+   public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
+   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 }

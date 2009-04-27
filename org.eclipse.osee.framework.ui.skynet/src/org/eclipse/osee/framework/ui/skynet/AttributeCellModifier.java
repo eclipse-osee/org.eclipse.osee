@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -90,11 +91,15 @@ public class AttributeCellModifier implements ICellModifier {
          Object object = attribute.getValue();
          if (attribute instanceof EnumeratedAttribute) {
             enumeratedValue.setValue(attribute.getDisplayableString());
-            enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
+
+            String[] choices =
+                  AttributeTypeManager.getEnumerationValues(attribute.getAttributeType()).toArray(
+                        new String[0]);
+            enumeratedValue.setChoices(choices);
             return enumeratedValue;
          } else if (attribute instanceof BooleanAttribute) {
             enumeratedValue.setValue(attribute.getDisplayableString());
-            enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
+            enumeratedValue.setChoices(BooleanAttribute.booleanChoices);
             return enumeratedValue;
          } else if (attribute instanceof DateAttribute) {
             dateValue.setValue((Date) object);

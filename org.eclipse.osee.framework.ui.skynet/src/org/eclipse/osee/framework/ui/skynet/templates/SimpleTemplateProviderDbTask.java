@@ -20,11 +20,9 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -77,19 +75,16 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    }
 
    private Artifact getTemplateFolder() throws OseeCoreException {
-      try {
-         return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
-               BranchManager.getCommonBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         Artifact rootArt =
-               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+      Artifact templateFolder =
+            ArtifactQuery.checkArtifactFromTypeAndName("Folder", "Document Templates", BranchManager.getCommonBranch());
+      if (templateFolder == null) {
+         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
 
-         Artifact templateFolder =
-               ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(),
-                     "Document Templates");
+         templateFolder =
+               ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(), "Document Templates");
          rootArt.addChild(templateFolder);
          templateFolder.persistAttributesAndRelations();
-         return templateFolder;
       }
+      return templateFolder;
    }
 }

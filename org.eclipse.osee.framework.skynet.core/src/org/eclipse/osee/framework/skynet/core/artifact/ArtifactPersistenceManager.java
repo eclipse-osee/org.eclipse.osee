@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -31,14 +30,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -70,9 +66,9 @@ public class ArtifactPersistenceManager {
 
    private static final String GET_GAMMAS_RELATION_REVERT =
          "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_relation_link rel2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = rel2.gamma_id and txd2.branch_id = ? and rel2.rel_link_id = ?";
-   
+
    private static final String GET_GAMMAS_ATTRIBUTE_REVERT =
-      "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_attribute atr2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = atr2.gamma_id and txd2.branch_id = ? and atr2.attr_id = ?";
+         "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_attribute atr2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = atr2.gamma_id and txd2.branch_id = ? and atr2.attr_id = ?";
 
    private static final String PURGE_ATTRIBUTE = "DELETE FROM osee_attribute WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
@@ -92,12 +88,9 @@ public class ArtifactPersistenceManager {
 
    private static final String ARTIFACT_SELECT =
          "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
- 
+
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
-
-   public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
-   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
          "Select det.tx_type from osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.tx_type = 1 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
@@ -394,10 +387,10 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
-
    public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
       if (attribute == null) return;
-      revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(), attribute.getArtifact().getArtId(), attribute.getAttrId());
+      revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
+            attribute.getArtifact().getArtId(), attribute.getAttrId());
    }
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
@@ -409,7 +402,7 @@ public class ArtifactPersistenceManager {
       RevertAction revertAction = null;
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, branchId, attributeId);
-         revertAction  = new RevertAction(connection, chStmt, transId);
+         revertAction = new RevertAction(connection, chStmt, transId);
          revertAction.revertObject(totalTime, artId, "Attribute");
       } finally {
          chStmt.close();
@@ -446,7 +439,6 @@ public class ArtifactPersistenceManager {
       }
    }
 
-
    public static void revertArtifact(OseeConnection connection, Artifact artifact) throws OseeCoreException {
       if (artifact == null) return;
       revertArtifact(connection, artifact.getBranch().getBranchId(), artifact.getArtId());
@@ -464,34 +456,6 @@ public class ArtifactPersistenceManager {
       } finally {
          chStmt.close();
       }
-   }
-
-   
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws OseeCoreException {
-      try {
-         Artifact root = ArtifactCache.getByTextId(DEFAULT_HIERARCHY_ROOT_NAME, branch);
-         if (root == null) {
-            root =
-                  ArtifactQuery.getArtifactFromTypeAndName(ROOT_ARTIFACT_TYPE_NAME, DEFAULT_HIERARCHY_ROOT_NAME, branch);
-            ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
-         }
-         return root;
-      } catch (ArtifactDoesNotExist ex) {
-         if (createIfNecessary) {
-            OseeLog.log(SkynetActivator.class, Level.INFO,
-                  "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
-            Artifact root =
-                  ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
-            root.persistAttributes();
-            ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
-            return root;
-         }
-         throw ex;
-      }
-   }
-
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
-      return getDefaultHierarchyRootArtifact(branch, false);
    }
 
    public void bulkLoadArtifacts(Collection<? extends Artifact> arts, Branch branch) throws OseeCoreException {

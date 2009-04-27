@@ -35,7 +35,9 @@ public class RebaselineArtifacts extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Rebaseline", IProgressMonitor.UNKNOWN);
       Branch childBranch = variableMap.getBranch("Child Branch Name");
-      RebaselineDbTransaction dbTransaction = new RebaselineDbTransaction(childBranch, childBranch.getParentBranch(), variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"));
+      RebaselineDbTransaction dbTransaction =
+            new RebaselineDbTransaction(childBranch, childBranch.getParentBranch(),
+                  variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch"));
       dbTransaction.execute();
    }
 
@@ -48,6 +50,6 @@ public class RebaselineArtifacts extends AbstractBlam {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Define");
+      return Arrays.asList("Admin");
    }
 }

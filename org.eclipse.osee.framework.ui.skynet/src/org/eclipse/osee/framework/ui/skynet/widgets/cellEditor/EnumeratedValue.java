@@ -46,7 +46,7 @@ public class EnumeratedValue extends UniversalCellEditorValue {
       this.value = value;
    }
 
-   public void setChocies(String[] choices) {
+   public void setChoices(String[] choices) {
       this.choices = choices;
    }
 }

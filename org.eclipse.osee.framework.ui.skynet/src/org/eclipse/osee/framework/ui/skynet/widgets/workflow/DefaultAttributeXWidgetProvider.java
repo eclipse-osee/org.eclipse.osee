@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
@@ -55,10 +56,10 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       if (attributeType.getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
          if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
-                  EnumeratedAttribute.getChoices(attributeType)) + ")");
+                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
          } else {
             defaultData.setXWidgetName("XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                  EnumeratedAttribute.getChoices(attributeType)) + ")");           
+                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
          }
       } else if (attributeType.getBaseAttributeClass().equals(StringAttribute.class)) {
          if (maxOccurrence == 1) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -25,7 +26,7 @@ class RootBranchInitializer {
     */
    protected void initialize(Branch branch) throws OseeCoreException {
       // Create necessary default hierarchy root artifact
-      ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch, true);
+      ArtifactQuery.getDefaultHierarchyRootArtifact(branch, true);
 
       // Create necessary top universal group artifact
       UniversalGroup.createTopUniversalGroupArtifact(branch);

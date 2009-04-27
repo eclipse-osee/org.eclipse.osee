@@ -53,7 +53,7 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> attribute = null;
    private Attribute<?> sourceAttribute = null;
    private Attribute<?> destAttribute = null;
-   private AttributeType dynamicAttributeDescriptor;
+   private AttributeType attributeType;
    private boolean isWordAttribute;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
@@ -98,8 +98,7 @@ public class AttributeConflict extends Conflict {
 
    public Attribute<?> getAttribute() throws OseeCoreException {
       if (attribute != null) return attribute;
-      Collection<Attribute<Object>> localAttributes =
-            getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             attribute = localAttribute;
@@ -129,8 +128,7 @@ public class AttributeConflict extends Conflict {
 
    public Attribute<?> getDestAttribute() throws OseeCoreException {
       if (destAttribute != null) return destAttribute;
-      Collection<Attribute<Object>> localAttributes =
-            getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             destAttribute = localAttribute;
@@ -145,7 +143,7 @@ public class AttributeConflict extends Conflict {
 
    private Attribute<?> getAttribute(Artifact artifact) throws OseeCoreException {
       Attribute<?> attribute = null;
-      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getDynamicAttributeDescriptor().getName());
+      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             attribute = localAttribute;
@@ -159,14 +157,14 @@ public class AttributeConflict extends Conflict {
    }
 
    /**
-    * @return the dynamicAttributeDescriptor
+    * @return the attributeType
     * @throws OseeCoreException
     */
-   public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException {
-      if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = AttributeTypeManager.getType(AttributeTypeManager.getType(attrTypeId).getName());
+   public AttributeType getAttributeType() throws OseeCoreException {
+      if (attributeType == null) {
+         attributeType = AttributeTypeManager.getType(attrTypeId);
       }
-      return dynamicAttributeDescriptor;
+      return attributeType;
    }
 
    public Object getSourceObject() throws OseeCoreException {
@@ -275,13 +273,12 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
-      return new TreeSet<String>(AttributeTypeManager.getValidEnumerationAttributeValues(
-            getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
+      return new TreeSet<String>(AttributeTypeManager.getEnumerationValues(getAttributeType().getName()));
    }
 
    @SuppressWarnings("unchecked")
    public Class<? extends Attribute> getBaseAttributeClass() throws OseeCoreException {
-      return getDynamicAttributeDescriptor().getBaseAttributeClass();
+      return getAttributeType().getBaseAttributeClass();
    }
 
    public boolean setStringAttributeValue(String value) throws OseeCoreException {
@@ -295,7 +292,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
-      getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().setSoleAttributeFromString(getAttributeType().getName(), value);
       getArtifact().persistAttributes();
       markStatusToReflectEdit();
       return true;
@@ -312,7 +309,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().setSoleAttributeValue(getAttributeType().getName(), value);
       getArtifact().persistAttributes();
       markStatusToReflectEdit();
       return true;
@@ -331,7 +328,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d",
                getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
+      getArtifact().setSoleAttributeValue(getAttributeType().getName(), getSourceObject());
       getArtifact().persistAttributes();
       markStatusToReflectEdit();
       return true;
@@ -350,7 +347,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d",
                getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
+      getArtifact().setSoleAttributeValue(getAttributeType().getName(), getDestObject());
       getArtifact().persistAttributes();
       markStatusToReflectEdit();
       return true;
@@ -373,7 +370,7 @@ public class AttributeConflict extends Conflict {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
          getArtifact().persistAttributes();
       } else {
-         getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), NO_VALUE);
+         getArtifact().setSoleAttributeFromString(getAttributeType().getName(), NO_VALUE);
          getArtifact().persistAttributes();
       }
       computeEqualsValues();
@@ -436,7 +433,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public String getChangeItem() throws OseeCoreException {
-      return getDynamicAttributeDescriptor().getName();
+      return getAttributeType().getName();
    }
 
    @Override

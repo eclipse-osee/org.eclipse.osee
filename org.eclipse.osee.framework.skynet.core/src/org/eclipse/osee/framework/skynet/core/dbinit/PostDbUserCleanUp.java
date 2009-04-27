@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -42,8 +42,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
       boolean isUserAuthenticationAllowed = false;
       try {
          // Check that this is a normal initialization
-         Artifact root =
-               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch(), false);
+         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
          if (root != null) {
             isUserAuthenticationAllowed = true;
          }

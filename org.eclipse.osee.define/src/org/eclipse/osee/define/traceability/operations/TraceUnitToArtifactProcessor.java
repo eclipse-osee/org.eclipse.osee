@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -287,7 +286,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
-         Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
             root.persistAttributesAndRelations(transaction);
@@ -307,7 +306,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
-         Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnitFolder)) {
             root.addChild(testUnitFolder);
             root.persistAttributesAndRelations(transaction);

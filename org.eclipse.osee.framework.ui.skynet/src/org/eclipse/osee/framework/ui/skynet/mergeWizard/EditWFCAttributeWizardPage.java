@@ -144,7 +144,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       try {
          if (conflict != null) {
             this.conflict = conflict;
-            changeType = conflict.getDynamicAttributeDescriptor().getName();
+            changeType = conflict.getAttributeType().getName();
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

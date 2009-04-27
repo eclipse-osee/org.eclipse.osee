@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.workflow;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
@@ -47,8 +46,7 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
          Set<String> options;
          try {
             options =
-                  AttributeTypeManager.getValidEnumerationAttributeValues(xWidgetData.getStorageName(),
-                        AtsPlugin.getAtsBranch());
+                  AttributeTypeManager.getEnumerationValues(xWidgetData.getStorageName());
          } catch (OseeCoreException ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

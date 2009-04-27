@@ -89,7 +89,7 @@ public class EditAttributeWizardPage extends WizardPage {
       try {
          if (conflict != null) {
             this.conflict = conflict;
-            changeType = conflict.getDynamicAttributeDescriptor().getName();
+            changeType = conflict.getAttributeType().getName();
          }
          if (!conflict.isWordAttribute()) {
             editor =
