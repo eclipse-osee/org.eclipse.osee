@@ -183,8 +183,10 @@ public abstract class XWidget {
    protected abstract void createWidgets(Composite parent, int horizontalSpan);
 
    public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
-      this.toolkit = managedForm.getToolkit();
-      this.managedForm = managedForm;
+      if (managedForm != null) {
+         this.toolkit = managedForm.getToolkit();
+         this.managedForm = managedForm;
+      }
       createWidgets(parent, horizontalSpan);
       adaptControls(toolkit);
 
@@ -196,12 +198,14 @@ public abstract class XWidget {
    }
 
    public void adaptControls(FormToolkit toolkit) {
-      if (getControl() != null) {
-         toolkit.adapt(getControl(), true, false);
-      }
-      if (labelWidget != null) {
-         toolkit.adapt(labelWidget, true, true);
-         toolkit.adapt(labelWidget.getParent(), true, true);
+      if (toolkit != null) {
+         if (getControl() != null) {
+            toolkit.adapt(getControl(), true, false);
+         }
+         if (labelWidget != null) {
+            toolkit.adapt(labelWidget, true, true);
+            toolkit.adapt(labelWidget.getParent(), true, true);
+         }
       }
    }
 
