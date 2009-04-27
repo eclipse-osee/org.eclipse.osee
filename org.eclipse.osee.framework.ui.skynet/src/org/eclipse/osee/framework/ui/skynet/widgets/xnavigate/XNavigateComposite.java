@@ -123,7 +123,7 @@ public class XNavigateComposite extends Composite {
       filteredTree.getViewer().getTree().addListener(SWT.KeyDown, tableListener);
       filteredTree.getViewer().getTree().addListener(SWT.MouseMove, tableListener);
       filteredTree.getViewer().getTree().addListener(SWT.MouseHover, tableListener);
-
+      
    }
 
    // Implement a "fake" tooltip
@@ -220,9 +220,12 @@ public class XNavigateComposite extends Composite {
 
    public void refresh() {
       items = navigateViewItems.getSearchNavigateItems();
-      filteredTree.getViewer().setInput(items);
-   }
-
+      Display.getDefault().asyncExec(new Runnable(){
+         public void run(){
+            filteredTree.getViewer().setInput(items);
+         }
+      });
+   }   
    /**
     * @return the listViewer
     */
