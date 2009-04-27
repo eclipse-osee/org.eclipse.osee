@@ -78,8 +78,10 @@ public abstract class Attribute<T> {
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
    public final void initializeToDefaultValue() throws OseeCoreException {
-      subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
-      dirty = true;
+      boolean response = subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
+      if (response) {
+         setDirty();
+      }
    }
 
    public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
@@ -213,7 +215,7 @@ public abstract class Attribute<T> {
    }
 
    /**
-    * @return true if in datastore
+    * @return true if in data store
     */
    public boolean isInDb() {
       return getGammaId() > 0;

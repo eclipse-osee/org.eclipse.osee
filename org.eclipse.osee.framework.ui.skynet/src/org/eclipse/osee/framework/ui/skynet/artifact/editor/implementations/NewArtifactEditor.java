@@ -170,10 +170,6 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
-         ArtifactFormPage formPage = getFormPage();
-         if (formPage != null) {
-            formPage.dispose();
-         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       } finally {
@@ -236,15 +232,15 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
             Artifact artifact = getEditorInput().getArtifact();
             setPartName(getEditorInput().getName());
             setTitleImage(artifact.getImage());
+            ArtifactEditorOutlinePage outlinePage = getOutlinePage();
+            if (outlinePage != null) {
+               outlinePage.refresh();
+            }
             ArtifactFormPage page = getFormPage();
             if (page != null) {
                page.showBusy(true);
                page.refresh();
                page.showBusy(false);
-            }
-            ArtifactEditorOutlinePage outlinePage = getOutlinePage();
-            if (outlinePage != null) {
-               outlinePage.refresh();
             }
             onDirtied();
          }
@@ -264,11 +260,13 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
          public void run() {
             ArtifactFormPage page = getFormPage();
             if (page != null) {
+               page.showBusy(true);
                RelationsComposite relationsComposite = page.getRelationsComposite();
                if (relationsComposite != null && !relationsComposite.isDisposed()) {
                   relationsComposite.refresh();
                   onDirtied();
                }
+               page.showBusy(false);
             }
          }
       });

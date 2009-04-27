@@ -50,7 +50,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AttributeFormPart extends AbstractFormPart {
 
-   private NewArtifactEditor editor;
+   private final NewArtifactEditor editor;
    private Font defaultLabelFont;
    private Composite composite;
 
@@ -62,7 +62,7 @@ public class AttributeFormPart extends AbstractFormPart {
       final FormToolkit toolkit = getManagedForm().getToolkit();
       composite = toolkit.createComposite(parent, SWT.WRAP);
       composite.setLayout(new GridLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
@@ -76,12 +76,12 @@ public class AttributeFormPart extends AbstractFormPart {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
+      setAllLabelFonts(composite, getBoldLabelFont());
+      setGrabAllLayout(composite);
 
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
          xWidget.addXModifiedListener(new XWidgetValidationListener());
       }
-      setAllLabelFonts(composite, getBoldLabelFont());
-      setGrabAllLayout(composite);
    }
 
    /* (non-Javadoc)
@@ -151,9 +151,9 @@ public class AttributeFormPart extends AbstractFormPart {
             if (xWidget instanceof XTextDam) {
                XTextDam dam = (XTextDam) xWidget;
                if (!dam.isEditable()) {
-                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
+                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, false));
                } else {
-                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
                }
             } else {
                parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));

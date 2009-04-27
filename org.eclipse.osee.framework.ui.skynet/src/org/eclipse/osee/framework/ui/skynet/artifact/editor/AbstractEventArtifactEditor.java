@@ -74,8 +74,8 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(internalEventHandler);
       super.dispose();
+      OseeEventManager.removeListener(internalEventHandler);
    }
 
    private final class InternalEventHandler implements IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener {
@@ -84,7 +84,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
        */
       @Override
       public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) {
-         if (getArtifactFromEditorInput() != null && !getArtifactFromEditorInput().equals(artifact)) return;
+         if (getArtifactFromEditorInput() == null || !getArtifactFromEditorInput().equals(artifact)) return;
          if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
             refreshDirtyArtifact();
          }

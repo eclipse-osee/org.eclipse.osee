@@ -245,6 +245,15 @@ public class ArtifactFormPage extends FormPage {
       return super.isDirty();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
+    */
+   @Override
+   public void showBusy(boolean busy) {
+      super.showBusy(busy);
+      getManagedForm().getForm().getForm().setBusy(busy);
+   }
+
    private final class RefreshAction extends Action {
 
       public RefreshAction() {
