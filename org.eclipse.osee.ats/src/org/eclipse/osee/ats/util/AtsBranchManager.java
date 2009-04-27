@@ -401,6 +401,19 @@ public class AtsBranchManager {
       return configObjects;
    }
 
+   public ICommitConfigArtifact getParentBranchConfigArtifactConfiguredToCommitTo() throws OseeCoreException {
+      if (smaMgr.isTeamUsesVersions()) {
+         if (smaMgr.getTargetedForVersion() != null) {
+            return smaMgr.getTargetedForVersion();
+         }
+      } else {
+         if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
+            return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition();
+         }
+      }
+      return null;
+   }
+
    public boolean isAllObjectsToCommitToConfigured() throws OseeCoreException {
       return getConfigArtifactsConfiguredToCommitTo().size() == getBranchesToCommitTo().size();
    }

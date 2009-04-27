@@ -186,7 +186,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
+   public static Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
       Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =

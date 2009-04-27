@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -30,6 +31,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 /**
  * Common cache storage for ATS configuration artifacts:<br>
@@ -40,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * 
  * @author Donald G. Dunne
  */
-public class AtsCache {
+public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
    private final Set<Artifact> cache = new HashSet<Artifact>();
    private final Map<String, ActionableItemArtifact> guidToActionableItem =
@@ -51,6 +66,10 @@ public class AtsCache {
    private static List<String> cacheTypes =
          Arrays.asList(ActionableItemArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME,
                VersionArtifact.ARTIFACT_NAME);
+
+   public AtsCache() {
+      OseeEventManager.addListener(this);
+   }
 
    public static void cache(Artifact artifact) throws OseeCoreException {
       if (cacheTypes.contains(artifact.getArtifactTypeName())) {
@@ -128,5 +147,74 @@ public class AtsCache {
          return arts.iterator().next();
       }
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+    */
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+      try {
+         for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
+            deCache(artifact);
+            if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+                  WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+                  WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+                  WorkWidgetDefinition.ARTIFACT_NAME)) {
+               WorkItemDefinitionFactory.deCache(artifact);
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      for (Artifact artifact : transData.cacheDeletedArtifacts) {
+         deCache(artifact);
+         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+               WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+               WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+               WorkWidgetDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.deCache(artifact);
+         }
+      }
+      for (Artifact artifact : transData.cacheAddedArtifacts) {
+         cache(artifact);
+         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkRuleDefinition(artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkPageDefinition(artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
+                  artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkFlowDefinition(artifact), artifact);
+         }
+      }
+      for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All,
+            AtsRelation.WorkItem__Child.getRelationType())) {
+         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkRuleDefinition(artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkPageDefinition(artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
+                  artifact), artifact);
+         } else if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                  new WorkFlowDefinition(artifact), artifact);
+         }
+      }
    }
 }

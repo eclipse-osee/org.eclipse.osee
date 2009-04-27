@@ -11,17 +11,35 @@
 
 package org.eclipse.osee.ats.config;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
+import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
+import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
  * @author Donald G. Dunne
@@ -127,4 +145,117 @@ public class AtsConfig {
       return art;
    }
 
+   /**
+    * This method creates a simple configuration of ATS given teamdef name, version names (if desired), actionable items
+    * and workflow id.
+    * 
+    * @param namespace
+    * @param teamDefName - name of team definition to use
+    * @param versionNames - list of version names (if team is using versions)
+    * @param actionableItems - list of actionable items
+    * @param workflowId - workflowId to use (if null, workflow will be created)
+    * @return Result of creation
+    * @throws OseeCoreException
+    */
+   public static Result configureAtsForDefaultTeam(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) throws OseeCoreException {
+      try {
+         if (WorkItemDefinitionFactory.getWorkItemDefinition(namespace) != null) {
+            return new Result("Configuration Namespace already used, choose a unique namespace.");
+         }
+      } catch (OseeCoreException ex) {
+         // do nothing
+      }
+
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+
+      // Create team def
+      TeamDefinitionArtifact teamDef =
+            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
+                  AtsPlugin.getAtsBranch(), teamDefName);
+      if (versionNames == null || versionNames.size() > 0) {
+         teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+      }
+      teamDef.addRelation(AtsRelation.TeamLead_Lead, UserManager.getUser());
+      teamDef.addRelation(AtsRelation.TeamMember_Member, UserManager.getUser());
+      AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction).addChild(teamDef);
+
+      // Create actionable items
+      List<ActionableItemArtifact> aias = new ArrayList<ActionableItemArtifact>();
+      // Create top actionable item
+      ActionableItemArtifact topAia =
+            (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+                  AtsPlugin.getAtsBranch(), teamDefName);
+      topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+      AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction).addChild(topAia);
+      teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, topAia);
+      aias.add(topAia);
+      // Create childrent actionable item
+      for (String name : actionableItems) {
+         ActionableItemArtifact aia =
+               (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+                     AtsPlugin.getAtsBranch(), name);
+         aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
+         topAia.addChild(aia);
+         aias.add(aia);
+      }
+
+      // Create versions
+      List<VersionArtifact> versions = new ArrayList<VersionArtifact>();
+      if (versionNames != null) {
+         for (String name : versionNames) {
+            VersionArtifact aia =
+                  (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
+                        AtsPlugin.getAtsBranch(), name);
+            teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, aia);
+            versions.add(aia);
+         }
+      }
+
+      // create workflow
+      Artifact workflowArt = null;
+      try {
+         workflowArt =
+               ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
+                     AtsPlugin.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      WorkFlowDefinition workFlowDefinition;
+      // If can't be found, create a new one
+      if (workflowArt == null) {
+         WorkflowData workflowData =
+               AtsWorkflowConfigCreationWizard.generateDefaultWorkflow(namespace, transaction, teamDef);
+         workFlowDefinition = workflowData.getWorkDefinition();
+         workflowArt = workflowData.getWorkFlowArtifact();
+      }
+      // Else, use existing one
+      else {
+         workFlowDefinition = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workflowId);
+      }
+      // Relate new team def to workflow artifact
+      teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
+
+      // persist everything
+      teamDef.persistAttributesAndRelations(transaction);
+      workflowArt.persistAttributesAndRelations(transaction);
+      for (Artifact artifact : aias) {
+         artifact.persistAttributesAndRelations(transaction);
+      }
+      if (versionNames != null) {
+         for (Artifact artifact : versions) {
+            artifact.persistAttributesAndRelations(transaction);
+         }
+      }
+      transaction.execute();
+
+      // open everything in editors
+      AtsLib.openAtsAction(teamDef, AtsOpenOption.OpenAll);
+      for (ActionableItemArtifact aia : aias) {
+         AtsLib.openAtsAction(aia, AtsOpenOption.OpenAll);
+      }
+      AtsWorkflowConfigEditor.editWorkflow(workFlowDefinition);
+
+      return Result.TrueResult;
+
+   }
 }

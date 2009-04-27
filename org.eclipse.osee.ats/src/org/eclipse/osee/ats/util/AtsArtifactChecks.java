@@ -97,15 +97,15 @@ public class AtsArtifactChecks extends ArtifactCheck {
       for (Artifact art : artifacts) {
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
-                  "ATS Team Workflow selected to delete has related Team Definition(s); Re-assign Team Definitions to new Team Workflows first.");
+                  "ATS WorkFlowDefinition  [" + art + "] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.");
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
-                  "ATS Workflow Rule selected to delete has related Work Items that must be removed first.");
+                  "ATS WorkRuleDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.");
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
             if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) return new Result(
-                  "ATS Workflow Widget selected to delete has related Work Items that must be removed first.");
+                  "ATS WorkWidgetDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.");
          }
       }
       return Result.TrueResult;

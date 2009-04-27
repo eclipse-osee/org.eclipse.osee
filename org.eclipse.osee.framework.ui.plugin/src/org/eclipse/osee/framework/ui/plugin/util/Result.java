@@ -15,7 +15,7 @@ public class Result {
 
    public static Result TrueResult = new Result(true);
    public static Result FalseResult = new Result(false);
-   private boolean isTrue = false;
+   private final boolean isTrue;
    private String text = "";
 
    public Result(boolean valid, String text) {
@@ -42,10 +42,6 @@ public class Result {
 
    public boolean isFalse() {
       return !isTrue;
-   }
-
-   public void setResult(boolean isTrue) {
-      this.isTrue = isTrue;
    }
 
    public String getText() {

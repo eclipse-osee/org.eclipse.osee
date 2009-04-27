@@ -14,7 +14,12 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -67,6 +72,22 @@ public class BranchSelectComposite extends Composite implements Listener {
       branchSelectButton.setText("Select Branch...");
       branchSelectButton.addListener(SWT.Selection, this);
       branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+      branchSelectButton.addListener(SWT.MouseUp, new Listener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
+         @Override
+         public void handleEvent(Event event) {
+            if (event.button == 3) {
+               try {
+                  setSelected(BranchManager.getCommonBranch());
+                  notifyListener(event);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
    }
 
    public Branch getSelectedBranch() {
@@ -83,9 +104,15 @@ public class BranchSelectComposite extends Composite implements Listener {
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
          if (areOnlyWorkingBranchesAllowed()) {
-            setSelected(BranchSelectionDialog.getWorkingBranchFromUser());
+            Branch newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
+            if (newBranch != null) {
+               setSelected(newBranch);
+            }
          } else {
-            setSelected(BranchSelectionDialog.getBranchFromUser());
+            Branch newBranch = BranchSelectionDialog.getBranchFromUser();
+            if (newBranch != null) {
+               setSelected(newBranch);
+            }
          }
       }
       notifyListener(event);

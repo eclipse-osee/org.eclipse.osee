@@ -34,14 +34,25 @@ public class WorkItemDefinitionFactory {
    private static Map<String, WorkItemDefinition> itemIdToDefinition;
    private static Map<String, Artifact> itemIdToWidArtifact;
 
-   public static void clearCache() {
-      itemIdToDefinition = null;
-      itemIdToWidArtifact = null;
+   public static void deCache(WorkItemDefinition workItemDefinition) {
+      deCache(workItemDefinition.getId());
    }
 
-   public static void deCache(WorkItemDefinition workItemDefinition) {
-      itemIdToDefinition.remove(workItemDefinition.getId());
-      itemIdToWidArtifact.remove(workItemDefinition.getId());
+   public synchronized static void deCache(String workItemDefinitionId) {
+      itemIdToDefinition.remove(workItemDefinitionId);
+      itemIdToWidArtifact.remove(workItemDefinitionId);
+   }
+
+   public static void deCache(Artifact artifact) {
+      String itemId = null;
+      if (itemIdToWidArtifact.containsValue(artifact)) {
+         for (Entry<String, Artifact> entry : itemIdToWidArtifact.entrySet()) {
+            if (entry.getValue().equals(artifact)) {
+               deCache(entry.getKey());
+               return;
+            }
+         }
+      }
    }
 
    public synchronized static void loadDefinitions() throws OseeCoreException {

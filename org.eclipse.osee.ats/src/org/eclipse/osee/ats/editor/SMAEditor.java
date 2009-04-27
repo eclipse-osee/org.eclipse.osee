@@ -795,6 +795,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
       try {
+         if (branch.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
          if (link.getArtifactA().equals(smaMgr.getSma()) || link.getArtifactB().equals(smaMgr.getSma())) {
             onDirtied();
          }
