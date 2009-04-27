@@ -77,7 +77,6 @@ public class XListViewer extends XWidget {
 
    public XListViewer(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
-      setReportType(XWidget.RPT_SINGLE_LINE);
       listMenu = null;
    }
 
@@ -174,9 +173,9 @@ public class XListViewer extends XWidget {
       // Create List Widgets
       if (displayLabel) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -313,7 +312,7 @@ public class XListViewer extends XWidget {
    }
 
    public Result isValid() {
-      if (!requiredEntry) return Result.TrueResult;
+      if (!isRequiredEntry()) return Result.TrueResult;
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
          if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
@@ -361,7 +360,7 @@ public class XListViewer extends XWidget {
    }
 
    public String toXml() {
-      return toXml(xmlRoot, xmlSubRoot);
+      return toXml(getXmlRoot(), getXmlSubRoot());
    }
 
    public String toXml(String xmlRoot, String xmlSubRoot) {
@@ -369,7 +368,7 @@ public class XListViewer extends XWidget {
    }
 
    public String toHTML(String labelFont) {
-      String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, label + ": ") + "<dt><ul type=\"disc\">";
+      String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, getLabel() + ": ") + "<dt><ul type=\"disc\">";
       for (Object xItem : getSelected()) {
          s += "<li>" + xItem;
       }

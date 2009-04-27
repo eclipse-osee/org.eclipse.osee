@@ -109,7 +109,7 @@ public class XRadioButton extends XWidget {
       if (!isLabelAfter() && isDisplayLabel()) createLabel(parent);
 
       button = new Button(parent, (buttonType == ButtonType.Check) ? SWT.CHECK : SWT.RADIO);
-      if (toolTip != null && !toolTip.equals("")) button.setToolTipText(toolTip);
+      if (getToolTip() != null && !getToolTip().equals("")) button.setToolTipText(getToolTip());
       if (getToolTip() != null && !getToolTip().equals("")) button.setToolTipText(getToolTip());
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
       button.setLayoutData(gd);
@@ -127,10 +127,10 @@ public class XRadioButton extends XWidget {
 
    public void createLabel(Composite parent) {
       labelWidget = new Label(parent, SWT.NONE);
-      String str = label;
+      String str = getLabel();
       if (!isLabelAfter()) str += ":";
       labelWidget.setText(str);
-      if (toolTip != null && !toolTip.equals("")) labelWidget.setToolTipText(toolTip);
+      if (getToolTip() != null && !getToolTip().equals("")) labelWidget.setToolTipText(getToolTip());
    }
 
    public void dispose() {
@@ -167,7 +167,7 @@ public class XRadioButton extends XWidget {
    }
 
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + getDisplayStr();
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
    }
 
    public boolean isLabelAfter() {

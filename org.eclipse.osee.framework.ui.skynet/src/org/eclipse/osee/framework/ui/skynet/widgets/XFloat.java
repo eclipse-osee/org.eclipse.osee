@@ -51,7 +51,7 @@ public class XFloat extends XText {
 
    @Override
    public Result isValid() {
-      if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
+      if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
          String name = getLabel();
          if (name.equals("")) name = "Value";
          Result result = super.isValid();

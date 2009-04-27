@@ -139,7 +139,7 @@ public class XDate extends XWidget {
       if (horizontalSpan < 2) horizontalSpan = 2;
 
       labelWidget = new Label(parent, SWT.NONE);
-      labelWidget.setText(label + ": ");
+      labelWidget.setText(getLabel() + ": ");
       dateCombo = new CalendarCombo(parent, SWT.BORDER);
       dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
@@ -173,7 +173,7 @@ public class XDate extends XWidget {
    @Override
    public void setFromXml(String xml) {
       Matcher m =
-            Pattern.compile("<" + xmlRoot + ">(\\d+)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+            Pattern.compile("<" + getXmlRoot() + ">(\\d+)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
                   xml);
       if (m.find()) {
          try {
@@ -233,7 +233,7 @@ public class XDate extends XWidget {
       if (isRequireFutureDate()) {
          if (getDate().before(new Date())) return new Result(getLabel() + " must be in future.");
       }
-      if (requiredEntry) {
+      if (isRequiredEntry()) {
          if (get().equals("")) return new Result(getLabel() + " must be selected.");
       }
       return Result.TrueResult;
@@ -294,11 +294,11 @@ public class XDate extends XWidget {
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + get(defaultFormat);
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + get(defaultFormat);
    }
 
    public String toHTML(String labelFont, String pattern) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + get(pattern);
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + get(pattern);
    }
 
    public boolean isRequireFutureDate() {

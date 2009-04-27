@@ -76,7 +76,7 @@ public class XButton extends XWidget {
       // Create Text Widgets
       if (!labelAfter) {
          labelWidget = new Label(bComp, SWT.NONE);
-         labelWidget.setText(label + ":");
+         labelWidget.setText(getLabel() + ":");
       }
 
       if (toolkit != null)
@@ -97,10 +97,10 @@ public class XButton extends XWidget {
 
       if (labelAfter) {
          labelWidget = new Label(bComp, SWT.NONE);
-         labelWidget.setText(label);
+         labelWidget.setText(getLabel());
       }
-      if (toolTip != null) {
-         button.setToolTipText(toolTip);
+      if (getToolTip() != null) {
+         button.setToolTipText(getToolTip());
       }
       button.setLayoutData(gd);
       updateCheckWidget();
@@ -155,7 +155,7 @@ public class XButton extends XWidget {
    }
 
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + selected;
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + selected;
    }
 
    /**

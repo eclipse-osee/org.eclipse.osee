@@ -90,11 +90,11 @@ public class XChangeWidget extends XWidget implements IActionable {
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -425,11 +425,11 @@ public class XChangeWidget extends XWidget implements IActionable {
     * @param showDocOrder
     */
    public void setShowDocumentOrder(boolean showDocOrder) {
-      if(contentProvider != null){
+      if (contentProvider != null) {
          contentProvider.setShowDocOrder(showDocOrder);
          refresh();
       }
-      
+
    }
 
 }

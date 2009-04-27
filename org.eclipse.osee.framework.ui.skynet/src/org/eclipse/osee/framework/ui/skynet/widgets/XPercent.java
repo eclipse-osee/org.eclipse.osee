@@ -26,7 +26,7 @@ public class XPercent extends XText {
    }
 
    public Result isValid() {
-      if (super.requiredEntry()) {
+      if (isRequiredEntry()) {
          Result result = super.isValid();
          if (result.isFalse()) {
             return result;

@@ -81,11 +81,11 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -244,8 +244,10 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
             try {
                if (loadHistory) {
-                  for(TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(artifact, true)){
-                     for(RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(transactionData)){
+                  for (TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(
+                        artifact, true)) {
+                     for (RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(
+                           transactionData)) {
                         historyItems.add(new HistoryTransactionItem(transactionData, revisionChange));
                      }
                   }
@@ -258,7 +260,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
                            extraInfoLabel.setText(NO_HISTORY);
                            xHistoryViewer.setInput(historyItems);
                         } else {
-                           String infoLabel = String.format("History: %s on branch: %s", artifact.getDescriptiveName(), artifact.getBranch().getBranchShortName());
+                           String infoLabel =
+                                 String.format("History: %s on branch: %s", artifact.getDescriptiveName(),
+                                       artifact.getBranch().getBranchShortName());
                            extraInfoLabel.setText(infoLabel);
                            xHistoryViewer.setInput(historyItems);
                         }

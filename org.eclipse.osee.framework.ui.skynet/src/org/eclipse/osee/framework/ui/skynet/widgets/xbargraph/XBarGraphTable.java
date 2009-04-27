@@ -57,7 +57,7 @@ public class XBarGraphTable extends XWidget {
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       labelWidget = new Label(parent, SWT.NONE);
-      labelWidget.setText(label + ": ");
+      labelWidget.setText(getLabel() + ": ");
 
       table = new Table(parent, SWT.BORDER);
       table.setHeaderVisible(isHeaderVisible);

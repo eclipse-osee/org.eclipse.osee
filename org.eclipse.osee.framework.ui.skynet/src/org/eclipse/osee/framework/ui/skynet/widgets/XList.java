@@ -117,7 +117,6 @@ public class XList extends XWidget {
 
    public XList(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
-      setReportType(XWidget.RPT_SINGLE_LINE);
       listMenu = null;
    }
 
@@ -171,9 +170,9 @@ public class XList extends XWidget {
       // Create List Widgets
       if (displayLabel) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -262,10 +261,11 @@ public class XList extends XWidget {
       String outterXml;
       items.clear();
       outter =
-            Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                  xml);
       while (outter.find()) {
          outterXml = outter.group(1);
-         inner = Pattern.compile("<" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + ">").matcher(outterXml);
+         inner = Pattern.compile("<" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + ">").matcher(outterXml);
          while (inner.find()) {
             String str = inner.group(1);
             XListItem xItem = getByXmlName(str);
@@ -385,7 +385,7 @@ public class XList extends XWidget {
 
    @Override
    public Result isValid() {
-      if (!requiredEntry) return Result.TrueResult;
+      if (!isRequiredEntry()) return Result.TrueResult;
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
          if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
@@ -434,7 +434,7 @@ public class XList extends XWidget {
 
    @Override
    public String toXml() {
-      return toXml(xmlRoot, xmlSubRoot);
+      return toXml(getXmlRoot(), getXmlSubRoot());
    }
 
    @Override
@@ -455,7 +455,7 @@ public class XList extends XWidget {
 
    @Override
    public String toHTML(String labelFont) {
-      String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, label + ": ") + "<dt><ul type=\"disc\">";
+      String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, getLabel() + ": ") + "<dt><ul type=\"disc\">";
       for (XListItem xItem : getSelected()) {
          s += "<li>" + xItem;
       }

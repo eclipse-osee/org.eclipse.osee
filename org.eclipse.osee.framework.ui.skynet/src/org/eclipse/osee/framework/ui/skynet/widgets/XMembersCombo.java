@@ -89,7 +89,7 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public String toString() {
-      return label + ": *" + get() + "*";
+      return getLabel() + ": *" + get() + "*";
    }
 
    /**
@@ -103,11 +103,11 @@ public class XMembersCombo extends XWidget {
       if (horizontalSpan < 2) horizontalSpan = 2;
 
       // Create Data Widgets
-      if (!label.equals("")) {
+      if (!getLabel().equals("")) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -162,7 +162,7 @@ public class XMembersCombo extends XWidget {
       });
 
       refresh();
-      dataCombo.setEnabled(editable);
+      dataCombo.setEnabled(isEditable());
    }
 
    private void resetSelectionList() {
@@ -202,13 +202,14 @@ public class XMembersCombo extends XWidget {
    @Override
    public void setFromXml(String xml) {
       Matcher matcher;
-      if (xmlSubRoot.equals("")) {
+      if (getXmlSubRoot().equals("")) {
          matcher =
-               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
                      xml);
       } else {
          matcher =
-               Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
+               Pattern.compile(
+                     "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
                      Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (matcher.find()) {
@@ -280,30 +281,30 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public Result isValid() {
-      if (requiredEntry && !isAssigned()) return new Result("Must select " + getLabel());
+      if (isRequiredEntry() && !isAssigned()) return new Result("Must select " + getLabel());
       return Result.TrueResult;
    }
 
    @Override
-   public String toXml() throws Exception {
-      return toXml(xmlRoot);
+   protected String toXml() throws Exception {
+      return toXml(getXmlRoot());
    }
 
    @Override
-   public String toXml(String xmlRoot) throws Exception {
+   protected String toXml(String xmlRoot) throws Exception {
       String s;
       String dataStr = selectedUser.getUserId();
-      if (xmlSubRoot == null || xmlSubRoot.equals("")) {
+      if (getXmlSubRoot() == null || getXmlSubRoot().equals("")) {
          s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
       } else {
-         s = "<" + xmlRoot + "><" + xmlSubRoot + ">" + dataStr + "</" + xmlSubRoot + "></" + xmlRoot + ">\n";
+         s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";
       }
       return s;
    }
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + get();
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + get();
    }
 
    protected void keyReleaseOccured(KeyEvent keyEvent) {

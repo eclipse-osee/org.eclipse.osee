@@ -43,12 +43,13 @@ public abstract class XWidget {
    private IManagedForm managedForm;
 
    protected Label labelWidget = null;
-   protected String label = "";
-   protected String xmlRoot = "";
-   protected String xmlSubRoot = "";
-   protected String toolTip = null;
-   protected boolean requiredEntry = false;
-   protected boolean editable = true;
+   private String label = "";
+   private String xmlRoot = "";
+   private String xmlSubRoot = "";
+   private String toolTip = null;
+   private boolean requiredEntry = false;
+   private boolean editable = true;
+
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
    protected boolean fillHorizontally = false;
@@ -63,20 +64,6 @@ public abstract class XWidget {
    protected boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
    private MouseListener mouseLabelListener;
-
-   /**
-    * Display "label: data"
-    */
-   public final static int RPT_NONE = 0;
-   /**
-    * Display "label: data\n\n" Default of AAtribute
-    */
-   public final static int RPT_SINGLE_LINE = 1;
-   /**
-    * Display "label:\n data\n\n"
-    */
-   public final static int RPT_MULTI_LINE = 2;
-   protected int reportType = RPT_SINGLE_LINE;
    protected FormToolkit toolkit;
 
    public XWidget(String label) {
@@ -245,11 +232,11 @@ public abstract class XWidget {
     * 
     * @return Return Xml data string.
     */
-   public abstract String getXmlData();
+   protected abstract String getXmlData();
 
    public abstract String toHTML(String labelFont);
 
-   public String toXml() throws Exception {
+   protected String toXml() throws Exception {
       if (xmlSubRoot.equals("")) {
          return toXml(xmlRoot);
       } else {
@@ -257,7 +244,7 @@ public abstract class XWidget {
       }
    }
 
-   public String toXml(String xmlRoot) throws Exception {
+   protected String toXml(String xmlRoot) throws Exception {
       String s = "<" + xmlRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlRoot + ">\n";
       return s;
    }
@@ -391,7 +378,7 @@ public abstract class XWidget {
    /**
     * @param labelWidget The labelWidget to set.
     */
-   public void setLabelWidget(Label labelWidget) {
+   protected void setLabelWidget(Label labelWidget) {
       this.labelWidget = labelWidget;
    }
 
@@ -410,56 +397,15 @@ public abstract class XWidget {
    }
 
    /**
-    * @return Returns the reportType.
-    */
-   public int getReportType() {
-      return reportType;
-   }
-
-   /**
-    * @param reportType The reportType to set.
-    */
-   public void setReportType(int reportType) {
-      this.reportType = reportType;
-   }
-
-   /**
     * Return data for display in Report (without label) NOTE: There should be no newlines at end of String
     * 
     * @return Return string.
     */
-   public abstract String getReportData();
+   protected abstract String getReportData();
 
    @Override
    public String toString() {
-      return toReport();
-   }
-
-   public String toReport() {
-      return toReport(reportType);
-   }
-
-   /**
-    * RPT_NONE (label: data), RPT_SINGLE_LINE (label: data\n\n), RPT_MULTI_LINE (label:\n data\n\n)
-    * 
-    * @return String report
-    */
-   public String toReport(int rptType) {
-      String s = label + ": ";
-      switch (rptType) {
-         case RPT_SINGLE_LINE:
-            s += getReportData() + "\n\n";
-            break;
-         case RPT_MULTI_LINE:
-            String data = getReportData();
-            data = data.replaceAll("\n", "\n   ");
-            s += "\n" + data + "\n\n";
-            break;
-         default:
-            s += getReportData();
-            break;
-      }
-      return s;
+      return String.format("%s: %s\n\n", getLabel(), getReportData());
    }
 
    /**

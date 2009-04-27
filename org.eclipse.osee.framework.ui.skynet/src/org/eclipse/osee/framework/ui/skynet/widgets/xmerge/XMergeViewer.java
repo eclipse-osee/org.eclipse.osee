@@ -102,11 +102,11 @@ public class XMergeViewer extends XWidget implements IActionable {
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -485,16 +485,6 @@ public class XMergeViewer extends XWidget implements IActionable {
 
    public void setEditor(IDirtiableEditor editor) {
       this.editor = editor;
-   }
-
-   @Override
-   public boolean isEditable() {
-      return editable;
-   }
-
-   @Override
-   public void setEditable(boolean editable) {
-      this.editable = editable;
    }
 
    public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, boolean showConflicts) {

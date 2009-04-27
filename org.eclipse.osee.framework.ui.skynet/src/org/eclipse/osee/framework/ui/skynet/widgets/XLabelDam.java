@@ -48,11 +48,11 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
       this.parent = parent;
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets
-      if (!label.equals("")) {
+      if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
       valueTextWidget = new Text(parent, SWT.NONE);

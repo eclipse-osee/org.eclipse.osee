@@ -129,7 +129,7 @@ public class XRadioButtons extends XWidget {
       else {
          Matcher m;
          m =
-               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
                      xml);
          if (m.find()) {
             String str = m.group(1);
@@ -189,10 +189,10 @@ public class XRadioButtons extends XWidget {
       // Create Text Widgets
       if (displayLabel) {
          labelWidget = new Label(comp, SWT.NONE);
-         labelWidget.setText(label + ":");
+         labelWidget.setText(getLabel() + ":");
       }
-      if (toolTip != null && displayLabel) {
-         labelWidget.setToolTipText(toolTip);
+      if (getToolTip() != null && displayLabel) {
+         labelWidget.setToolTipText(getToolTip());
       }
 
       if (sortNames) Arrays.sort(names);
@@ -264,7 +264,7 @@ public class XRadioButtons extends XWidget {
    public Set<String> getSelectedNames() {
       Set<String> names = new HashSet<String>();
       for (XRadioButton rb : xButtons) {
-         if (rb.isSelected()) names.add(rb.label);
+         if (rb.isSelected()) names.add(rb.getLabel());
       }
       return names;
    }
@@ -291,7 +291,7 @@ public class XRadioButtons extends XWidget {
    }
 
    public Result isValid() {
-      if (requiredEntry && getSelectedNames().size() == 0) {
+      if (isRequiredEntry() && getSelectedNames().size() == 0) {
          return new Result(getLabel() + " must have at least one selection.");
       }
       return Result.TrueResult;
@@ -302,7 +302,7 @@ public class XRadioButtons extends XWidget {
    }
 
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + getDisplayStr();
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
    }
 
    public boolean isMultiSelect() {

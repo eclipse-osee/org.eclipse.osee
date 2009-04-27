@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -72,7 +71,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       // Create List Widgets
       if (displayLabel) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
+         labelWidget.setText(getLabel() + ":");
       }
       selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
       if (defaultBranch != null) {
@@ -233,5 +232,5 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       defaultBranch = branch;
       selectComposite.setSelected(branch);
    }
-   
+
 }

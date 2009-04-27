@@ -40,7 +40,7 @@ public class XInteger extends XText {
    }
 
    public Result isValid() {
-      if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
+      if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
          Result result = super.isValid();
          if (result.isFalse()) {
             return result;

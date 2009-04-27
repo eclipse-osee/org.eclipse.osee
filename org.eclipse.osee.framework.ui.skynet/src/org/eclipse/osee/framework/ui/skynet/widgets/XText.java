@@ -87,7 +87,7 @@ public class XText extends XWidget {
 
    @Override
    public String toString() {
-      return label + ": *" + text + "*";
+      return getLabel() + ": *" + text + "*";
    }
 
    /*
@@ -148,11 +148,11 @@ public class XText extends XWidget {
       // composite = parent;
 
       // Create Text Widgets
-      if (displayLabel && !label.equals("")) {
+      if (displayLabel && !getLabel().equals("")) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -189,7 +189,7 @@ public class XText extends XWidget {
       }
       if (fillText) updateTextWidget();
       setLabelError();
-      sText.setEditable(editable);
+      sText.setEditable(isEditable());
       if (font != null) sText.setFont(font);
       parent.layout();
    }
@@ -360,10 +360,6 @@ public class XText extends XWidget {
       setLabelError();
    }
 
-   public boolean requiredEntry() {
-      return requiredEntry;
-   }
-
    public void addModifyListener(ModifyListener modifyListener) {
       if (sText != null) sText.addModifyListener(modifyListener);
    }
@@ -386,11 +382,11 @@ public class XText extends XWidget {
    }
 
    @Override
-   public String toXml() {
-      if (xmlSubRoot.equals("")) {
-         return toXml(xmlRoot);
+   protected String toXml() {
+      if (getXmlSubRoot().equals("")) {
+         return toXml(getXmlRoot());
       } else {
-         return toXml(xmlRoot, xmlSubRoot);
+         return toXml(getXmlRoot(), getXmlSubRoot());
       }
    }
 
@@ -416,7 +412,9 @@ public class XText extends XWidget {
    @Override
    public void setFromXml(String xml) {
       Matcher m;
-      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+      m =
+            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                  xml);
 
       if (m.find()) {
          String xmlStr = m.group(1);
@@ -483,7 +481,7 @@ public class XText extends XWidget {
    }
 
    public String toHTML(String labelFont, boolean newLineText) {
-      String s = AHTML.getLabelStr(labelFont, label + ": ");
+      String s = AHTML.getLabelStr(labelFont, getLabel() + ": ");
       if (newLineText) s = "<dl><dt>" + s + "<dd>";
       s += text;
       if (newLineText) s += "</dl>";
@@ -516,7 +514,7 @@ public class XText extends XWidget {
    @Override
    public Result isValid() {
       if (isRequiredEntry() && get().equals("")) {
-         return new Result(String.format("Must enter \"%s\"", label));
+         return new Result(String.format("Must enter \"%s\"", getLabel()));
       }
       return Result.TrueResult;
    }

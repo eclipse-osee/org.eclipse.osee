@@ -91,11 +91,11 @@ public class XCombo extends XWidget {
       }
 
       // Create Data Widgets
-      if (!label.equals("")) {
+      if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(label + ":");
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         labelWidget.setText(getLabel() + ":");
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
 
@@ -125,7 +125,7 @@ public class XCombo extends XWidget {
       dataCombo.addModifyListener(dataComboListener);
 
       refresh();
-      dataCombo.setEnabled(editable);
+      dataCombo.setEnabled(isEditable());
    }
 
    public int getDisplayPosition(String str) {
@@ -179,13 +179,14 @@ public class XCombo extends XWidget {
    @Override
    public void setFromXml(String xml) throws IllegalStateException {
       Matcher m;
-      if (xmlSubRoot.equals("")) {
+      if (getXmlSubRoot().equals("")) {
          m =
-               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
                      xml);
       } else {
          m =
-               Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
+               Pattern.compile(
+                     "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
                      Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (m.find()) {
@@ -305,32 +306,32 @@ public class XCombo extends XWidget {
 
    @Override
    public Result isValid() {
-      if (requiredEntry && data.equals("")) {
+      if (isRequiredEntry() && data.equals("")) {
          return new Result(getLabel() + " must be selected.");
       }
       return Result.TrueResult;
    }
 
    @Override
-   public String toXml() {
-      return toXml(xmlRoot);
+   protected String toXml() {
+      return toXml(getXmlRoot());
    }
 
    @Override
-   public String toXml(String xmlRoot) {
+   protected String toXml(String xmlRoot) {
       String s;
       String dataStr = getXml();
-      if (xmlSubRoot == null || xmlSubRoot.equals("")) {
+      if (getXmlSubRoot() == null || getXmlSubRoot().equals("")) {
          s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
       } else {
-         s = "<" + xmlRoot + "><" + xmlSubRoot + ">" + dataStr + "</" + xmlSubRoot + "></" + xmlRoot + ">\n";
+         s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";
       }
       return s;
    }
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, label + ": ") + data;
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + data;
    }
 
    public static void copy(XCombo from, XCombo to) throws IllegalStateException {
@@ -349,10 +350,10 @@ public class XCombo extends XWidget {
       return displayArray;
    }
 
-   public String[] getInDataStrings () {
-	   return inDataStrings;
+   public String[] getInDataStrings() {
+      return inDataStrings;
    }
-   
+
    @Override
    public Object getData() {
       return dataCombo.getText();

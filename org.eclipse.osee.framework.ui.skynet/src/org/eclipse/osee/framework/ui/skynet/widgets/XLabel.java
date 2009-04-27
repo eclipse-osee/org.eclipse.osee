@@ -42,11 +42,11 @@ public class XLabel extends XWidget {
    public void createWidgets(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets
-      if (!label.equals("")) {
+      if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(showString);
-         if (toolTip != null) {
-            labelWidget.setToolTipText(toolTip);
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
    }

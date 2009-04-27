@@ -76,7 +76,7 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       // Create List Widgets
       if (displayLabel) {
          labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(label + ":");
+         labelWidget.setText(getLabel() + ":");
       }
       selectComposite = BranchSelectSimpleComposite.createBranchSelectComposite(composite, SWT.NONE);
       if (defaultBranch != -1) {
