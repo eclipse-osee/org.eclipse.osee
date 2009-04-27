@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewA
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
@@ -48,8 +49,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Roberto E. Escobar
  */
 public class AttributeFormPart extends AbstractFormPart {
-   private Font defaultLabelFont;
+
    private NewArtifactEditor editor;
+   private Font defaultLabelFont;
+   private Composite composite;
 
    public AttributeFormPart(NewArtifactEditor editor) {
       this.editor = editor;
@@ -57,12 +60,12 @@ public class AttributeFormPart extends AbstractFormPart {
 
    public void createContents(Composite parent) {
       final FormToolkit toolkit = getManagedForm().getToolkit();
-      Composite composite = toolkit.createComposite(parent, SWT.WRAP);
+      composite = toolkit.createComposite(parent, SWT.WRAP);
       composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Artifact artifact = editor.getEditorInput().getArtifact();
       try {
+         Artifact artifact = editor.getEditorInput().getArtifact();
          for (AttributeType attributeType : AttributeTypeUtil.getTypesWithData(artifact)) {
             if (false && attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
                //            createCollapsibleAttributeDataComposite(parent, attributeType);
@@ -79,6 +82,52 @@ public class AttributeFormPart extends AbstractFormPart {
       }
       setAllLabelFonts(composite, getBoldLabelFont());
       setGrabAllLayout(composite);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
+    */
+   @Override
+   public void dispose() {
+      disposeControl(composite);
+      super.dispose();
+   }
+
+   private void disposeControl(Control control) {
+      if (control != null && !control.isDisposed()) {
+         if (control instanceof Composite) {
+            for (Control child : ((Composite) control).getChildren()) {
+               disposeControl(child);
+            }
+         }
+         control.dispose();
+      }
+   }
+
+   private Font getBoldLabelFont() {
+      if (defaultLabelFont == null) {
+         Font baseFont = JFaceResources.getDefaultFont();
+         FontData[] fontDatas = baseFont.getFontData();
+         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
+         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
+      }
+      return defaultLabelFont;
+   }
+
+   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType) {
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      internalComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+      IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+      List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+      try {
+         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
+         workPage.createBody(getManagedForm(), internalComposite, artifact, null, true);
+      } catch (OseeCoreException ex) {
+         toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
+      }
+      return internalComposite;
    }
 
    private void setAllLabelFonts(Control parent, Font font) {
@@ -99,7 +148,16 @@ public class AttributeFormPart extends AbstractFormPart {
       } else if (!(parent instanceof Button)) {
          XWidget xWidget = XWidgetUtility.asXWidget(parent);
          if (!(xWidget instanceof XSelectFromDialog<?>)) {
-            parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+            if (xWidget instanceof XTextDam) {
+               XTextDam dam = (XTextDam) xWidget;
+               if (!dam.isEditable()) {
+                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, true));
+               } else {
+                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+               }
+            } else {
+               parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+            }
          }
       }
       if (parent instanceof Composite) {
@@ -139,33 +197,6 @@ public class AttributeFormPart extends AbstractFormPart {
             }
             count++;
          }
-
       }
-   }
-
-   private Font getBoldLabelFont() {
-      if (defaultLabelFont == null) {
-         Font baseFont = JFaceResources.getDefaultFont();
-         FontData[] fontDatas = baseFont.getFontData();
-         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
-         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
-      }
-      return defaultLabelFont;
-   }
-
-   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType) {
-      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
-      internalComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
-      IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-      List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
-      try {
-         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
-         workPage.createBody(getManagedForm(), internalComposite, artifact, null, true);
-      } catch (OseeCoreException ex) {
-         toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
-      }
-      return internalComposite;
    }
 }

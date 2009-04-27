@@ -231,6 +231,8 @@ public class ArtifactFormPage extends FormPage {
       for (SectionPart part : sectionParts.values()) {
          part.refresh();
       }
+      sForm.getBody().layout(true);
+      sForm.reflow(true);
       getManagedForm().refresh();
    }
 

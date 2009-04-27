@@ -19,6 +19,7 @@ import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -38,7 +39,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
     * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
     */
    @Override
-   public void initialize(final IManagedForm form) {
+   public void initialize(IManagedForm form) {
       super.initialize(form);
       final FormToolkit toolkit = form.getToolkit();
 
@@ -63,12 +64,12 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
          @Override
          public void treeCollapsed(TreeEvent e) {
-            form.getForm().getBody().layout();
+            getManagedForm().getForm().getBody().layout();
          }
 
          @Override
          public void treeExpanded(TreeEvent e) {
-            form.getForm().getBody().layout();
+            getManagedForm().getForm().getBody().layout();
          }
       });
    }
@@ -82,10 +83,14 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
     */
    @Override
    public void refresh() {
-      if (relationComposite != null && !relationComposite.isDisposed()) {
-         relationComposite.refresh();
-      }
       super.refresh();
+      Display.getDefault().asyncExec(new Runnable() {
+         public void run() {
+            if (relationComposite != null && !relationComposite.isDisposed()) {
+               relationComposite.refresh();
+            }
+         }
+      });
    }
 
    /* (non-Javadoc)

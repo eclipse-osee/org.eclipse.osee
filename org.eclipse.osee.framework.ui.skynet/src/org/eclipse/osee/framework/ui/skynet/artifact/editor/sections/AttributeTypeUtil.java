@@ -43,11 +43,13 @@ public class AttributeTypeUtil {
       for (AttributeType type : artifact.getAttributeTypes()) {
          if (type.getName().equals("Name")) {
             nameType = type;
-         } else if (type.getName().equals("Annotation")) {
-            annotations = type;
          } else {
             if (!artifact.getAttributes(type.getName()).isEmpty()) {
-               items.add(type);
+               if (type.getName().equals("Annotation")) {
+                  annotations = type;
+               } else {
+                  items.add(type);
+               }
             }
          }
       }

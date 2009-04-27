@@ -3,7 +3,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -69,10 +71,21 @@ public class AttributeActionContribution implements IActionContributor {
       String operation = isAdd ? "add" : "delete";
       AttributeType[] types =
             isAdd ? AttributeTypeUtil.getEmptyTypes(artifact) : AttributeTypeUtil.getTypesWithData(artifact);
-      if (types.length > 0) {
+      List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
+      if (!isAdd) {
+         for (AttributeType type : types) {
+            if (type.getMinOccurrences() > 0) {
+               input.remove(type);
+            }
+         }
+      }
+      if (input.isEmpty()) {
+         MessageDialog.openInformation(PlatformUI.getWorkbench().getDisplay().getActiveShell(), title, String.format(
+               "No attribute types available to %s.", operation));
+      } else {
          CheckedTreeSelectionDialog dialog =
                createDialog(title, image, String.format("Select items to %s.", operation));
-         dialog.setInput(Arrays.asList(types));
+         dialog.setInput(input);
          int result = dialog.open();
          if (result == Window.OK) {
             Object[] objects = dialog.getResult();
@@ -80,16 +93,13 @@ public class AttributeActionContribution implements IActionContributor {
                for (Object object : objects) {
                   String attributeTypeName = ((AttributeType) object).getName();
                   if (isAdd) {
-                     artifact.addAttributeFromString(attributeTypeName, "lolol");
+                     artifact.addAttributeFromString(attributeTypeName, "");
                   } else {
                      artifact.deleteAttributes(attributeTypeName);
                   }
                }
             }
          }
-      } else {
-         MessageDialog.openInformation(PlatformUI.getWorkbench().getDisplay().getActiveShell(), title, String.format(
-               "There are 0 attribute types available to %s.", operation));
       }
    }
 

@@ -4,6 +4,8 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
@@ -50,7 +52,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       getSite().getActionBars().getToolBarManager().add(
             new Action("Refresh", SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif")) {
                public void run() {
-                  getTreeViewer().refresh();
+                  refresh();
                }
             });
       getSite().getActionBars().getToolBarManager().update(true);
@@ -80,10 +82,29 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    public void refresh() {
-      getTreeViewer().refresh();
+      getTreeViewer().refresh(true);
    }
 
    private final class InternalLabelProvider extends LabelProvider {
+      private Image EDIT_ATTRIBUTE_IMAGE;
+      private Image NON_EDIT_ATTRIBUTE_IMAGE;
+      private Image ATTRIBUTE_IMAGE;
+      private Image NON_ACTIVE_ATTRIBUTE_IMAGE;
+
+      private List<AttributeTypeContainer> containers;
+
+      public InternalLabelProvider() {
+         this.containers = new ArrayList<AttributeTypeContainer>();
+      }
+
+      private void checkImages() {
+         if (EDIT_ATTRIBUTE_IMAGE == null) {
+            EDIT_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("edit_artifact.gif");
+            NON_EDIT_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("add.gif");
+            ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("attribute.gif");
+            NON_ACTIVE_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("disabled_attribute.gif");
+         }
+      }
 
       /* (non-Javadoc)
        * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
@@ -93,7 +114,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          if (element instanceof BaseArtifactEditorInput) {
             return ((BaseArtifactEditorInput) element).getName();
          } else if (element instanceof AttributeTypeContainer) {
-            return ((AttributeTypeContainer) element).setName;
+            return ((AttributeTypeContainer) element).getName();
          }
          return String.valueOf(element);
       }
@@ -103,17 +124,21 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
        */
       @Override
       public Image getImage(Object element) {
+         checkImages();
          if (element instanceof BaseArtifactEditorInput) {
+            containers.clear();
             return ((BaseArtifactEditorInput) element).getImage();
          } else if (element instanceof AttributeTypeContainer) {
-            String name = ((AttributeTypeContainer) element).setName;
-            if (name.contains("Editting")) {
-               return SkynetGuiPlugin.getInstance().getImage("edit_artifact.gif");
-            } else {
-               return SkynetGuiPlugin.getInstance().getImage("add.gif");
-            }
+            AttributeTypeContainer container = ((AttributeTypeContainer) element);
+            containers.add(container);
+            return container.isEditable() ? EDIT_ATTRIBUTE_IMAGE : NON_EDIT_ATTRIBUTE_IMAGE;
          } else if (element instanceof AttributeType) {
-            return SkynetGuiPlugin.getInstance().getImage("attribute.gif");
+            AttributeType type = (AttributeType) element;
+            for (AttributeTypeContainer container : containers) {
+               if (container.contains(type)) {
+                  return container.isEditable() ? ATTRIBUTE_IMAGE : NON_ACTIVE_ATTRIBUTE_IMAGE;
+               }
+            }
          }
          return null;
       }
@@ -148,13 +173,14 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof BaseArtifactEditorInput) {
             try {
                Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
-               items.add(new AttributeTypeContainer("Editting", AttributeTypeUtil.getTypesWithData(artifact)));
-               items.add(new AttributeTypeContainer("Additional", AttributeTypeUtil.getEmptyTypes(artifact)));
+               items.add(new AttributeTypeContainer("Editable", true, AttributeTypeUtil.getTypesWithData(artifact)));
+               items.add(new AttributeTypeContainer("Add to form before editing", false,
+                     AttributeTypeUtil.getEmptyTypes(artifact)));
             } catch (OseeCoreException ex) {
                items.add(Lib.exceptionToString(ex));
             }
          } else if (element instanceof AttributeTypeContainer) {
-            return ((AttributeTypeContainer) element).types;
+            return ((AttributeTypeContainer) element).getTypes().toArray();
          } else if (element instanceof AttributeType) {
             System.out.println("Here");
          } else if (element instanceof String) {
@@ -187,7 +213,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof BaseArtifactEditorInput) {
             return ((BaseArtifactEditorInput) element).getArtifact() != null;
          } else if (element instanceof AttributeTypeContainer) {
-            return ((AttributeTypeContainer) element).types.length > 0;
+            return !((AttributeTypeContainer) element).getTypes().isEmpty();
          } else if (element instanceof Artifact) {
             try {
                Artifact artifact = (Artifact) element;
@@ -209,16 +235,34 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    private final static class AttributeTypeContainer {
-      private static final AttributeType[] EMPTY_TYPES = new AttributeType[0];
-      AttributeType[] types;
-      String setName;
+      private List<AttributeType> types;
+      private String name;
+      private boolean editable;
 
-      AttributeTypeContainer(String setName, AttributeType... data) {
-         this.setName = setName;
-         this.types = data;
-         if (types == null) {
-            this.types = EMPTY_TYPES;
+      public AttributeTypeContainer(String name, boolean editable, AttributeType... data) {
+         this.name = name;
+         this.editable = editable;
+         if (data == null) {
+            this.types = Collections.emptyList();
+         } else {
+            this.types = Arrays.asList(data);
          }
+      }
+
+      public String getName() {
+         return name;
+      }
+
+      public List<AttributeType> getTypes() {
+         return types;
+      }
+
+      public boolean isEditable() {
+         return editable;
+      }
+
+      public boolean contains(AttributeType type) {
+         return getTypes().contains(type);
       }
    }
 

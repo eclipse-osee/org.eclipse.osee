@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -40,7 +41,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
     * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
     */
    @Override
-   public void initialize(final IManagedForm form) {
+   public void initialize(IManagedForm form) {
       super.initialize(form);
       Section section = getSection();
       section.setText("Attributes");
@@ -51,32 +52,12 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       updateDataPart();
    }
 
-   private void updateDataPart() {
-      final IManagedForm form = getManagedForm();
-      final FormToolkit toolkit = form.getToolkit();
-      final Section section = getSection();
-      if (formPart != null) {
-         form.removePart(formPart);
-      }
-      Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
-      sectionBody.setLayout(ALayout.getZeroMarginLayout());
-      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      formPart = new AttributeFormPart(getEditor());
-      form.addPart(formPart);
-      formPart.createContents(sectionBody);
-      section.setClient(sectionBody);
-      toolkit.paintBordersFor(section);
-
-      section.layout(true);
-      form.getForm().getBody().layout(true);
-   }
-
-   public void addToolBar(IManagedForm form) {
+   private void addToolBar(IManagedForm form) {
       final FormToolkit toolkit = form.getToolkit();
       Composite composite = toolkit.createComposite(getSection());
       composite.setLayout(ALayout.getZeroMarginLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      composite.setBackground(getSection().getBackground());
 
       ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
       ToolBarManager manager = new ToolBarManager(toolBar);
@@ -92,5 +73,50 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
          actionContributor = new AttributeActionContribution(getEditor());
       }
       return actionContributor;
+   }
+
+   private void updateDataPart() {
+      final IManagedForm form = getManagedForm();
+      final FormToolkit toolkit = form.getToolkit();
+      final Section section = getSection();
+
+      if (formPart != null) {
+         form.removePart(formPart);
+         formPart.dispose();
+         Control control = section.getClient();
+         if (control != null && !control.isDisposed()) {
+            control.dispose();
+         }
+      }
+      Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
+      sectionBody.setLayout(ALayout.getZeroMarginLayout());
+      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      formPart = new AttributeFormPart(getEditor());
+      form.addPart(formPart);
+      formPart.createContents(sectionBody);
+      section.setClient(sectionBody);
+      toolkit.paintBordersFor(section);
+
+      section.layout(true);
+      form.getForm().getBody().layout(true);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+    */
+   @Override
+   public void refresh() {
+      super.refresh();
+      updateDataPart();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
+    */
+   @Override
+   public void dispose() {
+      formPart.dispose();
+      super.dispose();
    }
 }

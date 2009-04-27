@@ -28,6 +28,8 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class DetailsFormSection extends ArtifactEditorFormSection {
 
+   private FormText formText;
+
    public DetailsFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
@@ -38,57 +40,88 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
-      final FormToolkit toolkit = form.getToolkit();
       Section section = getSection();
       section.setText("Details");
-
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Composite composite = toolkit.createComposite(section, toolkit.getBorderStyle());
-      composite.setLayout(new GridLayout());
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      updateText(true);
+   }
 
-      FormText formText = toolkit.createFormText(composite, false);
-      formText.setText(getDetailsText(getEditorInput().getArtifact()), true, true);
-      formText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+   private void updateText(boolean isCreate) {
+      if (isCreate) {
+         final FormToolkit toolkit = getManagedForm().getToolkit();
+         Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle());
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         formText = toolkit.createFormText(composite, false);
+         formText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         getSection().setClient(composite);
+         toolkit.paintBordersFor(composite);
+      }
 
-      section.setClient(composite);
-      toolkit.paintBordersFor(composite);
+      if (formText != null && !formText.isDisposed()) {
+         formText.setText(getDetailsText(getEditorInput().getArtifact()), true, true);
+         getManagedForm().reflow(true);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
+    */
+   @Override
+   public void dispose() {
+      if (formText != null && !formText.isDisposed()) {
+         formText.dispose();
+      }
+      super.dispose();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+    */
+   @Override
+   public void refresh() {
+      super.refresh();
+      updateText(false);
    }
 
    private String getDetailsText(Artifact artifact) {
       String template = "<p><b>%s:</b> %s</p>";
       StringBuilder sb = new StringBuilder();
       sb.append("<form>");
-      sb.append(String.format(template, "GUID", artifact.getGuid()));
-      sb.append(String.format(template, "HRID", artifact.getHumanReadableId()));
-      sb.append(String.format(template, "Branch", artifact.getBranch().toString()));
-      sb.append(String.format(template, "Branch Id", String.valueOf(artifact.getBranch().getBranchId())));
-      sb.append(String.format(template, "Artifact Id", String.valueOf(artifact.getArtId())));
-      sb.append(String.format(template, "Artifact Type Name", artifact.getArtifactTypeName()));
-      sb.append(String.format(template, "Artifact Type Id", String.valueOf(artifact.getArtTypeId())));
-      sb.append(String.format(template, "Gamma Id", String.valueOf(artifact.getGammaId())));
-      sb.append(String.format(template, "Historical", String.valueOf(artifact.isHistorical())));
-      sb.append(String.format(template, "Deleted", String.valueOf(artifact.isDeleted())));
-      sb.append(String.format(template, "Revision", String.valueOf(artifact.getTransactionNumber())));
-      Date lastModified = null;
-      try {
-         lastModified = artifact.getLastModified();
-      } catch (Exception ex) {
 
-      }
-      sb.append(String.format(template, "Last Modified",
-            lastModified != null ? String.valueOf(lastModified) : "Error - unknown"));
-      User lastAuthor = null;
-      try {
-         lastAuthor = artifact.getLastModifiedBy();
-      } catch (Exception ex) {
+      if (artifact != null) {
+         sb.append(String.format(template, "GUID", artifact.getGuid()));
+         sb.append(String.format(template, "HRID", artifact.getHumanReadableId()));
+         sb.append(String.format(template, "Branch", artifact.getBranch().toString()));
+         sb.append(String.format(template, "Branch Id", String.valueOf(artifact.getBranch().getBranchId())));
+         sb.append(String.format(template, "Artifact Id", String.valueOf(artifact.getArtId())));
+         sb.append(String.format(template, "Artifact Type Name", artifact.getArtifactTypeName()));
+         sb.append(String.format(template, "Artifact Type Id", String.valueOf(artifact.getArtTypeId())));
+         sb.append(String.format(template, "Gamma Id", String.valueOf(artifact.getGammaId())));
+         sb.append(String.format(template, "Historical", String.valueOf(artifact.isHistorical())));
+         sb.append(String.format(template, "Deleted", String.valueOf(artifact.isDeleted())));
+         sb.append(String.format(template, "Revision", String.valueOf(artifact.getTransactionNumber())));
+         Date lastModified = null;
+         try {
+            lastModified = artifact.getLastModified();
+         } catch (Exception ex) {
 
+         }
+         sb.append(String.format(template, "Last Modified",
+               lastModified != null ? String.valueOf(lastModified) : "Error - unknown"));
+         User lastAuthor = null;
+         try {
+            lastAuthor = artifact.getLastModifiedBy();
+         } catch (Exception ex) {
+
+         }
+         sb.append(String.format(template, "Last Modified By", lastAuthor != null ? lastAuthor : "Error - unknown"));
+      } else {
+         sb.append(String.format(template, "Artifact", "null"));
       }
-      sb.append(String.format(template, "Last Modified By", lastAuthor != null ? lastAuthor : "Error - unknown"));
       sb.append("</form>");
       return sb.toString();
    }
-
 }

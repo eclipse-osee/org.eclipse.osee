@@ -19,7 +19,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactEditorFormSection extends SectionPart {
+public abstract class ArtifactEditorFormSection extends SectionPart {
 
    private final NewArtifactEditor editor;
 
