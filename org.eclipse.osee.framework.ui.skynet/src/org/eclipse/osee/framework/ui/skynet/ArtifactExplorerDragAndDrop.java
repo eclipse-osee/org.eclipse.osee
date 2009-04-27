@@ -27,17 +27,16 @@ import org.eclipse.ui.IViewPart;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private TreeViewer treeViewer;
    private String viewId;
    private IViewPart viewPart;
    private InterArtifactExplorerDropHandler interArtifactExplorerHandler;
-   
+
    public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart) {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
-      
+
       this.treeViewer = treeViewer;
       this.viewId = viewId;
       this.viewPart = viewPart;
@@ -108,17 +107,17 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       final Artifact parentArtifact = getSelectedArtifact(event);
 
       if (parentArtifact != null) {
-         ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-         final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-         if (artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
-               parentArtifact.getBranch())) {
-            try {
-               interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         } else {
-            if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType) && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
+         if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+            final Artifact[] artifactsToBeRelated = artData.getArtifacts();
+            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
+                  parentArtifact.getBranch())) {
+               try {
+                  interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
                   viewPart.getViewSite().getShell(),
                   "Confirm Move",
                   "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getDescriptiveName() + "?")) {
@@ -134,17 +133,15 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                }
             }
+         } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
+            if (object instanceof String[]) {
+               String filename = ((String[]) object)[0];
 
-            else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-               Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
-               if (object instanceof String[]) {
-                  String filename = ((String[]) object)[0];
+               ArtifactImportWizard wizard = new ArtifactImportWizard();
+               wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
 
-                  ArtifactImportWizard wizard = new ArtifactImportWizard();
-                  wizard.setImportResourceAndArtifactDestination(new File(filename), parentArtifact);
-
-                  Wizards.initAndOpen(wizard, viewPart);
-               }
+               Wizards.initAndOpen(wizard, viewPart);
             }
          }
       }
