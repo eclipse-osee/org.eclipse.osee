@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
@@ -236,8 +235,7 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       // make changes
       rd.log("Make new requirement artifact");
       Artifact rootArtifact =
-            ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(
-                  teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(), true);
+            ArtifactQuery.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(), true);
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
                   teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
