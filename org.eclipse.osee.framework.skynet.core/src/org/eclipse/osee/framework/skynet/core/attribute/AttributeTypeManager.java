@@ -249,7 +249,7 @@ public class AttributeTypeManager {
             if (node.getNodeName().equals("Enum")) {
                choices.add(node.getTextContent());
             } else {
-               choices.add(node.getLocalName());
+               choices.add(node.getNodeName());
             }
          }
       } catch (Exception ex) {
