@@ -86,7 +86,7 @@ public class OseeDataTypeFactory {
       for (CompositeKey<String, String> key : relationsMap.keySet()) {
          ArtifactDataType artifact = artifactDataType.getById(key.getKey1());
          if (artifact != null) {
-            Collection<String> relKeys = entries.getValues(key.getKey1());
+            Collection<String> relKeys = entries.getValues(key.getKey2());
             if (relKeys != null) {
                for (String relKey : relKeys) {
                   RelationDataType relation = relationDataType.getById(relKey);
