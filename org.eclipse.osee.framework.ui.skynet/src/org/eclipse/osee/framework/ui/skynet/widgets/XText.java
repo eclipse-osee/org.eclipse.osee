@@ -148,7 +148,7 @@ public class XText extends XWidget {
       // composite = parent;
 
       // Create Text Widgets
-      if (displayLabel && !getLabel().equals("")) {
+      if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {
@@ -196,6 +196,9 @@ public class XText extends XWidget {
 
    protected int getTextStyle() {
       int styleBase = SWT.BORDER;
+      if (isEditable()) {
+         styleBase |= SWT.READ_ONLY;
+      }
       return styleBase | (fillVertically ? SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE);
    }
 

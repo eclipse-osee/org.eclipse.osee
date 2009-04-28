@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewA
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -138,7 +140,7 @@ public class AttributeFormPart extends AbstractFormPart {
          parent.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
       } else {
          XWidget xWidget = XWidgetUtility.asXWidget(parent);
-         if (!(xWidget instanceof XSelectFromDialog<?>)) {
+         if (!(xWidget instanceof XSelectFromDialog<?>) && !(xWidget instanceof XStackedWidget)) {
             if (xWidget instanceof XTextDam) {
                XTextDam dam = (XTextDam) xWidget;
                if (!dam.isEditable()) {
@@ -151,7 +153,7 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
       }
-      if (parent instanceof Composite) {
+      if (parent instanceof Composite && !(parent instanceof StackedViewer)) {
          Composite container = (Composite) parent;
          for (Control child : container.getChildren()) {
             if (!(child instanceof Canvas)) {
@@ -182,10 +184,14 @@ public class AttributeFormPart extends AbstractFormPart {
    private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean isEditable) {
       int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
 
-      ExpandableComposite expandable = toolkit.createExpandableComposite(parent, style);
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      internalComposite.setLayout(new GridLayout());
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+      ExpandableComposite expandable = toolkit.createExpandableComposite(internalComposite, style);
       expandable.setText(attributeType.getName());
-      //      section.setLayout(new GridLayout());
-      //      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+      expandable.setLayout(new GridLayout());
+      expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Artifact artifact = editor.getEditorInput().getArtifact();
 
@@ -204,7 +210,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
          @Override
          public void expansionStateChanging(ExpansionEvent e) {
-            getManagedForm().getForm().reflow(true);
+            getManagedForm().getForm().reflow(false);
          }
 
       });

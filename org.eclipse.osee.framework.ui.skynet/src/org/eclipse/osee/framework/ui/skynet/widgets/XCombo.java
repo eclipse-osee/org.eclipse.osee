@@ -39,9 +39,11 @@ public class XCombo extends XWidget {
    private final Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
    protected Map<String, String> dataStringToXmlString;
    private String displayArray[];
+   private boolean isDefaultSelectionAllowed;
 
    public XCombo(String displayLabel, String xmlRoot, String xmlSubRoot) {
       super(displayLabel, xmlRoot, xmlSubRoot);
+      isDefaultSelectionAllowed = true;
    }
 
    public XCombo(String displayLabel, String xmlRoot) {
@@ -50,6 +52,14 @@ public class XCombo extends XWidget {
 
    public XCombo(String displayLabel) {
       this(displayLabel, "", "");
+   }
+
+   public void setDefaultSelectionAllowed(boolean isAllowed) {
+      this.isDefaultSelectionAllowed = isAllowed;
+   }
+
+   public boolean isDefaultSelectionAllowed() {
+      return isDefaultSelectionAllowed;
    }
 
    /*
@@ -91,7 +101,7 @@ public class XCombo extends XWidget {
       }
 
       // Create Data Widgets
-      if (!getLabel().equals("")) {
+      if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {
@@ -158,12 +168,21 @@ public class XCombo extends XWidget {
     */
    private void setDisplayDataStrings() {
       displayDataStrings.clear();
-      displayDataStrings.put("--select--", 0);
-      displayArray = new String[inDataStrings.length + 1];
-      displayArray[0] = "--select--";
-      for (int i = 0; i < inDataStrings.length; i++) {
-         displayDataStrings.put(inDataStrings[i], (i + 1));
-         displayArray[i + 1] = inDataStrings[i];
+
+      if (isDefaultSelectionAllowed()) {
+         displayDataStrings.put("--select--", 0);
+         displayArray = new String[inDataStrings.length + 1];
+         displayArray[0] = "--select--";
+         for (int i = 0; i < inDataStrings.length; i++) {
+            displayDataStrings.put(inDataStrings[i], (i + 1));
+            displayArray[i + 1] = inDataStrings[i];
+         }
+      } else {
+         displayArray = new String[inDataStrings.length];
+         for (int i = 0; i < inDataStrings.length; i++) {
+            displayDataStrings.put(inDataStrings[i], i);
+            displayArray[i] = inDataStrings[i];
+         }
       }
    }
 

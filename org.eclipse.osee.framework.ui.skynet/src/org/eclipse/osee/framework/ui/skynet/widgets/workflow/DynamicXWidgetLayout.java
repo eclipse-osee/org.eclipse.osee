@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -90,7 +90,8 @@ public class DynamicXWidgetLayout {
       attrComp = createComposite(parent, toolkit);
 
       GridLayout layout = new GridLayout(1, false);
-      layout.marginWidth = layout.marginHeight = 2;
+      layout.marginWidth = 2;
+      layout.marginHeight = 2;
       attrComp.setLayout(layout);
       attrComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -108,40 +109,43 @@ public class DynamicXWidgetLayout {
             childComp = createComposite(attrComp, toolkit);
             childComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false));
             childComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            if (toolkit != null) toolkit.adapt(childComp);
+            if (toolkit != null) {
+               toolkit.adapt(childComp);
+            }
             inChildComposite = true;
          }
          if (inChildComposite) {
             useComp = childComp;
-            if (xWidgetLayoutData.isEndComposite()) inChildComposite = false;
+            if (xWidgetLayoutData.isEndComposite()) {
+               inChildComposite = false;
+            }
          } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
             useComp = createComposite(attrComp, toolkit);
             useComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             useComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            if (toolkit != null) toolkit.adapt(useComp);
+            if (toolkit != null) {
+               toolkit.adapt(useComp);
+            }
          }
 
          XWidget xWidget = xWidgetLayoutData.getXWidget();
          xWidgets.add(xWidget);
-         if (!xWidgetLayoutData.getName().equals("")) xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst(
-               "^.*?\\.", ""));
-         if (xWidgetLayoutData.getToolTip() != null && !xWidgetLayoutData.getToolTip().equals("")) xWidget.setToolTip(xWidgetLayoutData.getToolTip());
-         xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY) || xWidgetLayoutData.getXOptionHandler().contains(
-               XOption.FILL_VERTICALLY)) {
-            if (xWidget instanceof XText) {
-               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) ((XText) xWidget).setFillHorizontally(true);
-               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
-                  GridData gd = new GridData(GridData.FILL_BOTH);
-                  useComp.setLayoutData(gd);
-                  ((XText) xWidget).setFillVertically(true);
-               }
-               if (xWidgetLayoutData.isHeightSet()) ((XText) xWidget).setHeight(xWidgetLayoutData.getHeight());
-            }
+
+         if (Strings.isValid(xWidgetLayoutData.getName())) {
+            xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst("^.*?\\.", ""));
          }
+
+         if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
+            xWidget.setToolTip(xWidgetLayoutData.getToolTip());
+         }
+
+         xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
          xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
-         if (dynamicWidgetLayoutListener != null) dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit,
-               artifact, this, xModListener, isEditable);
+
+         if (dynamicWidgetLayoutListener != null) {
+            dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
+         }
+
          if (artifact != null && (xWidget instanceof IArtifactWidget)) {
             try {
                ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getStorageName());
@@ -149,15 +153,60 @@ public class DynamicXWidgetLayout {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-         xWidget.createWidgets(managedForm, useComp, 2);
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY) && (xWidget instanceof XText)) {
-            GridData gd = new GridData(GridData.FILL_BOTH);
-            gd.minimumHeight = 60;
-            ((XText) xWidget).getStyledText().setLayoutData(gd);
+
+         if (xWidget instanceof XText) {
+            XText xText = (XText) xWidget;
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+               xText.setFillHorizontally(true);
+            }
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+               xText.setFillVertically(true);
+            }
          }
-         if (artifact != null && (xWidget instanceof XLabelDam)) ((XLabelDam) xWidget).setArtifact(artifact,
-               xWidgetLayoutData.getStorageName());
-         if (xModListener != null) xWidget.addXModifiedListener(xModListener);
+
+         xWidget.createWidgets(managedForm, useComp, 2);
+
+         if (xWidget instanceof XText) {
+            XText xText = (XText) xWidget;
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY) && xWidgetLayoutData.getXOptionHandler().contains(
+                  XOption.FILL_VERTICALLY)) {
+               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+               gd.minimumWidth = 60;
+               gd.minimumHeight = 60;
+               useComp.setLayoutData(gd);
+
+               gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+               gd.minimumWidth = 60;
+               gd.minimumHeight = 60;
+               xText.getStyledText().setLayoutData(gd);
+            } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+               gd.minimumWidth = 60;
+               useComp.setLayoutData(gd);
+
+               gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+               gd.minimumWidth = 60;
+               xText.getStyledText().setLayoutData(gd);
+            } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+               gd.minimumHeight = 60;
+               useComp.setLayoutData(gd);
+
+               gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+               gd.minimumHeight = 60;
+               xText.getStyledText().setLayoutData(gd);
+            }
+
+            if (xWidgetLayoutData.isHeightSet()) {
+               xText.setHeight(xWidgetLayoutData.getHeight());
+            }
+         }
+         useComp.layout();
+
+         if (xModListener != null) {
+            xWidget.addXModifiedListener(xModListener);
+         }
+
          xWidget.addXModifiedListener(refreshRequiredModListener);
 
          if (dynamicWidgetLayoutListener != null) {

@@ -61,7 +61,7 @@ public abstract class XWidget {
       return fillHorizontally;
    }
 
-   protected boolean displayLabel = true;
+   private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
    private MouseListener mouseLabelListener;
    protected FormToolkit toolkit;

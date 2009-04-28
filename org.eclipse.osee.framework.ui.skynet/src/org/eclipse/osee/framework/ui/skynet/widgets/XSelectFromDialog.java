@@ -48,6 +48,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       super(displayLabel, xmlRoot);
       this.selected = new ArrayList<T>();
       this.input = new ArrayList<T>();
+      setToolTip("Click the button on the left to change the current selection.");
    }
 
    public XSelectFromDialog(String displayLabel) {
@@ -67,7 +68,17 @@ public abstract class XSelectFromDialog<T> extends XText {
    }
 
    protected int getTextStyle() {
-      return SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL;
+      return SWT.READ_ONLY | SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setToolTip(java.lang.String)
+    */
+   @Override
+   public void setToolTip(String toolTip) {
+      if (Strings.isValid(toolTip)) {
+         super.setToolTip(toolTip);
+      }
    }
 
    /* (non-Javadoc)
@@ -99,7 +110,8 @@ public abstract class XSelectFromDialog<T> extends XText {
             }
          }
       });
-      addToolTip(button, getToolTip());
+
+      addToolTip(composite, getToolTip());
       refresh();
    }
 

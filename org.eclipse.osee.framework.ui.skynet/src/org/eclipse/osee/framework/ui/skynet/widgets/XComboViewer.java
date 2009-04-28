@@ -126,7 +126,7 @@ public class XComboViewer extends XWidget {
          horizontalSpan = 1;
       }
 
-      if (displayLabel && verticalLabel) {
+      if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
          int numColumns = 1;
          GridLayout gridLayout = new GridLayout();
@@ -140,7 +140,7 @@ public class XComboViewer extends XWidget {
       }
 
       // Create List Widgets
-      if (displayLabel) {
+      if (isDisplayLabel()) {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {

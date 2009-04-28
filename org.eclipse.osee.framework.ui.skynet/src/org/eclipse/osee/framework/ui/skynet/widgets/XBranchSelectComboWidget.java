@@ -62,7 +62,7 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
          horizontalSpan = 1;
       }
 
-      if (displayLabel && verticalLabel) {
+      if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
          GridLayout gL = new GridLayout();
          gL.marginWidth = 0;
@@ -74,7 +74,7 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       }
 
       // Create List Widgets
-      if (displayLabel) {
+      if (isDisplayLabel()) {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }

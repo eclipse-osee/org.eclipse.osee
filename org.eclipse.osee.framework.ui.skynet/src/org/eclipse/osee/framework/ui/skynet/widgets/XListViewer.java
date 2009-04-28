@@ -157,7 +157,7 @@ public class XListViewer extends XWidget {
          horizontalSpan = 2;
       else if (verticalLabel) horizontalSpan = 1;
 
-      if (displayLabel && verticalLabel) {
+      if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
          // composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_CYAN));
          composite.setLayout(new GridLayout(1, false));
@@ -171,7 +171,7 @@ public class XListViewer extends XWidget {
       }
 
       // Create List Widgets
-      if (displayLabel) {
+      if (isDisplayLabel()) {
          labelWidget = new Label(composite, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {

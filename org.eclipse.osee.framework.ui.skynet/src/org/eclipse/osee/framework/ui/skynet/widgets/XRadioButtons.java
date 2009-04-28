@@ -174,10 +174,10 @@ public class XRadioButtons extends XWidget {
          names[x++] = rb.getLabel().toLowerCase();
       }
 
-      int numColumns = (names.length * 2) + (displayLabel ? 1 : 0);
+      int numColumns = (names.length * 2) + (isDisplayLabel() ? 1 : 0);
       if (vertical && horizontalSpan == 1)
          numColumns = 1;
-      else if (vertical) numColumns = (displayLabel ? 1 : 0) + 1; // only need label an composite
+      else if (vertical) numColumns = (isDisplayLabel() ? 1 : 0) + 1; // only need label an composite
       // System.out.println("numColumns *" + numColumns + "*");
       comp = new Composite(parent, SWT.NONE);
       comp.setLayout(new GridLayout(numColumns, false));
@@ -187,11 +187,11 @@ public class XRadioButtons extends XWidget {
       // comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
       // Create Text Widgets
-      if (displayLabel) {
+      if (isDisplayLabel()) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
       }
-      if (getToolTip() != null && displayLabel) {
+      if (getToolTip() != null && isDisplayLabel()) {
          labelWidget.setToolTipText(getToolTip());
       }
 

@@ -81,7 +81,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       // Create Text Widgets
-      if (displayLabel && !getLabel().equals("")) {
+      if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {

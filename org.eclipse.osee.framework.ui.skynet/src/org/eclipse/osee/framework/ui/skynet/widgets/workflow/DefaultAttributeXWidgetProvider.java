@@ -65,7 +65,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XTextDam");
          } else {
-            defaultData.setXWidgetName("XMultiXWidgetTextDam");
+            defaultData.setXWidgetName("XStackedXTextDam");
          }
       } else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) {
          if (minOccurrence == 1) {
@@ -74,21 +74,20 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             defaultData.setXWidgetName("XComboBooleanDam");
          }
       } else if (attributeType.getBaseAttributeClass().equals(DateAttribute.class)) {
-         if (maxOccurrence <= 1) {
+         if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XDateDam");
          } else {
-            defaultData.setXWidgetName("XLabelDam");
+            defaultData.setXWidgetName("XMultiXWidgetTextDam");
          }
       } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-         defaultData.setXWidgetName("XTextDam");
+         defaultData.setXWidgetName("XStackedXTextDam");
          defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          defaultData.getXOptionHandler().add(XOption.NO_LABEL);
-         //         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {
          defaultData.setXWidgetName("XLabelDam");
       }
-      //      defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+      defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
       return xWidgetLayoutData;
    }
 }

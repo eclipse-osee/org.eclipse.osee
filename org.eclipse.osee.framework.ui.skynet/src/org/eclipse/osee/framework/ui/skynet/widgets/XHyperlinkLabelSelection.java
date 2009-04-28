@@ -84,7 +84,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       // Create Text Widgets
-      if (displayLabel && !getLabel().equals("")) {
+      if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {

@@ -44,11 +44,10 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
    }
 
    public void createWidgets(Composite parent, int horizontalSpan) {
-
       this.parent = parent;
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets
-      if (!getLabel().equals("")) {
+      if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {
@@ -57,7 +56,6 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
       }
       valueTextWidget = new Text(parent, SWT.NONE);
       valueTextWidget.setEditable(false);
-
       refresh();
    }
 

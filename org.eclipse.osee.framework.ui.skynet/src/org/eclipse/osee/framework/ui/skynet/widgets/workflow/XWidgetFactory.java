@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XStackedXTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
@@ -158,6 +159,12 @@ public class XWidgetFactory {
                xWidget = new XComboDam(name);
                XComboDam combo = new XComboDam(name);
                combo.setDataStrings(values);
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
+                  combo.setDefaultSelectionAllowed(false);
+               }
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
+                  combo.setDefaultSelectionAllowed(true);
+               }
                xWidget = combo;
             } else
                throw new IllegalArgumentException(
@@ -175,6 +182,8 @@ public class XWidgetFactory {
                throw new IllegalArgumentException(
                      "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
          }
+      } else if (xWidgetName.startsWith("XStackedXTextDam")) {
+         xWidget = new XStackedXTextDam(name);
       } else if (xWidgetName.startsWith("XComboBooleanDam")) {
          xWidget = new XComboBooleanDam(name);
          XComboBooleanDam combo = new XComboBooleanDam(name);
@@ -191,6 +200,12 @@ public class XWidgetFactory {
             else
                combo.set("");
          }
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
+            combo.setDefaultSelectionAllowed(false);
+         }
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
+            combo.setDefaultSelectionAllowed(true);
+         }
       } else if (xWidgetName.startsWith("XComboViewer")) {
          xWidget = new XComboViewer(name);
       } else if (xWidgetName.startsWith("XCombo")) {
@@ -199,6 +214,13 @@ public class XWidgetFactory {
          if (values.length > 0) {
             XCombo combo = new XCombo(name);
             combo.setDataStrings(values);
+
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
+               combo.setDefaultSelectionAllowed(false);
+            }
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.ADD_DEFAULT_VALUE)) {
+               combo.setDefaultSelectionAllowed(true);
+            }
             xWidget = combo;
          } else
             throw new IllegalArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
@@ -246,10 +268,8 @@ public class XWidgetFactory {
          ((XText) xWidget).addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
       }
 
-      if (xWidget != null) {
-         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_LABEL)) {
-            xWidget.setDisplayLabel(false);
-         }
+      if (xWidget != null && xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_LABEL)) {
+         xWidget.setDisplayLabel(false);
       }
       return xWidget;
    }
