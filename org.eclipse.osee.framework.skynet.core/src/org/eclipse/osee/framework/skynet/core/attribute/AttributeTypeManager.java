@@ -246,7 +246,7 @@ public class AttributeTypeManager {
 
          for (int i = 0; i < enumerations.getLength(); i++) {
             Node node = enumerations.item(i);
-            if (node.getLocalName().equals("Enum")) {
+            if (node.getNodeName().equals("Enum")) {
                choices.add(node.getTextContent());
             } else {
                choices.add(node.getLocalName());
