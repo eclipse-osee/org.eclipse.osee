@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -71,13 +70,7 @@ public class SkynetUserArtifactCustomizeDefaults {
       String xml = "";
       if (user != null) {
          try {
-            xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE);
-            if (xml == null) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Invalid null for XViewerDefaults for user " + user);
-               xml = "";
-            }
-         } catch (AttributeDoesNotExist ex) {
-            xml = "";
+            xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             xml = "";

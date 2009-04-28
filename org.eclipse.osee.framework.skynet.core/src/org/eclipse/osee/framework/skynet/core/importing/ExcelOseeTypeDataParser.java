@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -43,7 +44,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    private final ExcelSaxHandler excelHandler;
    private Table currentTable;
    private Iterator<Table> tableIterator;
-   private final HashMap<String, ArrayList<String>> superTypeMap;
+   private final HashCollection<String, String> superTypeMap; //map each super type to all its direct sub types
    private final ArrayList<ValidityRow> validityArray;
    private final List<AttributeRow> attributeMapRows;
    private boolean done;
@@ -54,7 +55,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    public ExcelOseeTypeDataParser(IOseeDataTypeProcessor dataTypeProcessor) throws SAXException, IOException {
       this.dataTypeProcessor = dataTypeProcessor;
       excelHandler = new ExcelSaxHandler(this, true, true);
-      superTypeMap = new HashMap<String, ArrayList<String>>();
+      superTypeMap = new HashCollection<String, String>();
       validityArray = new ArrayList<ValidityRow>();
       attributeMapRows = new ArrayList<AttributeRow>();
 
@@ -68,19 +69,33 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       xmlReader.parse(new InputSource(importFile));
    }
 
+   private void ensureAllSuperTypesInheritFromArtifact() {
+      Collection<String> artifactSubTypes = superTypeMap.getValues("Artifact");
+      for (String typeName : superTypeMap.keySet()) {
+         if (!typeName.equals("Artifact") && !artifactSubTypes.contains(typeName)) {
+            superTypeMap.put("Artifact", typeName);
+         }
+      }
+   }
+
    public void finish() throws OseeCoreException {
+      ensureAllSuperTypesInheritFromArtifact();
+      Collection<String> concreteTypes = new ArrayList<String>();
       for (AttributeRow attributeRow : attributeMapRows) {
+         concreteTypes.clear();
          dataTypeProcessor.onAttributeValidity(attributeRow.attributeName, attributeRow.artifactSuperTypeName,
-               determineConcreteTypes(attributeRow.artifactSuperTypeName));
+               determineConcreteTypes(attributeRow.artifactSuperTypeName, concreteTypes));
       }
       processRelationValidity();
    }
 
    private void processRelationValidity() throws OseeCoreException {
+      Collection<String> concreteTypes = new ArrayList<String>();
       CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> keyMap =
             new CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>>();
       for (ValidityRow row : validityArray) {
-         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName)) {
+         concreteTypes.clear();
+         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
             String relationType = row.relationTypeName;
             int sideAMax = row.sideAmax;
             int sideBMax = row.sideBmax;
@@ -202,18 +217,6 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
             ordered);
    }
 
-   private void associateWithSuperType(String artifactTypeName, String superTypeName) {
-      ArrayList<String> artifactTypeList = superTypeMap.get(superTypeName);
-      if (artifactTypeList == null) {
-         artifactTypeList = new ArrayList<String>();
-         superTypeMap.put(superTypeName, artifactTypeList);
-      }
-      artifactTypeList.add(artifactTypeName);
-      if (!superTypeName.equals("Artifact")) {
-         associateWithSuperType(artifactTypeName, "Artifact");
-      }
-   }
-
    private void addArtifactType(String[] row) throws Exception {
       if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       String factoryClassName = row[0];
@@ -221,7 +224,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       String superTypeName = row[2];
 
       if (!artifactTypeName.equals("Artifact")) {
-         associateWithSuperType(artifactTypeName, superTypeName);
+         superTypeMap.put(superTypeName, artifactTypeName);
       }
       dataTypeProcessor.onArtifactType(factoryClassName, "", artifactTypeName);
    }
@@ -274,19 +277,17 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       return Integer.parseInt(quantity);
    }
 
-   private ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeCoreException {
-      ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
-
-      // if no sub-types then just return artifactSuperTypeName as the only Concrete type
-      if (artifactTypeList == null) {
-         artifactTypeList = new ArrayList<String>();
-         artifactTypeList.add(artifactSuperTypeName);
-      } else {
-         if (dataTypeProcessor.doesArtifactSuperTypeExist(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
-            artifactTypeList.add(artifactSuperTypeName);
+   private Collection<String> determineConcreteTypes(String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
+      if (dataTypeProcessor.doesArtifactSuperTypeExist(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
+         concreteTypes.add(artifactSuperTypeName);
+      }
+      Collection<String> subTypeNames = superTypeMap.getValues(artifactSuperTypeName);
+      if (subTypeNames != null) {
+         for (String subTypeName : subTypeNames) {
+            determineConcreteTypes(subTypeName, concreteTypes);
          }
       }
-      return artifactTypeList;
+      return concreteTypes;
    }
 
    private class ValidityRow {
