@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.ui.plugin.workspace;
 import java.util.Hashtable;
 import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.workspace.internal.SafeWorkspaceAccessImpl;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleContext;
 
@@ -22,7 +23,12 @@ public class EarlyStartup implements IStartup {
     */
    @Override
    public void earlyStartup() {
-      registerWorkspaceAccessService();
+      Display.getDefault().asyncExec(new Runnable() {
+         @Override
+         public void run() {
+              registerWorkspaceAccessService();
+         }
+      });
    }
    
    private void registerWorkspaceAccessService(){
