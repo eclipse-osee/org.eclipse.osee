@@ -33,6 +33,8 @@ public class OseePluginUiActivator extends OseeUiActivator {
    // The shared instance
    private static OseePluginUiActivator plugin;
 
+   private BundleContext context;
+
    /**
     * The constructor
     */
@@ -46,6 +48,7 @@ public class OseePluginUiActivator extends OseeUiActivator {
     */
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      this.context = context;
       OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
 
       if (PlatformUI.isWorkbenchRunning()) {
@@ -92,6 +95,7 @@ public class OseePluginUiActivator extends OseeUiActivator {
     */
    public void stop(BundleContext context) throws Exception {
       plugin = null;
+      context = null;
       super.stop(context);
    }
 
@@ -102,5 +106,12 @@ public class OseePluginUiActivator extends OseeUiActivator {
     */
    public static OseePluginUiActivator getInstance() {
       return plugin;
+   }
+
+   /**
+    * @return
+    */
+   public BundleContext getContext() {
+      return context;
    }
 }
