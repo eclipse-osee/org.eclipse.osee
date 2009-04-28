@@ -127,7 +127,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       deleteBranch.setToolTipText("Delete Working Branch");
       deleteBranch.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().deleteEmptyWorkingBranch(true);
+            smaMgr.getBranchMgr().deleteWorkingBranch(true);
             refresh();
          }
       });
@@ -158,15 +158,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       }
    }
 
-   private Branch getWorkingBranchEverCreated() {
-      try {
-         return ((IBranchArtifact) artifact).getWorkingBranch();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         return null;
-      }
-   }
-
    private String getWorkingBranchShortName() {
       if (getWorkingBranch() != null) {
          return getWorkingBranch().getBranchShortName();
@@ -177,6 +168,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    public String getStatus() {
       try {
          if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchArchived()) {
+            return Status.Changes_NotPermitted.name();
+         } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchEverCommitted()) {
             return Status.Changes_NotPermitted.name();
          } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchInWork()) {
             return Status.Changes_InProgress.name();
@@ -253,7 +246,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       try {
          if (smaMgr != null && smaMgr.getBranchMgr() != null) {
             if (createBranch != null) {
-               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranchExists());
+               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
             if (showArtifactExplorer != null) {
                if (getWorkingBranch() == null)
@@ -266,13 +259,13 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                }
             }
             if (showChangeReport != null) {
-               if (smaMgr.getBranchMgr().isWorkingBranch(true) || smaMgr.getBranchMgr().isCommittedBranchExists())
+               if (smaMgr.getBranchMgr().isWorkingBranchInWork() || smaMgr.getBranchMgr().isCommittedBranchExists())
                   showChangeReport.setEnabled(true);
                else
                   showChangeReport.setEnabled(false);
             }
             if (deleteBranch != null) {
-               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranchExists());
+               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
          }
       } catch (OseeCoreException ex) {

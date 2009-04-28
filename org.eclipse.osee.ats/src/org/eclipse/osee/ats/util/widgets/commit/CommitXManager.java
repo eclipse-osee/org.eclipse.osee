@@ -87,7 +87,7 @@ public class CommitXManager extends XViewer {
       try {
          ICommitConfigArtifact configArt = getSelectedConfigArtifacts().iterator().next();
          Branch destBranch = configArt.getParentBranch();
-         CommitStatus commitStatus = XCommitLabelProvider.getCommitStatus(xCommitManager.getTeamArt(), configArt);
+         CommitStatus commitStatus = xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.Branch_Not_Configured) {

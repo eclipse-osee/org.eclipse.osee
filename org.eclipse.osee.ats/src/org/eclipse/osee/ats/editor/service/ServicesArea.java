@@ -90,7 +90,7 @@ public class ServicesArea {
    public void loadToolbarServices(AtsWorkPage atsWorkPage) throws OseeCoreException {
       if (toolBarServices.size() == 0) {
          // Toolbar Services
-         if (atsWorkPage != null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranch())) {
+         if (atsWorkPage != null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch()) && (smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranchInWork())) {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
          }

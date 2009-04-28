@@ -589,9 +589,14 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       try {
-         if (getSmaMgr().getBranchMgr().isWorkingBranch())
+         if (getSmaMgr().getBranchMgr().isWorkingBranchInWork())
             return "Working";
-         else if (getSmaMgr().getBranchMgr().isCommittedBranchExists()) return "Committed";
+         else if (getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+            if (!getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured() || !getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+               return "Needs Commit";
+            }
+            return "Committed";
+         }
          return "";
       } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();

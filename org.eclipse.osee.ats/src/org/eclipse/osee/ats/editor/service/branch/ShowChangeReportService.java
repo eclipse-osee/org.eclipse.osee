@@ -90,7 +90,7 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
    private boolean isEnabled() {
       boolean enabled = false;
       try {
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
+         if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
             enabled = true;
          } else {
             enabled = smaMgr.getBranchMgr().isCommittedBranchExists();

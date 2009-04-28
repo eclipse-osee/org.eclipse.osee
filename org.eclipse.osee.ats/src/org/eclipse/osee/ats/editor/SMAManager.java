@@ -855,11 +855,11 @@ public class SMAManager {
          return new Result(errStr);
       }
       // Don't transition with existing working branch
-      if (toStateName.equals(DefaultTeamState.Cancelled) && getBranchMgr().isWorkingBranch()) return new Result(
+      if (toStateName.equals(DefaultTeamState.Cancelled) && getBranchMgr().isWorkingBranchInWork()) return new Result(
             "Working Branch exists.  Please delete working branch before cancelling.");
 
       // Don't transition with uncommitted branch if this is a commit state
-      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
+      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranchInWork()) return new Result(
             "Working Branch exists.  Please commit or delete working branch before transition.");
 
       // Check extension points for valid transition

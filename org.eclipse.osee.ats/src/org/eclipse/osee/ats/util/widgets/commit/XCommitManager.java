@@ -98,7 +98,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       }
 
       try {
-         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranchInWork() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
             labelWidget.setText(getLabel() + ": No working or committed branches available.");
          } else {
 

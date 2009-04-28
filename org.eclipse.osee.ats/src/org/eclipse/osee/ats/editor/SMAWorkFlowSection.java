@@ -565,7 +565,7 @@ public class SMAWorkFlowSection extends SectionPart {
             smaMgr.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             smaMgr.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
+         if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
 
             if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
                   DefaultTeamState.Cancelled.name())) {

@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -40,12 +39,12 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitLabelProvider.CommitStatus;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -97,11 +96,11 @@ public class AtsBranchManager {
 
    public void showMergeManager() {
       try {
-         if (!isWorkingBranch() && !isCommittedBranchExists()) {
+         if (!isWorkingBranchInWork() && !isCommittedBranchExists()) {
             AWorkbench.popup("ERROR", "No Current Working or Committed Branch");
             return;
          }
-         if (isWorkingBranch()) {
+         if (isWorkingBranchInWork()) {
             Branch branch = getConfiguredBranchForWorkflow();
             if (branch == null) {
                AWorkbench.popup("ERROR", "Can't access parent branch");
@@ -139,8 +138,43 @@ public class AtsBranchManager {
       return !conflictManager.remainingConflictsExist();
    }
 
+   public CommitStatus getCommitStatus(ICommitConfigArtifact configArt) throws OseeCoreException {
+      Branch branch = configArt.getParentBranch();
+      if (branch == null) return CommitStatus.Branch_Not_Configured;
+
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), false);
+      if (branches.contains(branch)) {
+         return CommitStatus.Committed;
+      }
+      Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+      for (TransactionId transId : transactions) {
+         if (transId.getBranchId() == branch.getBranchId()) {
+            if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
+               return CommitStatus.Committed_With_Merge;
+            } else {
+               return CommitStatus.Committed;
+            }
+         }
+      }
+
+      Result result = smaMgr.getBranchMgr().isCommitBranchAllowed(configArt);
+      if (result.isFalse()) {
+         return CommitStatus.Branch_Commit_Disabled;
+      }
+      if (smaMgr.getBranchMgr().getWorkingBranch(true) == null) {
+         return CommitStatus.Working_Branch_Not_Created;
+      }
+      if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
+         if (smaMgr.getBranchMgr().isMergeCompleted(branch)) {
+            return CommitStatus.Commit_Needed_After_Merge;
+         }
+         return CommitStatus.Merge_In_Progress;
+      }
+      return CommitStatus.Commit_Needed;
+   }
+
    public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
-      if (isWorkingBranch()) {
+      if (isWorkingBranchInWork()) {
          MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(
                getWorkingBranch()).getKey());
       } else if (isCommittedBranchExists()) {
@@ -158,7 +192,7 @@ public class AtsBranchManager {
     */
    public void showWorkingBranch() {
       try {
-         if (!isWorkingBranch()) {
+         if (!isWorkingBranchInWork()) {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
@@ -176,7 +210,7 @@ public class AtsBranchManager {
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public void deleteEmptyWorkingBranch(boolean popup) {
+   public void deleteWorkingBranch(boolean popup) {
       try {
          Branch branch = getWorkingBranch();
          if (branch.hasChanges() && popup) {
@@ -201,7 +235,7 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
+   private Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
       if (showMergeManager) {
          // grab only the transaction that had merge conflicts
          Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
@@ -228,7 +262,7 @@ public class AtsBranchManager {
       return earliestTransactionId;
    }
 
-   public TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
+   private TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionId> transactionIds = getTransactionIds(showMergeManager);
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
@@ -322,7 +356,7 @@ public class AtsBranchManager {
     */
    public void showChangeReport() {
       try {
-         if (isWorkingBranch()) {
+         if (isWorkingBranchInWork()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
@@ -380,27 +414,48 @@ public class AtsBranchManager {
    }
 
    /**
-    * @return true if there is a current working branch
-    * @deprecated
+    * Returns true if there were ever a working branch. This could be if there is an inWork branch or an archived
+    * branch. It also handles the case where the archived branch was deleted, in which case it looks at the committedTo
+    * branches and returns true.
+    * 
+    * @return result
+    * @throws OseeCoreException
     */
-   public boolean isWorkingBranch() throws OseeCoreException {
-      return getWorkingBranch() != null;
-   }
-
-   public boolean isWorkingBranch(boolean includeArchived) throws OseeCoreException {
-      return getWorkingBranch(includeArchived) != null;
-   }
-
    public boolean isWorkingBranchEverCreated() throws OseeCoreException {
-      return getWorkingBranch(true) != null || getBranchesCommittedTo().size() > 0;
+      return isWorkingBranchArchived() || isWorkingBranchEverCommitted();
    }
 
+   /**
+    * Returns true if there is a working branch that is not archived
+    * 
+    * @return result
+    * @throws OseeCoreException
+    */
    public boolean isWorkingBranchInWork() throws OseeCoreException {
       return getWorkingBranch(false) != null;
    }
 
+   /**
+    * Returns true if there is an archived working branch. Note, this method does not necessarily mean that there was
+    * ever a working branch cause archived branches can be deleted. Use isWorkingBranchEverCreated or
+    * isWorkingBranchEverCommitted.
+    * 
+    * @return result
+    * @throws OseeCoreException
+    */
    public boolean isWorkingBranchArchived() throws OseeCoreException {
-      return (getWorkingBranch(true) != null && getWorkingBranch(true).isArchived()) || getBranchesCommittedTo().size() > 0;
+      return getWorkingBranch(true) != null && getWorkingBranch(true).isArchived();
+   }
+
+   /**
+    * Returns true if there was ever a commit of a working branch regardless of whether the working branch is archived
+    * or not.
+    * 
+    * @return result
+    * @throws OseeCoreException
+    */
+   public boolean isWorkingBranchEverCommitted() throws OseeCoreException {
+      return getBranchesCommittedTo().size() > 0;
    }
 
    public Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo() throws OseeCoreException {
@@ -486,17 +541,6 @@ public class AtsBranchManager {
          }
       }
       return true;
-   }
-
-   /**
-    * Set parent branch id associated with this state machine artifact
-    * 
-    * @param branchId
-    * @throws MultipleAttributesExist
-    */
-   public void setParentBranchId(int branchId) throws OseeCoreException {
-      smaMgr.getSma().setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
-            String.valueOf(branchId));
    }
 
    /**
@@ -738,7 +782,7 @@ public class AtsBranchManager {
    }
 
    public boolean isBranchInCommit() throws OseeCoreException {
-      if (!isWorkingBranch()) return false;
+      if (!isWorkingBranchInWork()) return false;
       return BranchManager.isBranchInCommit(getWorkingBranch());
    }
 
@@ -776,7 +820,7 @@ public class AtsBranchManager {
          throw new OseeArgumentException("Parent Branch not configured for " + commitConfigArt);
       }
       ChangeData changeData = null;
-      if (smaMgr.getBranchMgr().isWorkingBranch()) {
+      if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
          changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), null);
       } else if (smaMgr.getBranchMgr().isCommittedBranchExists()) {
          TransactionId transactionId = null;
@@ -801,12 +845,12 @@ public class AtsBranchManager {
    }
 
    /**
-    * @return true if isWorkingBranch() and changes exist else false
+    * @return true if working branch is In Work and changes exist
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public Boolean isChangesOnWorkingBranch() throws OseeCoreException {
-      if (isWorkingBranch()) {
+   public Boolean isWorkingBranchHaveChanges() throws OseeCoreException {
+      if (isWorkingBranchInWork()) {
          return ChangeManager.isChangesOnWorkingBranch(getWorkingBranch());
       }
       return false;
