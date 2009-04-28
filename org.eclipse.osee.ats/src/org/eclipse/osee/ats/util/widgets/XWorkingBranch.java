@@ -54,7 +54,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    private Button showChangeReport;
    private Button deleteBranch;
    public static enum Status {
-      Not_Started, Changes_InProgress, Changes_NotPermitted, Committed
+      Not_Started, Changes_InProgress, Changes_NotPermitted
    }
    public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
 
@@ -158,6 +158,15 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       }
    }
 
+   private Branch getWorkingBranchEverCreated() {
+      try {
+         return ((IBranchArtifact) artifact).getWorkingBranch();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         return null;
+      }
+   }
+
    private String getWorkingBranchShortName() {
       if (getWorkingBranch() != null) {
          return getWorkingBranch().getBranchShortName();
@@ -167,21 +176,12 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    public String getStatus() {
       try {
-         if (getWorkingBranch() == null) {
-            // all committed
-            if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isBranchesAllCommitted()) {
-               return Status.Committed.name();
-            }
-            // at least one branch committed
-            else if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
-               return Status.Changes_NotPermitted.name();
-            }
-            // otherwise, assume no working branch 
-            return Status.Not_Started.name();
-         } else if (smaMgr != null && smaMgr.getBranchMgr() != null && smaMgr.getBranchMgr().isCommittedBranchExists()) {
+         if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchArchived()) {
             return Status.Changes_NotPermitted.name();
-         } else {
+         } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchInWork()) {
             return Status.Changes_InProgress.name();
+         } else {
+            return Status.Not_Started.name();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);

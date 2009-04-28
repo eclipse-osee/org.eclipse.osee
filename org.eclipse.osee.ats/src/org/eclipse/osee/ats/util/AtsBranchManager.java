@@ -128,6 +128,9 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
+      if (getWorkingBranch(true) == null) {
+         return false;
+      }
       return BranchManager.isMergeBranch(getWorkingBranch(true), destinationBranch);
    }
 
@@ -378,6 +381,7 @@ public class AtsBranchManager {
 
    /**
     * @return true if there is a current working branch
+    * @deprecated
     */
    public boolean isWorkingBranch() throws OseeCoreException {
       return getWorkingBranch() != null;
@@ -385,6 +389,18 @@ public class AtsBranchManager {
 
    public boolean isWorkingBranch(boolean includeArchived) throws OseeCoreException {
       return getWorkingBranch(includeArchived) != null;
+   }
+
+   public boolean isWorkingBranchEverCreated() throws OseeCoreException {
+      return getWorkingBranch(true) != null || getBranchesCommittedTo().size() > 0;
+   }
+
+   public boolean isWorkingBranchInWork() throws OseeCoreException {
+      return getWorkingBranch(false) != null;
+   }
+
+   public boolean isWorkingBranchArchived() throws OseeCoreException {
+      return (getWorkingBranch(true) != null && getWorkingBranch(true).isArchived()) || getBranchesCommittedTo().size() > 0;
    }
 
    public Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo() throws OseeCoreException {
