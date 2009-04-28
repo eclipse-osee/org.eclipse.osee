@@ -89,6 +89,7 @@ public class BranchConfigurationTest extends XNavigateItemAction {
          rd.log(getName() + "\n\n");
          try {
             testBranchViaVersions(rd);
+            rd.log("\n\n");
             testBranchViaTeamDefinition(rd);
          } catch (Exception ex) {
             rd.logError("Exception: " + ex.getLocalizedMessage());
@@ -307,6 +308,7 @@ public class BranchConfigurationTest extends XNavigateItemAction {
                (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
                      testType.name() + " Req Changes", AtsPlugin.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
+            SMAEditor.close(teamArt, false);
             teamArt.delete(transaction);
          }
          aArt.delete(transaction);
@@ -315,8 +317,17 @@ public class BranchConfigurationTest extends XNavigateItemAction {
       }
       transaction.execute();
 
+      // Delete VersionArtifacts
       transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      for (Artifact verArt : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
+         if (verArt.getDescriptiveName().contains(testType.name())) {
+            verArt.delete(transaction);
+         }
+      }
+      transaction.execute();
+
       // Delete Team Definitions
+      transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       try {
          Artifact art =
                ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
@@ -325,7 +336,10 @@ public class BranchConfigurationTest extends XNavigateItemAction {
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
+      transaction.execute();
+
       // Delete AIs
+      transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       try {
          Artifact art =
                ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
@@ -336,12 +350,6 @@ public class BranchConfigurationTest extends XNavigateItemAction {
          art.delete(transaction);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
-      }
-      // Delete VersionArtifacts
-      for (Artifact verArt : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
-         if (verArt.getDescriptiveName().contains(testType.name())) {
-            verArt.delete(transaction);
-         }
       }
       transaction.execute();
 

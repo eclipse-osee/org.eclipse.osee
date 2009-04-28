@@ -135,7 +135,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
-               false, true, false)));
+               false, false, false)));
 
          XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
          new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null);
