@@ -189,7 +189,7 @@ public class ArtifactPromptChange {
       }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
-      if (result == 0 || result == 1) {
+      if (result == 0) {
          SkynetTransaction transaction = !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch());
          for (Artifact sma : smas) {
             String value = ed.getEntry();
