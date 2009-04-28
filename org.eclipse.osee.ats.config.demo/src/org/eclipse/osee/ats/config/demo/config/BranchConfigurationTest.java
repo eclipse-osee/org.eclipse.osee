@@ -119,16 +119,11 @@ public class BranchConfigurationTest extends XNavigateItemAction {
 
       DemoDbUtil.sleep(2000);
 
-      // configure team def to use versions
-      rd.log("Configuring team def to use versions");
+      // configure version to use branch and allow create/commit
+      rd.log("Configuring version to use branch and allow create/commit");
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
                   TestType.BranchViaVersions.name(), AtsPlugin.getAtsBranch());
-      teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
-      teamDef.persistAttributes();
-
-      // configure version to use branch and allow create/commit
-      rd.log("Configuring version to use branch and allow create/commit");
       VersionArtifact verArtToTarget = null;
       for (VersionArtifact vArt : teamDef.getVersionsArtifacts()) {
          if (vArt.getDescriptiveName().contains("Ver1")) {
@@ -306,8 +301,8 @@ public class BranchConfigurationTest extends XNavigateItemAction {
    private void cleanupBranchTest(TestType testType, XResultData rd) throws Exception {
       String namespace = "org.branchTest." + testType.name().toLowerCase();
       rd.log("Cleanup from previous run of ATS for team " + namespace);
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          ActionArtifact aArt =
                (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
                      testType.name() + " Req Changes", AtsPlugin.getAtsBranch());
@@ -315,30 +310,42 @@ public class BranchConfigurationTest extends XNavigateItemAction {
             teamArt.delete(transaction);
          }
          aArt.delete(transaction);
-         transaction.execute();
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
+      transaction.execute();
 
+      transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      // Delete Team Definitions
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          Artifact art =
                ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
                      AtsPlugin.getAtsBranch());
          art.delete(transaction);
-         art =
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      // Delete AIs
+      try {
+         Artifact art =
                ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
                      AtsPlugin.getAtsBranch());
          for (Artifact childArt : art.getChildren()) {
             childArt.delete(transaction);
          }
          art.delete(transaction);
-         transaction.execute();
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
+      // Delete VersionArtifacts
+      for (Artifact verArt : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
+         if (verArt.getDescriptiveName().contains(testType.name())) {
+            verArt.delete(transaction);
+         }
+      }
+      transaction.execute();
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
          if (workArt.getDescriptiveName().startsWith(namespace)) {
