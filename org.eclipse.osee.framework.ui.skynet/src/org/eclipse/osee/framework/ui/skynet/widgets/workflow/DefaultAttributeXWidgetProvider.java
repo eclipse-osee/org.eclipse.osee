@@ -82,6 +82,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
          defaultData.setXWidgetName("XTextDam");
          defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+         defaultData.getXOptionHandler().add(XOption.NO_LABEL);
+         //         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {
          defaultData.setXWidgetName("XLabelDam");

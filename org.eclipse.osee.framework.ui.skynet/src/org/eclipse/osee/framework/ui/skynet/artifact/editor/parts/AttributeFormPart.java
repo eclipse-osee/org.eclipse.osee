@@ -39,10 +39,14 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.AbstractFormPart;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -61,23 +65,24 @@ public class AttributeFormPart extends AbstractFormPart {
    public void createContents(Composite parent) {
       final FormToolkit toolkit = getManagedForm().getToolkit();
       composite = toolkit.createComposite(parent, SWT.WRAP);
-      composite.setLayout(new GridLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
          for (AttributeType attributeType : AttributeTypeUtil.getTypesWithData(artifact)) {
-            if (false && attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-               //            createCollapsibleAttributeDataComposite(parent, attributeType);
+            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+               createAttributeTypeControlsInSection(parent, toolkit, attributeType, false);
             } else {
-               createAttributeTypeControls(composite, toolkit, artifact, attributeType);
+               createAttributeTypeControls(composite, toolkit, artifact, attributeType, true);
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
-      setAllLabelFonts(composite, getBoldLabelFont());
-      setGrabAllLayout(composite);
+      setLabelFonts(composite, getBoldLabelFont());
+      layoutControls(composite);
+      composite.layout();
 
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
          xWidget.addXModifiedListener(new XWidgetValidationListener());
@@ -114,44 +119,30 @@ public class AttributeFormPart extends AbstractFormPart {
       return defaultLabelFont;
    }
 
-   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType) {
-      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
-      internalComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
-      IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-      List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
-      try {
-         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
-         workPage.createBody(getManagedForm(), internalComposite, artifact, null, true);
-      } catch (OseeCoreException ex) {
-         toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
-      }
-      return internalComposite;
-   }
-
-   private void setAllLabelFonts(Control parent, Font font) {
+   private void setLabelFonts(Control parent, Font font) {
       if (parent instanceof Label) {
          ((Label) parent).setFont(font);
       }
       if (parent instanceof Composite) {
          Composite container = (Composite) parent;
          for (Control child : container.getChildren()) {
-            setAllLabelFonts(child, font);
+            setLabelFonts(child, font);
          }
       }
    }
 
-   private void setGrabAllLayout(Control parent) {
+   private void layoutControls(Control parent) {
       if ((parent instanceof Label)) {
          parent.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-      } else if (!(parent instanceof Button)) {
+      } else if (parent instanceof Button) {
+         parent.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
+      } else {
          XWidget xWidget = XWidgetUtility.asXWidget(parent);
          if (!(xWidget instanceof XSelectFromDialog<?>)) {
             if (xWidget instanceof XTextDam) {
                XTextDam dam = (XTextDam) xWidget;
                if (!dam.isEditable()) {
-                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, false, false));
+                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true));
                } else {
                   parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
                }
@@ -163,9 +154,61 @@ public class AttributeFormPart extends AbstractFormPart {
       if (parent instanceof Composite) {
          Composite container = (Composite) parent;
          for (Control child : container.getChildren()) {
-            setGrabAllLayout(child);
+            if (!(child instanceof Canvas)) {
+               layoutControls(child);
+            } else {
+               System.out.println("Skipped : " + ((Canvas) child).getToolTipText());
+            }
          }
       }
+   }
+
+   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean isEditable) {
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      internalComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+      IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+      List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+      try {
+         WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
+         workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
+      } catch (OseeCoreException ex) {
+         toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
+      }
+      return internalComposite;
+   }
+
+   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean isEditable) {
+      int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
+
+      ExpandableComposite expandable = toolkit.createExpandableComposite(parent, style);
+      expandable.setText(attributeType.getName());
+      //      section.setLayout(new GridLayout());
+      //      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+
+      Artifact artifact = editor.getEditorInput().getArtifact();
+
+      Composite composite = createAttributeTypeControls(expandable, toolkit, artifact, attributeType, isEditable);
+      //      composite.setLayout(new GridLayout());
+      //      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+
+      expandable.setClient(composite);
+
+      expandable.addExpansionListener(new IExpansionListener() {
+
+         @Override
+         public void expansionStateChanged(ExpansionEvent e) {
+            getManagedForm().getForm().reflow(true);
+         }
+
+         @Override
+         public void expansionStateChanging(ExpansionEvent e) {
+            getManagedForm().getForm().reflow(true);
+         }
+
+      });
+      toolkit.paintBordersFor(expandable);
    }
 
    private final class XWidgetValidationListener implements XModifiedListener {

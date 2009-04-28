@@ -54,8 +54,10 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle());
          composite.setLayout(new GridLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
          formText = toolkit.createFormText(composite, false);
          formText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
       }

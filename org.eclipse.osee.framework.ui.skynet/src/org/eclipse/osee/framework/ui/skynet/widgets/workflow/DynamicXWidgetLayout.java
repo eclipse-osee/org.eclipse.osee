@@ -78,15 +78,17 @@ public class DynamicXWidgetLayout {
       }
    }
 
+   private Composite createComposite(Composite parent, FormToolkit toolkit) {
+      return toolkit != null ? toolkit.createComposite(parent, SWT.WRAP) : new Composite(parent, SWT.NONE);
+   }
+
    public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       Composite attrComp = null;
 
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
-      if (toolkit != null)
-         attrComp = toolkit.createComposite(parent);
-      else
-         attrComp = new Composite(parent, SWT.NONE);
+      attrComp = createComposite(parent, toolkit);
+
       GridLayout layout = new GridLayout(1, false);
       layout.marginWidth = layout.marginHeight = 2;
       attrComp.setLayout(layout);
@@ -103,7 +105,7 @@ public class DynamicXWidgetLayout {
          Composite useComp = attrComp;
 
          if (xWidgetLayoutData.getBeginComposite() > 0) {
-            childComp = new Composite(attrComp, SWT.NONE);
+            childComp = createComposite(attrComp, toolkit);
             childComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false));
             childComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             if (toolkit != null) toolkit.adapt(childComp);
@@ -113,7 +115,7 @@ public class DynamicXWidgetLayout {
             useComp = childComp;
             if (xWidgetLayoutData.isEndComposite()) inChildComposite = false;
          } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
-            useComp = new Composite(attrComp, SWT.NONE);
+            useComp = createComposite(attrComp, toolkit);
             useComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             useComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             if (toolkit != null) toolkit.adapt(useComp);

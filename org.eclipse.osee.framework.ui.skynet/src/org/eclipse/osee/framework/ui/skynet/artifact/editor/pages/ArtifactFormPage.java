@@ -81,6 +81,7 @@ public class ArtifactFormPage extends FormPage {
       layout.marginWidth = 6;
       layout.horizontalSpacing = 20;
       form.getBody().setLayout(layout);
+      form.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
       updateTitle(form);
       updateImage(form);

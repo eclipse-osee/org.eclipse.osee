@@ -152,8 +152,8 @@ public class XWidgetFactory {
          xWidget = checkBox;
       } else if (xWidgetName.startsWith("XComboDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-            String values[] = new String[]{"1","2"};
-//                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            String values[] = new String[] {"1", "2"};
+            //                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
                xWidget = new XComboDam(name);
                XComboDam combo = new XComboDam(name);
@@ -244,6 +244,12 @@ public class XWidgetFactory {
 
       if (xWidget instanceof XText) {
          ((XText) xWidget).addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
+      }
+
+      if (xWidget != null) {
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_LABEL)) {
+            xWidget.setDisplayLabel(false);
+         }
       }
       return xWidget;
    }
