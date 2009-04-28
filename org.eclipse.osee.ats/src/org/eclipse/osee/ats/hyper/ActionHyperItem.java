@@ -59,7 +59,8 @@ public class ActionHyperItem extends HyperViewItem {
    public String getToolTip() {
       if (iHyperartifact.isDeleted()) return "";
       StringBuilder builder = new StringBuilder();
-      builder.append("Type: " + (iHyperartifact).getHyperType());
+      builder.append("Name: " + (iHyperartifact).getHyperName());
+      builder.append("\nType: " + (iHyperartifact).getHyperType());
       if (iHyperartifact instanceof IHyperArtifact) {
          if ((iHyperartifact).getHyperState() != null) builder.append("\nState: " + (iHyperartifact).getHyperState());
          if ((iHyperartifact).getHyperAssignee() != null) builder.append("\nAssignee: " + (iHyperartifact).getHyperAssignee());
