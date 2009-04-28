@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,9 +27,13 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
+import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,11 +45,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -58,13 +65,13 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Donald G. Dunne
  */
-public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
+public class BranchConfigurationTest extends XNavigateItemAction {
 
    public enum TestType {
       BranchViaTeamDef, BranchViaVersions, BranchViaParallelVersions
    }
 
-   public BranchConfigThroughTeamDefTest(XNavigateItem parent) {
+   public BranchConfigurationTest(XNavigateItem parent) {
       super(parent, "ATS Branch Config Test - TestDb or DemoDb");
    }
 
@@ -82,13 +89,14 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       return BranchManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
-   public void testBranchViaTeamDefinition_cleanup(XResultData rd) throws Exception {
-      rd.log("Cleanup from previous run of ATS for team org.branchTest.viaTeamDefs");
+   public void cleanupBranchTest(TestType testType, XResultData rd) throws Exception {
+      String namespace = "org.branchTest." + testType.name().toLowerCase();
+      rd.log("Cleanup from previous run of ATS for team " + namespace);
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          ActionArtifact aArt =
                (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
-                     TestType.BranchViaTeamDef.name() + " Req Changes", AtsPlugin.getAtsBranch());
+                     testType.name() + " Req Changes", AtsPlugin.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
             teamArt.delete(transaction);
          }
@@ -101,12 +109,12 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          Artifact art =
-               ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
-                     TestType.BranchViaTeamDef.name(), AtsPlugin.getAtsBranch());
+               ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
+                     AtsPlugin.getAtsBranch());
          art.delete(transaction);
          art =
-               ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME,
-                     TestType.BranchViaTeamDef.name(), AtsPlugin.getAtsBranch());
+               ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
+                     AtsPlugin.getAtsBranch());
          for (Artifact childArt : art.getChildren()) {
             childArt.delete(transaction);
          }
@@ -119,13 +127,13 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
-         if (workArt.getDescriptiveName().startsWith("org.branchTest.viaTeamDefs")) {
+         if (workArt.getDescriptiveName().startsWith(namespace)) {
             workArt.delete(transaction);
          }
       }
       for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
-         if (workArt.getDescriptiveName().startsWith("org.branchTest.viaTeamDefs")) {
+         if (workArt.getDescriptiveName().startsWith(namespace)) {
             workArt.delete(transaction);
          }
       }
@@ -135,13 +143,13 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
          // delete working branches
          for (Branch workingBranch : BranchManager.getBranches(BranchState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
-            if (workingBranch.getBranchName().contains(TestType.BranchViaTeamDef.name())) {
+            if (workingBranch.getBranchName().contains(testType.name())) {
                BranchManager.deleteBranch(workingBranch);
                DemoDbUtil.sleep(2000);
             }
          }
          // delete baseline branch
-         Branch branch = BranchManager.getKeyedBranch(TestType.BranchViaTeamDef.name());
+         Branch branch = BranchManager.getKeyedBranch(testType.name());
          if (branch != null) {
             BranchManager.deleteBranch(branch);
             DemoDbUtil.sleep(2000);
@@ -155,14 +163,14 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
    public void testBranchViaTeamDefinition(XResultData rd) throws Exception {
       rd.log("Running testBranchViaTeamDefinition...");
 
+      String namespace = "org.branchTest." + TestType.BranchViaTeamDef.name().toLowerCase();
       // Cleanup from previous run
-      testBranchViaTeamDefinition_cleanup(rd);
+      cleanupBranchTest(TestType.BranchViaTeamDef, rd);
 
       rd.log("Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
-      AtsConfig.configureAtsForDefaultTeam("org.branchTest.viaTeamDefs", TestType.BranchViaTeamDef.name(), null,
-            Arrays.asList(TestType.BranchViaTeamDef.name() + "- A1", TestType.BranchViaTeamDef.name() + "- A2"),
-            "org.branchTest.viaTeamDefs");
+      AtsConfig.configureAtsForDefaultTeam(namespace, TestType.BranchViaTeamDef.name(), null, Arrays.asList(
+            TestType.BranchViaTeamDef.name() + "- A1", TestType.BranchViaTeamDef.name() + "- A2"), namespace);
 
       DemoDbUtil.sleep(2000);
 
@@ -192,7 +200,7 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
 
       // setup workflow page to have create/commit branch widgets
       rd.log("Setup new workflow page to have create/commit branch widgets");
-      String implementPageId = "org.branchTest.viaTeamDefs.Implement";
+      String implementPageId = namespace + ".Implement";
       Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
       implementPageDef.addRelation(AtsRelation.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
@@ -220,8 +228,27 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       teamWf.persistAttributesAndRelations(transaction);
       transaction.execute();
 
+      SMAEditor.editArtifact(teamWf, true);
+
       // Verify XWorkingBranch and XCommitManger widgets exist in editor
-      rd.logError("TTD: Verify XWorkingBranch and XCommitManger widgets exist in editor");
+      rd.log("Verify XWorkingBranch and XCommitManger widgets exist in editor");
+      SMAEditor smaEditor = SMAEditor.getSmaEditor(teamWf);
+      if (smaEditor == null) {
+         rd.logError("Can't retrieve SMAEditor for workflow " + teamWf);
+         return;
+      }
+      Collection<XWidget> xWidgets =
+            smaEditor.getXWidgetsFromState(smaEditor.getSmaMgr().getStateMgr().getCurrentStateName(),
+                  XWorkingBranch.class);
+      if (xWidgets.size() == 1) {
+         rd.logError("Should be one XWorkingBranch widget in current state, found " + xWidgets.size());
+      }
+      xWidgets =
+            smaEditor.getXWidgetsFromState(smaEditor.getSmaMgr().getStateMgr().getCurrentStateName(),
+                  XCommitManager.class);
+      if (xWidgets.size() == 1) {
+         rd.logError("Should be 1 XCommitManager widget in current state, found " + xWidgets.size());
+      }
 
       // create branch
       rd.log("Creating working branch");
@@ -250,7 +277,13 @@ public class BranchConfigThroughTeamDefTest extends XNavigateItemAction {
       DemoDbUtil.sleep(2000);
 
       // test change report
-      rd.logError("TTD: Test change report results");
+      rd.log("Test change report results");
+      Collection<Artifact> newArts =
+            teamWf.getSmaMgr().getBranchMgr().getChangeDataFromEarliestTransactionId().getArtifacts(KindType.Artifact,
+                  ModificationType.NEW);
+      if (newArts.size() != 1) {
+         rd.logError("Should be 1 new artifact in change report, found " + newArts.size());
+      }
 
    }
 

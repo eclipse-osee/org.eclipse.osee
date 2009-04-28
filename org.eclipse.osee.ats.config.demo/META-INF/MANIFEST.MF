@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.plugin,
  org.junit,
- org.eclipse.osee.framework.core
+ org.eclipse.osee.framework.core,
+ org.eclipse.ui.forms;bundle-version="3.3.101"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,

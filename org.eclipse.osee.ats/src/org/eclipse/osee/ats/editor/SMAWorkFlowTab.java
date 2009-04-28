@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,6 @@ import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
-import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -608,20 +608,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public SMAWorkFlowSection getSectionForCurrentState() {
-      for (SMAWorkFlowSection section : sections) {
-         if (section.isCurrentState()) {
-            return section;
-         }
-      }
+
       return null;
    }
 
-   public XWorkingBranch getXworkingBranch() {
-      return getSectionForCurrentState().getXWorkingBranch();
-   }
-
-   public XCommitManager getXcommitBranch() {
-      return getSectionForCurrentState().getXCommitManager();
+   public List<XWidget> getXWidgetsFromState(String stateName, Class<?> clazz) {
+      for (SMAWorkFlowSection section : sections) {
+         if (section.getPage().getName().equals(stateName)) {
+            return section.getXWidgets(clazz);
+         }
+      }
+      return Collections.emptyList();
    }
 
 }

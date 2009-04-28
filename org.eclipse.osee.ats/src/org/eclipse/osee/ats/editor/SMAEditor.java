@@ -29,8 +29,6 @@ import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
-import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -69,6 +67,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.panels.DetailsBrowserComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -872,11 +871,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       this.taskComposite = taskComposite;
    }
 
-   public XWorkingBranch getXworkingBranch() {
-      return workFlowTab.getXworkingBranch();
-   }
-
-   public XCommitManager getXcommitManager() {
-      return workFlowTab.getXcommitBranch();
+   public List<XWidget> getXWidgetsFromState(String stateName, Class<?> clazz) {
+      return workFlowTab.getXWidgetsFromState(stateName, clazz);
    }
 }

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
-import org.eclipse.osee.ats.config.demo.config.BranchConfigThroughTeamDefTest;
+import org.eclipse.osee.ats.config.demo.config.BranchConfigurationTest;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
@@ -125,7 +125,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data");
       new PopulateDemoActions(demoItems);
-      new BranchConfigThroughTeamDefTest(demoItems);
+      new BranchConfigurationTest(demoItems);
 
       return items;
    }
