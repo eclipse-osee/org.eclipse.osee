@@ -11,22 +11,13 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
@@ -74,27 +65,8 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      }
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
-
-      List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new AttributeValueSearch(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(),
-            DepricatedOperator.EQUAL));
-      criteria.add(teamWorkflowSearch);
-      FromArtifactsSearch criteriaSearch = new FromArtifactsSearch(criteria, true);
-
-      List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(criteriaSearch, AtsRelation.ActionToWorkflow_Action));
-
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(actionCriteria, true, AtsPlugin.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return ArtifactQuery.getArtifactsFromTypeAndAttribute(TeamWorkFlowArtifact.ARTIFACT_NAME,
+            ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(), AtsPlugin.getAtsBranch());
    }
 
    @Override
