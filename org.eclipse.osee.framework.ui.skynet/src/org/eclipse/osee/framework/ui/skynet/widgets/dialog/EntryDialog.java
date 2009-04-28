@@ -139,6 +139,7 @@ public class EntryDialog extends MessageDialog {
          text.setFont(font);
       }
       text.createWidgets(comp, 2);
+      text.setFocus();
       if (!entryText.equals("")) text.set(entryText);
 
       ModifyListener modifyListener = new ModifyListener() {
