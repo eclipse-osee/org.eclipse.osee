@@ -53,8 +53,12 @@ public class StackedViewer extends Composite {
       compositeMap.put(DEFAULT_CONTROL, createDefault(parent));
    }
 
-   public void addControl(String key, Control control) {
-      compositeMap.put(key, control);
+   public Control addControl(String key, Control control) {
+      return compositeMap.put(key, control);
+   }
+
+   public Control removeControl(String key) {
+      return compositeMap.remove(key);
    }
 
    private Composite createDefault(Composite parent) {
@@ -71,5 +75,19 @@ public class StackedViewer extends Composite {
    public void displayArea(String key) {
       stackLayout.topControl = compositeMap.get(key);
       stackComposite.layout();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.swt.widgets.Widget#dispose()
+    */
+   @Override
+   public void dispose() {
+      super.dispose();
+      for (Control control : compositeMap.values()) {
+         if (control != null && !control.isDisposed()) {
+            control.dispose();
+         }
+      }
+      compositeMap.clear();
    }
 }
