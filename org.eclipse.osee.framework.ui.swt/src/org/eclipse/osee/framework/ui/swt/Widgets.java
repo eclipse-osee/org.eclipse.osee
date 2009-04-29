@@ -820,6 +820,6 @@ public final class Widgets {
     * @return <b>true</b> if widget is not null and is not disposed
     */
    public static boolean isAccessible(Widget widget) {
-      return widget != null && widget.isDisposed();
+      return widget != null && !widget.isDisposed();
    }
 }

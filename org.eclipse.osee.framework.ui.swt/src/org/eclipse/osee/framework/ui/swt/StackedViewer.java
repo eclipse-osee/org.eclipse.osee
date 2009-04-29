@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -64,10 +65,17 @@ public class StackedViewer extends Composite {
    }
 
    private Composite createDefault(Composite parent) {
-      Label label = new Label(parent, SWT.NONE);
+      Composite composite = new Composite(parent, SWT.NONE);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+
+      Label label = new Label(composite, SWT.NONE);
       label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       label.setText("DEFAULT LAYER");
-      return label.getShell();
+      label.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+
+      return composite;
    }
 
    public Composite getStackComposite() {
@@ -75,7 +83,11 @@ public class StackedViewer extends Composite {
    }
 
    public void displayArea(String key) {
-      stackLayout.topControl = compositeMap.get(key);
+      Control control = compositeMap.get(key);
+      if (control == null) {
+         control = compositeMap.get(DEFAULT_CONTROL);
+      }
+      stackLayout.topControl = control;
       stackComposite.layout();
    }
 

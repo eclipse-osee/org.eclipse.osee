@@ -44,7 +44,6 @@ public abstract class XStackedWidget extends XLabel {
    private int minPage;
    private int maxPage;
    private int currentPage;
-   private int totalPages;
 
    public XStackedWidget(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
@@ -52,7 +51,6 @@ public abstract class XStackedWidget extends XLabel {
       minPage = 0;
       maxPage = 0;
       currentPage = 0;
-      totalPages = 0;
    }
 
    public void dispose() {
@@ -128,6 +126,9 @@ public abstract class XStackedWidget extends XLabel {
       gd.minimumWidth = 60;
       stackedViewer.setLayoutData(gd);
       stackedViewer.displayArea(StackedViewer.DEFAULT_CONTROL);
+      stackedViewer.layout();
+      stackedViewer.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+      container.layout();
    }
 
    private void createToolBar(Composite parent) {
@@ -188,6 +189,8 @@ public abstract class XStackedWidget extends XLabel {
    public void setDisplay(int index) {
       stackedViewer.displayArea(String.valueOf(index));
       setCurrentPage(index);
+      container.layout();
+      updateCurrentPageLabel();
    }
 
    protected abstract void createPage(String id, Composite parent);
@@ -200,41 +203,24 @@ public abstract class XStackedWidget extends XLabel {
       return Widgets.isAccessible(stackedViewer) ? stackedViewer.getNumberOfControls() : 0;
    }
 
-   private void setTotalPages(int index) {
-      //      this.totalPages = index;
-   }
-
    private void setCurrentPage(int index) {
-      if (index >= 0 && index < getTotalPages()) {
-         this.currentPage = index;
-         updateCurrentPageLabel();
-      }
+      this.currentPage = index;
+      updateCurrentPageLabel();
    }
 
    private int getNextPageIndex() {
-      if (getCurrentPageIndex() + 1 < getTotalPages()) {
+      if (getCurrentPageIndex() + 1 <= getTotalPages()) {
          return getCurrentPageIndex() + 1;
       } else {
-         return 0;
+         return 1;
       }
    }
 
    private int getPreviousPageIndex() {
-      if (getCurrentPageIndex() - 1 >= 0) {
+      if (getCurrentPageIndex() - 1 >= 1) {
          return getCurrentPageIndex() - 1;
       } else {
          return getTotalPages();
-      }
-   }
-
-   private void disposeControl(Control control) {
-      if (control != null && !control.isDisposed()) {
-         if (control instanceof Composite) {
-            for (Control child : ((Composite) control).getChildren()) {
-               disposeControl(child);
-            }
-         }
-         control.dispose();
       }
    }
 
@@ -244,9 +230,11 @@ public abstract class XStackedWidget extends XLabel {
       composite.setLayout(ALayout.getZeroMarginLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      String id = String.valueOf(getTotalPages());
+      int lastPage = getTotalPages() + 1;
+      String id = String.valueOf(lastPage);
       createPage(id, composite);
       stackedViewer.addControl(id, composite);
+      setDisplay(lastPage);
    }
 
    private void handlePageDeletion() {
@@ -257,7 +245,7 @@ public abstract class XStackedWidget extends XLabel {
       setDisplay(previous);
 
       Control control = stackedViewer.removeControl(String.valueOf(current));
-      disposeControl(control);
+      Widgets.disposeWidget(control);
    }
 
    private final class Back extends Action {
@@ -268,18 +256,8 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         if (isEnabled()) {
-            int previousPage = getPreviousPageIndex();
-            setDisplay(previousPage);
-         }
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.action.Action#isEnabled()
-       */
-      @Override
-      public boolean isEnabled() {
-         return getCurrentPageIndex() != 0;
+         int previousPage = getPreviousPageIndex();
+         setDisplay(previousPage);
       }
    }
 
@@ -291,18 +269,8 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         if (isEnabled()) {
-            int nextPage = getNextPageIndex();
-            setDisplay(nextPage);
-         }
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.action.Action#isEnabled()
-       */
-      @Override
-      public boolean isEnabled() {
-         return getCurrentPageIndex() != getTotalPages();
+         int nextPage = getNextPageIndex();
+         setDisplay(nextPage);
       }
    }
 
@@ -326,17 +294,9 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         if (isEnabled()) {
+         if (getTotalPages() != 0) {
             handlePageDeletion();
          }
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.action.Action#isEnabled()
-       */
-      @Override
-      public boolean isEnabled() {
-         return getTotalPages() == 0;
       }
    }
 
