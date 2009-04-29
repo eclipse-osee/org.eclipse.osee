@@ -153,7 +153,6 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
 
    private File selectFile() {
       FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SINGLE);
-      dialog.setFilterExtensions(new String[] {"*.xml"});
       dialog.setFilterPath(AWorkspace.getWorkspacePath());
 
       String path = dialog.open();
