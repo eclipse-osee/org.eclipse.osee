@@ -746,6 +746,8 @@ public class AtsBranchManager {
                                     "Override State Validation",
                                     tempResult.getText() + "\n\nYou are set as Admin, OVERRIDE this?")) {
                                  adminOverride = true;
+                              } else {
+                                 adminOverride = false;
                               }
                            }
                         }, true);
