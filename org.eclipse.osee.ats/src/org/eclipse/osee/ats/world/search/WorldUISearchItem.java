@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -24,15 +25,27 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 public abstract class WorldUISearchItem extends WorldSearchItem {
 
    public WorldUISearchItem(String name) {
-      this(name, LoadView.WorldEditor);
+      this(name, LoadView.WorldEditor, null);
+   }
+
+   public WorldUISearchItem(String name, Image image) {
+      this(name, LoadView.WorldEditor, image);
    }
 
    public WorldUISearchItem(String name, LoadView loadView) {
-      super(name, loadView);
+      this(name, loadView, null);
    }
 
-   public WorldUISearchItem(WorldUISearchItem WorldUISearchItem) {
-      super(WorldUISearchItem);
+   public WorldUISearchItem(String name, LoadView loadView, Image image) {
+      super(name, loadView, image);
+   }
+
+   public WorldUISearchItem(WorldUISearchItem worldUISearchItem) {
+      this(worldUISearchItem, null);
+   }
+
+   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, Image image) {
+      super(worldUISearchItem, image);
    }
 
    /**

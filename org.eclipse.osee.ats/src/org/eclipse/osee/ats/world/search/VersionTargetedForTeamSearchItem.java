@@ -41,14 +41,15 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    }
 
    public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
-      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView);
+      super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
+            AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
    }
 
    public VersionTargetedForTeamSearchItem(VersionTargetedForTeamSearchItem versionTargetedForTeamSearchItem) {
-      super(versionTargetedForTeamSearchItem);
+      super(versionTargetedForTeamSearchItem, AtsPlugin.getInstance().getImage("version.gif"));
       this.versionArt = versionTargetedForTeamSearchItem.versionArt;
       this.returnAction = versionTargetedForTeamSearchItem.returnAction;
       this.teamDef = versionTargetedForTeamSearchItem.teamDef;

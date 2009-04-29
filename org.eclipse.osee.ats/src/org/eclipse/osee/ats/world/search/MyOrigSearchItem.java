@@ -33,12 +33,12 @@ public class MyOrigSearchItem extends UserSearchItem {
    };
 
    public MyOrigSearchItem(String name, User user, OriginatedState originatedState) {
-      super(name, user);
+      super(name, user, AtsPlugin.getInstance().getImage("user.gif"));
       this.originatedState = originatedState;
    }
 
    public MyOrigSearchItem(MyOrigSearchItem myOrigSearchItem) {
-      super(myOrigSearchItem);
+      super(myOrigSearchItem, null);
       this.originatedState = myOrigSearchItem.originatedState;
    }
 

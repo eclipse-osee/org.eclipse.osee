@@ -39,7 +39,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
     * @param parent
     */
    public UpdateAssigneesRelations(XNavigateItem parent) {
-      super(parent, "Update Assignees Relations");
+      super(parent, "Update Assignees Relations", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

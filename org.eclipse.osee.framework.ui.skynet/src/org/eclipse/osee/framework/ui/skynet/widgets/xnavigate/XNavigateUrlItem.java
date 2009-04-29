@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
@@ -37,7 +38,11 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @param external true to open in system browser; false to open inside Eclipse
     */
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external) {
-      super(parent, name);
+      this(parent, name, url, external, null);
+   }
+
+   public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external, Image image) {
+      super(parent, name, image);
       this.url = url;
       this.external = external;
    }

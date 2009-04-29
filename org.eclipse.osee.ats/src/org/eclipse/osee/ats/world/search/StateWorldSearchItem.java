@@ -36,7 +36,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public StateWorldSearchItem(StateWorldSearchItem stateWorldSearchItem) {
-      super(stateWorldSearchItem);
+      super(stateWorldSearchItem, AtsPlugin.getInstance().getImage("globe.gif"));
       this.stateClass = stateWorldSearchItem.stateClass;
    }
 

@@ -49,7 +49,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private final Collection<String> actionItemNames;
 
    public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean showAction, boolean recurseChildren) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
       this.actionItemNames = actionItemNames;
       this.showFinished = showFinished;
       this.selectedShowFinished = showFinished; // Set as default in case UI is not used
@@ -60,7 +60,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean showAction, boolean recurseChildren) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
       this.actionItemNames = null;
       this.actionItems = actionItems;
       this.showFinished = showFinished;
@@ -69,7 +69,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public ActionableItemWorldSearchItem(ActionableItemWorldSearchItem item) {
-      super(item);
+      super(item, AtsPlugin.getInstance().getImage("AI.gif"));
       this.actionItemNames = item.actionItemNames;
       this.actionItems = item.actionItems;
       this.showFinished = item.showFinished;

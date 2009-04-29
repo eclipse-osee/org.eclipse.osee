@@ -50,11 +50,11 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    private XCheckBox includeCompletedCancelledCheckbox;
 
    public TeamWorkflowSearchWorkflowSearchItem() {
-      super("Team Workflow Search");
+      super("Team Workflow Search", AtsPlugin.getInstance().getImage("workflow.gif"));
    }
 
    public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) {
-      super(editTeamWorkflowSearchItem);
+      super(editTeamWorkflowSearchItem, AtsPlugin.getInstance().getImage("workflow.gif"));
    }
 
    /* (non-Javadoc)

@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -56,14 +57,13 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class ValidateAtsDatabase extends XNavigateItemAction {
+public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private final boolean fixAssignees = true;
    private final boolean fixAttributeValues = true;
@@ -78,7 +78,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    }
 
    public ValidateAtsDatabase(String name, XNavigateItem parent) {
-      super(parent, name);
+      super(parent, name, AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -27,10 +28,10 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private Artifact group;
    private Artifact selectedGroup;
    private final String groupName;
-   private Branch branch;
+   private final Branch branch;
 
    public GroupWorldSearchItem(String displayName, String groupName, Branch branch) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("group.gif"));
       this.groupName = groupName;
       this.branch = branch;
    }
@@ -40,7 +41,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem, int toDifferentiateFromBranch) {
-      super(groupWorldSearchItem);
+      super(groupWorldSearchItem, AtsPlugin.getInstance().getImage("group.gif"));
       this.group = groupWorldSearchItem.group;
       this.groupName = groupWorldSearchItem.groupName;
       this.selectedGroup = groupWorldSearchItem.selectedGroup;
@@ -63,8 +64,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public void getProduct() throws OseeCoreException {
       if (groupName == null) return;
-      if (group == null && branch != null) group =
-            UniversalGroup.getGroups(groupName, branch).iterator().next();
+      if (group == null && branch != null) group = UniversalGroup.getGroups(groupName, branch).iterator().next();
       if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 

@@ -11,10 +11,12 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -25,17 +27,22 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    protected final User user;
    protected User selectedUser;
 
-   public UserSearchItem(String name) {
-      this(name, null);
-   }
-
    public UserSearchItem(String name, User user) {
       super(name);
       this.user = user;
    }
 
+   public UserSearchItem(String name, User user, Image image) {
+      super(name, image);
+      this.user = user;
+   }
+
    public UserSearchItem(UserSearchItem userSearchItem) {
-      super(userSearchItem);
+      this(userSearchItem, null);
+   }
+
+   public UserSearchItem(UserSearchItem userSearchItem, Image image) {
+      super(userSearchItem, image);
       this.user = userSearchItem.user;
       this.selectedUser = userSearchItem.selectedUser;
    }
@@ -136,6 +143,24 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       } catch (OseeCoreException ex) {
          return 0;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
+    */
+   @Override
+   public WorldSearchItem copy() {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#getImage()
+    */
+   @Override
+   public Image getImage() {
+      Image image = super.getImage();
+      if (image != null) return image;
+      return AtsPlugin.getInstance().getImage("user.gif");
    }
 
 }

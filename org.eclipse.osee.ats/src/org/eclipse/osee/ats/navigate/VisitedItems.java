@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -43,7 +44,7 @@ public class VisitedItems extends XNavigateItemAction {
     * @param parent
     */
    public VisitedItems(XNavigateItem parent) {
-      super(parent, "My Recently Visited");
+      super(parent, "My Recently Visited", AtsPlugin.getInstance().getImage("globe.gif"));
    }
 
    /*

@@ -28,17 +28,25 @@ public class XNavigateItemAction extends XNavigateItem {
    private boolean promptFirst = false;
 
    public XNavigateItemAction(XNavigateItem parent, String name) {
-      this(parent, name, false);
+      this(parent, name, null);
    }
 
-   public XNavigateItemAction(XNavigateItem parent, String name, boolean promptFirst) {
-      super(parent, name);
+   public XNavigateItemAction(XNavigateItem parent, String name, Image image) {
+      this(parent, name, false, image);
+   }
+
+   public XNavigateItemAction(XNavigateItem parent, String name, boolean promptFirst, Image image) {
+      super(parent, name, image);
       this.action = null;
       this.promptFirst = promptFirst;
    }
 
    public XNavigateItemAction(XNavigateItem parent, Action action) {
       this(parent, action, null, false);
+   }
+
+   public XNavigateItemAction(XNavigateItem parent, Action action, Image image) {
+      this(parent, action, image, false);
    }
 
    public XNavigateItemAction(XNavigateItem parent, Action action, Image image, boolean promptFirst) {

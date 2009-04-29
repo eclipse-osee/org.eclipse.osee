@@ -82,7 +82,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @param parent
     */
    public ValidateChangeReports(XNavigateItem parent) {
-      super(parent, "Validate Change Reports");
+      super(parent, "Validate Change Reports", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

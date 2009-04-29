@@ -47,7 +47,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public OpenChangeReportByIdItem(XNavigateItem parent) {
-      super(parent, "Open Change Report by ID");
+      super(parent, "Open Change Report by ID", AtsPlugin.getInstance().getImage("openId.gif"));
    }
 
    /*

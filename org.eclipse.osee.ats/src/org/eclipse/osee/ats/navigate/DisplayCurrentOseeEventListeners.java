@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,7 +32,7 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
     * @param parent
     */
    public DisplayCurrentOseeEventListeners(XNavigateItem parent) {
-      super(parent, "Display Current OSEE Event Listeners");
+      super(parent, "Display Current OSEE Event Listeners", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

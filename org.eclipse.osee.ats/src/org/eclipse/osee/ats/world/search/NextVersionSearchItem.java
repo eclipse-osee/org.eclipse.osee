@@ -43,12 +43,13 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
-      super(name != null ? name : "Workflows Targeted-For Next Version", loadView);
+      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, AtsPlugin.getInstance().getImage(
+            "version.gif"));
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
    public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
-      super(nextVersionSearchItem);
+      super(nextVersionSearchItem, AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
       this.selectedTeamDef = nextVersionSearchItem.selectedTeamDef;
    }

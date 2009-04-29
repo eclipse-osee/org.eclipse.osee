@@ -40,23 +40,23 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GenerateFullVersionReportItem extends XNavigateItemAction {
 
-   private TeamDefinitionArtifact teamDef;
+   private final TeamDefinitionArtifact teamDef;
    private final String teamDefName;
 
    public GenerateFullVersionReportItem(XNavigateItem parent) {
-      super(parent, "Generate Full Version Report");
+      super(parent, "Generate Full Version Report", AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDefName = null;
       this.teamDef = null;
    }
 
    public GenerateFullVersionReportItem(XNavigateItem parent, TeamDefinitionArtifact teamDef) {
-      super(parent, "Generate Full Version Report");
+      super(parent, "Generate Full Version Report", AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDefName = null;
       this.teamDef = teamDef;
    }
 
    public GenerateFullVersionReportItem(XNavigateItem parent, String teamDefName) {
-      super(parent, "Generate Full Version Report");
+      super(parent, "Generate Full Version Report", AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }

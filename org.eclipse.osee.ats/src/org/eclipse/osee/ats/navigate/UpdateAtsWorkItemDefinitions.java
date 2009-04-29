@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -30,7 +31,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
     * @param parent
     */
    public UpdateAtsWorkItemDefinitions(XNavigateItem parent) {
-      super(parent, "Update Ats WorkItemDefinitions");
+      super(parent, "Update Ats WorkItemDefinitions", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -36,27 +37,22 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    private final TeamDefinitionArtifact teamDef;
    private TeamDefinitionArtifact selectedTeamDef;
 
-   public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName) {
-      this("Show Team Versions", parent, teamDefName);
+   public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName, Image image) {
+      this("Show Team Versions", parent, teamDefName, image);
    }
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, String teamDefName) {
-      super(parent, name);
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, String teamDefName, Image image) {
+      super(parent, name, image);
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }
 
-   public MassEditTeamVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDef) {
-      this("Show Team Versions", parent, teamDef);
+   public MassEditTeamVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, Image image) {
+      this("Show Team Versions", parent, teamDef, image);
    }
 
-   /**
-    * @param name
-    * @param parent
-    * @param teamDef Team Definition Artifact that is related to versions or null for popup selection
-    */
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, TeamDefinitionArtifact teamDef) {
-      super(parent, name);
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, TeamDefinitionArtifact teamDef, Image image) {
+      super(parent, name, image);
       this.teamDef = teamDef;
       this.teamDefName = null;
    }

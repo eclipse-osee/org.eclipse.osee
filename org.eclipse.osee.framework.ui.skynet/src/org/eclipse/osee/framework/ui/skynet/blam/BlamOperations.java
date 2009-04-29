@@ -72,7 +72,8 @@ public class BlamOperations {
 
    public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
-      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
+      XNavigateItem blamOperationItems =
+            new XNavigateItem(null, "Blam Operations", SkynetGuiPlugin.getInstance().getImage("blam.gif"));
       for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
 
          // Create categories first (so can have them up top)
@@ -110,7 +111,8 @@ public class BlamOperations {
       // Create new folder category
       if (thisCategoryItem == null) {
          // Add to parentItem
-         thisCategoryItem = new XNavigateItem(parentItem, firstElement);
+         thisCategoryItem =
+               new XNavigateItem(parentItem, firstElement, SkynetGuiPlugin.getInstance().getImage("folder.gif"));
          String catName = "";
          for (int x = 0; x <= index; x++) {
             if (!catName.equals("")) {

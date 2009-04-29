@@ -43,7 +43,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public CreateNewVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
-      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + " Version");
+      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + " Version",
+            AtsPlugin.getInstance().getImage("version.gif"));
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
@@ -103,10 +104,10 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * 
     * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
     */
-   private void createNewVersionItemTx( SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, String newVer) throws OseeCoreException {
+   private void createNewVersionItemTx(SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, String newVer) throws OseeCoreException {
       VersionArtifact ver =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), newVer);
+            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(),
+                  newVer);
       teamDefHoldingVersions.addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
       ver.persistAttributesAndRelations(transaction);
       ArtifactEditor.editArtifact(ver);

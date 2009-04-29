@@ -56,7 +56,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final ReleasedOption releasedOption;
 
    public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("workflow.gif"));
       this.versionArt = versionArt;
       this.userArt = userArt;
       if (teamDefNames != null) {
@@ -72,7 +72,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("workflow.gif"));
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.recurseChildren = recurseChildren;
@@ -85,7 +85,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public TeamWorldSearchItem(TeamWorldSearchItem teamWorldUISearchItem) {
-      super(teamWorldUISearchItem);
+      super(teamWorldUISearchItem, AtsPlugin.getInstance().getImage("workflow.gif"));
       this.versionArt = null;
       this.userArt = null;
       this.releasedOption = null;

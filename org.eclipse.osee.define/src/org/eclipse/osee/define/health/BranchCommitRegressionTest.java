@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -37,7 +38,7 @@ public class BranchCommitRegressionTest extends XNavigateItemAction {
     * @param parent
     */
    public BranchCommitRegressionTest(XNavigateItem parent) {
-      super(parent, NAME);
+      super(parent, NAME, SkynetGuiPlugin.getInstance().getImage("admin.gif"));
    }
 
    public BranchCommitRegressionTest() {

@@ -24,12 +24,12 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
    private final String artifactTypeName;
 
    public ArtifactTypeSearchItem(String name, String artifactTypeName) {
-      super(name);
+      super(name, AtsPlugin.getInstance().getImage("flashlight.gif"));
       this.artifactTypeName = artifactTypeName;
    }
 
    public ArtifactTypeSearchItem(ArtifactTypeSearchItem artifactTypeSearchItem) {
-      super(artifactTypeSearchItem);
+      super(artifactTypeSearchItem, AtsPlugin.getInstance().getImage("flashlight.gif"));
       this.artifactTypeName = artifactTypeSearchItem.artifactTypeName;
    }
 

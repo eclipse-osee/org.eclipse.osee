@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -29,24 +30,29 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    /**
     * @param name
-    */
-   public WorldEditorParameterSearchItem(String name) {
-      super(name);
-   }
-
-   /**
-    * @param name
     * @param loadView
     */
+   public WorldEditorParameterSearchItem(String name, Image image) {
+      super(name, LoadView.WorldEditor, image);
+   }
+
    public WorldEditorParameterSearchItem(String name, LoadView loadView) {
-      super(name, loadView);
+      this(name, loadView, null);
+   }
+
+   public WorldEditorParameterSearchItem(String name, LoadView loadView, Image image) {
+      super(name, loadView, image);
    }
 
    /**
     * @param worldSearchItem
     */
    public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
-      super(worldSearchItem);
+      this(worldSearchItem, null);
+   }
+
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, Image image) {
+      super(worldSearchItem, image);
    }
 
    public abstract String getParameterXWidgetXml() throws OseeCoreException;

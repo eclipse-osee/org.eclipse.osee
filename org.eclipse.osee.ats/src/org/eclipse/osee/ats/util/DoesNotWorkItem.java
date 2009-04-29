@@ -48,7 +48,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - ??");
+      super(parent, "Does Not Work - ??", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

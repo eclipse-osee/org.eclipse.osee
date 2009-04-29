@@ -48,7 +48,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    private final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
 
    public GenerateReviewParticipationReport(XNavigateItem parent) {
-      super(parent, "Generate Review Participation Report");
+      super(parent, "Generate Review Participation Report", AtsPlugin.getInstance().getImage("report.gif"));
    }
 
    @Override

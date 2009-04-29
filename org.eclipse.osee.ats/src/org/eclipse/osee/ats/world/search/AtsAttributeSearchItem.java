@@ -37,7 +37,7 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
    private final String attributeName;
 
    public AtsAttributeSearchItem(String searchName, String attributeName, String searchStr) {
-      super(searchName);
+      super(searchName, AtsPlugin.getInstance().getImage("flashlight.gif"));
       this.attributeName = attributeName;
       this.searchStr = searchStr;
    }
@@ -51,7 +51,7 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
    }
 
    public AtsAttributeSearchItem(AtsAttributeSearchItem atsAttributeSearchItem) {
-      super(atsAttributeSearchItem);
+      super(atsAttributeSearchItem, AtsPlugin.getInstance().getImage("flashlight.gif"));
       this.searchStr = atsAttributeSearchItem.searchStr;
       this.attributeName = atsAttributeSearchItem.attributeName;
    }

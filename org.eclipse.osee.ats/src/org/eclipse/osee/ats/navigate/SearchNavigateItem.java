@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +26,7 @@ public class SearchNavigateItem extends XNavigateItem {
    /**
     * @param parent
     * @param wsi
-    * @throws OseeCoreException 
+    * @throws OseeCoreException
     */
    public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) throws OseeCoreException {
       super(parent, wsi.getName());
@@ -33,6 +35,16 @@ public class SearchNavigateItem extends XNavigateItem {
 
    public WorldSearchItem getWorldSearchItem() {
       return wsi;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#getImage()
+    */
+   @Override
+   public Image getImage() {
+      Image image = wsi.getImage();
+      if (image != null) return image;
+      return AtsPlugin.getInstance().getImage("globe.gif");
    }
 
 }

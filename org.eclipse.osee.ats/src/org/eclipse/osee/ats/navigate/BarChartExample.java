@@ -35,6 +35,7 @@ import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.layout.Plot;
 import org.eclipse.birt.chart.model.type.BarSeries;
 import org.eclipse.birt.chart.model.type.impl.BarSeriesImpl;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -53,7 +54,7 @@ public class BarChartExample extends XNavigateItemAction {
     * @param action
     */
    public BarChartExample(XNavigateItem parent) {
-      super(parent, "Bar Chart Example");
+      super(parent, "Bar Chart Example", AtsPlugin.getInstance().getImage("report.gif"));
    }
 
    /* (non-Javadoc)

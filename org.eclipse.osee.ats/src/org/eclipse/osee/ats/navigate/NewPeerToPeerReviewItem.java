@@ -37,7 +37,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
     * @param parent
     */
    public NewPeerToPeerReviewItem(XNavigateItem parent) {
-      super(parent, "New Stand-alone Peer To Peer Review");
+      super(parent, "New Stand-alone Peer To Peer Review", AtsPlugin.getInstance().getImage("R.gif"));
    }
 
    /*

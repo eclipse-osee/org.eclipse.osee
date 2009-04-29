@@ -51,7 +51,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
     * @param parent
     */
    public ArtifactImpactToActionSearchItem(XNavigateItem parent) {
-      super(parent, TITLE);
+      super(parent, TITLE, AtsPlugin.getInstance().getImage("flashlight.gif"));
    }
 
    /*
@@ -62,9 +62,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       EntryDialogWithBranchSelect ed =
-            new EntryDialogWithBranchSelect(
-                  getName(),
-                  "Enter Artifact Name (or string) to search (no wildcards)");
+            new EntryDialogWithBranchSelect(getName(), "Enter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry(), ed.getBranch());
          job.setUser(true);

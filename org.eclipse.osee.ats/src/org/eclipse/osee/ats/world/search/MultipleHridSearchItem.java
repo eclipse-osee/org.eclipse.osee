@@ -47,7 +47,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    private Branch branch;
 
    public MultipleHridSearchItem(String name) {
-      super(name);
+      super(name, AtsPlugin.getInstance().getImage("openId.gif"));
    }
 
    public MultipleHridSearchItem() {
@@ -55,7 +55,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    }
 
    public MultipleHridSearchItem(MultipleHridSearchItem multipleHridSearchItem) {
-      super(multipleHridSearchItem);
+      super(multipleHridSearchItem, AtsPlugin.getInstance().getImage("openId.gif"));
       this.enteredIds = multipleHridSearchItem.enteredIds;
    }
 
@@ -91,8 +91,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
       // This does artId search
       if (includeArtIds && branch != null) {
-         for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-               branch, false)) {
+         for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds), branch, false)) {
             artifacts.add(art);
          }
       }
@@ -146,7 +145,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          enteredIds = ed.getEntry();
          if (ed instanceof EntryCheckDialog) {
             includeArtIds = ((EntryCheckDialog) ed).isChecked();
-            if (includeArtIds){
+            if (includeArtIds) {
                branch = BranchSelectionDialog.getBranchFromUser();
             }
          }

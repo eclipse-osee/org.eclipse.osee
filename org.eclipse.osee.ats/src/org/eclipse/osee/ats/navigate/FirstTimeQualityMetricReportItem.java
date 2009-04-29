@@ -51,7 +51,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    private final String teamDefName;
 
    public FirstTimeQualityMetricReportItem(XNavigateItem parent, String name, String teamDefName) {
-      super(parent, name);
+      super(parent, name, AtsPlugin.getInstance().getImage("report.gif"));
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }

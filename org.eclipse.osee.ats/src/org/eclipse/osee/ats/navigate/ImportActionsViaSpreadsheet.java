@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.Import.ActionImportWizard;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -28,7 +29,7 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
     * @param parent
     */
    public ImportActionsViaSpreadsheet(XNavigateItem parent) {
-      super(parent, "Import Actions Via Spreadsheet");
+      super(parent, "Import Actions Via Spreadsheet", AtsPlugin.getInstance().getImage("import.gif"));
    }
 
    /*

@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -97,10 +98,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
-         items.add(new XNavigateItemAction(null, new NewAction()));
+         items.add(new XNavigateItemAction(null, new NewAction(), AtsPlugin.getInstance().getImage("newAction.gif")));
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
-         XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
+         XNavigateItem otherItems = new XNavigateItemFolder(null, "Other My Searches");
          new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", user));
          new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork", user,
                MyOrigSearchItem.OriginatedState.InWork));
@@ -110,7 +111,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("My Reviews - All", user, ReviewState.All));
          items.add(otherItems);
 
-         otherItems = new XNavigateItem(null, "Other User Searches");
+         otherItems = new XNavigateItemFolder(null, "Other User Searches");
          new SearchNavigateItem(otherItems, new MyWorldSearchItem("User's World"));
          new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - InWork", null,
                MyOrigSearchItem.OriginatedState.InWork));
@@ -137,8 +138,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
                false, false, false)));
 
-         XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
-         new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null);
+         XNavigateItem releaseItems =
+               new XNavigateItem(null, "Versions", AtsPlugin.getInstance().getImage("version.gif"));
+         new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
+               AtsPlugin.getInstance().getImage("version.gif"));
          new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
                LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
@@ -150,7 +153,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          addExtensionPointItems(items);
 
-         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews");
+         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsPlugin.getInstance().getImage("R.gif"));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s", DecisionReviewArtifact.ARTIFACT_NAME, false,
                false));
@@ -167,7 +170,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);
 
-         XNavigateItem stateItems = new XNavigateItem(null, "States");
+         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsPlugin.getInstance().getImage("globe.gif"));
          new SearchNavigateItem(stateItems, new StateWorldSearchItem());
          new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
          items.add(stateItems);
@@ -179,14 +182,15 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem("Search ATS Titles", "Name", null)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
-         XNavigateItem reportItems = new XNavigateItem(null, "Reports");
+         XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsPlugin.getInstance().getImage("report.gif"));
          new FirstTimeQualityMetricReportItem(reportItems);
-         new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
+         new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World",
+               AtsPlugin.getInstance().getImage("report.gif"));
          new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
-         XNavigateItem emailItems = new XNavigateItem(null, "Email");
+         XNavigateItem emailItems = new XNavigateItem(null, "Email", AtsPlugin.getInstance().getImage("email.gif"));
          new EmailTeamsItem(emailItems, null, MemberType.Both);
          new EmailTeamsItem(emailItems, null, MemberType.Leads);
          new EmailTeamsItem(emailItems, null, MemberType.Members);
@@ -195,14 +199,14 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(reportItems);
 
-         XNavigateItem importItems = new XNavigateItem(null, "Import");
+         XNavigateItem importItems = new XNavigateItem(null, "Import", AtsPlugin.getInstance().getImage("import.gif"));
          new ImportActionsViaSpreadsheet(importItems);
          items.add(importItems);
 
          BlamOperations.addBlamOperationsToNavigator(items);
 
          if (AtsPlugin.isAtsAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin");
+            XNavigateItem adminItems = new XNavigateItem(null, "Admin", AtsPlugin.getInstance().getImage("admin.gif"));
 
             new AtsNotificationNavigateItem(adminItems);
             new UpdateAtsWorkItemDefinitions(adminItems);
@@ -220,7 +224,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
             new DoesNotWorkItem(adminItems);
 
-            XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
+            XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
             new ValidateAtsDatabase(healthItems);
             new ValidateChangeReports(healthItems);
             new ValidateChangeReportByHrid(healthItems);

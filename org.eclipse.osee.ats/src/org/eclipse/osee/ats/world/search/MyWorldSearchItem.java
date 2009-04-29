@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -34,11 +35,11 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    public MyWorldSearchItem() {
-      super("My World", null);
+      this("My World", null);
    }
 
    public MyWorldSearchItem(String name, User user) {
-      super(name, user);
+      super(name, user, AtsPlugin.getInstance().getImage("globe.gif"));
    }
 
    public MyWorldSearchItem(MyWorldSearchItem myWorldSearchItem) {

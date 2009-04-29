@@ -30,7 +30,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    private final String userCommName;
 
    public UserCommunitySearchItem(String displayName, String userCommName) {
-      super(displayName);
+      super(displayName, AtsPlugin.getInstance().getImage("globe.gif"));
       this.userCommName = userCommName;
    }
 
@@ -39,7 +39,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    }
 
    public UserCommunitySearchItem(UserCommunitySearchItem userCommunitySearchItem) {
-      super(userCommunitySearchItem);
+      super(userCommunitySearchItem, AtsPlugin.getInstance().getImage("globe.gif"));
       this.userComm = userCommunitySearchItem.userComm;
       this.userCommName = userCommunitySearchItem.userCommName;
    }

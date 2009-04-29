@@ -36,7 +36,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
     * @param parent
     */
    public ValidateChangeReportByHrid(XNavigateItem parent) {
-      super(parent, "Validate Change Reports by HRID");
+      super(parent, "Validate Change Reports by HRID", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /*

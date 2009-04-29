@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -49,7 +50,8 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
    public EmailGroupsAndUserGroups(XNavigateItem parent, GroupType... groupType) {
       super(parent,
             "Email " + (Arrays.asList(groupType).contains(GroupType.Both) ? "Groups / User Groups" : (Arrays.asList(
-                  groupType).contains(GroupType.Groups) ? "Groups" : "User Groups")));
+                  groupType).contains(GroupType.Groups) ? "Groups" : "User Groups")),
+            SkynetGuiPlugin.getInstance().getImage("email.gif"));
       this.groupType = groupType;
    }
 

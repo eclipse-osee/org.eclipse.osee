@@ -40,12 +40,12 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    };
 
    public MyReviewWorkflowItem(String name, User user, ReviewState reviewState) {
-      super(name, user);
+      super(name, user, AtsPlugin.getInstance().getImage("R.gif"));
       this.reviewState = reviewState;
    }
 
    public MyReviewWorkflowItem(MyReviewWorkflowItem myReviewWorkflowItem) {
-      super(myReviewWorkflowItem);
+      super(myReviewWorkflowItem, AtsPlugin.getInstance().getImage("R.gif"));
       this.reviewState = myReviewWorkflowItem.reviewState;
    }
 

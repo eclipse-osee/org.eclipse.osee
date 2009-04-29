@@ -25,9 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -49,15 +48,11 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
-      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
-         new XNavigateItemBlam(blamOperationItems, blamOperation);
-      }
-      items.add(blamOperationItems);
-
       try {
+         BlamOperations.addBlamOperationsToNavigator(items);
+
          if (AccessControlManager.isOseeAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin");
+            XNavigateItem adminItems = new XNavigateItemFolder(null, "Admin");
             new BranchCommitRegressionTest(adminItems);
             items.add(adminItems);
          }

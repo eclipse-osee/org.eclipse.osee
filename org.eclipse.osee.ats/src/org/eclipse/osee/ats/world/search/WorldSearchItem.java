@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +28,7 @@ public abstract class WorldSearchItem {
    protected static Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
    private LoadView loadView;
+   private final Image image;
    public static enum LoadView {
       TaskEditor, WorldEditor, None
    }
@@ -50,16 +52,26 @@ public abstract class WorldSearchItem {
    }
 
    public WorldSearchItem(String name, LoadView loadView) {
+      this(name, loadView, null);
+   }
+
+   public WorldSearchItem(String name, LoadView loadView, Image image) {
       super();
       this.name = name;
       this.loadView = loadView;
       this.cancelled = false;
+      this.image = image;
    }
 
    public WorldSearchItem(WorldSearchItem worldSearchItem) {
+      this(worldSearchItem, null);
+   }
+
+   public WorldSearchItem(WorldSearchItem worldSearchItem, Image image) {
       this.name = worldSearchItem.name;
       this.cancelled = worldSearchItem.cancelled;
       this.loadView = worldSearchItem.loadView;
+      this.image = image;
    }
 
    public abstract WorldSearchItem copy();
@@ -110,6 +122,13 @@ public abstract class WorldSearchItem {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
+   }
+
+   /**
+    * @return the image
+    */
+   public Image getImage() {
+      return image;
    }
 
 }

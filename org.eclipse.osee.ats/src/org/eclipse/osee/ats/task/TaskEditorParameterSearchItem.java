@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,14 +31,14 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
     * @param name
     */
    public TaskEditorParameterSearchItem(String name) {
-      super(name, LoadView.TaskEditor);
+      super(name, LoadView.TaskEditor, AtsPlugin.getInstance().getImage("task.gif"));
    }
 
    /**
     * @param worldSearchItem
     */
    public TaskEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
-      super(worldSearchItem);
+      super(worldSearchItem, AtsPlugin.getInstance().getImage("task.gif"));
    }
 
    /* (non-Javadoc)

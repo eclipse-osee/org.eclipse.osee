@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.notify;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -25,7 +26,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
     * @param name
     */
    public AtsNotificationNavigateItem(XNavigateItem parent) {
-      super(parent, "Process ATS Notifications");
+      super(parent, "Process ATS Notifications", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /* (non-Javadoc)

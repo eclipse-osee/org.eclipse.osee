@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamVersionListDialog;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 public class GenerateVersionReportItem extends XNavigateItemAction {
 
    public GenerateVersionReportItem(XNavigateItem parent) {
-      super(parent, "Generate Version Report");
+      super(parent, "Generate Version Report", AtsPlugin.getInstance().getImage("version.gif"));
    }
 
    @Override

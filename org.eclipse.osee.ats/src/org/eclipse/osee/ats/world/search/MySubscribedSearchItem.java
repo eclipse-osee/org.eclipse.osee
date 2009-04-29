@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -30,11 +31,11 @@ public class MySubscribedSearchItem extends UserSearchItem {
    }
 
    public MySubscribedSearchItem(String name, User user) {
-      super(name, user);
+      super(name, user, AtsPlugin.getInstance().getImage("subscribedEmail.gif"));
    }
 
    public MySubscribedSearchItem(MySubscribedSearchItem mySubscribedSearchItem) {
-      super(mySubscribedSearchItem);
+      super(mySubscribedSearchItem, AtsPlugin.getInstance().getImage("subscribedEmail.gif"));
    }
 
    @Override
