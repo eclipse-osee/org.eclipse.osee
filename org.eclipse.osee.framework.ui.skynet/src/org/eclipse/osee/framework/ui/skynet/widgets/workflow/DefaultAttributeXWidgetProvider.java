@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
@@ -79,15 +78,13 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          } else {
             defaultData.setXWidgetName("XMultiXWidgetTextDam");
          }
-      } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-         defaultData.setXWidgetName("XStackedXTextDam");
-         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
-         defaultData.getXOptionHandler().add(XOption.NO_LABEL);
-         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {
-         defaultData.setXWidgetName("XLabelDam");
+         defaultData.setXWidgetName("XStackedXTextDam");
+         //         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+         //         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       }
       defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+      defaultData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
       return xWidgetLayoutData;
    }
 }

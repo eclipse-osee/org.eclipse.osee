@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -41,7 +40,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -73,11 +71,11 @@ public class AttributeFormPart extends AbstractFormPart {
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
          for (AttributeType attributeType : AttributeTypeUtil.getTypesWithData(artifact)) {
-            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-               createAttributeTypeControlsInSection(parent, toolkit, attributeType, false);
-            } else {
-               createAttributeTypeControls(composite, toolkit, artifact, attributeType, true);
-            }
+            //            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+            //               createAttributeTypeControlsInSection(parent, toolkit, attributeType, false);
+            //            } else {
+            createAttributeTypeControls(composite, toolkit, artifact, attributeType, true);
+            //            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
@@ -96,19 +94,8 @@ public class AttributeFormPart extends AbstractFormPart {
     */
    @Override
    public void dispose() {
-      disposeControl(composite);
+      //     Widgets.disposeControl(composite);
       super.dispose();
-   }
-
-   private void disposeControl(Control control) {
-      if (control != null && !control.isDisposed()) {
-         if (control instanceof Composite) {
-            for (Control child : ((Composite) control).getChildren()) {
-               disposeControl(child);
-            }
-         }
-         control.dispose();
-      }
    }
 
    private Font getBoldLabelFont() {
@@ -146,7 +133,7 @@ public class AttributeFormPart extends AbstractFormPart {
                if (!dam.isEditable()) {
                   parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true));
                } else {
-                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
                }
             } else {
                parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -156,11 +143,7 @@ public class AttributeFormPart extends AbstractFormPart {
       if (parent instanceof Composite && !(parent instanceof StackedViewer)) {
          Composite container = (Composite) parent;
          for (Control child : container.getChildren()) {
-            if (!(child instanceof Canvas)) {
-               layoutControls(child);
-            } else {
-               System.out.println("Skipped : " + ((Canvas) child).getToolTipText());
-            }
+            layoutControls(child);
          }
       }
    }

@@ -153,8 +153,8 @@ public class XWidgetFactory {
          xWidget = checkBox;
       } else if (xWidgetName.startsWith("XComboDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-            String values[] = new String[] {"1", "2"};
-            //                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
             if (values.length > 0) {
                xWidget = new XComboDam(name);
                XComboDam combo = new XComboDam(name);

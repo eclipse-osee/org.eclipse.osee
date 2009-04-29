@@ -50,10 +50,10 @@ public class XStackedXTextDam extends XStackedWidget implements IArtifactWidget 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget#createPage(org.eclipse.swt.widgets.Composite)
     */
    @Override
-   protected void createPage(Composite parent) {
+   protected void createPage(String id, Composite parent) {
       Label label = new Label(parent, SWT.BORDER);
       label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      label.setText("A Page");
+      label.setText(String.format("Page: %s", id));
 
    }
 

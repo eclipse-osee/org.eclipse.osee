@@ -17,13 +17,16 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +39,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 public abstract class XStackedWidget extends XLabel {
 
    private StackedViewer stackedViewer;
-   private Label currentPageLabel;
+   private StyledText currentPageLabel;
    private Composite container;
    private int minPage;
    private int maxPage;
@@ -54,7 +57,6 @@ public abstract class XStackedWidget extends XLabel {
 
    public void dispose() {
       super.dispose();
-      disposeControl(container);
    }
 
    public XStackedWidget(String displayLabel) {
@@ -94,20 +96,21 @@ public abstract class XStackedWidget extends XLabel {
 
    @Override
    public void createWidgets(final Composite parent, int horizontalSpan) {
-      Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(isDisplayLabel() ? 2 : 1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      container = new Composite(parent, SWT.NONE);
+      container.setLayout(ALayout.getZeroMarginLayout(isDisplayLabel() ? 2 : 1, false));
+      container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (isDisplayLabel()) {
-         super.createWidgets(composite, horizontalSpan);
-         Label label = getLabelWidget();
-         if (label != null) {
-            label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      if (isDisplayLabel() && Strings.isValid(getLabel())) {
+         labelWidget = new Label(container, SWT.NONE);
+         labelWidget.setText(String.format("%s:", getLabel()));
+         labelWidget.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
          }
       }
-      createStackedControl(composite);
-      stackedViewer.displayArea(StackedViewer.DEFAULT_CONTROL);
-      addToolTip(composite, getToolTip());
+      createStackedControl(container);
+
+      addToolTip(container, getToolTip());
       refresh();
    }
 
@@ -119,22 +122,39 @@ public abstract class XStackedWidget extends XLabel {
       createToolBar(composite);
 
       stackedViewer = new StackedViewer(composite, SWT.BORDER);
-      stackedViewer.setLayout(new GridLayout());
-      stackedViewer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      stackedViewer.setLayout(ALayout.getZeroMarginLayout());
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.minimumHeight = 60;
+      gd.minimumWidth = 60;
+      stackedViewer.setLayoutData(gd);
+      stackedViewer.displayArea(StackedViewer.DEFAULT_CONTROL);
    }
 
    private void createToolBar(Composite parent) {
-      container = new Composite(parent, SWT.BORDER);
-      container.setLayout(ALayout.getZeroMarginLayout(2, false));
-      container.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+      Composite composite = new Composite(parent, SWT.BORDER);
+      GridLayout layout = new GridLayout(3, false);
+      layout.marginHeight = 1;
+      layout.marginLeft = 5;
+      layout.marginWidth = 2;
+      composite.setLayout(layout);
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      currentPageLabel = new Label(container, SWT.NONE);
+      currentPageLabel = new StyledText(composite, SWT.READ_ONLY | SWT.SINGLE | SWT.WRAP);
       currentPageLabel.setAlignment(SWT.RIGHT);
-      currentPageLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+      currentPageLabel.setFont(JFaceResources.getBannerFont());
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+      gd.minimumWidth = 10;
+      currentPageLabel.setLayoutData(gd);
+      currentPageLabel.setText("0 of 0");
 
-      ToolBar toolbar = new ToolBar(container, SWT.FLAT);
+      Composite filler = new Composite(composite, SWT.NONE);
+      GridLayout layout1 = new GridLayout(1, false);
+      filler.setLayout(layout1);
+      filler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+      ToolBar toolbar = new ToolBar(composite, SWT.FLAT | SWT.HORIZONTAL);
+      toolbar.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
       ToolBarManager manager = new ToolBarManager(toolbar);
-
       manager.add(new Separator());
       manager.add(new Back());
       manager.add(new Forward());
@@ -147,7 +167,9 @@ public abstract class XStackedWidget extends XLabel {
    private void updateCurrentPageLabel() {
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
-            currentPageLabel.setText(String.format("%s of %s", getCurrentPageIndex(), getTotalPages()));
+            if (Widgets.isAccessible(currentPageLabel)) {
+               currentPageLabel.setText(String.format("%s of %s", getCurrentPageIndex(), getTotalPages()));
+            }
          }
       });
    }
@@ -168,18 +190,18 @@ public abstract class XStackedWidget extends XLabel {
       setCurrentPage(index);
    }
 
-   protected abstract void createPage(Composite parent);
+   protected abstract void createPage(String id, Composite parent);
 
    private int getCurrentPageIndex() {
       return currentPage;
    }
 
    private int getTotalPages() {
-      return totalPages;
+      return Widgets.isAccessible(stackedViewer) ? stackedViewer.getNumberOfControls() : 0;
    }
 
    private void setTotalPages(int index) {
-      this.totalPages = index;
+      //      this.totalPages = index;
    }
 
    private void setCurrentPage(int index) {
@@ -218,19 +240,17 @@ public abstract class XStackedWidget extends XLabel {
 
    private void handlePageCreation() {
       System.out.println("Add Page");
-      Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
+      Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      createPage(composite);
-
-      int total = getTotalPages();
-      stackedViewer.addControl(String.valueOf(total), composite);
-      total++;
-      setTotalPages(total);
+      String id = String.valueOf(getTotalPages());
+      createPage(id, composite);
+      stackedViewer.addControl(id, composite);
    }
 
    private void handlePageDeletion() {
+      System.out.println("Delete Page");
       int current = getCurrentPageIndex();
       int previous = getPreviousPageIndex();
       setCurrentPage(previous);
@@ -238,9 +258,6 @@ public abstract class XStackedWidget extends XLabel {
 
       Control control = stackedViewer.removeControl(String.valueOf(current));
       disposeControl(control);
-      int total = getTotalPages();
-      total--;
-      setTotalPages(total);
    }
 
    private final class Back extends Action {
@@ -251,8 +268,10 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         int previousPage = getPreviousPageIndex();
-         setDisplay(previousPage);
+         if (isEnabled()) {
+            int previousPage = getPreviousPageIndex();
+            setDisplay(previousPage);
+         }
       }
 
       /* (non-Javadoc)
@@ -272,8 +291,10 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         int nextPage = getNextPageIndex();
-         setDisplay(nextPage);
+         if (isEnabled()) {
+            int nextPage = getNextPageIndex();
+            setDisplay(nextPage);
+         }
       }
 
       /* (non-Javadoc)
@@ -305,7 +326,9 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         handlePageDeletion();
+         if (isEnabled()) {
+            handlePageDeletion();
+         }
       }
 
       /* (non-Javadoc)
