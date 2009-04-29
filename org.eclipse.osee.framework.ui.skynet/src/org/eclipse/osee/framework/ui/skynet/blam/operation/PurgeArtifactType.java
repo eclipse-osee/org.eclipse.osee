@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class PurgeArtifactType extends AbstractBlam {
+   private boolean convertArtifacts;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
@@ -34,12 +35,12 @@ public class PurgeArtifactType extends AbstractBlam {
      * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
      */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
       Collection<ArtifactType> purgeArtifactTypes =
             variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
-      ArtifactType newArtifactType = variableMap.getArtifactType("New Artifact Type");
+      convertArtifacts = variableMap.getBoolean("Convert Artifacts");
+      ArtifactType newArtifactType = convertArtifacts ? variableMap.getArtifactType("New Artifact Type") : null;
 
-      ArtifactTypeManager.purgeArtifactTypesWithConversion(purgeArtifactTypes, newArtifactType);
+      ArtifactTypeManager.purgeArtifactTypesWithCheck(purgeArtifactTypes, newArtifactType);
    }
 
    /*
@@ -49,7 +50,7 @@ public class PurgeArtifactType extends AbstractBlam {
     */
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type(s) to purge\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type(s) to purge\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Convert Artifacts\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 
    /* (non-Javadoc)

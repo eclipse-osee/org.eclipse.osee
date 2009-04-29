@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -26,8 +27,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -295,23 +298,16 @@ public class ArtifactTypeManager {
 
    private static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
    private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
-   private static final String COUNT_ARTIFACT_OCCURRENCE =
-         "select count(1) AS artCount FROM osee_artifact where art_type_id = ?";
+   private static final String COUNT_ARTIFACT_OCCURRENCE = "select count(1) FROM osee_artifact where art_type_id = ?";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
-   public static void purgeArtifactType(ArtifactType artifactType) throws Exception {
+   public static void purgeArtifactType(ArtifactType artifactType) throws OseeCoreException {
       int artTypeId = artifactType.getArtTypeId();
+      int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artTypeId);
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      try {
-         chStmt.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
-         if (chStmt.next() && chStmt.getInt("artCount") != 0) {
-            throw new IllegalArgumentException(
-                  "Can not delete artifact type " + artifactType.getName() + " because there are " + chStmt.getInt("artCount") + " existing artifacts of this type.");
-         }
-      } finally {
-         chStmt.close();
+      if (artifactCount != 0) {
+         throw new OseeArgumentException(
+               "Can not delete artifact type " + artifactType.getName() + " because there are " + artifactCount + " existing artifacts of this type.");
       }
 
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
@@ -327,22 +323,27 @@ public class ArtifactTypeManager {
     * @param newArtifactType new type to convert any existing artifacts of the old type
     * @throws OseeCoreException
     */
-   public static void purgeArtifactTypesWithConversion(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
-      try {
-         for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
-            // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-            List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
-            if (artifacts.size() > 0) {
-               HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+   public static void purgeArtifactTypesWithCheck(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
+      for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+         // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
+         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+         if (artifacts.size() > 0) {
+            HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+            for (Artifact artifact : artifacts) {
+               artifactMap.put(artifact.getArtId(), artifact);
+            }
+            if (newArtifactType == null) {
+               HashSet<Branch> branches = new HashSet<Branch>();
                for (Artifact artifact : artifacts) {
-                  artifactMap.put(artifact.getArtId(), artifact);
+                  branches.add(artifact.getBranch());
                }
+               throw new OseeStateException(
+                     "Found " + artifacts.size() + " artifact references of type " + purgeArtifactType + " on branches " + branches);
+            } else {
                changeArtifactType(artifactMap.values(), newArtifactType);
             }
-            ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
          }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
       }
    }
 
