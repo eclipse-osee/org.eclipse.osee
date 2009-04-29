@@ -187,7 +187,7 @@ public class XWidgetParser {
          else if (nodeName.equals("keyedBranch"))
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new IllegalArgumentException(
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeArgumentException(
                   "Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }
