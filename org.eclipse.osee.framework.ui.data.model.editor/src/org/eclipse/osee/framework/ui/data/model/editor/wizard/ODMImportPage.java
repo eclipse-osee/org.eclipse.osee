@@ -148,11 +148,11 @@ public class ODMImportPage extends WizardPage {
          if (isDataStoreExport) {
             xmlExportButton.setSelection(false);
             dataStoreExportButton.setSelection(true);
-            stackedViewer.displayArea(DATASTORE_OPTIONS);
+            stackedViewer.setCurrentControl(DATASTORE_OPTIONS);
          } else {
             dataStoreExportButton.setSelection(false);
             xmlExportButton.setSelection(true);
-            stackedViewer.displayArea(XML_FILE_OPTIONS);
+            stackedViewer.setCurrentControl(XML_FILE_OPTIONS);
          }
       }
    }

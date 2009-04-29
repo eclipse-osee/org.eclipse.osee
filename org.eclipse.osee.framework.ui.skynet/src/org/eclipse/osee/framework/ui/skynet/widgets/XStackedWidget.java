@@ -20,6 +20,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,27 +36,29 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
-public abstract class XStackedWidget extends XLabel {
+public abstract class XStackedWidget<T> extends XLabel {
 
-   private StackedViewer stackedViewer;
+   private StackedControl stackedControl;
    private StyledText currentPageLabel;
    private Composite container;
+   private Label messageLabel;
+   private Label messageIcon;
    private int minPage;
    private int maxPage;
-   private int currentPage;
 
    public XStackedWidget(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
       setToolTip("Navigate pages by clicking forward and backward buttons.");
       minPage = 0;
       maxPage = 0;
-      currentPage = 0;
    }
 
    public void dispose() {
       super.dispose();
+      stackedControl.dispose();
    }
 
    public XStackedWidget(String displayLabel) {
@@ -89,13 +93,16 @@ public abstract class XStackedWidget extends XLabel {
    @Override
    public void refresh() {
       updateCurrentPageLabel();
-      stackedViewer.getStackComposite().layout();
+      stackedControl.refresh();
    }
 
    @Override
    public void createWidgets(final Composite parent, int horizontalSpan) {
       container = new Composite(parent, SWT.NONE);
-      container.setLayout(ALayout.getZeroMarginLayout(isDisplayLabel() ? 2 : 1, false));
+      GridLayout layout = new GridLayout(isDisplayLabel() ? 2 : 1, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      container.setLayout(layout);
       container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (isDisplayLabel() && Strings.isValid(getLabel())) {
@@ -106,35 +113,51 @@ public abstract class XStackedWidget extends XLabel {
             labelWidget.setToolTipText(getToolTip());
          }
       }
-      createStackedControl(container);
 
-      addToolTip(container, getToolTip());
-      refresh();
-   }
-
-   private void createStackedControl(Composite parent) {
-      Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      Composite composite = new Composite(container, SWT.NONE);
+      GridLayout layout1 = new GridLayout(1, false);
+      layout1.marginHeight = 0;
+      layout1.marginWidth = 0;
+      layout1.verticalSpacing = 0;
+      layout1.horizontalSpacing = 0;
+      composite.setLayout(layout1);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createToolBar(composite);
+      stackedControl = new StackedControl();
+      stackedControl.createControl(composite);
+      createMessageArea(composite);
 
-      stackedViewer = new StackedViewer(composite, SWT.BORDER);
-      stackedViewer.setLayout(ALayout.getZeroMarginLayout());
-      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gd.minimumHeight = 60;
-      gd.minimumWidth = 60;
-      stackedViewer.setLayoutData(gd);
-      stackedViewer.displayArea(StackedViewer.DEFAULT_CONTROL);
-      stackedViewer.layout();
-      stackedViewer.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-      container.layout();
+      addToolTip(container, getToolTip());
+      stackedControl.next();
+      refresh();
+   }
+
+   private void createMessageArea(Composite parent) {
+      Composite messageArea = new Composite(parent, SWT.BORDER);
+      GridLayout layout = new GridLayout(2, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      layout.marginLeft = 5;
+      layout.horizontalSpacing = 0;
+      layout.verticalSpacing = 0;
+      layout.marginBottom = 5;
+
+      messageArea.setLayout(layout);
+      messageArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      messageArea.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+
+      messageIcon = new Label(messageArea, SWT.NONE);
+      messageIcon.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+
+      messageLabel = new Label(messageArea, SWT.NONE);
+      messageLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
    }
 
    private void createToolBar(Composite parent) {
       Composite composite = new Composite(parent, SWT.BORDER);
       GridLayout layout = new GridLayout(3, false);
-      layout.marginHeight = 1;
+      layout.marginHeight = 0;
       layout.marginLeft = 5;
       layout.marginWidth = 2;
       composite.setLayout(layout);
@@ -165,16 +188,6 @@ public abstract class XStackedWidget extends XLabel {
       manager.update(true);
    }
 
-   private void updateCurrentPageLabel() {
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            if (Widgets.isAccessible(currentPageLabel)) {
-               currentPageLabel.setText(String.format("%s of %s", getCurrentPageIndex(), getTotalPages()));
-            }
-         }
-      });
-   }
-
    private void addToolTip(Control control, String toolTipText) {
       if (Strings.isValid(toolTipText)) {
          control.setToolTipText(toolTipText);
@@ -186,67 +199,69 @@ public abstract class XStackedWidget extends XLabel {
       }
    }
 
-   public void setDisplay(int index) {
-      stackedViewer.displayArea(String.valueOf(index));
-      setCurrentPage(index);
-      container.layout();
-      updateCurrentPageLabel();
+   private void updateCurrentPageLabel() {
+      Display.getDefault().asyncExec(new Runnable() {
+         public void run() {
+            if (Widgets.isAccessible(currentPageLabel)) {
+               int totalPages = stackedControl.getTotalPages();
+               int currentPage = stackedControl.getCurrentPageIndex() + 1;
+               if (currentPage > totalPages) {
+                  currentPage = totalPages;
+               }
+               currentPageLabel.setText(String.format("%s of %s", currentPage, totalPages));
+            }
+         }
+      });
    }
 
-   protected abstract void createPage(String id, Composite parent);
-
-   private int getCurrentPageIndex() {
-      return currentPage;
+   public void addPage(T value) {
+      stackedControl.addPage(value);
    }
 
-   private int getTotalPages() {
-      return Widgets.isAccessible(stackedViewer) ? stackedViewer.getNumberOfControls() : 0;
+   private void setMessage(final int severity, final String message) {
+      Display.getDefault().asyncExec(new Runnable() {
+         public void run() {
+            if (Widgets.isAccessible(messageLabel)) {
+               Composite parent = messageLabel.getParent();
+
+               String text = message;
+               boolean isVisible = Strings.isValid(text);
+
+               String imageName = null;
+               switch (severity) {
+                  case IStatus.INFO:
+                     imageName = ISharedImages.IMG_OBJS_INFO_TSK;
+                     break;
+                  case IStatus.ERROR:
+                     imageName = ISharedImages.IMG_OBJS_ERROR_TSK;
+                     break;
+                  case IStatus.WARNING:
+                     imageName = ISharedImages.IMG_OBJS_WARN_TSK;
+                     break;
+                  default:
+                     imageName = null;
+                     break;
+               }
+               Image image =
+                     Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
+               messageIcon.setImage(image);
+               messageLabel.setText(text);
+
+               messageIcon.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+               messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+               messageIcon.setVisible(isVisible);
+               messageLabel.setVisible(isVisible);
+               parent.setVisible(isVisible);
+               parent.layout();
+            }
+         }
+      });
    }
 
-   private void setCurrentPage(int index) {
-      this.currentPage = index;
-      updateCurrentPageLabel();
-   }
+   protected abstract void createPage(String id, Composite parent, T value);
 
-   private int getNextPageIndex() {
-      if (getCurrentPageIndex() + 1 <= getTotalPages()) {
-         return getCurrentPageIndex() + 1;
-      } else {
-         return 1;
-      }
-   }
-
-   private int getPreviousPageIndex() {
-      if (getCurrentPageIndex() - 1 >= 1) {
-         return getCurrentPageIndex() - 1;
-      } else {
-         return getTotalPages();
-      }
-   }
-
-   private void handlePageCreation() {
-      System.out.println("Add Page");
-      Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      int lastPage = getTotalPages() + 1;
-      String id = String.valueOf(lastPage);
-      createPage(id, composite);
-      stackedViewer.addControl(id, composite);
-      setDisplay(lastPage);
-   }
-
-   private void handlePageDeletion() {
-      System.out.println("Delete Page");
-      int current = getCurrentPageIndex();
-      int previous = getPreviousPageIndex();
-      setCurrentPage(previous);
-      setDisplay(previous);
-
-      Control control = stackedViewer.removeControl(String.valueOf(current));
-      Widgets.disposeWidget(control);
-   }
+   protected abstract void onRemovePage(String id);
 
    private final class Back extends Action {
       public Back() {
@@ -256,8 +271,7 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         int previousPage = getPreviousPageIndex();
-         setDisplay(previousPage);
+         stackedControl.previous();
       }
    }
 
@@ -269,8 +283,7 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         int nextPage = getNextPageIndex();
-         setDisplay(nextPage);
+         stackedControl.next();
       }
    }
 
@@ -282,7 +295,7 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         handlePageCreation();
+         stackedControl.addPage((T) null);
       }
    }
 
@@ -294,31 +307,158 @@ public abstract class XStackedWidget extends XLabel {
       }
 
       public void run() {
-         if (getTotalPages() != 0) {
-            handlePageDeletion();
-         }
+         stackedControl.removePage();
       }
    }
 
-   private final class PageStatusValidator implements ISelectionStatusValidator {
+   private final class StackedControl {
+      private StackedViewer stackedViewer;
+      private int currentPage;
+      private final List<String> pageIds;
 
-      @Override
-      public IStatus validate(Object[] selection) {
+      public StackedControl() {
+         this.stackedViewer = null;
+         this.currentPage = -1;
+         this.pageIds = new ArrayList<String>();
+      }
+
+      private void createControl(Composite parent) {
+         pageIds.clear();
+         stackedViewer = new StackedViewer(parent, SWT.BORDER);
+         stackedViewer.setLayout(ALayout.getZeroMarginLayout());
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, false, true);
+         gd.minimumHeight = 60;
+         gd.minimumWidth = 60;
+         stackedViewer.setLayoutData(gd);
+         stackedViewer.setCurrentControl(StackedViewer.DEFAULT_CONTROL);
+         stackedViewer.layout();
+      }
+
+      public void dispose() {
+         pageIds.clear();
+         stackedViewer.dispose();
+      }
+
+      public void refresh() {
+         stackedViewer.getStackComposite().layout();
+         stackedViewer.getStackComposite().getParent().layout();
+      }
+
+      private int getTotalPages() {
+         return Widgets.isAccessible(stackedViewer) ? stackedViewer.getControlCount() : 0;
+      }
+
+      private int getCurrentPageIndex() {
+         return currentPage;
+      }
+
+      private void next() {
+         int next = getCurrentPageIndex();
+         if (next + 1 < getTotalPages()) {
+            next++;
+         } else {
+            next = 0;
+         }
+         setCurrentPage(next);
+      }
+
+      private void previous() {
+         int previous = getCurrentPageIndex();
+         if (previous - 1 >= 0) {
+            previous--;
+         } else {
+            previous = getTotalPages() - 1;
+         }
+         setCurrentPage(previous);
+      }
+
+      public void setCurrentPage(int index) {
+         String pageId = null;
+         setMessage(IStatus.OK, "");
+         if (index >= 0 && index < pageIds.size()) {
+            pageId = pageIds.get(index);
+            if (pageId == null) {
+               setMessage(IStatus.ERROR, String.format("Page [%s] not found.", index));
+            }
+         } else {
+            setMessage(IStatus.ERROR, String.format("Page [%s] out of bounds.", index));
+         }
+
+         if (pageId == null) {
+            index = 0;
+            pageId = StackedViewer.DEFAULT_CONTROL;
+         }
+         this.currentPage = index;
+         stackedViewer.setCurrentControl(pageId);
+         container.layout();
+         updateCurrentPageLabel();
+      }
+
+      private void addPage(T value) {
+         int numberOfPages = getTotalPages();
+         IStatus status = validate(numberOfPages + 1);
+         if (status.isOK()) {
+            setMessage(IStatus.OK, "");
+            String id = GUID.generateGuidStr();
+            if (pageIds.add(id)) {
+               Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
+               GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+               composite.setLayout(layout);
+               GridData data = new GridData(SWT.FILL, SWT.FILL, false, true);
+               composite.setLayoutData(data);
+
+               createPage(id, composite, value);
+               stackedViewer.addControl(id, composite);
+               setCurrentPage(numberOfPages);
+               notifyXModifiedListeners();
+            } else {
+               setMessage(IStatus.WARNING, String.format("Add page error - page at index [%s] already exists",
+                     getCurrentPageIndex()));
+            }
+         } else {
+            setMessage(IStatus.ERROR, status.getMessage());
+         }
+      }
+
+      private void removePage() {
+         int numberOfPages = getTotalPages();
+         IStatus status = validate(numberOfPages - 1);
+         if (status.isOK()) {
+            setMessage(IStatus.OK, "");
+            System.out.println("Delete Page");
+
+            String pageId = pageIds.remove(getCurrentPageIndex());
+            if (pageId != null) {
+               onRemovePage(pageId);
+               Control control = stackedViewer.removeControl(pageId);
+               Widgets.disposeWidget(control);
+               previous();
+               notifyXModifiedListeners();
+            } else {
+               setMessage(IStatus.WARNING, String.format("Remove page error - page at index [%s] does not exist",
+                     getCurrentPageIndex()));
+            }
+         } else {
+            setMessage(IStatus.ERROR, status.getMessage());
+         }
+      }
+
+      private IStatus validate(int numberOfPages) {
          IStatus status = null;
-         int numberSelected = selection.length;
-         if (minPage <= numberSelected && maxPage >= numberSelected) {
+         if (minPage <= numberOfPages && maxPage >= numberOfPages) {
             status = Status.OK_STATUS;
          } else {
             List<String> message = new ArrayList<String>();
-            if (numberSelected < minPage) {
-               message.add(String.format("Must have at least [%s] pages", minPage));
+            if (numberOfPages < minPage) {
+               message.add(String.format("Must have at least [%s] page%s", minPage, minPage == 1 ? "" : "s"));
             }
-            if (numberSelected > maxPage) {
-               message.add(String.format("Can't add more than [%s] pages", maxPage));
+            if (numberOfPages > maxPage) {
+               message.add(String.format("Can't add more than [%s] page%s", maxPage, maxPage == 1 ? "" : "s"));
             }
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, Collections.toString(" &&", message));
+            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, Collections.toString(" &", message));
          }
          return status;
       }
    }
+
 }

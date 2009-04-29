@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -40,9 +41,13 @@ public class XMultiXWidgetTextDam extends XMultiXWidgetDam {
    public XWidget addXWidget(String label, String defaultValue) {
       XText xTextWidget = new XText(label);
       xTextWidget.addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
-      if (defaultValue != null && !defaultValue.equals("")) xTextWidget.setText(defaultValue);
+      if (Strings.isValid(defaultValue)) {
+         xTextWidget.setText(defaultValue);
+      }
       xTextWidget.setFillHorizontally(true);
-      if (!xWidgets.contains(xTextWidget)) xWidgets.add(xTextWidget);
+      if (!xWidgets.contains(xTextWidget)) {
+         xWidgets.add(xTextWidget);
+      }
       xTextWidget.addXModifiedListener(xModifiedListener);
       return xTextWidget;
    }

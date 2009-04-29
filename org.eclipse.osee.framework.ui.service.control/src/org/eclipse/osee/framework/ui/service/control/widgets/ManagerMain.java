@@ -250,13 +250,13 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
          Class<?> key = connectionManager.getConnectionType();
          IServiceRenderer renderer = connectionManager.getRenderer();
          renderer.setService(serviceNode.getServiceItem());
-         stackedViewer.displayArea(key.getCanonicalName());
+         stackedViewer.setCurrentControl(key.getCanonicalName());
          stackedViewer.setVisible(true);
          serviceAndDetailsSash.setWeights(new int[] {7, 3});
          renderer.refresh();
       } else {
          serviceAreaSash.setOrientation(SWT.HORIZONTAL);
-         stackedViewer.displayArea(StackedViewer.DEFAULT_CONTROL);
+         stackedViewer.setCurrentControl(StackedViewer.DEFAULT_CONTROL);
          stackedViewer.setVisible(false);
          serviceAndDetailsSash.setWeights(new int[] {4, 5});
       }

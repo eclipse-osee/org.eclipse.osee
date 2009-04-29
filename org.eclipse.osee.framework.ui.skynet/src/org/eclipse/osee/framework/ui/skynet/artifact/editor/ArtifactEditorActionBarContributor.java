@@ -15,9 +15,12 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,7 +58,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       manager.add(new RevealInExplorerAction());
       manager.add(new Separator());
       addOpenWithContributionItem(manager);
-      manager.add(createDeleteAction());
+      manager.add(new DeleteArtifactAction());
       manager.add(new Separator());
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
@@ -104,13 +107,30 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
+
    }
 
-   private final Action createDeleteAction() {
-      DeleteArtifactAction deleteAction = new DeleteArtifactAction(getSelectedArtifact());
-      deleteAction.setEnabled(!getSelectedArtifact().isReadOnly());
-      deleteAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("delete.gif"));
-      return deleteAction;
+   private final class DeleteArtifactAction extends Action {
+
+      public DeleteArtifactAction() {
+         super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
+         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("delete.gif"));
+      }
+
+      @Override
+      public void run() {
+         try {
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            if (dialog.open() == Window.OK) {
+               getSelectedArtifact().delete();
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
    }
 
    private final class OpenHistoryAction extends Action {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.swt;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -33,7 +33,7 @@ public class StackedViewer extends Composite {
 
    public StackedViewer(Composite parent, int style) {
       super(parent, style);
-      compositeMap = new LinkedHashMap<String, Control>();
+      compositeMap = new HashMap<String, Control>();
       create();
    }
 
@@ -49,7 +49,7 @@ public class StackedViewer extends Composite {
       compositeMap.clear();
       compositeMap.put(DEFAULT_CONTROL, createDefault(stackComposite));
 
-      displayArea(DEFAULT_CONTROL);
+      setCurrentControl(DEFAULT_CONTROL);
    }
 
    public Control addControl(String key, Control control) {
@@ -60,7 +60,7 @@ public class StackedViewer extends Composite {
       return compositeMap.remove(key);
    }
 
-   public int getNumberOfControls() {
+   public int getControlCount() {
       return compositeMap.size() - 1;
    }
 
@@ -82,7 +82,7 @@ public class StackedViewer extends Composite {
       return stackComposite;
    }
 
-   public void displayArea(String key) {
+   public void setCurrentControl(String key) {
       Control control = compositeMap.get(key);
       if (control == null) {
          control = compositeMap.get(DEFAULT_CONTROL);
@@ -98,9 +98,7 @@ public class StackedViewer extends Composite {
    public void dispose() {
       super.dispose();
       for (Control control : compositeMap.values()) {
-         if (control != null && !control.isDisposed()) {
-            control.dispose();
-         }
+         Widgets.disposeWidget(control);
       }
       compositeMap.clear();
    }
