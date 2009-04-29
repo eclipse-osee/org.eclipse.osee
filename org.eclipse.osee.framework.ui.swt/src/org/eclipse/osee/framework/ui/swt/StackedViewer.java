@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.swt;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -32,6 +32,7 @@ public class StackedViewer extends Composite {
 
    public StackedViewer(Composite parent, int style) {
       super(parent, style);
+      compositeMap = new LinkedHashMap<String, Control>();
       create();
    }
 
@@ -44,13 +45,10 @@ public class StackedViewer extends Composite {
       stackComposite.setLayout(stackLayout);
       stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      populateStackedComposite(stackComposite);
-      displayArea(DEFAULT_CONTROL);
-   }
+      compositeMap.clear();
+      compositeMap.put(DEFAULT_CONTROL, createDefault(stackComposite));
 
-   private void populateStackedComposite(Composite parent) {
-      compositeMap = new HashMap<String, Control>();
-      compositeMap.put(DEFAULT_CONTROL, createDefault(parent));
+      displayArea(DEFAULT_CONTROL);
    }
 
    public Control addControl(String key, Control control) {
@@ -59,6 +57,10 @@ public class StackedViewer extends Composite {
 
    public Control removeControl(String key) {
       return compositeMap.remove(key);
+   }
+
+   public int getNumberOfControls() {
+      return compositeMap.size() - 1;
    }
 
    private Composite createDefault(Composite parent) {
