@@ -270,7 +270,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
       ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm("Program 2");
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, ActionArtifact.class, 6, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6, null, TableLoadOption.DontCopySearchItem);
    }
 
    public void testActionableItemSearch() throws Exception {
@@ -278,7 +278,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
       ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, ActionArtifact.class, 3, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 3, null, TableLoadOption.DontCopySearchItem);
    }
 
    public void testTargetedForVersionTeamSearch() throws Exception {
