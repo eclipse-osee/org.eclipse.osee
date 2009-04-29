@@ -797,4 +797,29 @@ public final class Widgets {
          }
       }
    }
+
+   /**
+    * disposes all the controls including child controls if they are not null and not already disposed
+    * 
+    * @param Control control to dispose
+    */
+   public static void disposeWidget(final Widget widget) {
+      if (isAccessible(widget)) {
+         if (widget instanceof Composite) {
+            for (Control child : ((Composite) widget).getChildren()) {
+               disposeWidget(child);
+            }
+         }
+         widget.dispose();
+      }
+   }
+
+   /**
+    * Checks if widget is accessible
+    * 
+    * @return <b>true</b> if widget is not null and is not disposed
+    */
+   public static boolean isAccessible(Widget widget) {
+      return widget != null && widget.isDisposed();
+   }
 }
