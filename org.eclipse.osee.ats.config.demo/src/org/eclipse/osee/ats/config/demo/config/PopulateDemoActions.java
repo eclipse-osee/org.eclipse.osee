@@ -84,7 +84,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
 
    public PopulateDemoActions(XNavigateItem parent) {
-      super(parent, "Populate Demo Actions");
+      super(parent, "Populate Demo Actions", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    @Override

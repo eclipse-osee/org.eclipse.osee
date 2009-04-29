@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateUrlItem;
 
 /**
@@ -70,7 +71,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
-      XNavigateItem jhuItem = new XNavigateItem(null, "John Hopkins Univ (JHU)");
+      XNavigateItem jhuItem = new XNavigateItemFolder(null, "John Hopkins Univ (JHU)");
       new XNavigateUrlItem(jhuItem, "Open JHU Website - Externally", "http://www.jhu.edu/", true);
       new XNavigateUrlItem(jhuItem, "Open JHU Website - Internally", "http://www.jhu.edu/", false);
 
@@ -79,7 +80,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       for (Team team : Team.values()) {
          try {
             TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
-            XNavigateItem teamItems = new XNavigateItem(jhuItem, "JHU " + team.name().replaceAll("_", " "));
+            XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
                   Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, true, true, null, null,
                   ReleasedOption.Both));
@@ -123,7 +124,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
       new ValidateAtsDatabase(healthItems);
 
-      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data");
+      XNavigateItem demoItems =
+            new XNavigateItem(adminItems, "Demo Data", AtsPlugin.getInstance().getImage("admin.gif"));
       new PopulateDemoActions(demoItems);
       new BranchConfigurationTest(demoItems);
 

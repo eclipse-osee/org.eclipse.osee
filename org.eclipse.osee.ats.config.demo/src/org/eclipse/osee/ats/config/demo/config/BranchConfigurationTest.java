@@ -70,7 +70,7 @@ public class BranchConfigurationTest extends XNavigateItemAction {
    }
 
    public BranchConfigurationTest(XNavigateItem parent) {
-      super(parent, "ATS Branch Config Test - TestDb or DemoDb");
+      super(parent, "ATS Branch Config Test - TestDb or DemoDb", AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    @Override
