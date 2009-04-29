@@ -57,6 +57,9 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
       int minOccurrence = attributeType.getMinOccurrences();
       int maxOccurrence = attributeType.getMaxOccurrences();
 
+      if (minOccurrence == 0) {
+         minOccurrence = 1;
+      }
       setPageRange(minOccurrence, maxOccurrence);
    }
 

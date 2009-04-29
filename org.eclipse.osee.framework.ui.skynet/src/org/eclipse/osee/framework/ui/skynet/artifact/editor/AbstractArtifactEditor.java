@@ -11,10 +11,18 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
@@ -76,5 +84,42 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    @Override
    public XFormToolkit getToolkit() {
       return (XFormToolkit) super.getToolkit();
+   }
+
+   protected Artifact getArtifactFromEditorInput() {
+      return (Artifact) getEditorInput().getAdapter(Artifact.class);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.editor.FormEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+    */
+   @Override
+   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+      super.init(site, input);
+      ISelectionProvider provider = new ArtifactEditorSelectionProvider();
+      provider.setSelection(new StructuredSelection(new Object[] {getArtifactFromEditorInput()}));
+      getSite().setSelectionProvider(provider);
+   }
+
+   private final class ArtifactEditorSelectionProvider implements ISelectionProvider {
+      private ISelection selection;
+
+      @Override
+      public void addSelectionChangedListener(ISelectionChangedListener listener) {
+      }
+
+      @Override
+      public ISelection getSelection() {
+         return selection;
+      }
+
+      @Override
+      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+      }
+
+      @Override
+      public void setSelection(ISelection selection) {
+         this.selection = selection;
+      }
    }
 }

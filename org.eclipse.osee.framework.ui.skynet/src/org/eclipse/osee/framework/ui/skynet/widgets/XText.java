@@ -172,7 +172,7 @@ public class XText extends XWidget {
       if (fillVertically) {
          if (height > 0) gd.heightHint = height;
       }
-
+      //      gd.widthHint = 200;
       sText.setLayoutData(gd);
       sText.setMenu(getDefaultMenu());
       sText.addModifyListener(textListener);

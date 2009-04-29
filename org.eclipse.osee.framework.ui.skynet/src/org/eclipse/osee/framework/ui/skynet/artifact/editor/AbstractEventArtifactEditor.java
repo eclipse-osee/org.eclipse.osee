@@ -47,10 +47,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       OseeEventManager.addListener(internalEventHandler);
    }
 
-   private Artifact getArtifactFromEditorInput() {
-      return (Artifact) getEditorInput().getAdapter(Artifact.class);
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.swt.IDirtiableEditor#onDirtied()
     */

@@ -81,9 +81,9 @@ public class AttributeFormPart extends AbstractFormPart {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
       setLabelFonts(composite, getBoldLabelFont());
-      layoutControls(composite);
-      composite.layout();
-
+      //      layoutControls(composite);
+      //      composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+      //      getManagedForm().getForm().getBody().layout(true);
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
          xWidget.addXModifiedListener(new XWidgetValidationListener());
       }
@@ -129,12 +129,16 @@ public class AttributeFormPart extends AbstractFormPart {
          XWidget xWidget = XWidgetUtility.asXWidget(parent);
          if (!(xWidget instanceof XSelectFromDialog<?>) && !(xWidget instanceof XStackedWidget)) {
             if (xWidget instanceof XTextDam) {
-               XTextDam dam = (XTextDam) xWidget;
-               if (!dam.isEditable()) {
-                  parent.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true));
-               } else {
-                  parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-               }
+               //               XTextDam dam = (XTextDam) xWidget;
+               //               if (!dam.isEditable()) {
+               //                  GridData gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
+               //                  gd.widthHint = 200;
+               //                  parent.setLayoutData(gd);
+               //               } else {
+               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+               gd.widthHint = 200;
+               parent.setLayoutData(gd);
+               //               }
             } else {
                parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
             }

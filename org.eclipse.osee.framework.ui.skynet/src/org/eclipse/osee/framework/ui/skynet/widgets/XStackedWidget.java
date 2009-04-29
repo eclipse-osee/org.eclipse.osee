@@ -253,7 +253,8 @@ public abstract class XStackedWidget<T> extends XLabel {
                messageIcon.setVisible(isVisible);
                messageLabel.setVisible(isVisible);
                parent.setVisible(isVisible);
-               parent.layout();
+               parent.layout(true);
+               //               container.layout(true);
             }
          }
       });

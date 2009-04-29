@@ -14,10 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,8 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditor
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -71,17 +65,6 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    public BaseArtifactEditorInput getEditorInput() {
       return (BaseArtifactEditorInput) super.getEditorInput();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
-    */
-   @Override
-   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-      super.init(site, input);
-      ISelectionProvider provider = new ArtifactEditorSelectionProvider();
-      provider.setSelection(new StructuredSelection(new Object[] {getEditorInput().getArtifact()}));
-      getSite().setSelectionProvider(provider);
    }
 
    /* (non-Javadoc)
@@ -322,28 +305,6 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
          outlinePage = new ArtifactEditorOutlinePage();
       }
       return outlinePage;
-   }
-
-   private final class ArtifactEditorSelectionProvider implements ISelectionProvider {
-      private ISelection selection;
-
-      @Override
-      public void addSelectionChangedListener(ISelectionChangedListener listener) {
-      }
-
-      @Override
-      public ISelection getSelection() {
-         return selection;
-      }
-
-      @Override
-      public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-      }
-
-      @Override
-      public void setSelection(ISelection selection) {
-         this.selection = selection;
-      }
    }
 
    public static void editArtifacts(final Collection<Artifact> artifacts) {
