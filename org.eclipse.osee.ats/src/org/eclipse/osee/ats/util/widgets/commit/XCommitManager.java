@@ -31,9 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -64,7 +62,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBranchEventListener, IFrameworkTransactionEventListener, IBranchEventListener {
+public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBranchEventListener, IBranchEventListener {
 
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
@@ -391,20 +389,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
     */
    public TeamWorkFlowArtifact getTeamArt() {
       return teamArt;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            loadTable();
-         }
-      });
    }
 
    /* (non-Javadoc)
