@@ -97,7 +97,6 @@ public abstract class XSelectFromDialog<T> extends XText {
       setVerticalLabel(true);
       super.createWidgets(composite, horizontalSpan, fillText);
 
-      getStyledText().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
       getStyledText().setEditable(false);
       getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
@@ -114,6 +113,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       });
 
       addToolTip(composite, getToolTip());
+      getStyledText().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
       refresh();
    }
 

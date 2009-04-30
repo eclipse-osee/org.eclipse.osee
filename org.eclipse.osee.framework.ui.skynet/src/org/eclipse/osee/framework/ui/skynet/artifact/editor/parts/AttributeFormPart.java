@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTy
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
@@ -141,28 +138,27 @@ public class AttributeFormPart extends AbstractFormPart {
    private void layoutControls(Control control) {
       if (control instanceof Label || control instanceof Button) {
          control.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-      } else {
-         XWidget xWidget = XWidgetUtility.asXWidget(control);
-         if (!(xWidget instanceof XSelectFromDialog<?> || xWidget instanceof XStackedWidget)) {
-            if (xWidget instanceof XTextDam) {
-               //               XTextDam dam = (XTextDam) xWidget;
-               //               if (!dam.isEditable()) {
-               //                  GridData gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
-               //                  gd.widthHint = 200;
-               //                  parent.setLayoutData(gd);
-               //               } else {
-               //               GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
-               //               //               gd.widthHint = 200;
-               //               control.setLayoutData(gd);
-               //               }
-            } else {
-               //               control.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-            }
-         }
+         //      } else {
+         //         XWidget xWidget = XWidgetUtility.asXWidget(control);
+         //         if (!(xWidget instanceof XSelectFromDialog<?> || xWidget instanceof XStackedWidget)) {
+         //            if (xWidget instanceof XTextDam) {
+         //               //               XTextDam dam = (XTextDam) xWidget;
+         //               //               if (!dam.isEditable()) {
+         //               //                  GridData gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
+         //               //                  gd.widthHint = 200;
+         //               //                  parent.setLayoutData(gd);
+         //               //               } else {
+         //               //               GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+         //               //               //               gd.widthHint = 200;
+         //               //               control.setLayoutData(gd);
+         //               //               }
+         //            } else {
+         //               //               control.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+         //            }
+         //         }
       }
-      if (control instanceof Composite //
-      //&& !(control instanceof StackedViewer)
-      ) {
+
+      if (control instanceof Composite) {
          Composite container = (Composite) control;
          for (Control child : container.getChildren()) {
             layoutControls(child);
