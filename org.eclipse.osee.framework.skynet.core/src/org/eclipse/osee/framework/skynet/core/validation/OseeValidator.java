@@ -51,7 +51,7 @@ public class OseeValidator {
       return instance;
    }
 
-   public IStatus validate(int requiredQualityOfService, AttributeType attributeType, Artifact artifact, Object proposedValue) {
+   public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeType attributeType, Object proposedValue) {
       checkExtensionsLoaded();
       MultiStatus result = new MultiStatus(SkynetActivator.PLUGIN_ID, IStatus.OK, "ok", null);
 
@@ -77,7 +77,7 @@ public class OseeValidator {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             String attributeTypeName = attributeType.getName();
             for (Attribute<?> attribute : artifact.getAttributes(attributeTypeName)) {
-               result.add(validate(requiredQualityOfService, attributeType, artifact, (Object) attribute.getValue()));
+               result.add(validate(requiredQualityOfService, artifact, attributeType, (Object) attribute.getValue()));
             }
          }
       } catch (Exception ex) {
