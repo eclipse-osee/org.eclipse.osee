@@ -914,7 +914,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          String name = getSoleAttributeValue("Name");
          return name == null ? UNNAMED : name;
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
    }
@@ -1430,11 +1429,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
       ModificationType modificationType = modType == ModificationType.NEW ? ModificationType.INTRODUCED : modType;
-      
+
       Artifact reflectedArtifact =
             artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
                   branch, modificationType);
-      
+
       reflectedArtifact.dirty = true;
 
       for (Attribute<?> attribute : attributes.getValues()) {
@@ -1697,7 +1696,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          }
       }
    }
-   
+
    /**
     * @return the reflected
     */

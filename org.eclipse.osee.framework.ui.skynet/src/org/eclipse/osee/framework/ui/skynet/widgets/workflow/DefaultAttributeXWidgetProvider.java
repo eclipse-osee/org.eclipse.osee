@@ -14,12 +14,16 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
@@ -76,12 +80,14 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          if (maxOccurrence == 1) {
             defaultData.setXWidgetName("XDateDam");
          } else {
-            defaultData.setXWidgetName("XMultiXWidgetTextDam");
+            defaultData.setXWidgetName("XStackedXTextDam");
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.WARNING, "Found a multi data attribute type");
          }
       } else {
          defaultData.setXWidgetName("XStackedXTextDam");
-         //         defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
-         //         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+         if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+            defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+         }
       }
       defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
       defaultData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);

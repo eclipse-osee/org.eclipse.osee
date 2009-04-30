@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -44,6 +45,7 @@ public class XLabel extends XWidget {
       // Create Data Widgets
       if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
+         labelWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
          labelWidget.setText(showString);
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());

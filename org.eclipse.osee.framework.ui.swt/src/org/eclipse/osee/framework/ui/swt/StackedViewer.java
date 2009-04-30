@@ -43,6 +43,8 @@ public class StackedViewer extends Composite {
 
       stackComposite = new Composite(this, SWT.NONE);
       stackLayout = new StackLayout();
+      stackLayout.marginHeight = 0;
+      stackLayout.marginWidth = 0;
       stackComposite.setLayout(stackLayout);
       stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -96,10 +98,11 @@ public class StackedViewer extends Composite {
     */
    @Override
    public void dispose() {
-      super.dispose();
       for (Control control : compositeMap.values()) {
          Widgets.disposeWidget(control);
       }
       compositeMap.clear();
+      Widgets.disposeWidget(stackComposite);
+      super.dispose();
    }
 }

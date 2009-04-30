@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.resource.JFaceResources;
@@ -18,10 +19,13 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -33,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.StackedViewer;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -65,28 +69,40 @@ public class AttributeFormPart extends AbstractFormPart {
    public void createContents(Composite parent) {
       final FormToolkit toolkit = getManagedForm().getToolkit();
       composite = toolkit.createComposite(parent, SWT.WRAP);
-      composite.setLayout(new GridLayout());
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      composite.setVisible(false);
 
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
-         for (AttributeType attributeType : AttributeTypeUtil.getTypesWithData(artifact)) {
-            //            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
-            //               createAttributeTypeControlsInSection(parent, toolkit, attributeType, false);
-            //            } else {
-            createAttributeTypeControls(composite, toolkit, artifact, attributeType, true);
-            //            }
+         List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
+         boolean willHaveASection = hasWordAttribute(types);
+         for (AttributeType attributeType : types) {
+            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+               createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
+            } else {
+               createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, true, false);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
       setLabelFonts(composite, getBoldLabelFont());
-      //      layoutControls(composite);
-      //      composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-      //      getManagedForm().getForm().getBody().layout(true);
+      layoutControls(composite);
+
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
          xWidget.addXModifiedListener(new XWidgetValidationListener());
       }
+      composite.setVisible(true);
+   }
+
+   private boolean hasWordAttribute(List<AttributeType> types) {
+      for (AttributeType attributeType : types) {
+         if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /* (non-Javadoc)
@@ -94,7 +110,7 @@ public class AttributeFormPart extends AbstractFormPart {
     */
    @Override
    public void dispose() {
-      //     Widgets.disposeControl(composite);
+      Widgets.disposeWidget(composite);
       super.dispose();
    }
 
@@ -110,24 +126,24 @@ public class AttributeFormPart extends AbstractFormPart {
 
    private void setLabelFonts(Control parent, Font font) {
       if (parent instanceof Label) {
-         ((Label) parent).setFont(font);
+         Label label = ((Label) parent);
+         label.setFont(font);
       }
       if (parent instanceof Composite) {
          Composite container = (Composite) parent;
          for (Control child : container.getChildren()) {
             setLabelFonts(child, font);
          }
+         container.layout();
       }
    }
 
-   private void layoutControls(Control parent) {
-      if ((parent instanceof Label)) {
-         parent.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-      } else if (parent instanceof Button) {
-         parent.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false));
+   private void layoutControls(Control control) {
+      if (control instanceof Label || control instanceof Button) {
+         control.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       } else {
-         XWidget xWidget = XWidgetUtility.asXWidget(parent);
-         if (!(xWidget instanceof XSelectFromDialog<?>) && !(xWidget instanceof XStackedWidget)) {
+         XWidget xWidget = XWidgetUtility.asXWidget(control);
+         if (!(xWidget instanceof XSelectFromDialog<?> || xWidget instanceof XStackedWidget)) {
             if (xWidget instanceof XTextDam) {
                //               XTextDam dam = (XTextDam) xWidget;
                //               if (!dam.isEditable()) {
@@ -135,31 +151,44 @@ public class AttributeFormPart extends AbstractFormPart {
                //                  gd.widthHint = 200;
                //                  parent.setLayoutData(gd);
                //               } else {
-               GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-               gd.widthHint = 200;
-               parent.setLayoutData(gd);
+               //               GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+               //               //               gd.widthHint = 200;
+               //               control.setLayoutData(gd);
                //               }
             } else {
-               parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+               //               control.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
             }
          }
       }
-      if (parent instanceof Composite && !(parent instanceof StackedViewer)) {
-         Composite container = (Composite) parent;
+      if (control instanceof Composite //
+      //&& !(control instanceof StackedViewer)
+      ) {
+         Composite container = (Composite) control;
          for (Control child : container.getChildren()) {
             layoutControls(child);
          }
       }
    }
 
-   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean isEditable) {
+   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean willHaveASection, boolean isEditable, boolean isExpandable) {
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
-      internalComposite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+      GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+      if (willHaveASection) {
+         layout.marginLeft = 18;
+      }
+      internalComposite.setLayout(layout);
+
+      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
       List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
       try {
+         if (isExpandable) {
+            for (DynamicXWidgetLayoutData data : concreteWidgets) {
+               data.getXOptionHandler().add(XOption.NO_LABEL);
+            }
+         }
+
          WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
          workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
       } catch (OseeCoreException ex) {
@@ -168,7 +197,7 @@ public class AttributeFormPart extends AbstractFormPart {
       return internalComposite;
    }
 
-   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean isEditable) {
+   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
       int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
 
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
@@ -178,14 +207,13 @@ public class AttributeFormPart extends AbstractFormPart {
       ExpandableComposite expandable = toolkit.createExpandableComposite(internalComposite, style);
       expandable.setText(attributeType.getName());
       expandable.setLayout(new GridLayout());
-      expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Artifact artifact = editor.getEditorInput().getArtifact();
 
-      Composite composite = createAttributeTypeControls(expandable, toolkit, artifact, attributeType, isEditable);
-      //      composite.setLayout(new GridLayout());
-      //      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
+      Composite composite =
+            createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable,
+                  true);
       expandable.setClient(composite);
 
       expandable.addExpansionListener(new IExpansionListener() {
@@ -213,25 +241,35 @@ public class AttributeFormPart extends AbstractFormPart {
       @Override
       public void widgetModified(XWidget xWidget) {
          if (xWidget != null) {
-            switch (count) {
-               case 0:
-                  xWidget.setControlCausedMessage("None Message", IMessageProvider.NONE);
-                  break;
-               case 1:
-                  xWidget.setControlCausedMessage("Info Message", IMessageProvider.INFORMATION);
-                  break;
-               case 2:
-                  xWidget.setControlCausedMessage("Warning Message", IMessageProvider.WARNING);
-                  break;
-               case 3:
-                  xWidget.setControlCausedMessage("Error Message", IMessageProvider.ERROR);
-                  break;
-               default:
-                  xWidget.removeControlCausedMessage();
-                  count = -1;
-                  break;
+            if (xWidget instanceof IArtifactWidget) {
+               //               IArtifactWidget aWidget = (IArtifactWidget)xWidget;
+               //               Artifact artifact = aWidget.getArtifact();
+               //               String attributeTypeName = aWidget.getAttributeName();
+               //               
+               //               AttributeType type = null;
+               //               aWidget.
+               //               OseeValidator.getInstance().validate(0, attributeType, artifact, proposedValue)
+
+               switch (count) {
+                  case 0:
+                     xWidget.setControlCausedMessage("None Message", IMessageProvider.NONE);
+                     break;
+                  case 1:
+                     xWidget.setControlCausedMessage("Info Message", IMessageProvider.INFORMATION);
+                     break;
+                  case 2:
+                     xWidget.setControlCausedMessage("Warning Message", IMessageProvider.WARNING);
+                     break;
+                  case 3:
+                     xWidget.setControlCausedMessage("Error Message", IMessageProvider.ERROR);
+                     break;
+                  default:
+                     xWidget.removeControlCausedMessage();
+                     count = -1;
+                     break;
+               }
+               count++;
             }
-            count++;
          }
       }
    }

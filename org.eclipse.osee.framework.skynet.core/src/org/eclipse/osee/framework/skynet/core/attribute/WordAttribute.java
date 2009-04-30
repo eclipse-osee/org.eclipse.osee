@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -52,7 +56,20 @@ public class WordAttribute extends StringAttribute {
     */
    @Override
    public String getDisplayableString() throws OseeCoreException {
-      return WordUtil.textOnly(getValue());
+      InputStream inputStream = null;
+      try {
+         inputStream = new XmlTextInputStream(getValue());
+         return Lib.inputStreamToString(inputStream);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (Exception ex) {
+               // Do Nothing
+            }
+         }
+      }
    }
-
 }

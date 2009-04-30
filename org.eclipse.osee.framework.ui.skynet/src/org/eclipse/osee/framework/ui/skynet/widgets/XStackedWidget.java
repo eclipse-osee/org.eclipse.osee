@@ -57,8 +57,8 @@ public abstract class XStackedWidget<T> extends XLabel {
    }
 
    public void dispose() {
-      super.dispose();
       stackedControl.dispose();
+      super.dispose();
    }
 
    public XStackedWidget(String displayLabel) {
@@ -102,8 +102,9 @@ public abstract class XStackedWidget<T> extends XLabel {
       GridLayout layout = new GridLayout(isDisplayLabel() ? 2 : 1, false);
       layout.marginHeight = 0;
       layout.marginWidth = 0;
+      layout.marginRight = 0;
       container.setLayout(layout);
-      container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       if (isDisplayLabel() && Strings.isValid(getLabel())) {
          labelWidget = new Label(container, SWT.NONE);
@@ -121,7 +122,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       layout1.verticalSpacing = 0;
       layout1.horizontalSpacing = 0;
       composite.setLayout(layout1);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       createToolBar(composite);
       stackedControl = new StackedControl();
@@ -247,14 +248,10 @@ public abstract class XStackedWidget<T> extends XLabel {
                messageIcon.setImage(image);
                messageLabel.setText(text);
 
-               messageIcon.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-               messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
                messageIcon.setVisible(isVisible);
                messageLabel.setVisible(isVisible);
                parent.setVisible(isVisible);
-               parent.layout(true);
-               //               container.layout(true);
+               parent.layout();
             }
          }
       });
@@ -327,7 +324,7 @@ public abstract class XStackedWidget<T> extends XLabel {
          pageIds.clear();
          stackedViewer = new StackedViewer(parent, SWT.BORDER);
          stackedViewer.setLayout(ALayout.getZeroMarginLayout());
-         GridData gd = new GridData(SWT.FILL, SWT.FILL, false, true);
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
          gd.minimumHeight = 60;
          gd.minimumWidth = 60;
          stackedViewer.setLayoutData(gd);
@@ -337,7 +334,7 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       public void dispose() {
          pageIds.clear();
-         stackedViewer.dispose();
+         Widgets.disposeWidget(stackedViewer);
       }
 
       public void refresh() {
@@ -391,7 +388,6 @@ public abstract class XStackedWidget<T> extends XLabel {
          }
          this.currentPage = index;
          stackedViewer.setCurrentControl(pageId);
-         container.layout();
          updateCurrentPageLabel();
       }
 
@@ -403,10 +399,8 @@ public abstract class XStackedWidget<T> extends XLabel {
             String id = GUID.generateGuidStr();
             if (pageIds.add(id)) {
                Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
-               GridLayout layout = ALayout.getZeroMarginLayout(1, false);
-               composite.setLayout(layout);
-               GridData data = new GridData(SWT.FILL, SWT.FILL, false, true);
-               composite.setLayoutData(data);
+               composite.setLayout(new GridLayout());
+               composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
                createPage(id, composite, value);
                stackedViewer.addControl(id, composite);

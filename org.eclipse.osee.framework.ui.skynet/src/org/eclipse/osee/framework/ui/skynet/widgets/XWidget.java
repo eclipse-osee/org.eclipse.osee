@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -49,6 +50,7 @@ public abstract class XWidget {
    private String toolTip = null;
    private boolean requiredEntry = false;
    private boolean editable = true;
+   private MutableBoolean isNotificationAllowed = new MutableBoolean(true);
 
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
@@ -91,8 +93,15 @@ public abstract class XWidget {
    }
 
    public void notifyXModifiedListeners() {
-      for (XModifiedListener listener : modifiedListeners)
-         listener.widgetModified(this);
+      if (areNotificationsAllowed()) {
+         for (XModifiedListener listener : modifiedListeners) {
+            listener.widgetModified(this);
+         }
+      }
+   }
+
+   public boolean areNotificationsAllowed() {
+      return isNotificationAllowed.getValue();
    }
 
    private IManagedForm getManagedForm() {
@@ -167,21 +176,32 @@ public abstract class XWidget {
       }
    }
 
+   protected void setNotificationsAllowed(boolean areAllowed) {
+      this.isNotificationAllowed.setValue(areAllowed);
+   }
+
    protected abstract void createWidgets(Composite parent, int horizontalSpan);
 
    public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
-      if (managedForm != null) {
-         this.toolkit = managedForm.getToolkit();
-         this.managedForm = managedForm;
-      }
-      createWidgets(parent, horizontalSpan);
-      adaptControls(toolkit);
+      //      synchronized (isNotificationAllowed) {
+      setNotificationsAllowed(false);
+      try {
+         if (managedForm != null) {
+            this.toolkit = managedForm.getToolkit();
+            this.managedForm = managedForm;
+         }
+         createWidgets(parent, horizontalSpan);
+         adaptControls(toolkit);
 
-      // Added to be able to operate on XWidget who create the control
-      Control internalControl = getControl();
-      if (internalControl != null) {
-         internalControl.setData(XWIDGET_DATA_KEY, this);
+         // Added to be able to operate on XWidget who create the control
+         Control internalControl = getControl();
+         if (internalControl != null) {
+            internalControl.setData(XWIDGET_DATA_KEY, this);
+         }
+      } finally {
+         setNotificationsAllowed(true);
       }
+      //      }
    }
 
    public void adaptControls(FormToolkit toolkit) {

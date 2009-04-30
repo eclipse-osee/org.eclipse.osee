@@ -20,6 +20,21 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Donald G. Dunne
  */
 public interface IArtifactWidget {
+
+   //   /**
+   //    * Artifact used as storage for this widget
+   //    * 
+   //    * @throws Exception TODO
+   //    */
+   //   public Artifact getArtifact();
+   //
+   //   /**
+   //    * Attribute Name used for storage
+   //    * 
+   //    * @throws Exception TODO
+   //    */
+   //   public String getAttributeName();
+
    /**
     * Set artifact used as storage for this widget
     * 

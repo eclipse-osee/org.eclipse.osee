@@ -30,6 +30,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
  */
 public abstract class AbstractArtifactEditor extends FormEditor implements IDirtiableEditor {
 
+   private final static Object[] EMPTY_ARRAY = new Object[0];
+
    /*
     * (non-Javadoc)
     * 
@@ -97,7 +99,9 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);
       ISelectionProvider provider = new ArtifactEditorSelectionProvider();
-      provider.setSelection(new StructuredSelection(new Object[] {getArtifactFromEditorInput()}));
+      Artifact artifact = getArtifactFromEditorInput();
+      Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
+      provider.setSelection(new StructuredSelection(selected));
       getSite().setSelectionProvider(provider);
    }
 

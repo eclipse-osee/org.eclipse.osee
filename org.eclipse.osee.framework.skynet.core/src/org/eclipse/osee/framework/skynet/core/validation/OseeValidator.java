@@ -47,7 +47,7 @@ public class OseeValidator {
    private OseeValidator() {
    }
 
-   public OseeValidator getInstance() {
+   public static OseeValidator getInstance() {
       return instance;
    }
 

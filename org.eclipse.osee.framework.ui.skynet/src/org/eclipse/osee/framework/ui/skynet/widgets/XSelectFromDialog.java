@@ -88,16 +88,18 @@ public abstract class XSelectFromDialog<T> extends XText {
    public void createWidgets(final Composite parent, int horizontalSpan, boolean fillText) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(3, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
       Label label = getLabelWidget();
       if (label != null) {
          label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       }
+      setVerticalLabel(true);
       super.createWidgets(composite, horizontalSpan, fillText);
+
       getStyledText().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
       getStyledText().setEditable(false);
-      getStyledText().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
       Button button = new Button(composite, SWT.PUSH);
       button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
