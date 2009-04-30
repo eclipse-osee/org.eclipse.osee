@@ -78,6 +78,14 @@ public abstract class XStackedWidget<T> extends XLabel {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabel#getControl()
+    */
+   @Override
+   public Control getControl() {
+      return stackedControl.stackedViewer;
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setToolTip(java.lang.String)
     */
    @Override
@@ -149,10 +157,10 @@ public abstract class XStackedWidget<T> extends XLabel {
       messageArea.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       messageIcon = new Label(messageArea, SWT.NONE);
-      messageIcon.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+      messageIcon.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 
       messageLabel = new Label(messageArea, SWT.NONE);
-      messageLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
+      messageLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
    }
 
    private void createToolBar(Composite parent) {
@@ -246,7 +254,7 @@ public abstract class XStackedWidget<T> extends XLabel {
                Image image =
                      Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
                messageIcon.setImage(image);
-               messageLabel.setText(text);
+               messageLabel.setText(isVisible ? " " + text : text);
 
                messageIcon.setVisible(isVisible);
                messageLabel.setVisible(isVisible);
