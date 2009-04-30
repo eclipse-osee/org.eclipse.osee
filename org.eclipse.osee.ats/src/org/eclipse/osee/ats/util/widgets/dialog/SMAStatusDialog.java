@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XPercent;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
@@ -132,11 +133,8 @@ public class SMAStatusDialog extends MessageDialog {
    }
 
    protected void updateStatusLabel() {
-      Result result = isComplete();
-      if (result.isFalse())
-         statusLabel.setText(result.getText());
-      else
-         statusLabel.setText("");
+      IStatus result = isComplete();
+      statusLabel.setText(result.isOK() ? "" : result.getMessage());
       statusLabel.getParent().layout();
    }
 
@@ -152,19 +150,28 @@ public class SMAStatusDialog extends MessageDialog {
       return (splitRadio.isSelected());
    }
 
-   protected Result isComplete() {
-      if (percent.isValid().isFalse()) return percent.isValid();
-      if (hours.isValid().isFalse()) return hours.isValid();
-      if (smas.size() > 1) {
-         if (!splitRadio.isSelected() && !eachRadio.isSelected()) return new Result(
-               "Either split or each must be selected");
-         if (splitRadio.isSelected() && eachRadio.isSelected()) return new Result("Select only split or each");
+   protected IStatus isComplete() {
+      IStatus status = percent.isValid();
+      if (!status.isOK()) {
+         return status;
       }
-      return Result.TrueResult;
+      status = hours.isValid();
+      if (!status.isOK()) {
+         return status;
+      }
+      if (smas.size() > 1) {
+         if (!splitRadio.isSelected() && !eachRadio.isSelected()) {
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Either split or each must be selected");
+         }
+         if (splitRadio.isSelected() && eachRadio.isSelected()) {
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Select only split or each");
+         }
+      }
+      return Status.OK_STATUS;
    }
 
    private void updateButtons() {
-      okButton.setEnabled(isComplete().isTrue());
+      okButton.setEnabled(isComplete().isOK());
    }
 
    public XFloat getHours() {

@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
@@ -27,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -163,8 +164,8 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return userRoleManager;
    }
 
-   public Result isUserRoleValid() throws OseeCoreException {
-      return Result.TrueResult;
+   public IStatus isUserRoleValid() throws OseeCoreException {
+      return Status.OK_STATUS;
    }
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {

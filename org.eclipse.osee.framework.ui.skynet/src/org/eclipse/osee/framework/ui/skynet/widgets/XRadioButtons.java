@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -287,14 +289,14 @@ public class XRadioButtons extends XWidget {
    }
 
    public void refresh() {
-      setLabelError();
+      validate();
    }
 
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequiredEntry() && getSelectedNames().size() == 0) {
-         return new Result(getLabel() + " must have at least one selection.");
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must have at least one selection.");
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    public String getReportData() {

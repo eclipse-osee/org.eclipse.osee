@@ -20,8 +20,10 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -233,7 +235,7 @@ public class XList extends XWidget {
          XListItem xItem = items.get(sel);
          if (xItem != null) xItem.setSelected(true);
       }
-      setLabelError();
+      validate();
 
       notifyXModifiedListeners();
    }
@@ -326,7 +328,7 @@ public class XList extends XWidget {
             } else if (xItem.isSelected()) selected.add(xItem.getName());
          }
          listList.setSelection(selected.toArray(new String[selected.size()]));
-         setLabelError();
+         validate();
       }
    }
 
@@ -384,21 +386,23 @@ public class XList extends XWidget {
    }
 
    @Override
-   public Result isValid() {
-      if (!isRequiredEntry()) return Result.TrueResult;
+   public IStatus isValid() {
+      if (!isRequiredEntry()) return Status.OK_STATUS;
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
          if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
-            return Result.TrueResult;
+            return Status.OK_STATUS;
          } else if (size < requiredMinSelected)
-            return new Result(getLabel() + " must have at least " + requiredMinSelected + " selected.");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+                  getLabel() + " must have at least " + requiredMinSelected + " selected.");
          else if (size < requiredMaxSelected)
-            return new Result(getLabel() + " should only have " + requiredMaxSelected + " selected.");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+                  getLabel() + " should only have " + requiredMaxSelected + " selected.");
          else
-            return new Result(getLabel());
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel());
       }
-      if (size == 0) return new Result(getLabel() + " must be selected.");
-      return Result.TrueResult;
+      if (size == 0) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+      return Status.OK_STATUS;
    }
 
    /**

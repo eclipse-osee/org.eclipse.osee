@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -50,21 +52,21 @@ public class XFloat extends XText {
    }
 
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
          String name = getLabel();
          if (name.equals("")) name = "Value";
-         Result result = super.isValid();
-         if (result.isFalse()) {
+         IStatus result = super.isValid();
+         if (!result.isOK()) {
             return result;
          } else if (!this.isFloat()) {
-            return new Result(name + " must be a Float");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be a Float");
          } else if (minValueSet && (this.getFloat() < minValue)) {
-            return new Result(name + " must be >= " + minValue);
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be >= " + minValue);
          } else if (maxValueSet && (this.getFloat() > maxValue)) {
-            return new Result(name + " must be <= " + maxValue);
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be <= " + maxValue);
          }
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 }

@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -435,24 +437,24 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
-      setLabelError();
+      validate();
       refreshActionEnablement();
    }
 
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            return new Result("At least one defect entry is required");
+            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "At least one defect entry is required");
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
                   extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
                   extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-                  return new Result(
+                  return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
                         "Review not complete until all items are marked for severity, disposition and closed");
                }
 
@@ -460,10 +462,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
          extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
          extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-         return Result.TrueResult;
+         return Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Result("Exception validating defects. See log for details. " + ex);
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+               "Exception validating defects. See log for details. " + ex);
       }
    }
 

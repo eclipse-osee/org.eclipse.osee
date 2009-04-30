@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -22,7 +24,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -55,14 +56,17 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    }
 
    @Override
-   protected Result isComplete() {
+   protected IStatus isComplete() {
       TaskResOptionDefinition trd = getSelectedOptionDef();
-      if (trd == null) return Result.FalseResult;
+      if (trd == null) return Status.OK_STATUS;
       int percentComp = percent.getInt();
-      if (trd.isCompleteable() && (percentComp != 100)) return new Result(
-            "Completed resolution must have %Complete == 100");
-      if (percentComp == 100 && !trd.isCompleteable()) return new Result(
-            "Can't have 100% complete with a non-Completed resolution");
+      if (trd.isCompleteable() && (percentComp != 100)) {
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Completed resolution must have %Complete == 100");
+      }
+      if (percentComp == 100 && !trd.isCompleteable()) {
+         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+               "Can't have 100% complete with a non-Completed resolution");
+      }
       return super.isComplete();
    }
 

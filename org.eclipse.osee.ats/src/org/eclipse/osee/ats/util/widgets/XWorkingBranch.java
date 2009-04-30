@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -53,7 +55,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    private Button showArtifactExplorer;
    private Button showChangeReport;
    private Button deleteBranch;
-   public static enum Status {
+   public static enum BranchStatus {
       Not_Started, Changes_InProgress, Changes_NotPermitted
    }
    public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
@@ -168,13 +170,13 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    public String getStatus() {
       try {
          if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchArchived()) {
-            return Status.Changes_NotPermitted.name();
+            return BranchStatus.Changes_NotPermitted.name();
          } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchEverCommitted()) {
-            return Status.Changes_NotPermitted.name();
+            return BranchStatus.Changes_NotPermitted.name();
          } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchInWork()) {
-            return Status.Changes_InProgress.name();
+            return BranchStatus.Changes_InProgress.name();
          } else {
-            return Status.Not_Started.name();
+            return BranchStatus.Not_Started.name();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
@@ -230,8 +232,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
     * @see osee.skynet.gui.widgets.XWidget#isValid()
     */
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    /* (non-Javadoc)
@@ -252,7 +254,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                if (getWorkingBranch() == null)
                   showArtifactExplorer.setEnabled(false);
                else {
-                  if (getStatus().equals(Status.Changes_NotPermitted.name())) {
+                  if (getStatus().equals(BranchStatus.Changes_NotPermitted.name())) {
                      showArtifactExplorer.setEnabled(false);
                   } else
                      showArtifactExplorer.setEnabled(true);

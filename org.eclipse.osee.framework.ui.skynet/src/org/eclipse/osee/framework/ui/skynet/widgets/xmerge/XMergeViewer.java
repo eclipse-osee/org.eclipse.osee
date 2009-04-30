@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -415,7 +414,7 @@ public class XMergeViewer extends XWidget implements IActionable {
    @Override
    public void refresh() {
       mergeXViewer.refresh();
-      setLabelError();
+      validate();
       refreshActionEnablement();
       mergeView.showConflicts(true);
       int resolved = 0;
@@ -439,8 +438,8 @@ public class XMergeViewer extends XWidget implements IActionable {
    }
 
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    @Override

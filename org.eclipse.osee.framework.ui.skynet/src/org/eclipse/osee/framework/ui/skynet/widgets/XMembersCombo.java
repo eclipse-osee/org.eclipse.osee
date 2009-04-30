@@ -14,11 +14,12 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Search;
 import org.eclipse.swt.SWT;
@@ -137,7 +138,7 @@ public class XMembersCombo extends XWidget {
          public void modifyText(ModifyEvent e) {
             String selectedUserName = dataCombo.getText();
             selectedUser = (User) dataCombo.getData(selectedUserName);
-            setLabelError();
+            validate();
             notifyXModifiedListeners();
          }
       });
@@ -271,7 +272,7 @@ public class XMembersCombo extends XWidget {
          }
          dataCombo.select(index);
       }
-      setLabelError();
+      validate();
    }
 
    public void clear() {
@@ -280,9 +281,10 @@ public class XMembersCombo extends XWidget {
    }
 
    @Override
-   public Result isValid() {
-      if (isRequiredEntry() && !isAssigned()) return new Result("Must select " + getLabel());
-      return Result.TrueResult;
+   public IStatus isValid() {
+      if (isRequiredEntry() && !isAssigned()) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+            "Must select " + getLabel());
+      return Status.OK_STATUS;
    }
 
    @Override

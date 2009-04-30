@@ -141,10 +141,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
 
    public Result isPageComplete() {
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-         if (!layoutData.getXWidget().isValid().isTrue()) {
+         if (!layoutData.getXWidget().isValid().isOK()) {
             // Check to see if widget is part of a completed OR or XOR group
             if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) {
-               return new Result(layoutData.getXWidget().isValid().getText());
+               return new Result(layoutData.getXWidget().isValid().getMessage());
             }
          }
       }

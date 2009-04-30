@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -74,15 +75,17 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.artifact.ReviewSMArtifact#isUserRoleValid()
     */
    @Override
-   public Result isUserRoleValid() throws OseeCoreException {
-      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Result("Must have at least one Author");
-      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Result(
-            "Must have at least one Reviewer");
+   public IStatus isUserRoleValid() throws OseeCoreException {
+      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Status(IStatus.ERROR,
+            AtsPlugin.PLUGIN_ID, "Must have at least one Author");
+      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Status(IStatus.ERROR,
+            AtsPlugin.PLUGIN_ID, "Must have at least one Reviewer");
       // If in review state, all roles must have hours spent entered
       if (smaMgr.getStateMgr().getCurrentStateName().equals(
             PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
-            if (uRole.getHoursSpent() == null) return new Result("Hours spent must be entered for each role.");
+            if (uRole.getHoursSpent() == null) new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+                  "Hours spent must be entered for each role.");
          }
       }
       return super.isUserRoleValid();

@@ -20,14 +20,17 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 /**
  * @author Roberto E. Escobar
  */
-public class XWidgetValidator {
+public class XWidgetValidateUtility {
+
+   private XWidgetValidateUtility() {
+   }
 
    //            Artifact artifact = null; //aWidget.getArtifact();
    //            AttributeType attributeType = null;//AttributeTypeManager.getType(aWidget.getAttributeName());
    //            String data = null;
    //            validate(0, xWidget, artifact, attributeType, data);
 
-   private void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, AttributeType attributeType, Object proposedValue) {
+   private static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, AttributeType attributeType, Object proposedValue) {
       IStatus status =
             OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       if (!status.isOK()) {
@@ -44,15 +47,15 @@ public class XWidgetValidator {
       }
    }
 
-   private boolean isInRange(int value, int min, int max) {
+   public static boolean isValueInRange(int value, int min, int max) {
       return min <= value && value < max;
    }
 
-   private int toMessageProviderLevel(int level) {
+   public static int toMessageProviderLevel(int level) {
       int toReturn = IMessageProvider.NONE;
-      if (isInRange(level, Level.INFO.intValue(), Level.WARNING.intValue())) {
+      if (isValueInRange(level, Level.INFO.intValue(), Level.WARNING.intValue())) {
          toReturn = IMessageProvider.INFORMATION;
-      } else if (isInRange(level, Level.WARNING.intValue(), Level.SEVERE.intValue())) {
+      } else if (isValueInRange(level, Level.WARNING.intValue(), Level.SEVERE.intValue())) {
          toReturn = IMessageProvider.WARNING;
       } else if (level > Level.SEVERE.intValue()) {
          toReturn = IMessageProvider.ERROR;

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -24,6 +26,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -199,7 +202,7 @@ public class XComboViewer extends XWidget {
    }
 
    private void handleSelection() {
-      setLabelError();
+      validate();
       notifyXModifiedListeners();
    }
 
@@ -230,7 +233,7 @@ public class XComboViewer extends XWidget {
 
    protected void updateListWidget() {
       comboViewer.refresh();
-      setLabelError();
+      validate();
    }
 
    public void add(Object obj) {
@@ -249,11 +252,13 @@ public class XComboViewer extends XWidget {
    }
 
    @Override
-   public Result isValid() {
-      if (!isRequiredEntry()) return Result.TrueResult;
+   public IStatus isValid() {
+      if (!isRequiredEntry()) return Status.OK_STATUS;
       Object selected = getSelected();
-      if (selected == null && isRequiredEntry()) return new Result("Must select " + getLabel());
-      return Result.TrueResult;
+      if (selected == null && isRequiredEntry()) {
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
+      }
+      return Status.OK_STATUS;
    }
 
    @Override

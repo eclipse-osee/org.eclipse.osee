@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -51,6 +52,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -61,7 +63,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
@@ -124,6 +128,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          scrolledForm.setText(getEditorInput().getName());
          fillBody(managedForm);
+         addMessageDecoration(scrolledForm);
+         managedForm.getMessageManager().setAutoUpdate(true);
+
          refreshToolbar();
 
          if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
@@ -132,6 +139,26 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private void addMessageDecoration(ScrolledForm form) {
+      form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
+
+         public void linkActivated(HyperlinkEvent e) {
+            String title = e.getLabel();
+            Object href = e.getHref();
+            if (href instanceof IMessage[]) {
+               Point noteLocation = ((Control) e.widget).toDisplay(0, 0);
+               noteLocation.x += 10;
+               noteLocation.y += 10;
+
+               MessageSummaryNote note = new MessageSummaryNote(getManagedForm(), title, (IMessage[]) href);
+               note.setLocation(noteLocation);
+               note.open();
+            }
+         }
+
+      });
    }
 
    private void refreshToolbar() throws OseeCoreException {

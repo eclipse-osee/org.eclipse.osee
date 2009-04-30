@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -39,19 +41,19 @@ public class XInteger extends XText {
       this.maxValue = maxValue;
    }
 
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
-         Result result = super.isValid();
-         if (result.isFalse()) {
+         IStatus result = super.isValid();
+         if (!result.isOK()) {
             return result;
          } else if (!this.isInteger()) {
-            return new Result("Must be an Integer");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be an Integer");
          } else if (minValueSet && (this.getInteger() < minValue)) {
-            return new Result("Must be >= " + minValue);
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be >= " + minValue);
          } else if (maxValueSet && (this.getInteger() > maxValue)) {
-            return new Result("Must be <= " + maxValue);
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must be <= " + maxValue);
          }
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 }

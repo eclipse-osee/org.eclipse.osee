@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -184,11 +185,14 @@ public class XMultiXWidget extends XWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
     */
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       for (XWidget xWidget : xWidgets) {
-         if (xWidget.isValid().isFalse()) return xWidget.isValid();
+         IStatus status = xWidget.isValid();
+         if (!status.isOK()) {
+            return status;
+         }
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    /* (non-Javadoc)

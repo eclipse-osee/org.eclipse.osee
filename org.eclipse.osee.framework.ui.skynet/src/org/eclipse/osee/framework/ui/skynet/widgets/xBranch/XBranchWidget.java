@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -236,12 +235,12 @@ public class XBranchWidget extends XWidget implements IActionable {
    @Override
    public void refresh() {
       branchXViewer.refresh();
-      setLabelError();
+      validate();
    }
 
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    @Override

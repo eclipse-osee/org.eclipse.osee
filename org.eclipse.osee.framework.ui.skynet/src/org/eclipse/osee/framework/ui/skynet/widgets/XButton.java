@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -88,7 +89,7 @@ public class XButton extends XWidget {
       button.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            setLabelError();
+            validate();
             notifyXModifiedListeners();
          }
       });
@@ -138,7 +139,7 @@ public class XButton extends XWidget {
    }
 
    private void updateCheckWidget() {
-      setLabelError();
+      validate();
    }
 
    public void set(boolean selected) {
@@ -150,8 +151,8 @@ public class XButton extends XWidget {
       updateCheckWidget();
    }
 
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    public String toHTML(String labelFont) {

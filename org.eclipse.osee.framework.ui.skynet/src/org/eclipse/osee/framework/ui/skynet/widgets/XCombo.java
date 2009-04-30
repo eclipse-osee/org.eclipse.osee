@@ -15,8 +15,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -128,7 +130,7 @@ public class XCombo extends XWidget {
             if (data.compareTo("--select--") == 0) {
                data = "";
             }
-            setLabelError();
+            validate();
             notifyXModifiedListeners();
          }
       };
@@ -303,7 +305,7 @@ public class XCombo extends XWidget {
          }
          if (displayDataStrings.size() < 15) dataCombo.setVisibleItemCount(displayDataStrings.size());
       }
-      setLabelError();
+      validate();
    }
 
    public void set(String data) {
@@ -324,11 +326,11 @@ public class XCombo extends XWidget {
    }
 
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequiredEntry() && data.equals("")) {
-         return new Result(getLabel() + " must be selected.");
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    @Override

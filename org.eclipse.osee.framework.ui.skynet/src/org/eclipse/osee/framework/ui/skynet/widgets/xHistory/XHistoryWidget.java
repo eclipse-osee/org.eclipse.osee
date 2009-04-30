@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -202,12 +201,12 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public void refresh() {
       xHistoryViewer.refresh();
-      setLabelError();
+      validate();
    }
 
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    @Override

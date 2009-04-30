@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -146,7 +147,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       }
       valueLabel.setText(getCurrentValue());
       valueLabel.getParent().layout();
-      setLabelError();
+      validate();
 
    }
 
@@ -219,8 +220,8 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
     * @see osee.skynet.gui.widgets.XWidget#isValid()
     */
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    /* (non-Javadoc)

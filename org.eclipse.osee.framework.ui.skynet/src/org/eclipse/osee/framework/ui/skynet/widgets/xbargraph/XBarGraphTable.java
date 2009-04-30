@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xbargraph;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -156,8 +157,8 @@ public class XBarGraphTable extends XWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
     */
    @Override
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    /* (non-Javadoc)

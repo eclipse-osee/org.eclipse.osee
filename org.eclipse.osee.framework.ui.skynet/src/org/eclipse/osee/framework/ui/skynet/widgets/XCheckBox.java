@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -73,7 +74,7 @@ public class XCheckBox extends XWidget {
 
          public void widgetSelected(SelectionEvent event) {
             selected = checkButton.getSelection();
-            setLabelError();
+            validate();
             notifyXModifiedListeners();
          }
       });
@@ -135,7 +136,7 @@ public class XCheckBox extends XWidget {
 
    private void updateCheckWidget() {
       if (checkButton != null && !checkButton.isDisposed()) checkButton.setSelection(selected);
-      setLabelError();
+      validate();
    }
 
    public void set(boolean selected) {
@@ -147,8 +148,8 @@ public class XCheckBox extends XWidget {
       updateCheckWidget();
    }
 
-   public Result isValid() {
-      return Result.TrueResult;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
    public String toHTML(String labelFont) {
@@ -156,7 +157,7 @@ public class XCheckBox extends XWidget {
    }
 
    /**
-    * If set, label will be displayed after the checkbox NOTE: Has to be set before call to createWidgets
+    * If set, label will be displayed after the check box NOTE: Has to be set before call to createWidgets
     * 
     * @param labelAfter The labelAfter to set.
     */

@@ -17,12 +17,14 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -108,6 +110,10 @@ public abstract class XWidget {
       return managedForm;
    }
 
+   public boolean isInForm() {
+      return getManagedForm() != null;
+   }
+
    protected IMessageManager getMessageManager() {
       return getManagedForm() != null ? managedForm.getMessageManager() : null;
    }
@@ -147,28 +153,34 @@ public abstract class XWidget {
       }
    }
 
-   public void setLabelError() {
-      if (labelWidget == null || labelWidget.isDisposed()) {
-         return;
-      }
-      if (!isValid().isTrue()) {
-         labelWidget.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      } else {
-         labelWidget.setForeground(null);
-      }
-      if (mouseLabelListener == null) {
-         mouseLabelListener = new MouseListener() {
-            public void mouseDoubleClick(MouseEvent e) {
-               openHelp();
+   public void validate() {
+      if (isEditable()) {
+         IStatus status = isValid();
+         if (isInForm()) {
+            if (!status.isOK()) {
+               setControlCausedMessage("validation.error", status.getMessage(), IMessageProvider.ERROR);
+            } else {
+               removeControlCausedMessage("validation.error");
             }
+         } else {
+            if (Widgets.isAccessible(labelWidget)) {
+               labelWidget.setForeground(status.isOK() ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+               if (mouseLabelListener == null) {
+                  mouseLabelListener = new MouseListener() {
+                     public void mouseDoubleClick(MouseEvent e) {
+                        openHelp();
+                     }
 
-            public void mouseDown(MouseEvent e) {
-            }
+                     public void mouseDown(MouseEvent e) {
+                     }
 
-            public void mouseUp(MouseEvent e) {
+                     public void mouseUp(MouseEvent e) {
+                     }
+                  };
+                  labelWidget.addMouseListener(mouseLabelListener);
+               }
             }
-         };
-         labelWidget.addMouseListener(mouseLabelListener);
+         }
       }
    }
 
@@ -176,8 +188,10 @@ public abstract class XWidget {
 
    public void openHelp() {
       try {
-         if (toolTip != null && label != null) MessageDialog.openInformation(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), label + " Tool Tip", toolTip);
+         if (toolTip != null && label != null) {
+            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  label + " Tool Tip", toolTip);
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -243,7 +257,7 @@ public abstract class XWidget {
     * 
     * @return Return boolean validity indication.
     */
-   public abstract Result isValid();
+   public abstract IStatus isValid();
 
    /**
     * Called with string found between xml tags Used by setFromXml() String will be sent through AXml.xmlToText() before

@@ -12,9 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -124,7 +127,7 @@ public class XText extends XWidget {
             if (sText != null) {
                debug("modifyText");
                text = sText.getText();
-               setLabelError();
+               validate();
                notifyXModifiedListeners();
             }
          }
@@ -188,7 +191,7 @@ public class XText extends XWidget {
          sText.setTextLimit(maxTextChars);
       }
       if (fillText) updateTextWidget();
-      setLabelError();
+      validate();
       sText.setEditable(isEditable());
       if (font != null) sText.setFont(font);
       parent.layout();
@@ -360,7 +363,7 @@ public class XText extends XWidget {
    @Override
    public void setRequiredEntry(boolean requiredEntry) {
       super.setRequiredEntry(requiredEntry);
-      setLabelError();
+      validate();
    }
 
    public void addModifyListener(ModifyListener modifyListener) {
@@ -443,7 +446,7 @@ public class XText extends XWidget {
       // Disable Listeners so not to fill Undo List
       sText.setText(text);
       // Reenable Listeners
-      setLabelError();
+      validate();
    }
 
    public void set(String text) {
@@ -515,11 +518,11 @@ public class XText extends XWidget {
    }
 
    @Override
-   public Result isValid() {
-      if (isRequiredEntry() && get().equals("")) {
-         return new Result(String.format("Must enter \"%s\"", getLabel()));
+   public IStatus isValid() {
+      if (isRequiredEntry() && !Strings.isValid(get())) {
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, String.format("Must enter \"%s\"", getLabel()));
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    /*

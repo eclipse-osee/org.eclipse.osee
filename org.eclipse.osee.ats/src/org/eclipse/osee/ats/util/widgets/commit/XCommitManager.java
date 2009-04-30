@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -275,24 +277,24 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public void refresh() {
       if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) return;
       xCommitManager.refresh();
-      setLabelError();
+      validate();
       refreshActionEnablement();
       setXviewerTree();
    }
 
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       try {
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured()) {
                extraInfoLabel.setText("All branches must be configured and committed - Double-click item to perform Action");
                extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Result(false, "All branches must be configured and committed.");
+               return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "All branches must be configured and committed.");
             }
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
                extraInfoLabel.setText("All branches must be committed - Double-click item to perform Action");
                extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Result(false, "All branches must be committed.");
+               return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "All branches must be committed.");
             }
             extraInfoLabel.setText("Double-click item to perform Action");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
@@ -300,7 +302,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    @Override

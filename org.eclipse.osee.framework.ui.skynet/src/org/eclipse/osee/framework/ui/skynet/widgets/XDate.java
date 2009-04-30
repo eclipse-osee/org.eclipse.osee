@@ -17,10 +17,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -156,7 +158,7 @@ public class XDate extends XWidget {
                date = null;
             else
                date = newDate.getTime();
-            setLabelError();
+            validate();
             notifyXModifiedListeners();
             dateCombo.getParent().layout();
          }
@@ -225,18 +227,20 @@ public class XDate extends XWidget {
 
    @Override
    public void refresh() {
-      setLabelError();
+      validate();
    }
 
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequireFutureDate()) {
-         if (getDate().before(new Date())) return new Result(getLabel() + " must be in future.");
+         if (getDate().before(new Date())) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+               getLabel() + " must be in future.");
       }
       if (isRequiredEntry()) {
-         if (get().equals("")) return new Result(getLabel() + " must be selected.");
+         if (get().equals("")) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
+               getLabel() + " must be selected.");
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    @Override

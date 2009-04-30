@@ -18,13 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
@@ -214,7 +215,7 @@ public class DynamicXWidgetLayout {
             dynamicWidgetLayoutListener.createXWidgetLayoutData(xWidgetLayoutData, xWidget, toolkit, artifact,
                   xModListener, isEditable);
          }
-         xWidget.setLabelError();
+         xWidget.validate();
       }
       refreshOrAndXOrRequiredFlags();
    }
@@ -254,15 +255,15 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   public Result isPageComplete() {
+   public IStatus isPageComplete() {
       for (DynamicXWidgetLayoutData data : datas) {
-         Result valid = data.getXWidget().isValid();
-         if (valid.isFalse()) {
+         IStatus valid = data.getXWidget().isValid();
+         if (!valid.isOK()) {
             // Check to see if widget is part of a completed OR or XOR group
             if (!isOrGroupFromAttrNameComplete(data.getStorageName()) && !isXOrGroupFromAttrNameComplete(data.getStorageName())) return valid;
          }
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    public Set<DynamicXWidgetLayoutData> getLayoutDatas() {
@@ -317,7 +318,7 @@ public class DynamicXWidgetLayout {
    public boolean isOrGroupFromAttrNameComplete(String name) {
       for (String aName : getOrRequiredGroup(name)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isTrue()) return true;
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) return true;
       }
       return false;
    }
@@ -330,7 +331,7 @@ public class DynamicXWidgetLayout {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isTrue())
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK())
          // If already found one, return false
          if (oneFound)
             return false;

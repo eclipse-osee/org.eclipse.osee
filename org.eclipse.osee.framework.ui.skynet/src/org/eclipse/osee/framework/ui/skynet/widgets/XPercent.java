@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -25,17 +27,17 @@ public class XPercent extends XText {
       super.set(percent + "");
    }
 
-   public Result isValid() {
+   public IStatus isValid() {
       if (isRequiredEntry()) {
-         Result result = super.isValid();
-         if (result.isFalse()) {
+         IStatus result = super.isValid();
+         if (!result.isOK()) {
             return result;
          } else if (!this.isInteger()) {
-            return new Result("Percent must be an Integer");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Percent must be an Integer");
          } else if (this.getInteger() < 0 || this.getInteger() > 100) {
-            return new Result("Percent must be between 0 and 100");
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Percent must be between 0 and 100");
          }
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 }

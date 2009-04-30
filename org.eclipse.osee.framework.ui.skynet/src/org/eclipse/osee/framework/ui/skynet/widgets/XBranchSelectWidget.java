@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -129,11 +131,11 @@ public class XBranchSelectWidget extends XWidget implements Listener {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
     */
    @Override
-   public Result isValid() {
+   public IStatus isValid() {
       if (selectComposite.getSelectedBranch() == null) {
-         return new Result("Must select a Branch");
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select a Branch");
       }
-      return Result.TrueResult;
+      return Status.OK_STATUS;
    }
 
    /* (non-Javadoc)
@@ -206,7 +208,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
     */
    @Override
    public void handleEvent(Event event) {
-      super.setLabelError();
+      super.validate();
       notifyListeners(event);
    }
 
