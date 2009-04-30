@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.artifact.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,15 @@ public class ArtifactFileServlet extends OseeHttpServlet {
          HttpArtifactFileInfo artifactFileInfo = null;
 
          String servletPath = request.getServletPath();
+         //         System.out.println("servletPath: " + servletPath);
          if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
+            //            Enumeration<?> enumeration = request.getHeaderNames();
+            //            while (enumeration.hasMoreElements()) {
+            //               String headerField = (String) enumeration.nextElement();
+            //               String value = request.getHeader(headerField);
+            //               System.out.println(String.format("%s: %s", headerField, value));
+            //            }
+
             ObjectPair<String, String> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
                artifactFileInfo = new HttpArtifactFileInfo(defaultArtifact.object1, null, defaultArtifact.object2);
@@ -84,8 +93,9 @@ public class ArtifactFileServlet extends OseeHttpServlet {
                   }
                }
                response.setContentType(mimeType);
-               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
-
+               if (!mimeType.equals("text/html")) {
+                  response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+               }
                Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
             }
          }
