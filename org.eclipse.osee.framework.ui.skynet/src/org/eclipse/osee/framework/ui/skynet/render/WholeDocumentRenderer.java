@@ -137,7 +137,7 @@ public class WholeDocumentRenderer extends WordRenderer {
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
          if (baseVersion != null && attribute != null) {
             String value = attribute.getValue().toString();
             if (WordAnnotationHandler.containsWordAnnotations(value)) {
@@ -145,7 +145,7 @@ public class WholeDocumentRenderer extends WordRenderer {
                attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
             }
          }
-         attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+         attribute = newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
          if (newerVersion != null && attribute != null) {
             String value = attribute.getValue().toString();
             if (WordAnnotationHandler.containsWordAnnotations(value)) {
@@ -180,10 +180,10 @@ public class WholeDocumentRenderer extends WordRenderer {
          newerFile = renderForDiff(monitor, branch);
       }
       WordImageChecker.restoreOriginalValue(
-            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
             oldAnnotationValue != null ? oldAnnotationValue : originalValue);
       WordImageChecker.restoreOriginalValue(
-            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
             newAnnotationValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 public class WordImageChecker {
 
    public static void restoreOriginalValue(Attribute attr, Pair<String, Boolean> originalValue) throws OseeCoreException {
-      if (originalValue != null) {
+      if (attr != null && originalValue != null) {
          attr.setValue(originalValue.getKey());
          if (!originalValue.getValue()) {
             attr.setNotDirty();
