@@ -13,8 +13,11 @@ package org.eclipse.osee.ats.test.config;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +35,15 @@ public class AtsWorkItemDefinitionTest extends TestCase {
    public void testWorkItemDefinitions() throws Exception {
       for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getWorkItemDefinitions()) {
          System.out.println("Testing " + workItemDefinition);
+         // set up dynamic layout for work widget definition
+         if (workItemDefinition instanceof WorkWidgetDefinition) {
+            WorkWidgetDefinition workWidgetDefinition = (WorkWidgetDefinition) workItemDefinition;
+            DynamicXWidgetLayoutData dynamicXWidgetLayoutData = workWidgetDefinition.get();
+            if (dynamicXWidgetLayoutData.getDynamicXWidgetLayout() == null) {
+               dynamicXWidgetLayoutData.setDynamicXWidgetLayout(new DynamicXWidgetLayout());
+               workWidgetDefinition.set(dynamicXWidgetLayoutData);
+            }
+         }
          Result result = AtsWorkDefinitions.validateWorkItemDefinition(workItemDefinition);
          if (result.isFalse()) {
             fail(result.getText());
