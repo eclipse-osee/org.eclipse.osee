@@ -87,7 +87,8 @@ public class OldArtifactEditor extends AbstractEventArtifactEditor {
       return Result.FalseResult;
    }
 
-   protected void onDirty() {
+   @Override
+   public void onDirtied() {
       Display.getDefault().asyncExec(new Runnable() {
 
          public void run() {

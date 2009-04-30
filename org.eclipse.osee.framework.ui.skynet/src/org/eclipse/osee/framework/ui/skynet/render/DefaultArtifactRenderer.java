@@ -216,7 +216,6 @@ public class DefaultArtifactRenderer implements IRenderer {
 
       if (presentationType == PresentationType.SPECIALIZED_EDIT) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.artifacteditor.command");
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command");
       }
 
       return commandIds;

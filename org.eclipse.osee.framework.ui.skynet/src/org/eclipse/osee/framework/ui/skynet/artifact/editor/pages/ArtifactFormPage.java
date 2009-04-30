@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,9 +49,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-/**
- * @author Roberto E. Escobar
- */
 public class ArtifactFormPage extends FormPage {
 
    private enum SectionEnum {
@@ -136,12 +135,14 @@ public class ArtifactFormPage extends FormPage {
    }
 
    private void addToolBar(FormToolkit toolkit, ScrolledForm form, boolean add) {
+      IToolBarManager manager = form.getToolBarManager();
       if (add) {
-         form.getToolBarManager().add(new RefreshAction());
-         ((NewArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(form.getToolBarManager());
-         form.getToolBarManager().update(true);
+         manager.add(new RefreshAction());
+         manager.add(new Separator());
+         ((NewArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(manager);
+         manager.update(true);
       } else {
-         form.getToolBarManager().removeAll();
+         manager.removeAll();
       }
       form.reflow(true);
    }
@@ -235,15 +236,6 @@ public class ArtifactFormPage extends FormPage {
       sForm.getBody().layout(true);
       sForm.reflow(true);
       getManagedForm().refresh();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#isDirty()
-    */
-   @Override
-   public boolean isDirty() {
-      // Computed from managedForm.isDirty
-      return super.isDirty();
    }
 
    /* (non-Javadoc)

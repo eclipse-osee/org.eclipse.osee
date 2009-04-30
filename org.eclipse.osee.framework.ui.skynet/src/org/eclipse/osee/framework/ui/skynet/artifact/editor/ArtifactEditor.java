@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.OldArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactEditor extends OldArtifactEditor {
-   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
+public class ArtifactEditor extends NewArtifactEditor {
+   public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.NewArtifactEditor";
 
    public static void editArtifacts(final Collection<Artifact> artifacts) {
       Displays.ensureInDisplayThread(new Runnable() {

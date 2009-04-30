@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -82,7 +84,10 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    public void refresh() {
-      getTreeViewer().refresh(true);
+      TreeViewer viewer = getTreeViewer();
+      if (viewer != null && Widgets.isAccessible(viewer.getTree())) {
+         viewer.refresh();
+      }
    }
 
    private final class InternalLabelProvider extends LabelProvider {

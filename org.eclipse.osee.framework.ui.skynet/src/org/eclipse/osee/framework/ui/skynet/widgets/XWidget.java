@@ -119,17 +119,24 @@ public abstract class XWidget {
       }
    }
 
-   public void setControlCausedMessage(String messageText, int type) {
+   public void setControlCausedMessage(String messageId, String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.addMessage(this, messageText, null, type, getControl());
+         messageManager.addMessage(messageId, messageText, null, type, getControl());
       }
    }
 
-   public void removeControlCausedMessage() {
+   public void removeControlCausedMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.removeMessage(this, getControl());
+         messageManager.removeMessage(messageId, getControl());
+      }
+   }
+
+   public void removeControlCausedMessages() {
+      IMessageManager messageManager = getMessageManager();
+      if (messageManager != null) {
+         messageManager.removeMessage(getControl());
       }
    }
 

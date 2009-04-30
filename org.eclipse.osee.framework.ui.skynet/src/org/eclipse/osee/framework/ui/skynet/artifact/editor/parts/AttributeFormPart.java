@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -138,24 +139,6 @@ public class AttributeFormPart extends AbstractFormPart {
    private void layoutControls(Control control) {
       if (control instanceof Label || control instanceof Button) {
          control.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-         //      } else {
-         //         XWidget xWidget = XWidgetUtility.asXWidget(control);
-         //         if (!(xWidget instanceof XSelectFromDialog<?> || xWidget instanceof XStackedWidget)) {
-         //            if (xWidget instanceof XTextDam) {
-         //               //               XTextDam dam = (XTextDam) xWidget;
-         //               //               if (!dam.isEditable()) {
-         //               //                  GridData gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
-         //               //                  gd.widthHint = 200;
-         //               //                  parent.setLayoutData(gd);
-         //               //               } else {
-         //               //               GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
-         //               //               //               gd.widthHint = 200;
-         //               //               control.setLayoutData(gd);
-         //               //               }
-         //            } else {
-         //               //               control.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-         //            }
-         //         }
       }
 
       if (control instanceof Composite) {
@@ -228,43 +211,61 @@ public class AttributeFormPart extends AbstractFormPart {
       toolkit.paintBordersFor(expandable);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#commit(boolean)
+    */
+   @Override
+   public void commit(boolean onSave) {
+      int saveCount = 0;
+      List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
+      for (XWidget xWidget : widgets) {
+         if (xWidget.isEditable()) {
+            if (xWidget instanceof IArtifactWidget) {
+               IArtifactWidget aWidget = ((IArtifactWidget) xWidget);
+               try {
+                  if (aWidget.isDirty().isTrue()) {
+                     aWidget.saveToArtifact();
+                     xWidget.removeControlCausedMessage("attribute.dirty");
+                     saveCount++;
+                  } else {
+                     saveCount++;
+                  }
+               } catch (OseeCoreException ex) {
+                  ex.printStackTrace();
+               }
+            }
+         } else {
+            saveCount++;
+         }
+      }
+
+      // Ensure all changes saved
+      if (saveCount == widgets.size()) {
+         super.commit(onSave);
+      }
+   }
+
    private final class XWidgetValidationListener implements XModifiedListener {
-      int count = 0;
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
        */
       @Override
       public void widgetModified(XWidget xWidget) {
-         if (xWidget != null) {
-            if (xWidget instanceof IArtifactWidget) {
-               //               IArtifactWidget aWidget = (IArtifactWidget)xWidget;
-               //               Artifact artifact = aWidget.getArtifact();
-               //               String attributeTypeName = aWidget.getAttributeName();
-               //               
-               //               AttributeType type = null;
-               //               aWidget.
-               //               OseeValidator.getInstance().validate(0, attributeType, artifact, proposedValue)
-
-               switch (count) {
-                  case 0:
-                     xWidget.setControlCausedMessage("None Message", IMessageProvider.NONE);
-                     break;
-                  case 1:
-                     xWidget.setControlCausedMessage("Info Message", IMessageProvider.INFORMATION);
-                     break;
-                  case 2:
-                     xWidget.setControlCausedMessage("Warning Message", IMessageProvider.WARNING);
-                     break;
-                  case 3:
-                     xWidget.setControlCausedMessage("Error Message", IMessageProvider.ERROR);
-                     break;
-                  default:
-                     xWidget.removeControlCausedMessage();
-                     count = -1;
-                     break;
+         if (xWidget != null && xWidget instanceof IArtifactWidget) {
+            IArtifactWidget aWidget = (IArtifactWidget) xWidget;
+            try {
+               Result result = aWidget.isDirty();
+               if (result.isTrue()) {
+                  xWidget.setControlCausedMessage("attribute.dirty", "Dirty", IMessageProvider.WARNING);
+                  if (!isDirty()) {
+                     markDirty();
+                  }
+               } else {
+                  xWidget.removeControlCausedMessage("attribute.dirty");
                }
-               count++;
+            } catch (Exception ex) {
+               xWidget.setControlCausedMessage("attribute.dirty", "Unable to compute isDirty", IMessageProvider.ERROR);
             }
          }
       }

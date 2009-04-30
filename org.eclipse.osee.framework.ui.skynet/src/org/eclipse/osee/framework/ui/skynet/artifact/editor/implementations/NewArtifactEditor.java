@@ -14,16 +14,18 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPa
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
@@ -80,44 +83,15 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#onDirty()
+    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
     */
    @Override
-   protected void onDirty() {
-      // Do Nothing
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
-   @Override
-   public boolean isDirty() {
-      return computeIsDirty().isTrue();
-   }
-
-   private Result computeIsDirty() {
-      Artifact artifact = getEditorInput().getArtifact();
-      if (artifact.isDeleted()) {
-         return Result.FalseResult;
+   public void showBusy(boolean busy) {
+      super.showBusy(busy);
+      ArtifactFormPage page = getFormPage();
+      if (page != null) {
+         page.showBusy(busy);
       }
-      try {
-         if (artifact.isReadOnly()) {
-            return Result.FalseResult;
-         }
-         Result result = artifact.reportIsDirty(true);
-         if (result.isTrue()) {
-            return result;
-         }
-
-         ArtifactFormPage page = getFormPage();
-         if (page != null) {
-            result = page.isDirty() ? Result.TrueResult : Result.FalseResult;
-         }
-         System.out.println("New Attribute Composite - isDirt => " + result);
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return Result.FalseResult;
    }
 
    /* (non-Javadoc)
@@ -126,15 +100,13 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         getFormPage().showBusy(true);
+         getFormPage().doSave(monitor);
          Artifact artifact = getEditorInput().getArtifact();
          artifact.persistAttributesAndRelations();
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      } finally {
-         getFormPage().showBusy(false);
       }
    }
 
@@ -206,28 +178,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
     */
    @Override
    protected void refreshDirtyArtifact() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            Artifact artifact = getEditorInput().getArtifact();
-            setPartName(getEditorInput().getName());
-            setTitleImage(artifact.getImage());
-            ArtifactEditorOutlinePage outlinePage = getOutlinePage();
-            if (outlinePage != null) {
-               outlinePage.refresh();
-            }
-            ArtifactFormPage page = getFormPage();
-            if (page != null) {
-               page.showBusy(true);
-               page.refresh();
-               page.showBusy(false);
-            }
-            onDirtied();
-         }
-      });
+      Jobs.startJob(new RefreshDirtyArtifactJob());
    }
 
    /* (non-Javadoc)
@@ -235,24 +186,7 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
     */
    @Override
    protected void refreshRelations() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            ArtifactFormPage page = getFormPage();
-            if (page != null) {
-               page.showBusy(true);
-               RelationsComposite relationsComposite = page.getRelationsComposite();
-               if (relationsComposite != null && !relationsComposite.isDisposed()) {
-                  relationsComposite.refresh();
-                  onDirtied();
-               }
-               page.showBusy(false);
-            }
-         }
-      });
+      Jobs.startJob(new RefreshRelations());
    }
 
    /* (non-Javadoc)
@@ -305,6 +239,51 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
          outlinePage = new ArtifactEditorOutlinePage();
       }
       return outlinePage;
+   }
+
+   private final class RefreshRelations extends UIJob {
+      public RefreshRelations() {
+         super("Refresh Relations");
+      }
+
+      @Override
+      public IStatus runInUIThread(IProgressMonitor monitor) {
+         ArtifactFormPage page = getFormPage();
+         if (page != null) {
+            page.showBusy(true);
+            RelationsComposite relationsComposite = page.getRelationsComposite();
+            if (relationsComposite != null && !relationsComposite.isDisposed()) {
+               relationsComposite.refresh();
+               onDirtied();
+            }
+            page.showBusy(false);
+         }
+         return Status.OK_STATUS;
+      }
+   }
+
+   private final class RefreshDirtyArtifactJob extends UIJob {
+
+      public RefreshDirtyArtifactJob() {
+         super("Refresh Dirty Artifact");
+      }
+
+      @Override
+      public IStatus runInUIThread(IProgressMonitor monitor) {
+         Artifact artifact = getEditorInput().getArtifact();
+         setPartName(getEditorInput().getName());
+         setTitleImage(artifact.getImage());
+         ArtifactEditorOutlinePage outlinePage = getOutlinePage();
+         if (outlinePage != null) {
+            outlinePage.refresh();
+         }
+         ArtifactFormPage page = getFormPage();
+         if (page != null) {
+            page.refresh();
+         }
+         onDirtied();
+         return Status.OK_STATUS;
+      }
    }
 
    public static void editArtifacts(final Collection<Artifact> artifacts) {

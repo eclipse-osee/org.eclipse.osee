@@ -53,13 +53,13 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
    public void contributeToToolBar(IToolBarManager manager) {
       manager.add(createAtsBugAction());
-      manager.add(new OpenOutlineAction());
-      manager.add(new OpenHistoryAction());
-      manager.add(new RevealInExplorerAction());
       manager.add(new Separator());
       addOpenWithContributionItem(manager);
       manager.add(new DeleteArtifactAction());
       manager.add(new Separator());
+      manager.add(new OpenOutlineAction());
+      manager.add(new OpenHistoryAction());
+      manager.add(new RevealInExplorerAction());
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
       manager.add(new AccessControlAction());

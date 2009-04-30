@@ -48,14 +48,27 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.swt.IDirtiableEditor#onDirtied()
+    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
     */
    @Override
-   public void onDirtied() {
-      onDirty();
+   protected void addPages() {
+      // TODO Auto-generated method stub
    }
 
-   protected abstract void onDirty();
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
+    */
+   @Override
+   public boolean isDirty() {
+      boolean wasDirty = false;
+      Artifact artifact = getArtifactFromEditorInput();
+      if (artifact != null) {
+         if (!artifact.isDeleted() && !artifact.isReadOnly()) {
+            wasDirty = super.isDirty() || artifact.isDirty(true);
+         }
+      }
+      return wasDirty;
+   }
 
    protected abstract void checkEnabledTooltems();
 
