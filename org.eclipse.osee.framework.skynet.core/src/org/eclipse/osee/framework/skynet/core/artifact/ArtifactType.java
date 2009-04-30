@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
@@ -250,6 +251,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
          imageRegistry.put(BASE + OUTGOING + CHANGE, new OverlayImage(imageRegistry.get(BASE), outChange));
          imageRegistry.put(BASE + OUTGOING + MERGED, new OverlayImage(imageRegistry.get(BASE), merge));
          imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));
+         imageRegistry.put(BASE + OUTGOING + INTRODUCED, new OverlayImage(imageRegistry.get(BASE), outNew));
          imageRegistry.put(BASE + CONFLICTING + DELETED, new OverlayImage(imageRegistry.get(BASE), conDeleted));
          imageRegistry.put(BASE + CONFLICTING + CHANGE, new OverlayImage(imageRegistry.get(BASE), conChange));
          imageRegistry.put(BASE + CONFLICTING + DELETED + "Small", new OverlayImage(imageRegistry.get(BASE),
