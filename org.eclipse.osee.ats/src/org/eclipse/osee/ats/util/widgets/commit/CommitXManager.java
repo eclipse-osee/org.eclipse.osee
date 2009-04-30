@@ -16,7 +16,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.commit.XCommitLabelProvider.CommitStatus;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,12 +95,12 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                   "Talk to project lead as to why commit disabled for version [" + configArt + "]");
-         } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Commit_Needed_After_Merge) {
+         } else if (commitStatus == CommitStatus.Commit_Needed) {
             destBranch = configArt.getParentBranch();
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             destBranch = configArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
+            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch, true);
          } else if (commitStatus == CommitStatus.Committed) {
             xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {

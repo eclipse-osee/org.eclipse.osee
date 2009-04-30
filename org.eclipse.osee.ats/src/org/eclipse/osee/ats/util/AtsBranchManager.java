@@ -38,8 +38,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.util.widgets.commit.XCommitLabelProvider.CommitStatus;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
@@ -165,9 +165,6 @@ public class AtsBranchManager {
          return CommitStatus.Working_Branch_Not_Created;
       }
       if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
-         if (smaMgr.getBranchMgr().isMergeCompleted(branch)) {
-            return CommitStatus.Commit_Needed_After_Merge;
-         }
          return CommitStatus.Merge_In_Progress;
       }
       return CommitStatus.Commit_Needed;

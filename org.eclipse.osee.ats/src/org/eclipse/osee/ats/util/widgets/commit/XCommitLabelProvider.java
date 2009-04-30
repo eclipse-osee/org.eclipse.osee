@@ -28,29 +28,6 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    Font font = null;
 
    private final CommitXManager commitXManager;
-   public static enum CommitStatus {
-      Working_Branch_Not_Created("Working Branch Not Created"),
-      Branch_Not_Configured("Branch Not Configured"),
-      Branch_Commit_Disabled("Branch Commit Disabled"),
-      Commit_Needed("Start Commit"),
-      Merge_In_Progress("Merge in Progress"),
-      Commit_Needed_After_Merge("Finish Commit"),
-      Committed("Committed"),
-      Committed_With_Merge("Committed With Merge");
-
-      private final String displayName;
-
-      private CommitStatus(String displayName) {
-         this.displayName = displayName;
-      }
-
-      /**
-       * @return the displayName
-       */
-      public String getDisplayName() {
-         return displayName;
-      }
-   };
 
    public XCommitLabelProvider(CommitXManager commitXManager) {
       super(commitXManager);
@@ -79,9 +56,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
             }
 
-            if (commitStatus == CommitStatus.Merge_In_Progress ||
-            //
-            commitStatus == CommitStatus.Commit_Needed_After_Merge) {
+            if (commitStatus == CommitStatus.Merge_In_Progress) {
                return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
             }
 
@@ -98,7 +73,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          try {
             CommitStatus commitStatus =
                   commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
-            if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Commit_Needed_After_Merge || commitStatus == CommitStatus.Committed_With_Merge) {
+            if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return SkynetGuiPlugin.getInstance().getImage("branch_merge.gif");
             }
             return null;
@@ -138,9 +113,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          else if (commitStatus == CommitStatus.Commit_Needed)
             return "Start Commit";
          else if (commitStatus == CommitStatus.Merge_In_Progress)
-            return "Merge Conflicts";
-         else if (commitStatus == CommitStatus.Commit_Needed_After_Merge)
-            return "Finish Commit";
+            return "Merge Conflicts and Commit";
          else if (commitStatus == CommitStatus.Committed)
             return "Show Change Report";
          else if (commitStatus == CommitStatus.Committed_With_Merge)
