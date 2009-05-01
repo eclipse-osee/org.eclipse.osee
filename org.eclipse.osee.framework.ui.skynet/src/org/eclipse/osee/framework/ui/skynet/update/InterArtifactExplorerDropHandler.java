@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.RebaselineDbTransaction;
@@ -82,6 +84,13 @@ public class InterArtifactExplorerDropHandler {
       SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch());
       ArrayList<Artifact> reloadArtifacts = new ArrayList<Artifact>();
 
+      ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(transferObjects.size());
+      for (TransferObject transferObject : transferObjects) {
+         sourceArtIds.add(transferObject.getArtifact().getArtId());
+      }
+      
+      ArtifactLoader.loadArtifacts(sourceArtIds, sourceBranch, ArtifactLoad.ALL_CURRENT, true);
+      
       for (TransferObject transferObject : transferObjects) {
          TransferStatus status = transferObject.getStatus();
          Artifact sourceArtifact = transferObject.getArtifact();

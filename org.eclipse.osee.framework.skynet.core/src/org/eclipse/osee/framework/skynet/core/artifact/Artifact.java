@@ -1438,7 +1438,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       for (Attribute<?> attribute : attributes.getValues()) {
          Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
-               attribute.getAttrId(), attribute.getGammaId(), attribute.getAttributeDataProvider().getData());
+               attribute.getAttrId(), attribute.getGammaId(), attribute.isDeleted()? ModificationType.DELETED : null, attribute.getAttributeDataProvider().getData());
       }
       return reflectedArtifact;
    }

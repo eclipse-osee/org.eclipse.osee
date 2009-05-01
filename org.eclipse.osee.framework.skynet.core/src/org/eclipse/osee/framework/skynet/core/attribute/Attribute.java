@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -266,11 +267,19 @@ public abstract class Attribute<T> {
    }
 
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
+      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, data) ;
+   }
+   
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
       Attribute<?> attribute = artifact.createAttribute(attributeType, false);
       attribute.getAttributeDataProvider().loadData(data);
       attribute.internalSetAttributeId(attributeId);
       attribute.internalSetGammaId(gammaId);
+      
+      if(modificationType == ModificationType.DELETED){
+         attribute.internalSetDeleted();
+      }
       return attribute;
    }
 }

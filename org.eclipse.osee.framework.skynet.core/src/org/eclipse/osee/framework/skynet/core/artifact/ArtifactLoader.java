@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRIBUTE;
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -155,6 +153,47 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
+   /**
+    * loads or reloads artifacts based on artifact ids and branch ids
+    * @param artIds
+    * @param branch
+    * @param loadLevel
+    * @return list of the loaded artifacts
+    * @throws OseeCoreException
+    */
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException{
+      return loadArtifacts(artIds, branch, loadLevel, null, reload);
+   }
+   
+   /**
+    * loads or reloads artifacts based on artifact ids and branch ids
+    * @param artIds
+    * @param branch
+    * @param loadLevel
+    * @param transactionId
+    * @return list of the loaded artifacts
+    * @throws OseeCoreException
+    */
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, TransactionId transactionId, boolean reload) throws OseeCoreException{
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      
+      if (!artIds.isEmpty()) {
+         int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+         boolean historical = transactionId != null;
+
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
+         for (int artId : artIds) {
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+                  historical  ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
+         }
+         
+         for(Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical, true)){
+            artifacts.add(artifact);
+         }
+      }
+      return artifacts;
+   }
    /**
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
     * 
@@ -324,17 +363,9 @@ public final class ArtifactLoader {
          }
       }
 
-      if (loadLevel == SHALLOW) {
-         return;
-      } else if (loadLevel == ATTRIBUTE) {
-         loadAttributeData(queryId, artifacts, historical, allowDeleted);
-      } else if (loadLevel == RELATION) {
-         loadRelationData(queryId, artifacts, historical);
-      } else if (loadLevel == FULL) {
-         loadAttributeData(queryId, artifacts, historical, allowDeleted);
-         loadRelationData(queryId, artifacts, historical);
-      }
-
+      loadAttributeData(queryId, artifacts, historical, allowDeleted, loadLevel);
+      loadRelationData(queryId, artifacts, historical, loadLevel);
+      
       for (Artifact artifact : artifacts) {
          artifact.onInitializationComplete();
          if (reload) {
@@ -343,7 +374,11 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeCoreException {
+   private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical, ArtifactLoad loadLevel) throws OseeCoreException {
+      if(loadLevel == SHALLOW || loadLevel == ArtifactLoad.ATTRIBUTE){
+         return;
+      }
+      
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
@@ -387,15 +422,25 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts) throws OseeCoreException {
+   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+      if(loadLevel == SHALLOW || loadLevel == ArtifactLoad.RELATION){
+         return;
+      }
+      
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          if (historical) {
             chStmt.runPreparedQuery(artifacts.size() * 8,
                   ClientSessionManager.getSQL(OseeSql.Load.SELECT_HISTORICAL_ATTRIBUTES), queryId);
          } else {
-            String sql =
-                  allowDeletedArtifacts ? ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES);
+            String sql;
+            
+            if(loadLevel == ArtifactLoad.ALL_CURRENT){
+               sql = ClientSessionManager.getSQL(OseeSql.Load.SELECT_ALL_CURRENT_ATTRIBUTES);
+            }else{
+               sql = allowDeletedArtifacts ? ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSQL(OseeSql.Load.SELECT_CURRENT_ATTRIBUTES);
+            }
+            
             chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
@@ -431,10 +476,10 @@ public final class ArtifactLoader {
                }
             }
 
-            // if a different attribute than the previous iteration and its attribute had not already been loaded and this attribute is not deleted
-            if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null && chStmt.getInt("mod_type") != ModificationType.DELETED.getValue()) {
+            // if a different attribute than the previous iteration and its attribute had not already been loaded
+            if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null) {
                Attribute.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
-                     chStmt.getInt("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"));
+                     chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")), chStmt.getString("value"), chStmt.getString("uri"));
             }
             previousArtifactId = artifactId;
             previousBranchId = branchId;

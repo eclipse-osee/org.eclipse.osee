@@ -262,7 +262,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private void addReflectedAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      addAttributeHelper(artifact, attribute, artifact.getModType());
+      addAttributeHelper(artifact, attribute, attribute.isDeleted()? ModificationType.DELETED : artifact.getModType());
    }
 
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {

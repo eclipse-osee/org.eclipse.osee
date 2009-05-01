@@ -146,6 +146,7 @@ public class OseeSql {
       public static final String SELECT_HISTORICAL_ATTRIBUTES = "SELECT_HISTORICAL_ATTRIBUTES";
       public static final String SELECT_CURRENT_ATTRIBUTES = "SELECT_CURRENT_ATTRIBUTES";
       public static final String SELECT_CURRENT_ATTRIBUTES_WITH_DELETED = "SELECT_CURRENT_ATTRIBUTES_WITH_DELETED";
+      public static final String SELECT_ALL_CURRENT_ATTRIBUTES = "SELECT_ALL_CURRENT_ATTRIBUTES";
       public static final String SELECT_RELATIONS = "SELECT_RELATIONS";
       public static final String SELECT_CURRENT_ARTIFACTS = "SELECT_CURRENT_ARTIFACTS";
       public static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED = "SELECT_CURRENT_ARTIFACTS_WITH_DELETED";
@@ -165,6 +166,9 @@ public class OseeSql {
       private static final String SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION =
             SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.branch_id, al1.art_id";
 
+      private static final String SELECT_ALL_CURRENT_ATTRIBUTES_DEFINITION =
+         SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id";
+      
       private static final String SELECT_RELATIONS_DEFINITION =
             "SELECT%s rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order, b_order, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
@@ -186,6 +190,9 @@ public class OseeSql {
          sqlProperties.put(SELECT_CURRENT_ATTRIBUTES, getFormattedSql(SELECT_CURRENT_ATTRIBUTES_DEFINITION,
                HINTS__ORDERED__FIRST_ROWS));
 
+         sqlProperties.put(SELECT_ALL_CURRENT_ATTRIBUTES, getFormattedSql(
+               SELECT_ALL_CURRENT_ATTRIBUTES_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
+         
          sqlProperties.put(SELECT_CURRENT_ATTRIBUTES_WITH_DELETED, getFormattedSql(
                SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
 
