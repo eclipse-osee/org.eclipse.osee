@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.RebaselineArtifacts;
 
 /**
- * Tests the BLAM operation updateFromParentBranch.
+ * Tests the BLAM Rebaseline operation.
  * 
  * @author Jeff C. Phillips
  */
@@ -61,8 +61,8 @@ public class RebaselineArtifactTest extends TestCase {
 
       variableMap.setValue("Parent Branch Artifacts to update to Child Branch", destinationArtifacts);
       variableMap.setValue("Child Branch Name", sourceArtifacts.iterator().next().getBranch());
-      RebaselineArtifacts updateFromParentBranch = new RebaselineArtifacts();
-      updateFromParentBranch.runOperation(variableMap, new NullProgressMonitor());
+      RebaselineArtifacts rebaselineArtifacts = new RebaselineArtifacts();
+      rebaselineArtifacts.runOperation(variableMap, new NullProgressMonitor());
       sourceArtifact.reloadAttributesAndRelations();
 
       if (DEBUG) {
