@@ -88,7 +88,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AtsBranchManager {
    private final SMAManager smaMgr;
-   public static String BRANCH_CATEGORY = "Branch Changes";
 
    public AtsBranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
