@@ -533,14 +533,14 @@ public class BranchManager {
     * @see MasterSkynetTypesImport#importSkynetDbTypes
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
       if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
          MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds);
       }
-      return createRootBranch(shortBranchName, branchName, staticBranchName, initializeArtifacts);
+      return createTopLevelBranch(shortBranchName, branchName, staticBranchName, initializeArtifacts);
    }
 
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String shortBranchName, String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
       Branch branch =
             HttpBranchCreation.createRootBranch(null, branchName, staticBranchName, systemRootBranch.getBranchId(),

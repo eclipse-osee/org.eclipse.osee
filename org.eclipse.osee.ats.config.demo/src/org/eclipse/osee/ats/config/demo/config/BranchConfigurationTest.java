@@ -296,7 +296,7 @@ public class BranchConfigurationTest extends XNavigateItemAction {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
 
-      return BranchManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
+      return BranchManager.createTopLevelBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
    private void cleanupBranchTest(TestType testType, XResultData rd) throws Exception {

@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Andrew M. Finkbeiner
  * @author Donald G. Dunne
- * @see BranchManager#createRootBranch(String, String, String, Collection, boolean)
+ * @see BranchManager#createTopLevelBranch(String, String, String, Collection, boolean)
  */
 public class MasterSkynetTypesImport {
    private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.OseeTypes";
@@ -52,7 +52,7 @@ public class MasterSkynetTypesImport {
     * @param skynetTypesImportExtensionsUniqueIds
     * @param branch
     * @throws Exception
-    * @see BranchManager#createRootBranch(String, String, String, Collection, boolean)
+    * @see BranchManager#createTopLevelBranch(String, String, String, Collection, boolean)
     */
    public static void importSkynetDbTypes(Collection<String> skynetTypesImportExtensionsUniqueIds) throws OseeCoreException {
       try {
