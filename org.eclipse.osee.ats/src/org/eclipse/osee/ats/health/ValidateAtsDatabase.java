@@ -193,7 +193,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) art;
             try {
                String parentBranchId =
-                     verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
+                     verArt.getSoleAttributeValueAsString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
                if (parentBranchId != null) {
                   validateBranchId(verArt, parentBranchId);
                }
