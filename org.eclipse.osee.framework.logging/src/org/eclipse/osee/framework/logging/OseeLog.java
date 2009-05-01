@@ -42,7 +42,7 @@ public class OseeLog {
    }
 
    public static void log(Class<?> activatorClass, Level level, String message) {
-      if (level.intValue() >= Level.SEVERE.intValue()) {
+      if (level.intValue() == Level.SEVERE.intValue()) {
          getLog().log(activatorClass.getName(), level, message, new Exception("used to get a stack trace"));
       } else {
          getLog().log(activatorClass.getName(), level, message, null);
@@ -64,7 +64,7 @@ public class OseeLog {
    public static void log(String loggerName, String name2, Level level, String message, Throwable th) {
       getLog().log(loggerName, level, message, th);
    }
-   
+
    public static void format(String loggerName, Level level, String message, Object... objects) {
       getLog().format(loggerName, level, message, objects);
    }
@@ -121,7 +121,7 @@ public class OseeLog {
     * @param status
     */
    public static void reportStatus(List<IHealthStatus> statuses) {
-      for(IHealthStatus status:statuses){
+      for (IHealthStatus status : statuses) {
          reportStatus(status);
       }
    }
