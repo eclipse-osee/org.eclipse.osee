@@ -242,9 +242,14 @@ public class XWidgetFactory {
       } else if (xWidgetName.equals("XArtifactTypeListViewer")) {
          xWidget =
                new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
+         ((XArtifactTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
+               XOption.MULTI_SELECT));
       } else if (xWidgetName.equals("XAttributeTypeListViewer")) {
          xWidget =
                new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
+         ((XAttributeTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
+               XOption.MULTI_SELECT));
+
       } else if (xWidgetName.startsWith("XList")) {
          String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
