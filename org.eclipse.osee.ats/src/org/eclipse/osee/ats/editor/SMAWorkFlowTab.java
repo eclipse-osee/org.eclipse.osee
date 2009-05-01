@@ -129,7 +129,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          scrolledForm.setText(getEditorInput().getName());
          fillBody(managedForm);
          addMessageDecoration(scrolledForm);
-         managedForm.getMessageManager().setAutoUpdate(true);
 
          refreshToolbar();
 
