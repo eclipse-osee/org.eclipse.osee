@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 
+import sun.reflect.generics.visitor.Reifier;
+
 /**
  * @author Ken J. Aguilar
  */
@@ -96,11 +98,8 @@ public class JiniServiceSideConnector extends JiniConnector implements
 	 * this method will cancel all current registrations of this connector
 	 */
 	synchronized void removeAllRegistrations() {
-		Iterator<ServiceRegistration> regIterator = registrations.keySet().iterator();
-		while (regIterator.hasNext()) {
-			ServiceRegistration registration = regIterator.next();
+		for (ServiceRegistration registration : registrations.keySet()) {
 			try {
-				System.out.println("removing registration");
 				LeaseRenewTask task = registrations.remove(registration);
 				if (task != null) {
 					task.cancel();
@@ -109,6 +108,7 @@ public class JiniServiceSideConnector extends JiniConnector implements
 				Activator.log(Level.SEVERE, "exception removing registration", e);
 			}
 		}
+		registrations.clear();
 	}
 
 	private ServiceID generateServiceId() {
