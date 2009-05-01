@@ -194,6 +194,32 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
       xWidgets.remove(id);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
+    */
+   @Override
+   public IStatus isValid() {
+      for (XWidget widget : xWidgets.values()) {
+         IStatus status = widget.isValid();
+         if (!status.isOK()) {
+            return status;
+         }
+      }
+      return Status.OK_STATUS;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#validate()
+    */
+   @Override
+   public void validate() {
+      String id = getCurrentPageId();
+      if (Strings.isValid(id)) {
+         XWidget widget = xWidgets.get(id);
+         widget.validate();
+      }
+   }
+
    private final class XTextInternalWidget extends XText {
 
       public XTextInternalWidget(String label) {

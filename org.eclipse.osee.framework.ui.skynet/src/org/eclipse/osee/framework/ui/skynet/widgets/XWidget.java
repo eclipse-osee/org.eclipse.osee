@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -154,14 +153,10 @@ public abstract class XWidget {
    }
 
    public void validate() {
-      if (isEditable()) {
+      if (isEditable() && Widgets.isAccessible(getControl())) {
          IStatus status = isValid();
          if (isInForm()) {
-            if (!status.isOK()) {
-               setControlCausedMessage("validation.error", status.getMessage(), IMessageProvider.ERROR);
-            } else {
-               removeControlCausedMessage("validation.error");
-            }
+            XWidgetValidateUtility.setStatus(status, this);
          } else {
             if (Widgets.isAccessible(labelWidget)) {
                labelWidget.setForeground(status.isOK() ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));

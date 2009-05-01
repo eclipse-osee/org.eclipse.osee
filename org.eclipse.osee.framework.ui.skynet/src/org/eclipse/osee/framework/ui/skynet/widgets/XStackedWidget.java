@@ -227,6 +227,10 @@ public abstract class XStackedWidget<T> extends XLabel {
       stackedControl.addPage(value);
    }
 
+   protected String getCurrentPageId() {
+      return stackedControl.getCurrentPageId();
+   }
+
    private void setMessage(final int severity, final String message) {
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
@@ -356,6 +360,15 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       private int getCurrentPageIndex() {
          return currentPage;
+      }
+
+      private String getCurrentPageId() {
+         String toReturn = null;
+         int index = getCurrentPageIndex();
+         if (index >= 0 && index < pageIds.size()) {
+            toReturn = pageIds.get(index);
+         }
+         return toReturn;
       }
 
       private void next() {

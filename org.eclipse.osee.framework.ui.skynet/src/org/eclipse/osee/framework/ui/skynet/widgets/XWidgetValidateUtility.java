@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 
 /**
@@ -25,14 +23,13 @@ public class XWidgetValidateUtility {
    private XWidgetValidateUtility() {
    }
 
-   //            Artifact artifact = null; //aWidget.getArtifact();
-   //            AttributeType attributeType = null;//AttributeTypeManager.getType(aWidget.getAttributeName());
-   //            String data = null;
-   //            validate(0, xWidget, artifact, attributeType, data);
-
-   private static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, AttributeType attributeType, Object proposedValue) {
+   public static void validate(int requiredQualityOfService, XWidget xWidget, Artifact artifact, String attributeTypeName, Object proposedValue) {
       IStatus status =
-            OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeType, proposedValue);
+            OseeValidator.getInstance().validate(requiredQualityOfService, artifact, attributeTypeName, proposedValue);
+      setStatus(status, xWidget);
+   }
+
+   public static void setStatus(IStatus status, XWidget xWidget) {
       if (!status.isOK()) {
          IStatus[] itemsToReport;
          if (status.isMultiStatus()) {
@@ -41,9 +38,11 @@ public class XWidgetValidateUtility {
             itemsToReport = new IStatus[] {status};
          }
          for (IStatus item : itemsToReport) {
-            xWidget.setControlCausedMessage(status.getPlugin(), status.getMessage(),
+            xWidget.setControlCausedMessage("validation.error", status.getMessage(),
                   toMessageProviderLevel(item.getSeverity()));
          }
+      } else {
+         xWidget.removeControlCausedMessage("validation.error");
       }
    }
 
@@ -53,11 +52,11 @@ public class XWidgetValidateUtility {
 
    public static int toMessageProviderLevel(int level) {
       int toReturn = IMessageProvider.NONE;
-      if (isValueInRange(level, Level.INFO.intValue(), Level.WARNING.intValue())) {
+      if (level == IStatus.INFO) {
          toReturn = IMessageProvider.INFORMATION;
-      } else if (isValueInRange(level, Level.WARNING.intValue(), Level.SEVERE.intValue())) {
+      } else if (level == IStatus.WARNING) {
          toReturn = IMessageProvider.WARNING;
-      } else if (level > Level.SEVERE.intValue()) {
+      } else if (level == IStatus.ERROR) {
          toReturn = IMessageProvider.ERROR;
       }
       return toReturn;

@@ -11,12 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
+import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.widgets.Display;
@@ -44,6 +48,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
 
       setRequiredSelection(minOccurrence, maxOccurrence);
       setSelected(getStored());
+      setRequiredEntry(true);
    }
 
    /* (non-Javadoc)
@@ -95,5 +100,23 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    @Override
    public void saveToArtifact() throws OseeCoreException {
       artifact.setAttributeValues(attributeTypeName, getSelected());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
+    */
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         List<String> items = getSelectableItems();
+         for (String item : items) {
+            status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, item);
+            if (!status.isOK()) {
+               break;
+            }
+         }
+      }
+      return status;
    }
 }
