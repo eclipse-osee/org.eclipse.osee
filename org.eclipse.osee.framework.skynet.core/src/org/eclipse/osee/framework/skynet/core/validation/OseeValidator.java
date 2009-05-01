@@ -35,10 +35,10 @@ import org.osgi.framework.Bundle;
  * @author Roberto E. Escobar
  */
 public class OseeValidator {
-   private static final String EXTENSION_ELEMENT = "OseeTypeValidator";
+   private static final String EXTENSION_ELEMENT = "OseeValidator";
    private static final String EXTENSION_ID = SkynetActivator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
    private static final String CLASS_NAME_ATTRIBUTE = "classname";
-   private static final String ATTRIBUTE_TYPENAME = "";
+   private static final String ATTRIBUTE_TYPENAME = "AttributeTypeName";
    private final static OseeValidator instance = new OseeValidator();
 
    private final HashCollection<AttributeType, IOseeValidator> loadedObjects =
@@ -49,6 +49,17 @@ public class OseeValidator {
 
    public static OseeValidator getInstance() {
       return instance;
+   }
+
+   public IStatus validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
+      IStatus status = Status.OK_STATUS;
+      try {
+         AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+         status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
+      } catch (Exception ex) {
+         status = new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+      }
+      return status;
    }
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeType attributeType, Object proposedValue) {

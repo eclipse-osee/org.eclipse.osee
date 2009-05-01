@@ -16,6 +16,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface IOseeValidator {
 
+   public static final int SHORT = 10;
+   public static final int MEDIUM = 50;
+   public static final int LONG = 100;
+
    public int getQualityOfService();
 
    public IStatus validate(Artifact artifact, Object proposedObject) throws OseeCoreException;
