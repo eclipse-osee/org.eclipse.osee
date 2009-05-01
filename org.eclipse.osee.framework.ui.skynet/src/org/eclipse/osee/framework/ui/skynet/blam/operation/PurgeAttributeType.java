@@ -13,34 +13,32 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeArtifactType extends AbstractBlam {
-   private boolean convertArtifacts;
-
+public class PurgeAttributeType extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
     */
    @Override
    public String getName() {
-      return "Purge Artifact Type";
+      return "Purge Attribute Type";
    }
 
    /* (non-Javadoc)
      * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
      */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Collection<ArtifactType> purgeArtifactTypes =
-            variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to purge");
-      convertArtifacts = variableMap.getBoolean("Convert Artifacts");
-      ArtifactType newArtifactType = convertArtifacts ? variableMap.getArtifactType("New Artifact Type") : null;
+      Collection<AttributeType> purgeAttributeTypes =
+            variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
-      ArtifactTypeManager.purgeArtifactTypesWithCheck(purgeArtifactTypes, newArtifactType);
+      for (AttributeType attributeType : purgeAttributeTypes) {
+         AttributeTypeManager.purgeAttributeType(attributeType);
+      }
    }
 
    /*
@@ -50,7 +48,7 @@ public class PurgeArtifactType extends AbstractBlam {
     */
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type(s) to purge\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Convert Artifacts\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
    /* (non-Javadoc)
@@ -58,7 +56,7 @@ public class PurgeArtifactType extends AbstractBlam {
     */
    @Override
    public String getDescriptionUsage() {
-      return "Purge an artifact type.  Will find artifacts (if any) of this type on all branches and switch their type to the specified type.  Then purge the artifact type ";
+      return "Purge an attribute type.";
    }
 
    public Collection<String> getCategories() {
