@@ -49,13 +49,6 @@
 
    <element name="OseeValidator">
       <complexType>
-         <attribute name="AttributeTypeName" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
          <attribute name="classname" type="string" use="required">
             <annotation>
                <documentation>
