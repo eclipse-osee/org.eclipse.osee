@@ -24,9 +24,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.NoteItem;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
-import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -79,28 +77,22 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final XFormToolkit toolkit;
    private static String ORIGINATOR = "Originator:";
-   private static String TEAM_ACTIONABLE_ITEMS = "Team Actionable Items: ";
-   private static String ACTION_ACTIONABLE_ITEMS = "Action Actionable Items: ";
-   private Label origLabel, teamActionableItemLabel, actionActionableItemsLabel;
+   private Label origLabel;
    private final List<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
    private AtsWorkPage currentAtsWorkPage;
    private ScrolledForm scrolledForm;
    private final Integer HEADER_COMP_COLUMNS = 4;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
-   private final TeamWorkFlowArtifact teamWf;
    private SMARelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
    private Composite body;
    private Composite atsBody;
+   private SMAActionableItemHeader sMAActionableItemHeader;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
       this.smaMgr = smaMgr;
       toolkit = smaMgr.getEditor().getToolkit();
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
-         teamWf = (TeamWorkFlowArtifact) smaMgr.getSma();
-      else
-         teamWf = null;
    }
 
    /*
@@ -143,6 +135,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void addMessageDecoration(ScrolledForm form) {
       form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
 
+         @Override
          public void linkActivated(HyperlinkEvent e) {
             String title = e.getLabel();
             Object href = e.getHref();
@@ -198,6 +191,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    @Override
    public void dispose() {
+      sMAActionableItemHeader.dispose();
       for (SMAWorkFlowSection section : sections)
          section.dispose();
       toolbarArea.dispose();
@@ -256,7 +250,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createTopLineHeader(headerComp, toolkit);
          createAssigneesLineHeader(headerComp, toolkit);
          createLatestHeader(headerComp, toolkit);
-         createTeamWorkflowHeader(headerComp, toolkit);
+         sMAActionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
          createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
          createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
          createAnnotationsHeader(headerComp, toolkit);
@@ -349,119 +343,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          });
          return Status.OK_STATUS;
 
-      }
-   }
-
-   private void createTeamWorkflowHeader(Composite comp, XFormToolkit toolkit) {
-      try {
-         if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return;
-
-         Composite actionComp = new Composite(comp, SWT.NONE);
-         toolkit.adapt(actionComp);
-         actionComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = 4;
-         actionComp.setLayoutData(gd);
-
-         // Show Action's AIs
-         if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(actionComp, ACTION_ACTIONABLE_ITEMS, SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
-
-               public void linkEntered(HyperlinkEvent e) {
-               }
-
-               public void linkExited(HyperlinkEvent e) {
-               }
-
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     AtsLib.editActionActionableItems(teamWf.getParentActionArtifact());
-                  } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-            link.setToolTipText("Edit Actionable Items for the parent Action (this may add Team Workflows)");
-            if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel =
-                     toolkit.createLabel(actionComp,
-                           " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
-               errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               actionActionableItemsLabel =
-                     toolkit.createLabel(actionComp,
-                           teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
-               actionActionableItemsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            }
-         } else {
-            if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel =
-                     toolkit.createLabel(actionComp,
-                           " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
-               errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               Label label =
-                     toolkit.createLabel(
-                           actionComp,
-                           " " + ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
-               label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            }
-         }
-
-         Composite teamComp = new Composite(comp, SWT.NONE);
-         toolkit.adapt(teamComp);
-         teamComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-         gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = 4;
-         teamComp.setLayoutData(gd);
-
-         // Show Team Workflow's AIs
-         if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(teamComp, " " + TEAM_ACTIONABLE_ITEMS, SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
-
-               public void linkEntered(HyperlinkEvent e) {
-               }
-
-               public void linkExited(HyperlinkEvent e) {
-               }
-
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     AtsLib.editTeamActionableItems(teamWf);
-                  } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-
-            });
-            link.setToolTipText("Edit Actionable Items for this Team Workflow");
-            if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel =
-                     toolkit.createLabel(teamComp,
-                           " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
-               errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               teamActionableItemLabel =
-                     toolkit.createLabel(teamComp, teamWf.getActionableItemsDam().getActionableItemsStr());
-               teamActionableItemLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            }
-         } else {
-            if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel =
-                     toolkit.createLabel(teamComp,
-                           " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
-               errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            } else {
-               Label label =
-                     toolkit.createLabel(teamComp,
-                           " " + TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
-               label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -606,10 +487,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public void updateOrigLabel() throws OseeCoreException {
       origLabel.setText(smaMgr.getOriginator().getName());
       origLabel.getParent().layout();
-      if (teamWf != null) {
-         teamActionableItemLabel.setText(teamWf.getActionableItemsDam().getActionableItemsStr());
-         actionActionableItemsLabel.setText(teamWf.getActionableItemsDam().getActionableItemsStr());
-      }
    }
 
    public void refresh() throws OseeCoreException {

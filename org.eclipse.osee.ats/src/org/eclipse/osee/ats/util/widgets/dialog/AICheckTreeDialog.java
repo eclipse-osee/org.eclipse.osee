@@ -37,6 +37,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
    private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
+   private Set<ActionableItemArtifact> initialAias;
 
    public AICheckTreeDialog(String title, String message, Active active) {
       super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider());
@@ -74,6 +75,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
                }
             }
          });
+         if (getInitialAias() != null) getTreeViewer().setInitalChecked(getInitialAias());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -92,6 +94,20 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return super.isComplete();
+   }
+
+   /**
+    * @return the initialAias
+    */
+   public Set<ActionableItemArtifact> getInitialAias() {
+      return initialAias;
+   }
+
+   /**
+    * @param initialAias the initialAias to set
+    */
+   public void setInitialAias(Set<ActionableItemArtifact> initialAias) {
+      this.initialAias = initialAias;
    }
 
 }

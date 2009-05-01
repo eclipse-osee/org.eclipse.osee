@@ -99,14 +99,9 @@ public class NewActionJob extends Job {
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 
-      // Relate Action to ActionableItems (by guid)
-      for (ActionableItemArtifact aia : actionableItems)
-         actionArt.getActionableItemsDam().addActionableItem(aia);
-
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) monitor.subTask("Creating WorkFlows");
-      Collection<TeamDefinitionArtifact> teams =
-            TeamDefinitionArtifact.getImpactedTeamDefs(actionArt.getActionableItemsDam().getActionableItems());
+      Collection<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
       if (teams == null || teams.size() == 0) {
          StringBuffer sb = new StringBuffer();
          for (ActionableItemArtifact aia : actionableItems)

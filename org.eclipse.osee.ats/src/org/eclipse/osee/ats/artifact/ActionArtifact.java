@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -58,7 +57,6 @@ import org.eclipse.swt.graphics.Image;
 public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public static String ARTIFACT_NAME = "Action";
-   private XActionableItemsDam actionableItemsDam;
    public static enum CreateTeamOption {
       Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
    };
@@ -73,19 +71,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#onInitializationComplete()
-    */
-   @Override
-   public void onInitializationComplete() {
-      super.onInitializationComplete();
-      actionableItemsDam = new XActionableItemsDam(this);
-   }
-
    public void resetAttributesOffChildren(SkynetTransaction transaction) throws OseeCoreException {
-      resetActionItemsOffChildren();
       resetChangeTypeOffChildren();
       resetPriorityOffChildren();
       resetUserCommunityOffChildren();
@@ -97,6 +83,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {
       return true;
+   }
+
+   public Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         aias.addAll(team.getActionableItemsDam().getActionableItems());
+      }
+      return aias;
    }
 
    /**
@@ -141,15 +135,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (desc.equals("")) {
          deleteSoleAttribute(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
       }
-   }
-
-   private Result resetActionItemsOffChildren() throws OseeCoreException {
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
-         if (getTeamWorkFlowArtifacts().size() == 1 || !(new SMAManager(team)).isCancelled()) {
-            aias.addAll(team.getActionableItemsDam().getActionableItems());
-         }
-      return actionableItemsDam.setActionableItems(aias);
    }
 
    private void resetChangeTypeOffChildren() throws OseeCoreException {
@@ -212,13 +197,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public void setPriority(PriorityType type) throws OseeCoreException {
       setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
-   }
-
-   /**
-    * @return Returns the actionableItemsDam.
-    */
-   public XActionableItemsDam getActionableItemsDam() {
-      return actionableItemsDam;
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
@@ -326,11 +304,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewActionableItems() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
-         sb.append(aia.getDescriptiveName() + ", ");
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      // Roll up if same for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         aias.addAll(team.getActionableItemsDam().getActionableItems());
       }
-      return sb.toString().replaceFirst(", $", "");
+      return Artifacts.commaArts(aias);
    }
 
    @Override
@@ -645,28 +624,47 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return this;
    }
 
-   public Result addActionableItems() throws OseeCoreException {
+   public Result editActionableItems() throws OseeCoreException {
       final AICheckTreeDialog diag =
             new AICheckTreeDialog(
                   "Add Impacted Actionable Items",
                   "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
                   Active.Active);
 
-      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         aias.addAll(team.getActionableItemsDam().getActionableItems());
-      }
-      diag.setInitialSelections(aias);
+      diag.setInitialAias(getActionableItems());
       if (diag.open() != 0) return Result.FalseResult;
 
-      final StringBuffer sb = new StringBuffer();
+      // ensure that at least one actionable item exists for each team
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         boolean found = false;
+         for (TeamDefinitionArtifact teamDef : TeamDefinitionArtifact.getImpactedTeamDefs(diag.getChecked())) {
+            if (team.getTeamDefinition().equals(teamDef)) {
+               found = true;
+            }
+         }
+         if (!found) {
+            return new Result("Can not remove all actionable items for a team.\n\nCancel team workflow instead.");
+         }
+      }
 
+      final StringBuffer sb = new StringBuffer();
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
 
+      // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
          Result result = addActionableItemToTeamsOrAddTeams(aia, transaction);
          sb.append(result.getText());
       }
+      // Remove unchecked aias
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         for (ActionableItemArtifact aia : team.getActionableItemsDam().getActionableItems()) {
+            if (!diag.getChecked().contains(aia)) {
+               team.getActionableItemsDam().removeActionableItem(aia);
+            }
+         }
+         team.persistAttributes(transaction);
+      }
+
       transaction.execute();
       return new Result(true, sb.toString());
    }
@@ -683,7 +681,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                // ADD it
                if (!teamArt.getActionableItemsDam().getActionableItems().contains(aia)) {
                   teamArt.getActionableItemsDam().addActionableItem(aia);
-                  teamArt.persistAttributes();
+                  teamArt.saveSMA(transaction);
                   sb.append(aia.getDescriptiveName() + " => added to existing team workflow \"" + tda.getDescriptiveName() + "\"\n");
                   teamExists = true;
                } else {

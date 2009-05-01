@@ -67,7 +67,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          if (art instanceof ActionableItemArtifact) aias.add((ActionableItemArtifact) art);
       }
       if (aias.size() > 0) {
-         ActionableItemWorldSearchItem srch = new ActionableItemWorldSearchItem("AI search", aias, true, false, true);
+         ActionableItemWorldSearchItem srch = new ActionableItemWorldSearchItem("AI search", aias, true, true);
          if (srch.performSearchGetResults(false).size() > 0) {
             return new Result(
                   "Actionable Items (or children AIs) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.");

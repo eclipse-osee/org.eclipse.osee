@@ -68,7 +68,9 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
     */
    public void setInitialSelections(Set<? extends Object> initialSelections) {
       this.initialSelections = initialSelections;
-      if (treeViewer != null) treeViewer.setInitalChecked(initialSelections);
+      if (treeViewer != null) {
+         treeViewer.setInitalChecked(initialSelections);
+      }
    }
 
    @Override

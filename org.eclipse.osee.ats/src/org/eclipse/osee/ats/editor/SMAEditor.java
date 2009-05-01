@@ -255,7 +255,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          // Create WorkFlow tab
          try {
             workFlowTab = new SMAWorkFlowTab(smaMgr);
-
             workFlowPageIndex = addPage(workFlowTab);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

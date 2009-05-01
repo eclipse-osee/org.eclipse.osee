@@ -168,14 +168,14 @@ public class AtsLib implements IAtsLib {
          return String.format("%5.2f", d);
    }
 
-   public static void editActionActionableItems(ActionArtifact actionArt) throws OseeCoreException {
-      Result result = actionArt.addActionableItems();
+   public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
+      Result result = actionArt.editActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse()) result.popup(result.isTrue());
    }
 
-   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Result result = teamArt.addActionableItems();
+   public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Result result = teamArt.editActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
    }

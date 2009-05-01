@@ -1369,7 +1369,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param links
     */
-   @Deprecated
    public Result isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
       try {
          if (isDirty()) {

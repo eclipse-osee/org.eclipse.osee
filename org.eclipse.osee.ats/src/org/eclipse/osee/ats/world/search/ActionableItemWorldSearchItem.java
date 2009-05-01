@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCache;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -44,27 +42,22 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean showFinished;
    private boolean selectedShowFinished; // Used to not corrupt original values
-   private boolean showAction;
-   private boolean selectedShowAction; // Used to not corrupt original values
    private final Collection<String> actionItemNames;
 
-   public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean showAction, boolean recurseChildren) {
+   public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean recurseChildren) {
       super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
       this.actionItemNames = actionItemNames;
       this.showFinished = showFinished;
       this.selectedShowFinished = showFinished; // Set as default in case UI is not used
-      this.showAction = showAction;
-      this.selectedShowAction = showAction; // Set as default in case UI is not used
       this.recurseChildren = recurseChildren;
       this.selectedRecurseChildren = recurseChildren; // Set as default in case UI is not used
    }
 
-   public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean showAction, boolean recurseChildren) {
+   public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean recurseChildren) {
       super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
       this.actionItemNames = null;
       this.actionItems = actionItems;
       this.showFinished = showFinished;
-      this.showAction = showAction;
       this.recurseChildren = recurseChildren;
    }
 
@@ -73,7 +66,6 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       this.actionItemNames = item.actionItemNames;
       this.actionItems = item.actionItems;
       this.showFinished = item.showFinished;
-      this.showAction = item.showAction;
       this.recurseChildren = item.recurseChildren;
    }
 
@@ -137,13 +129,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
                Operator.NOT_EQUAL));
       }
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
-
-      if (selectedShowAction) {
-         return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
-      } else {
-         return artifacts;
-      }
+      return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), 1000, criteria);
    }
 
    @Override
@@ -154,12 +140,10 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedActionItems != null) return;
       ActionActionableItemListDialog diag = new ActionActionableItemListDialog(Active.Both);
       diag.setShowFinished(showFinished);
-      diag.setShowAction(showAction);
       diag.setRecurseChildren(recurseChildren);
       int result = diag.open();
       if (result == 0) {
          selectedShowFinished = diag.isShowFinished();
-         selectedShowAction = diag.isShowAction();
          selectedRecurseChildren = diag.isRecurseChildren();
          if (selectedActionItems == null)
             selectedActionItems = new HashSet<ActionableItemArtifact>();
@@ -170,13 +154,6 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          return;
       }
       cancelled = true;
-   }
-
-   /**
-    * @param showAction The showAction to set.
-    */
-   public void setShowAction(boolean showAction) {
-      this.showAction = showAction;
    }
 
    /**

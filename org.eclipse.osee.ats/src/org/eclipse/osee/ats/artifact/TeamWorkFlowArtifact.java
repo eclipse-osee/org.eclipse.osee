@@ -350,35 +350,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return super.getManHrsPerDayPreference();
    }
 
-   public Result addActionableItems() {
-      Result toReturn = Result.FalseResult;
-      AICheckTreeDialog diag =
-            new AICheckTreeDialog(
-                  "Add/Remove Impacted Actionable Items",
-                  "Select/De-Select Impacted Actionable Items\n\n" + "Note: At least one Actionable Item must remain.\nTeam should be cancelled if no impact exists.",
-                  Active.Both);
-
-      try {
-         diag.setInput(getTeamDefinition().getRelatedArtifacts(AtsRelation.TeamActionableItem_ActionableItem,
-               ActionableItemArtifact.class));
-         diag.setInitialSelections(actionableItemsDam.getActionableItems());
-         if (diag.open() != 0) {
-            toReturn = new Result("Add/Remove Cancelled");
-         } else if (diag.getChecked().size() == 0) {
-            toReturn = new Result("At least one actionable item must remain.");
-         } else {
-            Set<ActionableItemArtifact> selectedAlias = new HashSet<ActionableItemArtifact>();
-            for (Object obj : diag.getChecked()) {
-               selectedAlias.add((ActionableItemArtifact) obj);
-            }
-
-            toReturn = actionableItemsTx(AtsPlugin.getAtsBranch(), selectedAlias, null);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         toReturn = Result.FalseResult;
-      }
-      return toReturn;
+   public Result editActionableItems() throws OseeCoreException {
+      return getParentActionArtifact().editActionableItems();
    }
 
    public Result convertActionableItems() throws OseeCoreException {

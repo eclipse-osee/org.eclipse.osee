@@ -323,11 +323,11 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                if (getSelectedActionArtifacts().size() == 1) {
                   ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
-                  AtsLib.editActionActionableItems(actionArt);
+                  AtsLib.editActionableItems(actionArt);
                   refresh(getSelectedArtifactItems().iterator().next());
                } else {
                   TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
-                  AtsLib.editTeamActionableItems(teamArt);
+                  AtsLib.editActionableItems(teamArt);
                   refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {
