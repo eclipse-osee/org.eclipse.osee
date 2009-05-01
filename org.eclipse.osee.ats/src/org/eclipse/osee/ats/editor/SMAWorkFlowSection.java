@@ -193,6 +193,13 @@ public class SMAWorkFlowSection extends SectionPart {
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
 
+      if (smaMgr.isTaskable()) {
+         new SMATaskInfoComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      }
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+         new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      }
+
       // Check extension points for page creation
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          Result result = item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener, isEditable || isGlobalEditable);
@@ -200,13 +207,6 @@ public class SMAWorkFlowSection extends SectionPart {
             result.popup();
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
          }
-      }
-
-      if (smaMgr.isTaskable()) {
-         new SMATaskInfoComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
-      }
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
       }
 
       createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);

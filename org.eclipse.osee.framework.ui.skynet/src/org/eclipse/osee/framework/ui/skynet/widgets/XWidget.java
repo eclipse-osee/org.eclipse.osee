@@ -51,7 +51,7 @@ public abstract class XWidget {
    private String toolTip = null;
    private boolean requiredEntry = false;
    private boolean editable = true;
-   private MutableBoolean isNotificationAllowed = new MutableBoolean(true);
+   private final MutableBoolean isNotificationAllowed = new MutableBoolean(true);
 
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
@@ -117,38 +117,38 @@ public abstract class XWidget {
       return getManagedForm() != null ? managedForm.getMessageManager() : null;
    }
 
-   public void setMessage(String messageText, int type) {
+   public void setMessage(String messageId, String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.addMessage(this, messageText, null, type);
+         messageManager.addMessage(messageId, messageText, null, type);
       }
    }
 
    public void setControlCausedMessage(String messageId, String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.addMessage(messageId, messageText, null, type, getControl());
+         messageManager.addMessage(messageId, messageText, null, type, getErrorMessageControl());
       }
    }
 
    public void removeControlCausedMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.removeMessage(messageId, getControl());
+         messageManager.removeMessage(messageId, getErrorMessageControl());
       }
    }
 
    public void removeControlCausedMessages() {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.removeMessage(getControl());
+         messageManager.removeMessage(getErrorMessageControl());
       }
    }
 
-   public void removeMessage() {
+   public void removeMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null) {
-         messageManager.removeMessage(this);
+         messageManager.removeMessage(messageId);
       }
    }
 
@@ -177,6 +177,16 @@ public abstract class XWidget {
             }
          }
       }
+   }
+
+   /**
+    * Return the control that the error message is to be placed. By default the getControl() will be used. Override to
+    * change.
+    * 
+    * @return control
+    */
+   public Control getErrorMessageControl() {
+      return getControl();
    }
 
    public abstract Control getControl();

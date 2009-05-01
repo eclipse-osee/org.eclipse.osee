@@ -424,4 +424,12 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       });
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getErrorMessageControl()
+    */
+   @Override
+   public Control getErrorMessageControl() {
+      return labelWidget;
+   }
+
 }
