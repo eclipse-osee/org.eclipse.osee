@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -1137,21 +1136,23 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
             Artifact previousArtifact =
-                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID),
+                  ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID),
                         BranchManager.getBranch(Integer.parseInt(memento.getString(ROOT_BRANCH))));
-            explore(previousArtifact);
+            if (previousArtifact != null) {
+               explore(previousArtifact);
+            } else {
+               /*
+                * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
+                * because it was deleted or this workspace was last used with a different branch or database, so let the logic
+                * below get the default hierarchy root artifact
+                */
+            }
             return;
          }
-      } catch (ArtifactDoesNotExist ex) {
-         /*
-          * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
-          * because it was deleted or this workspace was last used with a different branch or database, so let the logic
-          * below get the default hierarchy root artifact
-          */
+
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-
    }
 
    @Override
