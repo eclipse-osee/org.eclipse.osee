@@ -82,6 +82,29 @@ public class ArtifactQuery {
    }
 
    /**
+    * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
+    * 
+    * @param guidOrHrid either the guid or human readable id of the desired artifact
+    * @param branch
+    * @param allowDeleted whether to return the artifact even if it has been deleted
+    * @return one artifact by one its id if it exists, otherwise null
+    */
+   public static Artifact checkArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guidOrHrid, branch, allowDeleted, QueryType.CHECK);
+   }
+
+   /**
+    * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
+    * 
+    * @param guidOrHrid either the guid or human readable id of the desired artifact
+    * @param branch
+    * @return one artifact by one its guid or human readable id if it exists, otherwise null
+    */
+   public static Artifact checkArtifactFromId(String guidOrHrid, Branch branch) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guidOrHrid, branch, false, QueryType.CHECK);
+   }
+
+   /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
@@ -91,7 +114,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(String guidOrHrid, Branch branch) throws OseeCoreException {
-      return getArtifactFromId(guidOrHrid, branch, false);
+      return getOrCheckArtifactFromId(guidOrHrid, branch, false, QueryType.GET);
    }
 
    /**
@@ -105,11 +128,15 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guidOrHrid, branch, allowDeleted, QueryType.GET);
+   }
+
+   private static Artifact getOrCheckArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted, QueryType queryType) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getBranchId());
       if (artifact != null) {
          return artifact;
       }
-      return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
+      return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
    }
 
    /**
@@ -411,21 +438,24 @@ public class ArtifactQuery {
       Artifact root = ArtifactCache.getByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
       if (root == null) {
          root =
-               checkArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
-   
+               checkArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME,
+                     ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
+
          if (root == null) {
             if (createIfNecessary) {
                OseeLog.log(SkynetActivator.class, Level.INFO,
                      "Created " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
-               root = ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch, ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME);
+               root =
+                     ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch,
+                           ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME);
                root.persistAttributes();
-   
+
             } else {
                throw new ArtifactDoesNotExist(
                      "An artifact of type " + ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME + " named " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " was not found");
             }
          }
-   
+
          ArtifactCache.putByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
       }
       return root;
