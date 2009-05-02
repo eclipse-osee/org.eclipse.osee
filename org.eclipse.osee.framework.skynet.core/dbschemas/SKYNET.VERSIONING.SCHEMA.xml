@@ -140,7 +140,7 @@
 		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="INTEGER" />		
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Column id="ORDINAL" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID ORDINAL" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID, ORDINAL" />
 		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK1" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>

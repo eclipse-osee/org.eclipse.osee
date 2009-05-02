@@ -185,11 +185,9 @@ public class AttributeTypeManager {
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
 
-      int enumTypeId = -1;
-      if (validityXml != null) {
-         OseeEnumType enumType = OseeEnumTypeManager.createEnumTypeFromXml(validityXml);
-         enumTypeId = enumType.getEnumTypeId();
-      }
+      OseeEnumType enumType = OseeEnumTypeManager.createEnumTypeFromXml(namespace + name, validityXml);
+      int enumTypeId = enumType.getEnumTypeId();
+
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
             fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
             namespace == null ? SQL3DataType.VARCHAR : namespace, name,

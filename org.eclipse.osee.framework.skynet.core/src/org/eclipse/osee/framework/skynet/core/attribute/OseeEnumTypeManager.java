@@ -89,9 +89,9 @@ public class OseeEnumTypeManager {
    private static void checkEntryIntegrity(String enumTypeName, List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
       if (entries == null) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries",
             enumTypeName));
-      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
-            enumTypeName));
 
+      //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
+      //            enumTypeName));
       Map<String, Integer> values = new HashMap<String, Integer>();
       for (ObjectPair<String, Integer> entry : entries) {
          String name = entry.object1;
@@ -121,26 +121,33 @@ public class OseeEnumTypeManager {
          oseeEnumType.addEnum(entry.object1, entry.object2);
          data.add(new Object[] {oseeEnumTypeId, entry.object1, entry.object2});
       }
-      ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, data);
-
+      if (!data.isEmpty()) {
+         ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, data);
+      }
       instance.cache(oseeEnumType);
       return oseeEnumType;
    }
 
-   public static OseeEnumType createEnumTypeFromXml(String validityXml) throws OseeCoreException {
+   public static OseeEnumType createEnumTypeFromXml(String attributeTypeName, String validityXml) throws OseeCoreException {
       OseeEnumType oseeEnumType = null;
       try {
-         Document document = Jaxp.readXmlDocument(validityXml);
-         Element choicesElement = document.getDocumentElement();
-         NodeList enumerations = choicesElement.getChildNodes();
-         String enumTypeName = "";
          Set<String> choices = new HashSet<String>();
-         for (int i = 0; i < enumerations.getLength(); i++) {
-            Node node = enumerations.item(i);
-            if (node.getNodeName().equals("Enum")) {
-               choices.add(node.getTextContent());
-            } else {
-               choices.add(node.getNodeName());
+         String enumTypeName = "";
+         if (validityXml == null) {
+            validityXml = "";
+            enumTypeName = "Osee Default Enum";
+         } else {
+            Document document = Jaxp.readXmlDocument(validityXml);
+            enumTypeName = attributeTypeName;
+            Element choicesElement = document.getDocumentElement();
+            NodeList enumerations = choicesElement.getChildNodes();
+            for (int i = 0; i < enumerations.getLength(); i++) {
+               Node node = enumerations.item(i);
+               if (node.getNodeName().equals("Enum")) {
+                  choices.add(node.getTextContent());
+               } else {
+                  choices.add(node.getNodeName());
+               }
             }
          }
          List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
