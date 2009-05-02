@@ -337,7 +337,7 @@
     <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s28"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">unnamed</Data></Cell>
-    <Cell ss:StyleID="s36"><Data ss:Type="String">&lt;not&gt;null&lt;/not&gt;</Data></Cell>
+    <Cell ss:StyleID="s36"/>
     <Cell ss:StyleID="s36"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">Descriptive Name</Data></Cell>
@@ -687,7 +687,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>24</ActiveRow>
+     <ActiveRow>22</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

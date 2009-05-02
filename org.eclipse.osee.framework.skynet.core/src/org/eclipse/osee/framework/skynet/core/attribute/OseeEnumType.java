@@ -110,6 +110,14 @@ public class OseeEnumType {
       return prime * result + getEnumTypeId();
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      return enumTypeName;
+   }
+
    public final class OseeEnumEntry implements Comparable<OseeEnumEntry> {
       private final int ordinal;
       private final String name;
@@ -186,5 +194,4 @@ public class OseeEnumType {
          return 0;
       }
    }
-
 }

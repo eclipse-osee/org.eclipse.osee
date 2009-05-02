@@ -193,11 +193,11 @@ public class AttributeTypeManager {
             namespace == null ? SQL3DataType.VARCHAR : namespace, name,
             defaultValue == null ? SQL3DataType.VARCHAR : defaultValue, enumTypeId, minOccurrences, maxOccurrences,
             tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
-      AttributeType descriptor =
+      AttributeType attributeType =
             new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension, namespace,
                   name, defaultValue, enumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
-      instance.cache(descriptor);
-      return descriptor;
+      instance.cache(attributeType);
+      return attributeType;
    }
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {

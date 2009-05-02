@@ -39,9 +39,8 @@ import org.w3c.dom.NodeList;
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeManager {
-
    private static final String QUERY_ENUM =
-         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd order by oetd.ENUM_TYPE_ID";
+         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id";
 
    private static final String INSERT_ENUM_TYPE =
          "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_NAME) values (?,?)";
@@ -129,38 +128,40 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType createEnumTypeFromXml(String attributeTypeName, String validityXml) throws OseeCoreException {
-      OseeEnumType oseeEnumType = null;
-      try {
+      List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
+      String enumTypeName = "";
+
+      if (Strings.isValid(validityXml)) {
+         Document document;
+         try {
+            document = Jaxp.readXmlDocument(validityXml);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
+         }
+         enumTypeName = attributeTypeName;
+         Element choicesElement = document.getDocumentElement();
+         NodeList enumerations = choicesElement.getChildNodes();
          Set<String> choices = new HashSet<String>();
-         String enumTypeName = "";
-         if (validityXml == null) {
-            validityXml = "";
-            enumTypeName = "Osee Default Enum";
-         } else {
-            Document document = Jaxp.readXmlDocument(validityXml);
-            enumTypeName = attributeTypeName;
-            Element choicesElement = document.getDocumentElement();
-            NodeList enumerations = choicesElement.getChildNodes();
-            for (int i = 0; i < enumerations.getLength(); i++) {
-               Node node = enumerations.item(i);
-               if (node.getNodeName().equals("Enum")) {
-                  choices.add(node.getTextContent());
-               } else {
-                  choices.add(node.getNodeName());
-               }
+
+         for (int i = 0; i < enumerations.getLength(); i++) {
+            Node node = enumerations.item(i);
+            if (node.getNodeName().equalsIgnoreCase("Enum")) {
+               choices.add(node.getTextContent());
+            } else {
+               throw new OseeArgumentException("Validity Xml not of excepted enum format");
             }
          }
-         List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
+
          int ordinal = 0;
          for (String choice : choices) {
-            entries.add(new ObjectPair<String, Integer>(choice, ordinal));
-            ordinal++;
+            entries.add(new ObjectPair<String, Integer>(choice, ordinal++));
          }
-         oseeEnumType = createEnumType(enumTypeName, entries);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+
+      } else {
+         enumTypeName = "Osee Default Enum";
       }
-      return oseeEnumType;
+
+      return createEnumType(enumTypeName, entries);
    }
 
    private void cache(OseeEnumType oseeEnumType) {
