@@ -39,7 +39,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, ENUM_TYPE_ID, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -81,7 +81,7 @@ public class AttributeTypeManager {
                AttributeType type =
                      new AttributeType(chStmt.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
                            chStmt.getString("file_type_extension"), chStmt.getString("namespace"),
-                           chStmt.getString("name"), chStmt.getString("default_value"), chStmt.getInt("ENUM_TYPE_ID"),
+                           chStmt.getString("name"), chStmt.getString("default_value"), chStmt.getInt("enum_type_id"),
                            chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
