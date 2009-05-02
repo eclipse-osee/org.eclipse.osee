@@ -109,7 +109,7 @@ public class SequenceManager {
       return (int) getNextSequence(ART_ID_SEQ);
    }
 
-   public static int getNextEnumTypeId() throws OseeDataStoreException {
+   public static int getNextOseeEnumTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ENUM_TYPE_ID_SEQ);
    }
 

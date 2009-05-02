@@ -26,14 +26,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Ryan D. Brooks
@@ -43,7 +39,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, ENUM_TYPE_ID, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -85,9 +81,9 @@ public class AttributeTypeManager {
                AttributeType type =
                      new AttributeType(chStmt.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
                            chStmt.getString("file_type_extension"), chStmt.getString("namespace"),
-                           chStmt.getString("name"), chStmt.getString("default_value"),
-                           chStmt.getString("validity_xml"), chStmt.getInt("min_occurence"),
-                           chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
+                           chStmt.getString("name"), chStmt.getString("default_value"), chStmt.getInt("ENUM_TYPE_ID"),
+                           chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
+                           chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
@@ -188,15 +184,20 @@ public class AttributeTypeManager {
       int attrTypeId = SequenceManager.getNextAttributeTypeId();
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
+
+      int enumTypeId = -1;
+      if (validityXml != null) {
+         OseeEnumType enumType = OseeEnumTypeManager.createEnumTypeFromXml(validityXml);
+         enumTypeId = enumType.getEnumTypeId();
+      }
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
             fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
             namespace == null ? SQL3DataType.VARCHAR : namespace, name,
-            defaultValue == null ? SQL3DataType.VARCHAR : defaultValue,
-            validityXml == null ? SQL3DataType.VARCHAR : validityXml, minOccurrences, maxOccurrences,
+            defaultValue == null ? SQL3DataType.VARCHAR : defaultValue, enumTypeId, minOccurrences, maxOccurrences,
             tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
       AttributeType descriptor =
             new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension, namespace,
-                  name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText, taggerId);
+                  name, defaultValue, enumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
       instance.cache(descriptor);
       return descriptor;
    }
@@ -239,18 +240,10 @@ public class AttributeTypeManager {
    public static Set<String> getEnumerationValues(AttributeType attributeType) {
       Set<String> choices = new HashSet<String>();
       try {
-         Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
-         Element choicesElement = document.getDocumentElement();
-
-         NodeList enumerations = choicesElement.getChildNodes();
-
-         for (int i = 0; i < enumerations.getLength(); i++) {
-            Node node = enumerations.item(i);
-            if (node.getNodeName().equals("Enum")) {
-               choices.add(node.getTextContent());
-            } else {
-               choices.add(node.getNodeName());
-            }
+         int oseeEnumTypeId = attributeType.getOseeEnumTypeId();
+         OseeEnumType enumType = OseeEnumTypeManager.getType(oseeEnumTypeId);
+         for (OseeEnumEntry enumEntry : enumType.values()) {
+            choices.add(enumEntry.name());
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);

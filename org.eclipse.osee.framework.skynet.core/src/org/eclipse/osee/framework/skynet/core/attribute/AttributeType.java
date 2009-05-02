@@ -27,7 +27,7 @@ public class AttributeType implements Comparable<AttributeType> {
    private String namespace;
    private String name;
    private String defaultValue;
-   private String validityXml;
+   private int oseeEnumTypeId;
    private int maxOccurrences;
    private int minOccurrences;
    private String tipText;
@@ -46,7 +46,7 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param maxOccurrences
     * @param tipText
     */
-   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
+   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -60,7 +60,7 @@ public class AttributeType implements Comparable<AttributeType> {
       this.namespace = namespace == null ? "" : namespace;
       this.name = name;
       this.defaultValue = defaultValue;
-      this.validityXml = validityXml;
+      this.oseeEnumTypeId = oseeEnumTypeId;
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
@@ -127,8 +127,8 @@ public class AttributeType implements Comparable<AttributeType> {
    /**
     * @return Returns the validityXml.
     */
-   public String getValidityXml() {
-      return validityXml;
+   public int getOseeEnumTypeId() {
+      return oseeEnumTypeId;
    }
 
    public String toString() {
