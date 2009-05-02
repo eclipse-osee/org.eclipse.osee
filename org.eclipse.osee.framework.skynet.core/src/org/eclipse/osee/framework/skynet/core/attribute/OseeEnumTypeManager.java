@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 public class OseeEnumTypeManager {
 
    private static final String QUERY_ENUM =
-         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd order by oetd.ordinal";
+         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd order by oetd.ENUM_TYPE_ID";
 
    private static final String INSERT_ENUM_TYPE =
          "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_NAME) values (?,?)";
