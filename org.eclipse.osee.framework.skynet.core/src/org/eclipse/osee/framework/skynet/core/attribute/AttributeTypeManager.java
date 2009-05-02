@@ -14,8 +14,8 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 /**
@@ -236,17 +235,14 @@ public class AttributeTypeManager {
    }
 
    public static Set<String> getEnumerationValues(AttributeType attributeType) {
-      Set<String> choices = new HashSet<String>();
       try {
          int oseeEnumTypeId = attributeType.getOseeEnumTypeId();
          OseeEnumType enumType = OseeEnumTypeManager.getType(oseeEnumTypeId);
-         for (OseeEnumEntry enumEntry : enumType.values()) {
-            choices.add(enumEntry.name());
-         }
+         return enumType.valuesAsOrderedStringSet();
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         return Collections.emptySet();
       }
-      return choices;
    }
 
    public static Set<String> getEnumerationValues(String attributeName) throws OseeDataStoreException, OseeTypeDoesNotExist {

@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -40,6 +42,14 @@ public class OseeEnumType {
 
    public OseeEnumEntry[] values() {
       return enumSet.toArray(new OseeEnumEntry[enumSet.size()]);
+   }
+
+   public Set<String> valuesAsOrderedStringSet() {
+      Set<String> values = new LinkedHashSet<String>();
+      for (OseeEnumEntry oseeEnumEntry : enumSet) {
+         values.add(oseeEnumEntry.name());
+      }
+      return values;
    }
 
    public int getEnumTypeId() {

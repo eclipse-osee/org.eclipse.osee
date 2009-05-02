@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
  */
 public class OseeEnumTypeManager {
    private static final String QUERY_ENUM =
-         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id";
+         "select oet.enum_type_name, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id, oetd.ordinal";
 
    private static final String INSERT_ENUM_TYPE =
          "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_NAME) values (?,?)";
@@ -141,7 +141,7 @@ public class OseeEnumTypeManager {
          enumTypeName = attributeTypeName;
          Element choicesElement = document.getDocumentElement();
          NodeList enumerations = choicesElement.getChildNodes();
-         Set<String> choices = new HashSet<String>();
+         Set<String> choices = new LinkedHashSet<String>();
 
          for (int i = 0; i < enumerations.getLength(); i++) {
             Node node = enumerations.item(i);

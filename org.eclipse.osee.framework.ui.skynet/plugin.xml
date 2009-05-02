@@ -1696,4 +1696,12 @@
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeAttributeType">
      </Operation>
   </extension>
+  <extension
+        id="CopyEnumDefinitions"
+        name="CopyEnumDefinitions"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CopyEnumDefinitions">
+     </Operation>
+  </extension>
 </plugin>
