@@ -972,6 +972,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
+      setPartName("Artifact Explorer: " + artifact.getBranch().getBranchShortName());
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
