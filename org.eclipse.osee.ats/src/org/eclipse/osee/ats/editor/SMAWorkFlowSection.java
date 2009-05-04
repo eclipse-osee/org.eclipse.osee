@@ -125,8 +125,9 @@ public class SMAWorkFlowSection extends SectionPart {
       Section section = getSection();
       try {
          section.setText(getCurrentStateTitle());
-
-         if (smaMgr.isCurrentState(atsWorkPage.getName())) section.setBackground(AtsPlugin.ACTIVE_COLOR);
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) {
+            section.setTitleBarForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
+         }
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 

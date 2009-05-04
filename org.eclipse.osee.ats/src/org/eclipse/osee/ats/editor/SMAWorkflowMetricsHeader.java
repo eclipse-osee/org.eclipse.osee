@@ -41,7 +41,7 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(8, false));
-         setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         setLayoutData(new GridData());
 
          Label label = toolkit.createLabel(this, "Total Percent: ", SWT.NONE);
          SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
