@@ -91,7 +91,7 @@ public class SMATargetVersionInfoComposite extends Composite {
       if (smaMgr.getTargetedForVersion() != null) {
          str = smaMgr.getTargetedForVersion() + "";
       } else {
-         str = "-- Set --";
+         str = "<edit>";
          if (required) {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
