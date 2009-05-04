@@ -100,7 +100,7 @@ public class JiniServiceSideConnector extends JiniConnector implements
 	synchronized void removeAllRegistrations() {
 		for (ServiceRegistration registration : registrations.keySet()) {
 			try {
-				LeaseRenewTask task = registrations.remove(registration);
+				LeaseRenewTask task = registrations.get(registration);
 				if (task != null) {
 					task.cancel();
 				}
