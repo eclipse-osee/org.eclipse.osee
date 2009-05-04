@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension
+         id="org.eclipse.osee.define.help.docs"
+         name="OSEE OTE"
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+      <toc
+            file="userguide/OSEE Define Reference-toc.xml"
+            primary="false">
+      </toc>
+   </extension>
+</plugin>
