@@ -95,22 +95,25 @@ public class StatePercentCompleteStat {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            sb.append(String.format("\nTotal State Percent: %d", smaMgr.getSma().getPercentCompleteSMAStateTotal(
+            setString(String.format("Total State Percent: %d", smaMgr.getSma().getPercentCompleteSMAStateTotal(
                   page.getName())));
-            if (page != null && link != null && !link.isDisposed()) {
-               link.setText(sb.toString());
-               link.update();
+            if (link != null && !link.isDisposed()) {
+               link.setToolTipText(sb.toString() + "\n" + TOOLTIP);
             }
          } else {
-            if (page != null && link != null && !link.isDisposed()) {
-               link.setText(String.format("State Percent Complete: %d", smaMgr.getStateMgr().getPercentComplete(
-                     page.getName())));
-               link.update();
-            }
+            setString(String.format("State Percent Complete: %d", smaMgr.getStateMgr().getPercentComplete(
+                  page.getName())));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private void setString(String str) {
+      if (page != null && link != null && !link.isDisposed()) {
+         link.setText(str);
+         link.update();
+      } else if (link != null && !link.isDisposed()) link.setText("State Hours Spent Error: page == null");
    }
 
    public String getName() {

@@ -99,9 +99,14 @@ public class StateHoursSpentStat {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            sb.append(String.format("\nTotal State Hours: %5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(
+            setString(String.format("Total State Hours: %5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(
                   page.getName())));
-            setString(sb.toString());
+            if (link != null && !link.isDisposed()) {
+               link.setToolTipText(sb.toString());
+            }
+            if (label != null && !label.isDisposed()) {
+               label.setToolTipText(sb.toString());
+            }
          } else {
             setString(String.format("State Hours Spent: %5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName())));
          }

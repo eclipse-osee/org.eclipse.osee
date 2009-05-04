@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -43,7 +42,6 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
       this.smaMgr = smaMgr;
       setLayout(ALayout.getZeroMarginLayout(3, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
       try {
 
          if (page.isCurrentNonCompleteCancelledState(smaMgr)) {
@@ -67,6 +65,7 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
    }
 
    private void refresh() throws OseeCoreException {
+      if (isDisposed()) return;
       if (percentComp != null) percentComp.refresh();
       if (estHoursStat != null) estHoursStat.refresh();
       if (hoursSpent != null) hoursSpent.refresh();
@@ -97,8 +96,8 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
     */
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
 }

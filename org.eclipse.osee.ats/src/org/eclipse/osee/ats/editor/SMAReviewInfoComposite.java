@@ -61,7 +61,7 @@ public class SMAReviewInfoComposite extends Composite {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
-      setLayout(new GridLayout(4, false));
+      setLayout(new GridLayout(3, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       Label label = new Label(this, SWT.NONE);
@@ -184,7 +184,7 @@ public class SMAReviewInfoComposite extends Composite {
          workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
          GridData gd = new GridData();
          gd.horizontalIndent = 20;
-         gd.horizontalSpan = 2;
+         gd.horizontalSpan = 3;
          workComp.setLayoutData(gd);
 
          for (ReviewSMArtifact revArt : revArts) {
@@ -261,7 +261,7 @@ public class SMAReviewInfoComposite extends Composite {
       Hyperlink hyperLabel =
             toolkit.createHyperlink(workComp, ((str.length() > 300) ? Strings.truncate(str, 300) + "..." : str),
                   SWT.NONE);
-      hyperLabel.setToolTipText("select to open review");
+      hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)

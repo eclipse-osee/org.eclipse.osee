@@ -103,9 +103,14 @@ public class StateEstimatedHoursStat {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            sb.append(String.format("\nTotal State Est Hours: %5.2f", smaMgr.getSma().getEstimatedHoursTotal(
+            setString(String.format("Total State Est Hours: %5.2f", smaMgr.getSma().getEstimatedHoursTotal(
                   page.getName())));
-            setString(sb.toString());
+            if (link != null && !link.isDisposed()) {
+               link.setToolTipText(sb.toString());
+            }
+            if (label != null && !label.isDisposed()) {
+               label.setToolTipText(sb.toString());
+            }
          } else {
             setString(String.format("State Estimated Hours: %5.2f", smaMgr.getSma().getEstimatedHoursTotal()));
          }
