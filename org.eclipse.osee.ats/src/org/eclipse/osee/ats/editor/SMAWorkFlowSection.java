@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAEditor.PriviledgedEditMode;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.task.TaskComposite;
@@ -360,8 +361,14 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
-      Composite comp = toolkit.createContainer(parent, 5);
+      Composite comp = toolkit.createContainer(parent, 6);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      if (smaMgr.getEditor().getPriviledgedEditMode() == PriviledgedEditMode.Global) {
+         Label label = toolkit.createLabel(comp, "Priviledged Edit");
+         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
+      }
 
       toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
 

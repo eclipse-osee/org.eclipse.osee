@@ -12,34 +12,79 @@
 package org.eclipse.osee.ats.editor.service;
 
 import java.util.Set;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
 public class PrivilegedEditService extends WorkPageService {
 
-   private Hyperlink link;
+   private Action action;
 
    public PrivilegedEditService(SMAManager smaMgr) {
       super(smaMgr);
+   }
+
+   @Override
+   public Action createToolbarService() {
+      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            togglePriviledgedEdit();
+         }
+      };
+      action.setToolTipText(getName());
+      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("privEdit.gif"));
+      return action;
+   }
+
+   private void togglePriviledgedEdit() {
+      try {
+         if (smaMgr.getSma().isReadOnly()) {
+            (new ReadOnlyHyperlinkListener(smaMgr)).linkActivated(null);
+         }
+         if (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off) {
+            if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Diable Privileged Edit",
+                  "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
+               smaMgr.getEditor().setPriviledgedEditMode(SMAEditor.PriviledgedEditMode.Off);
+            }
+         } else {
+            Set<User> users = smaMgr.getPrivilegedUsers();
+            if (AtsPlugin.isAtsAdmin()) users.add(UserManager.getUser());
+            StringBuffer sb = new StringBuffer();
+            for (User user : users)
+               sb.append(user.getName() + "\n");
+            String buttons[];
+            boolean iAmPrivileged = users.contains(UserManager.getUser());
+            if (iAmPrivileged)
+               buttons = new String[] {"Override and Edit", "Cancel"};
+            else
+               buttons = new String[] {"Cancel"};
+            MessageDialog ed =
+                  new MessageDialog(
+                        Display.getCurrent().getActiveShell(),
+                        "Privileged Edit",
+                        null,
+                        "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
+                        MessageDialog.QUESTION, buttons, 0);
+            int result = ed.open();
+            if (iAmPrivileged && result == 0) smaMgr.getEditor().setPriviledgedEditMode(
+                  SMAEditor.PriviledgedEditMode.Global);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -47,84 +92,7 @@ public class PrivilegedEditService extends WorkPageService {
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return isCurrentState(page);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
-    */
-   @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
-      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
-      if (smaMgr.getSma().isReadOnly())
-         link.addHyperlinkListener(readOnlyHyperlinkListener);
-      else
-         link.addHyperlinkListener(new IHyperlinkListener() {
-
-            public void linkEntered(HyperlinkEvent e) {
-            }
-
-            public void linkExited(HyperlinkEvent e) {
-            }
-
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  if (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off) {
-                     if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Diable Privileged Edit",
-                           "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
-                        smaMgr.getEditor().setPriviledgedEditMode(SMAEditor.PriviledgedEditMode.Off);
-                     }
-                  } else {
-                     Set<User> users = smaMgr.getPrivilegedUsers();
-                     if (AtsPlugin.isAtsAdmin()) users.add(UserManager.getUser());
-                     StringBuffer sb = new StringBuffer();
-                     for (User user : users)
-                        sb.append(user.getName() + "\n");
-                     String buttons[];
-                     boolean iAmPrivileged = users.contains(UserManager.getUser());
-                     if (iAmPrivileged)
-                        buttons = new String[] {"Override and Edit", "Cancel"};
-                     else
-                        buttons = new String[] {"Cancel"};
-                     MessageDialog ed =
-                           new MessageDialog(
-                                 Display.getCurrent().getActiveShell(),
-                                 "Privileged Edit",
-                                 null,
-                                 "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
-                                 MessageDialog.QUESTION, buttons, 0);
-                     int result = ed.open();
-                     if (iAmPrivileged && result == 0) smaMgr.getEditor().setPriviledgedEditMode(
-                           SMAEditor.PriviledgedEditMode.Global);
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
-      refresh();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
-    */
-   @Override
-   public String getSidebarCategory() {
-      return ServicesArea.OPERATION_CATEGORY;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
-   @Override
-   public void refresh() {
-      if (link == null || link.isDisposed()) return;
-      if (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off)
-         link.setText("Privileged Edit Enabled - " + smaMgr.getEditor().getPriviledgedEditMode().name());
-      else
-         link.setText("Privileged Edit");
+      return false;
    }
 
    /* (non-Javadoc)

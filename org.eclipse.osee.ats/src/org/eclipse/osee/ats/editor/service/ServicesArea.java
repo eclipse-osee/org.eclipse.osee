@@ -63,11 +63,7 @@ public class ServicesArea {
    public void loadSidebarServices(AtsWorkPage page) throws OseeCoreException {
       if (sideBarServices.size() == 0) {
          // Operations
-         sideBarServices.add(new PrivilegedEditService(smaMgr));
          // Services
-         sideBarServices.add(new TotalPercentCompleteStat(smaMgr));
-         sideBarServices.add(new TotalEstimatedHoursStat(smaMgr));
-         sideBarServices.add(new TotalHoursSpentStat(smaMgr));
          sideBarServices.add(new StatePercentCompleteStat(smaMgr));
          sideBarServices.add(new StateEstimatedHoursStat(smaMgr));
          sideBarServices.add(new StateHoursSpentStat(smaMgr));
@@ -97,6 +93,7 @@ public class ServicesArea {
          toolBarServices.add(new OpenTeamDefinition(smaMgr));
          toolBarServices.add(new SubscribedOperation(smaMgr));
          toolBarServices.add(new CopyActionDetailsService(smaMgr));
+         toolBarServices.add(new PrivilegedEditService(smaMgr));
          for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             toolBarServices.addAll(item.getToolbarServices(smaMgr));
          }

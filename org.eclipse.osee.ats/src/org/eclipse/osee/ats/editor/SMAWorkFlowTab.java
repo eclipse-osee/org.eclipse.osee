@@ -88,7 +88,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private IManagedForm managedForm;
    private Composite body;
    private Composite atsBody;
-   private SMAActionableItemHeader sMAActionableItemHeader;
+   private SMAActionableItemHeader actionableItemHeader;
+   private SMAWorkflowMetricsHeader workflowMetricsHeader;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -192,8 +193,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    @Override
    public void dispose() {
-      if (sMAActionableItemHeader != null) {
-         sMAActionableItemHeader.dispose();
+      if (actionableItemHeader != null) {
+         actionableItemHeader.dispose();
+      }
+      if (workflowMetricsHeader != null) {
+         workflowMetricsHeader.dispose();
       }
       for (SMAWorkFlowSection section : sections)
          section.dispose();
@@ -254,8 +258,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createAssigneesLineHeader(headerComp, toolkit);
          createLatestHeader(headerComp, toolkit);
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            sMAActionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
+            actionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
          }
+         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, toolkit, smaMgr);
          createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
          createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
          createAnnotationsHeader(headerComp, toolkit);
