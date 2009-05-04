@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.net.URI;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class UriSource implements Source, Serializable {

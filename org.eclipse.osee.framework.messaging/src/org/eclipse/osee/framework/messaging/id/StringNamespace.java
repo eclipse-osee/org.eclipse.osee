@@ -2,6 +2,10 @@ package org.eclipse.osee.framework.messaging.id;
 
 import java.io.Serializable;
 
+/**
+ * @author Andrew M. Finkbeiner
+ *
+ */
 public class StringNamespace implements Namespace, Serializable {
    private static final long serialVersionUID = -8903438134102328929L;
    private String namespace;

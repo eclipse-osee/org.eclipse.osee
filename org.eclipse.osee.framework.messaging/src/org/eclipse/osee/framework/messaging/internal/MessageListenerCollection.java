@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.messaging.SendListener;
 import org.eclipse.osee.framework.messaging.id.MessageId;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class MessageListenerCollection {

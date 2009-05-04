@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging.id;
 import java.io.Serializable;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public abstract class StringId implements Serializable {

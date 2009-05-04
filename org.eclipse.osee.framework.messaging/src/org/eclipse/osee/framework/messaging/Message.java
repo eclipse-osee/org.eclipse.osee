@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging;
 import org.eclipse.osee.framework.messaging.id.MessageId;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface Message {

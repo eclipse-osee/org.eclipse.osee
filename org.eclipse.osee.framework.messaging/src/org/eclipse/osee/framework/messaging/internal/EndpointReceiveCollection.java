@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.messaging.EndpointReceive;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class EndpointReceiveCollection {

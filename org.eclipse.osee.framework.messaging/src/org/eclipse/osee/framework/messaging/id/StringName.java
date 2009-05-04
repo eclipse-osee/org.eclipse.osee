@@ -2,6 +2,10 @@ package org.eclipse.osee.framework.messaging.id;
 
 import java.io.Serializable;
 
+/**
+ * @author Andrew M. Finkbeiner
+ *
+ */
 public class StringName implements Name, Serializable {
    private static final long serialVersionUID = -7215226960243262972L;
    private String name;

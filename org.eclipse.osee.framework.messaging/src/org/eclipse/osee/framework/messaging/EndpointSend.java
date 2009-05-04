@@ -10,7 +10,7 @@ import java.util.Properties;
 
 
 /**
- * @author b1122182
+ * @author Andrew M. Finkbeiner
  */
 public interface EndpointSend {
    public void start(Properties properties);

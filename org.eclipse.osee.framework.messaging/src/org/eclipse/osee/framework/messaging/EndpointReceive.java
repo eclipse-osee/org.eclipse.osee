@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.messaging.internal.ApplicationDistributer;
 
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public abstract class EndpointReceive {

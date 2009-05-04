@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.messaging.id;
 
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class StringMessageId extends StringId implements MessageId {

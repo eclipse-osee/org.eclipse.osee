@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class ConcurrentListMap<MAP_TYPE, LIST_TYPE> {
