@@ -83,7 +83,8 @@ public class MasterSkynetTypesImport {
                String file = el.getAttribute("file");
                Bundle bundle = Platform.getBundle(el.getContributor().getName());
                URL url = bundle.getEntry(file);
-               OseeLog.log(SkynetActivator.class, Level.INFO, "Importing [" + url.getPath() + "]");
+               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Importing [%s] from [%s]", file,
+                     url != null ? url.getPath() : "url was null"));
                importer.extractTypesFromSheet(url.openStream());
             }
          }
