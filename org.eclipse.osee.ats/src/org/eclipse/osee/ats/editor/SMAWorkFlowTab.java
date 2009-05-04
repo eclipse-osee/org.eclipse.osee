@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationCompos
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
@@ -60,7 +61,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -359,40 +359,48 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createAssigneesLineHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       toolkit.adapt(topLineComp);
-      Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
-      toolkit.adapt(text, true, true);
-      text.setText(String.format("Assignee(s): %s", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      createLabelValue(topLineComp, "Assignee(s)", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
    }
 
    private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(8, false));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(13, false));
       toolkit.adapt(topLineComp);
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
-      Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
-      toolkit.adapt(text, true, true);
       try {
-         text.setText(smaMgr.getEditorHeaderString());
-
-         createOriginatorHeader(topLineComp, toolkit);
-
-         toolkit.createLabel(topLineComp, "Action Id:");
-         text = new Text(topLineComp, SWT.NONE);
-         toolkit.adapt(text, true, true);
-         text.setText(smaMgr.getSma().getParentActionArtifact() == null ? "??" : smaMgr.getSma().getParentActionArtifact().getHumanReadableId());
+         createLabelValue(topLineComp, "Current State", smaMgr.getStateMgr().getCurrentStateName());
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            createLabelValue(topLineComp, "Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName());
+         }
+         createLabelValue(topLineComp, "Created", XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
-         // Do nothing
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
 
-      toolkit.createLabel(topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id:");
-      text = new Text(topLineComp, SWT.NONE);
-      toolkit.adapt(text, true, true);
-      text.setText(smaMgr.getSma().getHumanReadableId());
+      try {
+         createOriginatorHeader(topLineComp, toolkit);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
 
+      try {
+         createLabelValue(
+               topLineComp,
+               "Action Id",
+               smaMgr.getSma().getParentActionArtifact() == null ? "??" : smaMgr.getSma().getParentActionArtifact().getHumanReadableId());
+         createLabelValue(topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id",
+               smaMgr.getSma().getHumanReadableId());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+   }
+
+   private void createLabelValue(Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+      SMAEditor.createLabelValue(toolkit, comp, labelStr, valueStr);
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {

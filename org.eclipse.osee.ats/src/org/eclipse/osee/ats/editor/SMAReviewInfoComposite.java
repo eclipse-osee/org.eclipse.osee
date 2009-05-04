@@ -66,6 +66,7 @@ public class SMAReviewInfoComposite extends Composite {
 
       Label label = new Label(this, SWT.NONE);
       label.setText("\"" + forStateName + "\" State Reviews: ");
+      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       label.setToolTipText("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
       // If ATS Admin, allow right-click to auto-complete reviews
       if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {

@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionViewSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -193,10 +194,14 @@ public class SMAWorkFlowSection extends SectionPart {
 
       atsWorkPage.setSmaMgr(smaMgr);
 
-      // Create main body
+      // Create widget body; this facilitates setting all labels
+      Composite widgetComp = toolkit.createContainer(workComp, 1);
+      widgetComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      widgetComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       dynamicXWidgetLayout =
-            atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
+            atsWorkPage.createBody(getManagedForm(), widgetComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
+      SMAEditor.setLabelFonts(widgetComp, SMAEditor.getBoldLabelFont());
 
       if (isShowTaskInfo()) {
          new SMATaskInfoComposite(smaMgr, workComp, getManagedForm(), atsWorkPage.getName());

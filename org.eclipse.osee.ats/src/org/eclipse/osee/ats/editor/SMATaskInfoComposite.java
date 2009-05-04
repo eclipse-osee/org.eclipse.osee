@@ -50,7 +50,8 @@ public class SMATaskInfoComposite extends Composite {
       Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(forStateName);
 
       label = new Label(this, SWT.NONE);
-      label.setText("\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Tasks: ");
+      label.setText("\"" + forStateName + "\" State Tasks: ");
+      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       label.setToolTipText("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       // If ATS Admin, allow right-click to auto-complete tasks
       if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {

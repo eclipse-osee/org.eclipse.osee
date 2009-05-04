@@ -40,25 +40,31 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
       try {
 
          toolkit.adapt(this);
-         setLayout(ALayout.getZeroMarginLayout(4, false));
+         setLayout(ALayout.getZeroMarginLayout(8, false));
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         toolkit.createLabel(this, NAME, SWT.NONE);
-
+         Label label = toolkit.createLabel(this, "Total Percent: ", SWT.NONE);
+         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
          percentLabel = toolkit.createLabel(this, "", SWT.NONE);
-         percentLabel.setToolTipText("Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
+         label.setToolTipText("Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
          percentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+         label = toolkit.createLabel(this, "Total Estimated Hours: ", SWT.NONE);
+         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
          estHoursLabel = toolkit.createLabel(this, "", SWT.NONE);
-         estHoursLabel.setToolTipText("Calculation: sum estimated hours for workflow and all tasks and reviews");
+         label.setToolTipText("Calculation: sum estimated hours for workflow and all tasks and reviews");
          estHoursLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+         label = toolkit.createLabel(this, "Total Hours Spent: ", SWT.NONE);
+         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
          hoursSpentLabel = toolkit.createLabel(this, "", SWT.NONE);
          hoursSpentLabel.setToolTipText("Calculation: sum of all hours spent for all tasks, reviews and in each state");
-         hoursSpentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         label.setToolTipText("Calculation: sum of all hours spent for all tasks, reviews and in each state");
 
+         label = toolkit.createLabel(this, "Remaining Hours: ", SWT.NONE);
+         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+         label.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
          remainHoursLabel = toolkit.createLabel(this, "", SWT.NONE);
-         remainHoursLabel.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
 
          refresh();
 
@@ -74,15 +80,15 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          return;
       }
       try {
-         if (percentLabel != null && !percentLabel.isDisposed()) percentLabel.setText("Total Percent: " + smaMgr.getSma().getPercentCompleteSMATotal());
-         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText("Total Estimated Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal()));
-         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText("Total Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal()));
+         if (percentLabel != null && !percentLabel.isDisposed()) percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
+         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal())));
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
             if (result.isFalse())
-               remainHoursLabel.setText("Remaining Hours: Error\n" + result.getText());
+               remainHoursLabel.setText("Error" + result.getText());
             else
-               remainHoursLabel.setText("Remaining Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours()));
+               remainHoursLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours())));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -132,15 +131,6 @@ public class SMAManager {
 
    public ATSNote getNotes() {
       return atsNote;
-   }
-
-   public String getEditorHeaderString() throws OseeCoreException {
-      if (sma instanceof TeamWorkFlowArtifact)
-         return String.format("Current State: %s        Team: %s        Created: %s", stateMgr.getCurrentStateName(),
-               ((TeamWorkFlowArtifact) sma).getTeamName(), XDate.getDateStr(atsLog.getCreationDate(), XDate.MMDDYYHHMM));
-      else
-         return String.format("Current State: %s        Created: %s", stateMgr.getCurrentStateName(), XDate.getDateStr(
-               atsLog.getCreationDate(), XDate.MMDDYYHHMM));
    }
 
    public Result getUserInputNeeded() {

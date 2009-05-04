@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -60,6 +61,7 @@ import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -73,7 +75,10 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -101,6 +106,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
+   private static Font defaultLabelFont;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
    };
@@ -109,6 +115,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public SMAEditor() {
       super();
+   }
+
+   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+      Label label = toolkit.createLabel(comp, labelStr + ": ");
+      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+      Text text = new Text(comp, SWT.WRAP | SWT.NO_TRIM);
+      toolkit.adapt(text, true, true);
+      text.setText(valueStr);
    }
 
    /*
@@ -147,6 +161,30 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   public static void setLabelFonts(Control parent, Font font) {
+      if (parent instanceof Label) {
+         Label label = ((Label) parent);
+         label.setFont(font);
+      }
+      if (parent instanceof Composite) {
+         Composite container = (Composite) parent;
+         for (Control child : container.getChildren()) {
+            setLabelFonts(child, font);
+         }
+         container.layout();
+      }
+   }
+
+   public static Font getBoldLabelFont() {
+      if (defaultLabelFont == null) {
+         Font baseFont = JFaceResources.getDefaultFont();
+         FontData[] fontDatas = baseFont.getFontData();
+         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
+         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
+      }
+      return defaultLabelFont;
    }
 
    void enableGlobalPrint() {

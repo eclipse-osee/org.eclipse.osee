@@ -56,6 +56,8 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
             hoursSpent = new StateHoursSpentStat(smaMgr);
             hoursSpent.createSidebarService(this, page, toolkit);
          }
+
+         SMAEditor.setLabelFonts(this, SMAEditor.getBoldLabelFont());
          refresh();
 
          OseeEventManager.addListener(this);
