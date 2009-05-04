@@ -1,0 +1,13 @@
+Right-click on build-helper.xml file and select Debug As->Ant Build....
+
+From the dialog set the following:
+	1. Classpath Tab-> Add External JARs
+		org.eclipse.mylyn
+		org.eclipse.mylyn.wikitext.core
+		org.eclipse.mylyn.wikitext.mediawiki.core
+		org.eclipse.mylyn.wikitext.textile.core
+		org.eclipse.mylyn.wikitext.tracwiki.core
+		org.eclipse.mylyn.wikitext.twiki.core
+		org.eclipse.mylyn.wikitext.confluence.core
+	 
+	2. JRE Tab ->Run in the same JRE as the workspace
