@@ -118,11 +118,17 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+      createLabelValue(toolkit, comp, labelStr, valueStr, null);
+   }
+
+   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
       Label label = toolkit.createLabel(comp, labelStr + ": ");
+      if (tooltip != null && !tooltip.equals("")) label.setToolTipText(tooltip);
       SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       Text text = new Text(comp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
       text.setText(valueStr);
+      if (tooltip != null && !tooltip.equals("")) text.setToolTipText(tooltip);
    }
 
    /*

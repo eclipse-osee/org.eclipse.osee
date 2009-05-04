@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -119,6 +120,18 @@ public class StateManager {
 
    public String getCurrentStateName() throws OseeCoreException {
       return currentStateDam.getState().getName();
+   }
+
+   public String getAssigneesStr() throws OseeCoreException {
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+   }
+
+   public String getAssigneesStr(int length) throws OseeCoreException {
+      String str = getAssigneesStr();
+      if (str.length() > length) {
+         return str.substring(0, length - 1) + "...";
+      }
+      return str;
    }
 
    public Collection<User> getAssignees() throws OseeCoreException {

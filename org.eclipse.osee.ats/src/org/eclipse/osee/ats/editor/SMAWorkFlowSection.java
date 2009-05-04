@@ -301,7 +301,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (smaMgr.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
-            sb.append(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
+            sb.append(smaMgr.getStateMgr().getAssigneesStr(80));
          }
       } else {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
@@ -379,13 +379,14 @@ public class SMAWorkFlowSection extends SectionPart {
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
-      toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
-
       if (isShowTargetedVersion()) {
          new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
       }
 
-      Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
+      Label label = toolkit.createLabel(comp, ASSIGNEES);
+      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+
+      Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
       setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -406,8 +407,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
 
-         currentAssigneesLabel =
-               toolkit.createLabel(comp, Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
+         currentAssigneesLabel = toolkit.createLabel(comp, smaMgr.getStateMgr().getAssigneesStr(80));
+         currentAssigneesLabel.setToolTipText(smaMgr.getStateMgr().getAssigneesStr());
          currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          if (smaMgr.getStateMgr().getAssignees().size() == 0) {
             Label errorLabel = toolkit.createLabel(comp, "Error: State has no assignees");

@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -361,7 +360,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       toolkit.adapt(topLineComp);
-      createLabelValue(topLineComp, "Assignee(s)", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
+      SMAEditor.createLabelValue(toolkit, topLineComp, "Assignee(s)", smaMgr.getStateMgr().getAssigneesStr(150));
    }
 
    private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {
@@ -372,11 +371,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       try {
-         createLabelValue(topLineComp, "Current State", smaMgr.getStateMgr().getCurrentStateName());
+         SMAEditor.createLabelValue(toolkit, topLineComp, "Current State", smaMgr.getStateMgr().getCurrentStateName());
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            createLabelValue(topLineComp, "Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName());
+            SMAEditor.createLabelValue(toolkit, topLineComp, "Team",
+                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName());
          }
-         createLabelValue(topLineComp, "Created", XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM));
+         SMAEditor.createLabelValue(toolkit, topLineComp, "Created", XDate.getDateStr(
+               smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
@@ -388,19 +389,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       try {
-         createLabelValue(
+         SMAEditor.createLabelValue(
+               toolkit,
                topLineComp,
                "Action Id",
                smaMgr.getSma().getParentActionArtifact() == null ? "??" : smaMgr.getSma().getParentActionArtifact().getHumanReadableId());
-         createLabelValue(topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id",
+         SMAEditor.createLabelValue(toolkit, topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id",
                smaMgr.getSma().getHumanReadableId());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
-   }
-
-   private void createLabelValue(Composite comp, String labelStr, String valueStr) throws OseeCoreException {
-      SMAEditor.createLabelValue(toolkit, comp, labelStr, valueStr);
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {

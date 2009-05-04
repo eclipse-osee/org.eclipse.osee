@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
@@ -36,20 +36,19 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMATargetVersionInfoComposite extends Composite {
 
    private final SMAManager smaMgr;
-   private final Label valueLabel;
    private Hyperlink link;
    private Label label;
+   private final IManagedForm managedForm;
 
    public SMATargetVersionInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, XFormToolkit toolkit) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
-      setLayout(new GridLayout(2, false));
+      this.managedForm = managedForm;
+      setLayout(ALayout.getZeroMarginLayout(2, false));
       setLayoutData(new GridData());
 
-      // Don't transition without targeted version if so configured
-      boolean required =
-            smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
-                  AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+      label = toolkit.createLabel(this, "Target Version: ", SWT.NONE);
+      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
 
       if (!smaMgr.isReleased()) {
          link = toolkit.createHyperlink(this, "", SWT.NONE);
@@ -80,12 +79,19 @@ public class SMATargetVersionInfoComposite extends Composite {
       }
       refresh();
 
-      valueLabel = new Label(this, SWT.NONE);
-      if (smaMgr.getTargetedForVersion() != null) {
-         valueLabel.setText(smaMgr.getTargetedForVersion() + "");
+   }
 
+   public void refresh() throws OseeCoreException {
+      String str = "";
+      // Don't transition without targeted version if so configured
+      boolean required =
+            smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
+                  AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+
+      if (smaMgr.getTargetedForVersion() != null) {
+         str = smaMgr.getTargetedForVersion() + "";
       } else {
-         valueLabel.setText("-- Not Set --");
+         str = "-- Set --";
          if (required) {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
@@ -94,14 +100,11 @@ public class SMATargetVersionInfoComposite extends Composite {
             }
          }
       }
-
-   }
-
-   public void refresh() {
-      String str = "Target Version: ";
-      if (link != null && !link.isDisposed())
+      if (link != null && !link.isDisposed()) {
          link.setText(str);
-      else if (label != null && !label.isDisposed()) label.setText(str);
+      } else if (label != null && !label.isDisposed()) {
+         label.setText(str);
+      }
    }
 
    @Override
