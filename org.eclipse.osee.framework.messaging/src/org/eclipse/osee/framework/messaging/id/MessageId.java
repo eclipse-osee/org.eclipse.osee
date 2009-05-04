@@ -3,7 +3,8 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.messaging;
+package org.eclipse.osee.framework.messaging.id;
+
 
 /**
  * @author b1528444

@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import org.eclipse.osee.framework.messaging.id.MessageId;
+
 /**
  * @author b1528444
  *

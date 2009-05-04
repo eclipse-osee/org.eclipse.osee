@@ -5,13 +5,14 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import java.util.Properties;
+
 
 
 /**
  * @author b1122182
  */
-public interface MessageSendChannel {
+public interface EndpointSend {
+   public void start(Properties properties);
    public void send(Message message, ExceptionHandler exceptionHandler);
-   public void registerMessageSendHandler(MessageId messageId, SendHandler... sendHandler);
-   public void unregisterMessageSendHandler(MessageId messageId, SendHandler... sendHandler);
 }

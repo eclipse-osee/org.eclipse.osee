@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.messaging;
+package org.eclipse.osee.framework.messaging.id;
 
 import java.io.Serializable;
 
@@ -11,22 +11,22 @@ import java.io.Serializable;
  * @author b1528444
  *
  */
-public class StringCommandId implements MessageId, Serializable {
+public abstract class StringId implements Serializable {
 
-   private static final long serialVersionUID = 2236967568467058971L;
+   private static final long serialVersionUID = 80655792810954088L;
    private Namespace namespace;
    private Name name;
    
-   public StringCommandId(Namespace namespace, Name name){
+   public StringId(Namespace namespace, Name name){
       this.namespace = namespace;
       this.name = name;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if(obj instanceof StringCommandId){
-         return namespace.equals(((StringCommandId)obj).namespace) && 
-         name.equals(((StringCommandId)obj).name);
+      if(obj instanceof StringId){
+         return namespace.equals(((StringId)obj).namespace) && 
+         name.equals(((StringId)obj).name);
       } else {
          return false;
       }

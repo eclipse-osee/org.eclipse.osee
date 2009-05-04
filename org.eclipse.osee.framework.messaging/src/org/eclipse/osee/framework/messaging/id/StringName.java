@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.messaging;
+package org.eclipse.osee.framework.messaging.id;
 
 import java.io.Serializable;
 
