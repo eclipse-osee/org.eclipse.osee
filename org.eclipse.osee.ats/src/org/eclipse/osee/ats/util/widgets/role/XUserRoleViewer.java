@@ -445,4 +445,12 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getErrorMessageControl()
+    */
+   @Override
+   public Control getErrorMessageControl() {
+      return labelWidget;
+   }
+
 }

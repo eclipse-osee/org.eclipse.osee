@@ -594,4 +594,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getErrorMessageControl()
+    */
+   @Override
+   public Control getErrorMessageControl() {
+      return labelWidget;
+   }
 }

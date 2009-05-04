@@ -217,7 +217,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
             htmlSb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString(), SMAReviewComposite.toHTML(smaMgr, page.getName())));
+                  notesSb.toString(), SMAReviewInfoComposite.toHTML(smaMgr, page.getName())));
             htmlSb.append(AHTML.newline());
          }
       }

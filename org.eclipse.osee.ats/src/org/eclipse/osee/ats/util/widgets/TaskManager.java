@@ -122,6 +122,20 @@ public class TaskManager {
       return Result.TrueResult;
    }
 
+   public Result areTasksComplete(String stateName) {
+      try {
+         for (TaskArtifact taskArt : getTaskArtifacts(stateName)) {
+            if (taskArt.isInWork()) {
+               return new Result(false, "Task " + taskArt.getHumanReadableId() + " Not Complete");
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return new Result(false, "Exception " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
    /**
     * Return Estimated Task Hours of "Related to State" stateName
     * 

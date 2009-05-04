@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.Collection;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessageManager;
 
 /**
  * @author Donald G. Dunne
@@ -37,20 +39,19 @@ import org.eclipse.swt.widgets.Listener;
 public class SMATaskInfoComposite extends Composite {
 
    private final SMAManager smaMgr;
+   private final Label valueLabel;
+   private final Label label;
 
-   public SMATaskInfoComposite(final SMAManager smaMgr, Composite parent, XFormToolkit toolkit, final String forStateName) throws OseeCoreException {
+   public SMATaskInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, final String forStateName) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       setLayout(new GridLayout(2, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(forStateName);
 
-      Label label = new Label(this, SWT.NONE);
+      label = new Label(this, SWT.NONE);
       label.setText("\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Tasks: ");
       label.setToolTipText("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
-      if (smaMgr.getTaskMgr().areTasksComplete().isFalse()) {
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      }
       // If ATS Admin, allow right-click to auto-complete tasks
       if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
@@ -88,13 +89,19 @@ public class SMATaskInfoComposite extends Composite {
             }
          });
       }
-      Label valueLabel = new Label(this, SWT.NONE);
+      valueLabel = new Label(this, SWT.NONE);
       if (taskArts.size() > 0) {
          valueLabel.setText(smaMgr.getTaskMgr().getStatus(forStateName));
       } else {
          valueLabel.setText("No Tasks Created");
       }
-
+      if (smaMgr.getTaskMgr().areTasksComplete(forStateName).isFalse()) {
+         IMessageManager messageManager = managedForm.getMessageManager();
+         if (messageManager != null) {
+            messageManager.addMessage("validation.error", "State \"" + forStateName + "\" has uncompleted Tasks", null,
+                  IMessageProvider.ERROR, label);
+         }
+      }
    }
 
    @Override

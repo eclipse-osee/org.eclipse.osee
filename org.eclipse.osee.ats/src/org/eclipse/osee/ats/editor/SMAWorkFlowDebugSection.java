@@ -81,4 +81,20 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
       workComp.layout();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#isShowReviewInfo()
+    */
+   @Override
+   protected boolean isShowReviewInfo() throws OseeCoreException {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#isShowTaskInfo()
+    */
+   @Override
+   protected boolean isShowTaskInfo() throws OseeCoreException {
+      return false;
+   }
+
 }

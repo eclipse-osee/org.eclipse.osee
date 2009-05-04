@@ -193,11 +193,11 @@ public class SMAWorkFlowSection extends SectionPart {
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
 
-      if (smaMgr.isTaskable()) {
-         new SMATaskInfoComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      if (isShowTaskInfo()) {
+         new SMATaskInfoComposite(smaMgr, workComp, getManagedForm(), atsWorkPage.getName());
       }
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         new SMAReviewComposite(smaMgr, workComp, toolkit, atsWorkPage.getName());
+      if (isShowReviewInfo()) {
+         new SMAReviewInfoComposite(smaMgr, workComp, getManagedForm(), toolkit, atsWorkPage.getName());
       }
 
       // Check extension points for page creation
@@ -212,6 +212,14 @@ public class SMAWorkFlowSection extends SectionPart {
       createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
 
       return workComp;
+   }
+
+   protected boolean isShowTaskInfo() throws OseeCoreException {
+      return smaMgr.isTaskable();
+   }
+
+   protected boolean isShowReviewInfo() throws OseeCoreException {
+      return smaMgr.getSma() instanceof TeamWorkFlowArtifact;
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {

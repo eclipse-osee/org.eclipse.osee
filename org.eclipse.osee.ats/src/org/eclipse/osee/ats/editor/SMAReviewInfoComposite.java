@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -36,17 +36,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
-public class SMAReviewComposite extends Composite {
+public class SMAReviewInfoComposite extends Composite {
 
    private final SMAManager smaMgr;
    private final String forStateName;
 
-   public SMAReviewComposite(final SMAManager smaMgr, Composite parent, XFormToolkit toolkit, String forStateName) throws OseeCoreException {
+   public SMAReviewInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, XFormToolkit toolkit, String forStateName) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
@@ -106,7 +108,7 @@ public class SMAReviewComposite extends Composite {
          workComp.setLayoutData(gd);
 
          for (ReviewSMArtifact revArt : revArts) {
-            createReviewHyperlink(workComp, toolkit, 2, revArt);
+            createReviewHyperlink(workComp, managedForm, toolkit, 2, revArt, forStateName);
          }
       }
    }
@@ -144,24 +146,33 @@ public class SMAReviewComposite extends Composite {
    }
 
    public String toHTML() throws OseeCoreException {
-      return SMAReviewComposite.toHTML(smaMgr, forStateName);
+      return SMAReviewInfoComposite.toHTML(smaMgr, forStateName);
    }
 
-   private static void createReviewHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt) throws OseeCoreException {
+   private static void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt, String forStateName) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
       workComp.setLayout(ALayout.getZeroMarginLayout(3, false));
 
-      Label imageLabel = new Label(workComp, SWT.NONE);
       Label strLabel = new Label(workComp, SWT.NONE);
       if (revArt.isBlocking() && !revArt.getSmaMgr().isCancelledOrCompleted()) {
-         imageLabel.setImage(ArtifactAnnotation.Type.Error.getImage());
-         strLabel.setText("Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
-         strLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         strLabel.setText("State Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
+         IMessageManager messageManager = managedForm.getMessageManager();
+         if (messageManager != null) {
+            messageManager.addMessage(
+                  "validation.error",
+                  "\"" + forStateName + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
+                  null, IMessageProvider.ERROR, strLabel);
+         }
       } else if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
-         imageLabel.setImage(ArtifactAnnotation.Type.Warning.getImage());
          strLabel.setText("Open [" + revArt.getArtifactTypeName() + "] exists: ");
+         IMessageManager messageManager = managedForm.getMessageManager();
+         if (messageManager != null) {
+            messageManager.addMessage("validation.error",
+                  "\"" + forStateName + "\" State has an open [" + revArt.getArtifactTypeName() + "].", null,
+                  IMessageProvider.WARNING, strLabel);
+         }
       } else {
          strLabel.setText(revArt.getSmaMgr().getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
       }
@@ -182,5 +193,4 @@ public class SMAReviewComposite extends Composite {
          }
       });
    }
-
 }
