@@ -62,12 +62,6 @@ public class ServicesArea {
 
    public void loadSidebarServices(AtsWorkPage page) throws OseeCoreException {
       if (sideBarServices.size() == 0) {
-         // Operations
-         // Services
-         sideBarServices.add(new StatePercentCompleteStat(smaMgr));
-         sideBarServices.add(new StateEstimatedHoursStat(smaMgr));
-         sideBarServices.add(new StateHoursSpentStat(smaMgr));
-         sideBarServices.add(new RemainingHoursStat(smaMgr));
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
          for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
             sideBarServices.addAll(item.getSidebarServices(smaMgr));

@@ -14,16 +14,14 @@ package org.eclipse.osee.ats.editor.service;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
-import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -32,34 +30,23 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class StateHoursSpentStat extends WorkPageService {
+public class StateHoursSpentStat {
 
    private Hyperlink link;
    private Label label;
    private AtsWorkPage page;
+   private final SMAManager smaMgr;
 
    public StateHoursSpentStat(SMAManager smaMgr) {
-      super(smaMgr);
+      this.smaMgr = smaMgr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
-    */
-   @Override
-   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return !page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !isCompleteCancelledState(page);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
-    */
-   @Override
-   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) throws OseeCoreException {
+   public void createSidebarService(Composite workGroup, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
       this.page = page;
-      if (!isCompleteCancelledState(page) && smaMgr.isCurrentState(page.getName())) {
+      if (!page.isCompleteCancelledState() && smaMgr.isCurrentState(page.getName())) {
          link = toolkit.createHyperlink(workGroup, "", SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
-            link.addHyperlinkListener(readOnlyHyperlinkListener);
+            link.addHyperlinkListener(new ReadOnlyHyperlinkListener(smaMgr));
          else
             link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -71,39 +58,24 @@ public class StateHoursSpentStat extends WorkPageService {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (smaMgr.promptChangeStatus(false)) section.refreshStateServices();
+                     smaMgr.promptChangeStatus(false);
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
             });
-      } else
+         link.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      } else {
          label = toolkit.createLabel(workGroup, "", SWT.NONE);
+         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      }
       refresh();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
-   @Override
    public String getName() {
       return "Hours Spent";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
-    */
-   @Override
-   public String getSidebarCategory() {
-      return ServicesArea.STATISTIC_CATEGORY;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
-    */
-   @Override
    public void refresh() {
       if (page == null && link != null && !link.isDisposed()) {
          link.setText("State Hours Error: page == null");

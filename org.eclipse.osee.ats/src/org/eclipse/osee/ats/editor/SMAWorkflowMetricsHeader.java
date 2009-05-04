@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -16,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -30,7 +32,7 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
    private static final String NAME = "Workflow Metrics: ";
    private final SMAManager smaMgr;
-   private Label percentLabel, estHoursLabel, hoursSpentLabel;
+   private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
 
    public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, SMAManager smaMgr) throws OseeCoreException {
       super(parent, SWT.NONE);
@@ -55,6 +57,9 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          hoursSpentLabel.setToolTipText("Calculation: sum of all hours spent for all tasks, reviews and in each state");
          hoursSpentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+         remainHoursLabel = toolkit.createLabel(this, "", SWT.NONE);
+         remainHoursLabel.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
+
          refresh();
 
          OseeEventManager.addListener(this);
@@ -72,6 +77,13 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          if (percentLabel != null && !percentLabel.isDisposed()) percentLabel.setText("Total Percent: " + smaMgr.getSma().getPercentCompleteSMATotal());
          if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText("Total Estimated Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal()));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText("Total Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal()));
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
+            Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
+            if (result.isFalse())
+               remainHoursLabel.setText("Remaining Hours: Error\n" + result.getText());
+            else
+               remainHoursLabel.setText("Remaining Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours()));
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

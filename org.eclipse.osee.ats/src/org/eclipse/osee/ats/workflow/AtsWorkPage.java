@@ -49,6 +49,18 @@ public class AtsWorkPage extends WorkPage {
       this(null, null, null, optionResolver);
    }
 
+   public boolean isCurrentState(SMAManager smaMgr) throws OseeCoreException {
+      return smaMgr.isCurrentState(getName());
+   }
+
+   public boolean isCurrentNonCompleteCancelledState(SMAManager smaMgr) throws OseeCoreException {
+      return smaMgr.isCurrentState(getName()) && !isCompleteCancelledState();
+   }
+
+   public boolean isCompleteCancelledState() {
+      return isCancelledPage() || isCompletePage();
+   }
+
    /*
     * (non-Javadoc)
     * 
