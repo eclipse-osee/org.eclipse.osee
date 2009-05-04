@@ -164,7 +164,9 @@ public class SMAWorkFlowSection extends SectionPart {
 
       createCurrentPageHeader(workComp, atsWorkPage, toolkit);
 
-      new SMAStateMetricsHeader(workComp, toolkit, smaMgr, atsWorkPage);
+      if (!atsWorkPage.isCompleteCancelledState()) {
+         new SMAStateMetricsHeader(workComp, toolkit, smaMgr, atsWorkPage);
+      }
 
       // Add static layoutDatas to atsWorkPage
       List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();

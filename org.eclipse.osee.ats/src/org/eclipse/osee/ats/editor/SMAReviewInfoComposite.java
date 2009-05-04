@@ -61,11 +61,11 @@ public class SMAReviewInfoComposite extends Composite {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
-      setLayout(new GridLayout(3, false));
+      setLayout(new GridLayout(4, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       Label label = new Label(this, SWT.NONE);
-      label.setText("\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Reviews: ");
+      label.setText("\"" + forStateName + "\" State Reviews: ");
       label.setToolTipText("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
       // If ATS Admin, allow right-click to auto-complete reviews
       if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
@@ -184,7 +184,7 @@ public class SMAReviewInfoComposite extends Composite {
          workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
          GridData gd = new GridData();
          gd.horizontalIndent = 20;
-         gd.horizontalSpan = 3;
+         gd.horizontalSpan = 4;
          workComp.setLayoutData(gd);
 
          for (ReviewSMArtifact revArt : revArts) {
@@ -209,8 +209,7 @@ public class SMAReviewInfoComposite extends Composite {
       if (smaMgr.getReviewManager().getReviews(forStateName).size() == 0) return "";
       StringBuffer html = new StringBuffer();
       try {
-         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT,
-               "\"" + smaMgr.getStateMgr().getCurrentStateName() + "\" State Reviews"));
+         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forStateName + "\" State Reviews"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
          for (ReviewSMArtifact art : smaMgr.getReviewManager().getReviews(forStateName)) {
