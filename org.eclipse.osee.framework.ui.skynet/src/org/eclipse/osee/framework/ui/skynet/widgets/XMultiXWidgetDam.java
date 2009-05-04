@@ -53,16 +53,16 @@ public abstract class XMultiXWidgetDam extends XMultiXWidget implements IArtifac
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidget#createControls(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       try {
          createXWidgets();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      super.createWidgets(parent, horizontalSpan);
+      super.createControls(parent, horizontalSpan);
    }
 
    /**

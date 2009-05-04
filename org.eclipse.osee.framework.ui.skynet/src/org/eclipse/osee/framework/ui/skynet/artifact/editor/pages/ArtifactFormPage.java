@@ -92,7 +92,7 @@ public class ArtifactFormPage extends FormPage {
       int sectionStyle = Section.TITLE_BAR | Section.TWISTIE;
 
       sectionParts.put(SectionEnum.Attributes, new AttributesFormSection(getEditor(), form.getBody(), toolkit,
-            sectionStyle));
+            sectionStyle | Section.EXPANDED));
       sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
             sectionStyle));
       sectionParts.put(SectionEnum.Details, new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));

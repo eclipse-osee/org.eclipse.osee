@@ -99,7 +99,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
     * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
 
       parentComposite = parent;
       // Create Text Widgets

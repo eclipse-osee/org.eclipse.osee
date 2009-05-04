@@ -45,7 +45,7 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
       return valueTextWidget;
    }
 
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       this.parent = parent;
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets

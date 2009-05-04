@@ -34,7 +34,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * Generic label and radiobutton field object for use by single entry artifact attributes
@@ -65,16 +64,6 @@ public class XRadioButtons extends XWidget {
    @Override
    public Control getControl() {
       return null;
-   }
-
-   public void createWidgets(FormToolkit toolkit, Composite parent, int horizontalSpan) {
-      createWidgets(parent, horizontalSpan);
-      for (XRadioButton button : xButtons) {
-         toolkit.adapt(button.getControl(), true, true);
-      }
-      if (labelWidget != null) {
-         toolkit.adapt(labelWidget, true, true);
-      }
    }
 
    public void addButtons(String items[]) {
@@ -166,7 +155,7 @@ public class XRadioButtons extends XWidget {
     * Create radio Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
 
       Map<String, XRadioButton> nameToButton = new HashMap<String, XRadioButton>();
       String names[] = new String[xButtons.size()];

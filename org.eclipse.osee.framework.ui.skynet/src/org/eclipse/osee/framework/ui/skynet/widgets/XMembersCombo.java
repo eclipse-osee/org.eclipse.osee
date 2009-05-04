@@ -98,7 +98,7 @@ public class XMembersCombo extends XWidget {
     * must be >=2 the string DEFAULT_SELECTION will be added to the sent in dataStrings array
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       composite = parent;
 
       if (horizontalSpan < 2) horizontalSpan = 2;

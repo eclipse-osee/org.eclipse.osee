@@ -38,11 +38,15 @@ public class XWidgetValidateUtility {
             itemsToReport = new IStatus[] {status};
          }
          for (IStatus item : itemsToReport) {
-            xWidget.setControlCausedMessage("validation.error", status.getMessage(),
-                  toMessageProviderLevel(item.getSeverity()));
+            if (item.isOK()) {
+               xWidget.removeControlCausedMessage(item.getPlugin());
+            } else {
+               xWidget.setControlCausedMessage(item.getPlugin(), item.getMessage(),
+                     toMessageProviderLevel(item.getSeverity()));
+            }
          }
       } else {
-         xWidget.removeControlCausedMessage("validation.error");
+         xWidget.removeControlCausedMessage(status.getPlugin());
       }
    }
 

@@ -133,7 +133,7 @@ public class XDate extends XWidget {
     * @param horizontalSpan - horizontalSpan takes up 4 columns, therefore horizontalSpan must be >=4
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
 
       // composite = new Composite(parent, parent.getStyle());
       this.parent = parent;

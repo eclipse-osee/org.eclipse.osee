@@ -43,12 +43,12 @@ public class XTextResourceDropDam extends XTextDam {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextDam#createWidgets(org.eclipse.swt.widgets.Composite,
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextDam#createControls(org.eclipse.swt.widgets.Composite,
     *      int, boolean)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan, boolean fillText) {
-      super.createWidgets(parent, horizontalSpan, fillText);
+   public void createControls(Composite parent, int horizontalSpan, boolean fillText) {
+      super.createControls(parent, horizontalSpan, fillText);
       setupDragAndDropSupport();
    }
 

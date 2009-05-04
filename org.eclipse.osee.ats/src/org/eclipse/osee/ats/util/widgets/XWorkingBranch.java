@@ -65,11 +65,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       OseeEventManager.addListener(this);
    }
 
-   /**
-    * 
-    */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       setSMAMgr();
       if (horizontalSpan < 2) horizontalSpan = 2;
       if (!getLabel().equals("")) {

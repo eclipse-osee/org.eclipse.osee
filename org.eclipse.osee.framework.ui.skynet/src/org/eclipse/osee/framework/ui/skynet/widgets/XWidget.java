@@ -105,7 +105,7 @@ public abstract class XWidget {
       return isNotificationAllowed.getValue();
    }
 
-   private IManagedForm getManagedForm() {
+   protected IManagedForm getManagedForm() {
       return managedForm;
    }
 
@@ -119,41 +119,50 @@ public abstract class XWidget {
 
    public void setMessage(String messageId, String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
-      if (messageManager != null) {
+      if (messageManager != null && isFormReady()) {
          messageManager.addMessage(messageId, messageText, null, type);
       }
    }
 
+   public boolean isFormReady() {
+      // Set to true if outside of a form;
+      boolean result = managedForm == null;
+      if (managedForm != null) {
+         result = !managedForm.getForm().isDisposed();
+      }
+      return result;
+   }
+
    public void setControlCausedMessage(String messageId, String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
-      if (messageManager != null) {
+      if (messageManager != null && isFormReady()) {
          messageManager.addMessage(messageId, messageText, null, type, getErrorMessageControl());
       }
    }
 
    public void removeControlCausedMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
-      if (messageManager != null) {
+      if (messageManager != null && isFormReady()) {
          messageManager.removeMessage(messageId, getErrorMessageControl());
       }
    }
 
    public void removeControlCausedMessages() {
       IMessageManager messageManager = getMessageManager();
-      if (messageManager != null) {
+      if (messageManager != null && isFormReady()) {
          messageManager.removeMessage(getErrorMessageControl());
       }
    }
 
    public void removeMessage(String messageId) {
       IMessageManager messageManager = getMessageManager();
-      if (messageManager != null) {
+      if (messageManager != null && isFormReady()) {
          messageManager.removeMessage(messageId);
       }
    }
 
    public void validate() {
-      if (isEditable() && Widgets.isAccessible(getControl())) {
+      if (isEditable() && Widgets.isAccessible(getControl()) && isFormReady() && areNotificationsAllowed()) {
          IStatus status = isValid();
          if (isInForm()) {
             XWidgetValidateUtility.setStatus(status, this);
@@ -206,7 +215,16 @@ public abstract class XWidget {
       this.isNotificationAllowed.setValue(areAllowed);
    }
 
-   protected abstract void createWidgets(Composite parent, int horizontalSpan);
+   protected abstract void createControls(Composite parent, int horizontalSpan);
+
+   public final void createWidgets(Composite parent, int horizontalSpan) {
+      setNotificationsAllowed(false);
+      try {
+         createControls(parent, horizontalSpan);
+      } finally {
+         setNotificationsAllowed(true);
+      }
+   }
 
    public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
       //      synchronized (isNotificationAllowed) {

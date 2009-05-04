@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.widgets.Composite;
 
 public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IArtifactWidget {
 
@@ -56,17 +55,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       }
 
       return users;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int,
-    *      boolean)
-    */
-   @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      super.createWidgets(parent, horizontalSpan);
    }
 
    @Override

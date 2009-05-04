@@ -52,8 +52,8 @@ public class XFileTextWithSelectionDialog extends XText {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
     */
    @Override
-   public void createWidgets(final Composite parent, int horizontalSpan, boolean fillText) {
-      super.createWidgets(parent, horizontalSpan, fillText);
+   public void createControls(final Composite parent, int horizontalSpan, boolean fillText) {
+      super.createControls(parent, horizontalSpan, fillText);
 
       Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
       fileDialog.setText("Select " + type.name());

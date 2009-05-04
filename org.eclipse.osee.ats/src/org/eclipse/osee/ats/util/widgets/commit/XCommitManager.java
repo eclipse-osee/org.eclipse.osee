@@ -86,7 +86,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
     * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
 
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {

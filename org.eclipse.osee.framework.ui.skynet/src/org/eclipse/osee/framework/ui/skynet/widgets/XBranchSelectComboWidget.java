@@ -51,10 +51,10 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       composite = null;
 
       if (!verticalLabel && (horizontalSpan < 2)) {

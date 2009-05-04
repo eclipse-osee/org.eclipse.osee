@@ -215,9 +215,17 @@ public class DynamicXWidgetLayout {
             dynamicWidgetLayoutListener.createXWidgetLayoutData(xWidgetLayoutData, xWidget, toolkit, artifact,
                   xModListener, isEditable);
          }
-         xWidget.validate();
       }
-      refreshOrAndXOrRequiredFlags();
+
+      Display.getDefault().asyncExec(new Runnable() {
+
+         public void run() {
+            for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+               xWidgetLayoutData.getXWidget().validate();
+            }
+            refreshOrAndXOrRequiredFlags();
+         }
+      });
    }
    private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {

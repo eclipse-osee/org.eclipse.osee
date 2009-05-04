@@ -50,14 +50,14 @@ public class XListDropViewer extends XListViewer {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XListViewer#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XListViewer#createControls(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       Menu popupMenu = new Menu(parent);
       setMultiSelect(true);
       super.setListMenu(popupMenu);
-      super.createWidgets(parent, horizontalSpan);
+      super.createControls(parent, horizontalSpan);
       new XDragAndDrop();
       this.myTableViewer = super.getTableViewer();
       //      popupMenu.addMenuListener(new MenuEnablingListener());

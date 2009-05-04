@@ -46,10 +46,10 @@ public class XMultiXWidget extends XWidget {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       this.horizontalSpan = horizontalSpan;
       //      parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
       group = new Group(parent, SWT.NONE);

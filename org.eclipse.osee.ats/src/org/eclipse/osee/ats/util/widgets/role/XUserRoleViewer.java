@@ -79,11 +79,10 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    /*
     * (non-Javadoc)
     * 
-    * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    * @see osee.skynet.gui.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-
+   protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);

@@ -85,7 +85,7 @@ public abstract class XSelectFromDialog<T> extends XText {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
     */
    @Override
-   public void createWidgets(final Composite parent, int horizontalSpan, boolean fillText) {
+   public void createControls(final Composite parent, int horizontalSpan, boolean fillText) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(3, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
@@ -95,7 +95,7 @@ public abstract class XSelectFromDialog<T> extends XText {
          label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       }
       setVerticalLabel(true);
-      super.createWidgets(composite, horizontalSpan, fillText);
+      super.createControls(composite, horizontalSpan, fillText);
 
       getStyledText().setEditable(false);
       getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));

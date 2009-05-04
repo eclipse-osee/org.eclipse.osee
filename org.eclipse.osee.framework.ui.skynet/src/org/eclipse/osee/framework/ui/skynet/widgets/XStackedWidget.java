@@ -105,7 +105,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    }
 
    @Override
-   public void createWidgets(final Composite parent, int horizontalSpan) {
+   protected void createControls(final Composite parent, int horizontalSpan) {
       container = new Composite(parent, SWT.NONE);
       GridLayout layout = new GridLayout(isDisplayLabel() ? 2 : 1, false);
       layout.marginHeight = 0;

@@ -41,7 +41,7 @@ public class XLabel extends XWidget {
     * be >=2 the string "--select--" will be added to the sent in dataStrings array
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) horizontalSpan = 2;
       // Create Data Widgets
       if (!getLabel().equals("")) {

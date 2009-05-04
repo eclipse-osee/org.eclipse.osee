@@ -74,7 +74,7 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
    }
 
    @Override
-   public void createWidgets(final Composite parent, int horizontalSpan) {
+   protected void createControls(final Composite parent, int horizontalSpan) {
       final Collection<String> values = new ArrayList<String>();
       setNotificationsAllowed(false);
       try {
@@ -178,7 +178,7 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
          xTextWidget.setEditable(isEditable());
          xTextWidget.setFillHorizontally(false);
          xTextWidget.setFillVertically(true);
-         xTextWidget.createWidgets(parent, 2, true);
+         xTextWidget.createWidgets(getManagedForm(), parent, 2);
 
          label.setBackground(xTextWidget.getStyledText().getBackground());
          parent.setBackground(label.getBackground());
@@ -238,8 +238,8 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
        * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
        */
       @Override
-      public void createWidgets(Composite parent, int horizontalSpan, boolean fillText) {
-         super.createWidgets(parent, horizontalSpan, fillText);
+      public void createControls(Composite parent, int horizontalSpan, boolean fillText) {
+         super.createControls(parent, horizontalSpan, fillText);
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 200;
          gd.heightHint = 200;

@@ -108,93 +108,97 @@ public class XText extends XWidget {
     * be >=2
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      createWidgets(parent, horizontalSpan, true);
+   protected void createControls(Composite parent, int horizontalSpan) {
+      createControls(parent, horizontalSpan, true);
    }
 
-   public void createWidgets(Composite parent, int horizontalSpan, boolean fillText) {
+   protected void createControls(Composite parent, int horizontalSpan, boolean fillText) {
+      setNotificationsAllowed(false);
+      try {
+         if (!verticalLabel && (horizontalSpan < 2)) {
+            horizontalSpan = 2;
+         }
 
-      if (!verticalLabel && (horizontalSpan < 2)) {
-         horizontalSpan = 2;
-      }
+         this.parent = parent;
+         Composite composite = null;
 
-      this.parent = parent;
-      Composite composite = null;
+         ModifyListener textListener = new ModifyListener() {
 
-      ModifyListener textListener = new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+               if (sText != null) {
+                  debug("modifyText");
+                  text = sText.getText();
+                  validate();
+                  notifyXModifiedListeners();
+               }
+            }
+         };
 
-         public void modifyText(ModifyEvent e) {
-            if (sText != null) {
-               debug("modifyText");
-               text = sText.getText();
-               validate();
-               notifyXModifiedListeners();
+         if (fillVertically) {
+            composite = new Composite(parent, SWT.NONE);
+            GridLayout layout = ALayout.getZeroMarginLayout(1, false);
+            layout.verticalSpacing = 4;
+            composite.setLayout(layout);
+            composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+         } else {
+            composite = new Composite(parent, SWT.NONE);
+            GridLayout layout = ALayout.getZeroMarginLayout(2, false);
+            layout.verticalSpacing = 4;
+            composite.setLayout(layout);
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.horizontalSpan = horizontalSpan;
+            composite.setLayoutData(gd);
+         }
+         // composite = parent;
+
+         // Create Text Widgets
+         if (isDisplayLabel() && !getLabel().equals("")) {
+            labelWidget = new Label(composite, SWT.NONE);
+            labelWidget.setText(getLabel() + ":");
+            if (getToolTip() != null) {
+               labelWidget.setToolTipText(getToolTip());
             }
          }
-      };
 
-      if (fillVertically) {
-         composite = new Composite(parent, SWT.NONE);
-         GridLayout layout = ALayout.getZeroMarginLayout(1, false);
-         layout.verticalSpacing = 4;
-         composite.setLayout(layout);
-         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-      } else {
-         composite = new Composite(parent, SWT.NONE);
-         GridLayout layout = ALayout.getZeroMarginLayout(2, false);
-         layout.verticalSpacing = 4;
-         composite.setLayout(layout);
+         sText = new StyledText(composite, getTextStyle());
+
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = horizontalSpan;
-         composite.setLayoutData(gd);
-      }
-      // composite = parent;
-
-      // Create Text Widgets
-      if (isDisplayLabel() && !getLabel().equals("")) {
-         labelWidget = new Label(composite, SWT.NONE);
-         labelWidget.setText(getLabel() + ":");
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
+         if (verticalLabel)
+            gd.horizontalSpan = horizontalSpan;
+         else
+            gd.horizontalSpan = horizontalSpan - 1;
+         gd.grabExcessHorizontalSpace = true;
+         gd.horizontalAlignment = GridData.FILL;
+         if (fillVertically) {
+            gd.grabExcessVerticalSpace = true;
+            gd.verticalAlignment = GridData.FILL;
          }
-      }
+         if (fillVertically) {
+            if (height > 0) gd.heightHint = height;
+         }
+         //      gd.widthHint = 200;
+         sText.setLayoutData(gd);
+         sText.setMenu(getDefaultMenu());
+         sText.addModifyListener(textListener);
+         if (text != null) sText.setText(text);
+         if (spellCheck) {
+            spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
+            sText.addPaintListener(spellPaintListener);
+            if (modDict != null) spellPaintListener.addXTextSpellModifyDictionary(modDict);
+         }
+         if (width != 0 && height != 0) sText.setSize(width, height);
 
-      sText = new StyledText(composite, getTextStyle());
-
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      if (verticalLabel)
-         gd.horizontalSpan = horizontalSpan;
-      else
-         gd.horizontalSpan = horizontalSpan - 1;
-      gd.grabExcessHorizontalSpace = true;
-      gd.horizontalAlignment = GridData.FILL;
-      if (fillVertically) {
-         gd.grabExcessVerticalSpace = true;
-         gd.verticalAlignment = GridData.FILL;
+         if (maxTextChars > 0) {
+            sText.setTextLimit(maxTextChars);
+         }
+         if (fillText) updateTextWidget();
+         validate();
+         sText.setEditable(isEditable());
+         if (font != null) sText.setFont(font);
+         parent.layout();
+      } finally {
+         setNotificationsAllowed(true);
       }
-      if (fillVertically) {
-         if (height > 0) gd.heightHint = height;
-      }
-      //      gd.widthHint = 200;
-      sText.setLayoutData(gd);
-      sText.setMenu(getDefaultMenu());
-      sText.addModifyListener(textListener);
-      if (text != null) sText.setText(text);
-      if (spellCheck) {
-         spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
-         sText.addPaintListener(spellPaintListener);
-         if (modDict != null) spellPaintListener.addXTextSpellModifyDictionary(modDict);
-      }
-      if (width != 0 && height != 0) sText.setSize(width, height);
-
-      if (maxTextChars > 0) {
-         sText.setTextLimit(maxTextChars);
-      }
-      if (fillText) updateTextWidget();
-      validate();
-      sText.setEditable(isEditable());
-      if (font != null) sText.setFont(font);
-      parent.layout();
    }
 
    protected int getTextStyle() {
