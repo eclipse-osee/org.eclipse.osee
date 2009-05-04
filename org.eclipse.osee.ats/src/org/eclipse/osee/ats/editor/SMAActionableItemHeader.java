@@ -42,7 +42,6 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       try {
-         if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return;
          final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) smaMgr.getSma();
 
          toolkit.adapt(this);

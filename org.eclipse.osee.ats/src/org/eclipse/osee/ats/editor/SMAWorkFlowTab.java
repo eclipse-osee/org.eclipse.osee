@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.NoteItem;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -191,7 +192,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    @Override
    public void dispose() {
-      sMAActionableItemHeader.dispose();
+      if (sMAActionableItemHeader != null) {
+         sMAActionableItemHeader.dispose();
+      }
       for (SMAWorkFlowSection section : sections)
          section.dispose();
       toolbarArea.dispose();
@@ -250,7 +253,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createTopLineHeader(headerComp, toolkit);
          createAssigneesLineHeader(headerComp, toolkit);
          createLatestHeader(headerComp, toolkit);
-         sMAActionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            sMAActionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
+         }
          createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
          createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
          createAnnotationsHeader(headerComp, toolkit);
