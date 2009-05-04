@@ -177,14 +177,24 @@ public abstract class Attribute<T> {
    }
 
    /**
-    * Currently this method provides support for quasi artifact type inheritance
+    * Currently this method provides support for quasi attribute type inheritance
     * 
     * @param artifactType
-    * @return whether this artifact's type or any of its super-types are the specified type
+    * @return whether this attribute's type or any of its super-types are the specified type
     */
    public boolean isOfType(String otherAttributeTypeName) {
       String attributeTypeName = attributeType.getName();
       return attributeTypeName.equals(otherAttributeTypeName);
+   }
+
+   /**
+    * Currently this method provides support for quasi attribute type inheritance
+    * 
+    * @param artifactType
+    * @return whether this attribute's type or any of its super-types are the specified type
+    */
+   public boolean isOfType(AttributeType otherAttributeType) {
+      return attributeType.equals(otherAttributeType);
    }
 
    /**
@@ -267,17 +277,17 @@ public abstract class Attribute<T> {
    }
 
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
-      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, data) ;
+      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, data);
    }
-   
+
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
       Attribute<?> attribute = artifact.createAttribute(attributeType, false);
       attribute.getAttributeDataProvider().loadData(data);
       attribute.internalSetAttributeId(attributeId);
       attribute.internalSetGammaId(gammaId);
-      
-      if(modificationType == ModificationType.DELETED){
+
+      if (modificationType == ModificationType.DELETED) {
          attribute.internalSetDeleted();
       }
       return attribute;

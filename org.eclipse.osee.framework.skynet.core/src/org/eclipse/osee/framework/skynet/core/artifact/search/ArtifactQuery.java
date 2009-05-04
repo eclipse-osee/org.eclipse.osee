@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -256,6 +257,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
+   }
+
+   public static List<Artifact> getArtifactsFromBranch(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, loadLevel, allowDeleted).getArtifacts(10000, null);
    }
 
    public static List<Artifact> reloadArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {

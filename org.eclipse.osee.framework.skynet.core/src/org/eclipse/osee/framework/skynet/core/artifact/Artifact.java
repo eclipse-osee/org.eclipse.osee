@@ -518,18 +518,23 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
-      ensureAttributesLoaded();
-      List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
-      Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
-      if (selectedAttributes == null) {
-         return java.util.Collections.emptyList();
-      }
-      for (Attribute<?> attribute : selectedAttributes) {
+      List<Attribute<T>> notDeltedAttributes = new ArrayList<Attribute<T>>();
+      Collection<Attribute<T>> selectedAttributes = getAttributesIncludeDeleted(attributeTypeName);
+      for (Attribute<T> attribute : selectedAttributes) {
          if (!attribute.isDeleted()) {
             notDeltedAttributes.add(attribute);
          }
       }
-      return Collections.castAll(notDeltedAttributes);
+      return notDeltedAttributes;
+   }
+
+   public <T> List<Attribute<T>> getAttributesIncludeDeleted(String attributeTypeName) throws OseeCoreException {
+      ensureAttributesLoaded();
+      Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
+      if (selectedAttributes == null) {
+         return java.util.Collections.emptyList();
+      }
+      return Collections.castAll(selectedAttributes);
    }
 
    /**
@@ -1437,7 +1442,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       for (Attribute<?> attribute : attributes.getValues()) {
          Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
-               attribute.getAttrId(), attribute.getGammaId(), attribute.isDeleted()? ModificationType.DELETED : null, attribute.getAttributeDataProvider().getData());
+               attribute.getAttrId(), attribute.getGammaId(), attribute.isDeleted() ? ModificationType.DELETED : null,
+               attribute.getAttributeDataProvider().getData());
       }
       return reflectedArtifact;
    }
