@@ -10,17 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts.OpenView;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
@@ -47,6 +57,80 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
       this.toolkit = toolkit;
       workComp = super.createWorkArea(comp, page, toolkit);
       toolkit.createLabel(workComp, "ATS Debug Section");
+
+      Hyperlink link = toolkit.createHyperlink(workComp, "Dirty Report", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            Result result = smaMgr.getEditor().isDirtyResult();
+            result.popup(true);
+         }
+
+      });
+      link = toolkit.createHyperlink(workComp, "Refresh Dirty", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            smaMgr.getEditor().onDirtied();
+         }
+
+      });
+      link = toolkit.createHyperlink(workComp, "Open VUE Workflow", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            try {
+               String hrid = smaMgr.getWorkFlowDefinition().getId().replaceFirst("^.* - ", "");
+               if (hrid.length() != 5)
+                  AWorkbench.popup("Open Workflow",
+                        "Workflow is NOT an artifact\n\n" + smaMgr.getWorkFlowDefinition().getId());
+               else
+                  AtsLib.open(hrid, OpenView.ArtifactEditor);
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+      link = toolkit.createHyperlink(workComp, "Open Team Definition", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
+               AWorkbench.popup("Open Workflow", "Workflow is NOT TeamWorkflowArtifact");
+            } else {
+               try {
+                  AtsLib.open(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getGuid(),
+                        OpenView.ArtifactEditor);
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
 
       // Display team definition
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
@@ -94,6 +178,14 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
     */
    @Override
    protected boolean isShowTaskInfo() throws OseeCoreException {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#isShowTargetedVersion()
+    */
+   @Override
+   protected boolean isShowTargetedVersion() throws OseeCoreException {
       return false;
    }
 

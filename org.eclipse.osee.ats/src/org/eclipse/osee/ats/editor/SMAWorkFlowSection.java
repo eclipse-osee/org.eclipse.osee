@@ -218,6 +218,10 @@ public class SMAWorkFlowSection extends SectionPart {
       return smaMgr.isTaskable();
    }
 
+   protected boolean isShowTargetedVersion() throws OseeCoreException {
+      return smaMgr.isTargetedVersionable();
+   }
+
    protected boolean isShowReviewInfo() throws OseeCoreException {
       return smaMgr.getSma() instanceof TeamWorkFlowArtifact;
    }
@@ -356,29 +360,35 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
-      Composite comp = toolkit.createContainer(parent, 3);
+      Composite comp = toolkit.createContainer(parent, 5);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+      toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
+
+      if (isShowTargetedVersion()) {
+         new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
+      }
+
+      Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
+      setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            try {
+               handleChangeCurrentAssignees();
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+
+      });
+
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-         toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
-         Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
-         setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
-
-            public void linkEntered(HyperlinkEvent e) {
-            }
-
-            public void linkExited(HyperlinkEvent e) {
-            }
-
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  handleChangeCurrentAssignees();
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-
-         });
 
          currentAssigneesLabel =
                toolkit.createLabel(comp, Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
@@ -394,6 +404,7 @@ public class SMAWorkFlowSection extends SectionPart {
                            smaMgr.getStateMgr().getAssignees()));
          errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
+
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {

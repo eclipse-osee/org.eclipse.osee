@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -32,6 +31,7 @@ public abstract class WorkPageService {
    public WorkPageService(SMAManager smaMgr) {
       super();
       this.smaMgr = smaMgr;
+      readOnlyHyperlinkListener = new ReadOnlyHyperlinkListener(smaMgr);
    }
 
    public boolean isCurrentState(AtsWorkPage page) throws OseeCoreException {
@@ -63,25 +63,7 @@ public abstract class WorkPageService {
       return null;
    }
 
-   protected IHyperlinkListener readOnlyHyperlinkListener = new IHyperlinkListener() {
-      public void linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent e) {
-         if (smaMgr.isHistoricalVersion())
-            AWorkbench.popup(
-                  "Historical Error",
-                  "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
-
-         else
-            AWorkbench.popup(
-                  "Authentication Error",
-                  "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
-      };
-
-      public void linkEntered(org.eclipse.ui.forms.events.HyperlinkEvent e) {
-      };
-
-      public void linkExited(org.eclipse.ui.forms.events.HyperlinkEvent e) {
-      };
-   };
+   protected IHyperlinkListener readOnlyHyperlinkListener;
 
    public abstract String getName();
 

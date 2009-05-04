@@ -12,12 +12,18 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
+import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.Overview;
+import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -25,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -38,6 +45,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessageManager;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -52,7 +61,7 @@ public class SMAReviewInfoComposite extends Composite {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
-      setLayout(new GridLayout(2, false));
+      setLayout(new GridLayout(4, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       Label label = new Label(this, SWT.NONE);
@@ -99,7 +108,78 @@ public class SMAReviewInfoComposite extends Composite {
       Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
       if (revArts.size() == 0) {
          (new Label(this, SWT.NONE)).setText("No Reviews Created");
-      } else {
+      }
+
+      Hyperlink link = toolkit.createHyperlink(this, "[Add Decision Review]", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            try {
+               StateListAndTitleDialog dialog =
+                     new StateListAndTitleDialog("Create Decision Review",
+                           "Select state to that review will be associated with.",
+                           smaMgr.getWorkFlowDefinition().getPageNames());
+               dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
+               if (dialog.open() == 0) {
+                  if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     AWorkbench.popup("ERROR", "Must enter review title");
+                     return;
+                  }
+                  NewDecisionReviewJob job =
+                        new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null, dialog.getReviewTitle(),
+                              dialog.getSelectedState(), null, NewDecisionReviewJob.getDefaultDecisionReviewOptions(),
+                              null);
+                  job.setUser(true);
+                  job.setPriority(Job.LONG);
+                  job.schedule();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      });
+
+      link = toolkit.createHyperlink(this, "[Add Peer to Peer Review]", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         public void linkEntered(HyperlinkEvent e) {
+         }
+
+         public void linkExited(HyperlinkEvent e) {
+         }
+
+         public void linkActivated(HyperlinkEvent e) {
+            try {
+               StateListAndTitleDialog dialog =
+                     new StateListAndTitleDialog("Add Peer to Peer Review",
+                           "Select state to that review will be associated with.",
+                           smaMgr.getWorkFlowDefinition().getPageNames());
+               dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
+               dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(smaMgr));
+               if (dialog.open() == 0) {
+                  if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     AWorkbench.popup("ERROR", "Must enter review title");
+                     return;
+                  }
+                  NewPeerToPeerReviewJob job =
+                        new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getReviewTitle(),
+                              dialog.getSelectedState());
+                  job.setUser(true);
+                  job.setPriority(Job.LONG);
+                  job.schedule();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+      if (revArts.size() > 0) {
          Composite workComp = toolkit.createContainer(this, 1);
          workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
          GridData gd = new GridData();

@@ -881,6 +881,11 @@ public class SMAManager {
       return transition(toStateName, users, transaction, transitionOption);
    }
 
+   public boolean isTargetedVersionable() throws OseeCoreException {
+      if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
+      return (((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions());
+   }
+
    public Result transition(String toStateName, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
       return transition(toStateName, toAssignees, null, transaction, transitionOption);
    }

@@ -48,7 +48,6 @@ public class ServicesArea {
    private final ArrayList<Group> groups = new ArrayList<Group>();
    public static String STATISTIC_CATEGORY = "Statistics";
    public static String OPERATION_CATEGORY = "Operation";
-   public static String DEBUG_PAGE_CATEGORY = "Debug";
 
    public ServicesArea(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
@@ -64,22 +63,15 @@ public class ServicesArea {
    public void loadSidebarServices(AtsWorkPage page) throws OseeCoreException {
       if (sideBarServices.size() == 0) {
          // Operations
-         sideBarServices.add(new OpenLatestVersion(smaMgr));
-         sideBarServices.add(new DebugOperations(smaMgr));
          sideBarServices.add(new PrivilegedEditService(smaMgr));
          // Services
-         sideBarServices.add(new AtsAdminStat(smaMgr));
          sideBarServices.add(new TotalPercentCompleteStat(smaMgr));
          sideBarServices.add(new TotalEstimatedHoursStat(smaMgr));
          sideBarServices.add(new TotalHoursSpentStat(smaMgr));
-         sideBarServices.add(new TargetedForVersionState(smaMgr));
          sideBarServices.add(new StatePercentCompleteStat(smaMgr));
          sideBarServices.add(new StateEstimatedHoursStat(smaMgr));
          sideBarServices.add(new StateHoursSpentStat(smaMgr));
          sideBarServices.add(new RemainingHoursStat(smaMgr));
-         sideBarServices.add(new AddDecisionReviewService(smaMgr));
-         sideBarServices.add(new AddPeerToPeerReviewService(smaMgr));
-         sideBarServices.add(new BlockingReview(smaMgr));
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
          for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
             sideBarServices.addAll(item.getSidebarServices(smaMgr));
