@@ -191,7 +191,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
       String diffPath;
-      String fileName = getStringOption("filename");
+      String fileName = getStringOption("fileName");
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
@@ -203,8 +203,7 @@ public class WholeDocumentRenderer extends WordRenderer {
                   baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
          }
       } else {
-         String baseFileStr = baseFile.getLocation().toOSString();
-         diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
+         diffPath = getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
