@@ -221,8 +221,8 @@ public class TraceReportBlam extends AbstractBlam {
             }
             buildReport(reports, "Trace Unit <-> Requirement", output, writer, getTraceUnitToReqReport(codeUnit,
                   testUnit, traceTypes));
-            buildReport(reports, "Disconnected Trace Unit", output, writer, getDisconnectedTraceUnitReport(codeUnit,
-                  testUnit, traceTypes));
+            buildReport(reports, "Trace Unit with No Valid Traceability", output, writer,
+                  getDisconnectedTraceUnitReport(codeUnit, testUnit, traceTypes));
             buildReport(reports, "Requirement Trace Counts", output, writer, getTraceCountReport(reqData, traceTypes));
 
             subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
