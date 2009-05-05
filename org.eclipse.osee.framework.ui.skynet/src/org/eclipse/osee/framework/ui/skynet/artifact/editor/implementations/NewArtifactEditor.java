@@ -270,18 +270,22 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
 
       @Override
       public IStatus runInUIThread(IProgressMonitor monitor) {
-         Artifact artifact = getEditorInput().getArtifact();
-         setPartName(getEditorInput().getName());
-         setTitleImage(artifact.getImage());
-         ArtifactEditorOutlinePage outlinePage = getOutlinePage();
-         if (outlinePage != null) {
-            outlinePage.refresh();
+         try {
+            Artifact artifact = getEditorInput().getArtifact();
+            setPartName(getEditorInput().getName());
+            setTitleImage(artifact.getImage());
+            ArtifactEditorOutlinePage outlinePage = getOutlinePage();
+            if (outlinePage != null) {
+               outlinePage.refresh();
+            }
+            ArtifactFormPage page = getFormPage();
+            if (page != null) {
+               page.refresh();
+            }
+            onDirtied();
+         } catch (Exception ex) {
+				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-         ArtifactFormPage page = getFormPage();
-         if (page != null) {
-            page.refresh();
-         }
-         onDirtied();
          return Status.OK_STATUS;
       }
    }
