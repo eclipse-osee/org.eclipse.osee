@@ -1402,15 +1402,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branchModType == BranchEventType.Committed && branch != null && branch.getBranchId() == branchId) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
-            }
-         });
+         SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
       }
    }
 
