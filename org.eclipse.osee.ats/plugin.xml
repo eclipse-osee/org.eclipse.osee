@@ -284,9 +284,6 @@
       <ArtifactAnnotation
             classname="org.eclipse.osee.ats.util.AtsArtifactAnnotations">
       </ArtifactAnnotation>
-      <ArtifactAnnotation
-            classname="org.eclipse.osee.ats.artifact.annotation.ReviewAnnotationHandler">
-      </ArtifactAnnotation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.AtsLib">
