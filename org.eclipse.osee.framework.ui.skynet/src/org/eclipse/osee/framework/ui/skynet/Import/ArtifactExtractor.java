@@ -13,19 +13,31 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface ArtifactExtractor {
    /**
     * called before getRoughArtifacts and getRoughRelations to discover the data that they will return
     * 
     * @param artifactsFile file from which to extract artifact data
+    * @param artifactResolver TODO
+    * @param branch TODO
+    * @param primaryArtifactType TODO
     * @throws Exception
     */
-   public abstract void discoverArtifactAndRelationData(File artifactsFile) throws Exception;
+   public abstract void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception;
 
    public abstract List<RoughArtifact> getRoughArtifacts() throws Exception;
 
    public abstract List<RoughRelation> getRoughRelations(RoughArtifact potentialParent) throws Exception;
 
    public abstract FileFilter getFileFilter();
+
+   public abstract String getName();
+
+   public abstract String getDescription();
+
+   public abstract boolean usesTypeList();
+
 }

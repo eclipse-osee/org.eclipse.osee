@@ -119,8 +119,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                             * @see WizardPage#becomesVisible
-                             */
+                               * @see WizardPage#becomesVisible
+                               */
 
    @Override
    public void setVisible(boolean visible) {
@@ -141,9 +141,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       try {
 
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         ExcelAtsActionArtifactExtractor extractor =
-               new ExcelAtsActionArtifactExtractor(AtsPlugin.getAtsBranch(), emailPocs.getSelection());
-         extractor.discoverArtifactAndRelationData(file);
+         ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
+         extractor.discoverArtifactAndRelationData(file, null, AtsPlugin.getAtsBranch(), null);
          if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
          WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          transaction.execute();

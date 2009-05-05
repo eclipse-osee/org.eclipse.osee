@@ -26,14 +26,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Robert A. Fisher
  */
 public class WordOutlineExtractor extends WordExtractor {
-   private static final String description =
-         "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
@@ -62,7 +61,6 @@ public class WordOutlineExtractor extends WordExtractor {
    private String headerNumber;
    private String listIdentifier;
    private final ArtifactType headingDescriptor;
-   private final ArtifactType mainDescriptor;
    private final int maxExtractionDepth;
    private boolean forceBody;
    private boolean forcePrimaryType;
@@ -70,12 +68,11 @@ public class WordOutlineExtractor extends WordExtractor {
 
    private final IWordOutlineContentHandler handler;
 
-   public WordOutlineExtractor(ArtifactType mainDescriptor, Branch branch, int maxExtractionDepth, IWordOutlineContentHandler handler) throws OseeCoreException {
+   public WordOutlineExtractor() throws OseeCoreException {
+      this(0, new GeneralWordOutlineHandler());
+   }
 
-      super(branch);
-
-      if (mainDescriptor == null) throw new IllegalArgumentException("mainDescriptor can not be null");
-      if (branch == null) throw new IllegalArgumentException("branch can not be null");
+   public WordOutlineExtractor(int maxExtractionDepth, IWordOutlineContentHandler handler) throws OseeCoreException {
       if (handler == null) throw new IllegalArgumentException("handler can not be null");
 
       this.handler = handler;
@@ -88,15 +85,14 @@ public class WordOutlineExtractor extends WordExtractor {
       this.currentListStack = new Stack<String>();
       this.clonedCurrentListStack = new Stack<String>();
       this.headingDescriptor = ArtifactTypeManager.getType("Heading");
-      this.mainDescriptor = mainDescriptor;
       this.maxExtractionDepth = maxExtractionDepth;
    }
 
-   public static String getDescription() {
-      return description;
+   public String getDescription() {
+      return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    }
 
-   public void discoverArtifactAndRelationData(File importFile) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
 
       Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));
 
@@ -104,7 +100,7 @@ public class WordOutlineExtractor extends WordExtractor {
          throwFileFormatError(importFile, "no start of body tag");
       }
 
-      handler.init(this, headingDescriptor, mainDescriptor);
+      handler.init(this, headingDescriptor, primaryArtifactType);
 
       try {
          CharSequence element;
@@ -272,5 +268,21 @@ public class WordOutlineExtractor extends WordExtractor {
             return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
          }
       };
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "Word Outline";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return true;
    }
 }

@@ -34,9 +34,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
+import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.xml.sax.InputSource;
@@ -47,7 +49,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Donald G. Dunne
  */
 public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final String description = "Extract each row as an Action";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
    private int rowNum = 0;
@@ -56,14 +57,13 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
    };
 
-   public static String getDescription() {
-      return description;
+   public String getDescription() {
+      return "Extract each row as an Action";
    }
    private final Set<ActionData> actionDatas = new HashSet<ActionData>();
    private final Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
 
-   public ExcelAtsActionArtifactExtractor(Branch branch, boolean emailPOCs) {
-      super(branch);
+   public ExcelAtsActionArtifactExtractor(boolean emailPOCs) {
       this.emailPOCs = emailPOCs;
    }
 
@@ -239,7 +239,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException {
+   public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);
@@ -302,5 +302,21 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
     */
    public FileFilter getFileFilter() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "Excel Ats Actions";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return false;
    }
 }

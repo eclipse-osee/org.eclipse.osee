@@ -111,7 +111,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       }
 
       roughArtifact.setHeadingDescriptor(headingDescriptor);
-      roughArtifact.setPrimaryDescriptor(mainDescriptor);
+      roughArtifact.setPrimaryArtifactType(mainDescriptor);
       extractor.addRoughArtifact(roughArtifact);
       roughArtifact.setSectionNumber(parNumber);
       roughArtifact.setForcePrimaryType(true);

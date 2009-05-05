@@ -36,8 +36,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final String description =
-         "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
    private ArtifactType primaryDescriptor;
@@ -45,19 +43,13 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    private boolean reuseArtifacts;
    private AttributeImportType[] types;
    private int rowCount;
-   private DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper;
+   private DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
+         new DoubleKeyHashMap<String, Integer, RoughArtifact>();
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
-   private final Matcher guidMatcher;
+   private final Matcher guidMatcher = guidPattern.matcher("");
 
-   public static String getDescription() {
-      return description;
-   }
-
-   public ExcelArtifactExtractor(Branch branch, boolean reuseArtifacts) {
-      super(branch);
-      this.reuseArtifacts = reuseArtifacts;
-      relationHelper = new DoubleKeyHashMap<String, Integer, RoughArtifact>();
-      guidMatcher = guidPattern.matcher("");
+   public String getDescription() {
+      return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    }
 
    /*
@@ -105,7 +97,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       } else {
          RoughArtifact roughArtifact = new RoughArtifact(getBranch());
          roughArtifact.setHeadingDescriptor(primaryDescriptor);
-         roughArtifact.setPrimaryDescriptor(primaryDescriptor);
+         roughArtifact.setPrimaryArtifactType(primaryDescriptor);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) continue;
             if (headerRow[i].equalsIgnoreCase("Outline Number")) {
@@ -148,11 +140,12 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws Exception {
+   public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       excelHandler = new ExcelSaxHandler(this, true);
       xmlReader.setContentHandler(excelHandler);
       xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+      reuseArtifacts = artifactResolver instanceof RootAndAttributeBasedArtifactResolver;
    }
 
    /*
@@ -228,5 +221,21 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
             return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
          }
       };
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "Excel XML Artifacts";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return false;
    }
 }

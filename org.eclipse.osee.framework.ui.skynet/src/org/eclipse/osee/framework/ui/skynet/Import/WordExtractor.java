@@ -10,20 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class WordExtractor extends AbstractArtifactExtractor {
-
    protected static final String BODY_START = "<w:body>";
    protected static final String BODY_END = "</w:body>";
-
-   /**
-    * @param branch
-    */
-   public WordExtractor(Branch branch) {
-      super(branch);
-   }
 }

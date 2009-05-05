@@ -20,27 +20,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
-   private final static String description = "Extract the content of each native document as one artifact";
    private final ArtifactType folderDescriptor;
-   private final ArtifactType primaryDescriptor;
+   private ArtifactType primaryDescriptor;
 
-   public NativeDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) throws OseeCoreException {
-      super(branch);
+   public NativeDocumentExtractor() throws OseeCoreException {
       folderDescriptor = ArtifactTypeManager.getType("Folder");
-      this.primaryDescriptor = primaryDescriptor;
    }
 
-   public static String getDescription() {
-      return description;
+   public String getDescription() {
+      return "Extract the content of each native document as one artifact";
    }
 
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File importFile) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.removeExtension(importFile.getName()));
       roughArtifact.setHeadingDescriptor(folderDescriptor);
-      roughArtifact.setPrimaryDescriptor(primaryDescriptor);
+      roughArtifact.setPrimaryArtifactType(primaryDescriptor);
       addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute("Extension", Lib.getExtension(importFile.getName()));
       roughArtifact.addFileAttribute(NativeArtifact.CONTENT_NAME, importFile);
@@ -55,5 +52,21 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
             return true;
          }
       };
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "General Documents (Any Format)";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return true;
    }
 }

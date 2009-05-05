@@ -13,15 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +34,7 @@ import org.eclipse.ui.IWorkbench;
  * @author Ryan D. Brooks
  */
 public class ArtifactImportWizard extends Wizard implements IImportWizard {
-   private static final String TITLE = "Import artifacts into Define";
+   private static final String TITLE = "Import artifacts into OSEE";
    private ArtifactImportPage mainPage;
    private AttributeTypePage attributeTypePage;
    private OutlineContentHandlerPage handlerPage;
@@ -77,36 +74,17 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, false);
       }
 
-      ArtifactType mainDescriptor = null;
-
-      if (mainPage.isGeneralDocumentExtractor() || mainPage.isWholeWordExtractor() || mainPage.isWordOutlineExtractor()) {
-         mainDescriptor = mainPage.getSelectedType();
-      }
-
       try {
-         ArtifactExtractor extractor = getNewArtifactExtractor(mainDescriptor, branch, reuseArtifactRoot != null);
+         ArtifactExtractor extractor = mainPage.getExtractor();
+         ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
+
          Artifact importRoot = mainPage.getImportRoot();
-         Jobs.startJob(new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver));
-      } catch (Exception ex) {
-         ErrorDialog.openError(getShell(), "Import Error", "An error has occured while importing a document.",
-               new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
-                     "Exception occured during artifact import", ex));
+         Jobs.startJob(new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver, primaryArtifactType));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
+         return false;
       }
       return true;
-   }
-
-   public ArtifactExtractor getNewArtifactExtractor(ArtifactType primaryDescriptor, Branch branch, boolean reuseArtifacts) throws OseeCoreException {
-      if (mainPage.isWordOutlineExtractor()) {
-         return new WordOutlineExtractor(primaryDescriptor, branch, 0, handlerPage.getSelectedOutlineContentHandler());
-      } else if (mainPage.isExcelExtractor()) {
-         return new ExcelArtifactExtractor(branch, reuseArtifacts);
-      } else if (mainPage.isWholeWordExtractor()) {
-         return new WholeWordDocumentExtractor(primaryDescriptor, branch);
-      } else if (mainPage.isGeneralDocumentExtractor()) {
-         return new NativeDocumentExtractor(primaryDescriptor, branch);
-      } else {
-         throw new OseeCoreException("None of the expected extractor buttons are selected");
-      }
    }
 
    /*
@@ -142,8 +120,9 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public IWizardPage getNextPage(IWizardPage page) {
-      if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
-         try {
+      try {
+         if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
+
             ArtifactType rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
             ArtifactType importDescriptor = mainPage.getSelectedType();
 
@@ -164,12 +143,13 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                importAttributes.addAll(rootAttributes);
                attributeTypePage.setDescriptors(importAttributes);
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+
+            return attributeTypePage;
+         } else if (mainPage.needsSecondaryPage() && page != handlerPage) {
+            return handlerPage;
          }
-         return attributeTypePage;
-      } else if (mainPage.isWordOutlineExtractor() && page != handlerPage) {
-         return handlerPage;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
    }
@@ -187,6 +167,11 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean canFinish() {
-      return mainPage.isPageComplete() && (mainPage.getReuseArtifactRoot() == null || attributeTypePage.isPageComplete()) && (!mainPage.isWordOutlineExtractor() || handlerPage.isPageComplete());
+      try {
+         return mainPage.isPageComplete() && (mainPage.getReuseArtifactRoot() == null || attributeTypePage.isPageComplete()) && (!mainPage.needsSecondaryPage() || handlerPage.isPageComplete());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return false;
+      }
    }
 }

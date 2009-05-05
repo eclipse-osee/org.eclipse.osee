@@ -18,25 +18,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class WholeWordDocumentExtractor extends WordExtractor {
-   private static final String description = "Extract all the content of each Word XML document as one artifact";
-   private final ArtifactType primaryDescriptor;
-
-   public WholeWordDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) {
-      super(branch);
-      this.primaryDescriptor = primaryDescriptor;
-   }
-
-   public static String getDescription() {
-      return description;
+   public String getDescription() {
+      return "Extract all the content of each Word XML document as one artifact";
    }
 
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File importFile) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
       RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.removeExtension(importFile.getName()));
-      roughArtifact.setPrimaryDescriptor(primaryDescriptor);
+      roughArtifact.setPrimaryArtifactType(primaryArtifactType);
       addRoughArtifact(roughArtifact);
       roughArtifact.addFileAttribute(WordAttribute.WHOLE_WORD_CONTENT, importFile);
    }
@@ -50,5 +42,21 @@ public class WholeWordDocumentExtractor extends WordExtractor {
             return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
          }
       };
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "Whole Word Document";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return true;
    }
 }

@@ -18,16 +18,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
-   private final ArrayList<RoughArtifact> roughArtifacts;
-   private final ArrayList<RoughRelation> roughRelations;
-   private final Branch branch;
-
-   public AbstractArtifactExtractor(Branch branch) {
-      super();
-      this.roughArtifacts = new ArrayList<RoughArtifact>();
-      this.roughRelations = new ArrayList<RoughRelation>();
-      this.branch = branch;
-   }
+   private final ArrayList<RoughArtifact> roughArtifacts = new ArrayList<RoughArtifact>();
+   private final ArrayList<RoughRelation> roughRelations = new ArrayList<RoughRelation>();
+   private Branch branch;
 
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#getRoughArtifacts()

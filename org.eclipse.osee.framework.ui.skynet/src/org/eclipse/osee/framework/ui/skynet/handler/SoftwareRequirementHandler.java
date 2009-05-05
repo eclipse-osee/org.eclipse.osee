@@ -41,7 +41,7 @@ public abstract class SoftwareRequirementHandler extends GeneralWordOutlineHandl
       }
 
       if (!isRequirement) {
-         roughArtifact.setPrimaryDescriptor(headingDescriptor);
+         roughArtifact.setPrimaryArtifactType(headingDescriptor);
       }
 
       roughArtifact.addAttribute("Name", text.toString().trim());

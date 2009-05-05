@@ -40,7 +40,7 @@ public class TaskImportJob extends Job {
          atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
          if (file != null && file.isFile()) {
-            atsTaskExtractor.discoverArtifactAndRelationData(file);
+            atsTaskExtractor.discoverArtifactAndRelationData(file, null, AtsPlugin.getAtsBranch(), null);
          } else {
             throw new OseeArgumentException("All files passed must be a file");
          }

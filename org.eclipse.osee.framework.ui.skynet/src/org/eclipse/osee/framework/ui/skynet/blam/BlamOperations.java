@@ -17,18 +17,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -49,25 +44,10 @@ public class BlamOperations {
    }
 
    public static Collection<BlamOperation> getBlamOperations() {
-      List<BlamOperation> blamOperations = new ArrayList<BlamOperation>();
-      for (IConfigurationElement iConfigurationElement : ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation")) {
-
-         String classname = iConfigurationElement.getAttribute("className");
-         String bundleName = iConfigurationElement.getContributor().getName();
-         if (classname != null && bundleName != null) {
-            Bundle bundle = Platform.getBundle(bundleName);
-            try {
-               Class<?> taskClass = bundle.loadClass(classname);
-               Object obj = taskClass.newInstance();
-               BlamOperation task = (BlamOperation) obj;
-               blamOperations.add(task);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error loading BlamOperation extension", ex);
-            }
-         }
-      }
-      return blamOperations;
+      ExtensionDefinedObjects<BlamOperation> definedObjects =
+            new ExtensionDefinedObjects<BlamOperation>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
+                  "Operation", "className");
+      return definedObjects.getObjects();
    }
 
    public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {

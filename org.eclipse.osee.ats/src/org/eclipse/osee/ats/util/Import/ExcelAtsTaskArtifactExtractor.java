@@ -33,8 +33,11 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
+import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -43,7 +46,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Donald G. Dunne
  */
 public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final String description = "Extract each row as a task";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
    private final StateMachineArtifact sma;
@@ -53,12 +55,11 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private final SMAManager smaMgr;
    private final SkynetTransaction transaction;
 
-   public static String getDescription() {
-      return description;
+   public String getDescription() {
+      return "Extract each row as a task";
    }
 
    public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, SkynetTransaction transaction) {
-      super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
       this.transaction = transaction;
       if (!(artifact instanceof StateMachineArtifact)) {
@@ -226,7 +227,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException {
+   public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);
@@ -292,5 +293,21 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
     */
    public FileFilter getFileFilter() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
+    */
+   @Override
+   public String getName() {
+      return "Excel Ats Tasks";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
+    */
+   @Override
+   public boolean usesTypeList() {
+      return false;
    }
 }

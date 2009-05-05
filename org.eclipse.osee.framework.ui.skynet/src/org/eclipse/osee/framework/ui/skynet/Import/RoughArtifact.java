@@ -38,7 +38,7 @@ public class RoughArtifact {
    private String guid;
    private String humandReadableId;
    private ArtifactType headingDescriptor;
-   private ArtifactType primaryDescriptor;
+   private ArtifactType primaryArtifactType;
    private boolean forcePrimaryType;
    private HashMap<String, File> fileAttributes;
    private final Branch branch;
@@ -214,7 +214,7 @@ public class RoughArtifact {
    }
 
    public ArtifactType getDescriptorForGetReal() {
-      return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
+      return children.isEmpty() || forcePrimaryType ? primaryArtifactType : headingDescriptor;
    }
 
    public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
@@ -258,10 +258,10 @@ public class RoughArtifact {
    }
 
    /**
-    * @param primaryDescriptor The leafDescriptor to set.
+    * @param primaryArtifactType The leaf ArtifactType to set.
     */
-   public void setPrimaryDescriptor(ArtifactType primaryDescriptor) {
-      this.primaryDescriptor = primaryDescriptor;
+   public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
+      this.primaryArtifactType = primaryArtifactType;
    }
 
    /**

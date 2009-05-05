@@ -88,36 +88,11 @@
                file="reference/toc.xml"
                primary="true"/>
       </extension>
-      <extension
-            id="ChangeArtifactTypeBlam"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam "/>
-      </extension>
-      <extension
-            id="CheckValidAttributeTypes"
-            name="CheckValidAttributeTypes"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidAttributeTypes"/>
-      </extension>
-      <extension
-            id="CheckValidArtifactTypes"
-            name="CheckValidArtifactTypes"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidArtifactTypes"/>
-      </extension>
    <extension
          id="AddEveryoneGroupToBranches"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
             className="org.eclipse.osee.define.blam.operation.AddEveryoneGroupToBranches">
-      </Operation>
-   </extension>
-   <extension
-         id="PublishRequirements"
-         name="PublishRequirements"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.blam.operation.PublishRequirements">
       </Operation>
    </extension>
    <extension
@@ -166,20 +141,17 @@
             className="org.eclipse.osee.define.blam.operation.ExperimentalBlam">
       </Operation>
    </extension>
-   <extension
-         id="PublishWithSpecifiedTemplate"
-         name="Publish With Specified Template"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
-      </Operation>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-      <ArtifactFactory
-            classname="org.eclipse.osee.define.DefineArtifactFactory">
-      </ArtifactFactory>
-   </extension>
+      <extension
+            id="CheckValidAttributeTypes"
+            name="CheckValidAttributeTypes"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidAttributeTypes"/>
+      </extension>
+      <extension
+            id="ChangeArtifactTypeBlam"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam "/>
+      </extension>
  <extension
        id="SubsystemToLowLevelReqTraceReport"
        name="SubsystemToLowLevelReqTraceReport"
@@ -188,6 +160,12 @@
           className="org.eclipse.osee.define.blam.operation.SubsystemToLowLevelReqTraceReport">
     </Operation>
  </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
+      <ArtifactFactory
+            classname="org.eclipse.osee.define.DefineArtifactFactory">
+      </ArtifactFactory>
+   </extension>
  <extension
        point="org.eclipse.ui.popupMenus">
     <viewerContribution
@@ -234,6 +212,28 @@
           className="org.eclipse.osee.define.traceability.blam.TraceReportBlam">
     </Operation>
  </extension>
+   <extension
+         id="PublishWithSpecifiedTemplate"
+         name="Publish With Specified Template"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
+      </Operation>
+   </extension>
+      <extension
+            id="CheckValidArtifactTypes"
+            name="CheckValidArtifactTypes"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidArtifactTypes"/>
+      </extension>
+   <extension
+         id="PublishRequirements"
+         name="PublishRequirements"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.blam.operation.PublishRequirements">
+      </Operation>
+   </extension>
  <extension
        id="RemoveTraceMarksFromTraceUnits"
        name="RemoveTraceMarksFromTraceUnits"

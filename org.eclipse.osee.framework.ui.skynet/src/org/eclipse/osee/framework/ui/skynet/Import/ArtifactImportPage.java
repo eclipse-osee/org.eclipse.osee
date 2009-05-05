@@ -19,7 +19,10 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -63,15 +66,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private Text txtImportUnderFolderName;
 
    private DirectoryOrFileSelector directoryFileSelector;
-
-   private Button radWordOutlineExtractor;
-   private Button radExcelExtractor;
-   private Button radWholeWordExtractor;
-   private Button radGeneralExtractor;
-
+   private final java.util.List<ObjectPair<ArtifactExtractor, Button>> extractors =
+         new ArrayList<ObjectPair<ArtifactExtractor, Button>>();
    private File importResource;
-
-   private boolean built;
+   private boolean built = false;
 
    /**
     * Constructor used by the Skynet drag-n-drop
@@ -83,7 +81,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       this.importResource = importResource;
       this.destinationArtifact = reuseRootArtifact;
-      this.built = false;
    }
 
    /**
@@ -161,10 +158,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
     * For DND the branch selected should be set from destination artifact.
     */
    private void setDefaultBranch() {
-	   if(destinationArtifact != null){
-		   Branch branch = destinationArtifact.getBranch();
-		   branchSelectComposite.setSelected(branch);
-	   }
+      if (destinationArtifact != null) {
+         Branch branch = destinationArtifact.getBranch();
+         branchSelectComposite.setSelected(branch);
+      }
    }
 
    private void createImportSource(Composite parent) {
@@ -331,31 +328,47 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      radWordOutlineExtractor = new Button(composite, SWT.RADIO);
-      radWordOutlineExtractor.setText("Word Outline");
-      radWordOutlineExtractor.setToolTipText(WordOutlineExtractor.getDescription());
-      radWordOutlineExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-      radWordOutlineExtractor.addListener(SWT.Selection, this);
+      ExtensionDefinedObjects<ArtifactExtractor> definedObjects =
+            new ExtensionDefinedObjects<ArtifactExtractor>("org.eclipse.osee.framework.ui.skynet.ArtifactExtractor",
+                  "ArtifactExtractor", "class");
+      java.util.List<ArtifactExtractor> artifactExtractors = definedObjects.getObjects();
+      for (ArtifactExtractor artifactExtractor : artifactExtractors) {
+         Button extractorButton = new Button(composite, SWT.RADIO);
+         extractorButton.setText(artifactExtractor.getName());
+         extractorButton.setToolTipText(artifactExtractor.getDescription());
+         extractorButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+         extractorButton.addListener(SWT.Selection, this);
+         if (artifactExtractor.getName().equals("Word Outline")) {
+            extractorButton.setSelection(true);
+         }
+         extractors.add(new ObjectPair<ArtifactExtractor, Button>(artifactExtractor, extractorButton));
+      }
 
-      radWholeWordExtractor = new Button(composite, SWT.RADIO);
-      radWholeWordExtractor.setText("Whole Word Document");
-      radWholeWordExtractor.setToolTipText(WholeWordDocumentExtractor.getDescription());
-      radWholeWordExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-      radWholeWordExtractor.addListener(SWT.Selection, this);
+      /*      radWordOutlineExtractor = new Button(composite, SWT.RADIO);
+            radWordOutlineExtractor.setText("Word Outline");
+            radWordOutlineExtractor.setToolTipText(WordOutlineExtractor.getDescription());
+            radWordOutlineExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+            radWordOutlineExtractor.addListener(SWT.Selection, this);
 
-      radExcelExtractor = new Button(composite, SWT.RADIO);
-      radExcelExtractor.setText("Excel XML Artifacts");
-      radExcelExtractor.setToolTipText(ExcelArtifactExtractor.getDescription());
-      radExcelExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-      radExcelExtractor.addListener(SWT.Selection, this);
+            radWholeWordExtractor = new Button(composite, SWT.RADIO);
+            radWholeWordExtractor.setText("Whole Word Document");
+            radWholeWordExtractor.setToolTipText(WholeWordDocumentExtractor.getDescription());
+            radWholeWordExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+            radWholeWordExtractor.addListener(SWT.Selection, this);
 
-      radGeneralExtractor = new Button(composite, SWT.RADIO);
-      radGeneralExtractor.setText("General Documents (All Formats)");
-      radGeneralExtractor.setToolTipText(NativeDocumentExtractor.getDescription());
-      radGeneralExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-      radGeneralExtractor.addListener(SWT.Selection, this);
+            radExcelExtractor = new Button(composite, SWT.RADIO);
+            radExcelExtractor.setText("Excel XML Artifacts");
+            radExcelExtractor.setToolTipText(ExcelArtifactExtractor.getDescription());
+            radExcelExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+            radExcelExtractor.addListener(SWT.Selection, this);
 
-      radWordOutlineExtractor.setSelection(true);
+            radGeneralExtractor = new Button(composite, SWT.RADIO);
+            radGeneralExtractor.setText("General Documents (Any Format)");
+            radGeneralExtractor.setToolTipText(NativeDocumentExtractor.getDescription());
+            radGeneralExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+            radGeneralExtractor.addListener(SWT.Selection, this);
+
+            radWordOutlineExtractor.setSelection(true);*/
    }
 
    /*
@@ -370,22 +383,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public File getImportFile() {
       return directoryFileSelector.getFile();
-   }
-
-   public boolean isExcelExtractor() {
-      return radExcelExtractor.getSelection();
-   }
-
-   public boolean isWholeWordExtractor() {
-      return radWholeWordExtractor.getSelection();
-   }
-
-   public boolean isGeneralDocumentExtractor() {
-      return radGeneralExtractor.getSelection();
-   }
-
-   public boolean isWordOutlineExtractor() {
-      return radWordOutlineExtractor.getSelection();
    }
 
    public ArtifactType getSelectedType() {
@@ -439,8 +436,24 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          txtImportUnderFolderName.setEnabled(false);// TODO future development
          radImportUnderSelection.setEnabled(destinationArtifact != null);
 
-         typeList.setEnabled(radGeneralExtractor.getSelection() || radWordOutlineExtractor.getSelection() || radWholeWordExtractor.getSelection());
+         for (ObjectPair<ArtifactExtractor, Button> extractor : extractors) {
+            if (extractor.object2.getSelection()) {
+               typeList.setEnabled(extractor.object1.usesTypeList());
+            }
+         }
       }
+   }
 
+   public ArtifactExtractor getExtractor() throws OseeStateException {
+      for (ObjectPair<ArtifactExtractor, Button> extractor : extractors) {
+         if (extractor.object2.getSelection()) {
+            return extractor.object1;
+         }
+      }
+      throw new OseeStateException("No artifact extractor has been selected");
+   }
+
+   public boolean needsSecondaryPage() throws OseeStateException {
+      return getExtractor().getName().equals("Word Outline");
    }
 }

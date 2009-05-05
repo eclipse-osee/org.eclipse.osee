@@ -17,6 +17,7 @@
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
  <extension-point id="DBHealthTask" name="DBHealthTask" schema="schema/DBHealthTask.exsd"/>
+ <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
 
 <extension
       point="org.eclipse.ui.popupMenus">
@@ -662,7 +663,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
               </equals>
            </with>
            <with
@@ -1703,5 +1704,43 @@
      <Operation
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CopyEnumDefinitions">
      </Operation>
+  </extension>
+  <extension
+        id="PurgeDeletedAttributes"
+        name="Purge Deleted Attributes"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeDeletedAttributes">
+     </Operation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
+     <ArtifactExtractor
+           class="org.eclipse.osee.framework.ui.skynet.Import.ExcelArtifactExtractor">
+     </ArtifactExtractor>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
+     <ArtifactExtractor
+           class="org.eclipse.osee.framework.ui.skynet.Import.NativeDocumentExtractor">
+     </ArtifactExtractor>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
+     <ArtifactExtractor
+           class="org.eclipse.osee.framework.ui.skynet.Import.WholeWordDocumentExtractor">
+     </ArtifactExtractor>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
+     <ArtifactExtractor
+           class="org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor">
+     </ArtifactExtractor>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
+     <ArtifactExtractor
+           class="org.eclipse.osee.framework.ui.skynet.Import.XmlDataExtractor">
+     </ArtifactExtractor>
   </extension>
 </plugin>

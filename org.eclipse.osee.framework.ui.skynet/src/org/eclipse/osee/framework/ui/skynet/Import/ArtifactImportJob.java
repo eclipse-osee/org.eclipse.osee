@@ -38,8 +38,9 @@ public class ArtifactImportJob extends Job {
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;
    private final Artifact importRoot;
+   private final ArtifactType primaryArtifactType;
 
-   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
+   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver, ArtifactType primaryArtifactType) throws OseeCoreException {
       super("Importing");
 
       this.file = file;
@@ -50,6 +51,7 @@ public class ArtifactImportJob extends Job {
       this.roughRelations = new ArrayList<RoughRelation>();
       this.branch = branch;
       this.importRoot = importRoot;
+      this.primaryArtifactType = primaryArtifactType;
    }
 
    public IStatus run(final IProgressMonitor monitor) {
@@ -99,7 +101,7 @@ public class ArtifactImportJob extends Job {
    private void extractArtifacts(File[] files, RoughArtifact parentArtifact) throws Exception {
       for (File file : files) {
          if (file.isFile()) {
-            extractor.discoverArtifactAndRelationData(file);
+            extractor.discoverArtifactAndRelationData(file, artifactResolver, branch, primaryArtifactType);
             List<RoughArtifact> tempArtifacts = extractor.getRoughArtifacts();
             roughArtifacts.addAll(tempArtifacts);
             roughRelations.addAll(extractor.getRoughRelations(parentArtifact));
@@ -112,7 +114,7 @@ public class ArtifactImportJob extends Job {
          } else if (file.isDirectory()) {
             RoughArtifact directoryArtifact = new RoughArtifact(branch, file.getName());
             directoryArtifact.setHeadingDescriptor(folderDescriptor);
-            directoryArtifact.setPrimaryDescriptor(folderDescriptor);
+            directoryArtifact.setPrimaryArtifactType(folderDescriptor);
             roughArtifacts.add(directoryArtifact);
             parentArtifact.addChild(directoryArtifact);
 
