@@ -352,10 +352,10 @@ public class MergeUtility {
          fileValue = fileValue.replace(rev, "wsp:rsidRDefault=\"" + baselineRsid + "\"");
       }
 
-      resetRsidIds(fileValue, rsidNumber, fileName);
+      resetRsidIds(fileValue, rsidNumber, baselineRsid, fileName);
    }
    
-   private static void resetRsidIds(String fileValue, String rsidNumber, String fileName) throws IOException{
+   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, String fileName) throws IOException{
       ChangeSet changeSet = new ChangeSet(fileValue);
       Matcher matcher = annotationTag.matcher(fileValue);
       
@@ -383,7 +383,7 @@ public class MergeUtility {
       
       Matcher m = rsidRootPattern.matcher(fileValue);
       while (m.find()) {
-         changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + rsidNumber + "\"/></wsp:rsids>");
+         changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
       }
       
       changeSet.applyChanges(new File(fileName));
