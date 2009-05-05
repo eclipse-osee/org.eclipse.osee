@@ -447,27 +447,27 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one defect entry is required.  Select \"New Defect\" to add.");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "At least one defect entry is required");
+            return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one defect entry is required");
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
                   extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
                   extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-                  return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+                  return new Status(IStatus.ERROR, getClass().getSimpleName(),
                         "Review not complete until all items are marked for severity, disposition and closed");
                }
-
             }
          }
          extraInfoLabel.setText("Select \"New Defect\" to add.  Select icon in cell or right-click to update field.");
          extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-         return Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+         return new Status(IStatus.ERROR, getClass().getSimpleName(),
                "Exception validating defects. See log for details. " + ex);
       }
+      // Need this cause it removes all error items of this namespace
+      return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 
    @Override

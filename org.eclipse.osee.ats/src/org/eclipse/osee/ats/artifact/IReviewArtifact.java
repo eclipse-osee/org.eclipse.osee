@@ -29,6 +29,6 @@ public interface IReviewArtifact {
 
    public Artifact getArtifact();
 
-   public IStatus isUserRoleValid() throws OseeCoreException;
+   public IStatus isUserRoleValid(String namespace) throws OseeCoreException;
 
 }

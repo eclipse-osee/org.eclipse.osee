@@ -302,9 +302,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one role entry is required. Select \"New Role\" to add.");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "At least one role entry is required");
+            return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
          }
-         IStatus result = reviewArt.isUserRoleValid();
+         IStatus result = reviewArt.isUserRoleValid(getClass().getSimpleName());
          if (!result.isOK()) {
             extraInfoLabel.setText(result.getMessage() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
@@ -312,12 +312,13 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          }
          extraInfoLabel.setText("Select \"New Role\" to add.  Select icon in cell to update value.");
          extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
-         return Status.OK_STATUS;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
+         return new Status(IStatus.ERROR, getClass().getSimpleName(),
                "Exception validating roles. See log for details. " + ex.getLocalizedMessage(), ex);
       }
+      // Need this cause it removes all error items of this namespace
+      return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 
    @Override

@@ -287,12 +287,13 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured()) {
                extraInfoLabel.setText("All branches must be configured and committed - Double-click item to perform Action");
                extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "All branches must be configured and committed.");
+               return new Status(IStatus.ERROR, getClass().getSimpleName(),
+                     "All branches must be configured and committed.");
             }
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
                extraInfoLabel.setText("All branches must be committed - Double-click item to perform Action");
                extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "All branches must be committed.");
+               return new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");
             }
             extraInfoLabel.setText("Double-click item to perform Action");
             extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
@@ -300,7 +301,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return Status.OK_STATUS;
+      return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 
    @Override

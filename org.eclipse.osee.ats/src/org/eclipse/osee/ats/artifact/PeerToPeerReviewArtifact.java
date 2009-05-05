@@ -75,11 +75,11 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.artifact.ReviewSMArtifact#isUserRoleValid()
     */
    @Override
-   public IStatus isUserRoleValid() throws OseeCoreException {
-      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Status(IStatus.ERROR,
-            AtsPlugin.PLUGIN_ID, "Must have at least one Author");
-      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Status(IStatus.ERROR,
-            AtsPlugin.PLUGIN_ID, "Must have at least one Reviewer");
+   public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
+      if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Status(IStatus.ERROR, namespace,
+            "Must have at least one Author");
+      if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Status(IStatus.ERROR, namespace,
+            "Must have at least one Reviewer");
       // If in review state, all roles must have hours spent entered
       if (smaMgr.getStateMgr().getCurrentStateName().equals(
             PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
@@ -88,7 +88,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
                   "Hours spent must be entered for each role.");
          }
       }
-      return super.isUserRoleValid();
+      return super.isUserRoleValid(namespace);
    }
 
    @Override

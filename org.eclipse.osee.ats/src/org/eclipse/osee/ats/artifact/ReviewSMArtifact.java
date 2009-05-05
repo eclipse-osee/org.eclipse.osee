@@ -164,8 +164,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return userRoleManager;
    }
 
-   public IStatus isUserRoleValid() throws OseeCoreException {
-      return Status.OK_STATUS;
+   public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
+      // Need this cause it removes all error items of this namespace
+      return new Status(IStatus.OK, namespace, "");
    }
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {

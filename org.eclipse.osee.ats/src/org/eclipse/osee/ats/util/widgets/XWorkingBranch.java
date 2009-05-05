@@ -230,7 +230,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
     */
    @Override
    public IStatus isValid() {
-      return Status.OK_STATUS;
+      // Need this cause it removes all error items of this namespace
+      return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 
    /* (non-Javadoc)
