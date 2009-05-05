@@ -375,39 +375,42 @@ public class SMAWorkFlowSection extends SectionPart {
       Composite comp = toolkit.createContainer(parent, 6);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+      // Create Privileged Edit label
       if (smaMgr.getEditor().getPriviledgedEditMode() == PriviledgedEditMode.Global) {
          Label label = toolkit.createLabel(comp, "Priviledged Edit");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
+      // Targeted Version composite
       if (isShowTargetedVersion()) {
          new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
       }
 
-      Label label = toolkit.createLabel(comp, ASSIGNEES);
-      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
-
-      Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
-      setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            try {
-               handleChangeCurrentAssignees();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-      });
-
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
+         // Assignee(s) label
+         Label label = toolkit.createLabel(comp, ASSIGNEES);
+         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+
+         // Assignees "edit" hyperlink
+         Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
+         setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
+
+            public void linkEntered(HyperlinkEvent e) {
+            }
+
+            public void linkExited(HyperlinkEvent e) {
+            }
+
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  handleChangeCurrentAssignees();
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+
+         });
 
          currentAssigneesLabel = toolkit.createLabel(comp, smaMgr.getStateMgr().getAssigneesStr(80));
          currentAssigneesLabel.setToolTipText(smaMgr.getStateMgr().getAssigneesStr());
