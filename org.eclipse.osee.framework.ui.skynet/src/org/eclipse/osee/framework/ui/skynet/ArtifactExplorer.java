@@ -85,6 +85,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -1135,19 +1136,21 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
-            Artifact previousArtifact =
-                  ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID),
-                        BranchManager.getBranch(Integer.parseInt(memento.getString(ROOT_BRANCH))));
-            if (previousArtifact != null) {
-               explore(previousArtifact);
-            } else {
-               /*
-                * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
-                * because it was deleted or this workspace was last used with a different branch or database, so let the logic
-                * below get the default hierarchy root artifact
-                */
+            Branch branch = BranchManager.getBranch(Integer.parseInt(memento.getString(ROOT_BRANCH)));
+
+            if (!branch.isArchived() || AccessControlManager.isOseeAdmin()) {
+               Artifact previousArtifact = ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID), branch);
+               if (previousArtifact != null) {
+                  explore(previousArtifact);
+               } else {
+                  /*
+                   * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
+                   * because it was deleted or this workspace was last used with a different branch or database, so let the logic
+                   * below get the default hierarchy root artifact
+                   */
+               }
+               return;
             }
-            return;
          }
 
       } catch (Exception ex) {
@@ -1405,19 +1408,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
              */
             @Override
             public void run() {
-               try {
-                  Object object = treeViewer.getInput();
-                  if (object instanceof Artifact) {
-                     Artifact artifact = (Artifact) object;
-                     try {
-                        explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), BranchManager.getBranch(branchId)));
-                     } catch (CoreException ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                     }
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
             }
          });
       }
