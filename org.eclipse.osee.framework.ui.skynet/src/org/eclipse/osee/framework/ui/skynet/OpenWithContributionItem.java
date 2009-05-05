@@ -136,14 +136,27 @@ public class OpenWithContributionItem extends CompoundContributionItem {
     */
    @Override
    public void fill(final ToolBar parent, int index) {
-
       final ToolItem toolItem = new ToolItem(parent, SWT.DROP_DOWN);
       toolItem.setImage(SkynetGuiPlugin.getInstance().getImage("open.gif"));
       toolItem.setToolTipText("Open the Artifact");
 
-      OpenWithToolItemListener listener = new OpenWithToolItemListener(parent);
+      OpenWithToolItemListener listener = new OpenWithToolItemListener(parent.getShell());
       toolItem.addListener(SWT.Selection, listener);
       toolItem.setEnabled(listener.isPreviewMenuEnabled());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.actions.CompoundContributionItem#fill(org.eclipse.swt.widgets.Menu, int)
+    */
+   @Override
+   public void fill(Menu parent, int index) {
+      final MenuItem item = new MenuItem(parent, SWT.CASCADE);
+      item.setText("Open With");
+
+      Menu subMenu = new Menu(parent);
+      item.setMenu(subMenu);
+      createDropDownMenu(parent.getShell(), subMenu);
+      item.setEnabled(isMenuEnabled(subMenu));
    }
 
    private List<Artifact> getSelectedArtifacts() {
@@ -164,47 +177,51 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       return Collections.emptyList();
    }
 
+   private void createDropDownMenu(Shell shell, Menu previewMenu) {
+      List<Artifact> artifacts = getSelectedArtifacts();
+      boolean previewable = false;
+      try {
+         if (artifacts != null && !artifacts.isEmpty()) {
+            Artifact artifact = artifacts.iterator().next();
+
+            if (RendererManager.getApplicableRenderers(PresentationType.PREVIEW, artifact, null).size() > 1) {
+               previewable = true;
+            }
+
+            if (previewable) {
+               if (OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.PREVIEW, artifacts)) {
+                  new MenuItem(previewMenu, SWT.SEPARATOR);
+               }
+            }
+            OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   public boolean isMenuEnabled(Menu menu) {
+      boolean itemzEnabled = false;
+      for (MenuItem menuItems : menu.getItems()) {
+         if (menuItems.isEnabled()) {
+            itemzEnabled = true;
+         }
+      }
+      return itemzEnabled;
+   }
+
    private final class OpenWithToolItemListener implements Listener {
       private Menu previewMenu;
       private boolean isPreviewEnabled;
 
-      public OpenWithToolItemListener(ToolBar toolbar) {
-         createToolItemMenu(toolbar.getShell());
+      public OpenWithToolItemListener(Shell shell) {
+         previewMenu = new Menu(shell, SWT.POP_UP);
+         createDropDownMenu(shell, previewMenu);
          isPreviewEnabled = isPreviewMenuEnabled();
       }
 
-      private void createToolItemMenu(Shell shell) {
-         List<Artifact> artifacts = getSelectedArtifacts();
-         previewMenu = new Menu(shell, SWT.POP_UP);
-         boolean previewable = false;
-         try {
-            if (artifacts != null && !artifacts.isEmpty()) {
-               Artifact artifact = artifacts.iterator().next();
-
-               if (RendererManager.getApplicableRenderers(PresentationType.PREVIEW, artifact, null).size() > 1) {
-                  previewable = true;
-               }
-
-               if (previewable) {
-                  if (OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.PREVIEW, artifacts)) {
-                     new MenuItem(previewMenu, SWT.SEPARATOR);
-                  }
-               }
-               OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
-            }
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-
       public boolean isPreviewMenuEnabled() {
-         boolean itemzEnabled = false;
-         for (MenuItem menuItems : previewMenu.getItems()) {
-            if (menuItems.isEnabled()) {
-               itemzEnabled = true;
-            }
-         }
-         return itemzEnabled;
+         return isMenuEnabled(previewMenu);
       }
 
       @Override
@@ -221,6 +238,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
                previewMenu.setLocation(pt.x, pt.y);
                previewMenu.setVisible(true);
             }
+
             if (event.detail == 0) {
                try {
                   List<Artifact> artifacts = getSelectedArtifacts();
