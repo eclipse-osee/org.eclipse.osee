@@ -212,7 +212,7 @@
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="145.5"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="106.5"/>
    <Column ss:StyleID="s21" ss:Width="71.25"/>
-   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="101.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="289.5"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="105.75"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="108.75"/>
    <Column ss:StyleID="s21" ss:Width="56.25"/>
@@ -368,7 +368,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s30"><Data ss:Type="Number">20</Data></Cell>
-    <Cell ss:StyleID="s25"><Data ss:Type="String">&lt;greater_equal&gt;1&lt;/greater_equal&gt;&lt;less&gt;100&lt;/less&gt;</Data></Cell>
+    <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s25"/>
@@ -381,7 +381,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s25"><Data ss:Type="String">&lt;greater_equal&gt;0&lt;/greater_equal&gt;&lt;less&gt;99999&lt;/less&gt;</Data></Cell>
+    <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s25"/>
@@ -407,7 +407,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="String">&lt;not&gt;null&lt;/not&gt;</Data></Cell>
+    <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">This is the corresponding section number from the outline of document from which this artifact was imported</Data></Cell>
@@ -1557,11 +1557,12 @@
    </Print>
    <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>62</TopRowVisible>
+   <TopRowVisible>9</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>106</ActiveRow>
+     <ActiveRow>24</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
