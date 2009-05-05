@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,8 +28,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -87,6 +88,10 @@ public class MergeUtility {
          Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern amlTerminatingDefault =
          Pattern.compile("aml:id[^\\>]*?/", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern annotationTag =
+      Pattern.compile("(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   
+   private static final Pattern rsidPattern = Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
@@ -276,8 +281,8 @@ public class MergeUtility {
                               MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
                                     attributeConflict.getDestArtifact(), null);
                         monitor.worked(15);
-                        changeAuthorinWord("Source", sourceChangeFile, 2, 12345678, 55555555);
-                        changeAuthorinWord("Destination", destChangeFile, 2, 56781234, 55555555);
+                        changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
+                        changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
                         monitor.worked(15);
                         MergeUtility.mergeEditableDiffFiles(
                               attributeConflict.getArtifact(),
@@ -289,7 +294,9 @@ public class MergeUtility {
                         monitor.worked(40);
                         attributeConflict.markStatusToReflectEdit();
 
-                        while (gamma == attributeConflict.getAttribute().getGammaId()) {
+                        int maxCount = 5;
+                        int counter = 0;
+                        while (gamma == attributeConflict.getAttribute().getGammaId() && counter++ != maxCount) {
                            Thread.sleep(500);
                         }
                         monitor.done();
@@ -315,7 +322,7 @@ public class MergeUtility {
       }
    }
 
-   protected static void changeAuthorinWord(String newAuthor, String fileName, int revisionNumber, int rsidNumber, int baselineRsid) throws Exception {
+   protected static void changeAuthorinWord(String newAuthor, String fileName, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {
       String fileValue = AFile.readFile(fileName);
 
       Matcher m = authorPattern.matcher(fileValue);
@@ -345,58 +352,40 @@ public class MergeUtility {
          fileValue = fileValue.replace(rev, "wsp:rsidRDefault=\"" + baselineRsid + "\"");
       }
 
-      StringBuilder builder = new StringBuilder();
-      String[] pieces = fileValue.split("</?aml:annotation");
-      int position = 0;
-      for (String string : pieces) {
-         if (position != 0) {
-            if (position % 2 == 1) {
-               if (string.contains("w:type=\"Word.Insertion")) {
-                  m = findSetRsids.matcher(string);
-                  while (m.find()) {
-                     String rev = m.group();
-                     string = string.replace(rev, "wsp:rsidR=\"" + rsidNumber + "\"");
-                  }
-                  m = findSetRsidP.matcher(string);
-                  while (m.find()) {
-                     String rev = m.group();
-                     string = string.replace(rev, "wsp:rsidP=\"" + rsidNumber + "\"");
-                  }
-                  m = findSetRsidRPR.matcher(string);
-                  while (m.find()) {
-                     String rev = m.group();
-                     string = string.replace(rev, "wsp:rsidRPr=\"" + rsidNumber + "\"");
-                  }
-               }
-               builder.append("<aml:annotation");
+      resetRsidIds(fileValue, rsidNumber, fileName);
+   }
+   
+   private static void resetRsidIds(String fileValue, String rsidNumber, String fileName) throws IOException{
+      ChangeSet changeSet = new ChangeSet(fileValue);
+      Matcher matcher = annotationTag.matcher(fileValue);
+      
+      while (matcher.find()) {
+         int startIndex = matcher.start();
+         int level = 1;
+         
+         do {
+            matcher.find();
+            
+            if (matcher.group().startsWith("<aml:annotation")) {
+               level++;
             } else {
-               if (!amlTerminatingDefault.matcher(string).find()) {
-                  builder.append("</aml:annotation");
-               } else {
-                  builder.append("<aml:annotation");
-               }
+               level--;
             }
-
+         } while (level != 0);
+         
+         Matcher rsidMatcher = rsidPattern.matcher(fileValue);
+         
+         while (rsidMatcher.find(startIndex) && rsidMatcher.end() <= matcher.end()) {
+            changeSet.replace(rsidMatcher.start(2), rsidMatcher.end(2) -1, rsidNumber);
+            startIndex = rsidMatcher.end();
          }
-         builder.append(string);
-         if (!amlTerminatingDefault.matcher(string).find()) {
-            position++;
-         }
       }
-
-      fileValue = builder.toString();
-
-      m = rsidRootPattern.matcher(fileValue);
+      
+      Matcher m = rsidRootPattern.matcher(fileValue);
       while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "<wsp:rsid wsp:val=\"" + rsidNumber + "\"/></wsp:rsids>");
+         changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + rsidNumber + "\"/></wsp:rsids>");
       }
-      m = rsidRootPattern.matcher(fileValue);
-      while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
-      }
-
-      Lib.writeStringToFile(fileValue, new File(fileName));
+      
+      changeSet.applyChanges(new File(fileName));
    }
 }

@@ -12,8 +12,9 @@ package org.eclipse.osee.framework.jdk.core.text.change;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.CharBuffer;
 import java.util.regex.Matcher;
@@ -108,7 +109,7 @@ public class ChangeSet {
    }
 
    public void applyChanges(File outFile) throws IOException {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8"));
       applyChanges(writer);
       writer.close();
    }
@@ -145,6 +146,12 @@ public class ChangeSet {
       addChanger(new CharChange(srcStartIndex, srcEndIndex, newChar));
    }
 
+   /**
+    * 
+    * @param srcStartIndex inclusive start index
+    * @param srcEndIndex inclusive end index
+    * @param newChar
+    */
    public void replace(int srcStartIndex, int srcEndIndex, String newChar) {
       replace(srcStartIndex, srcEndIndex, newChar.toCharArray());
    }
