@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XStackedXTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
@@ -182,8 +182,8 @@ public class XWidgetFactory {
                throw new IllegalArgumentException(
                      "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
          }
-      } else if (xWidgetName.startsWith("XStackedXTextDam")) {
-         xWidget = new XStackedXTextDam(name);
+      } else if (xWidgetName.startsWith("XStackedDam")) {
+         xWidget = new XStackedDam(name);
       } else if (xWidgetName.startsWith("XComboBooleanDam")) {
          xWidget = new XComboBooleanDam(name);
          XComboBooleanDam combo = new XComboBooleanDam(name);

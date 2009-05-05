@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +31,9 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -41,16 +45,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
-public class XStackedXTextDam extends XStackedWidget<String> implements IArtifactWidget {
+public class XStackedDam extends XStackedWidget<String> implements IArtifactWidget {
    private Font defaultLabelFont;
    private Artifact artifact;
    private String attributeTypeName;
-   private final Map<String, XText> xWidgets;
+   private final Map<String, XWidget> xWidgets;
    private final XModifiedListener xModifiedListener;
 
-   public XStackedXTextDam(String displayLabel) {
+   public XStackedDam(String displayLabel) {
       super(displayLabel);
-      this.xWidgets = new LinkedHashMap<String, XText>();
+      this.xWidgets = new LinkedHashMap<String, XWidget>();
       this.artifact = null;
       this.xModifiedListener = new XModifiedListener() {
          public void widgetModified(XWidget widget) {
@@ -73,31 +77,35 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
       setPageRange(minOccurrence, maxOccurrence);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget#createControls(org.eclipse.swt.widgets.Composite, int)
+    */
    @Override
-   protected void createControls(final Composite parent, int horizontalSpan) {
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
       final Collection<String> values = new ArrayList<String>();
-      setNotificationsAllowed(false);
       try {
-         super.createWidgets(parent, horizontalSpan);
          values.addAll(getStored());
          for (int index = 0; index < values.size(); index++) {
             addPage("");
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex.getLocalizedMessage(), ex);
-      } finally {
-         setNotificationsAllowed(true);
       }
-
       Job job = new UIJob("Update Stacked XText") {
 
          @Override
          public IStatus runInUIThread(IProgressMonitor monitor) {
             setNotificationsAllowed(false);
             Iterator<String> dataIterator = values.iterator();
-            Iterator<XText> widgetIterator = xWidgets.values().iterator();
+            Iterator<XWidget> widgetIterator = xWidgets.values().iterator();
             while (dataIterator.hasNext() && widgetIterator.hasNext()) {
-               widgetIterator.next().set(dataIterator.next());
+               XWidget widget = widgetIterator.next();
+               if (widget instanceof XText) {
+                  ((XText) widget).set(dataIterator.next());
+               } else if (widget instanceof XDate) {
+                  ((XDate) widget).setDate(toDate(dataIterator.next()));
+               }
             }
             values.clear();
             setNotificationsAllowed(true);
@@ -109,8 +117,15 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
 
    public List<String> getInput() {
       List<String> data = new ArrayList<String>();
-      for (XText widget : xWidgets.values()) {
-         data.add(widget.get());
+      for (XWidget widget : xWidgets.values()) {
+         if (widget instanceof XText) {
+            data.add(((XText) widget).get());
+         } else if (widget instanceof XDate) {
+            Date date = ((XDate) widget).getDate();
+            if (date != null) {
+               data.add(String.valueOf(date.getTime()));
+            }
+         }
       }
       return data;
    }
@@ -170,21 +185,13 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
          label.setFont(getBoldLabelFont());
          label.setText(String.format("Page: %s", id));
 
-         XText xTextWidget = new XTextInternalWidget("");
-         xTextWidget.addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
-         if (Strings.isValid(initialInput)) {
-            xTextWidget.setText(initialInput);
-         }
-         xTextWidget.setEditable(isEditable());
-         xTextWidget.setFillHorizontally(false);
-         xTextWidget.setFillVertically(true);
-         xTextWidget.createWidgets(getManagedForm(), parent, 2);
-
-         label.setBackground(xTextWidget.getStyledText().getBackground());
+         XWidget xWidget = getWidget(attributeTypeName, parent, initialInput);
+         xWidget.setEditable(isEditable());
+         label.setBackground(xWidget.getControl().getBackground());
          parent.setBackground(label.getBackground());
-         xWidgets.put(id, xTextWidget);
+         xWidgets.put(id, xWidget);
 
-         xTextWidget.addXModifiedListener(xModifiedListener);
+         xWidget.addXModifiedListener(xModifiedListener);
          parent.layout();
       }
    }
@@ -218,6 +225,66 @@ public class XStackedXTextDam extends XStackedWidget<String> implements IArtifac
          XWidget widget = xWidgets.get(id);
          widget.validate();
       }
+   }
+
+   private Date toDate(String value) {
+      try {
+         return new Date(Long.parseLong(value));
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return new Date();
+   }
+
+   private XWidget getWidget(String attributeType, Composite parent, String initialInput) {
+      XWidget xWidget = null;
+      AttributeType type = null;
+      try {
+         type = AttributeTypeManager.getType(attributeType);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      if (type != null) {
+         if (type.getBaseAttributeClass().equals(IntegerAttribute.class)) {
+            XInteger xInteger = new XInteger("");
+            xInteger.setFillHorizontally(true);
+            xInteger.createWidgets(getManagedForm(), parent, 2);
+            if (Strings.isValid(initialInput)) {
+               xInteger.setText(initialInput);
+            }
+            xWidget = xInteger;
+         } else if (type.getBaseAttributeClass().equals(DateAttribute.class)) {
+            XDate xDate = new XDate("");
+            xDate.setFillHorizontally(true);
+            xDate.createWidgets(getManagedForm(), parent, 2);
+            if (Strings.isValid(initialInput)) {
+               xDate.setDate(toDate(initialInput));
+            }
+            xWidget = xDate;
+         } else if (type.getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
+            XFloat xFloat = new XFloat("");
+            xFloat.setFillHorizontally(true);
+            xFloat.createWidgets(getManagedForm(), parent, 2);
+            if (Strings.isValid(initialInput)) {
+               xFloat.setText(initialInput);
+            }
+            xWidget = xFloat;
+         }
+      }
+
+      if (xWidget == null) {
+         XText xTextWidget = new XTextInternalWidget("");
+         if (Strings.isValid(initialInput)) {
+            xTextWidget.setText(initialInput);
+         }
+         xTextWidget.addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());
+         xTextWidget.setFillHorizontally(false);
+         xTextWidget.setFillVertically(true);
+         xTextWidget.createWidgets(getManagedForm(), parent, 2);
+         xWidget = xTextWidget;
+      }
+      return xWidget;
    }
 
    private final class XTextInternalWidget extends XText {

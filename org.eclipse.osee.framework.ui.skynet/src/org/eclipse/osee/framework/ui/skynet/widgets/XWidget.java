@@ -215,7 +215,9 @@ public abstract class XWidget {
       this.isNotificationAllowed.setValue(areAllowed);
    }
 
-   protected abstract void createControls(Composite parent, int horizontalSpan);
+   protected void createControls(Composite parent, int horizontalSpan) {
+
+   }
 
    public final void createWidgets(Composite parent, int horizontalSpan) {
       setNotificationsAllowed(false);
@@ -227,25 +229,18 @@ public abstract class XWidget {
    }
 
    public final void createWidgets(IManagedForm managedForm, Composite parent, int horizontalSpan) {
-      //      synchronized (isNotificationAllowed) {
-      setNotificationsAllowed(false);
-      try {
-         if (managedForm != null) {
-            this.toolkit = managedForm.getToolkit();
-            this.managedForm = managedForm;
-         }
-         createWidgets(parent, horizontalSpan);
-         adaptControls(toolkit);
-
-         // Added to be able to operate on XWidget who create the control
-         Control internalControl = getControl();
-         if (internalControl != null) {
-            internalControl.setData(XWIDGET_DATA_KEY, this);
-         }
-      } finally {
-         setNotificationsAllowed(true);
+      if (managedForm != null) {
+         this.toolkit = managedForm.getToolkit();
+         this.managedForm = managedForm;
       }
-      //      }
+      createWidgets(parent, horizontalSpan);
+      adaptControls(toolkit);
+
+      // Added to be able to operate on XWidget who create the control
+      Control internalControl = getControl();
+      if (internalControl != null) {
+         internalControl.setData(XWIDGET_DATA_KEY, this);
+      }
    }
 
    public void adaptControls(FormToolkit toolkit) {
