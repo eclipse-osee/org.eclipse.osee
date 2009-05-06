@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    private final ArtifactType folderDescriptor;
-   private ArtifactType primaryDescriptor;
 
    public NativeDocumentExtractor() throws OseeCoreException {
       folderDescriptor = ArtifactTypeManager.getType("Folder");
@@ -35,9 +34,9 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
    public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
-      RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.removeExtension(importFile.getName()));
+      RoughArtifact roughArtifact = new RoughArtifact(branch, Lib.removeExtension(importFile.getName()));
       roughArtifact.setHeadingDescriptor(folderDescriptor);
-      roughArtifact.setPrimaryArtifactType(primaryDescriptor);
+      roughArtifact.setPrimaryArtifactType(primaryArtifactType);
       addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute("Extension", Lib.getExtension(importFile.getName()));
       roughArtifact.addFileAttribute(NativeArtifact.CONTENT_NAME, importFile);
