@@ -111,6 +111,7 @@ public class OverviewPage extends FormPage implements IActionable {
       form.setText(getEditorInput().getName());
       createToolBarActions(form);
       form.updateToolBar();
+      managedForm.getMessageManager().setAutoUpdate(false);
       fillBody(managedForm);
 
       loadStoredLayoutData(workflow);
