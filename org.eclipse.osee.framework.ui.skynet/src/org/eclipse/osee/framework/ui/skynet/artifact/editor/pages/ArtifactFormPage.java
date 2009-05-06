@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesF
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -244,7 +245,9 @@ public class ArtifactFormPage extends FormPage {
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
-      getManagedForm().getForm().getForm().setBusy(busy);
+      if (Widgets.isAccessible(getManagedForm().getForm())) {
+         getManagedForm().getForm().getForm().setBusy(busy);
+      }
    }
 
    private final class RefreshAction extends Action {
