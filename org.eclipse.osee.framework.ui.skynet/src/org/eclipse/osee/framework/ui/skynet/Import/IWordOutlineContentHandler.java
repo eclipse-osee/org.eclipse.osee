@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Robert A. Fisher
@@ -51,6 +52,7 @@ public interface IWordOutlineContentHandler extends IExecutableExtension {
     * @param paragraphStyle
     * @param content
     * @param isParagraph
+    * @param branch TODO
     */
-   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph);
+   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch);
 }

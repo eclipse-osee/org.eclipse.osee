@@ -47,6 +47,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          new DoubleKeyHashMap<String, Integer, RoughArtifact>();
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
    private final Matcher guidMatcher = guidPattern.matcher("");
+   private Branch branch;
 
    public String getDescription() {
       return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
@@ -95,7 +96,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
                Integer.parseInt(row[4])));
       } else {
-         RoughArtifact roughArtifact = new RoughArtifact(getBranch());
+         RoughArtifact roughArtifact = new RoughArtifact(branch);
          roughArtifact.setHeadingDescriptor(primaryDescriptor);
          roughArtifact.setPrimaryArtifactType(primaryDescriptor);
          for (int i = 0; i < row.length; i++) {
@@ -141,6 +142,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
    public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+      this.branch = branch;
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       excelHandler = new ExcelSaxHandler(this, true);
       xmlReader.setContentHandler(excelHandler);

@@ -147,7 +147,7 @@ public class WordOutlineExtractor extends WordExtractor {
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
                handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
-                     content.toString(), element == PARAGRAPH_TAG);
+                     content.toString(), element == PARAGRAPH_TAG, branch);
             }
          }
       } finally {

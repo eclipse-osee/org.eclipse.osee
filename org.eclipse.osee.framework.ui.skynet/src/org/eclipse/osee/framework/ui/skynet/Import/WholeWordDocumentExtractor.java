@@ -27,7 +27,7 @@ public class WholeWordDocumentExtractor extends WordExtractor {
     */
    public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
-      RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.removeExtension(importFile.getName()));
+      RoughArtifact roughArtifact = new RoughArtifact(branch, Lib.removeExtension(importFile.getName()));
       roughArtifact.setPrimaryArtifactType(primaryArtifactType);
       addRoughArtifact(roughArtifact);
       roughArtifact.addFileAttribute(WordAttribute.WHOLE_WORD_CONTENT, importFile);

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
@@ -60,14 +61,14 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       roughArtifact = null;
    }
 
-   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) {
       if (!headerNumber.equals("")) {
          lastHeaderNumber = headerNumber;
       }
 
       if (!headerNumber.equals("") && WordUtil.isHeadingStyle(paragraphStyle) && !WordUtil.textOnly(content).equals("")) {
          setContent();
-         roughArtifact = setUpNewArtifact(headerNumber);
+         roughArtifact = setUpNewArtifact(headerNumber, branch);
          previousNamedArtifact = roughArtifact;
 
          processHeadingText(roughArtifact, WordUtil.textOnly(content));
@@ -98,11 +99,11 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       roughArtifact.addAttribute("Name", headingText.trim());
    }
 
-   private RoughArtifact setUpNewArtifact(String parNumber) {
+   private RoughArtifact setUpNewArtifact(String parNumber, Branch branch) {
       RoughArtifact roughArtifact;
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
-         roughArtifact = new RoughArtifact(extractor.getBranch());
+         roughArtifact = new RoughArtifact(branch);
          duplicateCatcher.put(parNumber, roughArtifact);
       } else {
          throw new IllegalStateException(String.format(
