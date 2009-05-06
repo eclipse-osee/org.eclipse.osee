@@ -217,7 +217,6 @@ public class ReviewManager {
 
    public Collection<ReviewSMArtifact> getReviews(String stateName) throws OseeCoreException {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
-      if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
          if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName)) arts.add(revArt);
       }
