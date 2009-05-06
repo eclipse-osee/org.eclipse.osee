@@ -382,7 +382,7 @@ public class CommitDbTx extends DbTransaction {
             timestamp, authorId, childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
       if (childBranch.getAssociatedArtifactId() > 0) {
-         TransactionIdManager.chacheCommittedArtifactTransaction(childBranch.getAssociatedArtifact(),
+         TransactionIdManager.cacheCommittedArtifactTransaction(childBranch.getAssociatedArtifact(),
                TransactionIdManager.getTransactionId(newTransactionNumber));
       }
 

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -54,8 +53,8 @@ public final class TransactionIdManager {
 
    private final Map<Integer, TransactionId> transactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
-   private static final HashCollection<Artifact, TransactionId> commitArtifactMap =
-         new HashCollection<Artifact, TransactionId>(true, HashCollection.DEFAULT_COLLECTION_TYPE);
+   private static final HashMap<Artifact, List<TransactionId>> commitArtifactMap =
+         new HashMap<Artifact, List<TransactionId>>();
 
    private TransactionIdManager() {
    }
@@ -77,14 +76,16 @@ public final class TransactionIdManager {
    }
 
    public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(Artifact artifact) throws OseeCoreException {
-      Collection<TransactionId> transactionIds = commitArtifactMap.getValues(artifact);
+      List<TransactionId> transactionIds = commitArtifactMap.get(artifact);
       if (transactionIds == null) {
+         transactionIds = new ArrayList<TransactionId>(5);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS);
+            chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
             while (chStmt.next()) {
-               commitArtifactMap.put(artifact, getTransactionId(chStmt.getInt("transaction_id")));
+               transactionIds.add(getTransactionId(chStmt.getInt("transaction_id")));
             }
+            commitArtifactMap.put(artifact, transactionIds);
          } finally {
             chStmt.close();
          }
@@ -92,10 +93,10 @@ public final class TransactionIdManager {
       return transactionIds;
    }
 
-   public synchronized static void chacheCommittedArtifactTransaction(Artifact artifact, TransactionId transactionId) {
-      Collection<TransactionId> transactionIds = commitArtifactMap.getValues(artifact);
-      if (transactionIds == null) {
-         commitArtifactMap.put(artifact, transactionId);
+   public synchronized static void cacheCommittedArtifactTransaction(Artifact artifact, TransactionId transactionId) throws OseeCoreException {
+      Collection<TransactionId> transactionIds = getCommittedArtifactTransactionIds(artifact);
+      if (!transactionIds.contains(transactionId)) {
+         transactionIds.add(transactionId);
       }
    }
 
