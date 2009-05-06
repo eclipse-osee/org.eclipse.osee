@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
-import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -36,7 +35,6 @@ public class DefectManager {
 
    private final Artifact artifact;
    private boolean enabled = true;
-   private static String ATS_DEFECT_TAG = "AtsDefect";
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
    private final Matcher defectMatcher =
@@ -90,40 +88,31 @@ public class DefectManager {
 
    private void saveDefectItems(Set<DefectItem> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
-         String expandDefects = OseeInfo.getValue("expandDefects");
-         if (expandDefects != null && expandDefects.equals("true")) {
-            // Change existing ones
+         // Change existing ones
+         for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+            DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
+            for (DefectItem pItem : defectItems) {
+               if (pItem.equals(dbPromoteItem)) {
+                  attr.setFromString(AXml.addTagData(DEFECT_ITEM_TAG, pItem.toXml()));
+               }
+            }
+         }
+         Set<DefectItem> dbPromoteItems = getDefectItems();
+         // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
+         for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+               dbPromoteItems, defectItems)) {
             for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
                DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
-               for (DefectItem pItem : defectItems) {
-                  if (pItem.equals(dbPromoteItem)) {
-                     attr.setFromString(AXml.addTagData(DEFECT_ITEM_TAG, pItem.toXml()));
-                  }
+               if (dbPromoteItem.equals(delPromoteItem)) {
+                  attr.delete();
                }
             }
-            Set<DefectItem> dbPromoteItems = getDefectItems();
-            // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
-            for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-                  dbPromoteItems, defectItems)) {
-               for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
-                  DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
-                  if (dbPromoteItem.equals(delPromoteItem)) {
-                     attr.delete();
-                  }
-               }
-            }
-            // Add new ones: items in promoteItems that are not in dbPromoteItems
-            for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-                  defectItems, dbPromoteItems)) {
-               artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
-                     newPromoteItem.toXml()));
-            }
-         } else {
-            StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
-            for (DefectItem item : defectItems)
-               sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
-            sb.append("</" + ATS_DEFECT_TAG + ">");
-            artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         }
+         // Add new ones: items in promoteItems that are not in dbPromoteItems
+         for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+               defectItems, dbPromoteItems)) {
+            artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
+                  newPromoteItem.toXml()));
          }
          if (persist) artifact.persistAttributes(transaction);
       } catch (Exception ex) {
