@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.validation;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -52,36 +51,40 @@ public class OseeValidator {
    }
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeType attributeType, Object proposedValue) {
-      MultiStatus result = new MultiStatus(SkynetActivator.PLUGIN_ID, IStatus.OK, "ok", null);
       for (IOseeValidator validator : loadedObjects.getObjects()) {
          try {
             if (requiredQualityOfService >= validator.getQualityOfService()) {
                if (validator.isApplicable(artifact, attributeType)) {
-                  result.add(validator.validate(artifact, proposedValue));
+                  IStatus status = validator.validate(artifact, proposedValue);
+                  if (!status.isOK()) {
+                     return status;
+                  }
                }
             }
          } catch (Exception ex) {
-            result.add(new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex));
+            return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
       }
-      return result;
+      return Status.OK_STATUS;
    }
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, Object proposedValue) {
-      MultiStatus result = new MultiStatus(SkynetActivator.PLUGIN_ID, IStatus.OK, "ok", null);
       try {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             String attributeTypeName = attributeType.getName();
             for (Attribute<?> attribute : artifact.getAttributes(attributeTypeName)) {
-               result.add(validate(requiredQualityOfService, artifact, attributeType, (Object) attribute.getValue()));
+               IStatus status =
+                     validate(requiredQualityOfService, artifact, attributeType, (Object) attribute.getValue());
+               if (!status.isOK()) {
+                  return status;
+               }
             }
          }
       } catch (Exception ex) {
-         result.add(new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex));
+         return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       }
-      return result;
+      return Status.OK_STATUS;
    }
-
    //   private void checkExtensionsLoaded() {
    //      if (loadedObjects.isEmpty()) {
    //         List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_ID, EXTENSION_ELEMENT);
