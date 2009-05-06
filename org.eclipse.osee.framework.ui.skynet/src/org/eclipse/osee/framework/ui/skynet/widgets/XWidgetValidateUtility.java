@@ -30,14 +30,8 @@ public class XWidgetValidateUtility {
    }
 
    public static void setStatus(IStatus status, XWidget xWidget) {
-      if (!status.isOK()) {
-         IStatus[] itemsToReport;
-         if (status.isMultiStatus()) {
-            itemsToReport = status.getChildren();
-         } else {
-            itemsToReport = new IStatus[] {status};
-         }
-         for (IStatus item : itemsToReport) {
+      if (status.isMultiStatus()) {
+         for (IStatus item : status.getChildren()) {
             if (item.isOK()) {
                xWidget.removeControlCausedMessage(item.getPlugin());
             } else {
@@ -46,7 +40,11 @@ public class XWidgetValidateUtility {
             }
          }
       } else {
-         xWidget.removeControlCausedMessage(status.getPlugin());
+         if (!status.isOK()) {
+            xWidget.setControlCausedMessageByObject(status.getMessage(), toMessageProviderLevel(status.getSeverity()));
+         } else {
+            xWidget.removeControlCausedMessageByObject();
+         }
       }
    }
 
