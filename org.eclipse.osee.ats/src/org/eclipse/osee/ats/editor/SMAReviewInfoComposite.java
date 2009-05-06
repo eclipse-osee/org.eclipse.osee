@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,10 +58,13 @@ public class SMAReviewInfoComposite extends Composite {
 
    private final SMAManager smaMgr;
    private final String forStateName;
+   private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
+   private final IManagedForm managedForm;
 
    public SMAReviewInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, XFormToolkit toolkit, String forStateName) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
+      this.managedForm = managedForm;
       this.forStateName = forStateName;
       setLayout(new GridLayout(4, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -203,7 +208,12 @@ public class SMAReviewInfoComposite extends Composite {
       }
    }
 
-   public void disposeReviewComposite() {
+   public void clearFormMessages() {
+      for (Label label : labelWidgets) {
+         if (Widgets.isAccessible(managedForm.getForm())) {
+            managedForm.getMessageManager().removeMessage("validation.error", label);
+         }
+      }
    }
 
    public static String toHTML(final SMAManager smaMgr, String forStateName) throws OseeCoreException {
@@ -229,13 +239,14 @@ public class SMAReviewInfoComposite extends Composite {
       return SMAReviewInfoComposite.toHTML(smaMgr, forStateName);
    }
 
-   private static void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt, String forStateName) throws OseeCoreException {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt, String forStateName) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
       workComp.setLayout(ALayout.getZeroMarginLayout(3, false));
 
       Label strLabel = new Label(workComp, SWT.NONE);
+      labelWidgets.add(strLabel);
       if (revArt.isBlocking() && !revArt.getSmaMgr().isCancelledOrCompleted()) {
          strLabel.setText("State Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
          IMessageManager messageManager = managedForm.getMessageManager();

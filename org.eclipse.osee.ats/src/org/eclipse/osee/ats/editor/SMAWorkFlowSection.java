@@ -99,6 +99,8 @@ public class SMAWorkFlowSection extends SectionPart {
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
    private DynamicXWidgetLayout dynamicXWidgetLayout;
+   private SMAReviewInfoComposite reviewInfoComposite;
+   private SMATaskInfoComposite taskInfoComposite;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -209,7 +211,8 @@ public class SMAWorkFlowSection extends SectionPart {
          new SMATaskInfoComposite(smaMgr, workComp, getManagedForm(), atsWorkPage.getName());
       }
       if (isShowReviewInfo()) {
-         new SMAReviewInfoComposite(smaMgr, workComp, getManagedForm(), toolkit, atsWorkPage.getName());
+         reviewInfoComposite =
+               new SMAReviewInfoComposite(smaMgr, workComp, getManagedForm(), toolkit, atsWorkPage.getName());
       }
 
       // Check extension points for page creation
@@ -324,6 +327,8 @@ public class SMAWorkFlowSection extends SectionPart {
    public void dispose() {
       super.dispose();
       atsWorkPage.dispose();
+      if (reviewInfoComposite != null) reviewInfoComposite.clearFormMessages();
+      if (taskInfoComposite != null) taskInfoComposite.clearFormMessages();
       servicesArea.dispose();
    }
 

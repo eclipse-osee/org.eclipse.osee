@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,15 +43,19 @@ public class SMATaskInfoComposite extends Composite {
    private final SMAManager smaMgr;
    private final Label valueLabel;
    private final Label label;
+   private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
+   private final IManagedForm managedForm;
 
    public SMATaskInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, final String forStateName) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.smaMgr = smaMgr;
+      this.managedForm = managedForm;
       setLayout(new GridLayout(2, false));
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(forStateName);
 
       label = new Label(this, SWT.NONE);
+      labelWidgets.add(label);
       label.setText("\"" + forStateName + "\" State Tasks: ");
       SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       label.setToolTipText("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
@@ -101,6 +107,14 @@ public class SMATaskInfoComposite extends Composite {
          if (messageManager != null) {
             messageManager.addMessage("validation.error", "State \"" + forStateName + "\" has uncompleted Tasks", null,
                   IMessageProvider.ERROR, label);
+         }
+      }
+   }
+
+   public void clearFormMessages() {
+      for (Label label : labelWidgets) {
+         if (Widgets.isAccessible(managedForm.getForm())) {
+            managedForm.getMessageManager().removeMessage("validation.error", label);
          }
       }
    }
