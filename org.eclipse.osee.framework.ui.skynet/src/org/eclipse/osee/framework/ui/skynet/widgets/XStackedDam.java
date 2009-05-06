@@ -31,9 +31,11 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -270,6 +272,15 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
                xFloat.setText(initialInput);
             }
             xWidget = xFloat;
+         } else if (type.getBaseAttributeClass().equals(CompressedContentAttribute.class) || type.getBaseAttributeClass().equals(
+               JavaObjectAttribute.class)) {
+            XLabel xLabel = new XLabel("");
+            xLabel.setFillHorizontally(true);
+            xLabel.createWidgets(getManagedForm(), parent, 2);
+            if (Strings.isValid(initialInput)) {
+               xLabel.setLabel(initialInput);
+            }
+            xWidget = xLabel;
          }
       }
 
