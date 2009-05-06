@@ -17,10 +17,12 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
@@ -93,6 +95,9 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          toReturn = "XIntegerDam";
       } else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
          toReturn = "XFloatDam";
+      } else if (attributeType.getBaseAttributeClass().equals(CompressedContentAttribute.class) || attributeType.getBaseAttributeClass().equals(
+            JavaObjectAttribute.class)) {
+         toReturn = "XLabelDam";
       } else {
          toReturn = "XTextDam";
       }
