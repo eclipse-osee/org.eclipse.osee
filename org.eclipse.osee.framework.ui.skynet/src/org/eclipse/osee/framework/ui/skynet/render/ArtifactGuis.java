@@ -10,60 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.ui.PlatformUI;
 
 public class ArtifactGuis {
    public ArtifactGuis() {
       super();
-   }
-
-   public static boolean checkOtherEdit(List<Artifact> artifacts) {
-      if (artifacts.size() == 0) throw new IllegalArgumentException("you must pass at least one artifact");
-
-      boolean goAhead = true;
-
-      Set<Branch> otherBranches = new HashSet<Branch>();
-      for (Artifact artifact : artifacts) {
-         otherBranches.addAll(RevisionManager.getInstance().getOtherEdittedBranches(artifact));
-      }
-
-      if (!otherBranches.isEmpty()) {
-         StringBuilder sb = new StringBuilder();
-
-         sb.append("The artifact");
-         if (artifacts.size() > 1) sb.append('s');
-         sb.append(" about to be editted ");
-         if (artifacts.size() > 1)
-            sb.append("have");
-         else
-            sb.append("has");
-         sb.append(" already been modified on the following branches:");
-         for (Branch branch : otherBranches)
-            sb.append("\n\t" + branch.getBranchName());
-         sb.append("\n\nDo you still want to proceed?");
-
-         synchronized (sb) {
-
-            AskQuestion question = new AskQuestion(sb, "Confirm Edit", sb.toString());
-            Displays.ensureInDisplayThread(question);
-            try {
-               while (!question.done)
-                  sb.wait();
-            } catch (InterruptedException e) {
-            }
-            goAhead = question.isYes();
-         }
-      }
-
-      return goAhead;
    }
 
    private static class AskQuestion implements Runnable {

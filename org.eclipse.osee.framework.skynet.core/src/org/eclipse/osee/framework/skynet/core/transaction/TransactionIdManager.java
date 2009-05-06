@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -29,15 +28,13 @@ import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -52,8 +49,13 @@ public final class TransactionIdManager {
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author",
                "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
+   private static final String SELECT_COMMIT_TRANSACTIONS =
+         "SELECT transaction_id from osee_tx_details where commit_art_id = ?";
+
    private final Map<Integer, TransactionId> transactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
+   private static final HashCollection<Artifact, TransactionId> commitArtifactMap =
+         new HashCollection<Artifact, TransactionId>(true, HashCollection.DEFAULT_COLLECTION_TYPE);
 
    private TransactionIdManager() {
    }
@@ -74,17 +76,27 @@ public final class TransactionIdManager {
       return transactions;
    }
 
-   public static Collection<TransactionId> getCommittedArtifactTransactionIds(Artifact artifact) throws OseeCoreException {
-      List<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      try {
-         for (Integer transIdInt : RevisionManager.getInstance().getTransactionDataPerCommitArtifact(artifact)) {
-            transactionIds.add(TransactionIdManager.getTransactionId(transIdInt));
+   public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(Artifact artifact) throws OseeCoreException {
+      Collection<TransactionId> transactionIds = commitArtifactMap.getValues(artifact);
+      if (transactionIds == null) {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         try {
+            chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS);
+            while (chStmt.next()) {
+               commitArtifactMap.put(artifact, getTransactionId(chStmt.getInt("transaction_id")));
+            }
+         } finally {
+            chStmt.close();
          }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         // there may be times where the transaction id cache is not up-to-date yet; don't throw error
       }
       return transactionIds;
+   }
+
+   public synchronized static void chacheCommittedArtifactTransaction(Artifact artifact, TransactionId transactionId) {
+      Collection<TransactionId> transactionIds = commitArtifactMap.getValues(artifact);
+      if (transactionIds == null) {
+         commitArtifactMap.put(artifact, transactionId);
+      }
    }
 
    /**

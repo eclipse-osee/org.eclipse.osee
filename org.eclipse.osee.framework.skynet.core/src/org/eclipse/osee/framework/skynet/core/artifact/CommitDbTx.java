@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -41,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.
@@ -92,7 +91,7 @@ public class CommitDbTx extends DbTransaction {
 
    private static final String REVERT_DELETED_NEW_ATTRIBUTE =
          "SELECT atr2.attr_id, atr2.art_id, td2.branch_id FROM osee_txs tx2, osee_tx_details td2, osee_attribute atr2 WHERE td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + "AND td2.transaction_id = tx2.transaction_id AND tx2.tx_current in ( " + TxChange.DELETED.getValue() + " , " + TxChange.ARTIFACT_DELETED.getValue() + " ) AND tx2.gamma_id = atr2.gamma_id AND NOT EXISTS (SELECT td1.branch_id FROM osee_txs tx1, osee_tx_details td1, osee_attribute atr1 WHERE td1.branch_id = ? AND td1.tx_type = " + TransactionDetailsType.Baselined.getId() + " AND td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = atr1.gamma_id and atr1.attr_id = atr2.attr_id)";
-   
+
    private static final String REVERT_DELETED_NEW_REL_LINK =
          "SELECT rel1.rel_link_id, td1.branch_id, tx2.transaction_id, tx2.gamma_id FROM osee_txs tx1, osee_txs tx2, osee_tx_details td1, osee_tx_details td2, osee_relation_link rel1, osee_relation_link rel2 WHERE td1.branch_id = ? AND td1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td1.transaction_id = tx1.transaction_id AND tx1.mod_type = " + ModificationType.NEW.getValue() + " AND tx1.gamma_id = rel1.gamma_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx2.transaction_id AND tx2.tx_current in ( " + TxChange.DELETED.getValue() + " , " + TxChange.ARTIFACT_DELETED.getValue() + " ) AND tx2.gamma_id = rel2.gamma_id AND rel1.rel_link_id = rel2.rel_link_id";
    private static final String UPDATE_DELETED_NEW =
@@ -372,7 +371,7 @@ public class CommitDbTx extends DbTransaction {
       branchesInCommit.remove(this.fromBranch);
    }
 
-   private static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
+   private static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeCoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -383,8 +382,8 @@ public class CommitDbTx extends DbTransaction {
             timestamp, authorId, childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
       if (childBranch.getAssociatedArtifactId() > 0) {
-         RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
-               newTransactionNumber);
+         TransactionIdManager.chacheCommittedArtifactTransaction(childBranch.getAssociatedArtifact(),
+               TransactionIdManager.getTransactionId(newTransactionNumber));
       }
 
       return newTransactionNumber;
