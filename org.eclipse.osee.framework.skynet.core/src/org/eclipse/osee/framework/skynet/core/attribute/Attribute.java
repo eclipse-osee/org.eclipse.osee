@@ -87,7 +87,11 @@ public abstract class Attribute<T> {
 
    public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       try {
-         return setFromString(Lib.inputStreamToString(value));
+         boolean response = setFromString(Lib.inputStreamToString(value));
+         if (response) {
+            setDirty();
+         }
+         return response;
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }
@@ -143,7 +147,7 @@ public abstract class Attribute<T> {
       return dirty;
    }
 
-   private void setDirty() {
+   protected void setDirty() {
       dirty = true;
 
       // Kick Local Event

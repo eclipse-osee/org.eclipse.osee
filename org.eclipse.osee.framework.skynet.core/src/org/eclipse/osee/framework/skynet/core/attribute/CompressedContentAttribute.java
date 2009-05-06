@@ -56,6 +56,9 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }
+      if (response) {
+         setDirty();
+      }
       return response;
    }
 
