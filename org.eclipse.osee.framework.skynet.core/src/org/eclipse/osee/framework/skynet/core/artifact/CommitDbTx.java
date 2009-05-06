@@ -335,6 +335,12 @@ public class CommitDbTx extends DbTransaction {
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       if (success) {
+         // Update commit artifact cache with new information
+         if (fromBranch.getAssociatedArtifactId() > 0) {
+            TransactionIdManager.cacheCommittedArtifactTransaction(fromBranch.getAssociatedArtifact(),
+                  TransactionIdManager.getTransactionId(newTransactionNumber));
+         }
+
          long time = System.currentTimeMillis();
          Object[] dataList =
                new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(), newTransactionNumber};
@@ -380,11 +386,6 @@ public class CommitDbTx extends DbTransaction {
       ConnectionHandler.runPreparedUpdate(connection, BranchManager.COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), parentBranch.getBranchId(), newTransactionNumber, comment,
             timestamp, authorId, childBranch.getAssociatedArtifactId());
-      // Update commit artifact cache with new information
-      if (childBranch.getAssociatedArtifactId() > 0) {
-         TransactionIdManager.cacheCommittedArtifactTransaction(childBranch.getAssociatedArtifact(),
-               TransactionIdManager.getTransactionId(newTransactionNumber));
-      }
 
       return newTransactionNumber;
    }
