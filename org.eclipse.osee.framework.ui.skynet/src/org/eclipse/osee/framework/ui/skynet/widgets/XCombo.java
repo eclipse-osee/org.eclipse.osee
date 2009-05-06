@@ -365,6 +365,7 @@ public class XCombo extends XWidget {
       if (dataCombo != null) dataCombo.dispose();
       if (labelWidget != null) labelWidget.dispose();
       if (parent != null && !parent.isDisposed()) parent.layout();
+      super.dispose();
    }
 
    public String[] getDisplayArray() {

@@ -272,7 +272,11 @@ public abstract class XWidget {
    /**
     * Create Widgets used to display label and entry for wizards and editors
     */
-   public abstract void dispose();
+   public void dispose() {
+      if (Widgets.isAccessible(managedForm.getForm())) {
+         removeControlCausedMessageByObject();
+      }
+   }
 
    /**
     * Set focus to the entry widget
