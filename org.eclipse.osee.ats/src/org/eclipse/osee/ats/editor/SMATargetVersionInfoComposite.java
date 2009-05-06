@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -78,7 +79,12 @@ public class SMATargetVersionInfoComposite extends Composite {
          label = toolkit.createLabel(this, "", SWT.NONE);
       }
       refresh();
+   }
 
+   public void clearFormMessages() {
+      if (Widgets.isAccessible(managedForm.getForm())) {
+         managedForm.getMessageManager().removeMessage("validation.error", label);
+      }
    }
 
    public void refresh() throws OseeCoreException {

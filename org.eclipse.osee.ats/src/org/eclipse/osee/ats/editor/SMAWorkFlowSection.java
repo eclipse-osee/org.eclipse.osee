@@ -101,6 +101,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private DynamicXWidgetLayout dynamicXWidgetLayout;
    private SMAReviewInfoComposite reviewInfoComposite;
    private SMATaskInfoComposite taskInfoComposite;
+   private SMATargetVersionInfoComposite targetVersionInfoComposite;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -329,6 +330,7 @@ public class SMAWorkFlowSection extends SectionPart {
       atsWorkPage.dispose();
       if (reviewInfoComposite != null) reviewInfoComposite.clearFormMessages();
       if (taskInfoComposite != null) taskInfoComposite.clearFormMessages();
+      if (targetVersionInfoComposite != null) targetVersionInfoComposite.clearFormMessages();
       servicesArea.dispose();
    }
 
@@ -389,7 +391,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Targeted Version composite
       if (isShowTargetedVersion()) {
-         new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
+         targetVersionInfoComposite = new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
       }
 
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
