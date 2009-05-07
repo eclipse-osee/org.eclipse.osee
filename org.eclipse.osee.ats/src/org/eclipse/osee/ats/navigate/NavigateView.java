@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -210,6 +211,21 @@ public class NavigateView extends ViewPart implements IActionable {
       myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
       myWorldAction.setToolTipText("My World");
 
+      Action myFavoritesAction = new Action("My Favorites") {
+
+         @Override
+         public void run() {
+            try {
+               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites",
+                     UserManager.getUser())), TableLoadOption.None);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+      myFavoritesAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("star.gif"));
+      myFavoritesAction.setToolTipText("My Favorites");
+
       Action collapseAction = new Action("Collapse All") {
 
          @Override
@@ -261,6 +277,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(myWorldAction);
+      toolbarManager.add(myFavoritesAction);
       toolbarManager.add(collapseAction);
       toolbarManager.add(expandAction);
       toolbarManager.add(openChangeReportById);
