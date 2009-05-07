@@ -341,13 +341,10 @@
      <command
            commandId="org.eclipse.osee.framework.ui.skynet.open.command">
      </command>
-     <menu
-           label="Open with">
-        <dynamic
-              class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
-              id="org.eclipse.osee.framework.ui.open.with">
-        </dynamic>
-     </menu>
+     <dynamic
+           class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
+           id="org.eclipse.osee.framework.ui.open.with">
+     </dynamic>
    <separator
          name="artifactSearchViewopenwithSeparator"
          visible="true">
@@ -418,13 +415,10 @@
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.open.command">
        </command>
-       <menu
-             label="Open with">
-          <dynamic
-                class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
-                id="org.eclipse.osee.framework.ui.open.with">
-          </dynamic>
-       </menu>
+       <dynamic
+             class="org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem"
+             id="org.eclipse.osee.framework.ui.open.with">
+       </dynamic>
        <separator
              name="org.eclipse.osee.framework.ui.skynet.ChangeView.wordChangesMadeTo.seperatro"
              visible="true">
