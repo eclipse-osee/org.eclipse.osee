@@ -5,13 +5,14 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import java.io.Serializable;
 import org.eclipse.osee.framework.messaging.id.MessageId;
 
 /**
  * @author Andrew M. Finkbeiner
  *
  */
-public interface Message {
+public interface Message extends Serializable {
    Source getSource();
    MessageId getId();
 }
