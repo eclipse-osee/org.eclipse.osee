@@ -14,9 +14,10 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -44,7 +45,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-   private TreeSet<ArtifactChange> artifactChanges = new TreeSet<ArtifactChange>();
+   private Set<ArtifactChange> artifactChanges;
 
    /*
     * (non-Javadoc)
@@ -123,9 +124,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-            for (ArtifactChange artifactChange : Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) {
-               artifactChanges.add(artifactChange);
-            }
+            artifactChanges = new LinkedHashSet<ArtifactChange>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
 
             for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());

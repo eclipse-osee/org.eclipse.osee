@@ -22,7 +22,8 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Robert A. Fisher
  */
-public class ArtifactChange extends RevisionChange implements Comparable<ArtifactChange> {
+public class ArtifactChange extends RevisionChange{
+
    private static final long serialVersionUID = 1L;
    private TransactionId baseParentTransactionId;
    private TransactionId headParentTransactionId;
@@ -162,12 +163,25 @@ public class ArtifactChange extends RevisionChange implements Comparable<Artifac
       }
       return null;
    }
-
+   
    /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
-   public int compareTo(ArtifactChange artifactChange) {
-      return this.getArtifact().compareTo(artifactChange.getArtifact());
+   public boolean equals(Object obj) {
+      if (obj instanceof ArtifactChange) {
+         ArtifactChange otherArtifactChnage = (ArtifactChange) obj;
+         return getArtifact().equals(otherArtifactChnage.getArtifact());
+      }else{
+         return false;
+      }
+   }
+   
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return getArtifact().hashCode();
    }
 }
