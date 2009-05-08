@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -634,16 +635,19 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       diag.setInitialAias(getActionableItems());
       if (diag.open() != 0) return Result.FalseResult;
 
-      // ensure that at least one actionable item exists for each team
+      // ensure that at least one actionable item exists for each team after aias added/removed
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         boolean found = false;
-         for (TeamDefinitionArtifact teamDef : TeamDefinitionArtifact.getImpactedTeamDefs(diag.getChecked())) {
-            if (team.getTeamDefinition().equals(teamDef)) {
-               found = true;
+         Set<ActionableItemArtifact> currentAias = team.getActionableItemsDam().getActionableItems();
+         Collection<ActionableItemArtifact> checkedAias = diag.getChecked();
+         for (ActionableItemArtifact aia : new CopyOnWriteArrayList<ActionableItemArtifact>(currentAias)) {
+            if (!checkedAias.contains(aia)) {
+               currentAias.remove(aia);
             }
          }
-         if (!found) {
-            return new Result("Can not remove all actionable items for a team.\n\nCancel team workflow instead.");
+         if (currentAias.size() == 0) {
+            return new Result("Can not remove all actionable items for a team.\n\nActionable Items will go to 0 for [" +
+            //
+            team.getTeamName() + "][" + team.getHumanReadableId() + "]\n\nCancel team workflow instead.");
          }
       }
 
