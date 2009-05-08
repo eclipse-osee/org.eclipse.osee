@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -43,7 +44,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-   private List<ArtifactChange> artifactChanges = new LinkedList<ArtifactChange>();
+   private TreeSet<ArtifactChange> artifactChanges = new TreeSet<ArtifactChange>();
 
    /*
     * (non-Javadoc)
@@ -121,7 +122,10 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            artifactChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+
+            for (ArtifactChange artifactChange : Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) {
+               artifactChanges.add(artifactChange);
+            }
 
             for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());
