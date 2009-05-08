@@ -41,7 +41,7 @@ public class NewActionPage2 extends WizardPage {
    /**
     * @param wizard -
     */
-   public NewActionPage2(NewActionWizard wizard) {
+   protected NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       this.wizard = wizard;
       setMessage("Enter description, priority, change type and select Finish.");
@@ -101,7 +101,7 @@ public class NewActionPage2 extends WizardPage {
       AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_2");
    }
 
-   public void handlePopulateWithDebugInfo() {
+   private void handlePopulateWithDebugInfo() {
       if (debugPopulated) return;
       ((XText) getXWidget("Description")).set("See title");
       // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
@@ -111,17 +111,13 @@ public class NewActionPage2 extends WizardPage {
       debugPopulated = true;
    }
 
-   public void update() {
-      getContainer().updateButtons();
-   }
-
    @Override
    public boolean isPageComplete() {
       if (page == null || !page.isPageComplete().isTrue()) return false;
       return true;
    }
 
-   public XWidget getXWidget(String attrName) {
+   protected XWidget getXWidget(String attrName) {
       if (page == null) throw new IllegalArgumentException("WorkPage == null");
       return page.getLayoutData(attrName).getXWidget();
    }

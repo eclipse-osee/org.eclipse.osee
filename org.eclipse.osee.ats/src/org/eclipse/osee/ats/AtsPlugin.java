@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats;
 
-import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
@@ -19,13 +18,10 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 
@@ -67,11 +63,6 @@ public class AtsPlugin extends OseeUiActivator {
       return ClientSessionManager.isProductionDataStore();
    }
 
-   public static Cursor getHandCursor() {
-      if (handCursor == null) handCursor = new Cursor(null, SWT.CURSOR_HAND);
-      return handCursor;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -87,11 +78,6 @@ public class AtsPlugin extends OseeUiActivator {
     */
    public static AtsPlugin getInstance() {
       return pluginInstance;
-   }
-
-   public static Cursor getWaitCursor() {
-      if (waitCursor == null) waitCursor = new Cursor(null, SWT.CURSOR_WAIT);
-      return waitCursor;
    }
 
    public static boolean isAtsAdmin() {
@@ -114,7 +100,4 @@ public class AtsPlugin extends OseeUiActivator {
       return BranchManager.getCommonBranch();
    }
 
-   public static URL getOpenInAtsLink(final Artifact artifact) throws OseeCoreException {
-      return ArtifactURL.getOpenInOseeLink(artifact, "open.ats");
-   }
 }

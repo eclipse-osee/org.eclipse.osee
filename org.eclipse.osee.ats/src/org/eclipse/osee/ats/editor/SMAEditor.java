@@ -117,6 +117,69 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       super();
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
+    */
+   @Override
+   protected void addPages() {
+
+      IEditorInput editorInput = getEditorInput();
+      StateMachineArtifact sma = null;
+      if (editorInput instanceof SMAEditorInput) {
+         SMAEditorInput aei = (SMAEditorInput) editorInput;
+         if (aei.getArtifact() != null) {
+            if (aei.getArtifact() instanceof StateMachineArtifact)
+               sma = (StateMachineArtifact) aei.getArtifact();
+            else
+               throw new IllegalArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
+         }
+      } else
+         throw new IllegalArgumentException("Editor Input not SMAEditorInput");
+
+      if (sma == null) {
+         MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
+               "Can't Find Action in DB");
+         return;
+      }
+      try {
+         smaMgr = new SMAManager(sma, this);
+         smaMgr.setEditor(this);
+
+         OseeEventManager.addListener(this);
+
+         setPartName(smaMgr.getSma().getEditorTitle());
+         setContentDescription(priviledgedEditMode != PriviledgedEditMode.Off ? " PRIVILEGED EDIT MODE ENABLED - " + priviledgedEditMode.name() : "");
+         setTitleImage(smaMgr.getSma().getImage());
+
+         // Create WorkFlow tab
+         try {
+            workFlowTab = new SMAWorkFlowTab(smaMgr);
+            workFlowPageIndex = addPage(workFlowTab);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+
+         // Create Tasks tab
+         if (smaMgr.showTaskTab()) {
+            createTaskTab();
+         }
+
+         createHistoryTab();
+         createRelationsTab();
+         createAttributesTab();
+         createDetailsTab();
+         createMetricsTab();
+
+         setActivePage(workFlowPageIndex);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      enableGlobalPrint();
+   }
+
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
       createLabelValue(toolkit, comp, labelStr, valueStr, null);
    }
@@ -258,69 +321,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    protected void createPages() {
       super.createPages();
       OseeContributionItem.addTo(this, true);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
-   @Override
-   protected void addPages() {
-
-      IEditorInput editorInput = getEditorInput();
-      StateMachineArtifact sma = null;
-      if (editorInput instanceof SMAEditorInput) {
-         SMAEditorInput aei = (SMAEditorInput) editorInput;
-         if (aei.getArtifact() != null) {
-            if (aei.getArtifact() instanceof StateMachineArtifact)
-               sma = (StateMachineArtifact) aei.getArtifact();
-            else
-               throw new IllegalArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
-         }
-      } else
-         throw new IllegalArgumentException("Editor Input not SMAEditorInput");
-
-      if (sma == null) {
-         MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
-               "Can't Find Action in DB");
-         return;
-      }
-      try {
-         smaMgr = new SMAManager(sma, this);
-         smaMgr.setEditor(this);
-
-         OseeEventManager.addListener(this);
-
-         setPartName(smaMgr.getSma().getEditorTitle());
-         setContentDescription(priviledgedEditMode != PriviledgedEditMode.Off ? " PRIVILEGED EDIT MODE ENABLED - " + priviledgedEditMode.name() : "");
-         setTitleImage(smaMgr.getSma().getImage());
-
-         // Create WorkFlow tab
-         try {
-            workFlowTab = new SMAWorkFlowTab(smaMgr);
-            workFlowPageIndex = addPage(workFlowTab);
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-
-         // Create Tasks tab
-         if (smaMgr.showTaskTab()) {
-            createTaskTab();
-         }
-
-         createHistoryTab();
-         createRelationsTab();
-         createAttributesTab();
-         createDetailsTab();
-         createMetricsTab();
-
-         setActivePage(workFlowPageIndex);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
-      enableGlobalPrint();
    }
 
    private void createHistoryTab() {

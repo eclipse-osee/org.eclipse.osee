@@ -21,10 +21,6 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
  */
 public interface IXTaskViewer {
 
-   public enum RelationChangeAction {
-      RemoveTask, AddTask, UpdateTask, ReLoadTable, None
-   };
-
    public String getTabName() throws OseeCoreException;
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException;

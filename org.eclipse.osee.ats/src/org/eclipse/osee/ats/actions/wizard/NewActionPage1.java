@@ -61,7 +61,7 @@ public class NewActionPage1 extends WizardPage {
    /**
     * @param actionWizard
     */
-   public NewActionPage1(NewActionWizard actionWizard) {
+   protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       setMessage("Enter title and select impacted items.");
       this.wizard = actionWizard;

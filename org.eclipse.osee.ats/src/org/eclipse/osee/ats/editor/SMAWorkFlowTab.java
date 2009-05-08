@@ -96,6 +96,76 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit = smaMgr.getEditor().getToolkit();
    }
 
+   private void createBody(Composite body) throws OseeCoreException {
+      atsBody = toolkit.createComposite(body);
+      atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
+      atsBody.setLayout(new GridLayout(1, false));
+
+      Composite headerComp = toolkit.createComposite(atsBody);
+      headerComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+
+      // Display relations
+      try {
+         createTopLineHeader(headerComp, toolkit);
+         createAssigneesLineHeader(headerComp, toolkit);
+         createLatestHeader(headerComp, toolkit);
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            actionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
+         }
+         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, toolkit, smaMgr);
+         createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
+         createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
+         createAnnotationsHeader(headerComp, toolkit);
+
+         sections.clear();
+         pages.clear();
+
+         if (SMARelationsHyperlinkComposite.relationExists(smaMgr.getSma())) {
+            smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, toolkit, SWT.NONE);
+            smaRelationsComposite.create(smaMgr);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+
+      // Only display current or past states
+      for (WorkPageDefinition workPageDefinition : smaMgr.getSma().getWorkFlowDefinition().getPagesOrdered()) {
+         AtsWorkPage atsWorkPage =
+               new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
+                     ATSXWidgetOptionResolver.getInstance());
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
+         if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
+            // Don't show completed or cancelled state if not currently those state
+            if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
+            if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
+            SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, toolkit, SWT.NONE, atsWorkPage, smaMgr);
+            managedForm.addPart(section);
+            control = section.getMainComp();
+            sections.add(section);
+            pages.add(atsWorkPage);
+         }
+      }
+
+      if (AtsPlugin.isAtsAdmin()) {
+         SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr);
+         managedForm.addPart(section);
+         control = section.getMainComp();
+         sections.add(section);
+      }
+
+      atsBody.setFocus();
+      // Jump to scroll location if set
+      Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
+      if (selection != null) {
+         JumpScrollbarJob job = new JumpScrollbarJob("");
+         job.schedule(500);
+      }
+
+      managedForm.refresh();
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -240,76 +310,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private ServicesArea toolbarArea;
-
-   private void createBody(Composite body) throws OseeCoreException {
-      atsBody = toolkit.createComposite(body);
-      atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
-      atsBody.setLayout(new GridLayout(1, false));
-
-      Composite headerComp = toolkit.createComposite(atsBody);
-      headerComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-
-      // Display relations
-      try {
-         createTopLineHeader(headerComp, toolkit);
-         createAssigneesLineHeader(headerComp, toolkit);
-         createLatestHeader(headerComp, toolkit);
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            actionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
-         }
-         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, toolkit, smaMgr);
-         createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
-         createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
-         createAnnotationsHeader(headerComp, toolkit);
-
-         sections.clear();
-         pages.clear();
-
-         if (SMARelationsHyperlinkComposite.relationExists(smaMgr.getSma())) {
-            smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, toolkit, SWT.NONE);
-            smaRelationsComposite.create(smaMgr);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-
-      // Only display current or past states
-      for (WorkPageDefinition workPageDefinition : smaMgr.getSma().getWorkFlowDefinition().getPagesOrdered()) {
-         AtsWorkPage atsWorkPage =
-               new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
-                     ATSXWidgetOptionResolver.getInstance());
-         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
-         if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
-            // Don't show completed or cancelled state if not currently those state
-            if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
-            if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
-            SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, toolkit, SWT.NONE, atsWorkPage, smaMgr);
-            managedForm.addPart(section);
-            control = section.getMainComp();
-            sections.add(section);
-            pages.add(atsWorkPage);
-         }
-      }
-
-      if (AtsPlugin.isAtsAdmin()) {
-         SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr);
-         managedForm.addPart(section);
-         control = section.getMainComp();
-         sections.add(section);
-      }
-
-      atsBody.setFocus();
-      // Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
-      if (selection != null) {
-         JumpScrollbarJob job = new JumpScrollbarJob("");
-         job.schedule(500);
-      }
-
-      managedForm.refresh();
-   }
 
    private Control control = null;
 

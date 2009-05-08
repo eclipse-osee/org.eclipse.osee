@@ -35,17 +35,6 @@ public abstract class WorldSearchItem {
    public static enum SearchType {
       Search, ReSearch
    };
-   public static enum ShowActionType {
-      ShowAction, ShowTeamWorkflow
-   }
-
-   public static enum RecurseType {
-      RecurseChildren, None
-   }
-
-   public static enum ShowFinishedType {
-      ShowAll, ShowFinished
-   }
 
    public WorldSearchItem(String name) {
       this(name, LoadView.WorldEditor);

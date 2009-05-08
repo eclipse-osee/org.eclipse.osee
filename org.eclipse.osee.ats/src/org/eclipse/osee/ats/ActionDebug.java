@@ -15,17 +15,9 @@ package org.eclipse.osee.ats;
  */
 public class ActionDebug extends org.eclipse.osee.framework.ui.plugin.util.Debug {
 
+   @Override
    protected String getPluginName() {
       return "AtsPlugin";
-   }
-
-   /**
-    * @param debugOn
-    * @param timeStampOn
-    * @param nameSpace
-    */
-   public ActionDebug(boolean debugOn, boolean timeStampOn, String nameSpace) {
-      super(debugOn, timeStampOn, nameSpace);
    }
 
    /**
