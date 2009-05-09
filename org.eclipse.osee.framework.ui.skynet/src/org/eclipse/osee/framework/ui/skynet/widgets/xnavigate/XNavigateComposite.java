@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -94,6 +97,16 @@ public class XNavigateComposite extends Composite {
       filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
       GridData gd = new GridData(GridData.FILL_BOTH);
       filteredTree.getViewer().getTree().setLayoutData(gd);
+      filteredTree.getViewer().addTreeListener(new ITreeViewerListener(){
+         @Override
+         public void treeCollapsed(TreeExpansionEvent event) {
+            filteredTree.getViewer().setSelection(new StructuredSelection(event.getElement()));
+         }
+         @Override
+         public void treeExpanded(TreeExpansionEvent event) {
+            filteredTree.getViewer().setSelection(new StructuredSelection(event.getElement()));
+         }
+      });
       filteredTree.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
          public void handleEvent(Event event) {
             try {
