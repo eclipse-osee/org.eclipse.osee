@@ -142,7 +142,7 @@ public class ActionImportPage extends WizardDataTransferPage {
 
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
-         extractor.discoverArtifactAndRelationData(file, null, AtsPlugin.getAtsBranch(), null);
+         extractor.discoverArtifactAndRelationData(file, AtsPlugin.getAtsBranch(), null);
          if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
          WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          transaction.execute();

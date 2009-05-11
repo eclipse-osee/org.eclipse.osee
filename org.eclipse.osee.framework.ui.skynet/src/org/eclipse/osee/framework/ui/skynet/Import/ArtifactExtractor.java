@@ -21,12 +21,11 @@ public interface ArtifactExtractor {
     * called before getRoughArtifacts and getRoughRelations to discover the data that they will return
     * 
     * @param artifactsFile file from which to extract artifact data
-    * @param artifactResolver TODO
     * @param branch TODO
     * @param primaryArtifactType TODO
     * @throws Exception
     */
-   public abstract void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception;
+   public abstract void discoverArtifactAndRelationData(File artifactsFile, Branch branch, ArtifactType primaryArtifactType) throws Exception;
 
    public abstract List<RoughArtifact> getRoughArtifacts() throws Exception;
 

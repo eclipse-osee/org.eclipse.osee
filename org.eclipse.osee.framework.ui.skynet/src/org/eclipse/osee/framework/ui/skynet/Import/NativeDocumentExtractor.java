@@ -33,7 +33,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       RoughArtifact roughArtifact = new RoughArtifact(branch, Lib.removeExtension(importFile.getName()));
       roughArtifact.setHeadingDescriptor(folderDescriptor);
       roughArtifact.setPrimaryArtifactType(primaryArtifactType);

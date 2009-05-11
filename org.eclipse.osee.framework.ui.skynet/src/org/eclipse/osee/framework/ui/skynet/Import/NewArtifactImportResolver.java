@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
@@ -28,12 +27,10 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
     * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
     */
    public Artifact resolve(final RoughArtifact roughArtifact) throws OseeCoreException {
-      ArtifactType descriptor = roughArtifact.getDescriptorForGetReal();
+      ArtifactType artifactType = roughArtifact.getArtifactTypeForGetReal();
 
-      Artifact realArtifact = null;
-      ArtifactFactory factory = descriptor.getFactory();
-      realArtifact =
-            factory.makeNewArtifact(roughArtifact.getBranch(), descriptor, roughArtifact.getGuid(),
+      Artifact realArtifact =
+            artifactType.getFactory().makeNewArtifact(roughArtifact.getBranch(), artifactType, roughArtifact.getGuid(),
                   roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
                      @Override
                      public void run(Artifact artifact) throws OseeCoreException {
@@ -43,5 +40,4 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
 
       return realArtifact;
    }
-
 }

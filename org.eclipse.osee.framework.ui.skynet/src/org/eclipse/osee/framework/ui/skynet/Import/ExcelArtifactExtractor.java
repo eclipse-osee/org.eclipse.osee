@@ -36,11 +36,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private ExcelSaxHandler excelHandler;
    private String[] headerRow;
    private ArtifactType primaryDescriptor;
    private boolean importingRelations;
-   private boolean reuseArtifacts;
    private AttributeImportType[] types;
    private int rowCount;
    private DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
@@ -91,7 +89,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
 
          if (guida == null || guidb == null) {
             OseeLog.log(SkynetActivator.class, Level.WARNING,
-                  "we failed to add a relation because at least on of the guids is null");
+                  "we failed to add a relation because at least on of its guids are null");
          }
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
                Integer.parseInt(row[4])));
@@ -141,13 +139,11 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       this.branch = branch;
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      excelHandler = new ExcelSaxHandler(this, true);
-      xmlReader.setContentHandler(excelHandler);
+      xmlReader.setContentHandler(new ExcelSaxHandler(this, true));
       xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
-      reuseArtifacts = artifactResolver instanceof RootAndAttributeBasedArtifactResolver;
    }
 
    /*
@@ -166,17 +162,15 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
     */
    public void processCommentRow(String[] row) {
       rowCount++;
-      if (reuseArtifacts) {
-         for (int i = 0; i < row.length; i++) {
-            if (row[i] != null) {
-               try {
-                  types[i] = AttributeImportType.valueOf(row[i]);
-               } catch (Throwable th) {
-                  types[i] = AttributeImportType.NONE;
-               }
-            } else {
+      for (int i = 0; i < row.length; i++) {
+         if (row[i] != null) {
+            try {
+               types[i] = AttributeImportType.valueOf(row[i]);
+            } catch (Throwable th) {
                types[i] = AttributeImportType.NONE;
             }
+         } else {
+            types[i] = AttributeImportType.NONE;
          }
       }
    }

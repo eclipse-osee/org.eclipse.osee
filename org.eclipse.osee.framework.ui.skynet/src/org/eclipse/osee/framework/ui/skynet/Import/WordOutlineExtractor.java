@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,7 @@ public class WordOutlineExtractor extends WordExtractor {
       return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    }
 
-   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
 
       Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));
 

@@ -25,7 +25,7 @@ public class WholeWordDocumentExtractor extends WordExtractor {
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File importFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
       RoughArtifact roughArtifact = new RoughArtifact(branch, Lib.removeExtension(importFile.getName()));
       roughArtifact.setPrimaryArtifactType(primaryArtifactType);

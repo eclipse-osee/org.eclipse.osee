@@ -213,7 +213,7 @@ public class RoughArtifact {
       return realArtifact;
    }
 
-   public ArtifactType getDescriptorForGetReal() {
+   public ArtifactType getArtifactTypeForGetReal() {
       return children.isEmpty() || forcePrimaryType ? primaryArtifactType : headingDescriptor;
    }
 

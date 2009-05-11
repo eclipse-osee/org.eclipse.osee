@@ -101,7 +101,7 @@ public class ArtifactImportJob extends Job {
    private void extractArtifacts(File[] files, RoughArtifact parentArtifact) throws Exception {
       for (File file : files) {
          if (file.isFile()) {
-            extractor.discoverArtifactAndRelationData(file, artifactResolver, branch, primaryArtifactType);
+            extractor.discoverArtifactAndRelationData(file, branch, primaryArtifactType);
             List<RoughArtifact> tempArtifacts = extractor.getRoughArtifacts();
             roughArtifacts.addAll(tempArtifacts);
             roughRelations.addAll(extractor.getRoughRelations(parentArtifact));

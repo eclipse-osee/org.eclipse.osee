@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
-import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -227,7 +226,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile, IArtifactImportResolver artifactResolver, Branch branch, ArtifactType primaryArtifactType) throws OseeCoreException {
+   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch, ArtifactType primaryArtifactType) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);
