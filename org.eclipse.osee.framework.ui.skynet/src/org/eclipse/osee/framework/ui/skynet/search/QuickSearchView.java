@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfig
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -283,8 +284,14 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       return "";
    }
 
+   public void setBranch(Branch branch) {
+      if (branchSelect != null) {
+         branchSelect.setSelection(branch);
+      }
+   }
+
    public void handleEvent(Event event) {
-      if (branchLabel != null && !branchLabel.isDisposed() && branchSelect != null) {
+      if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
          branchLabel.setText("");
          final Branch branch = branchSelect.getData();
          if (branch == null) {

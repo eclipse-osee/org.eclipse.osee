@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -82,6 +83,7 @@ import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -121,6 +123,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -323,6 +326,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          createUpAction();
          createNewArtifactExplorerAction();
          createShowChangeReportAction();
+         addOpenQuickSearchAction();
 
          artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
@@ -430,6 +434,31 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
       treeViewer.getTree().setMenu(popupMenu);
+   }
+
+   private void addOpenQuickSearchAction() {
+      ImageDescriptor descriptor = SkynetGuiPlugin.getInstance().getImageDescriptor("artifact_search.gif");
+      Action openQuickSearch = new Action("Quick Search", descriptor) {
+         @Override
+         public void run() {
+            try {
+               IViewPart viewPart =
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                           QuickSearchView.VIEW_ID);
+               if (viewPart != null) {
+                  Branch branch = getBranch();
+                  if (branch != null) {
+                     ((QuickSearchView) viewPart).setBranch(branch);
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+      openQuickSearch.setToolTipText("Opens Quick Search View");
+      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(openQuickSearch);
    }
 
    protected void createUpAction() {
