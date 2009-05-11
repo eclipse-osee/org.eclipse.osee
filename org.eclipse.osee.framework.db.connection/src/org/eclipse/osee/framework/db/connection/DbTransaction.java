@@ -49,24 +49,22 @@ public abstract class DbTransaction {
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
-      execute(OseeDbConnection.getConnection(), true);
+      execute(OseeDbConnection.getConnection());
    }
 
-   public void execute(OseeConnection connection, boolean commit) throws OseeCoreException {
+   private void execute(OseeConnection connection) throws OseeCoreException {
       boolean initialAutoCommit = true;
       OseeCoreException saveException = null;
       try {
          OseeLog.log(InternalActivator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
-         if (commit) {
-            OseeDbConnection.reportTxStart(this);
-         }
+         OseeDbConnection.reportTxStart(this);
+
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
          ConnectionHandler.deferConstraintChecking(connection);
          handleTxWork(connection);
-         if (commit) {
-            connection.commit();
-         }
+
+         connection.commit();
          OseeLog.log(InternalActivator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
          connection.rollback();
@@ -79,11 +77,11 @@ public abstract class DbTransaction {
          }
       } finally {
          try {
-            connection.setAutoCommit(initialAutoCommit);
-            if (commit) {
+            if (!connection.isClosed()) {
+               connection.setAutoCommit(initialAutoCommit);
                connection.close();
-               OseeDbConnection.reportTxEnd(this);
             }
+            OseeDbConnection.reportTxEnd(this);
             handleTxFinally();
          } catch (OseeCoreException ex) {
             OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
