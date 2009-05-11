@@ -6,7 +6,10 @@
 package org.eclipse.osee.framework.messaging;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.eclipse.osee.framework.messaging.internal.ApplicationDistributer;
@@ -19,6 +22,11 @@ import org.eclipse.osee.framework.messaging.internal.ApplicationDistributer;
 public abstract class EndpointReceive {
 
    private ApplicationDistributer distributer;
+   private ExecutorService executor;
+   
+   public EndpointReceive(){
+	   executor = Executors.newSingleThreadExecutor();
+   }
    
    /**
     * The MessagingGateway implementation must call this method to set the ApplicationDistributer callback so that received messages get propagated to the application.
@@ -36,12 +44,17 @@ public abstract class EndpointReceive {
    /**
     *  This method must be called by the implementing class when it receives a message so that it gets propagated to the MessagingGateway 
     */
-   protected void onReceive(Message message){
+   protected void onReceive(final Message message){
       if(distributer == null){
          String errorMsg = String.format("We have recieved message [%s] from [%s], but have no active ApplicationDistributer available.", message.getId().toString(), message.getSource().toString());
          OseeLog.log(Activator.class, Level.WARNING, errorMsg);
       } else {
-         distributer.distribute(message);
+    	  executor.execute(new Runnable(){
+			@Override
+			public void run() {
+				 distributer.distribute(message);
+			}
+    	  });
       }
    }
 
