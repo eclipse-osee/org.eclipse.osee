@@ -39,7 +39,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Description of an Artifact subtype. The descriptor can be used to create new artifacts that are of the type of this
- * descriptor. <br/> <br/> Descriptors can be acquired from the configuration manager.
+ * descriptor. <br/>
+ * <br/>
+ * Descriptors can be acquired from the configuration manager.
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
@@ -192,6 +194,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    public Image getImage(boolean isSubscribed, boolean isFavorite, ArtifactAnnotation.Type notifyType) {
+      if (Artifact.getOverrideImage() != null) return Artifact.getOverrideImage();
       checkImageRegistry();
       String hashKey =
             BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING));

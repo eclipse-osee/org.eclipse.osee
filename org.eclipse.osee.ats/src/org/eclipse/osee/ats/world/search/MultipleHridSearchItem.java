@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
@@ -151,6 +152,12 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
          if (enteredIds.equals("oseerocks") || enteredIds.equals("osee rocks")) {
             AWorkbench.popup("Confirmation", "Confirmed!  Osee Rocks!");
+            cancelled = true;
+            return;
+         }
+         if (enteredIds.equals("purple icons")) {
+            AWorkbench.popup("Confirmation", "Yeehaw, Purple Icons Rule!!");
+            Artifact.setOverrideImage(SkynetGuiPlugin.getInstance().getImage("purple.gif"));
             cancelled = true;
             return;
          }

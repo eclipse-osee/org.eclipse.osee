@@ -99,6 +99,22 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
                "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)"};
+   private static Image overrideImage = null;
+
+   /**
+    * @return the overrideImage
+    */
+   public static Image getOverrideImage() {
+      return overrideImage;
+   }
+
+   /**
+    * @param overrideImage the overrideImage to set
+    */
+   public static void setOverrideImage(Image overrideImage) {
+      Artifact.overrideImage = overrideImage;
+   }
+
    static {
       Arrays.sort(WholeArtifactMatches);
    }
@@ -160,6 +176,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Image getImage() {
+      if (overrideImage != null) {
+         return overrideImage;
+      }
       if (AccessControlManager.hasLock(this)) {
          return artifactType.getLockedImage(AccessControlManager.getInstance().hasLockAccess(this));
       }
