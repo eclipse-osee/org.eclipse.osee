@@ -102,9 +102,10 @@ public class ArtifactDiffMenu {
 
             TransactionData firstTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
             TransactionData secondTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
+            
             if (firstTransactionData.getTransactionId().getTransactionNumber() < secondTransactionData.getTransactionId().getTransactionNumber()) {
-               firstTransactionData = (TransactionData) secondSelection;
-               secondTransactionData = (TransactionData) firstSelection;
+               firstTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
+               secondTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
             }
             newerArtifact =
                   ArtifactPersistenceManager.getInstance().getArtifactFromId(firstTransactionData.getAssociatedArtId(),
