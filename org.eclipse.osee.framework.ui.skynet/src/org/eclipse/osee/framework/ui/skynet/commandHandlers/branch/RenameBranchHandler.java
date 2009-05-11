@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchXViewerFactory;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.FocusAdapter;
@@ -27,6 +29,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -34,7 +37,19 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Paul Waldfogel
  */
 public class RenameBranchHandler extends CommandHandler {
-   private TreeViewer treeViewer;
+
+   private int findColumnIndex(TreeViewer treeViewer, String columnName) {
+      if (treeViewer != null && Widgets.isAccessible(treeViewer.getTree())) {
+         TreeColumn[] columns = treeViewer.getTree().getColumns();
+         for (int index = 0; index < columns.length; index++) {
+            TreeColumn column = columns[index];
+            if (columnName.equalsIgnoreCase(column.getText())) {
+               return index;
+            }
+         }
+      }
+      return 0;
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
@@ -45,7 +60,7 @@ public class RenameBranchHandler extends CommandHandler {
             AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
       if (selectionProvider instanceof TreeViewer) {
-         this.treeViewer = (TreeViewer) selectionProvider;
+         final TreeViewer treeViewer = (TreeViewer) selectionProvider;
          Tree tree = treeViewer.getTree();
          IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
 
@@ -55,13 +70,14 @@ public class RenameBranchHandler extends CommandHandler {
          if (myTreeItemsSelected.length != 1) {
             return null;
          }
-
          TreeEditor myTreeEditor = new TreeEditor(tree);
          myTreeEditor.horizontalAlignment = SWT.LEFT;
          myTreeEditor.grabHorizontal = true;
          myTreeEditor.minimumWidth = 50;
+         myTreeEditor.setColumn(findColumnIndex(treeViewer, BranchXViewerFactory.branch_name.getName()));
 
          final TreeItem myTreeItem = myTreeItemsSelected[0];
+
          Control oldEditor = myTreeEditor.getEditor();
          if (oldEditor != null) {
             oldEditor.dispose();
@@ -73,6 +89,7 @@ public class RenameBranchHandler extends CommandHandler {
             @Override
             public void focusLost(FocusEvent e) {
                updateText(textBeingRenamed.getText(), selectedBranch);
+               treeViewer.refresh();
                textBeingRenamed.dispose();
             }
 
@@ -85,6 +102,7 @@ public class RenameBranchHandler extends CommandHandler {
             public void keyReleased(KeyEvent e) {
                if ((e.character == SWT.CR)) {
                   updateText(textBeingRenamed.getText(), selectedBranch);
+                  treeViewer.refresh();
                   textBeingRenamed.dispose();
                } else if (e.keyCode == SWT.ESC) {
                   textBeingRenamed.dispose();
@@ -105,7 +123,6 @@ public class RenameBranchHandler extends CommandHandler {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      treeViewer.refresh();
    }
 
    /* (non-Javadoc)
