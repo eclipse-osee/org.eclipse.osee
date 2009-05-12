@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,9 @@ import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
+import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
+import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;

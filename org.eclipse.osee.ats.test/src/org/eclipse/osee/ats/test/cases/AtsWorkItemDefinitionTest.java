@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.task.TaskEditor;
+import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -31,6 +33,10 @@ import org.eclipse.ui.PlatformUI;
  * @author Donald G. Dunne
  */
 public class AtsNavigateItemsToMassEditorTest extends TestCase {
+
+   public AtsNavigateItemsToMassEditorTest() {
+      super("AtsNavigateItemsToMassEditorTest");
+   }
 
    public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();

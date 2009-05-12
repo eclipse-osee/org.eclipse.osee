@@ -10,19 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
+import java.util.Arrays;
+import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.ats.test.AtsActionableItemToTeamDefinitionTest;
-import org.eclipse.osee.ats.test.AtsTeamDefintionToWorkflowTest;
-import org.eclipse.osee.ats.test.AtsWorkItemDefinitionTest;
+import org.eclipse.osee.ats.test.cases.AtsActionableItemToTeamDefinitionTest;
+import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToMassEditorTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToTaskEditorTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToWorldViewTest;
+import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
+import org.eclipse.osee.ats.test.cases.AtsTeamDefintionToWorkflowTest;
+import org.eclipse.osee.ats.test.cases.AtsWorkItemDefinitionTest;
+import org.eclipse.osee.support.test.IOseeTest;
+import org.eclipse.osee.support.test.OseeTestType;
 
 /**
  * @author Donald G. Dunne
  */
-public class Demo_AtsTest_Suite {
+public class AtsTest_Demo_Suite extends TestSuite implements IOseeTest {
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("Test for org.eclipse.osee.ats.test.testDb - All ATS Tests");
+      TestSuite suite = new TestSuite("AtsTest_Demo_Suite");
       //$JUnit-BEGIN$
       suite.addTestSuite(AtsWorkItemDefinitionTest.class); // Can be run production or testDb
       suite.addTestSuite(AtsActionableItemToTeamDefinitionTest.class); // Can be run production or testDb
@@ -34,5 +43,13 @@ public class Demo_AtsTest_Suite {
       suite.addTestSuite(AtsBranchConfigurationTest.class);
       //$JUnit-END$
       return suite;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.support.test.IOseeTest#getTestTypes()
+    */
+   @Override
+   public Collection<OseeTestType> getTestTypes() {
+      return Arrays.asList(OseeTestType.Demo);
    }
 }

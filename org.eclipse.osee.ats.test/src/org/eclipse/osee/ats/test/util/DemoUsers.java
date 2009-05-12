@@ -1,4 +1,4 @@
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.util;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;

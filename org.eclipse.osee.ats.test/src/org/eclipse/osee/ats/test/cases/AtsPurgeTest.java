@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -133,4 +133,5 @@ public class AtsPurgeTest extends TestCase {
    private int getTableRowCount(String tableName) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
    }
+
 }

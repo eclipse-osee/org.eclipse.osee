@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.util;
 
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;

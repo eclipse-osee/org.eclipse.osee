@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,4 +67,5 @@ public class AtsQueryPerformanceTests extends TestCase {
       }
       return andy;
    }
+
 }

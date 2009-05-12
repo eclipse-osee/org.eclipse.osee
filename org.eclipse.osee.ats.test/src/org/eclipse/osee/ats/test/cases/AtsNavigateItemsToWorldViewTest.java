@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +38,10 @@ import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
+import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.ats.test.util.DemoUsers;
+import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -516,4 +520,5 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
          }
       }
    }
+
 }

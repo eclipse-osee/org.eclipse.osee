@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test;
+package org.eclipse.osee.ats.test.cases;
 
+import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -19,26 +21,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Donald G. Dunne
  */
-public class AtsTeamDefintionToWorkflowTest extends TestCase {
+public class AtsActionableItemToTeamDefinitionTest extends TestCase {
 
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
     */
-   @Override
    protected void setUp() throws Exception {
       super.setUp();
    }
 
-   public void testTeamDefinitionToWorkflow() throws Exception {
+   public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
-      for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
+      for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
-         TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-         if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
-            System.err.println("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");
-            error = true;
+         ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
+         if (aia.isActionable()) {
+            if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
+               System.err.println("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
+               error = true;
+            }
          }
       }
-      assertFalse("See syserr message(s)", error);
+      assertFalse(error);
    }
 }
