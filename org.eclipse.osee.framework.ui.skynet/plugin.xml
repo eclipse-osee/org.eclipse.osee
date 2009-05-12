@@ -545,6 +545,10 @@
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
             style="push">
       </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
+            style="push">
+      </command>
       <dynamic
             class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoParentCompoundContributionItem"
             id="org.eclipse.osee.framework.ui.skynet.dynamic.commitIntoParent">
@@ -1059,6 +1063,10 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction">
     </handler>
     <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.UpdateBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch">
+    </handler>
+    <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoParentHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent">
     </handler>
@@ -1155,6 +1163,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent"
         icon="images/commit.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
+        icon="images/branchSynch.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
@@ -1485,6 +1497,10 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
         name="Delete Transaction">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
+        name="Update Branch">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent"

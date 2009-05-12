@@ -50,6 +50,8 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.update.IConflictResolver;
+import org.eclipse.osee.framework.skynet.core.artifact.update.UpdateBranchJob;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
@@ -357,6 +359,15 @@ public class BranchManager {
       }
 
       return branch;
+   }
+
+   /**
+    * Update branch
+    * 
+    * @param branch
+    */
+   public static Job updateBranch(final Branch branch, final IConflictResolver resolver) {
+      return Jobs.startJob(new UpdateBranchJob(branch, resolver));
    }
 
    /**
