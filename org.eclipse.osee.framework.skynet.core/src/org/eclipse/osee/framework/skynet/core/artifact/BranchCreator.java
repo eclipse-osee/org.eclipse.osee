@@ -49,7 +49,7 @@ public class BranchCreator {
    public static final String NEW_MERGE_BRANCH_COMMENT = "New Merge Branch from ";
 
    private static final String BRANCH_TABLE_INSERT =
-         "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "short_name", "branch_name", "parent_branch_id",
+         "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "branch_name", "parent_branch_id",
                "parent_transaction_id", "archived", "associated_art_id", "branch_type");
    private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
 
@@ -124,13 +124,13 @@ public class BranchCreator {
          associatedArtifactId = associatedArtifact.getArtId();
       }
 
-      ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
-            parentBranchNumber, parentTransactionId, 0, associatedArtifactId, branchType.getValue());
+      ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchName, parentBranchNumber,
+            parentTransactionId, 0, associatedArtifactId, branchType.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
-            BranchManager.createBranchObject(branchShortName, branchName, branchId, parentBranchNumber,
-                  parentTransactionId, false, authorId, creationDate, creationComment, associatedArtifactId, branchType);
+            BranchManager.createBranchObject(branchName, branchId, parentBranchNumber, parentTransactionId, false,
+                  authorId, creationDate, creationComment, associatedArtifactId, branchType);
       if (associatedArtifact != null) {
          branch.setAssociatedArtifact(associatedArtifact);
       }
@@ -144,9 +144,9 @@ public class BranchCreator {
     * @param parentTransactionId
     * @param childBranchName
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
-      return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, preserveMetaData, compressArtTypeIds, preserveArtTypeIds);
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
+      return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
+            preserveMetaData, compressArtTypeIds, preserveArtTypeIds);
    }
 
    /**

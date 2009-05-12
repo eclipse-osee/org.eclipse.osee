@@ -304,8 +304,7 @@
 	
 	<Table name="OSEE_BRANCH" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />
-		<Column id="SHORT_NAME" defaultValue="not null" limits="25" type="VARCHAR" />
+		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />		
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PARENT_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ARCHIVED" defaultValue="not null" type="INTEGER" />

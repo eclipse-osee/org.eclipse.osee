@@ -284,10 +284,10 @@ public class BranchManager {
       }
    }
 
-   public static Branch createBranchObject(String branchShortName, String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
+   public static Branch createBranchObject(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
       Branch branch =
-            new Branch(branchShortName, branchName, branchId, parentBranchId, parentTransactionId, archived, authorId,
-                  creationDate, creationComment, associatedArtifactId, branchType);
+            new Branch(branchName, branchId, parentBranchId, parentTransactionId, archived, authorId, creationDate,
+                  creationComment, associatedArtifactId, branchType);
       instance.branchCache.put(branchId, branch);
       return branch;
    }
@@ -300,11 +300,10 @@ public class BranchManager {
     * @throws OseeDataStoreException
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
-      return createBranchObject(chStmt.getString("short_name"), chStmt.getString("branch_name"),
-            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
-            chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-            chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
-            BranchType.getBranchType(chStmt.getInt("branch_type")));
+      return createBranchObject(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
+            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
+            chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
+            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")));
    }
 
    /**
@@ -500,9 +499,9 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, false, null, null);
+   public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
+            false, null, null);
    }
 
    /**
@@ -512,10 +511,10 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createWorkingBranch(Branch parentBranch, String childBranchShortName, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createWorkingBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
-      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, false, null, null);
+      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
+            false, null, null);
    }
 
    /**
@@ -523,7 +522,6 @@ public class BranchManager {
     * staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
-    * @param shortBranchName short name to use; null will auto-compute short name from first 25 chars of branchName
     * @param branchName
     * @param staticBranchName will allow programatic access to branch from getKeyedBranch
     * @param skynetTypesImportExtensionsIds skynetDbTypes extensionIds to import onto new branch
@@ -533,17 +531,17 @@ public class BranchManager {
     * @see MasterSkynetTypesImport#importSkynetDbTypes
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createTopLevelBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
       if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
          MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds);
       }
-      return createTopLevelBranch(shortBranchName, branchName, staticBranchName, initializeArtifacts);
+      return createTopLevelBranch(branchName, staticBranchName, initializeArtifacts);
    }
 
-   public static Branch createTopLevelBranch(String shortBranchName, String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
       Branch branch =
-            HttpBranchCreation.createRootBranch(null, branchName, staticBranchName, systemRootBranch.getBranchId(),
+            HttpBranchCreation.createRootBranch(branchName, staticBranchName, systemRootBranch.getBranchId(),
                   systemRootBranch.getParentTransactionId(), false);
       if (staticBranchName != null) {
          setKeyedBranchInCache(staticBranchName, branch);
@@ -556,7 +554,7 @@ public class BranchManager {
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
-      return HttpBranchCreation.createRootBranch(null, "System Root Branch", null, 1, 1, true);
+      return HttpBranchCreation.createRootBranch("System Root Branch", null, 1, 1, true);
    }
 
    public static List<Branch> getTopLevelBranches() throws OseeCoreException {

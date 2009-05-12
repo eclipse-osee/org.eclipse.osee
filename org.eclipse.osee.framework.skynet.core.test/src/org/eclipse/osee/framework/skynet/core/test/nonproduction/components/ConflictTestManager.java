@@ -77,7 +77,7 @@ public class ConflictTestManager {
       protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) {
          this(attributeName, sourceValue, destValue, mergeValue, clas, false);
       }
-      
+
       protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean deleted) {
          this.attributeName = attributeName;
          this.sourceValue = sourceValue;
@@ -207,7 +207,7 @@ public class ConflictTestManager {
       } catch (Exception ex) {
          branch = BranchManager.getBranch("SAW_Bld_1");
       }
-      destBranch = BranchManager.createWorkingBranch(branch, null, DEST_BRANCH, null);
+      destBranch = BranchManager.createWorkingBranch(branch, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 
@@ -227,7 +227,7 @@ public class ConflictTestManager {
          destArtifacts[i].persistAttributesAndRelations();
       }
       // Create the source branch
-      sourceBranch = BranchManager.createWorkingBranch(destBranch, null, SOURCE_BRANCH, null);
+      sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH, null);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);
@@ -513,8 +513,8 @@ public class ConflictTestManager {
                if (value.destValue == null) {
                   expected = value.sourceValue;
                }
-               if (value.deleted){
-                  if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, "Deleted").equals("Deleted")){
+               if (value.deleted) {
+                  if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, "Deleted").equals("Deleted")) {
                      System.err.println("The attribute should have been deleted but wasn't");
                      return false;
                   }
@@ -613,9 +613,9 @@ public class ConflictTestManager {
       conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
             StringAttribute.class));
-      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "5", null, "Source",
-            StringAttribute.class, true));
-      
+      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "5", null, "Source", StringAttribute.class,
+            true));
+
       conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
       conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[15].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
@@ -728,6 +728,6 @@ public class ConflictTestManager {
          if (value.equals("")) return new Double(0);
          return new Double(value);
       }
-         return value;
-      }
+      return value;
+   }
 }

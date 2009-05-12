@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -42,13 +43,12 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
+   private static final int SHORT_NAME_LIMIT = 25;
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
-   private static final String UPDATE_BRANCH_SHORT_NAME = "UPDATE osee_branch SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
    private final int parentBranchId;
    private final int parentTransactionId;
    private String branchName;
-   private String branchShortName;
    private boolean archived;
    private final int authorId;
    private int associatedArtifactId;
@@ -60,8 +60,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private Branch destBranch;
    private boolean deleted;
 
-   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
-      this.branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
+   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
       this.branchId = branchId;
       this.branchName = branchName;
       this.parentBranchId = parentBranchId;
@@ -105,21 +104,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return Returns the short branch name if provided else returns null.
     */
    public String getBranchShortName() {
-      return branchShortName;
-   }
-
-   /**
-    * Sets the branch short name to the given value
-    * 
-    * @param persist if persist, store the change to the data-store
-    */
-   public void setBranchShortName(String branchShortName, boolean persist) throws OseeCoreException {
-      if (persist) {
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, StringFormat.truncate(branchShortName, 25),
-               branchId);
-      }
-      this.branchShortName = branchShortName;
-      kickRenameEvents();
+      return Strings.isValid(getBranchName()) ? StringFormat.truncate(getBranchName(), SHORT_NAME_LIMIT) : Strings.emptyString();
    }
 
    private void kickRenameEvents() throws OseeCoreException {
@@ -157,11 +142,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    @Override
    public String toString() {
-      return branchName;
+      return getBranchName();
    }
 
    public Branch getParentBranch() throws OseeCoreException {
-      return BranchManager.getBranch(parentBranchId);
+      return BranchManager.getBranch(getParentBranchId());
    }
 
    public boolean hasParentBranch() {

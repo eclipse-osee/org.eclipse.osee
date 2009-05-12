@@ -363,7 +363,6 @@ public class RemoteEventManager {
                      try {
                         Branch branch = BranchManager.getBranch(branchId);
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
-                        branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         try {
                            InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
                         } catch (Exception ex) {

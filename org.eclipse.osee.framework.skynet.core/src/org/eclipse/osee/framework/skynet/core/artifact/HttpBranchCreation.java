@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  */
 public class HttpBranchCreation {
 
-   public static Branch createChildBranch(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
+   public static Branch createChildBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", childBranchName);
@@ -55,9 +55,7 @@ public class HttpBranchCreation {
       parameters.put(
             "creationComment",
             BranchManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");
-      if (childBranchShortName != null && childBranchShortName.length() > 0) {
-         parameters.put("shortBranchName", childBranchShortName);
-      }
+
       return commonServletBranchingCode(parameters);
    }
 
@@ -75,7 +73,7 @@ public class HttpBranchCreation {
     * @see BranchManager#createRootBranch(String, String, int)
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, int parentBranchId, int parentTransactionId, boolean systemRootBranch) throws OseeCoreException {
+   public static Branch createRootBranch(String branchName, String staticBranchName, int parentBranchId, int parentTransactionId, boolean systemRootBranch) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", branchName);
@@ -85,9 +83,7 @@ public class HttpBranchCreation {
       parameters.put("parentTransactionId", Integer.toString(parentTransactionId));
       parameters.put("associatedArtifactId", getAssociatedArtifactId(null));
       parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
-      if (shortBranchName != null && shortBranchName.length() > 0) {
-         parameters.put("shortBranchName", shortBranchName);
-      }
+
       if (staticBranchName != null && staticBranchName.length() > 0) {
          parameters.put("staticBranchName", staticBranchName);
       }
