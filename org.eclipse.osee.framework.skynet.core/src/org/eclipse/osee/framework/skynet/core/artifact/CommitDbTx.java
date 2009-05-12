@@ -53,7 +53,7 @@ public class CommitDbTx extends DbTransaction {
    private static final String INSERTION =
          "INSERT INTO osee_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN tx1.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END ";
    private static final String UPDATE =
-         "UPDATE osee_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id ";
+         "UPDATE osee_txs tx2 set tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id ";
    private static final String UPDATE_CURRENT_COMMIT_ATTRIBUTES =
          UPDATE + "FROM osee_txs tx1, osee_tx_details td2, osee_attribute at3, osee_txs tx4, osee_tx_details td5, osee_attribute at6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND tx1.tx_current != " + TxChange.NOT_CURRENT.getValue() + " AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current != " + TxChange.NOT_CURRENT.getValue() + " AND tx4.gamma_id = at6.gamma_id AND at6.attr_id = at3.attr_id)";
 
