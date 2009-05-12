@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.RebaselineArtifactTest;
 import org.eclipse.osee.support.test.IOseeTest;
 import org.eclipse.osee.support.test.OseeTestType;
@@ -27,6 +28,7 @@ public class FrameworkUi_Demo_Suite extends TestSuite implements IOseeTest {
       TestSuite suite = new TestSuite("FrameworkUi_Demo_Suite");
       //$JUnit-BEGIN$
       suite.addTestSuite(RebaselineArtifactTest.class);
+      suite.addTestSuite(OseeEmailTest.class);
       //$JUnit-END$
       return suite;
    }
