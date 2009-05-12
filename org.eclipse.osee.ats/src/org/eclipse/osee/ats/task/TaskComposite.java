@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -346,8 +347,10 @@ public class TaskComposite extends Composite implements IActionable {
 
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
+    	  if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
          extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
                getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null));
+    	  }
       else
          extraInfoLabel.setText("");
       extraInfoLabel.getParent().layout();
