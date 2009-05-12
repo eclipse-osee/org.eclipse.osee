@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -108,22 +109,22 @@ public class RoughArtifact {
    }
 
    public void conferAttributesUpon(Artifact artifact) throws OseeCoreException {
-      try {
-         for (NameAndVal roughtAttribute : attributes) {
-            if (roughtAttribute.getValue() != null) {
-               artifact.addAttributeFromString(roughtAttribute.getName(), roughtAttribute.getValue());
-            }
+      for (NameAndVal roughtAttribute : attributes) {
+         if (roughtAttribute.getValue() != null) {
+            artifact.addAttributeFromString(roughtAttribute.getName(), roughtAttribute.getValue());
          }
-         setFileAttributes(artifact);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
       }
+      setFileAttributes(artifact);
    }
 
-   private void setFileAttributes(Artifact artifact) throws OseeCoreException, FileNotFoundException {
+   private void setFileAttributes(Artifact artifact) throws OseeCoreException {
       if (fileAttributes != null) {
          for (Entry<String, File> entry : fileAttributes.entrySet()) {
-            artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
+            try {
+               artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
+            } catch (FileNotFoundException ex) {
+               throw new OseeWrappedException(ex);
+            }
          }
       }
    }

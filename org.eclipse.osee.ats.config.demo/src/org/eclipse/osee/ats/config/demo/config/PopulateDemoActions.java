@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
@@ -442,10 +442,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
       ArtifactType primaryArtifactType = ArtifactTypeManager.getType(requirementArtifactName);
       ArtifactExtractor extractor = new WordOutlineExtractor(0, new GeneralWordOutlineHandler());
-      Job job = new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver, primaryArtifactType);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      job.join();
+      new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver, primaryArtifactType).run(new NullProgressMonitor());
+
       // Validate that something was imported
       if (systemReq.getChildren().size() == 0) throw new IllegalStateException("Artifacts were not imported");
 

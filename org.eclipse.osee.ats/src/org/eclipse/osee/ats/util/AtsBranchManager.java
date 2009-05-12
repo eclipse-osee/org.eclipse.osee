@@ -650,12 +650,13 @@ public class AtsBranchManager {
       final String finalBranchShortName = branchShortName;
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws OseeCoreException {
+         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             BranchManager.createWorkingBranch(parentBranch, finalBranchShortName, branchName, stateMachineArtifact);
             // Create reviews as necessary
             SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
             transaction.execute();
+            return Status.OK_STATUS;
          }
       };
 

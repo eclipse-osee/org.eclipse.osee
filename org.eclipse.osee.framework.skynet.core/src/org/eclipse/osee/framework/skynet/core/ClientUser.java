@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -109,9 +111,10 @@ final class ClientUser {
       Jobs.run("Osee User Authenticated", new IExceptionableRunnable() {
 
          @Override
-         public void run(IProgressMonitor monitor) throws Exception {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
             OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
                   LoadedArtifacts.EmptyLoadedArtifacts());
+            return Status.OK_STATUS;
          }
 
       }, CoreClientActivator.class, CoreClientActivator.PLUGIN_ID);

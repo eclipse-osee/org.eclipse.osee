@@ -52,10 +52,11 @@ public class FindTraceUnitJob extends Job {
                   IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
                      @Override
-                     public void run(IProgressMonitor monitor) throws Exception {
+                     public IStatus run(IProgressMonitor monitor) throws Exception {
                         if (branch != null) {
                            FindTraceUnitFromResource.search(branch, resources);
                         }
+                        return Status.OK_STATUS;
                      }
                   };
                   Jobs.run(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);

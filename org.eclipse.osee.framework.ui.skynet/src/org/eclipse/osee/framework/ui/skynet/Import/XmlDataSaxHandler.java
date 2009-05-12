@@ -17,14 +17,16 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    private RoughArtifact roughArtifact;
    private final Branch branch;
    private final ArtifactType artifactType;
+   private final AbstractArtifactExtractor extractor;
 
    /**
     * @param branch
     */
-   public XmlDataSaxHandler(Branch branch, ArtifactType artifactType) {
+   public XmlDataSaxHandler(AbstractArtifactExtractor extractor, Branch branch, ArtifactType artifactType) {
       super();
       this.branch = branch;
       this.artifactType = artifactType;
+      this.extractor = extractor;
    }
 
    /* (non-Javadoc)
@@ -32,10 +34,10 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
     */
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
-      level--;
       if (level == 3) {
          roughArtifact.addAttribute(localName, getContents());
       }
+      level--;
    }
 
    /* (non-Javadoc)
@@ -49,7 +51,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
          roughArtifact = new RoughArtifact(branch);
          roughArtifact.setPrimaryArtifactType(artifactType);
          roughArtifact.setForcePrimaryType(true);
+         extractor.addRoughArtifact(roughArtifact);
       }
-
    }
 }

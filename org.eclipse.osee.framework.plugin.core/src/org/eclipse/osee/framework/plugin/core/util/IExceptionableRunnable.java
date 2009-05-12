@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
@@ -18,5 +19,5 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IExceptionableRunnable {
 
-   public void run(IProgressMonitor monitor) throws Exception;
+   public IStatus run(IProgressMonitor monitor) throws Exception;
 }

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -71,13 +73,14 @@ public class BranchCreationHandler extends CommandHandler {
       if (result == 0 && dialog.getEntry() != null) {
 
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
-            public void run(IProgressMonitor monitor) throws Exception {
+            public IStatus run(IProgressMonitor monitor) throws Exception {
                Branch branch = parentTransactionId.getBranch();
                if (branch != null && branch.isSystemRootBranch()) {
                   BranchManager.createTopLevelBranch(null, dialog.getEntry(), dialog.getEntry(), true);
                } else {
                   BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
                }
+               return Status.OK_STATUS;
             }
          };
 

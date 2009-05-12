@@ -23,7 +23,7 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
    @Override
    public void discoverArtifactAndRelationData(File artifactsFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new XmlDataSaxHandler(branch, primaryArtifactType));
+      xmlReader.setContentHandler(new XmlDataSaxHandler(this, branch, primaryArtifactType));
       xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
    }
 

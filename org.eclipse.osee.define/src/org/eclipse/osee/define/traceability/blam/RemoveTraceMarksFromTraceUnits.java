@@ -335,34 +335,31 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
             @Override
-            public void run(IProgressMonitor monitor) throws Exception {
-               try {
-                  ResultsEditor.open(new IResultsEditorProvider() {
-                     @Override
-                     public String getEditorName() throws OseeCoreException {
-                        return getName();
-                     }
+            public IStatus run(IProgressMonitor monitor) throws Exception {
+               ResultsEditor.open(new IResultsEditorProvider() {
+                  @Override
+                  public String getEditorName() throws OseeCoreException {
+                     return getName();
+                  }
 
-                     @Override
-                     public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
-                        List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>();
-                        if (modifiedRows != null && !modifiedRows.isEmpty()) {
-                           resultsTabs.add(new ResultsEditorTableTab("Modified Trace Units", getModifiedHeaders(),
-                                 modifiedRows));
-                        }
-                        if (noChangeRows != null && !noChangeRows.isEmpty()) {
-                           resultsTabs.add(new ResultsEditorTableTab("Unmodified Items", getNoChangeHeaders(),
-                                 noChangeRows));
-                        }
-                        if (resultsTabs.isEmpty()) {
-                           resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "No changes Reported"));
-                        }
-                        return resultsTabs;
+                  @Override
+                  public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+                     List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>();
+                     if (modifiedRows != null && !modifiedRows.isEmpty()) {
+                        resultsTabs.add(new ResultsEditorTableTab("Modified Trace Units", getModifiedHeaders(),
+                              modifiedRows));
                      }
-                  });
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
-               }
+                     if (noChangeRows != null && !noChangeRows.isEmpty()) {
+                        resultsTabs.add(new ResultsEditorTableTab("Unmodified Items", getNoChangeHeaders(),
+                              noChangeRows));
+                     }
+                     if (resultsTabs.isEmpty()) {
+                        resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "No changes Reported"));
+                     }
+                     return resultsTabs;
+                  }
+               });
+               return Status.OK_STATUS;
             }
          };
          Jobs.run(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);

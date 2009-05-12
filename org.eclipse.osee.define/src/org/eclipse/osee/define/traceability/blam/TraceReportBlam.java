@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
@@ -320,22 +322,19 @@ public class TraceReportBlam extends AbstractBlam {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
             @Override
-            public void run(IProgressMonitor monitor) throws Exception {
-               try {
-                  ResultsEditor.open(new IResultsEditorProvider() {
-                     @Override
-                     public String getEditorName() throws OseeCoreException {
-                        return getName();
-                     }
+            public IStatus run(IProgressMonitor monitor) throws Exception {
+               ResultsEditor.open(new IResultsEditorProvider() {
+                  @Override
+                  public String getEditorName() throws OseeCoreException {
+                     return getName();
+                  }
 
-                     @Override
-                     public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
-                        return results;
-                     }
-                  });
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
-               }
+                  @Override
+                  public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+                     return results;
+                  }
+               });
+               return Status.OK_STATUS;
             }
          };
          Jobs.run(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);

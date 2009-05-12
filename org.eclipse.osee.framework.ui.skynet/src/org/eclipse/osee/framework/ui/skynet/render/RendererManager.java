@@ -21,8 +21,10 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -189,13 +191,14 @@ public class RendererManager {
 
    public static void openInJob(final List<Artifact> artifacts, final VariableMap options, final PresentationType presentationType) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws Exception {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
             HashCollection<IRenderer, Artifact> rendererArtifactMap =
                   createRenderMap(presentationType, artifacts, options);
 
             for (IRenderer renderer : rendererArtifactMap.keySet()) {
                renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
             }
+            return Status.OK_STATUS;
          }
       };
 
@@ -215,8 +218,9 @@ public class RendererManager {
 
    public static void previewInJob(final List<Artifact> artifacts, final VariableMap options) throws OseeCoreException {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws Exception {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
             preview(artifacts, new NullProgressMonitor(), options);
+            return Status.OK_STATUS;
          }
       };
 
@@ -254,8 +258,9 @@ public class RendererManager {
    public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final VariableMap options) {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws OseeCoreException {
+         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             diff(baseVersion, newerVersion, true, options);
+            return Status.OK_STATUS;
          }
       };
 
@@ -290,11 +295,12 @@ public class RendererManager {
 
    public static void diffInJob(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifacts, final VariableMap options) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws OseeCoreException {
+         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             Artifact sampleArtifact = baseArtifacts.get(0) == null ? newerArtifacts.get(0) : baseArtifacts.get(0);
             IRenderer renderer = getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
             renderer.compareArtifacts(baseArtifacts, newerArtifacts, monitor, sampleArtifact.getBranch(),
                   PresentationType.DIFF);
+            return Status.OK_STATUS;
          }
       };
       Jobs.run("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);

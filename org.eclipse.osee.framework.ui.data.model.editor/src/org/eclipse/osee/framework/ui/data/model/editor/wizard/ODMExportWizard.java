@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -88,12 +90,13 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
       return new IExceptionableRunnable() {
 
          @Override
-         public void run(IProgressMonitor monitor) throws Exception {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
             String extra = " no backup";
             if (isBackupEnabled) {
                extra = " backup " + backupfilePath;
             }
             System.out.println(String.format("Export into data store - %s", extra));
+            return Status.OK_STATUS;
          }
       };
    }
@@ -104,9 +107,10 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
       return new IExceptionableRunnable() {
 
          @Override
-         public void run(IProgressMonitor monitor) throws Exception {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
             ODMToXmlOperation operation = new ODMToXmlOperation(filePath, exportToSingleFile, selectedTypes);
             operation.execute(monitor);
+            return Status.OK_STATUS;
          }
       };
    }

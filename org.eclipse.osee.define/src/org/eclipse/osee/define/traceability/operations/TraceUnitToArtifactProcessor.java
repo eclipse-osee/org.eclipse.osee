@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.define.DefinePlugin;
@@ -220,12 +222,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
          @Override
-         public void run(IProgressMonitor monitor) throws Exception {
-            try {
-               ResultsEditor.open(new ResultEditorProvider());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
-            }
+         public IStatus run(IProgressMonitor monitor) throws Exception {
+            ResultsEditor.open(new ResultEditorProvider());
+            return Status.OK_STATUS;
          }
       };
       Jobs.run("Trace Unit to Artifact Report", runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);

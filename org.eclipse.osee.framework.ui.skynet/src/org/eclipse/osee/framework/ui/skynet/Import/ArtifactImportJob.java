@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactImportJob extends Job {
+public class ArtifactImportJob implements IExceptionableRunnable {
    private final File file;
    private final ArtifactType folderDescriptor;
    private final IArtifactImportResolver artifactResolver;
@@ -41,8 +41,6 @@ public class ArtifactImportJob extends Job {
    private final ArtifactType primaryArtifactType;
 
    public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver, ArtifactType primaryArtifactType) throws OseeCoreException {
-      super("Importing");
-
       this.file = file;
       this.extractor = extractor;
       this.folderDescriptor = ArtifactTypeManager.getType("Folder");
@@ -52,43 +50,6 @@ public class ArtifactImportJob extends Job {
       this.branch = branch;
       this.importRoot = importRoot;
       this.primaryArtifactType = primaryArtifactType;
-   }
-
-   public IStatus run(final IProgressMonitor monitor) {
-      IStatus toReturn;
-      try {
-         final RoughArtifact rootRoughArtifact = new RoughArtifact(importRoot);
-         extractArtifacts(new File[] {file}, rootRoughArtifact);
-
-         if (monitor.isCanceled()) {
-            return new Status(Status.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
-         }
-
-         monitor.beginTask("Creating Artifacts", roughArtifacts.size() + roughRelations.size());
-
-         SkynetTransaction transaction = new SkynetTransaction(branch);
-         for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-            // the getReal call with recursively call get real on all descendants of roughArtifact
-            importRoot.addChild(roughArtifact.getReal(transaction, monitor, artifactResolver));
-         }
-
-         monitor.setTaskName("Creating Relations");
-         for (RoughRelation roughRelation : roughRelations) {
-            roughRelation.makeReal(transaction, monitor);
-         }
-         importRoot.persistAttributesAndRelations(transaction);
-
-         monitor.setTaskName("Committing Transaction");
-         monitor.subTask(""); // blank out leftover relation subtask
-         monitor.worked(1); // cause the status to update
-         transaction.execute();
-         toReturn = Status.OK_STATUS;
-      } catch (Exception ex) {
-         toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
-      } finally {
-         monitor.done();
-      }
-      return toReturn;
    }
 
    /**
@@ -123,5 +84,38 @@ public class ArtifactImportJob extends Job {
             throw new IllegalStateException(file + " is not a file or directory");
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable#run(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   public IStatus run(IProgressMonitor monitor) throws Exception {
+      final RoughArtifact rootRoughArtifact = new RoughArtifact(importRoot);
+      extractArtifacts(new File[] {file}, rootRoughArtifact);
+
+      if (monitor.isCanceled()) {
+         return new Status(Status.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
+      }
+
+      monitor.beginTask("Creating Artifacts", roughArtifacts.size() + roughRelations.size());
+
+      SkynetTransaction transaction = new SkynetTransaction(branch);
+      for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
+         // the getReal call with recursively call get real on all descendants of roughArtifact
+         importRoot.addChild(roughArtifact.getReal(transaction, monitor, artifactResolver));
+      }
+
+      monitor.setTaskName("Creating Relations");
+      for (RoughRelation roughRelation : roughRelations) {
+         roughRelation.makeReal(transaction, monitor);
+      }
+      importRoot.persistAttributesAndRelations(transaction);
+
+      monitor.setTaskName("Committing Transaction");
+      monitor.subTask(""); // blank out leftover relation subtask
+      monitor.worked(1); // cause the status to update
+      transaction.execute();
+      return Status.OK_STATUS;
    }
 }
