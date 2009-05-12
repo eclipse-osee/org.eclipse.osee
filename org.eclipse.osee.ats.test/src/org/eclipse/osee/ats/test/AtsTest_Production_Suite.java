@@ -15,6 +15,7 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsActionableItemToTeamDefinitionTest;
+import org.eclipse.osee.ats.test.cases.AtsQueryPerformanceTests;
 import org.eclipse.osee.ats.test.cases.AtsTeamDefintionToWorkflowTest;
 import org.eclipse.osee.ats.test.cases.AtsWorkItemDefinitionTest;
 import org.eclipse.osee.support.test.IOseeTest;
@@ -33,6 +34,7 @@ public class AtsTest_Production_Suite extends TestSuite implements IOseeTest {
       suite.addTestSuite(AtsWorkItemDefinitionTest.class); // Can be run production or testDb
       suite.addTestSuite(AtsActionableItemToTeamDefinitionTest.class); // Can be run production or testDb
       suite.addTestSuite(AtsTeamDefintionToWorkflowTest.class); // Can be run production or testDb
+      suite.addTestSuite(AtsQueryPerformanceTests.class);
       //$JUnit-END$
       return suite;
    }
