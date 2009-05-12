@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.config;
+package org.eclipse.osee.ats.test;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
+ * This test can be run on a test or production Db
+ * 
  * @author Donald G. Dunne
  */
 public class AtsWorkItemDefinitionTest extends TestCase {

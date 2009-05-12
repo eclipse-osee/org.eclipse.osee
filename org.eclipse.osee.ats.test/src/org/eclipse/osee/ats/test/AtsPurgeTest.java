@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.testDb;
+package org.eclipse.osee.ats.test;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  * 
  * @author Donald G. Dunne
  */
-public class DemoPurgeTest extends TestCase {
+public class AtsPurgeTest extends TestCase {
 
    private final List<String> tables =
          Arrays.asList("osee_attribute", "osee_artifact", "osee_artifact_version", "osee_relation_link",

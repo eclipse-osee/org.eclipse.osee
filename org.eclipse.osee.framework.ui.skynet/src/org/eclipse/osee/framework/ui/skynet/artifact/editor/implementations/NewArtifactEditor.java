@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
@@ -279,12 +280,12 @@ public class NewArtifactEditor extends AbstractEventArtifactEditor {
                outlinePage.refresh();
             }
             ArtifactFormPage page = getFormPage();
-            if (page != null) {
+            if (page != null && Widgets.isAccessible(page.getPartControl())) {
                page.refresh();
             }
             onDirtied();
          } catch (Exception ex) {
-				OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return Status.OK_STATUS;
       }

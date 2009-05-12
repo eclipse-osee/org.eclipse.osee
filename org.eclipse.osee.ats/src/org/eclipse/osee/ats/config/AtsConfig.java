@@ -177,6 +177,7 @@ public class AtsConfig {
       teamDef.addRelation(AtsRelation.TeamLead_Lead, UserManager.getUser());
       teamDef.addRelation(AtsRelation.TeamMember_Member, UserManager.getUser());
       AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction).addChild(teamDef);
+      teamDef.persistAttributesAndRelations(transaction);
 
       // Create actionable items
       List<ActionableItemArtifact> aias = new ArrayList<ActionableItemArtifact>();
@@ -185,8 +186,12 @@ public class AtsConfig {
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
                   AtsPlugin.getAtsBranch(), teamDefName);
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+      topAia.persistAttributesAndRelations(transaction);
+
       AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction).addChild(topAia);
       teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, topAia);
+      teamDef.persistAttributesAndRelations(transaction);
+
       aias.add(topAia);
       // Create childrent actionable item
       for (String name : actionableItems) {
@@ -195,6 +200,7 @@ public class AtsConfig {
                      AtsPlugin.getAtsBranch(), name);
          aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
          topAia.addChild(aia);
+         aia.persistAttributesAndRelations(transaction);
          aias.add(aia);
       }
 
@@ -202,11 +208,12 @@ public class AtsConfig {
       List<VersionArtifact> versions = new ArrayList<VersionArtifact>();
       if (versionNames != null) {
          for (String name : versionNames) {
-            VersionArtifact aia =
+            VersionArtifact version =
                   (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                         AtsPlugin.getAtsBranch(), name);
-            teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, aia);
-            versions.add(aia);
+            teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, version);
+            versions.add(version);
+            version.persistAttributesAndRelations(transaction);
          }
       }
 
@@ -226,6 +233,7 @@ public class AtsConfig {
                AtsWorkflowConfigCreationWizard.generateDefaultWorkflow(namespace, transaction, teamDef);
          workFlowDefinition = workflowData.getWorkDefinition();
          workflowArt = workflowData.getWorkFlowArtifact();
+         workflowArt.persistAttributesAndRelations(transaction);
       }
       // Else, use existing one
       else {
@@ -233,18 +241,8 @@ public class AtsConfig {
       }
       // Relate new team def to workflow artifact
       teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
-
-      // persist everything
       teamDef.persistAttributesAndRelations(transaction);
-      workflowArt.persistAttributesAndRelations(transaction);
-      for (Artifact artifact : aias) {
-         artifact.persistAttributesAndRelations(transaction);
-      }
-      if (versionNames != null) {
-         for (Artifact artifact : versions) {
-            artifact.persistAttributesAndRelations(transaction);
-         }
-      }
+
       transaction.execute();
 
       // open everything in editors

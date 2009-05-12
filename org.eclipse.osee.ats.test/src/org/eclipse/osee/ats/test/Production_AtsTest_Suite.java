@@ -8,26 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.config;
+package org.eclipse.osee.ats.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
+ * This test suite contains test that can be run against any production db using the Production_AtsTest_Launch
+ * 
  * @author Donald G. Dunne
  */
-public class AtsConfigurationTestSuite {
+public class Production_AtsTest_Suite {
 
    public static Test suite() {
-      TestSuite suite =
-            new TestSuite(
-                  "Test for org.eclipse.osee.ats.test.config - All ATS Tests - Can be run on either production or test databases");
+      TestSuite suite = new TestSuite("Production ATS Test Suite");
       //$JUnit-BEGIN$
-      suite.addTestSuite(AtsWorkItemDefinitionTest.class);
-      suite.addTestSuite(AtsActionableItemToTeamDefinitionTest.class);
-      suite.addTestSuite(AtsTeamDefintionToWorkflowTest.class);
+      suite.addTestSuite(AtsWorkItemDefinitionTest.class); // Can be run production or testDb
+      suite.addTestSuite(AtsActionableItemToTeamDefinitionTest.class); // Can be run production or testDb
+      suite.addTestSuite(AtsTeamDefintionToWorkflowTest.class); // Can be run production or testDb
       //$JUnit-END$
       return suite;
    }
-
 }

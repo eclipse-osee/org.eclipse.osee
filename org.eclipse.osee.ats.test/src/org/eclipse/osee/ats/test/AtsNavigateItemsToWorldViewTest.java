@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.testDb;
+package org.eclipse.osee.ats.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -270,7 +270,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
       ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm("Program 2");
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 4, null, TableLoadOption.DontCopySearchItem);
    }
 
    public void testActionableItemSearch() throws Exception {

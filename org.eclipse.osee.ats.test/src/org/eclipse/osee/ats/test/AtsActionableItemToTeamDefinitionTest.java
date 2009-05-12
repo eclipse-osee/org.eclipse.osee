@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.config;
+package org.eclipse.osee.ats.test;
 
 import java.util.Arrays;
 import junit.framework.TestCase;

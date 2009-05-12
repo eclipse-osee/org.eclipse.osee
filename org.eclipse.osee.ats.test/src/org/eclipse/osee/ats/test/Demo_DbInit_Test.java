@@ -8,24 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.test.testDb.review;
+package org.eclipse.osee.ats.test;
 
 import junit.framework.TestCase;
-import org.eclipse.osee.ats.test.testDb.DemoTestUtil;
+import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 
 /**
- * This test is intended to be run against a demo database. It tests the ability to create and set rules on a workflow
- * page that causes decision and peerToPeer reviews to be auto-created during transition, createBranch and commitBranch
- * 
  * @author Donald G. Dunne
  */
-public class AtsReviewRuleTest extends TestCase {
+public class Demo_DbInit_Test extends TestCase {
 
-   public void testDemoDatabase() throws Exception {
-      DemoTestUtil.setUpTest();
+   public void testDemoDbInit() throws Exception {
+      System.out.println("Begin Database Initialization...");
+      DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
+      System.out.println("Database Initialization Complete.");
    }
 
-   public void testReviewCreation() throws Exception {
-
-   }
 }
