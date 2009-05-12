@@ -76,9 +76,9 @@ public class BranchCreationHandler extends CommandHandler {
             public IStatus run(IProgressMonitor monitor) throws Exception {
                Branch branch = parentTransactionId.getBranch();
                if (branch != null && branch.isSystemRootBranch()) {
-                  BranchManager.createTopLevelBranch(null, dialog.getEntry(), dialog.getEntry(), true);
+                  BranchManager.createTopLevelBranch(dialog.getEntry(), dialog.getEntry(), true);
                } else {
-                  BranchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
+                  BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null);
                }
                return Status.OK_STATUS;
             }

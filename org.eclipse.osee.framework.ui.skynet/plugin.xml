@@ -599,10 +599,6 @@
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
             style="push">
       </command>
-      <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
-            style="push">
-      </command>
       <separator
             name="separator.xBranch.BranchView3"
             visible="true">
@@ -1075,10 +1071,6 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename">
     </handler>
     <handler
-          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.RenameShortBranchNameHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName">
-    </handler>
-    <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.OpenAssociatedArtifactHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.openAssociatedArtifact">
     </handler>
@@ -1505,10 +1497,6 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.rename"
         name="Rename">
-  </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.renameShortName"
-        name="Rename Short Name">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.openAssociatedArtifact"

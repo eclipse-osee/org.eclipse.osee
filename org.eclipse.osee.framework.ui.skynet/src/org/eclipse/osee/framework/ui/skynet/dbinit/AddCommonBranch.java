@@ -45,7 +45,7 @@ public class AddCommonBranch implements IDbInitializationTask {
       BranchManager.createSystemRootBranch();
 
       // Create branch, import OSEE types and initialize
-      BranchManager.createTopLevelBranch(null, Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,
+      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,
             getSkynetDbTypeExtensionIds(), initializeArtifacts);
    }
 

@@ -24,9 +24,6 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn branch_name =
          new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String,
                false, null);
-   public static XViewerColumn branch_short_name =
-         new XViewerColumn("framework.branch.branchShortName", "Branch Short Name", 150, SWT.LEFT, true,
-               SortDataType.String, false, null);
    public static XViewerColumn time_stamp =
          new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
@@ -42,7 +39,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(branch_short_name, branch_name, time_stamp, author, comment, associatedArtifact);
+      registerColumn(branch_name, time_stamp, author, comment, associatedArtifact);
    }
 
    @Override
