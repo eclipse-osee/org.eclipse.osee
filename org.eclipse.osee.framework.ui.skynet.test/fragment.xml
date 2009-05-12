@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eclipse.osee.support.test.OseeTest">
+      <OseeTest
+            classname="org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite">
+      </OseeTest>
+   </extension>
+
+</fragment>

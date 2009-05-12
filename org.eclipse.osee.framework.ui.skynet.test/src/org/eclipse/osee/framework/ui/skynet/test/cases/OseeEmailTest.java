@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.testDb.interactive;
+package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import java.util.Date;
 import junit.framework.TestCase;
