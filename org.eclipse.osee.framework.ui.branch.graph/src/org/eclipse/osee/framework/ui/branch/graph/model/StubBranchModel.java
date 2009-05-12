@@ -24,7 +24,7 @@ public class StubBranchModel extends BranchModel {
    private static final long serialVersionUID = -6424441243526185426L;
 
    public static final Branch STUB_BRANCH =
-         new Branch("Unreferenced", "Unreferenced", -1, 1, 1, false, 0, new Timestamp(new Date().getTime()),
+         new Branch("Unreferenced", -1, 1, 1, false, 0, new Timestamp(new Date().getTime()),
                "Dummy branch to allocate data errors", 0, BranchType.TOP_LEVEL);
 
    private final Map<Long, TxModel> stubs;

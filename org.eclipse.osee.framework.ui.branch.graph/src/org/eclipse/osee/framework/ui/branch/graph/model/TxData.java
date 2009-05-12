@@ -124,7 +124,7 @@ public class TxData {
 
    public String toString() {
       return String.format("Tx:[%s] Author:[%s] Branch:[%s] Comment:[%s]", getTxId(), getAuthor(),
-            getBranch().getBranchShortName(), getComment());
+            getBranch().getBranchName(), getComment());
    }
 
    protected static TxData createTxData(TransactionId txId) {

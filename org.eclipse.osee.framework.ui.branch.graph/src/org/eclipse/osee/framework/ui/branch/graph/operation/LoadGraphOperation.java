@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphLoader;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -66,31 +68,36 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       boolean error = false;
       monitor.beginTask(getName(), TOTAL_STEPS);
       monitor.worked(SHORT_TASK_STEPS);
-      TransactionId transaction = TransactionIdManager.getlatestTransactionForBranch(resource);
-      if (editor != null) {
-         ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
-      }
-      Branch path = transaction.getBranch();
-
-      monitor.setTaskName("Initializating cache");
-
-      monitor.worked(SHORT_TASK_STEPS);
-
-      if (editor != null) {
-         if (error == true || monitor.isCanceled()) {
-            Display.getDefault().syncExec(new Runnable() {
-               public void run() {
-                  IWorkbenchWindow window = editor.getEditorSite().getWorkbenchWindow();
-                  IWorkbenchPage page = window.getActivePage();
-                  page.activate(editor);
-                  page.closeEditor(editor, false);
-               }
-            });
-         } else {
-            updateView(monitor, path, transaction);
+      try {
+         TransactionId transaction = TransactionIdManager.getlatestTransactionForBranch(resource);
+         if (editor != null) {
+            ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }
+         Branch path = transaction.getBranch();
+
+         monitor.setTaskName("Initializating cache");
+
+         monitor.worked(SHORT_TASK_STEPS);
+
+         if (editor != null) {
+            if (error == true || monitor.isCanceled()) {
+               Display.getDefault().syncExec(new Runnable() {
+                  public void run() {
+                     IWorkbenchWindow window = editor.getEditorSite().getWorkbenchWindow();
+                     IWorkbenchPage page = window.getActivePage();
+                     page.activate(editor);
+                     page.closeEditor(editor, false);
+                  }
+               });
+            } else {
+               updateView(monitor, path, transaction);
+            }
+         }
+      } catch (Exception ex) {
+         AWorkbench.popup("Error Calculating Revision Graph Information", Lib.exceptionToString(ex));
+      } finally {
+         monitor.done();
       }
-      monitor.done();
       return Status.OK_STATUS;
    }
 
