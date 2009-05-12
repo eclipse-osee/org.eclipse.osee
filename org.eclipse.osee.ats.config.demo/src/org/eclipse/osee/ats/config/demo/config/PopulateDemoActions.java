@@ -198,8 +198,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
-            BranchManager.createWorkingBranch(parentBranch, childBranchName, childBranchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+            BranchManager.createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
       return childBranch;
    }
 
@@ -568,4 +567,5 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
       }
    }
+
 }

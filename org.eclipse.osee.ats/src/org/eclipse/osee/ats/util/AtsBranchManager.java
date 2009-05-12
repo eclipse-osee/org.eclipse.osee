@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -640,18 +639,10 @@ public class AtsBranchManager {
       final String branchName =
             String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(),
                   stateMachineArtifact.getDescriptiveName(), title);
-      String branchShortName = "";
-      if (pageId != null && !pageId.equals("")) {
-         List<IAtsStateItem> stateItems = smaMgr.getStateItems().getStateItems(pageId);
-         if (stateItems.size() > 0) {
-            branchShortName = (stateItems.iterator().next().getBranchShortName(smaMgr));
-         }
-      }
-      final String finalBranchShortName = branchShortName;
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
-            BranchManager.createWorkingBranch(parentBranch, finalBranchShortName, branchName, stateMachineArtifact);
+            BranchManager.createWorkingBranch(parentBranch, branchName, stateMachineArtifact);
             // Create reviews as necessary
             SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
