@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.osgi.framework.Bundle;
@@ -53,10 +52,6 @@ public class ArtifactFactoryManager {
       }
       if (responsibleFactory != null) {
          return responsibleFactory;
-      }
-      if (AccessControlManager.isOseeAdmin()) {
-         OseeLog.log(SkynetActivator.class, Level.INFO,
-               "No available factory; defaulting to DefaultArtifactFactory for: " + artifactTypeName);
       }
       return new DefaultArtifactFactory();
    }
