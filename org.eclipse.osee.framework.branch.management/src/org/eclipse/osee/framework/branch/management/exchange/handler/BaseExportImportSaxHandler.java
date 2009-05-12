@@ -62,8 +62,6 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
             finishStringContent(ExportImportXml.OSEE_COMMENT);
          } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_NAME)) {
             finishStringContent(ExportImportXml.BRANCH_NAME);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_SHORT_NAME)) {
-            finishStringContent(ExportImportXml.BRANCH_SHORT_NAME);
          } else if (localName.equalsIgnoreCase(ExportImportXml.RATIONALE)) {
             finishStringContent(ExportImportXml.RATIONALE);
          } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {

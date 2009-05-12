@@ -24,7 +24,6 @@ public final class BranchData implements Cloneable {
    private static final String BRANCH_TYPE = "branch_type";
    public static final String COMMIT_ART_ID = "associated_art_id";
    private static final String IS_ARCHIVED_BRANCH = "archived";
-   private static final String BRANCH_SHORT_NAME = "short_name";
    public static final String PARENT_BRANCH_ID = "parent_branch_id";
    public static final String PARENT_TRANSACTION_ID = "parent_transaction_id";
 
@@ -56,10 +55,6 @@ public final class BranchData implements Cloneable {
 
    public int getBranchId() {
       return (Integer) backingData.get(BRANCH_ID);
-   }
-
-   public String getShortName() {
-      return (String) backingData.get(BRANCH_SHORT_NAME);
    }
 
    public int getParentBranchId() {

@@ -315,7 +315,7 @@ public class AtsBranchConfigurationTest extends TestCase {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
 
-      return BranchManager.createTopLevelBranch(null, branchName, branchName, skynetTypeImport, true);
+      return BranchManager.createTopLevelBranch(branchName, branchName, skynetTypeImport, true);
    }
 
    private void cleanupBranchTest(TestType testType) throws Exception {

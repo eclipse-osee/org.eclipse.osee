@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.util;
  * @author Jeff C. Phillips
  */
 public class Strings {
+   private final static String EMPTY_STRING = "";
 
    /**
     * Return string truncated if size > length, otherwise return string
@@ -34,5 +35,9 @@ public class Strings {
 
    public static boolean isValid(String value) {
       return value != null && value.length() > 0;
+   }
+
+   public static String emptyString() {
+      return EMPTY_STRING;
    }
 }

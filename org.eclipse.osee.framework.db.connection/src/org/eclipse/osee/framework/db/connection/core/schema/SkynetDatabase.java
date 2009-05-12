@@ -18,7 +18,6 @@ package org.eclipse.osee.framework.db.connection.core.schema;
  */
 public class SkynetDatabase {
    public static final int RELATION_SIDE_NAME_SIZE = 50;
-   public static final int BRANCH_SHORT_NAME_SIZE = 25;
 
    public static final Table ARTIFACT_TABLE = new Table("OSEE_ARTIFACT");
    public static final Table ARTIFACT_VERSION_TABLE = new Table("OSEE_ARTIFACT_VERSION");

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
  * @author Andrew M Finkbeiner
@@ -26,7 +25,6 @@ class HttpBranchCreationInfo {
    private BranchCreationFunction function;
    private int parentBranchId;
    private int parentTransactionId;
-   private String branchShortName;
    private String branchName;
    private String creationComment;
    private int associatedArtifactId;
@@ -59,11 +57,6 @@ class HttpBranchCreationInfo {
       if (branchName == null || branchName.length() == 0) {
          throw new OseeArgumentException("A 'branchName' parameter must be specified");
       }
-      branchShortName = req.getParameter("branchShortName");
-      if (branchShortName == null) {
-         branchShortName = branchName;
-      }
-      branchShortName = StringFormat.truncate(branchShortName, 25);
       creationComment = req.getParameter("creationComment");//required
       if (creationComment == null || creationComment.length() == 0) {
          throw new OseeArgumentException("A 'creationComment' parameter must be specified");
@@ -108,13 +101,6 @@ class HttpBranchCreationInfo {
     */
    public int getParentBranchId() {
       return parentBranchId;
-   }
-
-   /**
-    * @return the branchShortName
-    */
-   public String getBranchShortName() {
-      return branchShortName;
    }
 
    /**

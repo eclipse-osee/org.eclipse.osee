@@ -39,15 +39,15 @@ public class BranchManagerServlet extends OseeHttpServlet {
          switch (info.getFunction()) {
             case createChildBranch:
                branchId =
-                     InternalBranchServletActivator.getInstance().getBranchCreation().createChildBranch(info.getParentTransactionId(),
-                           info.getParentBranchId(), info.getBranchShortName(), info.getBranchName(),
+                     InternalBranchServletActivator.getInstance().getBranchCreation().createChildBranch(
+                           info.getParentTransactionId(), info.getParentBranchId(), info.getBranchName(),
                            info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
                            info.branchWithFiltering(), info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
                break;
             case createRootBranch:
                branchId =
-                     InternalBranchServletActivator.getInstance().getBranchCreation().createTopLevelBranch(info.getParentTransactionId(),
-                           info.getParentBranchId(), info.getBranchShortName(), info.getBranchName(),
+                     InternalBranchServletActivator.getInstance().getBranchCreation().createTopLevelBranch(
+                           info.getParentTransactionId(), info.getParentBranchId(), info.getBranchName(),
                            info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
                            info.getStaticBranchName(), info.isSystemRootBranch());
                break;
@@ -58,8 +58,8 @@ public class BranchManagerServlet extends OseeHttpServlet {
             resp.getWriter().write("Unknown Error during branch creation.");
          }
       } catch (Exception ex) {
-         OseeLog.log(InternalBranchServletActivator.class, Level.SEVERE, String.format("Failed to respond to a branch servlet request [%s]",
-               req.toString()), ex);
+         OseeLog.log(InternalBranchServletActivator.class, Level.SEVERE, String.format(
+               "Failed to respond to a branch servlet request [%s]", req.toString()), ex);
          resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));
       }

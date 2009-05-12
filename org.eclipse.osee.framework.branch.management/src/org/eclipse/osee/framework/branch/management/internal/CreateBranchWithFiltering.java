@@ -70,9 +70,9 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
    private String[] preserveArtTypeIds;
    private Map<Integer, Integer> gammasToCurrent = new HashMap<Integer, Integer>();
 
-   public CreateBranchWithFiltering(int parentTransactionId, int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws OseeCoreException {
-      super(parentTransactionId, parentBranchId, childBranchShortName, childBranchName, creationComment,
-            associatedArtifactId, authorId, BranchType.WORKING);
+   public CreateBranchWithFiltering(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws OseeCoreException {
+      super(parentTransactionId, parentBranchId, childBranchName, creationComment, associatedArtifactId, authorId,
+            BranchType.WORKING);
       this.compressArtTypeIds = compressArtTypeIds;
       this.preserveArtTypeIds = preserveArtTypeIds;
    }
