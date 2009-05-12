@@ -6,7 +6,12 @@ Bundle-Version: 0.5.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.CoreActivator
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: com.lowagie.text,
+ com.lowagie.text.html,
+ com.lowagie.text.markup,
+ com.lowagie.text.pdf,
+ com.lowagie.text.rtf,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.jdk.core.type,
@@ -17,5 +22,6 @@ Import-Package: org.eclipse.osee.framework.db.connection,
 Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.util
 Bundle-ActivationPolicy: lazy
