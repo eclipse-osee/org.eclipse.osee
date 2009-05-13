@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAEditor.PriviledgedEditMode;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.task.TaskComposite;
@@ -108,11 +107,9 @@ public class SMAWorkFlowSection extends SectionPart {
       this.toolkit = toolkit;
       this.atsWorkPage = page;
       this.smaMgr = smaMgr;
-      isEditable =
-            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.isCurrentState(page.getName()) && (smaMgr.getWorkPageDefinition().hasWorkRule(
-                  AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) || smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) || smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off || smaMgr.isAssigneeMe() || AtsPlugin.isAtsAdmin());
+      isEditable = isEditable(page);
       isGlobalEditable =
-            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().getPriviledgedEditMode() == SMAEditor.PriviledgedEditMode.Global;
+            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().isPriviledgedEditModeEnabled();
       isCurrentState = smaMgr.isCurrentState(page.getName());
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
    }
@@ -383,7 +380,7 @@ public class SMAWorkFlowSection extends SectionPart {
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       // Create Privileged Edit label
-      if (smaMgr.getEditor().getPriviledgedEditMode() == PriviledgedEditMode.Global) {
+      if (smaMgr.getEditor().isPriviledgedEditModeEnabled()) {
          Label label = toolkit.createLabel(comp, "Priviledged Edit");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
@@ -857,4 +854,24 @@ public class SMAWorkFlowSection extends SectionPart {
       return widgets;
    }
 
+   private boolean isEditable(AtsWorkPage page) throws OseeCoreException {
+      // must be writeable
+      return !smaMgr.getSma().isReadOnly() &&
+      // and access control writeable
+      smaMgr.isAccessControlWrite() &&
+      // and current state
+      smaMgr.isCurrentState(page.getName()) &&
+      // and one of these
+      //
+      // page is define to allow anyone to edit
+      (smaMgr.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      // team definition has allowed anyone to edit
+      smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      // priviledged edit mode is on
+      smaMgr.getEditor().isPriviledgedEditModeEnabled() ||
+      // current user is assigned
+      smaMgr.isAssigneeMe() ||
+      // current user is ats admin
+      AtsPlugin.isAtsAdmin());
+   }
 }

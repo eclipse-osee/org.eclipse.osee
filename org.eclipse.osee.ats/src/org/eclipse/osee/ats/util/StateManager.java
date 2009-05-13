@@ -84,6 +84,10 @@ public class StateManager {
       return getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned));
    }
 
+   public boolean isUnAssignedSolely() throws OseeCoreException {
+      return getAssignees().size() == 1 && isUnAssigned();
+   }
+
    /**
     * Return Hours Spent for State
     * 

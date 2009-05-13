@@ -107,10 +107,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
    private static Font defaultLabelFont;
-   public static enum PriviledgedEditMode {
-      Off, CurrentState, Global
-   };
-   private PriviledgedEditMode priviledgedEditMode = PriviledgedEditMode.Off;
+   private boolean priviledgedEditModeEnabled = false;
    private Action printAction;
 
    public SMAEditor() {
@@ -150,7 +147,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          OseeEventManager.addListener(this);
 
          setPartName(smaMgr.getSma().getEditorTitle());
-         setContentDescription(priviledgedEditMode != PriviledgedEditMode.Off ? " PRIVILEGED EDIT MODE ENABLED - " + priviledgedEditMode.name() : "");
+         setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
          setTitleImage(smaMgr.getSma().getImage());
 
          // Create WorkFlow tab
@@ -701,15 +698,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    /**
     * @return the priviledgedEditMode
     */
-   public PriviledgedEditMode getPriviledgedEditMode() {
-      return priviledgedEditMode;
+   public boolean isPriviledgedEditModeEnabled() {
+      return priviledgedEditModeEnabled;
    }
 
    /**
     * @param priviledgedEditMode the priviledgedEditMode to set s * @throws OseeCoreException
     */
-   public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException {
-      this.priviledgedEditMode = priviledgedEditMode;
+   public void setPriviledgedEditMode(boolean enabled) throws OseeCoreException {
+      this.priviledgedEditModeEnabled = enabled;
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       smaMgr.getSma().saveSMA(transaction);
       transaction.execute();
