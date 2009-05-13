@@ -14,19 +14,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.ui.skynet.test.cases.RebaselineArtifactTest;
+import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
 import org.eclipse.osee.support.test.IOseeTest;
 import org.eclipse.osee.support.test.OseeTestType;
 
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkUi_Demo_Suite extends TestSuite implements IOseeTest {
+public class FrameworkUi_Production_Suite extends TestSuite implements IOseeTest {
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("FrameworkUi_Demo_Suite");
+      TestSuite suite = new TestSuite("FrameworkUi_Production_Suite");
       //$JUnit-BEGIN$
-      suite.addTestSuite(RebaselineArtifactTest.class);
+      suite.addTestSuite(OseeEmailTest.class);
       //$JUnit-END$
       return suite;
    }
@@ -36,6 +36,6 @@ public class FrameworkUi_Demo_Suite extends TestSuite implements IOseeTest {
     */
    @Override
    public Collection<OseeTestType> getTestTypes() {
-      return Arrays.asList(OseeTestType.Demo);
+      return Arrays.asList(OseeTestType.Production);
    }
 }
