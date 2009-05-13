@@ -43,9 +43,10 @@ public class UpdateBranchJob extends Job {
       this.resolver = resolver;
    }
 
-   private String getUpdatedName(String branchName) {
+   private String getUpdatedName(String branchName, boolean inProgress) {
       String storeName = StringFormat.truncate(branchName, 100);
-      return String.format("%s - update - %s", storeName, Lib.getDateTimeString());
+      return String.format("%s - %s - %s", storeName, inProgress ? "update completed" : "updated",
+            Lib.getDateTimeString());
    }
 
    public IStatus run(IProgressMonitor monitor) {
@@ -62,17 +63,17 @@ public class UpdateBranchJob extends Job {
                         performUpdate(monitor, parentBranch, originalBranch, originalBranchName,
                               originalAssociatedArtifact);
 
-                  if (monitor.isCanceled()) {
-                     status = restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
-                     if (status.isOK()) {
-                        status = Status.CANCEL_STATUS;
-                     }
-                  }
+                  //                  if (monitor.isCanceled()) {
+                  //                     status = restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
+                  //                     if (status.isOK()) {
+                  //                        status = Status.CANCEL_STATUS;
+                  //                     }
+                  //                  }
                } catch (OseeCoreException ex) {
                   status =
                         new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format(
                               "Error updating branch [%s]", originalBranch.getBranchShortName()), ex);
-                  restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
+                  //                  restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
                }
             }
          }
@@ -91,29 +92,38 @@ public class UpdateBranchJob extends Job {
       IStatus status = Status.OK_STATUS;
       Branch newWorkingBranch = null;
       try {
-         // Change Names
-         originalBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
-         originalBranch.rename(getUpdatedName(originalBranchName));
+         String branchUpdateName = getUpdatedName(originalBranchName, true);
 
          // Create new updated branch
          monitor.subTask("Create new branch");
          newWorkingBranch =
-               BranchManager.createWorkingBranch(parentBranch, originalBranchName, originalAssociatedArtifact);
+               BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
+                     UserManager.getUser(SystemUser.OseeSystem));
          monitor.worked(HALF_TOTAL_WORK);
 
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
-         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL_WORK);
-         status = resolveConflicts(subMonitor, conflictManager);
-         if (status.isOK() && !conflictManager.remainingConflictsExist()) {
+         if (!conflictManager.remainingConflictsExist()) {
             monitor.subTask("Merging Changes");
             BranchManager.commitBranch(conflictManager, true, false);
+
+            originalBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
+            originalBranch.rename(getUpdatedName(originalBranchName, false));
+
+            newWorkingBranch.rename(originalBranchName);
             if (originalAssociatedArtifact != null) {
                newWorkingBranch.setAssociatedArtifact(originalAssociatedArtifact);
             }
          } else {
+            // TODO: Set branch state - originalBranch.setBranchState();
+            // TODO: Launch Conflict Resolver
+
+            //         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL_WORK);
+            //         status = resolveConflicts(subMonitor, conflictManager);
+            //            if (status.isOK() && !conflictManager.remainingConflictsExist()) {
+            //            } else {
             status =
-                  new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID,
-                        "All Conflict were not resolved. Unable to finish update process.");
+                  new Status(IStatus.OK, SkynetActivator.PLUGIN_ID,
+                        "All Conflicts were not resolved. Manual conflict resolution required");
          }
       } finally {
          if (newWorkingBranch != null && !status.isOK()) {

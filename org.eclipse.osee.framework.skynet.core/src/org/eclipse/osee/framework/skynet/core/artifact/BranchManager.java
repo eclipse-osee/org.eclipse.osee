@@ -78,6 +78,9 @@ public class BranchManager {
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
+
+   private static final String UPDATE_BRANCH_STATE = "UPDATE osee_branch set branch_state = ? WHERE branch_id = ?";
+
    private static final String ARCHIVE_BRANCH =
          "UPDATE osee_branch set archived = " + BranchStorageState.ARCHIVED.getValue() + " WHERE branch_id = ?";
    private static final String UN_ARCHIVE_BRANCH =
