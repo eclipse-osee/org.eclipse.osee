@@ -159,8 +159,8 @@ public class ArtifactTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public static List<ArtifactType> getTypes(Collection<String> artifactTypeNames) throws OseeTypeDoesNotExist, OseeDataStoreException {
-      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>(artifactTypeNames.size());
+   public static List<ArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeTypeDoesNotExist, OseeDataStoreException {
+      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       for (String artifactTypeName : artifactTypeNames) {
          artifactTypes.add(getType("", artifactTypeName));
       }

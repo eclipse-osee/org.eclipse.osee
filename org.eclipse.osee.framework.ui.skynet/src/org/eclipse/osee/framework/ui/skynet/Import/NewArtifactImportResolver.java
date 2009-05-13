@@ -14,20 +14,32 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public class NewArtifactImportResolver implements IArtifactImportResolver {
+   private ArtifactType primaryArtifactType;
+   private ArtifactType secondaryArtifactType;
 
-   public NewArtifactImportResolver() {
+   public NewArtifactImportResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType) {
+      this.primaryArtifactType = primaryArtifactType;
+      this.secondaryArtifactType = secondaryArtifactType;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
     */
    public Artifact resolve(final RoughArtifact roughArtifact) throws OseeCoreException {
-      ArtifactType artifactType = roughArtifact.getArtifactTypeForGetReal();
+      ArtifactType artifactType = null;
+      if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.PRIMARY) {
+         artifactType = primaryArtifactType;
+      } else if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.SECONDARY) {
+         artifactType = secondaryArtifactType;
+      } else if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.CONTAINER) {
+         artifactType = ArtifactTypeManager.getType("Folder");
+      }
 
       Artifact realArtifact =
             artifactType.getFactory().makeNewArtifact(roughArtifact.getBranch(), artifactType, roughArtifact.getGuid(),

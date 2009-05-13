@@ -22,8 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler;
@@ -60,7 +58,6 @@ public class WordOutlineExtractor extends WordExtractor {
    private int lastDepthNumber;
    private String headerNumber;
    private String listIdentifier;
-   private final ArtifactType headingDescriptor;
    private final int maxExtractionDepth;
    private boolean forceBody;
    private boolean forcePrimaryType;
@@ -76,15 +73,12 @@ public class WordOutlineExtractor extends WordExtractor {
       if (handler == null) throw new IllegalArgumentException("handler can not be null");
 
       this.handler = handler;
-
       this.headerNumber = "";
       this.listIdentifier = "";
       this.reqNumberMatcher = Pattern.compile("(\\d+\\.)*(\\d+\\.?)\\s*").matcher("");
       this.reqListMatcher = Pattern.compile("\\w+\\)", Pattern.CASE_INSENSITIVE).matcher("");
-
       this.currentListStack = new Stack<String>();
       this.clonedCurrentListStack = new Stack<String>();
-      this.headingDescriptor = ArtifactTypeManager.getType("Heading");
       this.maxExtractionDepth = maxExtractionDepth;
    }
 
@@ -92,7 +86,7 @@ public class WordOutlineExtractor extends WordExtractor {
       return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    }
 
-   public void discoverArtifactAndRelationData(File importFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File importFile, Branch branch) throws Exception {
 
       Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));
 
@@ -100,7 +94,7 @@ public class WordOutlineExtractor extends WordExtractor {
          throwFileFormatError(importFile, "no start of body tag");
       }
 
-      handler.init(this, headingDescriptor, primaryArtifactType);
+      handler.init(this);
 
       try {
          CharSequence element;

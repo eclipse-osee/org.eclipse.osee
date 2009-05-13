@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
+import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifactKind;
 
 /**
  * @author Robert A. Fisher
@@ -41,7 +42,7 @@ public abstract class SoftwareRequirementHandler extends GeneralWordOutlineHandl
       }
 
       if (!isRequirement) {
-         roughArtifact.setPrimaryArtifactType(headingDescriptor);
+         roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
       }
 
       roughArtifact.addAttribute("Name", text.toString().trim());

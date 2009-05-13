@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
+import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifactKind;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineContentHandler;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
 
@@ -38,8 +38,8 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
     * Subclasses may extend this method to allocate resources
     */
    @Override
-   public void init(WordOutlineExtractor extractor, ArtifactType headingDescriptor, ArtifactType mainDescriptor) {
-      super.init(extractor, headingDescriptor, mainDescriptor);
+   public void init(WordOutlineExtractor extractor) {
+      super.init(extractor);
 
       duplicateCatcher = new HashMap<String, RoughArtifact>();
       lastHeaderNumber = null;
@@ -100,25 +100,21 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
    }
 
    private RoughArtifact setUpNewArtifact(String parNumber, Branch branch) {
-      RoughArtifact roughArtifact;
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
-         roughArtifact = new RoughArtifact(branch);
+         RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
          duplicateCatcher.put(parNumber, roughArtifact);
+
+         extractor.addRoughArtifact(roughArtifact);
+         roughArtifact.setSectionNumber(parNumber);
+
+         roughArtifact.addAttribute("Imported Paragraph Number", parNumber);
+
+         return roughArtifact;
       } else {
          throw new IllegalStateException(String.format(
                "Paragraph %s found more than once following \"%s\" which is a duplicate of %s", parNumber,
                previousNamedArtifact.getName(), duplicateArtifact.getName()));
       }
-
-      roughArtifact.setHeadingDescriptor(headingDescriptor);
-      roughArtifact.setPrimaryArtifactType(mainDescriptor);
-      extractor.addRoughArtifact(roughArtifact);
-      roughArtifact.setSectionNumber(parNumber);
-      roughArtifact.setForcePrimaryType(true);
-
-      roughArtifact.addAttribute("Imported Paragraph Number", parNumber);
-
-      return roughArtifact;
    }
 }

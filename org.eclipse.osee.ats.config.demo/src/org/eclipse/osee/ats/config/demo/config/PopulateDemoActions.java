@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -447,10 +446,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
 
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
-      IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
-      ArtifactType primaryArtifactType = ArtifactTypeManager.getType(requirementArtifactName);
+      IArtifactImportResolver artifactResolver =
+            new NewArtifactImportResolver(ArtifactTypeManager.getType(requirementArtifactName),
+                  ArtifactTypeManager.getType("Heading"));
       ArtifactExtractor extractor = new WordOutlineExtractor(0, new GeneralWordOutlineHandler());
-      new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver, primaryArtifactType).run(new NullProgressMonitor());
+      new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver).run(new NullProgressMonitor());
 
       // Validate that something was imported
       if (systemReq.getChildren().size() == 0) throw new IllegalStateException("Artifacts were not imported");

@@ -1140,6 +1140,26 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Starting from this artifact, walks down the child hierarchy based on the list of child names provided and returns
+    * the child of the last name provided. ArtifactDoesNotExist exception is thrown ff any child along the path does not
+    * exist.
+    * 
+    * @param names
+    * @return child at the leaf (bottom) of the specified hierarchy.
+    * @throws OseeCoreException
+    */
+   public Artifact getDescendant(String... names) throws OseeCoreException {
+      if (names.length == 0) {
+         throw new OseeArgumentException("Must suply at least one name to getDescendant()");
+      }
+      Artifact descendant = null;
+      for (String name : names) {
+         descendant = getChild(name);
+      }
+      return descendant;
+   }
+
+   /**
     * Return relations that exist between artifacts
     * 
     * @throws ArtifactDoesNotExist

@@ -38,9 +38,8 @@ public class ArtifactImportJob implements IExceptionableRunnable {
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;
    private final Artifact importRoot;
-   private final ArtifactType primaryArtifactType;
 
-   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver, ArtifactType primaryArtifactType) throws OseeCoreException {
+   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       this.file = file;
       this.extractor = extractor;
       this.folderDescriptor = ArtifactTypeManager.getType("Folder");
@@ -49,7 +48,6 @@ public class ArtifactImportJob implements IExceptionableRunnable {
       this.roughRelations = new ArrayList<RoughRelation>();
       this.branch = branch;
       this.importRoot = importRoot;
-      this.primaryArtifactType = primaryArtifactType;
    }
 
    /**
@@ -62,7 +60,7 @@ public class ArtifactImportJob implements IExceptionableRunnable {
    private void extractArtifacts(File[] files, RoughArtifact parentArtifact) throws Exception {
       for (File file : files) {
          if (file.isFile()) {
-            extractor.discoverArtifactAndRelationData(file, branch, primaryArtifactType);
+            extractor.discoverArtifactAndRelationData(file, branch);
             List<RoughArtifact> tempArtifacts = extractor.getRoughArtifacts();
             roughArtifacts.addAll(tempArtifacts);
             roughRelations.addAll(extractor.getRoughRelations(parentArtifact));
@@ -73,9 +71,7 @@ public class ArtifactImportJob implements IExceptionableRunnable {
                }
             }
          } else if (file.isDirectory()) {
-            RoughArtifact directoryArtifact = new RoughArtifact(branch, file.getName());
-            directoryArtifact.setHeadingDescriptor(folderDescriptor);
-            directoryArtifact.setPrimaryArtifactType(folderDescriptor);
+            RoughArtifact directoryArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, branch, file.getName());
             roughArtifacts.add(directoryArtifact);
             parentArtifact.addChild(directoryArtifact);
 

@@ -94,9 +94,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
                Integer.parseInt(row[4])));
       } else {
-         RoughArtifact roughArtifact = new RoughArtifact(branch);
-         roughArtifact.setHeadingDescriptor(primaryDescriptor);
-         roughArtifact.setPrimaryArtifactType(primaryDescriptor);
+         RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) continue;
             if (headerRow[i].equalsIgnoreCase("Outline Number")) {
@@ -139,7 +137,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch, ArtifactType primaryArtifactType) throws Exception {
+   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception {
       this.branch = branch;
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(this, true));

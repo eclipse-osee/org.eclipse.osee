@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -34,30 +33,26 @@ public class RoughArtifact {
    private Artifact realArtifact;
    private RoughArtifact roughParent;
    private ReqNumbering number;
-   private List<NameAndVal> attributes;
-   private Collection<RoughArtifact> children;
    private String guid;
    private String humandReadableId;
-   private ArtifactType headingDescriptor;
-   private ArtifactType primaryArtifactType;
-   private boolean forcePrimaryType;
    private HashMap<String, File> fileAttributes;
    private final Branch branch;
+   private RoughArtifactKind roughArtifactKind;
+   private final List<NameAndVal> attributes = new ArrayList<NameAndVal>();
+   private final Collection<RoughArtifact> children = new ArrayList<RoughArtifact>();
 
-   public RoughArtifact(Branch branch) {
-      attributes = new ArrayList<NameAndVal>();
-      children = new ArrayList<RoughArtifact>();
-      forcePrimaryType = false;
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch) {
       this.branch = branch;
+      this.roughArtifactKind = roughArtifactKind;
    }
 
    public RoughArtifact(Artifact associatedArtifact) {
-      this(associatedArtifact.getBranch());
+      this(RoughArtifactKind.PRIMARY, associatedArtifact.getBranch());
       realArtifact = associatedArtifact;
    }
 
-   public RoughArtifact(Branch branch, String name) {
-      this(branch);
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch, String name) {
+      this(roughArtifactKind, branch);
       addAttribute("Name", name);
    }
 
@@ -83,10 +78,6 @@ public class RoughArtifact {
 
    public Artifact getAssociatedArtifact() {
       return realArtifact;
-   }
-
-   public String toString() {
-      return getName();
    }
 
    public void addFileAttribute(String name, File file) {
@@ -127,6 +118,10 @@ public class RoughArtifact {
             }
          }
       }
+   }
+
+   public String toString() {
+      return getName();
    }
 
    /**
@@ -214,10 +209,6 @@ public class RoughArtifact {
       return realArtifact;
    }
 
-   public ArtifactType getArtifactTypeForGetReal() {
-      return children.isEmpty() || forcePrimaryType ? primaryArtifactType : headingDescriptor;
-   }
-
    public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       for (NameAndVal value : attributes) {
          artifact.setSoleAttributeFromString(value.getName(), value.getValue());
@@ -252,24 +243,17 @@ public class RoughArtifact {
    }
 
    /**
-    * @param headingDescriptor The headingDescriptor to set.
+    * @return the roughArtifactKind
     */
-   public void setHeadingDescriptor(ArtifactType headingDescriptor) {
-      this.headingDescriptor = headingDescriptor;
+   public RoughArtifactKind getRoughArtifactKind() {
+      return roughArtifactKind;
    }
 
    /**
-    * @param primaryArtifactType The leaf ArtifactType to set.
+    * @param roughArtifactKind the roughArtifactKind to set
     */
-   public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
-      this.primaryArtifactType = primaryArtifactType;
-   }
-
-   /**
-    * @param forcePrimaryType The forcePrimaryType to set.
-    */
-   public void setForcePrimaryType(boolean forcePrimaryType) {
-      this.forcePrimaryType = forcePrimaryType;
+   public void setRoughArtifactKind(RoughArtifactKind roughArtifactKind) {
+      this.roughArtifactKind = roughArtifactKind;
    }
 
    public String getName() {

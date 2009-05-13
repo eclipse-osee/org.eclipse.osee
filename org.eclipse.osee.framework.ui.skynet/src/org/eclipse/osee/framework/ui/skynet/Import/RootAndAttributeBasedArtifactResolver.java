@@ -10,16 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact.NameAndVal;
@@ -35,7 +38,8 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    /**
     * @param identifyingAttributeDescriptors
     */
-   public RootAndAttributeBasedArtifactResolver(Collection<AttributeType> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
+   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
+      super(primaryArtifactType, secondaryArtifactType);
       if (identifyingAttributeDescriptors == null) throw new IllegalArgumentException(
             "identifyingAttributeDescriptors can not be null");
       if (identifyingAttributeDescriptors.isEmpty()) throw new IllegalArgumentException(
@@ -120,8 +124,8 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          }
 
          return realArtifact;
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+      } catch (FileNotFoundException ex) {
+         throw new WrappedException(ex);
       }
    }
 }

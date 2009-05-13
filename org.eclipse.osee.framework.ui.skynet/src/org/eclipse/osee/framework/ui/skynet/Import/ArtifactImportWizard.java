@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -66,21 +67,24 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       Branch branch = mainPage.getSelectedBranch();
       IArtifactImportResolver artifactResolver = null;
 
-      Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
-      if (reuseArtifactRoot == null) {
-         artifactResolver = new NewArtifactImportResolver();
-      } else { // only non-null when reuse artifacts is checked
-         Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
-         artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, false);
-      }
-
       try {
+         Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
          ArtifactExtractor extractor = mainPage.getExtractor();
          ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
+         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
+
+         if (reuseArtifactRoot == null) {
+            artifactResolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
+         } else { // only non-null when reuse artifacts is checked
+            Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
+            artifactResolver =
+                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
+                        identifyingAttributes, false);
+         }
 
          Artifact importRoot = mainPage.getImportRoot();
-         Jobs.run("Importing Artifacts", new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver,
-               primaryArtifactType), getClass(), SkynetGuiPlugin.PLUGIN_ID);
+         Jobs.run("Importing Artifacts", new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver),
+               getClass(), SkynetGuiPlugin.PLUGIN_ID);
       } catch (OseeCoreException ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
          return false;
