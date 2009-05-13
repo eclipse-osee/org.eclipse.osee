@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class OseeMasterDemoTestSuite {
+public class OseeMasterDemoTestSuite extends TestSuite {
 
    public static Test suite() throws ClassNotFoundException {
       TestSuite suite = new TestSuite("OSEE Master Demo Test Suite.");
