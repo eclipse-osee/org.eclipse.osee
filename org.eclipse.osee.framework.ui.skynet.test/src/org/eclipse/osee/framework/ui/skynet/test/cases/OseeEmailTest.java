@@ -38,7 +38,7 @@ public class OseeEmailTest extends TestCase {
          ArtifactEditor.editArtifact(UserManager.getUser());
          emailAddress = UserManager.getUser().getEmail();
          assertFalse("Invalid email address " + emailAddress + " for user " + UserManager.getUser(),
-               emailAddress.contains("@"));
+               emailAddress.contains("\\@"));
       }
    }
 

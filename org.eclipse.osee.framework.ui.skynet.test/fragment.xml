@@ -6,6 +6,9 @@
       <OseeTest
             classname="org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite">
       </OseeTest>
+      <OseeTest
+            classname="org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite">
+      </OseeTest>
    </extension>
 
 </fragment>
