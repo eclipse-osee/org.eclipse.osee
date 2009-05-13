@@ -116,8 +116,8 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
 
       Composite mainComp = new Composite(parent, SWT.BORDER);
-      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
+      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       if (toolkit != null) toolkit.paintBordersFor(mainComp);
 
       try {
@@ -150,28 +150,20 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    public void createTaskActionBar(Composite parent) throws OseeCoreException {
-
       // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      Composite composite = new Composite(parent, SWT.NONE);
+      //      composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_CYAN));
+      GridLayout layout = ALayout.getZeroMarginLayout(2, false);
+      layout.marginLeft = 5;
+      composite.setLayout(layout);
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
-
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
+      extraInfoLabel = new Label(composite, SWT.NONE);
+      extraInfoLabel.setAlignment(SWT.LEFT);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
 
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      toolBar.setLayoutData(gd);
+      ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
