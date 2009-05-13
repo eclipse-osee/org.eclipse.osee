@@ -218,7 +218,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
-            "TeamWorkflow has no TeamDefinition associated.");
+            "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
       return AtsCache.getTeamDefinitionArtifact(guid);
    }
 
