@@ -6,9 +6,9 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 
@@ -40,6 +40,13 @@ public class CsvArtifact {
       return artifact.getSoleAttributeValueAsString(NativeArtifact.CONTENT_NAME, "");
    }
 
+   public void appendData(String csvData) throws OseeCoreException {
+      String data = getCsvData();
+      data.replaceFirst("\n+$", "");
+      data = data + "\n" + csvData;
+      setCsvData(csvData);
+   }
+
    /**
     * Creates a new un-persisted CsvArtifact
     * 
@@ -50,10 +57,18 @@ public class CsvArtifact {
     * @throws OseeCoreException
     */
    public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, Branch branch) throws OseeCoreException {
-      NativeArtifact artifact = (NativeArtifact) ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, branch);
+      NativeArtifact artifact = (NativeArtifact) ArtifactTypeManager.addArtifact("General Document", branch);
       artifact.setDescriptiveName(artifactName);
+      artifact.setSoleAttributeValue("Extension", "csv");
       artifact.setSoleAttributeFromString(NativeArtifact.CONTENT_NAME, csvData);
       StaticIdManager.setSingletonAttributeValue(artifact, staticId);
       return new CsvArtifact(artifact);
    }
+
+   public static CsvArtifact getCsvArtifact(String staticId, Branch branch, boolean create) throws OseeCoreException {
+      Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch);
+      if (art != null) return new CsvArtifact((NativeArtifact) art);
+      return generateCsvArtifact(staticId, staticId, "", branch);
+   }
+
 }
