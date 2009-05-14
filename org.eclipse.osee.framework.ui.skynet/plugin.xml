@@ -527,6 +527,14 @@
    <menuContribution
          locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
       <command
+            commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
+            style="push">
+      </command>
+      <separator
+            name="separator.xBranch.BranchView0"
+            visible="true">
+      </separator>
+      <command
             commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
             style="push">
       </command>
@@ -675,6 +683,16 @@
               variable="selection">
            <count
                  value="+">
+           </count>
+        </with>
+     </enabledWhen>
+      </handler>
+      		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="1">
            </count>
         </with>
      </enabledWhen>
@@ -1176,6 +1194,10 @@
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
         icon="images/archive.gif">
   </image>
+    <image
+        commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
+        icon="images/artifact_explorer.gif">
+  </image>
 	</extension>
  <extension
        id="DeleteArchivedBranches"
@@ -1485,6 +1507,10 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager"
         name="Merge">
+  </command>
+  <command
+          id="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
+          name="Explore">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
