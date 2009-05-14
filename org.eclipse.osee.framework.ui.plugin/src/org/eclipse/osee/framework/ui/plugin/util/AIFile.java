@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 
 /**
@@ -44,10 +45,14 @@ public class AIFile {
    }
 
    public static void writeToFile(IFile file, String string) throws OseeCoreException {
+      writeToFile(file, string, "UTF-8");
+   }
+
+   public static void writeToFile(IFile file, String string, String charcode) throws OseeCoreException {
       try {
-         writeToFile(file, Streams.convertStringToInputStream(string, "UTF-8"));
+         writeToFile(file, Streams.convertStringToInputStream(string, charcode));
       } catch (UnsupportedEncodingException ex) {
-         throw new OseeCoreException(ex);
+         throw new OseeWrappedException(ex);
       }
    }
 
