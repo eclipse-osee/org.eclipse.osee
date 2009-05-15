@@ -44,7 +44,7 @@ public class CsvArtifact {
       String data = getCsvData();
       data.replaceFirst("\n+$", "");
       data = data + "\n" + csvData;
-      setCsvData(csvData);
+      setCsvData(data);
    }
 
    /**
