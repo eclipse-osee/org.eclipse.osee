@@ -94,7 +94,7 @@ public class UpdateBranchJob extends Job {
          }
       } finally {
          if (newWorkingBranch != null && !status.isOK()) {
-            BranchManager.deleteBranch(newWorkingBranch);
+            BranchManager.purgeBranch(newWorkingBranch);
          }
          monitor.worked(QUARTER_TOTAL_WORK);
       }

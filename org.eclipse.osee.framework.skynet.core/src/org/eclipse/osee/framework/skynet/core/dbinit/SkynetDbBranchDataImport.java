@@ -60,7 +60,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
             if (!branch.getBranchName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
-               BranchManager.deleteBranch(branch);
+               BranchManager.purgeBranch(branch);
             }
          }
 

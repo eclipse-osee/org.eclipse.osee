@@ -285,9 +285,9 @@ public class BranchManager {
     * 
     * @throws InterruptedException
     */
-   public static void deleteArchivedBranches() throws OseeCoreException, InterruptedException {
+   public static void purgeArchivedBranches() throws OseeCoreException, InterruptedException {
       for (Branch archivedBranch : getArchivedBranches()) {
-         Job job = new DeleteBranchJob(archivedBranch);
+         Job job = new PurgeBranchJob(archivedBranch);
          Jobs.startJob(job);
          job.join();
       }
@@ -397,12 +397,12 @@ public class BranchManager {
    }
 
    /**
-    * Delete branch from the system.
+    * Purges a branch from the system. (This operation cannot be undone.) All branch data will be removed.
     * 
     * @param branch
     */
-   public static Job deleteBranch(final Branch branch) {
-      return Jobs.startJob(new DeleteBranchJob(branch));
+   public static Job purgeBranch(final Branch branch) {
+      return Jobs.startJob(new PurgeBranchJob(branch));
    }
 
    public static void handleBranchDeletion(int branchId) {
