@@ -101,6 +101,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             Display.getCurrent().getActiveShell(), getName(), getName()))))) {
 
          SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+         OseeLog.registerLoggerListener(monitorLog);
 
          Branch saw1Branch = BranchManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name());
 
