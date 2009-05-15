@@ -51,10 +51,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    private Artifact artifact;
    private SMAManager smaMgr;
-   private Button createBranch;
+   private Button createBranchButton;
    private Button showArtifactExplorer;
    private Button showChangeReport;
-   private Button deleteBranch;
+   private Button purgeBranchButton;
    public static enum BranchStatus {
       Not_Started, Changes_InProgress, Changes_NotPermitted
    }
@@ -83,12 +83,12 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       if (toolkit != null) toolkit.adapt(bComp);
 
       if (toolkit != null)
-         createBranch = toolkit.createButton(bComp, null, SWT.PUSH);
+         createBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
       else
-         createBranch = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() != null) createBranch.setEnabled(false);
-      createBranch.setToolTipText("Create Working Branch");
-      createBranch.addListener(SWT.Selection, new Listener() {
+         createBranchButton = new Button(bComp, SWT.PUSH);
+      if (getWorkingBranch() != null) createBranchButton.setEnabled(false);
+      createBranchButton.setToolTipText("Create Working Branch");
+      createBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
             smaMgr.getBranchMgr().createWorkingBranch(null, true);
          }
@@ -119,21 +119,21 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       });
 
       if (toolkit != null)
-         deleteBranch = toolkit.createButton(bComp, null, SWT.PUSH);
+         purgeBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
       else
-         deleteBranch = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() == null) deleteBranch.setEnabled(false);
-      deleteBranch.setToolTipText("Delete Working Branch");
-      deleteBranch.addListener(SWT.Selection, new Listener() {
+         purgeBranchButton = new Button(bComp, SWT.PUSH);
+      if (getWorkingBranch() == null) purgeBranchButton.setEnabled(false);
+      purgeBranchButton.setToolTipText("Purge Working Branch");
+      purgeBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().deleteWorkingBranch(true);
+            smaMgr.getBranchMgr().purgeWorkingBranch(true);
             refresh();
          }
       });
 
       if (AtsPlugin.getInstance() != null) {
-         createBranch.setImage(AtsPlugin.getInstance().getImage("branch.gif"));
-         deleteBranch.setImage(AtsPlugin.getInstance().getImage("trash.gif"));
+         createBranchButton.setImage(AtsPlugin.getInstance().getImage("branch.gif"));
+         purgeBranchButton.setImage(AtsPlugin.getInstance().getImage("trash.gif"));
       }
       if (SkynetGuiPlugin.getInstance() != null) {
          showArtifactExplorer.setImage(SkynetGuiPlugin.getInstance().getImage("artifact_explorer.gif"));
@@ -245,8 +245,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
       try {
          if (smaMgr != null && smaMgr.getBranchMgr() != null) {
-            if (createBranch != null) {
-               createBranch.setEnabled(!smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
+            if (createBranchButton != null) {
+               createBranchButton.setEnabled(!smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
             if (showArtifactExplorer != null) {
                if (getWorkingBranch() == null)
@@ -264,8 +264,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                else
                   showChangeReport.setEnabled(false);
             }
-            if (deleteBranch != null) {
-               deleteBranch.setEnabled(smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
+            if (purgeBranchButton != null) {
+               purgeBranchButton.setEnabled(smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
             }
          }
       } catch (OseeCoreException ex) {
@@ -352,7 +352,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    }
 
    public Button getCreateBranchButton() {
-      return createBranch;
+      return createBranchButton;
    }
 
    public Button getShowArtifactExplorerButton() {
@@ -364,7 +364,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    }
 
    public Button getDeleteBranchButton() {
-      return deleteBranch;
+      return purgeBranchButton;
    }
 
 }

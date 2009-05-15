@@ -205,25 +205,25 @@ public class AtsBranchManager {
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public void deleteWorkingBranch(boolean popup) {
+   public void purgeWorkingBranch(boolean popup) {
       try {
          Branch branch = getWorkingBranch();
          if (branch.hasChanges() && popup) {
             if (!MessageDialog.openQuestion(
                   PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Delete Branch with Changes",
-                  "Warning: Changes have been made on this branch.\n\nAre you sure you want to delete the branch: " + branch)) return;
+                  "Purge Working Branch",
+                  "Warning: Changes have been made on this branch.\n\nAre you sure you want to purge the branch: " + branch)) return;
          } else if (popup && !MessageDialog.openQuestion(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Branch",
-               "Are you sure you want to delete the branch: " + branch)) {
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Purge Branch",
+               "Are you sure you want to purge the branch: " + branch)) {
          }
-         Job job = BranchManager.deleteBranch(branch);
+         Job job = BranchManager.purgeBranch(branch);
          job.join();
 
-         if (popup) AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
+         if (popup) AWorkbench.popup("Purge Complete", "Branch Purged Successfully");
 
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.");
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem purging branch.");
       }
    }
 
