@@ -52,6 +52,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
       addToolBar(form);
       updateDataPart();
+      updateToolBarVisibility();
    }
 
    private IToolBarManager getToolBarManager() {
@@ -117,10 +118,16 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    public void refresh() {
       super.refresh();
       updateDataPart();
+      updateToolBarVisibility();
+   }
+
+   private void updateToolBarVisibility() {
       boolean isReadOnly = !getEditorInput().isReadOnly();
+      getSection().getTextClient().setVisible(isReadOnly);
       for (IContributionItem item : getToolBarManager().getItems()) {
          item.setVisible(isReadOnly);
       }
+      getToolBarManager().update(true);
    }
 
    /* (non-Javadoc)
