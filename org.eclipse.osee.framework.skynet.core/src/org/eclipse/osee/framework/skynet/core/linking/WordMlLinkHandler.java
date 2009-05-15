@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -179,27 +180,45 @@ public class WordMlLinkHandler {
       return modified;
    }
 
+   private static List<Artifact> findArtifacts(int transactionNumber, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
+      List<Artifact> artifactsFromSearch;
+      if (isHistorical) {
+         TransactionId transactionId = TransactionIdManager.getTransactionId(transactionNumber);
+         artifactsFromSearch = ArtifactQuery.getHistoricalArtifactsFromIds(guidsFromLinks, transactionId, true);
+      } else {
+         artifactsFromSearch = ArtifactQuery.getArtifactsFromIds(guidsFromLinks, branch, true);
+      }
+      return artifactsFromSearch;
+   }
+
+   private static List<String> getGuidsNotFound(List<String> guidsFromLinks, List<Artifact> artifactsFound) {
+      Set<String> artGuids = new HashSet<String>();
+      for (Artifact artifact : artifactsFound) {
+         artGuids.add(artifact.getGuid());
+      }
+      return Collections.setComplement(guidsFromLinks, artGuids);
+   }
+
    private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, Match> matchMap, boolean isUnliking) throws OseeCoreException {
       Branch branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<String>(matchMap.keySet());
 
-      boolean historical = source.isHistorical();
-      if (historical) {
-         TransactionId transactionId = TransactionIdManager.getTransactionId(source.getTransactionNumber());
-         artifactsFromSearch = ArtifactQuery.getHistoricalArtifactsFromIds(guidsFromLinks, transactionId, true);
-      } else {
-         artifactsFromSearch = ArtifactQuery.getArtifactsFromIds(guidsFromLinks, branch, true);
+      artifactsFromSearch =
+            findArtifacts(source.getTransactionNumber(), source.getBranch(), source.isHistorical(), guidsFromLinks);
+      if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.isMergeBranch()) {
+         Branch sourceBranch = BranchManager.getBranch(branch.getParentBranchId());
+         List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
+
+         List<Artifact> union = new ArrayList<Artifact>();
+         union.addAll(findArtifacts(branch.getParentTransactionId(), sourceBranch, source.isHistorical(), unknownGuids));
+         union.addAll(artifactsFromSearch);
+         artifactsFromSearch = union;
       }
 
       if (guidsFromLinks.size() != artifactsFromSearch.size()) {
-         Set<String> artGuids = new HashSet<String>();
-         for (Artifact artifact : artifactsFromSearch) {
-            artGuids.add(artifact.getGuid());
-         }
-         List<String> unknownGuids = Collections.setComplement(guidsFromLinks, artGuids);
-
+         List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
          if (isUnliking) {
             // Ignore not found items and replace with osee marker
             for (String guid : unknownGuids) {
@@ -231,7 +250,7 @@ public class WordMlLinkHandler {
             if (isUnliking) {
                replaceWith = String.format(OSEE_LINK_MARKER, artifact.getGuid());
             } else {
-               replaceWith = getWordMlLink(destLinkType, artifact, branch);
+               replaceWith = getWordMlLink(destLinkType, artifact);
             }
             changeSet.replace(match.start, match.end, replaceWith);
          }
@@ -243,7 +262,7 @@ public class WordMlLinkHandler {
       return String.format(WORDML_BOOKMARK_FORMAT, source.getGuid());
    }
 
-   private static String getWordMlLink(LinkType destLinkType, Artifact artifact, Branch branch) throws OseeCoreException {
+   private static String getWordMlLink(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
       String toReturn = "";
       String linkText = artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : "");
       linkText = Xml.escape(linkText).toString();
