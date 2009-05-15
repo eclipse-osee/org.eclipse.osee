@@ -11,14 +11,12 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -49,12 +47,15 @@ public class BranchCreator {
    public static final String NEW_MERGE_BRANCH_COMMENT = "New Merge Branch from ";
 
    private static final String BRANCH_TABLE_INSERT =
-         "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "branch_name", "parent_branch_id",
-               "parent_transaction_id", "archived", "associated_art_id", "branch_type");
+         "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?)";
+
    private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
 
    private static final String MERGE_BRANCH_INSERT =
          "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
+
+   private static final String INSERT_INTO_TX_DETAILS =
+         "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
 
    private static final BranchCreator instance = new BranchCreator();
 
@@ -66,7 +67,7 @@ public class BranchCreator {
       return instance;
    }
 
-   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(OseeConnection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
+   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(OseeConnection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, BranchState branchState, Branch destBranch) throws OseeCoreException {
       User userToBlame = UserManager.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId =
@@ -76,16 +77,13 @@ public class BranchCreator {
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
             initializeBranch(connection, sourceTransactionId, childBranchShortName, childBranchName, userId, timestamp,
-                  comment, associatedArtifact, branchType);
+                  comment, associatedArtifact, branchType, branchState);
 
       // insert the new transaction data first.
       int newTransactionNumber = SequenceManager.getNextTransactionId();
-      String query =
-            "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
-                  "time", "author", "tx_type");
-      ConnectionHandler.runPreparedUpdate(connection, query, childBranch.getBranchId(), newTransactionNumber,
-            childBranch.getCreationComment(), childBranch.getCreationDate(), childBranch.getAuthorId(),
-            TransactionDetailsType.Baselined.getId());
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, childBranch.getBranchId(),
+            newTransactionNumber, childBranch.getCreationComment(), childBranch.getCreationDate(),
+            childBranch.getAuthorId(), TransactionDetailsType.Baselined.getId());
 
       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
    }
@@ -104,7 +102,7 @@ public class BranchCreator {
     * @return branch object that represents the newly created branch
     * @throws OseeCoreException
     */
-   private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType, BranchState branchState) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
@@ -125,12 +123,12 @@ public class BranchCreator {
       }
 
       ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchName, parentBranchNumber,
-            parentTransactionId, 0, associatedArtifactId, branchType.getValue());
+            parentTransactionId, 0, associatedArtifactId, branchType.getValue(), branchState.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
             BranchManager.createBranchObject(branchName, branchId, parentBranchNumber, parentTransactionId, false,
-                  authorId, creationDate, creationComment, associatedArtifactId, branchType);
+                  authorId, creationDate, creationComment, associatedArtifactId, branchType, branchState);
       if (associatedArtifact != null) {
          branch.setAssociatedArtifact(associatedArtifact);
       }
@@ -212,7 +210,7 @@ public class BranchCreator {
                      TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
                      "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
                      "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
-                     BranchType.MERGE, destBranch);
+                     BranchType.MERGE, BranchState.MERGE_IN_PROGRESS, destBranch);
 
          List<Object[]> datas = new LinkedList<Object[]>();
          int queryId = ArtifactLoader.getNewQueryId();

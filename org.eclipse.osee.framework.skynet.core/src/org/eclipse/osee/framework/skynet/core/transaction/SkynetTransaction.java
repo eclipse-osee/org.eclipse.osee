@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -101,7 +103,7 @@ public class SkynetTransaction extends DbTransaction {
     */
    private void checkBranch(Artifact artifact) throws OseeStateException {
       ensureCorrectBranch(artifact);
-      ensureBranchIsNotArchived(artifact);
+      ensureBranchIsEditable(artifact);
    }
 
    private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
@@ -113,10 +115,10 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   private void ensureBranchIsNotArchived(Artifact artifact) throws OseeStateException {
-      if (artifact.getBranch().isArchived()) {
+   private void ensureBranchIsEditable(Artifact artifact) throws OseeStateException {
+      if (!artifact.getBranch().isEditable()) {
          String msg =
-               String.format("The artifact [%s] is on an archived branch [%s]", artifact.getHumanReadableId(),
+               String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getHumanReadableId(),
                      artifact.getBranch());
          throw new OseeStateException(msg);
       }
@@ -262,7 +264,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private void addReflectedAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      addAttributeHelper(artifact, attribute, attribute.isDeleted()? ModificationType.DELETED : artifact.getModType());
+      addAttributeHelper(artifact, attribute, attribute.isDeleted() ? ModificationType.DELETED : artifact.getModType());
    }
 
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
@@ -392,6 +394,9 @@ public class SkynetTransaction extends DbTransaction {
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
+      if (!branch.isMergeBranch()) {
+         BranchManager.setBranchState(connection, branch, BranchState.IN_WORK);
+      }
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
 
       // Update all transaction items before collecting events

@@ -308,7 +308,7 @@
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PARENT_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ARCHIVED" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_STATE" defaultValue="null" type="INTEGER" />
+		<Column id="BRANCH_STATE" defaultValue="not null" type="INTEGER" />
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_TYPE" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />

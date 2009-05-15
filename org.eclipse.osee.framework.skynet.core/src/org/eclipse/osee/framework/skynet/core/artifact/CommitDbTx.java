@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -49,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Theron Virgin
  */
 public class CommitDbTx extends DbTransaction {
+
    //destination branch id, source branch id
    private static final String INSERTION =
          "INSERT INTO osee_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN tx1.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END ";
@@ -316,6 +318,14 @@ public class CommitDbTx extends DbTransaction {
             System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",
                   Lib.getElapseString(time)));
          }
+
+         Branch mergeBranch = BranchManager.getMergeBranch(fromBranch, toBranch);
+         BranchManager.setBranchState(connection, mergeBranch, BranchState.CLOSED);
+         time = System.currentTimeMillis();
+         if (DEBUG) {
+            System.out.println(String.format("   Set Merge Branch [%s] to closed in %s", mergeBranch.getBranchName(),
+                  Lib.getElapseString(time)));
+         }
       }
 
       if (relLinks.size() > 0) {
@@ -326,6 +336,9 @@ public class CommitDbTx extends DbTransaction {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
 
+      if (toBranch.getBranchState() == BranchState.CREATED) {
+         BranchManager.setBranchState(connection, toBranch, BranchState.IN_WORK);
+      }
       success = true;
    }
 

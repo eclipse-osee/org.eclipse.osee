@@ -29,14 +29,18 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchStorageState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -143,7 +147,7 @@ public class BranchManager {
     */
    public static List<Branch> getNormalBranches() throws OseeCoreException {
       List<Branch> branches =
-            getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
+            getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
                   BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
@@ -157,13 +161,13 @@ public class BranchManager {
     */
    public static List<Branch> getNormalAllBranches() throws OseeCoreException {
       List<Branch> branches =
-            getBranches(BranchState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
+            getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
                   BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
    }
 
-   public static List<Branch> getBranches(BranchState branchState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
+   public static List<Branch> getBranches(BranchArchivedState branchState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = new ArrayList<Branch>(1000);
       for (Branch branch : instance.branchCache.values()) {
@@ -263,7 +267,7 @@ public class BranchManager {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = new ArrayList<Branch>(500);
       for (Branch branch : instance.branchCache.values()) {
-         if (branch.matchesState(BranchState.ACTIVE) && branch.isOfType(BranchType.WORKING) && parentBranch.equals(branch.getParentBranch())) {
+         if (branch.matchesState(BranchArchivedState.UNARCHIVED) && branch.isOfType(BranchType.WORKING) && parentBranch.equals(branch.getParentBranch())) {
             branches.add(branch);
          }
       }
@@ -272,7 +276,7 @@ public class BranchManager {
    }
 
    public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
-      return getBranches(BranchState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
+      return getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
             BranchType.BASELINE);
    }
 
@@ -289,10 +293,10 @@ public class BranchManager {
       }
    }
 
-   public static Branch createBranchObject(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
+   public static Branch createBranchObject(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       Branch branch =
             new Branch(branchName, branchId, parentBranchId, parentTransactionId, archived, authorId, creationDate,
-                  creationComment, associatedArtifactId, branchType);
+                  creationComment, associatedArtifactId, branchType, branchState);
       instance.branchCache.put(branchId, branch);
       return branch;
    }
@@ -308,7 +312,8 @@ public class BranchManager {
       return createBranchObject(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
             chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
             chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
-            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")));
+            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")),
+            BranchState.getBranchState(chStmt.getInt("branch_state")));
    }
 
    /**
@@ -367,10 +372,28 @@ public class BranchManager {
    /**
     * Update branch
     * 
-    * @param branch
+    * @param Job
     */
    public static Job updateBranch(final Branch branch, final IConflictResolver resolver) {
       return Jobs.startJob(new UpdateBranchJob(branch, resolver));
+   }
+
+   /**
+    * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
+    * swaps branches so we are left with the most current branch containing latest changes.
+    * 
+    * @param Job
+    */
+   public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
+      Job job = new Job("Complete Update") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            return UpdateBranchJob.completeUpdate(monitor, conflictManager, archiveSourceBranch,
+                  overwriteUnresolvedConflicts);
+         }
+      };
+      return Jobs.startJob(job);
    }
 
    /**
@@ -401,7 +424,9 @@ public class BranchManager {
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
-
+      if (!conflictManager.getToBranch().isEditable()) {
+         throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
+      }
       runCommitExtPointActions(conflictManager.getFromBranch());
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
@@ -460,6 +485,25 @@ public class BranchManager {
    public static void unArchive(Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(UN_ARCHIVE_BRANCH, branch.getBranchId());
       branch.setArchived(false);
+   }
+
+   /**
+    * Sets the branch state
+    * 
+    * @throws OseeDataStoreException
+    */
+   public static void setBranchState(OseeConnection connection, Branch branch, BranchState branchState) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_BRANCH_STATE, branchState.getValue(), branch.getBranchId());
+      branch.setBranchState(branchState);
+   }
+
+   /**
+    * Sets the branch state
+    * 
+    * @throws OseeDataStoreException
+    */
+   public static void setBranchState(Branch branch, BranchState branchState) throws OseeDataStoreException {
+      setBranchState(null, branch, branchState);
    }
 
    /**
@@ -572,12 +616,12 @@ public class BranchManager {
    }
 
    public static List<Branch> getTopLevelBranches() throws OseeCoreException {
-      return getBranches(BranchState.ACTIVE, BranchControlled.ALL, BranchType.TOP_LEVEL);
+      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.TOP_LEVEL);
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
-      return getBranches(BranchState.ACTIVE, BranchControlled.CHANGE_MANAGED, BranchType.WORKING, BranchType.TOP_LEVEL,
-            BranchType.BASELINE);
+      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.CHANGE_MANAGED, BranchType.WORKING,
+            BranchType.TOP_LEVEL, BranchType.BASELINE);
    }
 
    private void initializeLastBranchValue() {

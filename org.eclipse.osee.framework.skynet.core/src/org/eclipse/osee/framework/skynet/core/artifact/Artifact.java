@@ -484,6 +484,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param existingAttribute specifies whether this attribute is new or is being loaded from the database
     * @return new Attribute
     */
+   @SuppressWarnings("unchecked")
    public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
          Object[] params = new Object[] {attributeType, this};
@@ -1006,7 +1007,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public boolean isReadOnly() {
       try {
-         return isDeleted() || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
+         return isDeleted() || isHistorical() || !getBranch().isEditable() || !AccessControlManager.checkObjectPermission(
+               this, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return false;

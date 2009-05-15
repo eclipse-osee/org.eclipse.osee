@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -148,6 +149,12 @@ public class ConflictManagerInternal {
                sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
+
+      BranchState sourceBranchState = sourceBranch.getBranchState();
+      if (sourceBranchState != BranchState.CLOSED && sourceBranchState != BranchState.CLOSED_BY_UPDATE) {
+         BranchManager.setBranchState(sourceBranch, BranchState.CLOSED);
+      }
+
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
       loadArtifactVersionConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
             artIdSetDontShow, artIdSetDontAdd, monitor, transactionId);

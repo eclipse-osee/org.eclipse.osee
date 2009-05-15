@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -59,8 +60,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private Branch sourceBranch;
    private Branch destBranch;
    private boolean deleted;
+   private BranchState branchState;
 
-   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
+   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       this.branchId = branchId;
       this.branchName = branchName;
       this.parentBranchId = parentBranchId;
@@ -72,6 +74,15 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       this.associatedArtifactId = associatedArtifactId;
       this.associatedArtifact = null;
       this.branchType = branchType;
+      this.branchState = branchState;
+   }
+
+   public BranchState getBranchState() {
+      return branchState;
+   }
+
+   void setBranchState(BranchState branchState) {
+      this.branchState = branchState;
    }
 
    /**
@@ -190,12 +201,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public Collection<Branch> getAllChildBranches() throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
-      getALLChildBranches(this, children, false);
+      getAllChildBranches(this, children, false);
 
       return children;
    }
 
-   private void getALLChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
+   private void getAllChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
       for (Branch branch : BranchManager.getNormalAllBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
@@ -389,8 +400,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return false;
    }
 
-   public boolean matchesState(BranchState branchState) {
-      return branchState == BranchState.ALL || (isArchived() && branchState == BranchState.ARCHIVED) || (!isArchived() && branchState == BranchState.ACTIVE);
+   public boolean matchesState(BranchArchivedState branchState) {
+      return branchState == BranchArchivedState.ALL || (isArchived() && branchState == BranchArchivedState.ARCHIVED) || (!isArchived() && branchState == BranchArchivedState.UNARCHIVED);
    }
 
    public boolean matchesControlled(BranchControlled branchControlled) {
@@ -406,6 +417,14 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public boolean isDeleted() {
       return deleted;
+   }
+
+   /**
+    * @return Returns whether the branch is editable.
+    */
+   public boolean isEditable() {
+      final BranchState currentState = getBranchState();
+      return currentState != BranchState.CLOSED && currentState != BranchState.CLOSED_BY_UPDATE && !isArchived();
    }
 
    /**

@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 /**
  * @author Ryan D. Brooks
  */
-public enum BranchState {
-   ARCHIVED, ACTIVE, ALL
+public enum BranchArchivedState {
+   ARCHIVED, UNARCHIVED, ALL
 }

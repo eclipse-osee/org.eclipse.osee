@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.skynet.core.artifact.update;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
@@ -43,9 +43,9 @@ public class UpdateBranchJob extends Job {
       this.resolver = resolver;
    }
 
-   private String getUpdatedName(String branchName, boolean inProgress) {
+   private static String getUpdatedName(String branchName, boolean inProgress) {
       String storeName = StringFormat.truncate(branchName, 100);
-      return String.format("%s - %s - %s", storeName, inProgress ? "update completed" : "updated",
+      return String.format("%s - %s - %s", storeName, inProgress ? "for update" : "moved by update on",
             Lib.getDateTimeString());
    }
 
@@ -54,30 +54,10 @@ public class UpdateBranchJob extends Job {
       monitor.beginTask(getName(), TOTAL_WORK);
       try {
          if (originalBranch != null && originalBranch.hasParentBranch()) {
-            Branch parentBranch = originalBranch.getParentBranch();
-            String originalBranchName = originalBranch.getBranchName();
-            Artifact originalAssociatedArtifact = originalBranch.getAssociatedArtifact();
-            if (parentBranch != null) {
-               try {
-                  status =
-                        performUpdate(monitor, parentBranch, originalBranch, originalBranchName,
-                              originalAssociatedArtifact);
-
-                  //                  if (monitor.isCanceled()) {
-                  //                     status = restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
-                  //                     if (status.isOK()) {
-                  //                        status = Status.CANCEL_STATUS;
-                  //                     }
-                  //                  }
-               } catch (OseeCoreException ex) {
-                  status =
-                        new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format(
-                              "Error updating branch [%s]", originalBranch.getBranchShortName()), ex);
-                  //                  restoreBranch(originalBranch, originalBranchName, originalAssociatedArtifact);
-               }
-            }
+            status = performUpdate(monitor, originalBranch);
+         } else {
+            monitor.worked(TOTAL_WORK);
          }
-         monitor.worked(TOTAL_WORK);
       } catch (OseeCoreException ex) {
          status =
                new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format("Error updating branch [%s]",
@@ -88,42 +68,29 @@ public class UpdateBranchJob extends Job {
       return status;
    }
 
-   private IStatus performUpdate(IProgressMonitor monitor, Branch parentBranch, Branch originalBranch, String originalBranchName, Artifact originalAssociatedArtifact) throws OseeCoreException {
+   private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {
+      Branch parentBranch = originalBranch.getParentBranch();
+      String branchUpdateName = getUpdatedName(originalBranch.getBranchName(), true);
+      return BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
+            UserManager.getUser(SystemUser.OseeSystem));
+   }
+
+   private IStatus performUpdate(IProgressMonitor monitor, Branch originalBranch) throws OseeCoreException {
       IStatus status = Status.OK_STATUS;
       Branch newWorkingBranch = null;
       try {
-         String branchUpdateName = getUpdatedName(originalBranchName, true);
-
-         // Create new updated branch
-         monitor.subTask("Create new branch");
-         newWorkingBranch =
-               BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
-                     UserManager.getUser(SystemUser.OseeSystem));
+         monitor.subTask("Creating temporary branch");
+         newWorkingBranch = createTempBranch(originalBranch);
          monitor.worked(HALF_TOTAL_WORK);
 
+         BranchManager.setBranchState(originalBranch, BranchState.CLOSED_BY_UPDATE);
+
+         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL_WORK);
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
          if (!conflictManager.remainingConflictsExist()) {
-            monitor.subTask("Merging Changes");
-            BranchManager.commitBranch(conflictManager, true, false);
-
-            originalBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
-            originalBranch.rename(getUpdatedName(originalBranchName, false));
-
-            newWorkingBranch.rename(originalBranchName);
-            if (originalAssociatedArtifact != null) {
-               newWorkingBranch.setAssociatedArtifact(originalAssociatedArtifact);
-            }
+            completeUpdate(subMonitor, conflictManager, true, false);
          } else {
-            // TODO: Set branch state - originalBranch.setBranchState();
-            // TODO: Launch Conflict Resolver
-
-            //         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL_WORK);
-            //         status = resolveConflicts(subMonitor, conflictManager);
-            //            if (status.isOK() && !conflictManager.remainingConflictsExist()) {
-            //            } else {
-            status =
-                  new Status(IStatus.OK, SkynetActivator.PLUGIN_ID,
-                        "All Conflicts were not resolved. Manual conflict resolution required");
+            status = resolver.resolveConflicts(subMonitor, conflictManager);
          }
       } finally {
          if (newWorkingBranch != null && !status.isOK()) {
@@ -134,53 +101,37 @@ public class UpdateBranchJob extends Job {
       return status;
    }
 
-   private IStatus restoreBranch(Branch originalBranch, String originalBranchName, Artifact originalAssociatedArtifact) {
+   public static IStatus completeUpdate(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
       IStatus status = Status.OK_STATUS;
       try {
-         Artifact currentArtifact = originalBranch.getAssociatedArtifact();
-         if ((currentArtifact == null || !currentArtifact.equals(originalAssociatedArtifact)) && originalAssociatedArtifact != null) {
-            originalBranch.setAssociatedArtifact(originalAssociatedArtifact);
+         monitor.beginTask("Merging updates", 3);
+         monitor.subTask("Merging updates");
+         BranchManager.commitBranch(conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
+         monitor.worked(1);
+
+         Branch sourceBranch = conflictManager.getFromBranch();
+         Branch destinationBranch = conflictManager.getToBranch();
+
+         String originalBranchName = sourceBranch.getBranchName();
+         Artifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+
+         sourceBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
+         sourceBranch.rename(getUpdatedName(originalBranchName, false));
+         monitor.worked(1);
+
+         destinationBranch.rename(originalBranchName);
+         if (originalAssociatedArtifact != null) {
+            destinationBranch.setAssociatedArtifact(originalAssociatedArtifact);
          }
-      } catch (OseeCoreException ex1) {
+
+         status = Status.OK_STATUS;
+         monitor.worked(1);
+      } catch (OseeCoreException ex) {
          status =
                new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format(
-                     "Error restoring associated artifact to [%s]", originalAssociatedArtifact.getArtId()), ex1);
-      }
-      try {
-         if (!originalBranch.getBranchName().equals(originalBranchName)) {
-            originalBranch.rename(originalBranchName);
-         }
-      } catch (OseeCoreException ex2) {
-         IStatus error =
-               new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format(
-                     "Error restoring branch name for: branchId[%s] - orginal name was [%s]",
-                     originalBranch.getBranchId(), originalBranchName), ex2);
-         if (!status.isOK()) {
-            MultiStatus multiStatus =
-                  new MultiStatus(status.getPlugin(), IStatus.ERROR, String.format("Error restoring branch [%s]",
-                        originalBranch.getBranchId()), status.getException());
-            multiStatus.add(status);
-            multiStatus.add(error);
-            status = multiStatus;
-         } else {
-            status = error;
-         }
-      }
-      return status;
-   }
-
-   private IStatus resolveConflicts(IProgressMonitor monitor, ConflictManagerExternal conflictManager) throws OseeCoreException {
-      IStatus status = Status.OK_STATUS;
-      try {
-         monitor.beginTask("Resolve Conflicts", 100);
-         if (conflictManager.remainingConflictsExist()) {
-            if (monitor.isCanceled()) {
-               status = Status.CANCEL_STATUS;
-            } else {
-               SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 100);
-               status = resolver.resolveConflicts(subMonitor, conflictManager);
-            }
-         }
+                     "Error merging updates between [%s] and [%s]",
+                     conflictManager.getFromBranch().getBranchShortName(),
+                     conflictManager.getToBranch().getBranchShortName()), ex);
       } finally {
          monitor.done();
       }
