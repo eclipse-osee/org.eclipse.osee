@@ -178,16 +178,16 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof BaseArtifactEditorInput) {
             try {
                Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
-               items.add(new AttributeTypeContainer("Editable", true, AttributeTypeUtil.getTypesWithData(artifact)));
-               items.add(new AttributeTypeContainer("Add to form before editing", false,
+               boolean isEditable = !artifact.isReadOnly();
+               items.add(new AttributeTypeContainer(isEditable ? "Editable" : "Readable", true,
+                     AttributeTypeUtil.getTypesWithData(artifact)));
+               items.add(new AttributeTypeContainer(isEditable ? "Add to form before editing" : "Empty Types", false,
                      AttributeTypeUtil.getEmptyTypes(artifact)));
             } catch (OseeCoreException ex) {
                items.add(Lib.exceptionToString(ex));
             }
          } else if (element instanceof AttributeTypeContainer) {
             return ((AttributeTypeContainer) element).getTypes().toArray();
-         } else if (element instanceof AttributeType) {
-            System.out.println("Here");
          } else if (element instanceof String) {
             items.add(element);
          }
