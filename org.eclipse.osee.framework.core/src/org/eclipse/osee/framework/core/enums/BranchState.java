@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.enums;
  * @author Roberto E. Escobar
  */
 public enum BranchState {
-   CREATED(0), CLOSED(1), IN_WORK(2), DELETED(3), MERGE_IN_PROGRESS(4), MERGE_COMPLETE(5);
+   CREATED(0), CLOSED(1), CLOSED_BY_UPDATE(2), IN_WORK(3), MERGE_IN_PROGRESS(4);
 
    private final int value;
 
@@ -26,7 +26,7 @@ public enum BranchState {
       return value;
    }
 
-   public static BranchState getBranchType(int value) {
+   public static BranchState getBranchState(int value) {
       for (BranchState type : values()) {
          if (type.getValue() == value) {
             return type;
