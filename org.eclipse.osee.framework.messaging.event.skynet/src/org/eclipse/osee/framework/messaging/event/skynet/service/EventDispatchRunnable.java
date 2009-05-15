@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.service;
 
-import java.rmi.ConnectException;
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -45,17 +46,29 @@ public class EventDispatchRunnable implements Runnable {
                if (values != null && !values.isEmpty()) {
                   listener.onEvent(values.toArray(new ISkynetEvent[values.size()]));
                }
-            } catch (ConnectException ex) {
+            } catch (IOException ex) {
                try {
                   service.deregister(listener);
-                  OseeLog.log(SkynetEventPlugin.class, Level.WARNING, "Listener unavailable - removing it from lookup");
+                  OseeLog.log(SkynetEventPlugin.class, Level.WARNING,
+                        "Listener unavailable - removing it from lookup:\n" + ex.getLocalizedMessage());
                } catch (RemoteException ex1) {
                   // Do Nothing - this should never happen
+               } finally {
+                  NumberFormat numFormat = NumberFormat.getInstance();
+                  long totalMem = Runtime.getRuntime().totalMemory();
+                  long freeMem = Runtime.getRuntime().freeMemory();
+                  String totalMemory = numFormat.format(totalMem);
+                  String usedMemory = numFormat.format(totalMem - freeMem);
+                  String message =
+                        String.format("JVM Heap space allocated: %s\nJVM Heap space used: %s\n", totalMemory,
+                              usedMemory);
+                  OseeLog.log(SkynetEventPlugin.class, Level.INFO, message);
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetEventPlugin.class, Level.SEVERE, ex);
             }
          }
       }
+
    }
 }
