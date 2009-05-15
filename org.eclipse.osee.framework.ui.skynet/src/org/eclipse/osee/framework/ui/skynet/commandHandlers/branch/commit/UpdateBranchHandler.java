@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -91,7 +92,7 @@ public class UpdateBranchHandler extends CommandHandler {
                      "Update Branch", String.format("Are you sure you want to update [%s] branch",
                            branchToUpdate.getBranchName()));
          if (isUpdateAllowed) {
-            //BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+            BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
          }
       }
       return null;
@@ -104,29 +105,12 @@ public class UpdateBranchHandler extends CommandHandler {
        */
       @Override
       public IStatus resolveConflicts(IProgressMonitor monitor, ConflictManagerExternal conflictManager) throws OseeCoreException {
-         IStatus status = Status.OK_STATUS;
-         monitor.beginTask("Resolve All Conflicts", 100);
-         try {
-            Job job = createMergeViewJob(conflictManager.getFromBranch(), conflictManager.getToBranch());
-            Jobs.startJob(job);
-            job.join();
-            status = job.getResult();
-            monitor.worked(50);
-
-            if (status.isOK()) {
-               monitor.subTask("Waiting for all conflicts to be resolved");
-               //               PlatformUI.getWorkbench().addWindowListener(new );
-               if (monitor.isCanceled()) {
-                  status = Status.CANCEL_STATUS;
-               }
-            }
-            monitor.worked(50);
-         } catch (Exception ex) {
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error during conflict resolution", ex);
-         } finally {
-            monitor.done();
-         }
-         return status;
+         monitor.beginTask("Launch Merge Manager", 100);
+         Job job = createMergeViewJob(conflictManager.getFromBranch(), conflictManager.getToBranch());
+         Jobs.startJob(job);
+         monitor.worked(100);
+         monitor.done();
+         return Status.OK_STATUS;
       }
 
       private Job createMergeViewJob(final Branch sourceBranch, final Branch destinationBranch) {
@@ -139,12 +123,14 @@ public class UpdateBranchHandler extends CommandHandler {
                IStatus status = Status.OK_STATUS;
                try {
                   IWorkbenchPage page = AWorkbench.getActivePage();
-
-                  MergeView mergeView =
-                        (MergeView) page.showView(MergeView.VIEW_ID,
+                  IViewPart viewPart =
+                        page.showView(MergeView.VIEW_ID,
                               String.valueOf(sourceBranch.getBranchId() * 100000 + destinationBranch.getBranchId()),
                               IWorkbenchPage.VIEW_ACTIVATE);
-                  mergeView.explore(sourceBranch, destinationBranch, null, null, true);
+                  if (viewPart instanceof MergeView) {
+                     MergeView mergeView = (MergeView) viewPart;
+                     mergeView.explore(sourceBranch, destinationBranch, null, null, true);
+                  }
                } catch (PartInitException ex) {
                   status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error launching merge view", ex);
                }

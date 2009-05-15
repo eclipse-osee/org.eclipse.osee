@@ -66,7 +66,8 @@ public class GlobalMenuPermissions {
 
       for (Artifact objectArtifact : artifacts) {
 
-         writePermission &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.WRITE);
+         writePermission &=
+               AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getBranch().isEditable();
          readPermission &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.READ);
          fullAccess &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);

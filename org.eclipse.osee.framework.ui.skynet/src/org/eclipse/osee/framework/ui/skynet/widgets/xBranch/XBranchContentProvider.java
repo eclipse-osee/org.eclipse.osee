@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -97,7 +97,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    private Object[] getBranchManagerChildren(BranchManager branchManager) {
-      BranchState branchState = BranchState.ACTIVE;
+      BranchArchivedState branchState = BranchArchivedState.UNARCHIVED;
       List<BranchType> branchTypes = new ArrayList<BranchType>(4);
 
       try {
@@ -111,7 +111,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.MERGE);
          }
          if (AccessControlManager.isOseeAdmin() && showArchivedBranches) {
-            branchState = BranchState.ALL;
+            branchState = BranchArchivedState.ALL;
          }
          if (showChildBranchesAtMainLevel) {
             branchTypes.add(BranchType.TOP_LEVEL);
@@ -121,7 +121,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
          List<Branch> branchesToReturn = new ArrayList<Branch>();
          if (showOnlyWorkingBranches) {
-            branchesToReturn.addAll(BranchManager.getBranches(BranchState.ACTIVE, BranchControlled.ALL,
+            branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL,
                   BranchType.WORKING));
          } else {
             branchesToReturn.addAll(BranchManager.getBranches(branchState, BranchControlled.ALL,

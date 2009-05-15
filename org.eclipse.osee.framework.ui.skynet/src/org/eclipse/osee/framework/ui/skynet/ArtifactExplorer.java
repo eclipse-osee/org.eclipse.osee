@@ -565,7 +565,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       createMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       needProjectListener.add(createMenuItem);
       createMenuItem.setText("&New Child");
-      createMenuItem.setEnabled(true);
       createMenuItem.addSelectionListener(new SelectionAdapter() {
          /* (non-Javadoc)
           * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -607,7 +606,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   treeViewer.refresh(false);
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
@@ -1103,12 +1102,15 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       public void menuShown(MenuEvent e) {
          boolean valid = treeViewer.getInput() != null;
-         for (MenuItem item : items)
-            if (!(item.getData() instanceof Exception)) // Only modify
-            // enabling if no
-            // error is
-            // associated
-            item.setEnabled(valid);
+         for (MenuItem item : items) {
+            if (!(item.getData() instanceof Exception)) {
+               // Only modify
+               // enabling if no
+               // error is
+               // associated
+               item.setEnabled(valid);
+            }
+         }
       }
    }
 

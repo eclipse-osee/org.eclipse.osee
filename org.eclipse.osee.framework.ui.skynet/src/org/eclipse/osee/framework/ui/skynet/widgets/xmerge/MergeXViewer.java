@@ -46,6 +46,7 @@ public class MergeXViewer extends XViewer {
    private Conflict[] conflicts;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
+   private Action openMergeViewAction;
 
    /**
     * @param parent
@@ -61,8 +62,6 @@ public class MergeXViewer extends XViewer {
       super.createSupportWidgets(parent);
       createMenuActions();
    }
-
-   Action openMergeViewAction;
 
    public void createMenuActions() {
       MenuManager mm = getMenuManager();

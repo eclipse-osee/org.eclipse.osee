@@ -65,6 +65,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -93,11 +94,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private TransactionId commitTrans;
    private boolean showConflicts;
 
-   /**
-    * @author Donald G. Dunne
-    */
-   public MergeView() {
-   }
+   //   private CompleteCommitAction commitAction;
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
       if (sourceBranch == null && destBranch == null && tranId == null) throw new IllegalArgumentException(
@@ -127,13 +124,16 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                public void run() {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
-                     MergeView mergeView =
-                           (MergeView) page.showView(
+                     IViewPart viewPart =
+                           page.showView(
                                  MergeView.VIEW_ID,
                                  String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() * 100000 + destBranch.getBranchId() : commitTrans.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_ACTIVATE);
-                     mergeView.showConflicts = showConflicts;
-                     mergeView.explore(sourceBranch, destBranch, tranId, commitTrans, showConflicts);
+                     if (viewPart instanceof MergeView) {
+                        MergeView mergeView = (MergeView) viewPart;
+                        mergeView.showConflicts = showConflicts;
+                        mergeView.explore(sourceBranch, destBranch, tranId, commitTrans, showConflicts);
+                     }
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
@@ -156,6 +156,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void setFocus() {
+      if (xMergeViewer != null) {
+         xMergeViewer.setFocus();
+      }
    }
 
    /*
@@ -182,7 +185,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       xMergeViewer.createWidgets(parent, 1);
 
       if (conflicts != null) xMergeViewer.setConflicts(conflicts);
-
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
@@ -1014,5 +1016,4 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    protected void showConflicts(boolean show) {
       showConflicts = show;
    }
-
 }

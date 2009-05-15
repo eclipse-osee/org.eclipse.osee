@@ -133,17 +133,15 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Committed || branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            public void run() {
-               try {
-                  xBranchWidget.refresh();
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               xBranchWidget.refresh();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         });
-      }
+         }
+      });
    }
 
    /* (non-Javadoc)
