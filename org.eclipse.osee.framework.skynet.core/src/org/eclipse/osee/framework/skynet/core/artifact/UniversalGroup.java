@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -64,8 +65,13 @@ public class UniversalGroup {
    }
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
+      try {
+         return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
+               ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing; not a bad state cause a group artifact will be created once a group is added
+      }
+      return null;
    }
 
    public static Artifact createTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
@@ -74,8 +80,7 @@ public class UniversalGroup {
                   ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
       if (artifacts.size() == 0) {
          Artifact art =
-               ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, branch,
-                     ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME);
+               ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, branch, ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME);
          art.persistAttributes();
          return art;
       }
