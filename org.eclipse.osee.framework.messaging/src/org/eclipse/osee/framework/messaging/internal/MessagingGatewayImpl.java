@@ -1,8 +1,13 @@
-/*
- * Created on Apr 21, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
 import java.util.Collection;
@@ -18,7 +23,6 @@ import org.eclipse.osee.framework.messaging.id.ProtocolId;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistributer {
 
@@ -26,7 +30,7 @@ public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistri
    private EndpointReceiveCollection endpointReceivers;
    private EndpointSendCollection endpointSenders;
 
-   public MessagingGatewayImpl(){
+   public MessagingGatewayImpl() {
       messageListeners = new MessageListenerCollection();
       endpointReceivers = new EndpointReceiveCollection();
       endpointSenders = new EndpointSendCollection();
@@ -51,21 +55,21 @@ public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistri
    public void removeSendListener(MessageId messageId, SendListener sendListener) {
       messageListeners.removeSendListener(messageId, sendListener);
    }
-   
+
    @Override
    public void distribute(Message message) {
       messageListeners.notifyReceiveListeners(message);
    }
-   
+
    @Override
    public boolean bind(EndpointReceive endpoint) {
-      if(endpointReceivers.add(endpoint)){
+      if (endpointReceivers.add(endpoint)) {
          endpoint.onBind(this);
          return true;
       }
       return false;
    }
-   
+
    @Override
    public boolean unbind(EndpointReceive endpoint) {
       endpoint.onUnbind(this);
@@ -76,7 +80,7 @@ public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistri
    public Collection<EndpointReceive> getReceiveEndpoints() {
       return endpointReceivers.getAll();
    }
-   
+
    @Override
    public boolean bind(EndpointSend endpoint) {
       return endpointSenders.add(endpoint);
@@ -96,7 +100,7 @@ public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistri
    public boolean unbindSendProtocol(ProtocolId protocolId, EndpointSend endpoint) {
       return endpointSenders.unbind(protocolId, endpoint);
    }
-   
+
    @Override
    public boolean bindSendMessage(MessageId messageId, ProtocolId protocolId) {
       return endpointSenders.bind(messageId, protocolId);
@@ -115,7 +119,7 @@ public class MessagingGatewayImpl implements MessagingGateway, ApplicationDistri
    @Override
    public void send(Message message, ExceptionHandler exceptionHandler) {
       EndpointSend sender = endpointSenders.get(message.getId());
-      if(sender == null){
+      if (sender == null) {
          String errorMessage = String.format("No registered senders for messageId[%s].", message.getId().toString());
          exceptionHandler.handleException(new Exception(errorMessage));
       } else {

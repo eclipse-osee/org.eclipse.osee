@@ -1,8 +1,13 @@
-/*
- * Created on May 3, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
 import java.util.ArrayList;
@@ -18,22 +23,21 @@ import org.eclipse.osee.framework.messaging.id.ProtocolId;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class EndpointSendCollection {
 
    private final List<EndpointSend> endpoints;
    private Map<ProtocolId, EndpointSend> protocolMapping;
    private Map<MessageId, ProtocolId> messageIdMapping;
-   
-   public EndpointSendCollection(){
+
+   public EndpointSendCollection() {
       endpoints = new CopyOnWriteArrayList<EndpointSend>();
       protocolMapping = new ConcurrentHashMap<ProtocolId, EndpointSend>();
       messageIdMapping = new ConcurrentHashMap<MessageId, ProtocolId>();
    }
-   
+
    public synchronized boolean add(EndpointSend endpoint) {
-      if(endpoints.contains(endpoint)){
+      if (endpoints.contains(endpoint)) {
          return false;
       } else {
          return endpoints.add(endpoint);
@@ -41,18 +45,18 @@ public class EndpointSendCollection {
    }
 
    public synchronized boolean remove(EndpointSend endpoint) {
-      if(endpoints.remove(endpoint)){
+      if (endpoints.remove(endpoint)) {
          List<ProtocolId> protocolIdsToRemove = new ArrayList<ProtocolId>();
          Iterator<ProtocolId> it = protocolMapping.keySet().iterator();
-         while(it.hasNext()){
+         while (it.hasNext()) {
             ProtocolId id = it.next();
-            if(protocolMapping.get(id).equals(endpoint)){
+            if (protocolMapping.get(id).equals(endpoint)) {
                it.remove();
                protocolIdsToRemove.add(id);
             }
          }
-         for(ProtocolId id:protocolIdsToRemove){
-            removeProtocolId(id);  
+         for (ProtocolId id : protocolIdsToRemove) {
+            removeProtocolId(id);
          }
          return true;
       }
@@ -60,47 +64,47 @@ public class EndpointSendCollection {
    }
 
    public synchronized boolean bind(ProtocolId protocolId, EndpointSend endpoint) {
-      if(protocolMapping.containsKey(protocolId)){
+      if (protocolMapping.containsKey(protocolId)) {
          return false;
       } else {
-         protocolMapping.put(protocolId, endpoint);   
+         protocolMapping.put(protocolId, endpoint);
          return true;
       }
    }
 
    public synchronized boolean unbind(ProtocolId protocolId, EndpointSend endpoint) {
-      if(protocolMapping.containsKey(protocolId)){
+      if (protocolMapping.containsKey(protocolId)) {
          protocolMapping.remove(protocolId);
-         
+
          removeProtocolId(protocolId);
-         
+
          return true;
       } else {
          return false;
       }
    }
 
-   private void removeProtocolId(ProtocolId protocolId){
+   private void removeProtocolId(ProtocolId protocolId) {
       Iterator<MessageId> it = messageIdMapping.keySet().iterator();
-      while(it.hasNext()){
+      while (it.hasNext()) {
          MessageId id = it.next();
-         if(messageIdMapping.get(id).equals(protocolId)){
+         if (messageIdMapping.get(id).equals(protocolId)) {
             it.remove();
          }
       }
    }
-   
+
    public synchronized boolean bind(MessageId messageId, ProtocolId protocolId) {
-      if(messageIdMapping.containsKey(messageId)){
+      if (messageIdMapping.containsKey(messageId)) {
          return false;
       } else {
-         messageIdMapping.put(messageId, protocolId);   
+         messageIdMapping.put(messageId, protocolId);
          return true;
       }
    }
 
    public synchronized boolean unbind(MessageId messageId, ProtocolId protocolId) {
-      if(messageIdMapping.containsKey(messageId)){
+      if (messageIdMapping.containsKey(messageId)) {
          messageIdMapping.remove(messageId);
          return true;
       } else {
@@ -120,11 +124,11 @@ public class EndpointSendCollection {
 
    public synchronized EndpointSend get(MessageId id) {
       ProtocolId protocolId = messageIdMapping.get(id);
-      if(protocolId != null){
+      if (protocolId != null) {
          EndpointSend send = protocolMapping.get(protocolId);
-         if(send != null){
+         if (send != null) {
             return send;
-         } 
+         }
       }
       return null;
    }
