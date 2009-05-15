@@ -209,6 +209,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             XNavigateItem adminItems = new XNavigateItem(null, "Admin", AtsPlugin.getInstance().getImage("admin.gif"));
 
             new AtsNotificationNavigateItem(adminItems);
+            new AtsNotificationNavigateItem(adminItems, true);
             new UpdateAtsWorkItemDefinitions(adminItems);
             new UpdateAssigneesRelations(adminItems);
             new DisplayCurrentOseeEventListeners(adminItems);

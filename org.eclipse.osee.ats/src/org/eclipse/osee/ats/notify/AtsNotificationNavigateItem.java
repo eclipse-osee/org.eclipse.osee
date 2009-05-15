@@ -26,7 +26,12 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
     * @param name
     */
    public AtsNotificationNavigateItem(XNavigateItem parent) {
-      super(parent, "Process ATS Notifications", AtsPlugin.getInstance().getImage("admin.gif"));
+      this(parent, false);
+   }
+
+   public AtsNotificationNavigateItem(XNavigateItem parent, boolean sync) {
+      super(parent, (sync ? "Sync - " : "") + "Process ATS Notifications",
+            AtsPlugin.getInstance().getImage("admin.gif"));
    }
 
    /* (non-Javadoc)
