@@ -28,21 +28,21 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Jeff C. Phillips
  */
-public class DeleteBranchHandler extends CommandHandler {
+public class PurgeBranchHandler extends CommandHandler {
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       MessageDialog dialog =
-            new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
-                  "Are you sure you want to delete the branch: " + selectedBranch.getBranchName(),
+            new MessageDialog(Display.getCurrent().getActiveShell(), "Purge Branch", null,
+                  "Are you sure you want to purge the branch: " + selectedBranch.getBranchName(),
                   MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
-         BranchManager.deleteBranch(selectedBranch);
+         BranchManager.purgeBranch(selectedBranch);
       }
 
       return null;
@@ -51,8 +51,8 @@ public class DeleteBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-  
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       return branches.size() == 1 && AccessControlManager.isOseeAdmin();
    }

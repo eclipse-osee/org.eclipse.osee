@@ -573,7 +573,7 @@
             visible="true">
       </separator>
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
             style="push">
       </command>
       <command
@@ -1073,8 +1073,8 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator">
     </handler>
     <handler
-          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteBranchHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch">
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.PurgeBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch">
     </handler>
     <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteTransactionHandler"
@@ -1159,7 +1159,7 @@
         icon="images/branch.gif">
   </image>
   <image
-        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
         icon="images/delete.gif">
   </image>
   <image
@@ -1517,8 +1517,8 @@
         name="Branch">
   </command>
   <command
-        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
-        name="Delete Branch">
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
+        name="Purge Branch">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"

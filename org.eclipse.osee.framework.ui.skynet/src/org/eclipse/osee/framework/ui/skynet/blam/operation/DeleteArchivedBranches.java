@@ -33,7 +33,7 @@ public class DeleteArchivedBranches extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchManager.deleteArchivedBranches();
+      BranchManager.purgeArchivedBranches();
    }
 
    /*
