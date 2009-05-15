@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.branch.management.internal.BranchCreation.CreateBranchTx;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -72,7 +73,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
    public CreateBranchWithFiltering(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws OseeCoreException {
       super(parentTransactionId, parentBranchId, childBranchName, creationComment, associatedArtifactId, authorId,
-            BranchType.WORKING);
+            BranchType.WORKING, BranchState.CREATED);
       this.compressArtTypeIds = compressArtTypeIds;
       this.preserveArtTypeIds = preserveArtTypeIds;
    }
