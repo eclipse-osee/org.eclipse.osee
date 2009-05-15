@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAStateMetricsHeader;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,7 +40,7 @@ public class StatePercentCompleteStat {
       this.smaMgr = smaMgr;
    }
 
-   public void createSidebarService(Composite composite, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+   public void createSidebarService(Composite composite, AtsWorkPage page, XFormToolkit toolkit, final SMAStateMetricsHeader header) throws OseeCoreException {
       this.page = page;
       link = toolkit.createHyperlink(composite, "", SWT.NONE);
       if (smaMgr.getSma().isReadOnly())
@@ -56,6 +57,7 @@ public class StatePercentCompleteStat {
             public void linkActivated(HyperlinkEvent e) {
                try {
                   smaMgr.promptChangeStatus(false);
+                  header.refresh();
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

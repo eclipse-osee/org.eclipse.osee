@@ -46,15 +46,15 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
 
          if (page.isCurrentNonCompleteCancelledState(smaMgr)) {
             percentComp = new StatePercentCompleteStat(smaMgr);
-            percentComp.createSidebarService(this, page, toolkit);
+            percentComp.createSidebarService(this, page, toolkit, this);
          }
          if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
             estHoursStat = new StateEstimatedHoursStat(smaMgr);
-            estHoursStat.createSidebarService(this, page, toolkit);
+            estHoursStat.createSidebarService(this, page, toolkit, this);
          }
          if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
             hoursSpent = new StateHoursSpentStat(smaMgr);
-            hoursSpent.createSidebarService(this, page, toolkit);
+            hoursSpent.createSidebarService(this, page, toolkit, this);
          }
 
          SMAEditor.setLabelFonts(this, SMAEditor.getBoldLabelFont());
@@ -66,11 +66,12 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
       }
    }
 
-   private void refresh() throws OseeCoreException {
+   public void refresh() throws OseeCoreException {
       if (isDisposed()) return;
       if (percentComp != null) percentComp.refresh();
       if (estHoursStat != null) estHoursStat.refresh();
       if (hoursSpent != null) hoursSpent.refresh();
+      smaMgr.getEditor().onDirtied();
       layout();
    }
 

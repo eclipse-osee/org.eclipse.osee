@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAStateMetricsHeader;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,7 +43,7 @@ public class StateEstimatedHoursStat {
       this.smaMgr = smaMgr;
    }
 
-   public void createSidebarService(Composite workGroup, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+   public void createSidebarService(Composite workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAStateMetricsHeader header) throws OseeCoreException {
       this.page = page;
       if (!page.isCompleteCancelledState() && smaMgr.isCurrentState(page.getName())) {
          link = toolkit.createHyperlink(workGroup, "", SWT.NONE);
@@ -60,6 +61,7 @@ public class StateEstimatedHoursStat {
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
+                     header.refresh();
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
@@ -125,8 +127,8 @@ public class StateEstimatedHoursStat {
          link.setText(str);
          link.update();
       } else if (page != null && label != null && !label.isDisposed()) {
-         label.update();
          label.setText(str);
+         label.update();
       } else if (label != null && !label.isDisposed()) {
          label.setText("State Hours Spent Error: page == null");
          label.update();
