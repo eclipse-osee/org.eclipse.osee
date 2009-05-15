@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server.internal;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -130,18 +131,24 @@ public class ApplicationServerDataStore {
                   if (isCompatibleVersion(serverVersion, clientVersion)) {
                      String serverAddress = chStmt.getString("server_address");
                      int port = chStmt.getInt("port");
-                     InternalOseeServerInfo info = (InternalOseeServerInfo) servers.get(serverAddress, port);
+                     OseeServerInfo info = servers.get(serverAddress, port);
                      if (info == null) {
                         info =
-                              new InternalOseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
-                                    chStmt.getTimestamp("start_time"),
+                              new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
+                                    new String[] {serverVersion}, chStmt.getTimestamp("start_time"),
                                     chStmt.getInt("accepts_requests") != 0 ? true : false);
                         servers.put(serverAddress, port, info);
-                     }
-                     try {
-                        info.addVersion(serverVersion);
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
+                     } else {
+                        Set<String> versions = new HashSet<String>(Arrays.asList(info.getVersion()));
+                        if (!versions.contains(serverVersion)) {
+                           versions.add(serverVersion);
+                           info =
+                                 new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port,
+                                       versions.toArray(new String[versions.size()]),
+                                       chStmt.getTimestamp("start_time"),
+                                       chStmt.getInt("accepts_requests") != 0 ? true : false);
+                           servers.put(serverAddress, port, info);
+                        }
                      }
                   }
                }
