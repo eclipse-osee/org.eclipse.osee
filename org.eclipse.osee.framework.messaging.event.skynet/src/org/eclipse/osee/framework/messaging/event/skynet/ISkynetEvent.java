@@ -14,7 +14,7 @@ import java.io.Serializable;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
 /**
- * All Skynet events implement this interface.
+ * All events implement this interface.
  * 
  * @author Robert A. Fisher
  */
