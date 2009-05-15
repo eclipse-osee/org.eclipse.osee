@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
@@ -20,7 +22,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -32,6 +33,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
    private IActionContributor actionContributor;
    private AttributeFormPart formPart;
+   private IToolBarManager toolBarManager;
 
    public AttributesFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
@@ -52,6 +54,13 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       updateDataPart();
    }
 
+   private IToolBarManager getToolBarManager() {
+      if (toolBarManager == null) {
+         toolBarManager = new ToolBarManager(SWT.FLAT);
+      }
+      return toolBarManager;
+   }
+
    private void addToolBar(IManagedForm form) {
       final FormToolkit toolkit = form.getToolkit();
       Composite composite = toolkit.createComposite(getSection());
@@ -59,9 +68,8 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       composite.setBackground(getSection().getBackground());
 
-      ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
-      ToolBarManager manager = new ToolBarManager(toolBar);
-
+      IToolBarManager manager = getToolBarManager();
+      ((ToolBarManager) manager).createControl(composite);
       getActionContributor().contributeToToolBar(manager);
       manager.update(true);
 
@@ -109,6 +117,10 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    public void refresh() {
       super.refresh();
       updateDataPart();
+      boolean isReadOnly = !getEditorInput().isReadOnly();
+      for (IContributionItem item : getToolBarManager().getItems()) {
+         item.setVisible(isReadOnly);
+      }
    }
 
    /* (non-Javadoc)

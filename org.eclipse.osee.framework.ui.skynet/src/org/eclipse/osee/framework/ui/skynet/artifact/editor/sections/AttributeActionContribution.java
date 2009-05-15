@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
@@ -106,8 +104,8 @@ public class AttributeActionContribution implements IActionContributor {
    private final class OpenAddAttributeTypeDialogAction extends Action {
       public OpenAddAttributeTypeDialogAction() {
          super();
-         ImageDescriptor expandAll = SkynetGuiPlugin.getInstance().getImageDescriptor("add.gif");
-         setImageDescriptor(expandAll);
+         ImageDescriptor addImage = SkynetGuiPlugin.getInstance().getImageDescriptor("add.gif");
+         setImageDescriptor(addImage);
          setToolTipText("Opens a dialog to select which attribute type instances to create on the artifact");
       }
 
@@ -138,57 +136,6 @@ public class AttributeActionContribution implements IActionContributor {
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      }
-   }
-
-   private final class DefaultExpandedAction extends Action {
-
-      public DefaultExpandedAction() {
-         super();
-         Image expandAll = SkynetGuiPlugin.getInstance().getImage("expandAll.gif");
-         ImageDescriptor defaultOverlay = SkynetGuiPlugin.getInstance().getImageDescriptor("switched.gif");
-         OverlayImage overlayImage = new OverlayImage(expandAll, defaultOverlay, Location.TOP_RIGHT);
-         setImageDescriptor(ImageDescriptor.createFromImage(overlayImage.createImage()));
-         setToolTipText("Expands sections with data");
-      }
-
-      public void run() {
-         //         setDefaultSectionExpantion();
-         //         scrolledForm.getBody().layout();
-      }
-   }
-
-   private final class ExpandAllAction extends Action {
-
-      public ExpandAllAction() {
-         super();
-         ImageDescriptor expandAll = SkynetGuiPlugin.getInstance().getImageDescriptor("expandAll.gif");
-         setImageDescriptor(expandAll);
-         setToolTipText("Expands all sections");
-      }
-
-      public void run() {
-         //         for (ExpandableComposite expandable : expandableItems) {
-         //            expandable.setExpanded(true);
-         //         }
-         //         scrolledForm.getBody().layout();
-      }
-   }
-
-   private final class CollapseAllAction extends Action {
-
-      public CollapseAllAction() {
-         super();
-         ImageDescriptor collapsedAll = SkynetGuiPlugin.getInstance().getImageDescriptor("collapseAll.gif");
-         setImageDescriptor(collapsedAll);
-         setToolTipText("Collapses all sections");
-      }
-
-      public void run() {
-         //         for (ExpandableComposite expandable : expandableItems) {
-         //            expandable.setExpanded(false);
-         //         }
-         //         scrolledForm.getBody().layout();
       }
    }
 }

@@ -73,13 +73,15 @@ public class AttributeFormPart extends AbstractFormPart {
 
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
+         boolean isEditable = !artifact.isReadOnly();
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
             if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {
-               createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, true, false);
+               createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
+                     false);
             }
          }
       } catch (OseeCoreException ex) {
@@ -167,7 +169,6 @@ public class AttributeFormPart extends AbstractFormPart {
                data.getXOptionHandler().add(XOption.NO_LABEL);
             }
          }
-
          WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
          workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
       } catch (OseeCoreException ex) {

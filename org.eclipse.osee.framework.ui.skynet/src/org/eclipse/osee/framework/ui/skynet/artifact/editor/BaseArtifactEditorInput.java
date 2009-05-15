@@ -77,7 +77,7 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       if (artifact == null) {
          return "No Artifact Input Provided";
       }
-      return artifact.getVersionedName();
+      return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
    }
 
    /*
@@ -117,5 +117,9 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
 
    public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
+   }
+
+   public boolean isReadOnly() {
+      return artifact == null || artifact.isReadOnly();
    }
 }
