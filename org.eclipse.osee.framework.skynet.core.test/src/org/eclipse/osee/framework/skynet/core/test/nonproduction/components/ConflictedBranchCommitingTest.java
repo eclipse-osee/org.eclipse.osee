@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -37,6 +38,10 @@ public class ConflictedBranchCommitingTest extends TestCase {
                new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
          BranchManager.commitBranch(conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
+
+         assertEquals("Source Branch state incorrect", BranchState.CLOSED,
+               ConflictTestManager.getSourceBranch().getBranchState());
+
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
       }
