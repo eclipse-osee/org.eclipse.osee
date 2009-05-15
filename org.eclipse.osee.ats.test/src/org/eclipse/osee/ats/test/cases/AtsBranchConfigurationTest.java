@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchState;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -390,7 +390,7 @@ public class AtsBranchConfigurationTest extends TestCase {
 
       try {
          // delete working branches
-         for (Branch workingBranch : BranchManager.getBranches(BranchState.ALL, BranchControlled.ALL,
+         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
             if (workingBranch.getBranchName().contains(testType.name())) {
                BranchManager.deleteBranch(workingBranch);
