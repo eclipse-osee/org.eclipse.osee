@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,6 +44,7 @@ public abstract class XSelectFromDialog<T> extends XText {
    private final List<T> selected;
    private final List<T> input;
    private int minSelectionRequired, maxSelectionRequired = 1;
+   private Button selectionButton;
 
    public XSelectFromDialog(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
@@ -82,6 +84,17 @@ public abstract class XSelectFromDialog<T> extends XText {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#setEditable(boolean)
+    */
+   @Override
+   public void setEditable(boolean editable) {
+      super.setEditable(editable);
+      if (Widgets.isAccessible(selectionButton)) {
+         selectionButton.setEnabled(editable);
+      }
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
     */
    @Override
@@ -100,10 +113,11 @@ public abstract class XSelectFromDialog<T> extends XText {
       getStyledText().setEditable(false);
       getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
-      Button button = new Button(composite, SWT.PUSH);
-      button.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-      button.setText("Set...");
-      button.addSelectionListener(new SelectionAdapter() {
+      selectionButton = new Button(composite, SWT.PUSH);
+      selectionButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      selectionButton.setText("Set...");
+      selectionButton.setEnabled(isEditable());
+      selectionButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             if (openSelectionDialog()) {

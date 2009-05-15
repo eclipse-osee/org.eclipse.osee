@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.StyledText;
@@ -294,7 +295,7 @@ public class XText extends XWidget {
    @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
-      if (sText != null && !sText.isDisposed()) {
+      if (Widgets.isAccessible(sText)) {
          sText.setEditable(editable);
       }
    }
