@@ -131,12 +131,12 @@ public class XChangeWidget extends XWidget implements IActionable {
    public void createTaskActionBar(Composite parent) throws OseeCoreException {
 
       // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
+      Composite composite = new Composite(parent, SWT.NONE);
       // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      composite.setLayout(new GridLayout(2, false));
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
+      Composite leftComp = new Composite(composite, SWT.NONE);
       leftComp.setLayout(new GridLayout());
       leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
 
@@ -144,7 +144,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
 
-      Composite rightComp = new Composite(bComp, SWT.NONE);
+      Composite rightComp = new Composite(composite, SWT.NONE);
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
