@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.test;
 
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
-import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +21,6 @@ public class AtsTest_TestDb_Suite extends TestSuite {
    public static TestSuite suite() {
       TestSuite suite = new TestSuite("AtsTest_TestDb_Suite");
       //$JUnit-BEGIN$
-      suite.addTestSuite(AtsPurgeTest.class);
       suite.addTestSuite(AtsBranchConfigurationTest.class);
       //$JUnit-END$
       return suite;
