@@ -159,6 +159,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
+            contentProvider.refeshDocOrder();
             setInputData(branch, transactionId, true);
          }
       });
