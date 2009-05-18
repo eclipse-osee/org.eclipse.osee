@@ -10,25 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
-import java.util.logging.Level;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
+import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
 
 /**
- * This Test Suite is to run against a postgres database with ATS Developer as the DbInit
+ * This suite should contain any test that can be run against a deployed OSEE database.<br>
+ * <br>
+ * Example test cases would be database health checks.
  * 
  * @author Donald G. Dunne
  */
-public class OseeMasterProductionTestDbSuite extends TestSuite {
+public class MasterTestSuite_ProductionDbTests extends TestSuite {
 
    public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("OSEE Master Production TestDb Suite.");
+      TestSuite suite = new TestSuite("MasterTestSuite_Production");
 
-      for (Test test : OseeTests.getOseeTests(OseeTestType.TestDb)) {
-         OseeLog.log(Activator.class, Level.INFO, "Adding TestDb OseeTest [" + test + "]");
-         suite.addTest(test);
-      }
+      suite.addTest(AtsTest_Config_Suite.suite());
+      suite.addTest(FrameworkUi_Production_Suite.suite());
+
       return suite;
    }
 

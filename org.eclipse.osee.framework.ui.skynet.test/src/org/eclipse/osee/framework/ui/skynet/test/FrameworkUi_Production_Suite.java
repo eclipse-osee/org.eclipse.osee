@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
-import java.util.Arrays;
-import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
-import org.eclipse.osee.support.test.IOseeTest;
-import org.eclipse.osee.support.test.OseeTestType;
 
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkUi_Production_Suite extends TestSuite implements IOseeTest {
+public class FrameworkUi_Production_Suite extends TestSuite {
 
    public static Test suite() {
       TestSuite suite = new TestSuite("FrameworkUi_Production_Suite");
@@ -31,11 +27,4 @@ public class FrameworkUi_Production_Suite extends TestSuite implements IOseeTest
       return suite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.support.test.IOseeTest#getTestTypes()
-    */
-   @Override
-   public Collection<OseeTestType> getTestTypes() {
-      return Arrays.asList(OseeTestType.Production);
-   }
 }

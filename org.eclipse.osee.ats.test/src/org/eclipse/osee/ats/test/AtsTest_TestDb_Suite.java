@@ -8,25 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.support.test;
+package org.eclipse.osee.ats.test;
 
-import java.util.logging.Level;
-import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 
 /**
  * @author Donald G. Dunne
  */
-public class OseeMasterProductionTestSuite extends TestSuite {
+public class AtsTest_TestDb_Suite extends TestSuite {
 
-   public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("OSEE Master Test Suite.");
-
-      for (Test test : OseeTests.getOseeTests(OseeTestType.Production)) {
-         OseeLog.log(Activator.class, Level.INFO, "Adding Production OseeTest [" + test + "]");
-         suite.addTest(test);
-      }
+   public static TestSuite suite() {
+      TestSuite suite = new TestSuite("AtsTest_TestDb_Suite");
+      //$JUnit-BEGIN$
+      suite.addTestSuite(AtsPurgeTest.class);
+      suite.addTestSuite(AtsBranchConfigurationTest.class);
+      //$JUnit-END$
       return suite;
    }
 

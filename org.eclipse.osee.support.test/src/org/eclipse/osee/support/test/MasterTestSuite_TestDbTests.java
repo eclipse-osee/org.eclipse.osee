@@ -10,23 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
-import java.util.logging.Level;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
 
 /**
+ * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
+ * <br>
+ * Example test cases would be a test that purges or corrupts databaes data
+ * 
  * @author Donald G. Dunne
  */
-public class OseeMasterDemoTestSuite extends TestSuite {
+public class MasterTestSuite_TestDbTests extends TestSuite {
 
    public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("OSEE Master Demo Test Suite.");
+      TestSuite suite = new TestSuite("OSEE Master Production TestDb Suite");
 
-      for (Test test : OseeTests.getOseeTests(OseeTestType.Demo)) {
-         OseeLog.log(Activator.class, Level.INFO, "Adding Demo OseeTest [" + test + "]");
-         suite.addTest(test);
-      }
+      suite.addTest(AtsTest_TestDb_Suite.suite());
+
       return suite;
    }
 

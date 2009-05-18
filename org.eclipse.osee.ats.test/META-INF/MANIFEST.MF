@@ -5,9 +5,11 @@ Bundle-SymbolicName: org.eclipse.osee.ats.test;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.ats
-Require-Bundle: org.junit,
- org.eclipse.osee.support.test;bundle-version="1.0.0"
+Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.db.connection.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.ats.test,
+ org.eclipse.osee.ats.test.cases,
+ org.eclipse.osee.ats.test.util

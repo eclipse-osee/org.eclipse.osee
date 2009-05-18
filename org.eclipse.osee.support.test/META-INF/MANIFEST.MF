@@ -7,8 +7,16 @@ Bundle-Activator: org.eclipse.osee.support.test.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit,
+ org.eclipse.osee.framework.logging;bundle-version="0.4.0",
  org.eclipse.osee.framework.plugin.core;bundle-version="0.4.0",
- org.eclipse.osee.framework.logging;bundle-version="0.4.0"
+ org.eclipse.osee.framework.ui.plugin;bundle-version="0.4.0",
+ org.eclipse.osee.framework.ui.skynet;bundle-version="0.4.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: lba.ats.config.common.test,
+ lba.ats.config.common.test.cases,
+ lba.ats.config.common.test.cases.req,
+ org.eclipse.osee.ats.test,
+ org.eclipse.osee.ats.test.cases,
+ org.eclipse.osee.ats.test.util
 Export-Package: org.eclipse.osee.support.test

@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ats Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats;singleton:=true
 Bundle-Version: 0.4.0.qualifier
+Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.AtsPlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.gef,

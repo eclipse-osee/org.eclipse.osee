@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <fragment>
-   <extension
-         point="org.eclipse.osee.support.test.OseeTest">
-      <OseeTest
-            classname="org.eclipse.osee.ats.test.AtsTest_Demo_Suite">
-      </OseeTest>
-      <OseeTest
-            classname="org.eclipse.osee.ats.test.AtsTest_Production_Suite">
-      </OseeTest>
-   </extension>
-
 </fragment>
