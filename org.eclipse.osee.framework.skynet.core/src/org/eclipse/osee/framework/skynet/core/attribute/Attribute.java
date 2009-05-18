@@ -36,8 +36,8 @@ public abstract class Attribute<T> {
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;
    private int gammaId;
-   private boolean deleted;
    private boolean dirty;
+   private ModificationType modificationType;
 
    protected Attribute(AttributeType attributeType, Artifact artifact) {
       this.attributeType = attributeType;
@@ -201,12 +201,34 @@ public abstract class Attribute<T> {
       return attributeType.equals(otherAttributeType);
    }
 
+   public void resetModType(){
+      this.modificationType = null;
+   }
+   /**
+    * Deletes the attribute
+    */
+   public final void setArtifactDeleted() {
+      setDeleteOrArtifactDeleted(ModificationType.ARTIFACT_DELETED);
+   }
+   
    /**
     * Deletes the attribute
     */
    public final void delete() {
-      deleted = true;
+      setDeleteOrArtifactDeleted(ModificationType.DELETED);
+   }
+
+   private final void setDeleteOrArtifactDeleted(ModificationType modificationType) {
+      this.modificationType = modificationType;
       setDirty();
+   }
+
+   /**
+    * @return the modificationType
+    * Warning ... This is only currently being set for delete and artifact deleted.
+    */
+   public ModificationType getModificationType() {
+      return modificationType;
    }
 
    public boolean canDelete() {
@@ -225,7 +247,7 @@ public abstract class Attribute<T> {
    }
 
    public void markAsPurged() {
-      deleted = true;
+      modificationType = ModificationType.DELETED;
       dirty = false;
    }
 
@@ -259,14 +281,14 @@ public abstract class Attribute<T> {
     * @return the deleted
     */
    public boolean isDeleted() {
-      return deleted;
+      return this.modificationType == ModificationType.DELETED || this.modificationType == ModificationType.ARTIFACT_DELETED;
    }
 
    /**
     * Called from remote events to mark this attribute as deleted
     */
    public void internalSetDeleted() {
-      this.deleted = true;
+      this.modificationType = ModificationType.DELETED;
       this.dirty = false;
    }
 

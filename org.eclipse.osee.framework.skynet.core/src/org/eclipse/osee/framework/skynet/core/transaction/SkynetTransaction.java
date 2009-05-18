@@ -202,7 +202,6 @@ public class SkynetTransaction extends DbTransaction {
       madeChanges = true;
 
       addArtifactHelper(artifact, ModificationType.DELETED);
-      artifact.deleteAttributes();
       RelationManager.deleteRelationsAll(artifact, reorderRelations);
 
       artifact.persistAttributesAndRelations(this);
@@ -273,11 +272,7 @@ public class SkynetTransaction extends DbTransaction {
          if (!attribute.isInDb()) {
             return;
          }
-         if (artifact.isDeleted()) {
-            modificationType = ModificationType.ARTIFACT_DELETED;
-         } else {
-            modificationType = ModificationType.DELETED;
-         }
+         modificationType = attribute.getModificationType();
       } else {
          if (attribute.isInDb()) {
             modificationType = ModificationType.CHANGE;

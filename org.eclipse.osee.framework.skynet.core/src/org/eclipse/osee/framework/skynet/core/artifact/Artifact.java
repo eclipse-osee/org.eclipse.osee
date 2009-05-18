@@ -613,12 +613,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void deleteAttributes() {
+   private void resetArtifactDeletedModTypes(){
       for (Attribute<?> attribute : attributes.getValues()) {
-         attribute.delete();
-      }
+         if(attribute.getModificationType() == ModificationType.ARTIFACT_DELETED){
+            attribute.resetModType();
+         }
+      }  
    }
-
+   
+   private void setAttributesModArtifactDeleted() throws OseeCoreException{
+      for (Attribute<?> attribute : getAttributes(false)) {
+         attribute.setArtifactDeleted();
+      } 
+   }
+   
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
          ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
@@ -965,9 +973,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
+    * @throws OseeCoreException 
     */
-   public void setDeleted() {
+   public void setDeleted() throws OseeCoreException {
       this.modType = ModificationType.DELETED;
+      setAttributesModArtifactDeleted();
    }
 
    /**
@@ -975,6 +985,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void resetToPreviousModType() {
       this.modType = lastValidModType;
+      resetArtifactDeletedModTypes();
    }
 
    /**
