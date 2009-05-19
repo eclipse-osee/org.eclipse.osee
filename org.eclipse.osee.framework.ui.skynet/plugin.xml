@@ -188,8 +188,8 @@
 	<extension id="UniqueNumberOfCurrentOseeUsers" name="Unique Number Of Current Osee Users" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers"/>
 	</extension>
-	<extension id="DeleteTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteTransaction"/>
+	<extension id="PurgeTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeTransaction"/>
 	</extension>
 	
 		<extension id="SortRelationsByBranch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -469,7 +469,7 @@
              visible="true">
        </separator>
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
              style="push">
        </command>
        <separator
@@ -585,7 +585,7 @@
             style="push">
       </command>
       <command
-            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
             style="push">
       </command>
       <separator
@@ -1089,8 +1089,8 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch">
     </handler>
     <handler
-          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteTransactionHandler"
-          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction">
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.PurgeTransactionHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction">
     </handler>
     <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.UpdateBranchHandler"
@@ -1179,8 +1179,8 @@
         icon="images/purge.gif">
   </image>
   <image
-        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
-        icon="images/delete.gif">
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
+        icon="images/purge.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl"
@@ -1541,8 +1541,8 @@
         name="Purge Branch">
   </command>
   <command
-        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
-        name="Delete Transaction">
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeTransaction"
+        name="Purge Transaction">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"

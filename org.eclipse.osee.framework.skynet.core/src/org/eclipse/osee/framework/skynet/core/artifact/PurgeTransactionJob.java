@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteTransactionJob extends Job {
+public class PurgeTransactionJob extends Job {
 
    private static final String UPDATE_TXS_DETAILS_COMMENT =
          "update osee_tx_details SET osee_comment = replace(osee_comment, ?, ?) WHERE osee_comment like ?";
@@ -86,7 +86,7 @@ public class DeleteTransactionJob extends Job {
     * @param name
     * @param transactionIdNumber
     */
-   public DeleteTransactionJob(boolean force, int... txIdsToDelete) {
+   public PurgeTransactionJob(boolean force, int... txIdsToDelete) {
       super(String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)));
       this.txIdsToDelete = txIdsToDelete;
       this.force = force;
@@ -96,7 +96,7 @@ public class DeleteTransactionJob extends Job {
     * @param name
     * @param transactionIdNumber
     */
-   public DeleteTransactionJob(int... txIdsToDelete) {
+   public PurgeTransactionJob(int... txIdsToDelete) {
       this(true, txIdsToDelete);
    }
 

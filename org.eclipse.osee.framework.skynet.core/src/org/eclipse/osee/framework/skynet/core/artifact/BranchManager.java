@@ -311,10 +311,9 @@ public class BranchManager {
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
       return createBranchObject(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
-            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
-            chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-            chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
-            BranchType.getBranchType(chStmt.getInt("branch_type")),
+            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
+            chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
+            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")),
             BranchState.getBranchState(chStmt.getInt("branch_state")));
    }
 
@@ -523,8 +522,8 @@ public class BranchManager {
     * 
     * @param transactionIdNumber
     */
-   public static void deleteTransactions(final int... transactionIdNumbers) {
-      deleteTransactions(null, transactionIdNumbers);
+   public static void purgeTransactions(final int... transactionIdNumbers) {
+      purgeTransactions(null, transactionIdNumbers);
    }
 
    /**
@@ -532,8 +531,8 @@ public class BranchManager {
     * 
     * @param transactionIdNumber
     */
-   public static void deleteTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
-      Jobs.startJob(new DeleteTransactionJob(transactionIdNumbers), jobChangeListener);
+   public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
+      Jobs.startJob(new PurgeTransactionJob(transactionIdNumbers), jobChangeListener);
 
    }
 

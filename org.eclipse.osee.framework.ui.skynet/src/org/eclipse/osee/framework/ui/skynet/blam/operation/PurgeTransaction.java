@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.DeleteTransactionJob;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteTransaction extends AbstractBlam {
+public class PurgeTransaction extends AbstractBlam {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
@@ -43,7 +43,7 @@ public class DeleteTransaction extends AbstractBlam {
       for (int index = 0; index < txs.size(); index++) {
          txIds[index] = txs.get(index);
       }
-      Job job = new DeleteTransactionJob(force, txIds);
+      Job job = new PurgeTransactionJob(force, txIds);
       Jobs.startJob(job);
       job.join();
    }

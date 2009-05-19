@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Jeff C. Phillips
  */
-public class DeleteTransactionHandler extends CommandHandler {
+public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
@@ -43,9 +43,9 @@ public class DeleteTransactionHandler extends CommandHandler {
       List<TransactionId> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
       TransactionId selectedTransaction = transactions.iterator().next();
 
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Transaction",
-            "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
-         BranchManager.deleteTransactions(new JobChangeAdapter() {
+      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Purge Transaction",
+            "Are you sure you want to purge the transaction: " + selectedTransaction.getTransactionNumber())) {
+         BranchManager.purgeTransactions(new JobChangeAdapter() {
 
             /* (non-Javadoc)
              * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)

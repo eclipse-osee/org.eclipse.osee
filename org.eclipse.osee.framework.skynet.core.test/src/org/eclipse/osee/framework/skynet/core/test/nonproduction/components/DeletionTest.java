@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.DeleteTransactionJob;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -187,7 +187,7 @@ public class DeletionTest extends TestCase {
       //OK now lets delete the transaction and check for the same thing
 
       if (DELETE_TRANSACTION_TEST) {
-         Job job = new DeleteTransactionJob(true, deletionTransaction);
+         Job job = new PurgeTransactionJob(true, deletionTransaction);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
