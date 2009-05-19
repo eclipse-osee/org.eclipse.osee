@@ -306,7 +306,7 @@ public class BranchManager {
     * 
     * @param rSet
     * @return
-    * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     * @throws OseeCoreException
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
@@ -405,6 +405,16 @@ public class BranchManager {
     */
    public static Job purgeBranch(final Branch branch) {
       return Jobs.startJob(new PurgeBranchJob(branch));
+   }
+
+   /**
+    * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
+    * undo-able)
+    * 
+    * @param branchId
+    */
+   public static Job deleteBranch(final Branch branch) {
+      return Jobs.startJob(new DeleteBranchJob(branch));
    }
 
    public static void handleBranchDeletion(int branchId) {

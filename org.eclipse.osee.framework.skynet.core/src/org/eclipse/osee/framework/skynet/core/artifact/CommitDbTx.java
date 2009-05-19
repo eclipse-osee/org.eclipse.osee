@@ -320,7 +320,7 @@ public class CommitDbTx extends DbTransaction {
          }
 
          Branch mergeBranch = BranchManager.getMergeBranch(fromBranch, toBranch);
-         BranchManager.setBranchState(connection, mergeBranch, BranchState.CLOSED);
+         BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
          time = System.currentTimeMillis();
          if (DEBUG) {
             System.out.println(String.format("   Set Merge Branch [%s] to closed in %s", mergeBranch.getBranchName(),
@@ -337,7 +337,7 @@ public class CommitDbTx extends DbTransaction {
       }
 
       if (toBranch.getBranchState() == BranchState.CREATED) {
-         BranchManager.setBranchState(connection, toBranch, BranchState.IN_WORK);
+         BranchManager.setBranchState(connection, toBranch, BranchState.MODIFIED);
       }
       success = true;
    }

@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.enums;
  * @author Roberto E. Escobar
  */
 public enum BranchState {
-   UNKNOWN(-1), CREATED(0), CLOSED(1), CLOSED_BY_UPDATE(2), IN_WORK(3), MERGE_IN_PROGRESS(4);
+   UNKNOWN(-1), CREATED(0), MODIFIED(1), COMMITTED(2), REBASELINED(3), DELETED(4);
 
    private final int value;
 

@@ -210,7 +210,7 @@ public class BranchCreator {
                      TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
                      "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
                      "Merge " + sourceBranch.getDisplayName() + " <=> " + destBranch.getBranchShortName(),
-                     BranchType.MERGE, BranchState.MERGE_IN_PROGRESS, destBranch);
+                     BranchType.MERGE, BranchState.CREATED, destBranch);
 
          List<Object[]> datas = new LinkedList<Object[]>();
          int queryId = ArtifactLoader.getNewQueryId();

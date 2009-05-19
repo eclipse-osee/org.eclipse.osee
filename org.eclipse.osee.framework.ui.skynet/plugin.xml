@@ -573,6 +573,10 @@
             visible="true">
       </separator>
       <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+            style="push">
+      </command>
+      <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
             style="push">
       </command>
@@ -665,7 +669,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
               </equals>
            </with>
            <with
@@ -1073,6 +1077,10 @@
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator">
     </handler>
     <handler
+          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.DeleteBranchHandler"
+          commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch">
+    </handler>
+    <handler
           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.PurgeBranchHandler"
           commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch">
     </handler>
@@ -1157,6 +1165,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.branchCreator"
         icon="images/branch.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+        icon="images/delete.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
@@ -1517,6 +1529,10 @@
         name="Branch">
   </command>
   <command
+        id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
+        name="Delete Branch">
+  </command>
+   <command
         id="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
         name="Purge Branch">
   </command>

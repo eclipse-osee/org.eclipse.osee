@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -512,7 +511,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       boolean isVisible = false;
       if (conflicts != null && conflicts.length != 0) {
          isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
-         isVisible &= sourceBranch != null && sourceBranch.getBranchState() == BranchState.CLOSED_BY_UPDATE;
+         isVisible &= sourceBranch != null && sourceBranch.isRebaselined();
       }
       setCompleteCommitItemVisible(isVisible);
    }
@@ -554,7 +553,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       }
 
       public void run() {
-         if (sourceBranch.getBranchState() == BranchState.CLOSED_BY_UPDATE) {
+         if (sourceBranch.isRebaselined()) {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
             BranchManager.completeUpdateBranch(conflictManager, true, false);
          }

@@ -39,7 +39,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
          BranchManager.commitBranch(conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
 
-         assertEquals("Source Branch state incorrect", BranchState.CLOSED,
+         assertEquals("Source Branch state incorrect", BranchState.COMMITTED,
                ConflictTestManager.getSourceBranch().getBranchState());
 
       } catch (Exception ex) {

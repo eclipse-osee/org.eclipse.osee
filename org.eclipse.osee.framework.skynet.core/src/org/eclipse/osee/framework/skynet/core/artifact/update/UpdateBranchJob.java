@@ -83,7 +83,7 @@ public class UpdateBranchJob extends Job {
          newWorkingBranch = createTempBranch(originalBranch);
          monitor.worked(HALF_TOTAL_WORK);
 
-         BranchManager.setBranchState(originalBranch, BranchState.CLOSED_BY_UPDATE);
+         BranchManager.setBranchState(originalBranch, BranchState.REBASELINED);
 
          SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL_WORK);
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);

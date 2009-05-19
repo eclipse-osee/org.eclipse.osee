@@ -150,9 +150,8 @@ public class ConflictManagerInternal {
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
 
-      BranchState sourceBranchState = sourceBranch.getBranchState();
-      if (sourceBranchState != BranchState.CLOSED && sourceBranchState != BranchState.CLOSED_BY_UPDATE) {
-         BranchManager.setBranchState(sourceBranch, BranchState.CLOSED);
+      if (!sourceBranch.isCommitted() && !sourceBranch.isRebaselined()) {
+         BranchManager.setBranchState(sourceBranch, BranchState.COMMITTED);
       }
 
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);

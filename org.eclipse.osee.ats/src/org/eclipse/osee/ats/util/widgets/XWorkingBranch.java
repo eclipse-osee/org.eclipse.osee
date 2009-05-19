@@ -123,10 +123,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       else
          purgeBranchButton = new Button(bComp, SWT.PUSH);
       if (getWorkingBranch() == null) purgeBranchButton.setEnabled(false);
-      purgeBranchButton.setToolTipText("Purge Working Branch");
+      purgeBranchButton.setToolTipText("Delete Working Branch");
       purgeBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().purgeWorkingBranch(true);
+            smaMgr.getBranchMgr().deleteWorkingBranch(true);
             refresh();
          }
       });

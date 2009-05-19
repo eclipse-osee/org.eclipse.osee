@@ -389,9 +389,9 @@ public class SkynetTransaction extends DbTransaction {
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
-      if (!branch.isMergeBranch()) {
-         BranchManager.setBranchState(connection, branch, BranchState.IN_WORK);
-      }
+
+      BranchManager.setBranchState(connection, branch, BranchState.MODIFIED);
+
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
 
       // Update all transaction items before collecting events

@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 
 /**
  * @author Jeff C. Phillips
@@ -135,8 +133,8 @@ class PurgeBranchJob extends Job {
       @Override
       protected void handleTxFinally() throws OseeCoreException {
          monitor.done();
-         if (getResult().equals(Status.OK_STATUS)) {
-            OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getBranchId());
+         if (getResult().isOK()) {
+            BranchManager.handleBranchDeletion(branch.getBranchId());
          }
       }
 
@@ -169,7 +167,6 @@ class PurgeBranchJob extends Job {
             monitor.subTask("Purge Branch");
             ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, branch.getBranchId());
             monitor.worked(1);
-            BranchManager.handleBranchDeletion(branch.getBranchId());
          }
       }
 

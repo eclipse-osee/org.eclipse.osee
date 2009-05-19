@@ -413,6 +413,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public void setDeleted() {
       this.deleted = true;
+      try {
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, getBranchId());
+      } catch (Exception ex) {
+         // Do Nothing
+      }
    }
 
    /**
@@ -426,8 +431,15 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return Returns whether the branch is editable.
     */
    public boolean isEditable() {
-      final BranchState currentState = getBranchState();
-      return currentState != BranchState.CLOSED && currentState != BranchState.CLOSED_BY_UPDATE && !isArchived();
+      return !isCommitted() && !isRebaselined() && !isArchived();
+   }
+
+   public boolean isCommitted() {
+      return getBranchState() == BranchState.COMMITTED;
+   }
+
+   public boolean isRebaselined() {
+      return getBranchState() == BranchState.REBASELINED;
    }
 
    /**
