@@ -123,6 +123,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
+      } else if (cCol.equals(BranchXViewerFactory.BRANCH_STATE)) {
+         return branch.getBranchState().name();
       }
       return columnText;
    }
