@@ -65,7 +65,7 @@ public class GraphLoader {
          List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
-            txJoinQuery.add(-1, branch.getParentTransactionId());
+            txJoinQuery.add(-1, branch.getParentTransactionNumber());
          }
          txJoinQuery.store();
 
@@ -94,7 +94,7 @@ public class GraphLoader {
          if (branchModel.getBranch().isSystemRootBranch()) {
             systemRootTx = branchModel.getFirstTx();
          } else {
-            long parentTxId = branchModel.getBranch().getParentTransactionId();
+            long parentTxId = branchModel.getBranch().getParentTransactionNumber();
             if (parentTxId > 0) {
                TxModel txModel = branchModel.getFirstTx();
                if (txModel != null) {

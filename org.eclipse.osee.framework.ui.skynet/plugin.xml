@@ -576,6 +576,10 @@
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteBranch"
             style="push">
       </command>
+            <separator
+            name="separator.xBranch.BranchView3"
+            visible="true">
+      </separator>
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
             style="push">
@@ -1172,7 +1176,7 @@
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.purgeBranch"
-        icon="images/delete.gif">
+        icon="images/purge.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.deleteTransaction"
