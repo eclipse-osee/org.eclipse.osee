@@ -111,7 +111,7 @@ public class BranchCreator {
 
       int branchId = SequenceManager.getNextBranchId();
       int parentBranchNumber = sourceTransactionId.getBranchId();
-      int parentTransactionId = sourceTransactionId.getTransactionNumber();
+      int parentTransactionIdNumnber = sourceTransactionId.getTransactionNumber();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
@@ -123,12 +123,12 @@ public class BranchCreator {
       }
 
       ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchName, parentBranchNumber,
-            parentTransactionId, 0, associatedArtifactId, branchType.getValue(), branchState.getValue());
+            parentTransactionIdNumnber, 0, associatedArtifactId, branchType.getValue(), branchState.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
-            BranchManager.createBranchObject(branchName, branchId, parentBranchNumber, parentTransactionId, false,
-                  authorId, creationDate, creationComment, associatedArtifactId, branchType, branchState);
+            BranchManager.createBranchObject(branchName, branchId, parentBranchNumber, parentTransactionIdNumnber,
+                  false, authorId, creationDate, creationComment, associatedArtifactId, branchType, branchState);
       if (associatedArtifact != null) {
          branch.setAssociatedArtifact(associatedArtifact);
       }

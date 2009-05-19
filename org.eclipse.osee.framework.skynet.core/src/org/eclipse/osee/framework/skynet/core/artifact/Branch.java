@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Robert A. Fisher
@@ -48,7 +50,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private final int branchId;
    private final int parentBranchId;
-   private final int parentTransactionId;
+   private TransactionId parentTransactionId;
+   private final int parentTransactionIdNumber;
    private String branchName;
    private boolean archived;
    private final int authorId;
@@ -62,11 +65,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private boolean deleted;
    private BranchState branchState;
 
-   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
+   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       this.branchId = branchId;
       this.branchName = branchName;
       this.parentBranchId = parentBranchId;
-      this.parentTransactionId = parentTransactionId;
+      this.parentTransactionIdNumber = parentTransactionIdNumber;
       this.archived = archived;
       this.authorId = authorId;
       this.creationDate = creationDate;
@@ -429,8 +432,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    /**
     * @return the parentTransactionId
+    * @throws OseeCoreException 
     */
-   public int getParentTransactionId() {
+   public TransactionId getParentTransactionId() throws OseeCoreException {
+      if(parentTransactionId == null){
+         parentTransactionId = TransactionIdManager.getTransactionId(parentTransactionIdNumber);
+      }
       return parentTransactionId;
    }
 
@@ -447,5 +454,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public Collection<Branch> getWorkingBranches() throws OseeCoreException {
       return BranchManager.getWorkingBranches(this);
+   }
+
+   public int getParentTransactionNumber() {
+      return parentTransactionIdNumber;
    }
 }

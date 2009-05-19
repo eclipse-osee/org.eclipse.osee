@@ -74,13 +74,6 @@ public class TransactionId implements Serializable, IAdaptable {
       return transactionNumber;
    }
 
-   /**
-    * @param transactionNumber The transactionId to set.
-    */
-   protected void setTransactionNumber(int transactionNumber) {
-      this.transactionNumber = transactionNumber;
-   }
-
    /*
     * (non-Javadoc)
     * 

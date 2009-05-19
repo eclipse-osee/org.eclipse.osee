@@ -146,7 +146,7 @@ public class AtsBranchManager {
       }
       Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
       for (TransactionId transId : transactions) {
-         if (transId.getBranchId() == branch.getBranchId()) {
+         if (transId.getBranch().equals(branch)) {
             if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
                return CommitStatus.Committed_With_Merge;
             } else {

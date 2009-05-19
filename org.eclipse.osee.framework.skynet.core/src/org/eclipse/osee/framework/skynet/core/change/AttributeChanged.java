@@ -162,7 +162,7 @@ public class AttributeChanged extends Change {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getArtModType(), getArtifact(), null, null, getFromTransactionId(),
-                     getFromTransactionId(), getToTransactionId(), getGamma());
+                     getFromTransactionId(), getToTransactionId(), getGamma(), isHistorical());
       }
       return artifactChange;
    }

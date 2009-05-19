@@ -32,6 +32,7 @@ public class ArtifactChange extends RevisionChange{
    private TransactionId toTransactionId;
    transient private Artifact artifact;
    transient private Artifact conflictingModArtifact;
+   private boolean isHistorical;
 
    @Override
    public String toString() {
@@ -47,16 +48,17 @@ public class ArtifactChange extends RevisionChange{
    }
 
    /**
-    * @param name
-    * @param descriptor
     * @param artifact
     * @param baselineTransactionId TODO
     * @param fromTransactionId TODO
     * @param toTransactionId TODO
+    * @param isHistorical TODO
+    * @param name
+    * @param descriptor
     * @param artId
     * @param lastGoodTransactionId TODO
     */
-   public ArtifactChange(ChangeType changeType, ModificationType modtype, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int gammaId) {
+   public ArtifactChange(ChangeType changeType, ModificationType modtype, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int gammaId, boolean isHistorical) {
       super(changeType, modtype, gammaId);
       this.artifact = artifact;
       this.baseParentTransactionId = baseParentTransactionId;
@@ -64,6 +66,14 @@ public class ArtifactChange extends RevisionChange{
       this.baselineTransactionId = baselineTransactionId == null ? toTransactionId : baselineTransactionId;
       this.fromTransactionId = fromTransactionId;
       this.toTransactionId = toTransactionId;
+      this.isHistorical = isHistorical;
+   }
+
+   /**
+    * @return the isHistorical
+    */
+   public boolean isHistorical() {
+      return isHistorical;
    }
 
    /**

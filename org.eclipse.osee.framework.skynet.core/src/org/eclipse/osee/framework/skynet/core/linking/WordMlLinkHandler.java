@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * This class converts between OSEE hyperlink markers into wordML style links. <br/>
@@ -180,10 +179,9 @@ public class WordMlLinkHandler {
       return modified;
    }
 
-   private static List<Artifact> findArtifacts(int transactionNumber, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<Artifact> findArtifacts(TransactionId transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
-         TransactionId transactionId = TransactionIdManager.getTransactionId(transactionNumber);
          artifactsFromSearch = ArtifactQuery.getHistoricalArtifactsFromIds(guidsFromLinks, transactionId, true);
       } else {
          artifactsFromSearch = ArtifactQuery.getArtifactsFromIds(guidsFromLinks, branch, true);
@@ -206,7 +204,7 @@ public class WordMlLinkHandler {
       List<String> guidsFromLinks = new ArrayList<String>(matchMap.keySet());
 
       artifactsFromSearch =
-            findArtifacts(source.getTransactionNumber(), source.getBranch(), source.isHistorical(), guidsFromLinks);
+            findArtifacts(source.getTransactionId(), source.getBranch(), source.isHistorical(), guidsFromLinks);
       if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.isMergeBranch()) {
          Branch sourceBranch = BranchManager.getBranch(branch.getParentBranchId());
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);

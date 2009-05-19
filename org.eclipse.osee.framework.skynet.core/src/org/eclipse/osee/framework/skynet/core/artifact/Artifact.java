@@ -1506,6 +1506,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public int getTransactionNumber() {
       return transactionId.getTransactionNumber();
    }
+   
+   public TransactionId getTransactionId(){
+      return transactionId;
+   }
 
    /**
     * @return Returns the gammaId.

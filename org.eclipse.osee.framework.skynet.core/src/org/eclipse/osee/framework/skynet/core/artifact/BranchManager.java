@@ -306,13 +306,15 @@ public class BranchManager {
     * 
     * @param rSet
     * @return
-    * @throws OseeDataStoreException
+    * @throws OseeDataStoreException 
+    * @throws OseeCoreException
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
       return createBranchObject(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
-            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
-            chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
-            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")),
+            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
+            chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
+            chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
+            BranchType.getBranchType(chStmt.getInt("branch_type")),
             BranchState.getBranchState(chStmt.getInt("branch_state")));
    }
 
@@ -600,7 +602,7 @@ public class BranchManager {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
       Branch branch =
             HttpBranchCreation.createRootBranch(branchName, staticBranchName, systemRootBranch.getBranchId(),
-                  systemRootBranch.getParentTransactionId(), false);
+                  systemRootBranch.getParentTransactionNumber(), false);
       if (staticBranchName != null) {
          setKeyedBranchInCache(staticBranchName, branch);
       }

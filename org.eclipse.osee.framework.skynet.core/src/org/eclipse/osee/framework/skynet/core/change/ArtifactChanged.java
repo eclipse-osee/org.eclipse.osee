@@ -101,7 +101,7 @@ public class ArtifactChanged extends Change {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getModificationType(), getArtifact(), null, null,
-                     getFromTransactionId(), getFromTransactionId(), getToTransactionId(), getGamma());
+                     getFromTransactionId(), getFromTransactionId(), getToTransactionId(), getGamma(), isHistorical());
       }
       return artifactChange;
    }

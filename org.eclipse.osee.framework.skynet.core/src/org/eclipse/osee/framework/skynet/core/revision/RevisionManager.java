@@ -254,7 +254,7 @@ public class RevisionManager {
 
          while (chStmt.next()) {
             changes.add(new ArtifactChange(changeType, ModificationType.getMod(chStmt.getInt("mod_type")), artifact,
-                  null, null, null, toTransactionId, fromTransactionId, chStmt.getInt("gamma_id")));
+                  null, null, null, toTransactionId, fromTransactionId, chStmt.getInt("gamma_id"), false));
          }
       } finally {
          chStmt.close();
