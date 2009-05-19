@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.cases;
+package org.eclipse.osee.framework.ui.skynet.test.testDb.interactive;
 
 import java.util.Collection;
 import junit.framework.TestCase;
@@ -42,7 +42,7 @@ public class RebaselineArtifactTest extends TestCase {
       assertFalse(ClientSessionManager.isProductionDataStore());
    }
 
-   public void testUpdateFromParent() throws Exception {
+   public void testRebaseline() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       VariableMap variableMap = new VariableMap();
