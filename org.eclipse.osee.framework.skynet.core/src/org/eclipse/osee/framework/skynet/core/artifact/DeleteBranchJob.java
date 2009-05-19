@@ -45,6 +45,7 @@ class DeleteBranchJob extends Job {
       monitor.beginTask(getName(), 1);
       try {
          BranchManager.setBranchState(branch, BranchState.DELETED);
+         BranchManager.archive(branch);
          BranchManager.handleBranchDeletion(branch.getBranchId());
       } catch (Exception ex) {
          status = new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, "Error - " + getName(), ex);
