@@ -705,6 +705,13 @@ public class InternalEventManager {
       }
    }
 
+   /**
+    * This method clears all listeners. Should only be used for testing purposes.
+    */
+   public static void removeAllListeners() {
+      listeners.clear();
+   }
+
    public static String getObjectSafeName(Object object) {
       try {
          return object.toString();
