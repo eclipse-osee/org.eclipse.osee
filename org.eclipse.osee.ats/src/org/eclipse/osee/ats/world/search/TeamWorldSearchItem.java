@@ -129,9 +129,15 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getTeamDefs();
-      List<String> teamDefinitionGuids = new ArrayList<String>(teamDefs.size());
-      for (TeamDefinitionArtifact art : teamDefs) {
-         teamDefinitionGuids.add(art.getGuid());
+      Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs.size());
+      for (TeamDefinitionArtifact teamDef : teamDefs) {
+         if (recurseChildren) {
+            for (TeamDefinitionArtifact childTeamDef : TeamDefinitionArtifact.getTeamsFromItemAndChildren(teamDef)) {
+               teamDefinitionGuids.add(childTeamDef.getGuid());
+            }
+         } else {
+            teamDefinitionGuids.add(teamDef.getGuid());
+         }
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
       criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),

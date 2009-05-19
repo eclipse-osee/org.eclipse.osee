@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvide
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -92,6 +92,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
             selectedTeamDefs = teamDefList.getSelected();
          };
       });
+      GridData gd = new GridData();
+      gd.heightHint = 300;
+      teamDefList.getTable().setLayoutData(gd);
 
       comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
@@ -131,8 +134,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       dateCombo.setRequiredEntry(true);
       dateCombo.createWidgets(comp, 2);
       if (selectedDate != null) dateCombo.setDate(selectedDate);
-      dateCombo.addModifyListener(new ModifyListener() {
-         public void modifyText(ModifyEvent e) {
+      dateCombo.addXModifiedListener(new XModifiedListener() {
+         @Override
+         public void widgetModified(XWidget widget) {
             selectedDate = dateCombo.getDate();
          };
       });

@@ -38,7 +38,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
    XCheckBox showFinishedCheck = new XCheckBox("Show Completed and Cancelled Workflows");
    boolean showFinished = false;
    XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
-   boolean showAction = true;
+   boolean showAction = false;
 
    public ActionTeamListDialog(Active active) {
       super(Display.getCurrent().getActiveShell(), null);
