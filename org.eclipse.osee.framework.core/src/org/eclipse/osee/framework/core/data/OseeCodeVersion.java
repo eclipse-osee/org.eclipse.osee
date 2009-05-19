@@ -35,11 +35,6 @@ public class OseeCodeVersion {
    private String oseeVersion;
 
    private OseeCodeVersion() {
-      oseeVersion = null;
-   }
-
-   private static OseeCodeVersion getInstance() {
-      return instance;
    }
 
    /**
@@ -48,7 +43,7 @@ public class OseeCodeVersion {
     * @return the version
     */
    public static String getVersion() {
-      return getInstance().get();
+      return instance.get();
    }
 
    public static boolean isDevelopment() {
