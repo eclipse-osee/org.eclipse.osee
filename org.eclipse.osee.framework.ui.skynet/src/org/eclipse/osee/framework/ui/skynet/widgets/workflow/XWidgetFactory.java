@@ -18,9 +18,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -98,6 +101,20 @@ public class XWidgetFactory {
          }
       } else if (xWidgetName.equals("XMultiXWidgetTextDam")) {
          xWidget = new XMultiXWidgetTextDam(name);
+      } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
+         XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
+         int maxSelectionRequired = 1;
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
+            maxSelectionRequired = Integer.MAX_VALUE;
+         }
+         try {
+            multiBranchSelect.setSelectableItems(BranchManager.getNormalAllBranches());
+            multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+         multiBranchSelect.setRequiredEntry(true);
+         xWidget = multiBranchSelect;
       } else if (xWidgetName.equals("XInteger")) {
          xWidget = new XInteger(name);
       } else if (xWidgetName.equals("XTextDam")) {
@@ -178,9 +195,10 @@ public class XWidgetFactory {
                XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
                widget.setSelectableItems(Arrays.asList(values));
                xWidget = widget;
-            } else
+            } else {
                throw new IllegalArgumentException(
                      "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
+            }
          }
       } else if (xWidgetName.startsWith("XStackedDam")) {
          xWidget = new XStackedDam(name);
