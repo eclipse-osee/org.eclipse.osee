@@ -39,7 +39,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    private String[] headerRow;
    private ArtifactType primaryDescriptor;
    private boolean importingRelations;
-   private AttributeImportType[] types;
    private int rowCount;
    private DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
          new DoubleKeyHashMap<String, Integer, RoughArtifact>();
@@ -63,10 +62,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          if (headerRow[i] != null && headerRow[i].trim().length() == 0) {
             this.headerRow[i] = null;
          }
-      }
-      types = new AttributeImportType[headerRow.length];
-      for (int i = 0; i < types.length; i++) {
-         types[i] = AttributeImportType.NONE;
       }
    }
 
@@ -107,7 +102,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
             } else if (headerRow[i].equalsIgnoreCase("Human Readable Id")) {
                roughArtifact.setHumandReadableId(row[i]);
             } else {
-               roughArtifact.addAttribute(headerRow[i], row[i], types[i]);
+               roughArtifact.addAttribute(headerRow[i], row[i]);
             }
          }
          addRoughArtifact(roughArtifact);
@@ -160,17 +155,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
     */
    public void processCommentRow(String[] row) {
       rowCount++;
-      for (int i = 0; i < row.length; i++) {
-         if (row[i] != null) {
-            try {
-               types[i] = AttributeImportType.valueOf(row[i]);
-            } catch (Throwable th) {
-               types[i] = AttributeImportType.NONE;
-            }
-         } else {
-            types[i] = AttributeImportType.NONE;
-         }
-      }
    }
 
    /*

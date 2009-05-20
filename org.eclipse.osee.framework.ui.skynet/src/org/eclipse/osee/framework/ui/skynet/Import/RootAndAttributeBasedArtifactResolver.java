@@ -20,12 +20,12 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact.NameAndVal;
 
 /**
  * @author Robert A. Fisher
@@ -51,10 +51,10 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
 
-      Collection<NameAndVal> roughAttributeCollection = roughArtifact.getAttributes();
+      Collection<ObjectPair<String, String>> roughAttributeCollection = roughArtifact.getAttributes();
       HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();
-      for (NameAndVal roughAttribute : roughAttributeCollection) {
-         roughAttributeMap.put(roughAttribute.getName(), roughAttribute.getValue());
+      for (ObjectPair<String, String> roughAttribute : roughAttributeCollection) {
+         roughAttributeMap.put(roughAttribute.object1, roughAttribute.object2);
       }
 
       for (AttributeType attributeType : identifyingAttributeDescriptors) {

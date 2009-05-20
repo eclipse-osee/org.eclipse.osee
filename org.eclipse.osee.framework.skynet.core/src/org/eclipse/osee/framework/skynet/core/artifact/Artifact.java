@@ -1178,9 +1178,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (names.length == 0) {
          throw new OseeArgumentException("Must suply at least one name to getDescendant()");
       }
-      Artifact descendant = null;
+      Artifact descendant = this;
       for (String name : names) {
-         descendant = getChild(name);
+         descendant = descendant.getChild(name);
       }
       return descendant;
    }

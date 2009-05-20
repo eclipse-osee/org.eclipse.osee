@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,5 +34,16 @@ public class EnumeratedAttribute extends StringAttribute {
    public String getDisplayableString() throws OseeCoreException {
       String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
+    */
+   @Override
+   public boolean subClassSetValue(String value) throws OseeCoreException {
+      if (!AttributeTypeManager.getEnumerationValues(getAttributeType()).contains(value)) {
+         throw new OseeArgumentException(value + " is not a valid enumeration of the type " + getAttributeType());
+      }
+      return super.subClassSetValue(value);
    }
 }

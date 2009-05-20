@@ -22,7 +22,7 @@ class RootBranchInitializer {
     * Add common artifacts that should be available to all branches
     * 
     * @param branch
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    protected void initialize(Branch branch) throws OseeCoreException {
       // Create necessary default hierarchy root artifact

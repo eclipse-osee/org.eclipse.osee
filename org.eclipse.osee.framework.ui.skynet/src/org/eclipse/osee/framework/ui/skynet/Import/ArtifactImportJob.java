@@ -94,8 +94,11 @@ public class ArtifactImportJob implements IExceptionableRunnable {
 
       SkynetTransaction transaction = new SkynetTransaction(branch);
       for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-         // the getReal call with recursively call get real on all descendants of roughArtifact
-         importRoot.addChild(roughArtifact.getReal(transaction, monitor, artifactResolver));
+         // the getReal call will recursively call get real on all descendants of roughArtifact
+         Artifact child = roughArtifact.getReal(transaction, monitor, artifactResolver);
+         if (child != null) {
+            importRoot.addChild(child);
+         }
       }
 
       monitor.setTaskName("Creating Relations");

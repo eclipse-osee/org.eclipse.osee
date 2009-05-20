@@ -117,7 +117,7 @@ public class AttributeTypeManager {
    /**
     * @param namespace
     * @param name
-    * @return the attribute type with the given name and namespace or throws an IllegalArgumentException if it does not
+    * @return the attribute type with the given name and namespace or throws an OseeTypeDoesNotExist if it does not
     *         exist.
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist

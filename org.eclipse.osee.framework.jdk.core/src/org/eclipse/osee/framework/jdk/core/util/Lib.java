@@ -911,6 +911,10 @@ public final class Lib {
       return filepath;
    }
 
+   public static String removeExtension(File file) {
+      return removeExtension(file.getName());
+   }
+
    /**
     * Remove the file extension from the file path
     * 

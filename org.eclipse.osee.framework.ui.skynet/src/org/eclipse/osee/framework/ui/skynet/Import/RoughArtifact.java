@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -38,7 +39,7 @@ public class RoughArtifact {
    private HashMap<String, File> fileAttributes;
    private final Branch branch;
    private RoughArtifactKind roughArtifactKind;
-   private final List<NameAndVal> attributes = new ArrayList<NameAndVal>();
+   private final List<ObjectPair<String, String>> attributes = new ArrayList<ObjectPair<String, String>>();
    private final Collection<RoughArtifact> children = new ArrayList<RoughArtifact>();
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch) {
@@ -88,11 +89,7 @@ public class RoughArtifact {
    }
 
    public void addAttribute(String name, String value) {
-      attributes.add(new NameAndVal(name, value));
-   }
-
-   public void addAttribute(String name, String value, AttributeImportType type) {
-      attributes.add(new NameAndVal(name, value, type));
+      attributes.add(new ObjectPair<String, String>(name, value));
    }
 
    public boolean isChild(RoughArtifact otherArtifact) {
@@ -100,9 +97,9 @@ public class RoughArtifact {
    }
 
    public void conferAttributesUpon(Artifact artifact) throws OseeCoreException {
-      for (NameAndVal roughtAttribute : attributes) {
-         if (roughtAttribute.getValue() != null) {
-            artifact.addAttributeFromString(roughtAttribute.getName(), roughtAttribute.getValue());
+      for (ObjectPair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.object2 != null) {
+            artifact.addAttributeFromString(roughtAttribute.object1, roughtAttribute.object2);
          }
       }
       setFileAttributes(artifact);
@@ -131,44 +128,7 @@ public class RoughArtifact {
       this.number = new ReqNumbering(number);
    }
 
-   public class NameAndVal {
-      private String name;
-      private String value;
-      private AttributeImportType type;
-
-      /**
-       * @param name
-       * @param value
-       */
-      public NameAndVal(String name, String value, AttributeImportType type) {
-         super();
-         this.name = name;
-         this.value = value;
-         this.type = type;
-      }
-
-      public NameAndVal(String name, String value) {
-         this(name, value, AttributeImportType.NONE);
-      }
-
-      public String getName() {
-         return name;
-      }
-
-      public String getValue() {
-         return value;
-      }
-
-      public AttributeImportType getType() {
-         return type;
-      }
-
-      public String toString() {
-         return name + ": " + value;
-      }
-   }
-
-   public Collection<NameAndVal> getAttributes() {
+   public Collection<ObjectPair<String, String>> getAttributes() {
       return attributes;
    }
 
@@ -210,8 +170,8 @@ public class RoughArtifact {
    }
 
    public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
-      for (NameAndVal value : attributes) {
-         artifact.setSoleAttributeFromString(value.getName(), value.getValue());
+      for (ObjectPair<String, String> roughtAttribute : attributes) {
+         artifact.setSoleAttributeFromString(roughtAttribute.object1, roughtAttribute.object2);
       }
 
       setFileAttributes(artifact);
@@ -260,12 +220,21 @@ public class RoughArtifact {
       if (realArtifact != null) {
          return realArtifact.getDescriptiveName();
       }
-      for (NameAndVal attr : attributes) {
-         if (attr.getName().equals("Name")) {
-            return attr.getValue();
+      for (ObjectPair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.object1.equals("Name")) {
+            return roughtAttribute.object2;
          }
       }
       return "";
+   }
+
+   public String getRoughAttribute(String attributeName) {
+      for (ObjectPair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.object1.equalsIgnoreCase(attributeName)) {
+            return roughtAttribute.object2;
+         }
+      }
+      return null;
    }
 
    /**
