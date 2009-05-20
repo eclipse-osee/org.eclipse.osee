@@ -438,6 +438,14 @@
              visible="true">
        </separator>
        <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"
+             style="push">
+       </command>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.changeView.singleNativeDiff.separator"
+             visible="true">
+       </separator>
+       <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
        </command>
        <command
@@ -1136,6 +1144,10 @@
            class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ToggleChangeViewDocOrderHandler"
            commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder">
      </handler>
+     <handler
+           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.SingleNativeDiffHandler"
+           commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command">
+     </handler>
   </extension>
 	<extension point="org.eclipse.ui.commandImages">
   <image
@@ -1611,6 +1623,10 @@
   <command
         id="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
         name="Show Document Order">
+  </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"
+        name="Single Native Diff">
   </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">

@@ -137,20 +137,26 @@ public class WholeDocumentRenderer extends WordRenderer {
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute = baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
-         if (baseVersion != null && attribute != null) {
-            String value = attribute.getValue().toString();
-            if (WordAnnotationHandler.containsWordAnnotations(value)) {
-               oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+
+         if (baseVersion != null) {
+            Attribute<?> baseAttribute = baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
+            if (baseAttribute != null) {
+               String value = baseAttribute.getValue().toString();
+               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                  oldAnnotationValue = new Pair<String, Boolean>(value, baseAttribute.isDirty());
+                  baseAttribute.setFromString(WordAnnotationHandler.removeAnnotations(value));
+               }
             }
          }
-         attribute = newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
-         if (newerVersion != null && attribute != null) {
-            String value = attribute.getValue().toString();
-            if (WordAnnotationHandler.containsWordAnnotations(value)) {
-               newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-               attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
+
+         if (newerVersion != null) {
+            Attribute<?> newerAttribute = newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
+            if (newerAttribute != null) {
+               String value = newerAttribute.getValue().toString();
+               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                  newAnnotationValue = new Pair<String, Boolean>(value, newerAttribute.isDirty());
+                  newerAttribute.setFromString(WordAnnotationHandler.removeAnnotations(value));
+               }
             }
          }
       }
@@ -203,7 +209,8 @@ public class WholeDocumentRenderer extends WordRenderer {
                   baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
          }
       } else {
-         diffPath = getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
+         diffPath =
+               getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
