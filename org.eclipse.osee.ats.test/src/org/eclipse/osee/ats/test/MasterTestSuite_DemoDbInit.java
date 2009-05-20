@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOper
 /**
  * @author Donald G. Dunne
  */
-public class Demo_DbInit_Test extends TestCase {
+public class MasterTestSuite_DemoDbInit extends TestCase {
 
    public void testDemoDbInit() throws Exception {
       System.out.println("Begin Database Initialization...");

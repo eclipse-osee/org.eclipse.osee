@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 /**
  * @author Donald G. Dunne
  */
-public class PopulateDemoDbTest extends TestCase {
+public class MasterTestSuite_DemoDbPopulate extends TestCase {
 
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
