@@ -79,9 +79,12 @@ public abstract class Attribute<T> {
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
    public final void initializeToDefaultValue() throws OseeCoreException {
-      boolean response = subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
-      if (response) {
-         setDirty();
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (defaultValue != null) {
+         boolean response = subClassSetValue(convertStringToValue(defaultValue));
+         if (response) {
+            setDirty();
+         }
       }
    }
 
@@ -201,16 +204,17 @@ public abstract class Attribute<T> {
       return attributeType.equals(otherAttributeType);
    }
 
-   public void resetModType(){
+   public void resetModType() {
       this.modificationType = null;
    }
+
    /**
     * Deletes the attribute
     */
    public final void setArtifactDeleted() {
       setDeleteOrArtifactDeleted(ModificationType.ARTIFACT_DELETED);
    }
-   
+
    /**
     * Deletes the attribute
     */
@@ -224,8 +228,7 @@ public abstract class Attribute<T> {
    }
 
    /**
-    * @return the modificationType
-    * Warning ... This is only currently being set for delete and artifact deleted.
+    * @return the modificationType Warning ... This is only currently being set for delete and artifact deleted.
     */
    public ModificationType getModificationType() {
       return modificationType;
