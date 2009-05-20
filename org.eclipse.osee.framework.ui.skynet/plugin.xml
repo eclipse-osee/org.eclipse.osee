@@ -4,7 +4,6 @@
 <plugin
 >
 	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="schema/ArtifactRenderer.exsd"/>
-	<extension-point id="ArtifactReport" name="ArtifactReport" schema="schema/ArtifactReport.exsd"/>
 	<extension-point id="BlamOperation" name="BlamOperation" schema="schema/BlamOperation.exsd"/>
 	<extension-point id="WordMlProducer" name="WordMlProducer" schema="schema/WordMlProducer.exsd"/>
 	<extension-point id="WordOutlineContentHandler" name="WordOutlineContentHandler" schema="schema/WordOutlineContentHandler.exsd"/>
@@ -172,9 +171,6 @@
 	<extension point="org.eclipse.ui.newWizards">
 		<wizard class="org.eclipse.osee.framework.ui.skynet.branch.RootBranchWizard" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.rootBranchWizard" name="Root Branch">
          </wizard>
-	</extension>
-	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactReport">
-		<report class="org.eclipse.osee.framework.ui.skynet.search.report.ModificationReportJob"/>
 	</extension>
 	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
 		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory"/>
