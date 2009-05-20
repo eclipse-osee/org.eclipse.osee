@@ -107,7 +107,7 @@ public class InternalChangeManager {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, historical, true);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
 
       if (DEBUG) {
