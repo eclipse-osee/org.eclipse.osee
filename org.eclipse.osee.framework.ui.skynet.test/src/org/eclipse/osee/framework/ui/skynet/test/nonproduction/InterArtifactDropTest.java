@@ -61,6 +61,7 @@ public class InterArtifactDropTest extends TestCase {
 
       BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), DESTINATION_BRANCH,
             UserManager.getUser(SystemUser.OseeSystem));
+     
       sleep(5000);
    }
 
@@ -75,7 +76,7 @@ public class InterArtifactDropTest extends TestCase {
             ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {source});
 
       sleep(5000);
-
+      //Acquire the introduced artifact
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(source.getArtId(), destinationBranch);
 
       assertTrue(source.getDescriptiveName().equals(destArtifact.getDescriptiveName()));
