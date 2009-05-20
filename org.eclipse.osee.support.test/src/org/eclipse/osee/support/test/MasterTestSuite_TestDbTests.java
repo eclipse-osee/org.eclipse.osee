@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
@@ -28,7 +30,16 @@ public class MasterTestSuite_TestDbTests extends TestSuite {
 
       suite.addTest(AtsTest_TestDb_Suite.suite());
 
-      return suite;
+      TestSetup wrapper = new TestSetup(suite) {
+         @Override
+         public void setUp() {
+            assertTrue("Production Application Server must be running",
+                  ClientSessionManager.getAuthenticationProtocols().size() > 0);
+            assertFalse("Production Application Server must be running.",
+                  ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         }
+      };
+      return wrapper;
    }
 
 }

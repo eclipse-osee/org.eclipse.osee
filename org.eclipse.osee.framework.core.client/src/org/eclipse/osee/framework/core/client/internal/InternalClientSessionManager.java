@@ -126,6 +126,7 @@ public class InternalClientSessionManager {
       if (!isSessionValid()) {
          try {
             authenticate(new BaseCredentialProvider() {
+               @Override
                public OseeCredential getCredential() throws OseeCoreException {
                   OseeCredential credential = super.getCredential();
                   credential.setUserName(System.getProperty("user.name"));
@@ -168,7 +169,7 @@ public class InternalClientSessionManager {
       }
    }
 
-   public String[] getAuthenticationProtocols() {
+   public List<String> getAuthenticationProtocols() {
       List<String> toReturn = new ArrayList<String>();
       try {
          Map<String, String> parameters = new HashMap<String, String>();
@@ -190,7 +191,7 @@ public class InternalClientSessionManager {
       } catch (Exception ex) {
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
-      return toReturn.toArray(new String[toReturn.size()]);
+      return toReturn;
    }
 
    private void clearData() {

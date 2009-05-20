@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.logging;bundle-version="0.4.0",
  org.eclipse.osee.framework.plugin.core;bundle-version="0.4.0",
  org.eclipse.osee.framework.ui.plugin;bundle-version="0.4.0",
- org.eclipse.osee.framework.ui.skynet;bundle-version="0.4.0"
+ org.eclipse.osee.framework.ui.skynet;bundle-version="0.4.0",
+ org.eclipse.osee.framework.core.client;bundle-version="0.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: lba.ats.config.common.test,

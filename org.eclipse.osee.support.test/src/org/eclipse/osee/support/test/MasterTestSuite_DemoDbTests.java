@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 
 /**
@@ -23,13 +26,20 @@ import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
  */
 public class MasterTestSuite_DemoDbTests extends TestSuite {
 
-   public static TestSuite suite() throws ClassNotFoundException {
+   public static Test suite() throws ClassNotFoundException {
       TestSuite suite = new TestSuite("MasterTestSuite_DemoDbTests");
 
       suite.addTest(AtsTest_Config_Suite.suite());
       suite.addTest(AtsTest_Demo_Suite.suite());
       suite.addTest(FrameworkUi_Demo_Suite.suite());
 
-      return suite;
+      TestSetup wrapper = new TestSetup(suite) {
+         @Override
+         public void setUp() {
+            assertTrue("Demo Application Server must be running.",
+                  ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         }
+      };
+      return wrapper;
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
@@ -86,7 +87,7 @@ public class ClientSessionManager {
       throw new OseeArgumentException(String.format("Invalid sql key [%s]", key));
    }
 
-   public static String[] getAuthenticationProtocols() {
+   public static List<String> getAuthenticationProtocols() {
       return InternalClientSessionManager.getInstance().getAuthenticationProtocols();
    }
 

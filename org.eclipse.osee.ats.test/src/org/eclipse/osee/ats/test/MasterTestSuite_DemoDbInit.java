@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.test;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 
 /**
@@ -19,6 +20,8 @@ import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOper
 public class MasterTestSuite_DemoDbInit extends TestCase {
 
    public void testDemoDbInit() throws Exception {
+      assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
+            "demo"));
       System.out.println("Begin Database Initialization...");
       DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
       System.out.println("Database Initialization Complete.");

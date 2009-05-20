@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
@@ -79,10 +80,10 @@ public class AuthenticationComposite extends Composite {
       }
    }
 
-   private Map<LabelEnum, Control> fieldMap;
-   private Map<LabelEnum, String> dataMap;
-   private Map<LabelEnum, Label> statusMap;
-   private boolean buildSubmitButton;
+   private final Map<LabelEnum, Control> fieldMap;
+   private final Map<LabelEnum, String> dataMap;
+   private final Map<LabelEnum, Label> statusMap;
+   private final boolean buildSubmitButton;
    private SelectionListener listener;
    private boolean allValid;
    private Button memoButton;
@@ -209,7 +210,8 @@ public class AuthenticationComposite extends Composite {
             if (labelEnum.equals(LabelEnum.Protocol)) {
                Combo combo = new Combo(composite, style);
                control = combo;
-               combo.setItems(ClientSessionManager.getAuthenticationProtocols());
+               List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
+               combo.setItems(protocols.toArray(new String[protocols.size()]));
                dataMap.put(labelEnum, combo.getText());
             } else {
                Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));

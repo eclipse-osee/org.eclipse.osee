@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -30,6 +31,8 @@ public class MasterTestSuite_DemoDbPopulate extends TestCase {
    protected void setUp() throws Exception {
       super.setUp();
       try {
+         assertTrue("Demo Application Server must be running",
+               ClientSessionManager.getAuthenticationProtocols().contains("demo"));
          // Confirm user is Joe Smith
          assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
                UserManager.getUserByUserId("Joe Smith") != null);
