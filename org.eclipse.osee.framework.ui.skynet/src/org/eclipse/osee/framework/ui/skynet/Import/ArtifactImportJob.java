@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -31,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class ArtifactImportJob implements IExceptionableRunnable {
    private final File file;
-   private final ArtifactType folderDescriptor;
    private final IArtifactImportResolver artifactResolver;
    private ArtifactExtractor extractor;
    private final ArrayList<RoughArtifact> roughArtifacts;
@@ -42,7 +39,6 @@ public class ArtifactImportJob implements IExceptionableRunnable {
    public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       this.file = file;
       this.extractor = extractor;
-      this.folderDescriptor = ArtifactTypeManager.getType("Folder");
       this.artifactResolver = artifactResolver;
       this.roughArtifacts = new ArrayList<RoughArtifact>();
       this.roughRelations = new ArrayList<RoughRelation>();
