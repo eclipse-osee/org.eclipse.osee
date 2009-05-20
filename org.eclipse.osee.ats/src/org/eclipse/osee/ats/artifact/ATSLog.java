@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -42,6 +43,8 @@ public class ATSLog {
    private boolean enabled = true;
    private static String ATS_LOG_TAG = "AtsLog";
    private static String LOG_ITEM_TAG = "Item";
+   private LogItem cancelledLogItem;
+   private LogItem completedLogItem;
    public static enum LogType {
       None, Originated, StateComplete, StateCancelled, StateEntered, Released, Error, Assign, Note, Metrics;
 
@@ -322,4 +325,17 @@ public class ATSLog {
       return null;
    }
 
+   public LogItem getCancelledLogItem() throws OseeCoreException {
+      if (cancelledLogItem == null) {
+         cancelledLogItem = getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
+      }
+      return cancelledLogItem;
+   }
+
+   public LogItem getCompletedLogItem() throws OseeCoreException {
+      if (completedLogItem == null) {
+         completedLogItem = getStateEvent(LogType.StateEntered, DefaultTeamState.Completed.name());
+      }
+      return completedLogItem;
+   }
 }

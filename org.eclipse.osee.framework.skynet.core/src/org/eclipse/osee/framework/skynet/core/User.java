@@ -66,6 +66,7 @@ public class User extends Artifact implements Serializable {
       setActive(u.isActive());
    }
 
+   @Override
    public String toString() {
       try {
          return String.format("%s (%s)", getName(), getUserId());
@@ -169,12 +170,12 @@ public class User extends Artifact implements Serializable {
 
    public void saveSettings() throws OseeCoreException, IOException {
       if (userSettings != null) {
-      StringWriter stringWriter = new StringWriter();
-      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
-      storeWriter.save(userSettings, stringWriter);
-      setSoleAttributeFromString("User Settings", stringWriter.toString());
-      persistAttributes();
-   }
+         StringWriter stringWriter = new StringWriter();
+         PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+         storeWriter.save(userSettings, stringWriter);
+         setSoleAttributeFromString("User Settings", stringWriter.toString());
+         persistAttributes();
+      }
    }
 
    private void ensureUserSettingsAreLoaded() throws OseeWrappedException {

@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +37,6 @@ public class StateManager {
 
    private final XCurrentStateDam currentStateDam;
    private final XStateDam stateDam;
-   private static Collection<User> EMPTY_USER_ARRAY = new ArrayList<User>(0);
    private final SMAManager smaMgr;
 
    public StateManager(SMAManager smaMgr) {
@@ -147,7 +146,7 @@ public class StateManager {
       if (state != null)
          return state.getAssignees();
       else
-         return EMPTY_USER_ARRAY;
+         return Collections.emptyList();
    }
 
    public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {

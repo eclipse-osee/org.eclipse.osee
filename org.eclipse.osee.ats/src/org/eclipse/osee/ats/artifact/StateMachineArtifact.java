@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -187,8 +188,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public Collection<User> getImplementersByState(String stateName) throws OseeCoreException {
-      Collection<User> users = smaMgr.getStateMgr().getAssignees(stateName);
-      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, stateName);
+      if (smaMgr.isCancelled()) {
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
+         return Arrays.asList(smaMgr.getLog().getCancelledLogItem().getUser());
+      }
+      Collection<User> users = new HashSet<User>(smaMgr.getStateMgr().getAssignees(stateName));
+      LogItem item = smaMgr.getLog().getCompletedLogItem();
       if (item != null) {
          users.add(item.getUser());
       }
@@ -554,13 +559,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public Date getWorldViewCompletedDate() throws OseeCoreException {
-      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Completed.name());
+      LogItem item = smaMgr.getLog().getCompletedLogItem();
       if (item != null) return item.getDate();
       return null;
    }
 
    public Date getWorldViewCancelledDate() throws OseeCoreException {
-      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
+      LogItem item = smaMgr.getLog().getCancelledLogItem();
       if (item != null) return item.getDate();
       return null;
    }
