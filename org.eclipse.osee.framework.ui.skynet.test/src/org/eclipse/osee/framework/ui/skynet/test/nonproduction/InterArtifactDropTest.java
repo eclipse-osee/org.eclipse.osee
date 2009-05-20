@@ -39,13 +39,18 @@ public class InterArtifactDropTest extends TestCase {
    private static final String SOURCE_BRANCH = "Source Branch";
    private static final String DESTINATION_BRANCH = "Destination Branch";
 
+   @Override
    protected void tearDown() throws Exception {
       super.tearDown();
 
       BranchManager.deleteBranch(BranchManager.getBranch(DESTINATION_BRANCH));
+      sleep(5000);
+
       BranchManager.deleteBranch(BranchManager.getBranch(SOURCE_BRANCH));
+      sleep(5000);
    }
 
+   @Override
    protected void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
@@ -61,7 +66,7 @@ public class InterArtifactDropTest extends TestCase {
 
       BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), DESTINATION_BRANCH,
             UserManager.getUser(SystemUser.OseeSystem));
-     
+
       sleep(5000);
    }
 
