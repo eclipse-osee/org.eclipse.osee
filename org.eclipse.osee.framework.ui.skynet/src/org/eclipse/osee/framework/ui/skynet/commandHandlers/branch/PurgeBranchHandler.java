@@ -42,7 +42,7 @@ public class PurgeBranchHandler extends CommandHandler {
                   MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
-         BranchManager.purgeBranch(selectedBranch);
+         BranchManager.purgeBranchInJob(selectedBranch);
       }
 
       return null;

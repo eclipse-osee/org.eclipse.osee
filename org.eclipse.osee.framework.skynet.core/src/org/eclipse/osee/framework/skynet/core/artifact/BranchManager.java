@@ -195,6 +195,16 @@ public class BranchManager {
       throw new BranchDoesNotExist("No branch exists with the name: " + branchName);
    }
 
+   public static boolean branchExists(String branchName) throws OseeDataStoreException {
+      instance.ensurePopulatedCache(false);
+      for (Branch branch : instance.branchCache.values()) {
+         if (branch.getBranchName().equals(branchName)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
@@ -285,11 +295,9 @@ public class BranchManager {
     * 
     * @throws InterruptedException
     */
-   public static void purgeArchivedBranches() throws OseeCoreException, InterruptedException {
+   public static void purgeArchivedBranches() throws OseeCoreException {
       for (Branch archivedBranch : getArchivedBranches()) {
-         Job job = new PurgeBranchJob(archivedBranch);
-         Jobs.startJob(job);
-         job.join();
+         archivedBranch.purge();
       }
    }
 
@@ -402,8 +410,9 @@ public class BranchManager {
     * 
     * @param branch
     */
-   public static Job purgeBranch(final Branch branch) {
-      return Jobs.startJob(new PurgeBranchJob(branch));
+   public static void purgeBranchInJob(final Branch branch) {
+      Jobs.run("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch), instance.getClass(),
+            SkynetActivator.PLUGIN_ID);
    }
 
    /**

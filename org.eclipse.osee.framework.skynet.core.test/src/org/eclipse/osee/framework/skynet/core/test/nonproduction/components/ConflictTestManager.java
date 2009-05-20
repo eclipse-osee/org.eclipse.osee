@@ -401,13 +401,13 @@ public class ConflictTestManager {
       }
 
       if (mBranch != null) {
-         BranchManager.purgeBranch(mBranch).join();
+         mBranch.purge();
       }
       if (sBranch != null) {
-         BranchManager.purgeBranch(sBranch).join();
+         sBranch.purge();
       }
       if (dBranch != null) {
-         BranchManager.purgeBranch(dBranch).join();
+         dBranch.purge();
       }
    }
 

@@ -90,7 +90,7 @@ public abstract class DbTransaction {
             }
          }
          if (saveException != null) {
-            throw (saveException);
+            throw saveException;
          }
       }
    }

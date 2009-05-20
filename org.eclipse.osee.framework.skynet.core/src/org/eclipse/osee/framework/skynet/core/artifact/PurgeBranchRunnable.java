@@ -11,26 +11,25 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 
 /**
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-class PurgeBranchJob extends Job {
+class PurgeBranchRunnable implements IExceptionableRunnable {
    private static final String COUNT_CHILD_BRANCHES =
          "SELECT count(branch_id) as child_branches FROM OSEE_BRANCH WHERE parent_branch_id = ?";
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =
@@ -57,27 +56,8 @@ class PurgeBranchJob extends Job {
     * @param name
     * @param branch
     */
-   public PurgeBranchJob(Branch branch) {
-      super("Purge Branch: " + branch);
+   public PurgeBranchRunnable(Branch branch) {
       this.branch = branch;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      IStatus toReturn = Status.CANCEL_STATUS;
-      try {
-         PurgeBranchTx purgeBranchTx = new PurgeBranchTx(branch, monitor);
-         purgeBranchTx.execute();
-         toReturn = purgeBranchTx.getResult();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-      return toReturn;
    }
 
    private final class PurgeBranchTx extends DbTransaction {
@@ -102,7 +82,7 @@ class PurgeBranchJob extends Job {
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, COUNT_CHILD_BRANCHES, branch.getBranchId()) > 0) {
-            throw new OseeCoreException("Can not purge a branch that has children");
+            throw new OseeArgumentException("Can not purge a branch that has children");
          }
 
          monitor.beginTask("Purge Branch: " + branch, 10);
@@ -175,4 +155,21 @@ class PurgeBranchJob extends Job {
          return isCanceled;
       }
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable#run(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
+      IStatus toReturn = Status.CANCEL_STATUS;
+      PurgeBranchTx purgeBranchTx = new PurgeBranchTx(branch, monitor);
+      purgeBranchTx.execute();
+      toReturn = purgeBranchTx.getResult();
+      return toReturn;
+   }
+
+   public IStatus run() throws OseeCoreException {
+      return run(new NullProgressMonitor());
+   }
+
 }

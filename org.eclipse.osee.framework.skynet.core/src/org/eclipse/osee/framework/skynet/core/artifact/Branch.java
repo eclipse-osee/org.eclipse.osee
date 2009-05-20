@@ -444,10 +444,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    /**
     * @return the parentTransactionId
-    * @throws OseeCoreException 
+    * @throws OseeCoreException
     */
    public TransactionId getParentTransactionId() throws OseeCoreException {
-      if(parentTransactionId == null){
+      if (parentTransactionId == null) {
          parentTransactionId = TransactionIdManager.getTransactionId(parentTransactionIdNumber);
       }
       return parentTransactionId;
@@ -470,5 +470,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public int getParentTransactionNumber() {
       return parentTransactionIdNumber;
+   }
+
+   public void purge() throws OseeCoreException {
+      new PurgeBranchRunnable(this).run();
    }
 }

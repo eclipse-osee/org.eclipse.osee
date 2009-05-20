@@ -393,14 +393,14 @@ public class AtsBranchConfigurationTest extends TestCase {
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
             if (workingBranch.getBranchName().contains(testType.name())) {
-               BranchManager.purgeBranch(workingBranch);
+               BranchManager.purgeBranchInJob(workingBranch);
                DemoTestUtil.sleep(2000);
             }
          }
          // delete baseline branch
          Branch branch = BranchManager.getKeyedBranch(testType.name());
          if (branch != null) {
-            BranchManager.purgeBranch(branch);
+            BranchManager.purgeBranchInJob(branch);
             DemoTestUtil.sleep(2000);
          }
 

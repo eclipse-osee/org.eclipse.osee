@@ -456,7 +456,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * creates a new child using descriptor, relates it to its parent, and persists the child
+    * creates a new child using artifactType with the given name and relates it to its parent
     * 
     * @param artifactType
     * @param name
@@ -467,6 +467,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       child.setDescriptiveName(name);
       addChild(child);
       return child;
+   }
+
+   /**
+    * creates a new child using artifactType with the given name and relates it to its parent
+    * 
+    * @param artifactTypeName
+    * @param name
+    * @return the newly created artifact
+    * @throws OseeCoreException
+    */
+   public Artifact addNewChild(String artifactTypeName, String name) throws OseeCoreException {
+      return addNewChild(ArtifactTypeManager.getType(artifactTypeName), name);
    }
 
    public void addChildren(List<? extends Artifact> artifacts) throws OseeCoreException {
@@ -613,20 +625,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   private void resetArtifactDeletedModTypes(){
+   private void resetArtifactDeletedModTypes() {
       for (Attribute<?> attribute : attributes.getValues()) {
-         if(attribute.getModificationType() == ModificationType.ARTIFACT_DELETED){
+         if (attribute.getModificationType() == ModificationType.ARTIFACT_DELETED) {
             attribute.resetModType();
          }
-      }  
+      }
    }
-   
-   private void setAttributesModArtifactDeleted() throws OseeCoreException{
+
+   private void setAttributesModArtifactDeleted() throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(false)) {
          attribute.setArtifactDeleted();
-      } 
+      }
    }
-   
+
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
          ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
@@ -973,7 +985,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
-    * @throws OseeCoreException 
+    * 
+    * @throws OseeCoreException
     */
    public void setDeleted() throws OseeCoreException {
       this.modType = ModificationType.DELETED;
@@ -1506,8 +1519,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public int getTransactionNumber() {
       return transactionId.getTransactionNumber();
    }
-   
-   public TransactionId getTransactionId(){
+
+   public TransactionId getTransactionId() {
       return transactionId;
    }
 
