@@ -68,7 +68,7 @@ public class OseeValidator {
       return Status.OK_STATUS;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, Object proposedValue) {
+   public IStatus validate(int requiredQualityOfService, Artifact artifact) {
       try {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             String attributeTypeName = attributeType.getName();
