@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -186,23 +187,36 @@ public class BranchManager {
    @Deprecated
    // use getKeyedBranch() or get the branch by id or from getBranches(...)
    public static Branch getBranch(String branchName) throws OseeCoreException {
+      Collection<Branch> branches = getBranchesByName(branchName);
+      if (branches.isEmpty()) {
+         throw new BranchDoesNotExist(String.format("No branch exists with the name: [%s]", branchName));
+      }
+      if (branches.size() > 1) {
+         throw new MultipleBranchesExist(String.format("More than 1 branch exists with the name: [%s]", branchName));
+      }
+      return branches.iterator().next();
+   }
+
+   public static Collection<Branch> getBranchesByName(String branchName) throws OseeDataStoreException {
       instance.ensurePopulatedCache(false);
+      List<Branch> branches = null;
       for (Branch branch : instance.branchCache.values()) {
          if (branch.getBranchName().equals(branchName)) {
-            return branch;
+            if (branches == null) {
+               branches = new ArrayList<Branch>();
+            }
+            branches.add(branch);
          }
       }
-      throw new BranchDoesNotExist("No branch exists with the name: " + branchName);
+
+      if (branches == null) {
+         branches = Collections.emptyList();
+      }
+      return branches;
    }
 
    public static boolean branchExists(String branchName) throws OseeDataStoreException {
-      instance.ensurePopulatedCache(false);
-      for (Branch branch : instance.branchCache.values()) {
-         if (branch.getBranchName().equals(branchName)) {
-            return true;
-         }
-      }
-      return false;
+      return !getBranchesByName(branchName).isEmpty();
    }
 
    private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {

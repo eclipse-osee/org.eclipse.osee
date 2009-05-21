@@ -34,8 +34,6 @@ public class BranchCreation implements IBranchCreation {
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-   private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
-
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
 
@@ -112,19 +110,12 @@ public class BranchCreation implements IBranchCreation {
       }
 
       private int initializeBranch(OseeConnection connection, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws OseeDataStoreException, OseeArgumentException {
-         if (checkAlreadyHasBranchName(branchName)) {
-            throw new OseeArgumentException("A branch with the name " + branchName + " already exists");
-         }
          int branchId = SequenceManager.getNextBranchId();
 
          ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchName, parentBranchId,
                parentTransactionId, 0, associatedArtifactId, branchType.getValue(), branchState.getValue());
 
          return branchId;
-      }
-
-      private boolean checkAlreadyHasBranchName(String branchName) throws OseeDataStoreException {
-         return ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_BRANCH_BY_NAME, branchName) > 0;
       }
 
       public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException;
