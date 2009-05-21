@@ -43,6 +43,8 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -168,13 +170,21 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews();
 
-         if (monitorLog.getSevereLogs().size() > 0) {
-            throw new OseeStateException(
-                  "SevereLoggingMonitor found " + monitorLog.getSevereLogs().size() + " exceptions!");
+         OseeLog.unregisterLoggerListener(monitorLog);
+         Collection<IHealthStatus> healthStatuses = monitorLog.getSevereLogs();
+         int numExceptions = 0;
+         if (healthStatuses.size() > 0) {
+            for (IHealthStatus status : healthStatuses) {
+               if (status.getLevel() != Level.INFO) {
+                  System.err.println(Lib.exceptionToString(status.getException()));
+                  numExceptions++;
+               }
+            }
+            if (numExceptions > 0) {
+               throw new OseeStateException("SevereLoggingMonitor found " + numExceptions + " exceptions!");
+            }
          }
-
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Populate Complete");
-
       }
    }
 
