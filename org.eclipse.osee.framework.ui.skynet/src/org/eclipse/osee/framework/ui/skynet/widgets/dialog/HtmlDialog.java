@@ -50,6 +50,14 @@ public class HtmlDialog extends MessageDialog {
       this.listener = listener;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+    */
+   @Override
+   protected boolean isResizable() {
+      return true;
+   }
+
    @Override
    protected Control createDialogArea(Composite parent) {
       Composite c = (Composite) super.createDialogArea(parent);
@@ -60,7 +68,6 @@ public class HtmlDialog extends MessageDialog {
       b.setSize(500, 500);
       if (listener != null) b.addLocationListener(listener);
       b.setMenu(pageOverviewGetPopup());
-
       return c;
    }
 
@@ -70,6 +77,7 @@ public class HtmlDialog extends MessageDialog {
       item.setText("View Source");
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             String file = System.getProperty("user.home") + File.separator + "out.html";
             try {

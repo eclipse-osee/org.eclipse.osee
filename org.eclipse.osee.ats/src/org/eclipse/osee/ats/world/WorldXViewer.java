@@ -14,10 +14,8 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -26,14 +24,12 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
@@ -48,15 +44,15 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
+import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
+import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -75,7 +71,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.swt.events.DisposeEvent;
@@ -439,7 +434,11 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       deletePurgeAtsObjectAction = new Action("Delete/Purge ATS Object", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            handleDeleteAtsObject();
+            try {
+               AtsDeleteManager.handleDeletePurgeAtsObject(getSelectedArtifacts(), DeleteOption.Prompt);
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       };
 
@@ -856,70 +855,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       if (items.length > 0) for (TreeItem item : items)
          arts.add((Artifact) item.getData());
       return arts;
-   }
-
-   private void handleDeleteAtsObject() {
-      try {
-         ArrayList<Artifact> delArts = new ArrayList<Artifact>();
-         StringBuilder artBuilder = new StringBuilder();
-         ArrayList<Artifact> selectedArts = getSelectedArtifacts();
-
-         for (Artifact art : selectedArts) {
-            if (art instanceof ATSArtifact) {
-               delArts.add(art);
-               if (selectedArts.size() < 30) artBuilder.append(String.format("Name: %s  Type: %s\n",
-                     art.getHumanReadableId(), art.getArtifactTypeName()));
-            }
-         }
-         if (selectedArts.size() >= 5) {
-            artBuilder.append(" < " + selectedArts.size() + " artifacts>");
-         }
-         MessageDialogWithToggle md =
-               MessageDialogWithToggle.openOkCancelConfirm(
-                     Display.getCurrent().getActiveShell(),
-                     "Delete/Purge ATS Object",
-                     "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL it's ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
-                     "Purge", false, null, null);
-         if (md.getReturnCode() == 0) {
-            final boolean purge = md.getToggleState();
-            StringBuilder delBuilder = new StringBuilder();
-            final Set<Artifact> deleteArts = new HashSet<Artifact>(30);
-            Map<Artifact, Object> ignoredArts = new HashMap<Artifact, Object>();
-            for (Artifact art : delArts) {
-               delBuilder.append("\nArtifact: " + art.getDescriptiveName());
-               ((ATSArtifact) art).atsDelete(deleteArts, ignoredArts);
-               delBuilder.append("\n\nDelete/Purge:\n");
-               for (Artifact loopArt : deleteArts)
-                  delBuilder.append(String.format("Guid %s Type: \"%s\" Name: \"%s\"", loopArt.getGuid(),
-                        loopArt.getArtifactTypeName(), loopArt.getDescriptiveName()) + "\n");
-               delBuilder.append("\n\nIngoring:\n");
-               for (Artifact loopArt : ignoredArts.keySet())
-                  if (!deleteArts.contains(loopArt)) delBuilder.append(String.format(
-                        "Type: \"%s\" Name: \"%s\" <-rel to-> Class: %s", loopArt.getArtifactTypeName(),
-                        loopArt.getDescriptiveName(), ignoredArts.get(loopArt).getClass().getCanonicalName()) + "\n");
-            }
-            String results = (purge ? "Purge" : "Delete") + " ATS Objects, Are You Sure?\n" + delBuilder.toString();
-            results = results.replaceAll("\n", "<br>");
-            HtmlDialog dialog =
-                  new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
-            dialog.open();
-            if (dialog.getReturnCode() == 0) {
-               if (purge) {
-                  ArtifactPersistenceManager.purgeArtifacts(deleteArts);
-               } else {
-                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-                  ArtifactPersistenceManager.deleteArtifact(transaction, false,
-                        deleteArts.toArray(new Artifact[deleteArts.size()]));
-                  transaction.execute();
-               }
-
-               AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
-                     (purge ? "Purge" : "Delete") + " Completed");
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
    }
 
    /*
