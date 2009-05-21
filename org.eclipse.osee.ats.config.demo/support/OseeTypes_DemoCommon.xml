@@ -80,6 +80,15 @@
   <Style ss:ID="s30">
    <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
   </Style>
+  <Style ss:ID="s31">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat/>
+  </Style>
  </Styles>
  <Worksheet ss:Name="SkyNet_LbaBlk3Mp">
   <Names>
@@ -164,7 +173,8 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">demo.code.CSCI</Data></Cell>
     <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
-    <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:Index="7" ss:StyleID="s31"><Data ss:Type="String">&lt;CSCI&gt;&lt;Enum&gt;Navigation&lt;/Enum&gt;&lt;Enum&gt;Sights&lt;/Enum&gt;&lt;Enum&gt;Visual&lt;/Enum&gt;&lt;Enum&gt;Interface&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/CSCI&gt;</Data></Cell>
+    <Cell><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
    </Row>
    <Row>
@@ -1238,12 +1248,12 @@
    </Print>
    <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>156</TopRowVisible>
+   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>189</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>11</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

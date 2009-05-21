@@ -498,7 +498,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Unspecified</Data></Cell>
-    <Cell ss:StyleID="s24"><Data ss:Type="String">&lt;CSCI&gt;&lt;Enum&gt;Navigation&lt;/Enum&gt;&lt;Enum&gt;Sights&lt;/Enum&gt;&lt;Enum&gt;Visual&lt;/Enum&gt;&lt;Enum&gt;Interface&lt;/Enum&gt;&lt;/CSCI&gt;</Data></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">&lt;CSCI&gt;&lt;Enum&gt;Navigation&lt;/Enum&gt;&lt;Enum&gt;Sights&lt;/Enum&gt;&lt;Enum&gt;Visual&lt;/Enum&gt;&lt;Enum&gt;Interface&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/CSCI&gt;</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s30"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s25"/>
@@ -511,7 +511,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Unspecified</Data></Cell>
-    <Cell ss:StyleID="s25"><Data ss:Type="String">&lt;Subsystem&gt;&lt;Enum&gt;Robot Survivability Equipment&lt;/Enum&gt;&lt;Enum&gt;Robot Systems Management&lt;/Enum&gt;&lt;Enum&gt;Chasis&lt;/Enum&gt;&lt;Enum&gt;Cognitive Decision Aiding&lt;/Enum&gt;&lt;Enum&gt;Communications&lt;/Enum&gt;&lt;Enum&gt;Controls and Displays&lt;/Enum&gt;&lt;Enum&gt;Data Management&lt;/Enum&gt;&lt;Enum&gt;Drive Train&lt;/Enum&gt;&lt;Enum&gt;Electrical&lt;/Enum&gt;&lt;Enum&gt;Controls&lt;/Enum&gt;&lt;Enum&gt;Hydraulics&lt;/Enum&gt;&lt;Enum&gt;Mission Systems Management&lt;/Enum&gt;&lt;Enum&gt;Navigation&lt;/Enum&gt;&lt;Enum&gt;Propulsion&lt;/Enum&gt;&lt;Enum&gt;Sights&lt;/Enum&gt;&lt;Enum&gt;Unknown&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/Subsystem&gt;</Data></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">&lt;Subsystems&gt;&lt;Enum&gt;Robot_Survivability_Equipment&lt;/Enum&gt;&lt;Enum&gt;Robot_Systems_Management&lt;/Enum&gt;&lt;Enum&gt;Chasis&lt;/Enum&gt;&lt;Enum&gt;Cognitive_Decision_Aiding&lt;/Enum&gt;&lt;Enum&gt;Communications&lt;/Enum&gt;&lt;Enum&gt;Controls_and_Displays&lt;/Enum&gt;&lt;Enum&gt;Data_Management&lt;/Enum&gt;&lt;Enum&gt;Drive_Train&lt;/Enum&gt;&lt;Enum&gt;Electrical&lt;/Enum&gt;&lt;Enum&gt;Controls&lt;/Enum&gt;&lt;Enum&gt;Hydraulics&lt;/Enum&gt;&lt;Enum&gt;Mission_Systems_Management&lt;/Enum&gt;&lt;Enum&gt;Navigation&lt;/Enum&gt;&lt;Enum&gt;Propulsion&lt;/Enum&gt;&lt;Enum&gt;Sights&lt;/Enum&gt;&lt;Enum&gt;Unknown&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/Subsystems&gt;</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s30"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s25"/>
@@ -1558,10 +1558,11 @@
    <Zoom>75</Zoom>
    <Selected/>
    <TopRowVisible>9</TopRowVisible>
+   <LeftColumnVisible>2</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>24</ActiveRow>
+     <ActiveRow>31</ActiveRow>
      <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
