@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -244,6 +245,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testAtsAttributeValues() throws OseeCoreException {
       xResultData.log(monitor, "testAtsAttributeValues");
+      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (Artifact artifact : artifacts) {
 
          // Test for null attribute values 
@@ -257,33 +259,46 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
 
          // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-         XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
-         for (SMAState state : stateDam.getStates()) {
-            if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                  state.getName().equals(DefaultTeamState.Cancelled.name()))) {
-               if (state.getHoursSpent() != 0.0) {
-                  xResultData.logError("ats.State error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
-                  if (fixAttributeValues) {
-                     System.err.println("Not implemented yet");
+         if (artifact instanceof StateMachineArtifact) {
+            XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
+            for (SMAState state : stateDam.getStates()) {
+               if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+                     state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+                  if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                     xResultData.logError("ats.State error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                     if (fixAttributeValues) {
+                        state.setHoursSpent(0);
+                        state.setPercentComplete(0);
+                        stateDam.setState(state);
+                        xResultData.log(monitor, "Fixed");
+                     }
                   }
                }
             }
          }
 
          // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
-         XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
-         SMAState state = currentStateDam.getState();
-         if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-               state.getName().equals(DefaultTeamState.Cancelled.name()))) {
-            if (state.getHoursSpent() != 0.0) {
-               xResultData.logError("ats.CurrentState error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
-               if (fixAttributeValues) {
-                  System.err.println("Not implemented yet");
+         if (artifact instanceof StateMachineArtifact) {
+            XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
+            SMAState state = currentStateDam.getState();
+            if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+                  state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+               if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                  xResultData.logError("ats.CurrentState error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                  if (fixAttributeValues) {
+                     state.setHoursSpent(0);
+                     state.setPercentComplete(0);
+                     currentStateDam.setState(state);
+                     xResultData.log(monitor, "Fixed");
+                  }
                }
             }
          }
-         if (artifact.isDirty()) artifact.persistAttributes();
+         if (artifact.isDirty()) {
+            artifact.persistAttributes(transaction);
+         }
       }
+      transaction.execute();
    }
 
    private void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
