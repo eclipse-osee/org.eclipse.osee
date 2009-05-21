@@ -778,9 +778,11 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
             Object obj = i.next();
-            if (obj instanceof StateMachineArtifact)
+            if (obj instanceof StateMachineArtifact) {
                smaArts.add((StateMachineArtifact) obj);
-            else if (obj instanceof ActionArtifact) smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
+            } else if (obj instanceof ActionArtifact) {
+               smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
