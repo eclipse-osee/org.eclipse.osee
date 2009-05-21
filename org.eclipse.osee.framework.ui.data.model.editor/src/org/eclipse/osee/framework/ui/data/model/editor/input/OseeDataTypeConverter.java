@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
@@ -52,9 +54,11 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
     */
    @Override
    public void onAttributeType(String baseAttributeClass, String providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
+      OseeEnumType enumType = OseeEnumTypeManager.getType(namespace + name);
+      int enumTypeId = enumType.getEnumTypeId();
       AttributeDataType attributeDataType =
             new AttributeDataType(namespace, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
-                  minOccurrence, providerAttributeClass, taggerId, toolTipText, validityXml);
+                  minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
 
       // Create attribute provider and base attribute classes here ?? 
 

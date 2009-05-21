@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.plugin.views.property.PropertyId;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
@@ -23,18 +23,18 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeBaseClassPropertyDescriptor extends ComboBoxPropertyDescriptor {
+public class EnumeratedAttributeValuesPropertyDescriptor extends ComboBoxPropertyDescriptor {
 
    private static final List<String> items = new ArrayList<String>();
    static {
       try {
-         items.addAll(AttributeExtensionManager.getAttributeClasses());
-      } catch (OseeStateException ex) {
+         items.addAll(OseeEnumTypeManager.getAllTypeNames());
+      } catch (OseeDataStoreException ex) {
          OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
       }
    }
 
-   public AttributeBaseClassPropertyDescriptor(PropertyId propertyId) {
+   public EnumeratedAttributeValuesPropertyDescriptor(PropertyId propertyId) {
       super(propertyId, propertyId.getDisplayName(), items.toArray(new String[items.size()]));
       setCategory(propertyId.getCategoryName());
    }

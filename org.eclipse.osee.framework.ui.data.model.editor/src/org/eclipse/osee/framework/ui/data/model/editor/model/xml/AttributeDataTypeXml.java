@@ -28,7 +28,7 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
    private final String TAGGER = "tagger";
    private final String EXTENSION = "extension";
    private final String DEFAULT_VALUE = "defaultValue";
-   private final String VALIDITY_XML = "validityXml";
+   private final String ENUM_TYPE_ID = "enumTypeId";
    private final String TOOL_TIP = "toolTip";
 
    /* (non-Javadoc)
@@ -53,7 +53,7 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
       writeTextElement(writer, TAGGER, dataType.getTaggerId());
       writeTextElement(writer, EXTENSION, dataType.getFileTypeExtension());
       writeCDataElement(writer, DEFAULT_VALUE, dataType.getDefaultValue());
-      writeCDataElement(writer, VALIDITY_XML, dataType.getValidityXml());
+      writeCDataElement(writer, ENUM_TYPE_ID, String.valueOf(dataType.getEnumTypeId()));
       writeTextElement(writer, TOOL_TIP, dataType.getToolTipText());
    }
 
@@ -77,7 +77,7 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
    protected void populateFromCDataElement(AttributeDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromCDataElement(dataType, tag, text);
       if (DEFAULT_VALUE.equals(tag)) dataType.setDefaultValue(text);
-      if (VALIDITY_XML.equals(tag)) dataType.setValidityXml(text);
+      if (ENUM_TYPE_ID.equals(tag)) dataType.setEnumTypeId(Integer.parseInt(text));
    }
 
    /* (non-Javadoc)

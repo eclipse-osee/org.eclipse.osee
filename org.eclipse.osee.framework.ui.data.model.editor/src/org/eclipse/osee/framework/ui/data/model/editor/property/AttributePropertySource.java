@@ -11,6 +11,11 @@
 package org.eclipse.osee.framework.ui.data.model.editor.property;
 
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
+import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.plugin.views.property.IntegerPropertyDescriptor;
 import org.eclipse.osee.framework.ui.plugin.views.property.ModelPropertySource;
@@ -24,7 +29,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 public class AttributePropertySource extends ModelPropertySource {
 
    protected final PropertyId idDefaultValue;
-   protected final PropertyId idValidityXml;
+   protected final PropertyId idEnumType;
    protected final PropertyId idToolTipText;
    protected final PropertyId idFileTypeExtension;
    protected final PropertyId idTaggerId;
@@ -38,7 +43,7 @@ public class AttributePropertySource extends ModelPropertySource {
    public AttributePropertySource(String categoryName, Object dataType) {
       super(dataType);
       idDefaultValue = new PropertyId(categoryName, "Default Value");
-      idValidityXml = new PropertyId(categoryName, "Validity Xml");
+      idEnumType = new PropertyId(categoryName, "Enum Type");
       idToolTipText = new PropertyId(categoryName, "ToolTip");
       idFileTypeExtension = new PropertyId(categoryName, "File Extension");
       idTaggerId = new PropertyId(categoryName, "Tagger Id");
@@ -54,7 +59,7 @@ public class AttributePropertySource extends ModelPropertySource {
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new StringPropertyDescriptor(idDefaultValue));
-      list.add(new StringPropertyDescriptor(idValidityXml));
+      list.add(new EnumeratedAttributeValuesPropertyDescriptor(idEnumType));
       list.add(new StringPropertyDescriptor(idToolTipText));
       list.add(new StringPropertyDescriptor(idFileTypeExtension));
       list.add(new StringPropertyDescriptor(idTaggerId));
@@ -75,7 +80,7 @@ public class AttributePropertySource extends ModelPropertySource {
     */
    @Override
    public boolean isPropertyResettable(Object id) {
-      return id == idDefaultValue || id == idValidityXml || id == idToolTipText || id == idFileTypeExtension || id == idTaggerId || id == idMinOccurrence || id == idMaxOccurrence || id == idBaseAttributeClass || id == idProviderAttributeClass;
+      return id == idDefaultValue || id == idEnumType || id == idToolTipText || id == idFileTypeExtension || id == idTaggerId || id == idMinOccurrence || id == idMaxOccurrence || id == idBaseAttributeClass || id == idProviderAttributeClass;
    }
 
    /* (non-Javadoc)
@@ -84,7 +89,7 @@ public class AttributePropertySource extends ModelPropertySource {
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idDefaultValue) return getDataTypeElement().getDefaultValue() != null;
-      if (id == idValidityXml) return getDataTypeElement().getValidityXml() != null;
+      if (id == idEnumType) return getDataTypeElement().getEnumTypeId() != -1;
       if (id == idToolTipText) return getDataTypeElement().getToolTipText() != null;
       if (id == idFileTypeExtension) return getDataTypeElement().getFileTypeExtension() != null;
       if (id == idTaggerId) return getDataTypeElement().getTaggerId() != null;
@@ -101,7 +106,14 @@ public class AttributePropertySource extends ModelPropertySource {
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idDefaultValue) return StringPropertyDescriptor.fromModel(getDataTypeElement().getDefaultValue());
-      if (id == idValidityXml) return StringPropertyDescriptor.fromModel(getDataTypeElement().getValidityXml());
+      if (id == idEnumType) {
+         int enumTypeId = getDataTypeElement().getEnumTypeId();
+         try {
+            return EnumeratedAttributeValuesPropertyDescriptor.fromModel(OseeEnumTypeManager.getType(enumTypeId).getEnumTypeName());
+         } catch (OseeCoreException ex) {
+            return -1;
+         }
+      }
       if (id == idToolTipText) return StringPropertyDescriptor.fromModel(getDataTypeElement().getToolTipText());
       if (id == idFileTypeExtension) return StringPropertyDescriptor.fromModel(getDataTypeElement().getFileTypeExtension());
       if (id == idTaggerId) return StringPropertyDescriptor.fromModel(getDataTypeElement().getTaggerId());
@@ -118,7 +130,7 @@ public class AttributePropertySource extends ModelPropertySource {
    @Override
    public void resetPropertyValue(Object id) {
       if (id == idDefaultValue) getDataTypeElement().setDefaultValue(null);
-      if (id == idValidityXml) getDataTypeElement().setValidityXml(null);
+      if (id == idEnumType) getDataTypeElement().setEnumTypeId(0);
       if (id == idToolTipText) getDataTypeElement().setToolTipText(null);
       if (id == idFileTypeExtension) getDataTypeElement().setFileTypeExtension(null);
       if (id == idTaggerId) getDataTypeElement().setTaggerId(null);
@@ -134,7 +146,14 @@ public class AttributePropertySource extends ModelPropertySource {
    @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idDefaultValue) getDataTypeElement().setDefaultValue(StringPropertyDescriptor.toModel(value));
-      if (id == idValidityXml) getDataTypeElement().setValidityXml(StringPropertyDescriptor.toModel(value));
+      if (id == idEnumType) {
+         String enumTypeName = EnumeratedAttributeValuesPropertyDescriptor.toModel(value);
+         try {
+            getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getType(enumTypeName).getEnumTypeId());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
+         }
+      }
       if (id == idToolTipText) getDataTypeElement().setToolTipText(StringPropertyDescriptor.toModel(value));
       if (id == idFileTypeExtension) getDataTypeElement().setFileTypeExtension(StringPropertyDescriptor.toModel(value));
       if (id == idTaggerId) getDataTypeElement().setTaggerId(StringPropertyDescriptor.toModel(value));
@@ -145,5 +164,4 @@ public class AttributePropertySource extends ModelPropertySource {
       if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(
             AttributeProviderPropertyDescriptor.toModel(value));
    }
-
 }

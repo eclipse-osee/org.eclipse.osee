@@ -52,7 +52,7 @@ public class OseeDataTypeDatastore {
                      attributeType.getDefaultValue(), attributeType.getFileTypeExtension(),
                      attributeType.getMaxOccurrences(), attributeType.getMinOccurrences(),
                      attributeType.getProviderAttributeClass().getCanonicalName(), attributeType.getTaggerId(),
-                     attributeType.getTipText(), String.valueOf(attributeType.getOseeEnumTypeId()));
+                     attributeType.getTipText(), attributeType.getOseeEnumTypeId());
          attributeDataTypes.add(attributeDataType);
       }
       return attributeDataTypes;

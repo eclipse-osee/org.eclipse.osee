@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
 public class AttributeDataType extends DataType {
 
    private String defaultValue;
-   private String validityXml;
+   private int enumTypeId;
    private String toolTipText;
    private String fileTypeExtension;
    private String taggerId;
@@ -29,10 +29,10 @@ public class AttributeDataType extends DataType {
 
    public AttributeDataType() {
       this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, 0, EMPTY_STRING,
-            EMPTY_STRING, EMPTY_STRING, EMPTY_STRING);
+            EMPTY_STRING, EMPTY_STRING, -1);
    }
 
-   public AttributeDataType(String typeId, String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, String validityXml) {
+   public AttributeDataType(String typeId, String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
       super(typeId, namespace, name);
       this.baseAttributeClass = baseAttributeClass;
       this.defaultValue = defaultValue;
@@ -42,12 +42,12 @@ public class AttributeDataType extends DataType {
       this.providerAttributeClass = providerAttributeClass;
       this.taggerId = taggerId;
       this.toolTipText = toolTipText;
-      this.validityXml = validityXml;
+      this.enumTypeId = enumTypeId;
    }
 
-   public AttributeDataType(String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, String validityXml) {
+   public AttributeDataType(String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
       this(EMPTY_STRING, namespace, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
-            minOccurrence, providerAttributeClass, taggerId, toolTipText, validityXml);
+            minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
    }
 
    /**
@@ -65,17 +65,17 @@ public class AttributeDataType extends DataType {
    }
 
    /**
-    * @return the validityXml
+    * @return the enumTypeId
     */
-   public String getValidityXml() {
-      return validityXml;
+   public int getEnumTypeId() {
+      return enumTypeId;
    }
 
    /**
-    * @param validityXml the validityXml to set
+    * @param enumTypeId the enumTypeId to set
     */
-   public void setValidityXml(String validityXml) {
-      this.validityXml = validityXml;
+   public void setEnumTypeId(int enumTypeId) {
+      this.enumTypeId = enumTypeId;
    }
 
    /**

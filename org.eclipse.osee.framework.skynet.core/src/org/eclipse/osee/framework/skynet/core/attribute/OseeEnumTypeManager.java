@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -74,6 +75,16 @@ public class OseeEnumTypeManager {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with name:[%s] does not exist.", enumTypeName));
       }
       return oseeEnumType;
+   }
+
+   public static Collection<String> getAllTypeNames() throws OseeDataStoreException {
+      instance.checkLoaded();
+      return new ArrayList<String>(instance.enumTypeByNameMap.keySet());
+   }
+
+   public static Collection<OseeEnumType> getAllTypes() throws OseeDataStoreException {
+      instance.checkLoaded();
+      return new ArrayList<OseeEnumType>(instance.enumTypeByNameMap.values());
    }
 
    public static boolean typeExist(String enumTypeName) throws OseeDataStoreException {

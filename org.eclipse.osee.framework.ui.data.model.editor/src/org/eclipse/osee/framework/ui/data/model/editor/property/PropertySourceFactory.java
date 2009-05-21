@@ -24,6 +24,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 public class PropertySourceFactory {
 
    private static final String CATEGORY_WIDGET = "Widget";
+   private static final String CATEGORY_ENUM = "Enum";
    private static final String CATEGORY_ARTIFACT = "Artifact";
    private static final String CATEGORY_ATTRIBUTE = "Attribute";
    private static final String CATEGORY_RELATION = "Relation";
@@ -41,8 +42,8 @@ public class PropertySourceFactory {
       } else if (model instanceof AttributeDataType) {
          toReturn =
                new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ATTRIBUTE, model),
-                     new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new NodePropertySource(
-                           CATEGORY_WIDGET, model));
+                     new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new EnumPropertySource(
+                           CATEGORY_ENUM + CATEGORY_DATA, model), new NodePropertySource(CATEGORY_WIDGET, model));
       } else if (model instanceof RelationDataType) {
          toReturn =
                new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_RELATION, model),
