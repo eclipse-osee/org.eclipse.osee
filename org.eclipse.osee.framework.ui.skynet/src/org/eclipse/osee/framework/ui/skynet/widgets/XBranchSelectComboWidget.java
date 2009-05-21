@@ -13,14 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.swt.SWT;
@@ -214,17 +210,6 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
    public void handleEvent(Event event) {
       super.validate();
       notifyListeners(event);
-   }
-
-   public void setDefaultBranch(String branchName) {
-      if (Strings.isValid(branchName) != false) {
-         try {
-            Branch branch = BranchManager.getBranch(branchName);
-            defaultBranch = branch.getBranchId();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to set default branch.", ex);
-         }
-      }
    }
 
    public void addListener(Listener listener) {
