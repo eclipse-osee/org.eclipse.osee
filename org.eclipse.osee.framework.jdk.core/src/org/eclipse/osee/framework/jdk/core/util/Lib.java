@@ -340,6 +340,9 @@ public final class Lib {
    }
 
    public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+      if (inputStream == null) throw new IllegalArgumentException("inputStream was null");
+      if (outputStream == null) throw new IllegalArgumentException("outputStream was null");
+
       byte[] buf = new byte[10000];
       int count = -1;
       while ((count = inputStream.read(buf)) != -1) {
