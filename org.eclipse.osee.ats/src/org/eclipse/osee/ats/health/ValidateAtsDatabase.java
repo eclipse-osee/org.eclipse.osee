@@ -34,10 +34,13 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.SMAState;
+import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -127,33 +130,20 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      monitor.beginTask(getName(), 13);
+      monitor.beginTask(getName(), 20);
       loadAtsBranchArtifacts();
-      monitor.worked(1);
       testArtifactIds();
-      monitor.worked(1);
-      testAtsBranchAttributeValues();
-      monitor.worked(1);
+      testAtsAttributeValues();
       testAtsActionsHaveTeamWorkflow();
-      monitor.worked(1);
       testAtsWorkflowsHaveAction();
-      monitor.worked(1);
       testAtsWorkflowsHaveZeroOrOneVersion();
-      monitor.worked(1);
       testTasksHaveParentWorkflow();
-      monitor.worked(1);
       testReviewsHaveParentWorkflowOrActionableItems();
-      monitor.worked(1);
       testReviewsHaveValidDefectAndRoleXml();
-      monitor.worked(1);
       testTeamWorkflows();
-      monitor.worked(1);
       testVersionArtifacts();
-      monitor.worked(1);
       testStateMachineAssignees();
-      monitor.worked(1);
       testAtsLogs();
-      monitor.worked(1);
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
       xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
@@ -251,14 +241,31 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.log(monitor, "testLoadAllCommonArtifacts - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
    }
 
-   private void testAtsBranchAttributeValues() throws OseeCoreException {
-      xResultData.log(monitor, "testAtsBranchAttributeValues");
+   private void testAtsAttributeValues() throws OseeCoreException {
+      xResultData.log(monitor, "testAtsAttributeValues");
+      // Test for null attribute values
       for (Artifact artifact : artifacts) {
          for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
                xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
                if (fixAttributeValues) {
                   attr.delete();
+               }
+            }
+         }
+         if (artifact.isDirty()) artifact.persistAttributes();
+      }
+      // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
+      for (Artifact artifact : artifacts) {
+         XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
+         for (SMAState state : stateDam.getStates()) {
+            if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+                  state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+               if (state.getHoursSpent() != 0.0) {
+                  xResultData.logError("SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
+                  if (fixAttributeValues) {
+                     System.err.println("Not implemented yet");
+                  }
                }
             }
          }
