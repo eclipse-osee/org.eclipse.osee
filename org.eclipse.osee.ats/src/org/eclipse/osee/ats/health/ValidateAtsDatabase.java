@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.SMAState;
+import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -243,8 +244,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testAtsAttributeValues() throws OseeCoreException {
       xResultData.log(monitor, "testAtsAttributeValues");
-      // Test for null attribute values
       for (Artifact artifact : artifacts) {
+
+         // Test for null attribute values 
          for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
                xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
@@ -253,19 +255,30 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          }
-         if (artifact.isDirty()) artifact.persistAttributes();
-      }
-      // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-      for (Artifact artifact : artifacts) {
+
+         // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
          XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
          for (SMAState state : stateDam.getStates()) {
             if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                   state.getName().equals(DefaultTeamState.Cancelled.name()))) {
                if (state.getHoursSpent() != 0.0) {
-                  xResultData.logError("SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
+                  xResultData.logError("ats.State error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
                   if (fixAttributeValues) {
                      System.err.println("Not implemented yet");
                   }
+               }
+            }
+         }
+
+         // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
+         XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
+         SMAState state = currentStateDam.getState();
+         if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+               state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+            if (state.getHoursSpent() != 0.0) {
+               xResultData.logError("ats.CurrentState error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr());
+               if (fixAttributeValues) {
+                  System.err.println("Not implemented yet");
                }
             }
          }
