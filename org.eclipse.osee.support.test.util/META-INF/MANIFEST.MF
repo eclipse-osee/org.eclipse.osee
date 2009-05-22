@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Demo Plug-in
+Bundle-SymbolicName: org.eclipse.osee.support.test.util
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.osee.support.test.util.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core;bundle-version="0.5.0",
+ org.eclipse.osee.framework.db.connection;bundle-version="0.4.0",
+ org.eclipse.osee.framework.skynet.core;bundle-version="0.4.0",
+ org.junit;bundle-version="3.8.2",
+ org.eclipse.osee.framework.core.client;bundle-version="0.5.0",
+ org.eclipse.osee.framework.logging;bundle-version="0.4.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.support.test.util
