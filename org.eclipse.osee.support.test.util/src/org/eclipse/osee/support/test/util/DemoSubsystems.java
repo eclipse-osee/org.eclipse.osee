@@ -17,8 +17,9 @@ import java.util.Collection;
  * @author Donald G. Dunne
  */
 public enum DemoSubsystems {
-   Robot_Survivability_Equipment, Robot_Systems_Management, Chasis, Cognitive_Decision_Aiding,
+   Robot_API, Robot_Survivability_Equipment, Robot_Systems_Management, Chasis, Cognitive_Decision_Aiding,
    //
+   SAW_Product_Decomposition,
    Communications,
    Controls_and_Displays,
    Data_Management,
