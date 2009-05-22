@@ -73,24 +73,26 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    private void internalOpen(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      IFile file = getRenderedFile(artifacts, presentationType);
-      if (file != null) {
-         String dummyName = file.getName();
-         if (!artifacts.isEmpty()) {
-            Artifact firstArtifact = artifacts.iterator().next();
-            try {
-               Program program = getAssociatedProgram(firstArtifact);
-               program.execute(file.getLocation().toFile().getAbsolutePath());
-            } catch (Exception ex) {
-               IWorkbench workbench = PlatformUI.getWorkbench();
-               IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
-               if (editorDescriptor != null) {
-                  try {
-                     IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-                     page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
-                  } catch (PartInitException ex1) {
-                     throw new OseeArgumentException(
-                           "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
+      if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
+         IFile file = getRenderedFile(artifacts, presentationType);
+         if (file != null) {
+            String dummyName = file.getName();
+            if (!artifacts.isEmpty()) {
+               Artifact firstArtifact = artifacts.iterator().next();
+               try {
+                  Program program = getAssociatedProgram(firstArtifact);
+                  program.execute(file.getLocation().toFile().getAbsolutePath());
+               } catch (Exception ex) {
+                  IWorkbench workbench = PlatformUI.getWorkbench();
+                  IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
+                  if (editorDescriptor != null) {
+                     try {
+                        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                        page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
+                     } catch (PartInitException ex1) {
+                        throw new OseeArgumentException(
+                              "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
+                     }
                   }
                }
             }

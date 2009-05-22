@@ -192,11 +192,14 @@ public class RendererManager {
    public static void openInJob(final List<Artifact> artifacts, final VariableMap options, final PresentationType presentationType) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws Exception {
-            HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                  createRenderMap(presentationType, artifacts, options);
 
-            for (IRenderer renderer : rendererArtifactMap.keySet()) {
-               renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
+               HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                     createRenderMap(presentationType, artifacts, options);
+
+               for (IRenderer renderer : rendererArtifactMap.keySet()) {
+                  renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+               }
             }
             return Status.OK_STATUS;
          }

@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -355,5 +356,36 @@ public class RevisionManager {
    public boolean branchHasChanges(Branch branch) throws OseeCoreException {
       Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
+   }
+
+   private static final String OTHER_EDIT_SQL =
+         "select distinct t3.branch_id from osee_artifact_version t1, osee_txs t2, osee_tx_details t3, (select min(transaction_id) as min_tx_id, branch_id from osee_tx_details group by branch_id) t4, osee_branch t5 where t1.art_id = ? and t1.gamma_id = t2.gamma_id and t2.transaction_id <> t4.min_tx_id and t2.transaction_id = t3.transaction_id and t3.branch_id = t4.branch_id and t4.branch_id <> ? and t5.parent_branch_id = ? and t4.branch_id = t5.branch_id and t5.archived = 0";
+
+   /**
+    * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
+    * 
+    * @param artifact
+    * @throws OseeDataStoreException
+    * @throws BranchDoesNotExist
+    */
+   public Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeDataStoreException, BranchDoesNotExist {
+      Collection<Branch> otherBranches = new LinkedList<Branch>();
+
+      // Can only be on other branches it has already been saved
+      if (artifact.isInDb()) {
+
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         try {
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getBranchId(),
+                  artifact.getBranch().getParentBranchId());
+
+            while (chStmt.next()) {
+               otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return otherBranches;
    }
 }
