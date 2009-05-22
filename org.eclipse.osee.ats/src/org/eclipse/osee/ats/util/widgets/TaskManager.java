@@ -13,11 +13,14 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -27,7 +30,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -216,6 +221,22 @@ public class TaskManager {
          spent += taskArt.getPercentCompleteSMATotal();
       if (spent == 0) return 0;
       return spent / taskArts.size();
+   }
+
+   public static void createTasks(TeamWorkFlowArtifact teamArt, List<String> titles, List<Artifact> assignees, SkynetTransaction transaction) throws OseeCoreException {
+      for (String title : titles) {
+         TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title);
+         if (assignees != null && assignees.size() > 0) {
+            Set<User> users = new HashSet<User>();
+            for (Artifact art : assignees) {
+               if (art instanceof User) {
+                  users.add((User) art);
+               }
+            }
+            taskArt.getSmaMgr().getStateMgr().setAssignees(users);
+         }
+         taskArt.persistAttributesAndRelations(transaction);
+      }
    }
 
 }

@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
-import org.eclipse.osee.ats.test.util.DemoUsers;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -65,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**

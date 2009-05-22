@@ -41,4 +41,5 @@ public class DemoArtifactFactory extends ArtifactFactory {
       }
       throw new IllegalArgumentException("did not recognize the artifact type: " + artifactType.getName());
    }
+
 }

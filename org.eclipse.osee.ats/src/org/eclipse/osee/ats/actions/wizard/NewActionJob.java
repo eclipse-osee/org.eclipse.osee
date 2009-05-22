@@ -22,12 +22,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -69,8 +67,8 @@ public class NewActionJob extends Job {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          if (title.equals("tt")) title += " " + AtsLib.getAtsDeveloperIncrementingNum();
          actionArt =
-               createAction(monitor, title, desc, changeType, priority, userComms, validationRequired, needByDate,
-                     actionableItems, transaction);
+               ActionManager.createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
+                     needByDate, actionableItems, transaction);
 
          if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
 
@@ -89,36 +87,6 @@ public class NewActionJob extends Job {
          monitor.done();
       }
       return Status.OK_STATUS;
-   }
-
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
-      // if "tt" is title, this is an action created for development. To
-      // make it easier, all fields are automatically filled in for ATS developer
-
-      if (monitor != null) monitor.subTask("Creating Action");
-      ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch());
-      ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
-            validationRequired, needByDate);
-
-      // Retrieve Team Definitions corresponding to selected Actionable Items
-      if (monitor != null) monitor.subTask("Creating WorkFlows");
-      Collection<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
-      if (teams == null || teams.size() == 0) {
-         StringBuffer sb = new StringBuffer();
-         for (ActionableItemArtifact aia : actionableItems)
-            sb.append("Selected AI \"" + aia + "\" " + aia.getHumanReadableId() + "\n");
-         throw new IllegalArgumentException(
-               "No teams returned for Action's selected Actionable Items\n" + sb.toString());
-      }
-
-      // Create team workflow artifacts
-      for (TeamDefinitionArtifact teamDef : teams) {
-         actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
-      }
-      actionArt.persistAttributesAndRelations(transaction);
-      return actionArt;
-
    }
 
    /**

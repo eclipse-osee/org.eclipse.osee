@@ -35,7 +35,7 @@ public class AtsDeleteManager {
       Prompt, Delete, Purge
    };
 
-   public static void handleDeletePurgeAtsObject(Collection<Artifact> selectedArts, DeleteOption... deleteOption) throws OseeCoreException {
+   public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, DeleteOption... deleteOption) throws OseeCoreException {
       Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
       ArrayList<Artifact> delArts = new ArrayList<Artifact>();
       StringBuilder artBuilder = new StringBuilder();

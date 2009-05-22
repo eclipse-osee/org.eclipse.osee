@@ -28,20 +28,13 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Donald G. Dunne
  */
 public class DemoTestUtil {
-   private static Branch branch;
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      branch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch branch = BranchManager.getKeyedBranch("SAW_Bld_1");
 
       if (ArtifactQuery.getArtifactsFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       return Result.TrueResult;
-   }
-
-   public static void sleep(long milliseconds) throws Exception {
-      System.out.println("Sleeping " + milliseconds);
-      Thread.sleep(milliseconds);
-      System.out.println("Awake");
    }
 
    public static Collection<String> getTaskTitles(boolean firstTaskWorkflow) {
@@ -57,10 +50,6 @@ public class DemoTestUtil {
 
    public static int getNumTasks() {
       return getTaskTitles(false).size() + getTaskTitles(true).size();
-   }
-
-   public static void setDefaultBranch(Branch branch) throws Exception {
-      DemoTestUtil.branch = branch;
    }
 
    public static void setUpTest() throws Exception {

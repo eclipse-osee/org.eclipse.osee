@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.Overview;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -139,8 +140,7 @@ public class SMAReviewInfoComposite extends Composite {
                   }
                   NewDecisionReviewJob job =
                         new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null, dialog.getReviewTitle(),
-                              dialog.getSelectedState(), null, NewDecisionReviewJob.getDefaultDecisionReviewOptions(),
-                              null);
+                              dialog.getSelectedState(), null, ReviewManager.getDefaultDecisionReviewOptions(), null);
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();

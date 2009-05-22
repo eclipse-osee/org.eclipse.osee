@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -76,7 +75,7 @@ public class ReviewManager {
       try {
 
          DecisionReviewArtifact decRev =
-               NewDecisionReviewJob.createNewDecisionReview(
+               ReviewManager.createNewDecisionReview(
                      smaMgr.getSma(),
                      AtsWorkDefinitions.isValidateReviewBlocking(smaMgr.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                      true);
@@ -98,20 +97,26 @@ public class ReviewManager {
 
    public DecisionReviewArtifact createNewDecisionReview(String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-            NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), reviewBlockType, reviewTitle, againstState,
+            ReviewManager.createNewDecisionReview(smaMgr.getSma(), reviewBlockType, reviewTitle, againstState,
                   description, options, assignees);
       return decRev;
    }
 
-   public DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
-            createNewDecisionReview(reviewTitle, description, againstState, reviewBlockType, options, assignees,
-                  transaction);
+            ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
+                  options, assignees);
+      decRev.persistAttributesAndRelations(transaction);
 
       SMAManager revSmaMgr = new SMAManager(decRev);
       revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
             TransitionOption.Persist, TransitionOption.OverrideAssigneeCheck);
       return decRev;
+   }
+
+   public DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+      return createNewDecisionReviewAndTransitionToDecision((TeamWorkFlowArtifact) smaMgr.getSma(), reviewTitle,
+            description, againstState, reviewBlockType, options, assignees, transaction);
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
@@ -278,6 +283,50 @@ public class ReviewManager {
          spent += reviewArt.getPercentCompleteSMATotal();
       if (spent == 0) return 0;
       return spent / reviewArts.size();
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException {
+      return createNewDecisionReview(teamParent, reviewBlockType,
+            "Should we do this?  Yes will require followup, No will not",
+            againstCurrentState ? teamParent.getSmaMgr().getStateMgr().getCurrentStateName() : null,
+            "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null);
+   }
+
+   public static String getDefaultDecisionReviewOptions() throws OseeCoreException {
+      return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {
+      DecisionReviewArtifact decRev =
+            (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
+                  AtsPlugin.getAtsBranch(), title);
+
+      if (teamParent != null) {
+         teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, decRev);
+      }
+      if (relatedToState != null && !relatedToState.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), relatedToState);
+      }
+      decRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
+      if (description != null && !description.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      }
+      if (options != null && !options.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), options);
+      }
+      if (reviewBlockType != null) {
+         decRev.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), reviewBlockType.name());
+      }
+
+      // Initialize state machine
+      decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
+            DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
+      if (assignees != null && assignees.size() > 0) {
+         decRev.getSmaMgr().getStateMgr().setAssignees(assignees);
+      }
+
+      return decRev;
    }
 
 }

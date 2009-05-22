@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
-import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
@@ -38,6 +37,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
+import org.eclipse.osee.support.test.util.DemoCISBuilds;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.DemoSubsystems;
+import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -60,19 +63,19 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       createVersionArtifacts();
 
       // Create SAW_Bld_1 branch
-      createProgramBranch(SawBuilds.SAW_Bld_1.name());
-      populateProgramBranch(SawBuilds.SAW_Bld_1.name());
+      createProgramBranch(DemoSawBuilds.SAW_Bld_1.name());
+      populateProgramBranch(DemoSawBuilds.SAW_Bld_1.name());
 
       // Create build one branch for CIS
-      createProgramBranch(CISBuilds.CIS_Bld_1.name());
-      populateProgramBranch(CISBuilds.CIS_Bld_1.name());
+      createProgramBranch(DemoCISBuilds.CIS_Bld_1.name());
+      populateProgramBranch(DemoCISBuilds.CIS_Bld_1.name());
 
       // Map team definitions versions to their related branches
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), SawBuilds.SAW_Bld_1.name(),
-            SawBuilds.SAW_Bld_1.name(), transaction);
-      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), CISBuilds.CIS_Bld_1.name(),
-            CISBuilds.CIS_Bld_1.name(), transaction);
+      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.name(),
+            DemoSawBuilds.SAW_Bld_1.name(), transaction);
+      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.name(),
+            DemoCISBuilds.CIS_Bld_1.name(), transaction);
 
       // Set Joe Smith as Priviledged Member of SAW Test
       Artifact teamDef =
@@ -93,25 +96,13 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       verArt.persistAttributes(transaction);
    }
 
-   public static enum SawBuilds {
-      SAW_Bld_1, SAW_Bld_2, SAW_Bld_3;
-   };
-
-   public static enum CISBuilds {
-      CIS_Bld_1, CIS_Bld_2, CIS_Bld_3;
-   };
-
    private void populateProgramBranch(String branchName) throws OseeCoreException {
-      String[] subsystems =
-            new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration", "Registration",
-                  "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
-                  "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
       Branch programBranch = BranchManager.getKeyedBranch(branchName);
       Artifact sawProduct =
             ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
 
-      for (String subsystem : subsystems) {
+      for (String subsystem : DemoSubsystems.getSubsystems()) {
          sawProduct.addChild(ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, subsystem));
       }
 
@@ -142,8 +133,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    private void createVersionArtifacts() throws OseeCoreException {
 
       // Setup some sample builds for Widget A
-      for (String verName : new String[] {SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name(),
-            SawBuilds.SAW_Bld_3.name()}) {
+      for (String verName : new String[] {DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name(),
+            DemoSawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      AtsPlugin.getAtsBranch(), verName);
@@ -158,8 +149,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       }
 
       // Setup some sample builds for Widget B
-      for (String verName : new String[] {CISBuilds.CIS_Bld_1.name(), CISBuilds.CIS_Bld_2.name(),
-            CISBuilds.CIS_Bld_3.name()}) {
+      for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.name(), DemoCISBuilds.CIS_Bld_2.name(),
+            DemoCISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      AtsPlugin.getAtsBranch(), verName);

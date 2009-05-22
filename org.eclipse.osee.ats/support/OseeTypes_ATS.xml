@@ -349,7 +349,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.User Community</Data></Cell>
-    <Cell ss:Index="7"><Data ss:Type="String">&lt;UserCommunities&gt;&lt;Enum&gt;Program 1&lt;/Enum&gt;&lt;Enum&gt;Program 2&lt;/Enum&gt;&lt;Enum&gt;Tools&lt;/Enum&gt;&lt;Enum&gt;Processes&lt;/Enum&gt;&lt;Enum&gt;Other&lt;/Enum&gt;&lt;/UserCommunities&gt;</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="String">&lt;UserCommunities&gt;&lt;Enum&gt;Program_1&lt;/Enum&gt;&lt;Enum&gt;Program_2&lt;/Enum&gt;&lt;Enum&gt;Tools&lt;/Enum&gt;&lt;Enum&gt;Processes&lt;/Enum&gt;&lt;Enum&gt;Other&lt;/Enum&gt;&lt;/UserCommunities&gt;</Data></Cell>
     <Cell><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -1747,12 +1747,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>97</TopRowVisible>
+   <LeftColumnVisible>3</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>117</ActiveRow>
-     <RangeSelection>R118C1:R120C1</RangeSelection>
+     <ActiveRow>7</ActiveRow>
+     <ActiveCol>7</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.test;
 
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.cases.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 
 /**
@@ -23,6 +24,7 @@ public class AtsTest_Demo_Suite extends TestSuite {
       TestSuite suite = new TestSuite("AtsTest_Demo_Suite");
       //$JUnit-BEGIN$
       suite.addTest(AtsTest_TestDb_Suite.suite());
+      suite.addTestSuite(AtsDeleteManagerTest.class);
       suite.addTestSuite(AtsPurgeTest.class);
       suite.addTestSuite(AtsBranchConfigurationTest.class);
       //$JUnit-END$

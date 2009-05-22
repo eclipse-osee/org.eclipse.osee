@@ -13,19 +13,16 @@ package org.eclipse.osee.ats.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -91,7 +88,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-                  handleCreateTasks(assignees, titles, teamArt, transaction);
+                  TaskManager.createTasks(teamArt, titles, assignees, transaction);
                   teamArt.persistAttributesAndRelations(transaction);
                   transaction.execute();
                } catch (Exception ex) {
@@ -105,22 +102,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
             }
          };
       });
-   }
-
-   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
-      for (String title : titles) {
-         TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title);
-         if (assignees != null && assignees.size() > 0) {
-            Set<User> users = new HashSet<User>();
-            for (Artifact art : assignees) {
-               if (art instanceof User) {
-                  users.add((User) art);
-               }
-            }
-            taskArt.getSmaMgr().getStateMgr().setAssignees(users);
-         }
-         taskArt.persistAttributesAndRelations(transaction);
-      }
    }
 
    /* (non-Javadoc)

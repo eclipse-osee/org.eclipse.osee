@@ -18,12 +18,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -199,7 +199,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       try {
          for (ActionData aData : actionDatas) {
             ActionArtifact actionArt =
-                  NewActionJob.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
+                  ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                         AtsPriority.PriorityType.getPriority(aData.priorityStr), aData.userComms, false, null,
                         ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
             actionArts.add(actionArt);

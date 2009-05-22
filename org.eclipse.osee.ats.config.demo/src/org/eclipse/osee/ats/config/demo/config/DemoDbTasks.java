@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
-import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * @author Donald G. Dunne

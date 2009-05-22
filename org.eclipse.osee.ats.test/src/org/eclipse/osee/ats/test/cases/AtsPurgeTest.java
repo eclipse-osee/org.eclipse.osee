@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Set;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -73,7 +73,7 @@ public class AtsPurgeTest extends TestCase {
       // Create Action, Workflow and Tasks
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       ActionArtifact actionArt =
-            NewActionJob.createAction(null, "Action to Purge", "description", ChangeType.Improvement,
+            ActionManager.createAction(null, "Action to Purge", "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
                         ArtifactQuery.getArtifactsFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",

@@ -14,13 +14,14 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class DemoReqTeamWorkflowArtifact extends TeamWorkFlowArtifact {
 
-   public static String ARTIFACT_NAME = "Demo Req Team Workflow";
+   public static String ARTIFACT_NAME = TestUtil.DEMO_REQ_TEAM_WORKFLOW_ARTIFACT;
 
    /**
     * @param parentFactory
