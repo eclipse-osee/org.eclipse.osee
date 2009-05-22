@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -165,12 +166,13 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public void setTableTitle(final String title, final boolean warning) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (warning)
-               warningLabel.setImage(AtsPlugin.getInstance().getImage("warn.gif"));
-            else
-               warningLabel.setImage(null);
-            searchNameLabel.setText(title);
-            searchNameLabel.getParent().layout();
+            if (Widgets.isAccessible(warningLabel)) {
+               warningLabel.setImage(warning ? AtsPlugin.getInstance().getImage("warn.gif") : null);
+            }
+            if (Widgets.isAccessible(searchNameLabel)) {
+               searchNameLabel.setText(title);
+               searchNameLabel.getParent().layout();
+            }
          };
       });
    }
