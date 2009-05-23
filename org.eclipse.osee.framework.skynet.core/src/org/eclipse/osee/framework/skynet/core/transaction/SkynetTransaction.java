@@ -69,6 +69,7 @@ public class SkynetTransaction extends DbTransaction {
 
    private final Branch branch;
    private boolean madeChanges = false;
+   private boolean executedWithException = false;
    private String comment;
 
    public SkynetTransaction(Branch branch) throws OseeCoreException {
@@ -83,8 +84,9 @@ public class SkynetTransaction extends DbTransaction {
    /**
     * Reset state so transaction object can be re-used
     */
-   private void clear() {
+   private void reset() {
       madeChanges = false;
+      executedWithException = false;
       dataInsertOrder.clear();
       transactionDataItems.clear();
       dataItemInserts.clear();
@@ -389,9 +391,25 @@ public class SkynetTransaction extends DbTransaction {
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
-
       BranchManager.setBranchState(connection, branch, BranchState.MODIFIED);
+   }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
+    */
+   @Override
+   protected void handleTxException(Exception ex) {
+      executedWithException = true;
+      for (BaseTransactionData transactionData : transactionDataItems.values()) {
+         try {
+            transactionData.internalOnRollBack();
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+         }
+      }
+   }
+
+   private void updateModifiedCachedObject() throws OseeCoreException {
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
 
       // Update all transaction items before collecting events
@@ -416,24 +434,13 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
-    */
-   @Override
-   protected void handleTxException(Exception ex) {
-      for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         try {
-            transactionData.internalOnRollBack();
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
-         }
-      }
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxFinally()
     */
    @Override
    protected void handleTxFinally() throws OseeCoreException {
-      clear();
+      if (!executedWithException) {
+         updateModifiedCachedObject();
+      }
+      reset();
    }
 }
