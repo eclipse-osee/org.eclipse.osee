@@ -61,11 +61,14 @@ public abstract class AbstractOperation implements IOperation {
 
    public final IOperation run(IProgressMonitor monitor) {
       wasExecuted = true;
+      monitor.beginTask(getName(), IOperation.TOTAL_WORK);
       try {
          doWork(monitor);
          checkForCancelledStatus(monitor);
       } catch (Throwable error) {
          setStatus(createErrorStatus(error));
+      } finally {
+         monitor.done();
       }
       return this;
    }
