@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.plugin.core.operation;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 /**
@@ -73,19 +75,19 @@ public abstract class AbstractOperation implements IOperation {
       return this;
    }
 
-   private void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCancelledException {
+   private void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
       if (monitor.isCanceled()) {
          boolean wasCancelled = false;
          IStatus[] children = this.status.getChildren();
          for (int i = 0; i < children.length; i++) {
             Throwable exception = children[i].getException();
-            if (exception instanceof OperationCancelledException) {
+            if (exception instanceof OperationCanceledException) {
                wasCancelled = true;
                break;
             }
          }
          if (!wasCancelled) {
-            throw new OperationCancelledException();
+            throw new OperationCanceledException();
          }
       }
    }
