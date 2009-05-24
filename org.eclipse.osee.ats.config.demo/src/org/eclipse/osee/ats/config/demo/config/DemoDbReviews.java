@@ -134,9 +134,9 @@ public class DemoDbReviews {
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Peer Review algorithm used in code",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
-      roles.add(new UserRole(Role.Author, DemoUsers.getDemoUser(DemoUsers.Joe_Smith)));
-      roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Kay_Jones)));
-      roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
+      roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
+      roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
             PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
                   PeerToPeerReviewArtifact.PeerToPeerReviewState.Review, roles, null, UserManager.getUser(), false,
@@ -150,22 +150,22 @@ public class DemoDbReviews {
       reviewArt =
             secondCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Review new logic",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(),
-                  DemoUsers.getDemoUser(DemoUsers.Kay_Jones), new Date(), transaction);
+                  DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), new Date(), transaction);
       roles = new ArrayList<UserRole>();
-      roles.add(new UserRole(Role.Author, DemoUsers.getDemoUser(DemoUsers.Kay_Jones), 2.3, true));
-      roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Joe_Smith), 4.5, true));
-      roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), 2.3, true));
+      roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), 4.5, true));
+      roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
 
       List<DefectItem> defects = new ArrayList<DefectItem>();
-      defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
+      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
             InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
-      defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
+      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept,
             InjectionActivity.Code, "Using getInteger instead", "Fixed", "MyWorld.java:Line 33", new Date()));
-      defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
+      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), Severity.Major, Disposition.Reject,
             InjectionActivity.Code, "Spelling incorrect", "Is correct", "MyWorld.java:Line 234", new Date()));
-      defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
+      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Minor, Disposition.Reject,
             InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
-      defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
+      defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
             InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       result =
             PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,

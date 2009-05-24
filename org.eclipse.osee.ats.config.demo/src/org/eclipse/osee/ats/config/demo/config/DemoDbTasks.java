@@ -31,8 +31,8 @@ public class DemoDbTasks {
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             TaskArtifact taskArt =
                   codeArt.getSmaMgr().getTaskMgr().createNewTask(
-                        (firstTaskWorkflow ? Arrays.asList(DemoUsers.getDemoUser(DemoUsers.Joe_Smith),
-                              DemoUsers.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoUsers.getDemoUser(DemoUsers.Joe_Smith))),
+                        (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
+                              DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
                         title);
             taskArt.persistAttributesAndRelations();
          }

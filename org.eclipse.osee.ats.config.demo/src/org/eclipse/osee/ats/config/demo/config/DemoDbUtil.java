@@ -17,12 +17,16 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * @author Donald G. Dunne
@@ -84,6 +88,10 @@ public class DemoDbUtil {
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
             branch);
+   }
+
+   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
+      return UserManager.getUserByName(demoUser.getName());
    }
 
 }

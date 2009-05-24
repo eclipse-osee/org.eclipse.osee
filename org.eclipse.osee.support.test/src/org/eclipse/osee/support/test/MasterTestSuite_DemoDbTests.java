@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 
 /**
@@ -32,6 +33,7 @@ public class MasterTestSuite_DemoDbTests extends TestSuite {
       suite.addTest(AtsTest_Config_Suite.suite());
       suite.addTest(AtsTest_Demo_Suite.suite());
       suite.addTest(FrameworkUi_Demo_Suite.suite());
+      suite.addTest(FrameworkCore_Demo_Suite.suite());
 
       TestSetup wrapper = new TestSetup(suite) {
          @Override

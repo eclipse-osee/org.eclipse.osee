@@ -13,6 +13,7 @@ package org.eclipse.osee.support.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
+import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Production_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
 
 /**
@@ -29,6 +30,7 @@ public class MasterTestSuite_ProductionDbTests extends TestSuite {
 
       suite.addTest(AtsTest_Config_Suite.suite());
       suite.addTest(FrameworkUi_Production_Suite.suite());
+      suite.addTest(FrameworkCore_Production_Suite.suite());
 
       return suite;
    }

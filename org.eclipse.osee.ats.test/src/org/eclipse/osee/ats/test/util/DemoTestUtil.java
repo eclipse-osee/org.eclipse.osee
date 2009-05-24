@@ -16,13 +16,16 @@ import java.util.logging.Level;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * @author Donald G. Dunne
@@ -50,6 +53,10 @@ public class DemoTestUtil {
 
    public static int getNumTasks() {
       return getTaskTitles(false).size() + getTaskTitles(true).size();
+   }
+
+   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
+      return UserManager.getUserByName(demoUser.getName());
    }
 
    public static void setUpTest() throws Exception {

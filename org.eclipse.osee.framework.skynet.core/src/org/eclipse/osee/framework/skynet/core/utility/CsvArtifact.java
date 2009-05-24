@@ -40,11 +40,16 @@ public class CsvArtifact {
    }
 
    public String getCsvData() throws OseeCoreException {
-      return artifact.getSoleAttributeValueAsString(NativeArtifact.CONTENT_NAME, "");
+      InputStream inputStream = artifact.getNativeContent();
+      try {
+         String data = Lib.inputStreamToString(inputStream);
+         return data;
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    public void appendData(String csvData) throws OseeCoreException {
-      System.out.println("v");
       InputStream inputStream = artifact.getNativeContent();
       try {
          String data = Lib.inputStreamToString(inputStream);

@@ -81,7 +81,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       Artifact teamDef =
             ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
                   AtsPlugin.getAtsBranch());
-      teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoUsers.getDemoUser(DemoUsers.Joe_Smith));
+      teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
       teamDef.persistAttributesAndRelations(transaction);
 
       transaction.execute();

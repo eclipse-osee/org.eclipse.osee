@@ -74,7 +74,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
-      assertTrue(DemoUsers.getDemoUser(DemoUsers.Kay_Jones) != null);
+      assertTrue(DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones) != null);
    }
 
    public void testAttributeDeletion() throws Exception {
@@ -150,37 +150,37 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testOtherUsersWorld() throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO,
-            "Testing User's items relating to " + DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
-      runGeneralLoadingTest(item, StateMachineArtifact.class, 8, DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest(item, StateMachineArtifact.class, 8, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersReviews() throws Exception {
       runGeneralLoadingTest("User's Reviews - InWork", PeerToPeerReviewArtifact.class, 1,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       runGeneralLoadingTest("User's Reviews - All", PeerToPeerReviewArtifact.class, 2,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersSubscribed() throws Exception {
       runGeneralLoadingTest("User's Subscribed", TeamWorkFlowArtifact.class, 0,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersFavorites() throws Exception {
       runGeneralLoadingTest("User's Favorites", TeamWorkFlowArtifact.class, 0,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersOriginator() throws Exception {
       runGeneralLoadingTest("User's Originator - InWork", PeerToPeerReviewArtifact.class, 0,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       runGeneralLoadingTest("User's Originator - All", PeerToPeerReviewArtifact.class, 1,
-            DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testOtherUsersCompleted() throws Exception {
-      runGeneralLoadingTest("User's Completed", ActionArtifact.class, 0, DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest("User's Completed", ActionArtifact.class, 0, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    public void testGroupsSearch() throws Exception {

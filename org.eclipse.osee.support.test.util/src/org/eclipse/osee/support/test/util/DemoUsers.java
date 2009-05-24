@@ -11,9 +11,6 @@
 package org.eclipse.osee.support.test.util;
 
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
@@ -44,10 +41,6 @@ public enum DemoUsers implements IOseeUserInfo {
       this.email = email;
       this.userID = userId;
       this.active = active;
-   }
-
-   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
-      return UserManager.getUserByName(demoUser.getName());
    }
 
    /**

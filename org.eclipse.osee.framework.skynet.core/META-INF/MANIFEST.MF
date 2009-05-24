@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Skynet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core;singleton:=true
 Bundle-Version: 0.4.0.qualifier
+Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.skynet.core.SkynetActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,

@@ -19,5 +19,7 @@ Import-Package: lba.ats.config.common.test,
  lba.ats.config.common.test.cases.req,
  org.eclipse.osee.ats.test,
  org.eclipse.osee.ats.test.cases,
- org.eclipse.osee.ats.test.util
+ org.eclipse.osee.ats.test.util,
+ org.eclipse.osee.framework.skynet.core.test2,
+ org.eclipse.osee.framework.skynet.core.test2.cases
 Export-Package: org.eclipse.osee.support.test
