@@ -5,7 +5,10 @@
  */
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.io.IOException;
+import java.io.InputStream;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -41,10 +44,16 @@ public class CsvArtifact {
    }
 
    public void appendData(String csvData) throws OseeCoreException {
-      String data = getCsvData();
-      data.replaceFirst("\n+$", "");
-      data = data + "\n" + csvData;
-      setCsvData(data);
+      System.out.println("v");
+      InputStream inputStream = artifact.getNativeContent();
+      try {
+         String data = Lib.inputStreamToString(inputStream);
+         data.replaceFirst("\n+$", "");
+         data = data + "\n" + csvData;
+         setCsvData(data);
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /**
