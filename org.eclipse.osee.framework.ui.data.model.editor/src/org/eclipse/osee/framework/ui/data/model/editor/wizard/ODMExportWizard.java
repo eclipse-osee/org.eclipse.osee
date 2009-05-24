@@ -78,7 +78,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
             worker = createXmlExportWorker(selectedTypes);
          }
          if (worker != null) {
-            Jobs.run(jobName, worker, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
+            Jobs.runInJob(jobName, worker, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
          }
       }
       return true;

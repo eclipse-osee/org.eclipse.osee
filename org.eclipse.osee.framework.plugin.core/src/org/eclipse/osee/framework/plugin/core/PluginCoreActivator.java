@@ -27,7 +27,7 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class PluginCoreActivator extends OseeActivator {
    private static PluginCoreActivator pluginInstance; // The shared instance.
-   public static final String PLUGIN_ID = "osee.plugin.core";
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.plugin.core";
    private ServiceTracker packageAdminTracker;
 
    public PluginCoreActivator() {
@@ -65,12 +65,12 @@ public class PluginCoreActivator extends OseeActivator {
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
 
-      try{
+      try {
          Platform.getBundle("org.eclipse.equinox.ds").start();
-      } catch (Exception ex){
+      } catch (Exception ex) {
          OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Unable to load: org.eclipse.equinox.ds", ex);
       }
-      
+
       for (Bundle bundle : context.getBundles()) {
          checkForEarlyStartup(bundle);
       }

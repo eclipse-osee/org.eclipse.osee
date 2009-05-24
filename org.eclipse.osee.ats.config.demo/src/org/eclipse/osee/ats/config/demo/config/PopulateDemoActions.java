@@ -56,7 +56,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
-import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportJob;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperation;
 import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.NewArtifactImportResolver;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
@@ -459,7 +459,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             new NewArtifactImportResolver(ArtifactTypeManager.getType(requirementArtifactName),
                   ArtifactTypeManager.getType("Heading"));
       ArtifactExtractor extractor = new WordOutlineExtractor(0, new GeneralWordOutlineHandler());
-      new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver).run(new NullProgressMonitor());
+      new ArtifactImportOperation(file, systemReq, extractor, branch, artifactResolver).run(new NullProgressMonitor());
 
       // Validate that something was imported
       if (systemReq.getChildren().size() == 0) throw new IllegalStateException("Artifacts were not imported");

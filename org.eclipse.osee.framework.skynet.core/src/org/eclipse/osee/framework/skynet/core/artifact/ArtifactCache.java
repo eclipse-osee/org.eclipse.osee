@@ -49,7 +49,7 @@ public class ArtifactCache {
     * 
     * @param artifact
     */
-   static void cache(Artifact artifact) {
+   synchronized static void cache(Artifact artifact) {
       if (artifact.isHistorical()) {
          instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
          instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
@@ -59,17 +59,17 @@ public class ArtifactCache {
       }
    }
 
-   static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
+   synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
          instance.staticIdArtifactCache.put(staticId, artifact);
       }
    }
 
-   public static void cacheByStaticId(String staticId, Artifact artifact) {
+   public synchronized static void cacheByStaticId(String staticId, Artifact artifact) {
       instance.staticIdArtifactCache.put(staticId, artifact);
    }
 
-   static void deCache(Artifact artifact) throws OseeCoreException {
+   synchronized static void deCache(Artifact artifact) throws OseeCoreException {
       instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
@@ -79,7 +79,7 @@ public class ArtifactCache {
       }
    }
 
-   public static Collection<Artifact> getArtifactsByStaticId(String staticId) {
+   public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) return artifacts;
@@ -89,7 +89,7 @@ public class ArtifactCache {
       return artifacts;
    }
 
-   public static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
+   public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) return artifacts;
@@ -99,11 +99,11 @@ public class ArtifactCache {
       return artifacts;
    }
 
-   public static Artifact getHistorical(Integer artId, Integer transactionNumber) {
+   public synchronized static Artifact getHistorical(Integer artId, Integer transactionNumber) {
       return instance.historicalArtifactIdCache.get(artId, transactionNumber);
    }
 
-   public static Artifact getHistorical(String guid, Integer transactionNumber) {
+   public synchronized static Artifact getHistorical(String guid, Integer transactionNumber) {
       return instance.historicalArtifactGuidCache.get(guid, transactionNumber);
    }
 
@@ -127,7 +127,7 @@ public class ArtifactCache {
     * @param branchId
     * @return
     */
-   public static Artifact getActive(Integer artId, Integer branchId) {
+   public synchronized static Artifact getActive(Integer artId, Integer branchId) {
       return instance.artifactIdCache.get(artId, branchId);
    }
 
@@ -139,7 +139,7 @@ public class ArtifactCache {
     * @param branchId
     * @return
     */
-   public static Artifact getActive(String artGuid, Integer branchId) {
+   public synchronized static Artifact getActive(String artGuid, Integer branchId) {
       return instance.artifactGuidCache.get(artGuid, branchId);
    }
 
@@ -150,7 +150,7 @@ public class ArtifactCache {
     * @param branch
     * @return
     */
-   public static Artifact getByTextId(String key, Branch branch) {
+   public synchronized static Artifact getByTextId(String key, Branch branch) {
       return instance.keyedArtifactCache.get(key, branch);
    }
 
@@ -161,7 +161,7 @@ public class ArtifactCache {
     * @param branch
     * @param artifact
     */
-   public static void putByTextId(String key, Artifact artifact) {
+   public synchronized static void putByTextId(String key, Artifact artifact) {
       instance.keyedArtifactCache.put(key, artifact.getBranch(), artifact);
    }
 }

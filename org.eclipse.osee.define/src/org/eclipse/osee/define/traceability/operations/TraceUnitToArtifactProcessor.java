@@ -227,7 +227,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             return Status.OK_STATUS;
          }
       };
-      Jobs.run("Trace Unit to Artifact Report", runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
+      Jobs.runInJob("Trace Unit to Artifact Report", runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
    }
 
    private static final class TestRunHandler {

@@ -67,6 +67,6 @@ public class PruneWorkspace extends AbstractBlam {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("OTE");
    }
 }

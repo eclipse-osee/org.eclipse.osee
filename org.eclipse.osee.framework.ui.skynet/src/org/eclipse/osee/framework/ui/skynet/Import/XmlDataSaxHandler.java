@@ -4,6 +4,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -16,14 +17,16 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    private RoughArtifact roughArtifact;
    private final Branch branch;
    private final AbstractArtifactExtractor extractor;
+   private final ArtifactType primaryArtifactType;
 
    /**
     * @param branch
     */
-   public XmlDataSaxHandler(AbstractArtifactExtractor extractor, Branch branch) {
+   public XmlDataSaxHandler(AbstractArtifactExtractor extractor, Branch branch, ArtifactType primaryArtifactType) {
       super();
       this.branch = branch;
       this.extractor = extractor;
+      this.primaryArtifactType = primaryArtifactType;
    }
 
    /* (non-Javadoc)
@@ -46,6 +49,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
 
       if (level == 2) {
          roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
+         roughArtifact.setPrimaryArtifactType(primaryArtifactType);
          extractor.addRoughArtifact(roughArtifact);
       }
    }

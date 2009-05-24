@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -41,6 +42,7 @@ public class RoughArtifact {
    private RoughArtifactKind roughArtifactKind;
    private final List<ObjectPair<String, String>> attributes = new ArrayList<ObjectPair<String, String>>();
    private final Collection<RoughArtifact> children = new ArrayList<RoughArtifact>();
+   private ArtifactType primaryArtifactType;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch) {
       this.branch = branch;
@@ -242,5 +244,19 @@ public class RoughArtifact {
     */
    public Branch getBranch() {
       return branch;
+   }
+
+   /**
+    * @return the primaryArtifactType
+    */
+   public ArtifactType getPrimaryArtifactType() {
+      return primaryArtifactType;
+   }
+
+   /**
+    * @param primaryArtifactType the primaryArtifactType to set
+    */
+   public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
+      this.primaryArtifactType = primaryArtifactType;
    }
 }

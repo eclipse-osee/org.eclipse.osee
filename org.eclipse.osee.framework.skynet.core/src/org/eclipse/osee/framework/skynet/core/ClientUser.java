@@ -108,7 +108,7 @@ final class ClientUser {
    }
 
    private void notifyListeners() {
-      Jobs.run("Osee User Authenticated", new IExceptionableRunnable() {
+      Jobs.runInJob("Osee User Authenticated", new IExceptionableRunnable() {
 
          @Override
          public IStatus run(IProgressMonitor monitor) throws Exception {

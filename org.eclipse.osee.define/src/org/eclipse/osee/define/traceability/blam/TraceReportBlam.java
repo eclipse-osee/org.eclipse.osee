@@ -337,7 +337,7 @@ public class TraceReportBlam extends AbstractBlam {
                return Status.OK_STATUS;
             }
          };
-         Jobs.run(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
+         Jobs.runInJob(getName(), runnable, DefinePlugin.class, DefinePlugin.PLUGIN_ID);
       }
    }
 

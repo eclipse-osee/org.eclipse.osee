@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.plugin.core.operation;
+package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -30,4 +30,9 @@ public interface IOperation {
    public ISchedulingRule getSchedulingRule();
 
    public IOperation run(IProgressMonitor monitor);
+
+   /**
+    * @return the total work units as used by a progress monitor
+    */
+   public int getTotalWorkUnits();
 }

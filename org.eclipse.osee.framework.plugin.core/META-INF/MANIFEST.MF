@@ -14,7 +14,8 @@ Export-Package: org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.server.resources,
  org.eclipse.osee.framework.plugin.core.server.task,
  org.eclipse.osee.framework.plugin.core.util
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging

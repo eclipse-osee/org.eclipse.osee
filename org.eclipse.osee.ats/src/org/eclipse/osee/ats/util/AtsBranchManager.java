@@ -653,7 +653,7 @@ public class AtsBranchManager {
          }
       };
 
-      Jobs.run("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
+      Jobs.runInJob("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
    }
 
    public void updateBranchAccessControl() throws OseeCoreException {

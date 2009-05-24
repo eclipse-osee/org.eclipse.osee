@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -21,8 +24,9 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
     */
    @Override
    public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception {
+      ArtifactType primaryArtifactType = ArtifactTypeManager.getType(Lib.removeExtension(artifactsFile));
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new XmlDataSaxHandler(this, branch));
+      xmlReader.setContentHandler(new XmlDataSaxHandler(this, branch, primaryArtifactType));
       xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
    }
 

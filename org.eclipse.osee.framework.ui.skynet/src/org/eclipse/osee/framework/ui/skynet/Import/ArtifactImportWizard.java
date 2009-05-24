@@ -83,8 +83,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          }
 
          Artifact importRoot = mainPage.getImportRoot();
-         Jobs.run("Importing Artifacts", new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver),
-               getClass(), SkynetGuiPlugin.PLUGIN_ID);
+         Jobs.runInJob(new ArtifactImportOperation(file, importRoot, extractor, branch, artifactResolver), true);
       } catch (OseeCoreException ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
          return false;

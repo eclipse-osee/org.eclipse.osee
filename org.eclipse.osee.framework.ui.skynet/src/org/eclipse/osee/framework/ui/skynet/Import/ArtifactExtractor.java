@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface ArtifactExtractor {
@@ -25,9 +26,9 @@ public interface ArtifactExtractor {
     */
    public abstract void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception;
 
-   public abstract List<RoughArtifact> getRoughArtifacts() throws Exception;
+   public abstract List<RoughArtifact> getRoughArtifacts() throws OseeCoreException;
 
-   public abstract List<RoughRelation> getRoughRelations(RoughArtifact potentialParent) throws Exception;
+   public abstract List<RoughRelation> getRoughRelations(RoughArtifact potentialParent) throws OseeCoreException;
 
    public abstract FileFilter getFileFilter();
 

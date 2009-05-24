@@ -84,7 +84,7 @@ public class BranchCreationHandler extends CommandHandler {
             }
          };
 
-         Jobs.run("Create Branch", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+         Jobs.runInJob("Create Branch", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
       }
 
       return null;

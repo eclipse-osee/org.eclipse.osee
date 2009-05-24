@@ -254,7 +254,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
    public void showGraphFor(ODMEditorInput editorInput) {
       setPartName(editorInput.getName() + " graph");
       ODMLoadGraphRunnable runnable = new ODMLoadGraphRunnable(getGraphicalViewer(), this, editorInput);
-      Jobs.run(runnable.getName(), runnable, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
+      Jobs.runInJob(runnable.getName(), runnable, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
    }
 
    /* (non-Javadoc)

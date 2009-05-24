@@ -84,7 +84,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       setPartName(editorInput.getName() + " Graph");
       LoadGraphOperation task =
             new LoadGraphOperation(getSite().getPart(), getGraphicalViewer(), this, editorInput.getBranch());
-      Jobs.run(task.getName(), task, BranchGraphActivator.class, BranchGraphActivator.PLUGIN_ID, true);
+      Jobs.runInJob(task.getName(), task, BranchGraphActivator.class, BranchGraphActivator.PLUGIN_ID, true);
    }
 
    @SuppressWarnings("unchecked")

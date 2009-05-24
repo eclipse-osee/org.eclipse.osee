@@ -194,18 +194,18 @@ public class RendererManager {
          public IStatus run(IProgressMonitor monitor) throws Exception {
 
             if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
-               HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                     createRenderMap(presentationType, artifacts, options);
+            HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                  createRenderMap(presentationType, artifacts, options);
 
-               for (IRenderer renderer : rendererArtifactMap.keySet()) {
-                  renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-               }
+            for (IRenderer renderer : rendererArtifactMap.keySet()) {
+               renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            }
             }
             return Status.OK_STATUS;
          }
       };
 
-      Jobs.run("Open ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.runInJob("Open ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public static void previewInJob(final Artifact artifact) throws OseeCoreException {
@@ -227,7 +227,7 @@ public class RendererManager {
          }
       };
 
-      Jobs.run("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
+      Jobs.runInJob("Preview " + artifacts.size() + " artifacts", runnable, SkynetGuiPlugin.class,
             SkynetGuiPlugin.PLUGIN_ID, false);
    }
 
@@ -269,7 +269,7 @@ public class RendererManager {
 
       String jobName =
             "Compare " + (baseVersion == null ? " new " : baseVersion.getDescriptiveName()) + " to " + (newerVersion == null ? " delete " : newerVersion.getDescriptiveName());
-      Jobs.run(jobName, runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.runInJob(jobName, runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
 
    }
 
@@ -306,6 +306,6 @@ public class RendererManager {
             return Status.OK_STATUS;
          }
       };
-      Jobs.run("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      Jobs.runInJob("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 }

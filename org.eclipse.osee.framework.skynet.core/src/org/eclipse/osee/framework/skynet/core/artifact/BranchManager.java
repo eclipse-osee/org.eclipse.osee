@@ -425,7 +425,7 @@ public class BranchManager {
     * @param branch
     */
    public static void purgeBranchInJob(final Branch branch) {
-      Jobs.run("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch), instance.getClass(),
+      Jobs.runInJob("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch), instance.getClass(),
             SkynetActivator.PLUGIN_ID);
    }
 

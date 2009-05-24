@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -30,7 +31,7 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
    /* (non-Javadoc)
     * @see osee.define.artifact.Import.ArtifactExtractor#getRoughRelations(osee.define.artifact.Import.RoughArtifact)
     */
-   public List<RoughRelation> getRoughRelations(RoughArtifact parent) throws Exception {
+   public List<RoughRelation> getRoughRelations(RoughArtifact parent) throws OseeCoreException {
       determineParentChildRelations();
 
       if (parent != null) {
