@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExis
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -97,7 +98,7 @@ public class ATSLog {
       if (!xml.equals("")) {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
-            LogItem item = new LogItem(m.group(4), m.group(1), m.group(5), m.group(3), m.group(2));
+            LogItem item = new LogItem(m.group(4), m.group(1), m.group(5), m.group(3), AXml.xmlToText(m.group(2)));
             logItems.add(item);
          }
 
