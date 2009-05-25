@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test2;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.osee.framework.skynet.core.test2.cases.Artifact_setAttributeValues;
 import org.eclipse.osee.framework.skynet.core.test2.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
 
@@ -21,8 +22,9 @@ import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
 public class FrameworkCore_Demo_Suite extends TestSuite {
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("FrrameworkCore_Demo_Suite");
+      TestSuite suite = new TestSuite("FrameworkCore_Demo_Suite");
       //$JUnit-BEGIN$
+      suite.addTestSuite(Artifact_setAttributeValues.class);
       suite.addTestSuite(CsvArtifactTest.class);
       suite.addTestSuite(NativeArtifactTest.class);
       //$JUnit-END$

@@ -40,11 +40,11 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
             AtsWorkDefinitions.getAtsWorkDefinitions());
 
-      new TeamWorkflowDefinition().config(writeType, null);
-      new TaskWorkflowDefinition().config(writeType, null);
-      new SimpleWorkflowDefinition().config(writeType, null);
-      new DecisionWorkflowDefinition().config(writeType, null);
-      new PeerToPeerWorkflowDefinition().config(writeType, null);
+      new TeamWorkflowDefinition().config(writeType, xResultData);
+      new TaskWorkflowDefinition().config(writeType, xResultData);
+      new SimpleWorkflowDefinition().config(writeType, xResultData);
+      new DecisionWorkflowDefinition().config(writeType, xResultData);
+      new PeerToPeerWorkflowDefinition().config(writeType, xResultData);
 
    }
 

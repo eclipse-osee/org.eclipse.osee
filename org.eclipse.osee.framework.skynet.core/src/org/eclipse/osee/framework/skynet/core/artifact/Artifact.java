@@ -832,6 +832,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * Uses the Dynamic Attribute Manager to set a group of attribute data strings into a set of attributes. Checks to
     * see if data value exists before adding and also removes those attribute values that are not in the input dataStrs.
+    * Duplicates will be removed.
     * 
     * @param attributeTypeName
     * @param dataStrs
@@ -881,6 +882,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   attribute.delete();
                }
             }
+         }
+      }
+
+      // Remove duplicates
+      ArrayList<String> foundAttribute = new ArrayList<String>();
+      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
+         // Delete duplicate if already found
+         if (foundAttribute.contains(attribute.toString())) {
+            attribute.delete();
+         } else {
+            foundAttribute.add(attribute.toString());
          }
       }
    }

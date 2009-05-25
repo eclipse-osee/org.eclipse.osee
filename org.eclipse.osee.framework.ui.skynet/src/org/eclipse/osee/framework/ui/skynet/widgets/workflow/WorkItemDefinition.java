@@ -194,6 +194,10 @@ public abstract class WorkItemDefinition {
          // Create new
          artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchManager.getCommonBranch());
       }
+      //      if (!getId().equals("atsStatePercentCompleteWeight.DefaultWorkflow")) {
+      //         System.err.println("Skipping all but atsStatePercentCompleteWeight.DefaultWorkflow - Remove This");
+      //         return artifact;
+      //      }
       artifact.setDescriptiveName(getName());
       if (getParentId() != null && !getParentId().equals("")) artifact.setSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
