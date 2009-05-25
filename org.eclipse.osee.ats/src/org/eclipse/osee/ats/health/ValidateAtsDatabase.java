@@ -70,8 +70,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
-   private final boolean fixAssignees = true;
-   private final boolean fixAttributeValues = true;
+   private boolean fixAssignees = true;
+   private boolean fixAttributeValues = true;
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
 
@@ -127,12 +127,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private XResultData xResultData;
    private IProgressMonitor monitor;
 
-   private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
+   public void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       this.monitor = monitor;
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      monitor.beginTask(getName(), 20);
+      if (monitor != null) monitor.beginTask(getName(), 20);
       loadAtsBranchArtifacts();
       testArtifactIds();
       testAtsAttributeValues();
@@ -147,7 +147,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testStateMachineAssignees();
       testAtsLogs();
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
-      xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
+      if (monitor != null) xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
 
    private void testArtifactIds() throws OseeCoreException {
@@ -501,4 +501,19 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
    }
+
+   /**
+    * @param fixAssignees the fixAssignees to set
+    */
+   public void setFixAssignees(boolean fixAssignees) {
+      this.fixAssignees = fixAssignees;
+   }
+
+   /**
+    * @param fixAttributeValues the fixAttributeValues to set
+    */
+   public void setFixAttributeValues(boolean fixAttributeValues) {
+      this.fixAttributeValues = fixAttributeValues;
+   }
+
 }

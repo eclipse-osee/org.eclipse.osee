@@ -14,6 +14,7 @@ import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
 import org.eclipse.osee.ats.test.cases.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
+import org.eclipse.osee.ats.test.cases.AtsValidateAtsDatabaseTest;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +28,7 @@ public class AtsTest_Demo_Suite extends TestSuite {
       suite.addTestSuite(AtsDeleteManagerTest.class);
       suite.addTestSuite(AtsPurgeTest.class);
       suite.addTestSuite(AtsBranchConfigurationTest.class);
+      suite.addTestSuite(AtsValidateAtsDatabaseTest.class);
       //$JUnit-END$
       return suite;
    }

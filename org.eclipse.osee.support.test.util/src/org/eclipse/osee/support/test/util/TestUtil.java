@@ -60,9 +60,9 @@ public class TestUtil {
                if (status.getException() != null) {
                   StringBuilder sb = new StringBuilder();
                   exceptionToString(status.getException(), sb);
-                  System.err.println(sb.toString());
+                  System.err.println("SevereLogging Exception: " + sb.toString());
                } else {
-                  System.err.println(status.getMessage());
+                  System.err.println("SevereLogging Exception: " + status.getMessage());
                }
             }
          }
