@@ -202,11 +202,12 @@ public abstract class WorkItemDefinition {
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
       if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
             getType());
-      if (workDataKeyValueMap != null) {
+      if (workDataKeyValueMap.size() > 0) {
+         Set<String> keyValues = new HashSet<String>();
          for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
-            artifact.addAttribute(WorkItemAttributes.WORK_DATA.getAttributeTypeName(),
-                  entry.getKey() + "=" + entry.getValue());
+            keyValues.add(entry.getKey() + "=" + entry.getValue());
          }
+         artifact.setAttributeValues(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), keyValues);
       }
       WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(writeType, this, artifact);
       return artifact;
