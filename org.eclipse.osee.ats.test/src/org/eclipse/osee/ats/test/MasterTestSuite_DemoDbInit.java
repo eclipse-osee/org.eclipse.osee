@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.test;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +25,11 @@ public class MasterTestSuite_DemoDbInit extends TestCase {
       assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
             "demo"));
       System.out.println("Begin Database Initialization...");
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+
       DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
+
+      TestUtil.severeLoggingEnd(monitorLog);
       System.out.println("Database Initialization Complete.");
    }
 

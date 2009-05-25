@@ -118,12 +118,14 @@ public class BranchManager {
       return instance;
    }
 
-   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact, boolean includeArchived) throws OseeCoreException {
+   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact, boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : getNormalBranches()) {
          if (branch.isAssociatedToArtifact(associatedArtifact)) {
-            branches.add(branch);
+            if (includeDeleted || (!includeDeleted && !branch.isDeleted())) {
+               branches.add(branch);
+            }
          }
       }
       if (includeArchived) {
@@ -425,8 +427,8 @@ public class BranchManager {
     * @param branch
     */
    public static void purgeBranchInJob(final Branch branch) {
-      Jobs.runInJob("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch), instance.getClass(),
-            SkynetActivator.PLUGIN_ID);
+      Jobs.runInJob("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch),
+            instance.getClass(), SkynetActivator.PLUGIN_ID);
    }
 
    /**

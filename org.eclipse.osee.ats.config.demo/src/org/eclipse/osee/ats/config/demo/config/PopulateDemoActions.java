@@ -38,9 +38,6 @@ import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -69,6 +66,7 @@ import org.eclipse.osee.support.test.util.DemoCscis;
 import org.eclipse.osee.support.test.util.DemoProgramAttributes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoSubsystems;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -102,8 +100,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && (!prompt || (prompt && MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(), getName(), getName()))))) {
 
-         SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-         OseeLog.registerLoggerListener(monitorLog);
+         SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
          Branch saw1Branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
 
@@ -170,20 +167,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews();
 
-         OseeLog.unregisterLoggerListener(monitorLog);
-         Collection<IHealthStatus> healthStatuses = monitorLog.getSevereLogs();
-         int numExceptions = 0;
-         if (healthStatuses.size() > 0) {
-            for (IHealthStatus status : healthStatuses) {
-               if (status.getLevel() != Level.INFO) {
-                  System.err.println(Lib.exceptionToString(status.getException()));
-                  numExceptions++;
-               }
-            }
-            if (numExceptions > 0) {
-               throw new OseeStateException("SevereLoggingMonitor found " + numExceptions + " exceptions!");
-            }
-         }
+         TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Populate Complete");
       }
    }

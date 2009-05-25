@@ -140,7 +140,7 @@ public class AtsBranchManager {
       Branch branch = configArt.getParentBranch();
       if (branch == null) return CommitStatus.Branch_Not_Configured;
 
-      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), false);
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), false, false);
       if (branches.contains(branch)) {
          return CommitStatus.Committed;
       }
@@ -399,12 +399,12 @@ public class AtsBranchManager {
     * @return Branch
     */
    public Branch getWorkingBranch(boolean includeArchived) throws OseeCoreException {
-      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived);
+      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, false);
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-               "Unexpected multiple associated working branches found for workflow " + smaMgr.getSma().getHumanReadableId());
+               "Unexpected multiple associated un-deleted working branches found for workflow " + smaMgr.getSma().getHumanReadableId());
       } else {
          return branches.iterator().next();
       }
