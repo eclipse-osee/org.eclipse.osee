@@ -125,14 +125,15 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
-      if (getWorkingBranch(true) == null) {
+      if (getWorkingBranch(true, false) == null) {
          return false;
       }
-      return BranchManager.isMergeBranch(getWorkingBranch(true), destinationBranch);
+      return BranchManager.isMergeBranch(getWorkingBranch(true, false), destinationBranch);
    }
 
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, getWorkingBranch(true));
+      ConflictManagerExternal conflictManager =
+            new ConflictManagerExternal(destinationBranch, getWorkingBranch(true, false));
       return !conflictManager.remainingConflictsExist();
    }
 
@@ -159,7 +160,7 @@ public class AtsBranchManager {
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
-      if (smaMgr.getBranchMgr().getWorkingBranch(true) == null) {
+      if (smaMgr.getBranchMgr().getWorkingBranch(true, false) == null) {
          return CommitStatus.Working_Branch_Not_Created;
       }
       if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
@@ -389,17 +390,19 @@ public class AtsBranchManager {
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
-      return getWorkingBranch(false);
+      return getWorkingBranch(false, false);
    }
 
    /**
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events.
     * 
+    * @param includeDeleted TODO
     * @return Branch
     */
-   public Branch getWorkingBranch(boolean includeArchived) throws OseeCoreException {
-      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, false);
+   public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
+      Set<Branch> branches =
+            BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted);
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
@@ -429,7 +432,7 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isWorkingBranchInWork() throws OseeCoreException {
-      return getWorkingBranch(false) != null;
+      return getWorkingBranch(false, false) != null;
    }
 
    /**
@@ -441,7 +444,7 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isWorkingBranchArchived() throws OseeCoreException {
-      return getWorkingBranch(true) != null && getWorkingBranch(true).isArchived();
+      return getWorkingBranch(true, false) != null && getWorkingBranch(true, false).isArchived();
    }
 
    /**
@@ -703,7 +706,7 @@ public class AtsBranchManager {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            Branch workflowWorkingBranch = getWorkingBranch(true);
+            Branch workflowWorkingBranch = getWorkingBranch(true, false);
             if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
