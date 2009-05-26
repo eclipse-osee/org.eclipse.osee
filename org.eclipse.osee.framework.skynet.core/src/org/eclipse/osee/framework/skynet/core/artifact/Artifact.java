@@ -1518,9 +1518,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       reflectedArtifact.dirty = true;
 
       for (Attribute<?> attribute : attributes.getValues()) {
-         Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
-               attribute.getAttrId(), attribute.getGammaId(), attribute.isDeleted() ? ModificationType.DELETED : null,
-               attribute.getAttributeDataProvider().getData());
+         if (attribute.isInDb()) {
+            Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
+                  attribute.getAttrId(), attribute.getGammaId(),
+                  attribute.isDeleted() ? ModificationType.DELETED : null,
+                  attribute.getAttributeDataProvider().getData());
+         }
       }
       return reflectedArtifact;
    }
