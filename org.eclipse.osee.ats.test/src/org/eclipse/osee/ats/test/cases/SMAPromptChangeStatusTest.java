@@ -49,7 +49,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
       // SMAPromptChangeStatus.promptChangeStatus(tasks, persist);
 
       // Change two to 100, 1 hr split
-      // either exception out or add hours to inwork state
+      // hours should be added to inwork state; make sure completed state isn't statused
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
@@ -57,6 +57,8 @@ public class SMAPromptChangeStatusTest extends TestCase {
 
       // Change two to 55, 0
       // no transition, no hours spent
+
+      // Test the cancelled state, what do there?
    }
 
    public void testChangeTaskStatusWithResolutionOptions() throws Exception {
@@ -73,6 +75,10 @@ public class SMAPromptChangeStatusTest extends TestCase {
 
       // Change two to 55, 0
       // no transition, no hours spent
+   }
+
+   public void testPromptChangeWorkflowStatus() throws Exception {
+      fail("Not implemented yet");
    }
 
    public void testCleanupPost() throws Exception {

@@ -48,6 +48,13 @@ public class SMAPromptChangeStatus {
 
    public static boolean promptChangeStatus(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
       try {
+         // Don't allow statusing for any cancelled tasks
+         for (StateMachineArtifact sma : smas) {
+            if (sma.getSmaMgr().isCancelled()) {
+               AWorkbench.popup("Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.");
+               return false;
+            }
+         }
          // If task status is being changed, make sure tasks belong to current state
          for (StateMachineArtifact sma : smas) {
             if (sma instanceof TaskArtifact) {
