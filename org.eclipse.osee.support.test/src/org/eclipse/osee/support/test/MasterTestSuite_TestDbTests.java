@@ -26,16 +26,16 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 public class MasterTestSuite_TestDbTests extends TestSuite {
 
    public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("OSEE Master Production TestDb Suite");
+      TestSuite suite = new TestSuite("OSEE Non-Production Database Tests");
 
       suite.addTest(AtsTest_TestDb_Suite.suite());
 
       TestSetup wrapper = new TestSetup(suite) {
          @Override
          public void setUp() {
-            assertTrue("Production Application Server must be running",
+            assertTrue("No authenticatication protocols found.",
                   ClientSessionManager.getAuthenticationProtocols().size() > 0);
-            assertFalse("Production Application Server must be running.",
+            assertTrue("'demo' authentication Protocol not found.",
                   ClientSessionManager.getAuthenticationProtocols().contains("demo"));
          }
       };
