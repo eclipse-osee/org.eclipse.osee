@@ -77,22 +77,4 @@ public class ShowAttributeAction extends Action {
    public Collection<AttributeType> getSelectedAttributes() {
       return attributeDialog != null ? attributeDialog.getSelectedAttributes() : null;
    }
-
-   //   public void setValidAttributeTypes(Collection<AttributeType> attrTypes, Branch branch) {
-   //      attributeDialog =
-   //            new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey, branch);
-   //   }
-
-   //   if (branchProvider != null && branchProvider.getBranch() != null){
-   //      attributesAction.setValidAttributeTypes(getValidAttributeTypes(), branchProvider.getBranch());
-   //   }
-   //   public void setBranchForAttributeTypes(IBranchProvider branchProvider) throws OseeCoreException {
-   //      this.branchProvider = branchProvider;
-   //      if (branchProvider != null && branchProvider.getBranch() != null) {
-   //            attributeDialog =
-   //                  new AttributeCheckListDialog(Display.getCurrent().getActiveShell(),
-   //                        SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()),
-   //                        preferenceKey, branchProvider.getBranch());
-   //      }
-   //   }
 }
