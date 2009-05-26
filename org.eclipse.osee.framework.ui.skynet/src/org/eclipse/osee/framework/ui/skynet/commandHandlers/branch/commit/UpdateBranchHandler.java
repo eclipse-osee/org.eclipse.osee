@@ -48,6 +48,7 @@ public class UpdateBranchHandler extends CommandHandler {
          try {
             hasValidParent = !branch.getParentBranch().equals(BranchManager.getSystemRootBranch());
             hasValidParent &= (!branch.isArchived() && branch.isWorkingBranch()) || AccessControlManager.isOseeAdmin();
+            hasValidParent &= branch.getChildBranches().isEmpty();
          } catch (Exception ex) {
             hasValidParent = false;
          }
