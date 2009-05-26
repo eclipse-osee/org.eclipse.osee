@@ -37,17 +37,17 @@ public class InterArtifactDropTest extends TestCase {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet.test/debug/Junit"));
    private static Artifact source;
-   private static String sourceBranchName;
-   private static String destinationBranchName;
+   private Branch sourceBranch;
+   private Branch destinationBranch;
 
    @Override
    protected void tearDown() throws Exception {
       super.tearDown();
 
-      BranchManager.deleteBranch(BranchManager.getBranch(destinationBranchName));
+      BranchManager.deleteBranch(sourceBranch);
       sleep(5000);
 
-      BranchManager.deleteBranch(BranchManager.getBranch(sourceBranchName));
+      BranchManager.deleteBranch(destinationBranch);
       sleep(5000);
    }
 
@@ -57,10 +57,10 @@ public class InterArtifactDropTest extends TestCase {
 
       super.setUp();
 
-      sourceBranchName = "Source Branch" + GUID.generateGuidStr();
-      destinationBranchName = "Destination Branch" + GUID.generateGuidStr();
+      String sourceBranchName = "Source Branch" + GUID.generateGuidStr();
+      String destinationBranchName = "Destination Branch" + GUID.generateGuidStr();
 
-      Branch sourceBranch =
+      sourceBranch =
             BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), sourceBranchName,
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
@@ -68,8 +68,9 @@ public class InterArtifactDropTest extends TestCase {
       source = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, sourceBranch);
       source.persistAttributes();
 
-      BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      destinationBranch =
+            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
+                  UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
    }
@@ -77,8 +78,6 @@ public class InterArtifactDropTest extends TestCase {
    public void testIntroduceCrossBranch() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-
-      Branch destinationBranch = BranchManager.getBranch(destinationBranchName);
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(
