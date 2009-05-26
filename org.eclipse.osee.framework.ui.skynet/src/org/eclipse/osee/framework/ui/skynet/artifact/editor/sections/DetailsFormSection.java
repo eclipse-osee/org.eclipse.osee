@@ -106,14 +106,15 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          sb.append(String.format(template, "GUID", Xml.escape(artifact.getGuid())));
          sb.append(String.format(template, "HRID", Xml.escape(artifact.getHumanReadableId())));
          sb.append(String.format(template, "Branch", Xml.escape(artifact.getBranch().toString())));
-         sb.append(String.format(template, "Branch Id", String.valueOf(artifact.getBranch().getBranchId())));
-         sb.append(String.format(template, "Artifact Id", String.valueOf(artifact.getArtId())));
+         sb.append(String.format(template, "Branch Id", artifact.getBranch().getBranchId()));
+         sb.append(String.format(template, "Artifact Id", artifact.getArtId()));
          sb.append(String.format(template, "Artifact Type Name", Xml.escape(artifact.getArtifactTypeName())));
-         sb.append(String.format(template, "Artifact Type Id", String.valueOf(artifact.getArtTypeId())));
-         sb.append(String.format(template, "Gamma Id", String.valueOf(artifact.getGammaId())));
-         sb.append(String.format(template, "Historical", String.valueOf(artifact.isHistorical())));
-         sb.append(String.format(template, "Deleted", String.valueOf(artifact.isDeleted())));
-         sb.append(String.format(template, "Revision", String.valueOf(artifact.getTransactionNumber())));
+         sb.append(String.format(template, "Artifact Type Id", artifact.getArtTypeId()));
+         sb.append(String.format(template, "Gamma Id", artifact.getGammaId()));
+         sb.append(String.format(template, "Historical", artifact.isHistorical()));
+         sb.append(String.format(template, "Deleted", artifact.isDeleted()));
+         sb.append(String.format(template, "Revision", artifact.getTransactionNumber()));
+         sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
          Date lastModified = null;
          try {
             lastModified = artifact.getLastModified();
