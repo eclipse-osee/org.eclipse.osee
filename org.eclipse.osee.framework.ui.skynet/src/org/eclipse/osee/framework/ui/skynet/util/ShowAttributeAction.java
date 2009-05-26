@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -29,14 +28,15 @@ import org.eclipse.swt.widgets.Display;
 public class ShowAttributeAction extends Action {
    private AttributeCheckListDialog attributeDialog;
    private StructuredViewer viewer;
-   private String preferenceKey;
-   private IBranchProvider branchProvider;
+   private final String preferenceKey;
+   private final IBranchProvider branchProvider;
 
-   public ShowAttributeAction(StructuredViewer viewer, String preferenceKey) {
+   public ShowAttributeAction(IBranchProvider branchProvider, StructuredViewer viewer, String preferenceKey) {
       super("Show Attributes", SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
       setToolTipText("Show Attributes");
       this.viewer = viewer;
       this.preferenceKey = preferenceKey;
+      this.branchProvider = branchProvider;
    }
 
    public void setViewer(StructuredViewer viewer) {
@@ -59,10 +59,10 @@ public class ShowAttributeAction extends Action {
          }
       }
       if (attributeDialog != null) {
-      int result = attributeDialog.open();
-      if (result == 0) {
-         viewer.refresh(true);
-      }
+         int result = attributeDialog.open();
+         if (result == 0) {
+            viewer.refresh(true);
+         }
       }
    }
 
@@ -78,17 +78,21 @@ public class ShowAttributeAction extends Action {
       return attributeDialog != null ? attributeDialog.getSelectedAttributes() : null;
    }
 
-   public void setValidAttributeTypes(Collection<AttributeType> attrTypes, Branch branch) {
-      attributeDialog = new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey, branch);
-   }
-   
-   public void setBranchForAttributeTypes(IBranchProvider branchProvider) throws OseeCoreException {
-      this.branchProvider = branchProvider;
-      if (branchProvider != null && branchProvider.getBranch() != null) {
-            attributeDialog =
-                  new AttributeCheckListDialog(Display.getCurrent().getActiveShell(),
-                        SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()),
-                        preferenceKey, branchProvider.getBranch());
-      }
-   }
+   //   public void setValidAttributeTypes(Collection<AttributeType> attrTypes, Branch branch) {
+   //      attributeDialog =
+   //            new AttributeCheckListDialog(Display.getCurrent().getActiveShell(), attrTypes, preferenceKey, branch);
+   //   }
+
+   //   if (branchProvider != null && branchProvider.getBranch() != null){
+   //      attributesAction.setValidAttributeTypes(getValidAttributeTypes(), branchProvider.getBranch());
+   //   }
+   //   public void setBranchForAttributeTypes(IBranchProvider branchProvider) throws OseeCoreException {
+   //      this.branchProvider = branchProvider;
+   //      if (branchProvider != null && branchProvider.getBranch() != null) {
+   //            attributeDialog =
+   //                  new AttributeCheckListDialog(Display.getCurrent().getActiveShell(),
+   //                        SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()),
+   //                        preferenceKey, branchProvider.getBranch());
+   //      }
+   //   }
 }

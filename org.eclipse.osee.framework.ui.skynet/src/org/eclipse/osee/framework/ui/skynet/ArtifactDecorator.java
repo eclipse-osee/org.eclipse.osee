@@ -10,21 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +31,6 @@ public class ArtifactDecorator {
    private ShowAttributeAction attributesAction;
    private StructuredViewer viewer;
    private String preferenceKey;
-   private IBranchProvider branchProvider;
 
    public ArtifactDecorator(StructuredViewer viewer, String preferenceKey) {
       this.viewer = viewer;
@@ -56,7 +49,7 @@ public class ArtifactDecorator {
       }
    }
 
-   private void checkActionsCreated() {
+   private void checkActionsCreated(IBranchProvider branchProvider) {
       if (showArtType == null) {
          showArtType = new Action("Show Artifact Type") {
             @Override
@@ -81,10 +74,7 @@ public class ArtifactDecorator {
       }
 
       if (attributesAction == null) {
-         attributesAction = new ShowAttributeAction(viewer, preferenceKey);
-         if (branchProvider != null && branchProvider.getBranch() != null){
-            attributesAction.setValidAttributeTypes(getValidAttributeTypes(), branchProvider.getBranch());
-         }
+         attributesAction = new ShowAttributeAction(branchProvider, viewer, preferenceKey);
       }
 
       if (showArtIds == null && isAdmin()) {
@@ -100,16 +90,6 @@ public class ArtifactDecorator {
       }
    }
 
-   private List<AttributeType> getValidAttributeTypes() {
-      List<AttributeType> toReturn = new ArrayList<AttributeType>();
-      try {
-         toReturn.addAll(SkynetViews.loadAttrTypesFromPreferenceStore(preferenceKey, branchProvider.getBranch()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return toReturn;
-   }
-
    private boolean isAdmin() {
       boolean result = false;
       try {
@@ -123,10 +103,8 @@ public class ArtifactDecorator {
       return result;
    }
 
-
    public void addActions(IMenuManager manager, IBranchProvider provider) {
-      this.branchProvider = provider;
-      checkActionsCreated();
+      checkActionsCreated(provider);
 
       manager.add(showArtVersion);
       manager.add(showArtType);
