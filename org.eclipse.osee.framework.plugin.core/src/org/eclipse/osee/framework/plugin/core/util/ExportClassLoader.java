@@ -26,17 +26,17 @@ public class ExportClassLoader extends ClassLoader {
    private final HashMap<String, Bundle> cache = new HashMap<String, Bundle>(1024);
 
    public static ExportClassLoader getInstance(){
-	   if(exportClassloaderInstance == null){
-		   exportClassloaderInstance = new ExportClassLoader();
-	   }
-	   return exportClassloaderInstance;
+      if(exportClassloaderInstance == null){
+         exportClassloaderInstance = new ExportClassLoader();
+      }
+      return exportClassloaderInstance;
    }
-   
+
    public ExportClassLoader(PackageAdmin packageAdmin) {
       super(ExportClassLoader.class.getClassLoader());
       this.packageAdmin = packageAdmin;
    }
-   
+
    public ExportClassLoader()
    {
       this(PluginCoreActivator.getInstance().getPackageAdmin());
@@ -47,38 +47,36 @@ public class ExportClassLoader extends ClassLoader {
     */
    @Override
    protected Class<?> findClass(String name) throws ClassNotFoundException {
-       try {
-	    Bundle bundle = getExportingBundle(name);
-	    if (bundle != null) {
-		return bundle.loadClass(name);
-	    }
-	    throw new ClassNotFoundException("could not locate a class for "
-		    + name);
-	} catch (Exception e) {
-	    throw new ClassNotFoundException("could not locate a class for "
-		    + name, e);
-	}
+      try {
+         Bundle bundle = getExportingBundle(name);
+         if (bundle != null) {
+            return bundle.loadClass(name);
+         }
+         throw new ClassNotFoundException("could not locate a class for " + name);
+      } catch (Exception e) {
+         throw new ClassNotFoundException("could not locate a class for " + name, e);
+      }
    }
-   
+
    public Bundle getExportingBundle(String name) {
-	final String pkg = name.substring(0, name.lastIndexOf('.'));
-	Bundle cachedBundle = cache.get(pkg);
-	if (cachedBundle != null) {
-	    return cachedBundle;
-	}
-	ExportedPackage[] list = packageAdmin.getExportedPackages(pkg);
-	if (list != null) {
-	    for (ExportedPackage ep : list) {
-		final Bundle bundle = ep.getExportingBundle();
-		final int state = bundle.getState();
-		if (state == Bundle.RESOLVED || state == Bundle.STARTING
-			|| state == Bundle.ACTIVE || state == Bundle.STOPPING) {
-		    cache.put(pkg, bundle);
-		    return bundle;
-		}
-	    }
-	}
-	return null;
-    }
+      final String pkg = name.substring(0, name.lastIndexOf('.'));
+      Bundle cachedBundle = cache.get(pkg);
+      if (cachedBundle != null && cachedBundle.getState() != Bundle.UNINSTALLED) {
+         return cachedBundle;
+      }
+      ExportedPackage[] list = packageAdmin.getExportedPackages(pkg);
+      if (list != null) {
+         for (ExportedPackage ep : list) {
+            final Bundle bundle = ep.getExportingBundle();
+            final int state = bundle.getState();
+            if (state == Bundle.RESOLVED || state == Bundle.STARTING
+                  || state == Bundle.ACTIVE || state == Bundle.STOPPING) {
+               cache.put(pkg, bundle);
+               return bundle;
+            }
+         }
+      }
+      return null;
+   }
 
 }
