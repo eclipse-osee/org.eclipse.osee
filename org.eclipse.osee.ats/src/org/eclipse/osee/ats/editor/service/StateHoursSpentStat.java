@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.editor.SMAStateMetricsHeader;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -59,7 +60,7 @@ public class StateHoursSpentStat {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     smaMgr.promptChangeStatus(false);
+                     SMAPromptChangeStatus.promptChangeStatus(smaMgr.getSma(), false);
                      header.refresh();
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

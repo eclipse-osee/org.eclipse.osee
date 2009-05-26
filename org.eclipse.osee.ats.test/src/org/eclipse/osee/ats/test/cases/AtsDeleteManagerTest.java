@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -226,11 +225,10 @@ public class AtsDeleteManagerTest extends TestCase {
    }
 
    public void cleanup() throws Exception {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<String> names = new ArrayList<String>();
       for (TestNames testName : TestNames.values()) {
-         artifacts.addAll(ArtifactQuery.getArtifactsFromName(testName + "%", AtsPlugin.getAtsBranch(), false));
+         names.add(testName.name());
       }
-      ArtifactPersistenceManager.purgeArtifacts(artifacts);
-      TestUtil.sleep(4000);
+      DemoTestUtil.cleanupSimpleTest(names);
    }
 }

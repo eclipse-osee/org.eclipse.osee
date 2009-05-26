@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -223,20 +222,21 @@ public class TaskManager {
       return spent / taskArts.size();
    }
 
-   public static void createTasks(TeamWorkFlowArtifact teamArt, List<String> titles, List<Artifact> assignees, SkynetTransaction transaction) throws OseeCoreException {
+   public static Collection<TaskArtifact> createTasks(TeamWorkFlowArtifact teamArt, List<String> titles, List<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
          TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title);
          if (assignees != null && assignees.size() > 0) {
             Set<User> users = new HashSet<User>();
-            for (Artifact art : assignees) {
-               if (art instanceof User) {
-                  users.add((User) art);
-               }
+            for (User art : assignees) {
+               users.add(art);
             }
             taskArt.getSmaMgr().getStateMgr().setAssignees(users);
          }
+         tasks.add(taskArt);
          taskArt.persistAttributesAndRelations(transaction);
       }
+      return tasks;
    }
 
 }

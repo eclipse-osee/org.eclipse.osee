@@ -165,7 +165,7 @@ public class AtsLib implements IAtsLib {
       if (blankIfZero && d == 0)
          return "";
       else
-         return String.format("%5.2f", d);
+         return String.format("%4.2f", d);
    }
 
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {

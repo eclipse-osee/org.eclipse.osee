@@ -10,22 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.support.test.util.AtsUserCommunity;
+import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoUsers;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -57,6 +73,43 @@ public class DemoTestUtil {
 
    public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
+   }
+
+   public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
+      ActionArtifact actionArt =
+            ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2,
+                  Arrays.asList(AtsUserCommunity.Other.name()), false, null,
+                  ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+                  transaction);
+
+      TeamWorkFlowArtifact teamArt = null;
+      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+         if (team.getTeamDefinition().getDescriptiveName().contains("Code")) {
+            teamArt = team;
+         }
+      }
+      return teamArt;
+   }
+
+   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, SkynetTransaction transaction) throws Exception {
+      List<String> names = new ArrayList<String>();
+      for (int x = 1; x == numTasks; x++) {
+         names.add(title + " " + x);
+      }
+      return TaskManager.createTasks(teamArt, names, Arrays.asList(UserManager.getUser()), transaction);
+   }
+
+   public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      for (String title : titles) {
+         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", AtsPlugin.getAtsBranch(), false));
+      }
+      ArtifactPersistenceManager.purgeArtifacts(artifacts);
+      TestUtil.sleep(4000);
+   }
+
+   public static void cleanupSimpleTest(String title) throws Exception {
+      cleanupSimpleTest(Arrays.asList(title));
    }
 
    public static void setUpTest() throws Exception {

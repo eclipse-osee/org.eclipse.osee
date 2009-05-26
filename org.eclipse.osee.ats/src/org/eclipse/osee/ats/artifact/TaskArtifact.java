@@ -224,13 +224,14 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToCompleted(SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
       // Assign current user if unassigned
       try {
          if (smaMgr.getStateMgr().isUnAssigned()) {
             smaMgr.getStateMgr().setAssignee(UserManager.getUser());
          }
+         smaMgr.getStateMgr().updateMetrics(additionalHours, 100, true);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -238,14 +239,15 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToInWork(User toUser, int percentComplete, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public void transitionToInWork(User toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
       Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, transaction, transitionOption);
-      if (smaMgr.getStateMgr().getPercentComplete() == 100) {
-         smaMgr.getStateMgr().updateMetrics(0, percentComplete, true);
+      if (smaMgr.getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
+         smaMgr.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
       }
-      if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) smaMgr.getSma().saveSMA(
-            transaction);
+      if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) {
+         smaMgr.getSma().saveSMA(transaction);
+      }
       if (result.isFalse()) result.popup();
    }
 
@@ -257,19 +259,29 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @param transaction
     * @throws OseeCoreException
     */
-   public void statusPercentChanged(int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
-      if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
-         transitionToCompleted(transaction, TransitionOption.None);
-      else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(UserManager.getUser(), percentComplete, transaction, TransitionOption.Persist);
+   public void statusPercentChanged(double additionalHours, int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
+      if (percentComplete == 100 && !isCompleted()) {
+         transitionToCompleted(additionalHours, transaction, TransitionOption.None);
+      } else if (percentComplete != 100 && isCompleted()) {
+         transitionToInWork(UserManager.getUser(), percentComplete, additionalHours, transaction,
+               TransitionOption.Persist);
+      }
+      // Case where already completed and statusing, just add additional hours to InWork state
+      else if (percentComplete == 100 && isCompleted()) {
+         if (additionalHours > 0) {
+            smaMgr.getStateMgr().updateMetrics(TaskStates.InWork.name(), additionalHours, percentComplete, true);
+         }
+      } else {
+         smaMgr.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
       }
    }
 
    public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", transaction, transitionOption);
-      else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
-            UserManager.getUser(), 99, transaction, transitionOption);
+      else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) {
+         transitionToInWork(UserManager.getUser(), 99, 0, transaction, transitionOption);
+      }
    }
 
    /*

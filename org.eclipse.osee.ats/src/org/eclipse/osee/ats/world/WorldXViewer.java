@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
@@ -241,7 +242,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeStatus(getSelectedSMAArtifacts(), true)) {
+               if (SMAPromptChangeStatus.promptChangeStatus(getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (Exception ex) {

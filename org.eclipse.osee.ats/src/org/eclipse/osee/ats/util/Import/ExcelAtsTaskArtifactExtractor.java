@@ -208,7 +208,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          }
          AtsPlugin.setEmailEnabled(true);
          if (taskArt.isCompleted()) {
-            taskArt.transitionToCompleted(transaction, TransitionOption.None);
+            taskArt.transitionToCompleted(0, transaction, TransitionOption.None);
          }
          // always persist
          taskArt.persistAttributesAndRelations(transaction);

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -188,7 +189,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
+               if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
@@ -329,12 +330,12 @@ public class TaskXViewer extends WorldXViewer {
       // Ensure tasks are related to current state of workflow 
       for (TaskArtifact taskArt : getSelectedTaskArtifacts()) {
          if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
-            SMAManager.popupTaskNotInRelatedToState(taskArt);
+            SMAPromptChangeStatus.popupTaskNotInRelatedToState(taskArt);
             return false;
          }
       }
       if (isUsingTaskResolutionOptions()) {
-         if (SMAManager.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
+         if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
             update(getSelectedTaskArtifacts().toArray(), null);
             return true;
@@ -371,7 +372,7 @@ public class TaskXViewer extends WorldXViewer {
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Resolution_Col)) {
             modified = handleChangeResolution();
          } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
-            modified = taskSmaMgr.promptChangeStatus(false);
+            modified = SMAPromptChangeStatus.promptChangeStatus(taskSmaMgr.getSma(), false);
          } else
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);
 

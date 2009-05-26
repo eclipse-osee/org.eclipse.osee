@@ -38,8 +38,11 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
 
    XComboViewer resolutionCombo = new XComboViewer("Resolution");
    private final List<TaskResOptionDefinition> options;
-   private Map<String, TaskResOptionDefinition> nameToResDef = new HashMap<String, TaskResOptionDefinition>();
+   private final Map<String, TaskResOptionDefinition> nameToResDef = new HashMap<String, TaskResOptionDefinition>();
    private TaskResOptionDefinition selectedOption;
+   private static String MESSAGE = "Enter percent complete and number of hours you spent since last status.";
+   private static String OPTION_MESSAGE =
+         "Select resolution, enter percent complete and number of hours you spent since last status.";
 
    /**
     * @param parentShell
@@ -49,10 +52,12 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
     * @param options
     */
    public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends StateMachineArtifact> tasks) {
-      super(parentShell, dialogTitle, dialogMessage, showPercent, tasks);
+      super(parentShell, dialogTitle, (options == null ? MESSAGE : OPTION_MESSAGE), showPercent, tasks);
       this.options = options;
-      for (TaskResOptionDefinition trd : options)
-         nameToResDef.put(trd.getName(), trd);
+      if (options != null) {
+         for (TaskResOptionDefinition trd : options)
+            nameToResDef.put(trd.getName(), trd);
+      }
    }
 
    @Override
@@ -77,43 +82,45 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    @Override
    protected void createPreCustomArea(Composite parent) {
       super.createPreCustomArea(parent);
-      resolutionCombo.setLabelProvider(new ResolutionLabelProvider());
-      resolutionCombo.setContentProvider(new ArrayContentProvider());
-      resolutionCombo.setRequiredEntry(true);
-      ArrayList<Object> objs = new ArrayList<Object>();
-      for (Object obj : options)
-         objs.add(obj);
-      resolutionCombo.setInput(objs);
-      resolutionCombo.createWidgets(parent, 2);
-      try {
-         if (smas.size() == 1) {
-            String selOption = smas.iterator().next().getWorldViewResolution();
-            if (selOption != null && !selOption.equals("")) {
-               selectedOption = nameToResDef.get(selOption);
-               if (selectedOption != null) {
-                  ArrayList<Object> sel = new ArrayList<Object>();
-                  sel.add(selectedOption);
-                  resolutionCombo.setSelected(sel);
+      if (options != null) {
+         resolutionCombo.setLabelProvider(new ResolutionLabelProvider());
+         resolutionCombo.setContentProvider(new ArrayContentProvider());
+         resolutionCombo.setRequiredEntry(true);
+         ArrayList<Object> objs = new ArrayList<Object>();
+         for (Object obj : options)
+            objs.add(obj);
+         resolutionCombo.setInput(objs);
+         resolutionCombo.createWidgets(parent, 2);
+         try {
+            if (smas.size() == 1) {
+               String selOption = smas.iterator().next().getWorldViewResolution();
+               if (selOption != null && !selOption.equals("")) {
+                  selectedOption = nameToResDef.get(selOption);
+                  if (selectedOption != null) {
+                     ArrayList<Object> sel = new ArrayList<Object>();
+                     sel.add(selectedOption);
+                     resolutionCombo.setSelected(sel);
+                  }
                }
             }
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      resolutionCombo.getCombo().setVisibleItemCount(20);
-      resolutionCombo.addSelectionListener(new SelectionListener() {
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
-         public void widgetSelected(SelectionEvent e) {
-            selectedOption = (TaskResOptionDefinition) resolutionCombo.getSelected();
-            if (selectedOption != null && !selectedOption.getPercent().equals("")) {
-               int newPercent = (new Integer(selectedOption.getPercent())).intValue();
-               percent.set(newPercent + "");
-               updateStatusLabel();
+         resolutionCombo.getCombo().setVisibleItemCount(20);
+         resolutionCombo.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
             }
-         };
-      });
+
+            public void widgetSelected(SelectionEvent e) {
+               selectedOption = (TaskResOptionDefinition) resolutionCombo.getSelected();
+               if (selectedOption != null && !selectedOption.getPercent().equals("")) {
+                  int newPercent = (new Integer(selectedOption.getPercent())).intValue();
+                  percent.set(newPercent + "");
+                  updateStatusLabel();
+               }
+            };
+         });
+      }
    }
    public class ResolutionLabelProvider implements ILabelProvider {
 
