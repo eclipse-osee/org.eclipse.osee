@@ -62,7 +62,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private final BranchType branchType;
    private Branch sourceBranch;
    private Branch destBranch;
-   private boolean deleted;
    private BranchState branchState;
 
    public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
@@ -412,7 +411,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public void setDeleted() {
-      this.deleted = true;
+      setBranchState(BranchState.DELETED);
       try {
          OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, getBranchId());
       } catch (Exception ex) {
@@ -424,7 +423,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return the deleted
     */
    public boolean isDeleted() {
-      return deleted;
+      return getBranchState() == BranchState.DELETED;
    }
 
    /**

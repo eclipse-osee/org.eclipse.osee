@@ -121,16 +121,13 @@ public class BranchManager {
    public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact, boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
-      for (Branch branch : getNormalBranches()) {
-         if (branch.isAssociatedToArtifact(associatedArtifact)) {
-            if (includeDeleted || (!includeDeleted && !branch.isDeleted())) {
-               branches.add(branch);
-            }
-         }
-      }
+      Set<Branch> branchesToCheck = new HashSet<Branch>(getNormalBranches());
       if (includeArchived) {
-         for (Branch branch : getArchivedBranches()) {
-            if (branch.isAssociatedToArtifact(associatedArtifact)) {
+         branchesToCheck.addAll(getArchivedBranches());
+      }
+      for (Branch branch : branchesToCheck) {
+         if (branch.isAssociatedToArtifact(associatedArtifact)) {
+            if (includeDeleted || !branch.isDeleted()) {
                branches.add(branch);
             }
          }
