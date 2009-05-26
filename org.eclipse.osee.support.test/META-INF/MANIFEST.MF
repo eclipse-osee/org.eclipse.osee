@@ -14,10 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.core.client;bundle-version="0.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: lba.ats.config.common.test,
- lba.ats.config.common.test.cases,
- lba.ats.config.common.test.cases.req,
- org.eclipse.osee.ats.test,
+Import-Package: org.eclipse.osee.ats.test,
  org.eclipse.osee.ats.test.cases,
  org.eclipse.osee.ats.test.util,
  org.eclipse.osee.framework.skynet.core.test2,
