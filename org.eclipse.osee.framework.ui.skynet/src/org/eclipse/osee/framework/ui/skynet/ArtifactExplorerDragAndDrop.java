@@ -29,10 +29,10 @@ import org.eclipse.ui.IViewPart;
  * @author Jeff C. Phillips
  */
 public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
-   private TreeViewer treeViewer;
-   private String viewId;
-   private IViewPart viewPart;
-   private InterArtifactExplorerDropHandler interArtifactExplorerHandler;
+   private final TreeViewer treeViewer;
+   private final String viewId;
+   private final IViewPart viewPart;
+   private final InterArtifactExplorerDropHandler interArtifactExplorerHandler;
 
    public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart) {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
@@ -113,7 +113,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
                   parentArtifact.getBranch())) {
                try {
-                  interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated);
+                  interArtifactExplorerHandler.dropArtifactIntoDifferentBranch(parentArtifact, artifactsToBeRelated,
+                        true);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

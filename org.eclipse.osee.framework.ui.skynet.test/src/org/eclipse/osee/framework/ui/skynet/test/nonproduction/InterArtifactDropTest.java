@@ -69,8 +69,8 @@ public class InterArtifactDropTest extends TestCase {
       source.persistAttributes();
 
       destinationBranch =
-            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
-                  UserManager.getUser(SystemUser.OseeSystem));
+      BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
+            UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
    }
@@ -81,7 +81,7 @@ public class InterArtifactDropTest extends TestCase {
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(
-            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {source});
+            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {source}, false);
 
       sleep(5000);
       //Acquire the introduced artifact

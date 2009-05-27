@@ -55,7 +55,7 @@ public class InterArtifactExplorerDropHandler {
             sourceBranch, PermissionEnum.READ);
    }
 
-   public void dropArtifactIntoDifferentBranch(Artifact destinationParentArtifact, Artifact[] sourceArtifacts) throws OseeCoreException {
+   public void dropArtifactIntoDifferentBranch(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt) throws OseeCoreException {
       if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.length < 1) {
          throw new OseeArgumentException("");
       }
@@ -87,19 +87,21 @@ public class InterArtifactExplorerDropHandler {
             transferObjects.add(new TransferObject(sourceArtifact, transferStatus));
 
          }
-         confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, transferObjects);
+         if (prompt) {
+            boolean userConfirmed =
+                  confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, transferObjects);
+            if (!userConfirmed) return;
+         }
+         addArtifactsToNewTransaction(destinationParentArtifact, transferObjects, sourceBranch);
       } else {
          MessageDialog.openError(Display.getCurrent().getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
       }
 
    }
 
-   private void confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<TransferObject> transferObjects) throws OseeCoreException {
+   private boolean confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<TransferObject> transferObjects) throws OseeCoreException {
       ReflectArtifactStatusDialog updateArtifactStatusDialog = new ReflectArtifactStatusDialog(transferObjects);
-
-      if (updateArtifactStatusDialog.open() == Window.OK) {
-         addArtifactsToNewTransaction(destinationArtifact, transferObjects, sourceBranch);
-      }
+      return (updateArtifactStatusDialog.open() == Window.OK);
    }
 
    private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException {
