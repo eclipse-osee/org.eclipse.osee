@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -33,18 +34,17 @@ import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
- * and txs tables, then adds an Action, Workflow and 30 Tasks, deletes these objects and compares the row count. If
- * purge works properly, all rows should be equal. This test is intended to be run against a demo database. It tests the
- * purge logic by counting the rows of the version and txs tables, createing artifacts, changing them and then purging
- * them. If it works properly, all rows should be equal.
+ * and txs tables, createing artifacts, changing them and then purging them. If it works properly, all rows should be
+ * equal.
  * 
  * @author Donald G. Dunne
  */
 public class ArtifactPurgeTest extends TestCase {
 
-   private final Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
-   private final Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
+   private final Map<String, Integer> preCreateArtifactsCount = new HashMap<String, Integer>();
+   private final Map<String, Integer> postCreateArtifactsCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
+   private static SevereLoggingMonitor monitorLog;
    List<String> tables =
          Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
                "osee_artifact_version");
@@ -58,9 +58,13 @@ public class ArtifactPurgeTest extends TestCase {
       assertFalse(TestUtil.isProductionDb());
    }
 
+   public void testInitialize() throws Exception {
+      monitorLog = TestUtil.severeLoggingStart();
+   }
+
    public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateActionCount, tables);
+      DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
@@ -78,26 +82,26 @@ public class ArtifactPurgeTest extends TestCase {
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
-         softArt.persistAttributesAndRelations(transaction);
+         softArt.persistAttributesAndRelations();
       }
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateActionCount, tables);
-      TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
+      DbUtil.getTableRowCounts(postCreateArtifactsCount, tables);
+      TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
-      // Purge Action, Workflow and Tasks
+      // Purge
       ArtifactPersistenceManager.purgeArtifacts(artsToPurge);
 
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO Looks like attributes created after initial artifact creation are not getting purged.  Needs Fix.
-      TestUtil.checkThatEqual(preCreateActionCount, postPurgeCount);
+      TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
 
    }
 
    public void testPurgeArtifactFromBranch() throws Exception {
       // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateActionCount, tables);
+      DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
       // Create some software artifacts      
       Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
@@ -110,11 +114,11 @@ public class ArtifactPurgeTest extends TestCase {
 
       // make more changes to artifact
       softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
-      softArt.persistAttributesAndRelations(transaction);
+      softArt.persistAttributesAndRelations();
 
       // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateActionCount, tables);
-      TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
+      DbUtil.getTableRowCounts(postCreateArtifactsCount, tables);
+      TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
       // Purge artifact
       ArtifactPersistenceManager.purgeArtifactFromBranch(OseeDbConnection.getConnection(), branch.getBranchId(),
@@ -123,7 +127,11 @@ public class ArtifactPurgeTest extends TestCase {
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);
       // TODO Looks like attributes created after initial artifact creation are not getting purged.  Needs Fix.
-      TestUtil.checkThatEqual(preCreateActionCount, postPurgeCount);
+      TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
+   }
+
+   public void testCleanup() throws Exception {
+      TestUtil.severeLoggingEnd(monitorLog);
    }
 
 }
