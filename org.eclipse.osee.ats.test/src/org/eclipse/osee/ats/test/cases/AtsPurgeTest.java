@@ -23,14 +23,13 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
@@ -41,12 +40,12 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class AtsPurgeTest extends TestCase {
 
-   private final List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_artifact_version", "osee_relation_link",
-               "osee_tx_details", "osee_txs");
    private final Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
+   List<String> tables =
+         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
+               "osee_artifact_version");
 
    /**
     * @throws java.lang.Exception
@@ -57,23 +56,16 @@ public class AtsPurgeTest extends TestCase {
       assertFalse(AtsPlugin.isProductionDb());
    }
 
-   public void testDemoPurge() throws Exception {
-      System.out.println("Validating OSEE Application Server...");
-      if (!OseeLog.isStatusOk()) {
-         System.err.println(OseeLog.getStatusReport() + ". \nExiting.");
-         return;
-      }
-      System.out.println("Begin Demo Purge Test...");
-      System.out.println("Pre Purge Table Counts.");
+   public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
-      getTableCounts(preCreateActionCount);
+      DbUtil.getTableRowCounts(preCreateActionCount, tables);
 
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create Action, Workflow and Tasks
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       ActionArtifact actionArt =
-            ActionManager.createAction(null, "Action to Purge", "description", ChangeType.Improvement,
+            ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
                         ArtifactQuery.getArtifactsFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
@@ -87,51 +79,21 @@ public class AtsPurgeTest extends TestCase {
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
                actionArt.getTeamWorkFlowArtifacts().iterator().next().getSmaMgr().getTaskMgr().createNewTask(
-                     "New Task " + x);
+                     getClass().getSimpleName() + x);
          taskArt.persistAttributesAndRelations();
          artsToPurge.add(taskArt);
       }
 
       // Count rows and check that increased
-      System.out.println("Post Create Action Table Counts.");
-      getTableCounts(postCreateActionCount);
-      checkThatIncreased(preCreateActionCount, postCreateActionCount);
+      DbUtil.getTableRowCounts(postCreateActionCount, tables);
+      TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
       ArtifactPersistenceManager.purgeArtifacts(artsToPurge);
 
       // Count rows and check that same as when began
-      System.out.println("Post Purge Table Counts.");
-      getTableCounts(postPurgeCount);
-      checkThatEqual(preCreateActionCount, postPurgeCount);
-
-      System.out.println("End Demo Purge Test.");
-   }
-
-   private void checkThatIncreased(Map<String, Integer> prevTableCount, Map<String, Integer> postTableCount) {
-      for (String tableName : prevTableCount.keySet()) {
-         assertTrue(postTableCount.get(tableName) > prevTableCount.get(tableName));
-      }
-   }
-
-   private void checkThatEqual(Map<String, Integer> prevTableCount, Map<String, Integer> postTableCount) {
-      for (String tableName : prevTableCount.keySet()) {
-         String str =
-               String.format("%s post[%d] vs pre[%d]", tableName, postTableCount.get(tableName),
-                     prevTableCount.get(tableName));
-         System.out.println(str);
-         assertTrue(str, postTableCount.get(tableName).equals(prevTableCount.get(tableName)));
-      }
-   }
-
-   private void getTableCounts(Map<String, Integer> tableCount) throws OseeDataStoreException {
-      for (String tableName : tables) {
-         tableCount.put(tableName, getTableRowCount(tableName));
-      }
-   }
-
-   private int getTableRowCount(String tableName) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
+      DbUtil.getTableRowCounts(postPurgeCount, tables);
+      TestUtil.checkThatEqual(preCreateActionCount, postPurgeCount);
    }
 
 }

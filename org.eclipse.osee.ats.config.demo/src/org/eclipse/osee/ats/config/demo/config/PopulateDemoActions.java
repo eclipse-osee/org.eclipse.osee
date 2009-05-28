@@ -193,6 +193,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       Branch childBranch =
             BranchManager.createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
+      BranchManager.setKeyedBranch(childBranchName, childBranch);
       return childBranch;
    }
 

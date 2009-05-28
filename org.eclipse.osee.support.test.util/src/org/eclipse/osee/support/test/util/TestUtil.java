@@ -7,7 +7,9 @@ package org.eclipse.osee.support.test.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Level;
+import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
@@ -87,6 +89,21 @@ public class TestUtil {
       if (cause != null) {
          sb.append("   caused by ");
          exceptionToString(cause, sb);
+      }
+   }
+
+   public static void checkThatIncreased(Map<String, Integer> prevCount, Map<String, Integer> postCount) {
+      for (String name : prevCount.keySet()) {
+         TestCase.assertTrue(String.format("[%s] did not increase as expected: pre[%d] vs post[%d]", name,
+               prevCount.get(name), postCount.get(name)), postCount.get(name) > prevCount.get(name));
+      }
+   }
+
+   public static void checkThatEqual(Map<String, Integer> prevCount, Map<String, Integer> postCount) {
+      for (String tableName : prevCount.keySet()) {
+         TestCase.assertTrue(String.format("[%s] count not equal pre[%d] post[%d]", tableName,
+               prevCount.get(tableName), postCount.get(tableName)), postCount.get(tableName).equals(
+               prevCount.get(tableName)));
       }
    }
 
