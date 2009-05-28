@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-class PurgeBranchRunnable implements IExceptionableRunnable {
+public class PurgeBranchRunnable implements IExceptionableRunnable {
    private static final String COUNT_CHILD_BRANCHES =
          "SELECT count(branch_id) as child_branches FROM OSEE_BRANCH WHERE parent_branch_id = ?";
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =

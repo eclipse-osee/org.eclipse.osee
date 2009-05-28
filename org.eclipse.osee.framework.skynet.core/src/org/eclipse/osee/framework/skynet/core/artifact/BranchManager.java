@@ -428,6 +428,11 @@ public class BranchManager {
             instance.getClass(), SkynetActivator.PLUGIN_ID);
    }
 
+   public static void purgeBranch(final Branch branch) throws OseeCoreException {
+      PurgeBranchRunnable runnable = new PurgeBranchRunnable(branch);
+      runnable.run();
+   }
+
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
