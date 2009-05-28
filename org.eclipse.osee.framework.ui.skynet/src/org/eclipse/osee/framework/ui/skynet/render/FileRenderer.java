@@ -10,21 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.utility.FileWatcher;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Ryan D. Brooks
@@ -33,10 +46,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 public abstract class FileRenderer extends FileSystemRenderer {
    private static final ResourceAttributes readonlyfileAttributes = new ResourceAttributes();
    private static Random generator = new Random();
-   private static final FileWatcher watcher = new FileWatcher(3, TimeUnit.SECONDS);
+
+   private static final FileWatcher watcher = new ArtifactEditFileWatcher(3, TimeUnit.SECONDS);
+   private static boolean firstTime = true;
    static {
       readonlyfileAttributes.setReadOnly(true);
-      watcher.addListener(new ArtifactEditFileWatcher());
       watcher.start();
    }
 
@@ -87,7 +101,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
          AIFile.writeToFile(workingFile, renderInputStream);
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-            watcher.addFile(workingFile.getLocation().toFile());
+            monitorFile(workingFile.getLocation().toFile());
          } else if (presentationType == PresentationType.PREVIEW) {
             workingFile.setResourceAttributes(readonlyfileAttributes);
          }
@@ -100,7 +114,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    protected void addFileToWatcher(IFolder baseFolder, String fileName) {
       IFile workingFile = baseFolder.getFile(fileName);
-      watcher.addFile(workingFile.getLocation().toFile());
+      monitorFile(workingFile.getLocation().toFile());
    }
 
    protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
@@ -136,4 +150,82 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    public abstract InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException;
 
+   private static void monitorFile(File file) {
+      watcher.addFile(file);
+      if (firstTime) {
+         firstTime = false;
+         PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+
+            @Override
+            public void postShutdown(IWorkbench workbench) {
+            }
+
+            @Override
+            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+               boolean wasConfirmed =
+                     MessageDialog.openConfirm(
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "OSEE Edit",
+                           "OSEE artifacts were opened for edit. Please save all external edits before continuing. Click OK to continue with shutwdown. Click Cancel to abort the shutdown process.");
+               return forced || wasConfirmed;
+            }
+         });
+      }
+   }
+
+   private static final class ArtifactEditFileWatcher extends FileWatcher {
+
+      public ArtifactEditFileWatcher(long time, TimeUnit unit) {
+         super(time, unit);
+      }
+
+      private synchronized void setLastModified(File file, Long value) {
+         if (filesToWatch.containsKey(file)) {
+            filesToWatch.put(file, value);
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.utility.FileWatcher#run()
+       */
+      @Override
+      public synchronized void run() {
+         try {
+            for (Map.Entry<File, Long> entry : filesToWatch.entrySet()) {
+               final File file = entry.getKey();
+               final Long storedLastModified = entry.getValue();
+
+               Long latestLastModified = file.lastModified();
+               boolean requiresUpdate = false;
+               if (!storedLastModified.equals(latestLastModified)) {
+                  entry.setValue(latestLastModified);
+                  if (file.exists()) {
+                     requiresUpdate = true;
+                  }
+               }
+
+               if (requiresUpdate) {
+                  UpdateArtifactJob updateJob = new UpdateArtifactJob();
+                  updateJob.setWorkingFile(file);
+                  updateJob.addJobChangeListener(new JobChangeAdapter() {
+
+                     @Override
+                     public void done(IJobChangeEvent event) {
+                        if (event.getResult().isOK()) {
+                           OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                                 "Updated artifact linked to: " + file.getAbsolutePath());
+                        } else {
+                           // There was an error during saving set last modified back so next time we try again
+                           setLastModified(file, storedLastModified);
+                        }
+                     }
+                  });
+                  Jobs.startJob(updateJob);
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
+      }
+   }
 }

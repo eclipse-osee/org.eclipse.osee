@@ -33,7 +33,7 @@ public class FileWatcher extends TimerTask {
    private final long interval;
    private final Timer timer = new Timer();
 
-   private final HashMap<File, Long> filesToWatch = new HashMap<File, Long>(128);
+   protected final HashMap<File, Long> filesToWatch = new HashMap<File, Long>(128);
    private final HashSet<IFileWatcherListener> listeners = new HashSet<IFileWatcherListener>();
 
    public FileWatcher(long time, TimeUnit unit) {
