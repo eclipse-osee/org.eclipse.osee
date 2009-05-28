@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -328,12 +329,10 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean handleChangeResolution() throws OseeCoreException {
       // Ensure tasks are related to current state of workflow 
-      for (TaskArtifact taskArt : getSelectedTaskArtifacts()) {
-         if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
-            SMAPromptChangeStatus.popupTaskNotInRelatedToState(taskArt);
-            return false;
-         }
-      }
+      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(getSelectedTaskArtifacts());
+      Result result = promptChangeStatus.isValidToChangeStatus();
+      if (result.isFalse()) return false;
+
       if (isUsingTaskResolutionOptions()) {
          if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
@@ -372,7 +371,7 @@ public class TaskXViewer extends WorldXViewer {
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Resolution_Col)) {
             modified = handleChangeResolution();
          } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
-            modified = SMAPromptChangeStatus.promptChangeStatus(taskSmaMgr.getSma(), false);
+            modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskSmaMgr.getSma()), false);
          } else
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);
 

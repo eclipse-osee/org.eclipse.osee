@@ -75,6 +75,14 @@ public class DemoTestUtil {
       return UserManager.getUserByName(demoUser.getName());
    }
 
+   /**
+    * Creates an action with the name title and demo code workflow
+    * 
+    * @param title
+    * @param transaction
+    * @return
+    * @throws OseeCoreException
+    */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
             ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2,
@@ -91,14 +99,29 @@ public class DemoTestUtil {
       return teamArt;
    }
 
+   /**
+    * Create tasks named title + <num>
+    * 
+    * @param teamArt
+    * @param title
+    * @param numTasks number to create
+    * @param transaction
+    * @throws Exception
+    */
    public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, SkynetTransaction transaction) throws Exception {
       List<String> names = new ArrayList<String>();
-      for (int x = 1; x == numTasks; x++) {
+      for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
       return TaskManager.createTasks(teamArt, names, Arrays.asList(UserManager.getUser()), transaction);
    }
 
+   /**
+    * Deletes all artifacts with names that start with any title given
+    * 
+    * @param titles
+    * @throws Exception
+    */
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
@@ -108,6 +131,12 @@ public class DemoTestUtil {
       TestUtil.sleep(4000);
    }
 
+   /**
+    * Deletes any artifact with name that starts with title
+    * 
+    * @param title
+    * @throws Exception
+    */
    public static void cleanupSimpleTest(String title) throws Exception {
       cleanupSimpleTest(Arrays.asList(title));
    }

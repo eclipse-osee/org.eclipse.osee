@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor.service;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -60,7 +61,7 @@ public class StateHoursSpentStat {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     SMAPromptChangeStatus.promptChangeStatus(smaMgr.getSma(), false);
+                     SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(smaMgr.getSma()), false);
                      header.refresh();
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
