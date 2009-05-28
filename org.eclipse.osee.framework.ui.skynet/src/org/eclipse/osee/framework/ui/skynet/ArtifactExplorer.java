@@ -95,6 +95,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
@@ -1322,32 +1323,35 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       if (branch == null || transData.branchId != branch.getBranchId()) {
          return;
       }
+
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
           */
          @Override
          public void run() {
-            for (Artifact art : transData.cacheDeletedArtifacts) {
-               treeViewer.remove(art);
-            }
-            try {
-               treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()).toArray(), null);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-            try {
-               Set<Artifact> parents = new HashSet<Artifact>();
-               for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
-                  if (!art.isDeleted() && art.getParent() != null) {
-                     parents.add(art.getParent());
-                  }
+            if (treeViewer != null && Widgets.isAccessible(treeViewer.getTree())) {
+               for (Artifact art : transData.cacheDeletedArtifacts) {
+                  treeViewer.remove(art);
                }
-               treeViewer.refresh(parents);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               try {
+                  treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
+                        CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()).toArray(), null);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+               try {
+                  Set<Artifact> parents = new HashSet<Artifact>();
+                  for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
+                        CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
+                     if (!art.isDeleted() && art.getParent() != null) {
+                        parents.add(art.getParent());
+                     }
+                  }
+                  treeViewer.refresh(parents);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
             }
          }
       });
