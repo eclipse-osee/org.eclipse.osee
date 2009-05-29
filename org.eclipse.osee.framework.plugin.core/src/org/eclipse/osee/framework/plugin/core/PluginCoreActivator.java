@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.plugin.core;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -79,7 +78,7 @@ public class PluginCoreActivator extends OseeActivator {
 
          @Override
          public void bundleChanged(BundleEvent event) {
-            if (event.getType() == BundleEvent.INSTALLED) {
+            if (event.getType() == BundleEvent.RESOLVED) {
                checkForEarlyStartup(event.getBundle());
             }
          }
@@ -92,9 +91,7 @@ public class PluginCoreActivator extends OseeActivator {
    private void checkForEarlyStartup(Bundle bundle) {
       if (bundle.getHeaders().get("OseeEarlyStart") != null) {
          try {
-            if (!((AbstractBundle) bundle).testStateChanging(Thread.currentThread())) {
-               bundle.start();
-            }
+            bundle.start();
          } catch (BundleException ex) {
             OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
          }
