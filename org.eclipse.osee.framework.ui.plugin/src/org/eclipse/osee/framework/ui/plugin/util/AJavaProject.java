@@ -43,17 +43,6 @@ public class AJavaProject {
        }
        return paths;
    }
-// public static URL[] getClasspathAsURLArray(IJavaProject javaProject) {
-   // if (javaProject == null)
-   // return null;
-   // Set visited = new HashSet();
-   // ArrayList urls = new ArrayList(70);
-   // return myClasspath(javaProject).;
-   // // collectClasspathURLs(javaProject, urls, visited, true);
-   // // URL[] result = new URL[urls.size()];
-   // // urls.toArray(result);
-   // // return result;
-   // }
 
    public static IJavaProject getJavaProject(File file) {
       IFile ifile = AWorkspace.fileToIFile(file);
@@ -127,56 +116,17 @@ public class AJavaProject {
 
    public static String getClassName(String file) {
       String classname = null;
-      IJavaProject javaProject = getJavaProject(new File(file));
-      //ArrayList<File> urls = new ArrayList<File>();
       try {
-    	  IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
-         for (int i = 0; i < paths.length; i++) {
-            if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-               File projectlocation = javaProject.getProject().getLocation().toFile();
-               File projecttricky = javaProject.getProject().getFullPath().toFile();
-               IPath output = paths[i].getOutputLocation();
-               File fileLocation;
-               if (output == null) {
-                  fileLocation = new File(paths[i].getPath().toFile().getPath().replace("src", "bin"));
-               } else {
-                  fileLocation = paths[i].getOutputLocation().toFile();
-               }
-               File javaFileLocation = paths[i].getPath().toFile();
-               String realClassLocation =
-                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
-               String realJavaLocation =
-                     javaFileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
-               String packagePath = file.replace(realJavaLocation, "");
-               packagePath = packagePath.replace(".java", ".class");
-               File theclassfile = new File(realClassLocation, packagePath);
-               if (theclassfile.exists()) {
-                  packagePath = packagePath.replace(".class", "");
-                  classname = packagePath.replaceAll("^\\\\", "");//windows
-                  classname = classname.replaceAll("^/", "");//linux
-                  classname = classname.replace("\\", ".");//windows
-                  classname = classname.replace("/", ".");//linux
-                  break;
-               }
-            }
+         String packageName = "";
+         File java = new File(file);
+         packageName = getJavaPackage(java);
+         if (packageName.length() > 0) {
+            packageName += ".";
          }
-
-      } catch (JavaModelException ex) {
-         ex.printStackTrace();
-      }
-      if (classname == null) {
-         try {
-            String packageName = "";
-            File java = new File(file);
-            packageName = getJavaPackage(java);
-            if (packageName.length() > 0) {
-               packageName += ".";
-            }
-            packageName += java.getName().replace(".java", "");
-            classname = packageName;
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
+         packageName += java.getName().replace(".java", "");
+         classname = packageName;
+      } catch (IOException e) {
+         e.printStackTrace();
       }
       return classname;
    }
