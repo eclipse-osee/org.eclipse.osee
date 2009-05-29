@@ -13,9 +13,14 @@ package org.eclipse.nebula.widgets.xviewer.util.internal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Donald G. Dunne
@@ -70,6 +75,42 @@ public class FileUtil {
       }
       in.close();
       return buffer.toString();
+   }
+
+   /**
+    * @param guid
+    * @param file
+    * @throws IOException
+    */
+   public static void writeStringToFile(String str, File file) throws IOException {
+      OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+      char[] chars = str.toCharArray();
+      out.write(chars, 0, chars.length);
+      out.close();
+   }
+
+   public static ArrayList<String> readListFromDir(File directory, FilenameFilter filter) {
+      ArrayList<String> list = new ArrayList<String>(400);
+
+      if (directory == null) {
+         System.out.println("Invalid path: " + directory);
+         return list;
+      }
+
+      File[] files = directory.listFiles(filter);
+      if (files == null) {
+         System.out.println("Invalid path: " + directory);
+         return list;
+      }
+      if (files.length > 0) {
+         Arrays.sort(files);
+      }
+
+      for (int i = 0; i < files.length; i++) {
+         list.add(files[i].getName());
+      }
+
+      return list;
    }
 
 }
