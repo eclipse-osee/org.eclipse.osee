@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * 
  * @author Theron Virgin
  */
-public class CommitedNewAndDeleted extends DatabaseHealthTask {
+public class CommitedNewAndDeleted extends DatabaseHealthOperation {
    private class LocalValues {
       public int relLinkId;
       public int artId;
@@ -64,21 +64,17 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
 
    private Set<LocalValues> addressing = null;
 
-   @Override
-   public String getFixTaskName() {
-      return "Fix Artifacts, Relation, Attributes that were Introduced on a Branch as Deleted";
+   public CommitedNewAndDeleted() {
+      super("Artifacts, Relation, Attributes that were Introduced on a Branch as Deleted");
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
+    */
    @Override
-   public String getVerifyTaskName() {
-      return "Check for Artifacts, Relation, Attributes that were Introduced on a Branch as Deleted";
-   }
-
-   @Override
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
-      boolean fix = operation == Operation.Fix;
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
+      boolean fix = isFixOperationEnabled();
       boolean verify = !fix;
-      monitor.beginTask(fix ? getFixTaskName() : getVerifyTaskName(), 100);
 
       if (verify || addressing == null) {
          addressing = new HashSet<LocalValues>();
@@ -92,15 +88,15 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
          loadData(COMMITTED_NEW_AND_DELETED_RELATIONS);
          monitor.worked(20);
       }
-      if (monitor.isCanceled()) return;
+      checkForCancelledStatus(monitor);
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       //monitor.subTask(name)
       sbFull.append(AHTML.addRowMultiColumnTable(COLUMN_HEADER));
-      displayData(sbFull, builder, verify);
+      displayData(sbFull, getAppendable(), verify);
       monitor.worked(20);
 
-      if (monitor.isCanceled()) return;
+      checkForCancelledStatus(monitor);
 
       if (fix) {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
@@ -114,7 +110,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
          addressing = null;
       }
 
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          sbFull.append(AHTML.endMultiColumnTable());
          XResultData rd = new XResultData();
          rd.addRaw(sbFull.toString());
@@ -122,7 +118,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
       }
    }
 
-   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) {
+   private void displayData(StringBuffer sbFull, Appendable builder, boolean verify) throws IOException {
       int attributeCount = 0, artifactCount = 0, relLinkCount = 0;
       for (LocalValues value : addressing) {
          if (value.artId != 0) artifactCount++;
@@ -133,13 +129,13 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
                String.valueOf(value.attributeId), String.valueOf(value.relLinkId)}));
       }
       builder.append(verify ? "Found " : "Fixed ");
-      builder.append(artifactCount);
+      builder.append(String.valueOf(artifactCount));
       builder.append(" Artifacts that were Introduced as Deleted\n");
       builder.append(verify ? "Found " : "Fixed ");
-      builder.append(attributeCount);
+      builder.append(String.valueOf(attributeCount));
       builder.append(" Attributes that were Introduced as Deleted\n");
       builder.append(verify ? "Found " : "Fixed ");
-      builder.append(relLinkCount);
+      builder.append(String.valueOf(relLinkCount));
       builder.append(" Relation Links that were Introduced as Deleted\n");
    }
 

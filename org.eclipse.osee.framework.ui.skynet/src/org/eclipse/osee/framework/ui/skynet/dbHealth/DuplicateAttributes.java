@@ -17,14 +17,13 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
  */
-public class DuplicateAttributes extends DatabaseHealthTask {
+public class DuplicateAttributes extends DatabaseHealthOperation {
    private class DuplicateAttribute {
       protected int artId;
       protected int attrId1;
@@ -55,42 +54,30 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    boolean fixErrors = false;
    boolean processTxCurrent = true;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
-    */
-   @Override
-   public String getFixTaskName() {
-      return "Fix Duplicate Attribute Errors";
+   public DuplicateAttributes() {
+      super("Duplicate Attribute Errors");
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getVerifyTaskName()
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public String getVerifyTaskName() {
-      return "Check for Duplicate Attribute Errors";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#run(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation, java.lang.StringBuilder)
-    */
-   @Override
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
       LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
       ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      fixErrors = operation.equals(Operation.Fix);
+      fixErrors = isFixOperationEnabled();
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
 
       monitor.beginTask("Clean Up Duplicate Attributes", processTxCurrent ? 20 : 8);
       monitor.subTask("Querying for Duplicate Attributes");
-      if (monitor.isCanceled()) return;
+      checkForCancelledStatus(monitor);
       try {
          chStmt1.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
          monitor.worked(6);
          monitor.subTask("Processing Results");
-         if (monitor.isCanceled()) return;
+         checkForCancelledStatus(monitor);
          while (chStmt1.next()) {
             ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
             try {
@@ -126,9 +113,9 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       }
       monitor.worked(2);
       monitor.subTask("Cleaning Up Attrinbutes");
-      if (monitor.isCanceled()) return;
+      checkForCancelledStatus(monitor);
       if (sameValues.isEmpty() && diffValues.isEmpty()) {
-         builder.append("No Duplicate Attributes Found\n");
+         getAppendable().append("No Duplicate Attributes Found\n");
       } else {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          try {
@@ -138,12 +125,12 @@ public class DuplicateAttributes extends DatabaseHealthTask {
             sbFull.append(AHTML.beginMultiColumnTable(100, 1));
             sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
-            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull, showDetails);
+            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull, isShowDetailsEnabled());
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with different values", columnHeaders.length));
-            count += showAttributeCleanUpDecisions(diffValues, false, sbFull, showDetails);
-            builder.append(String.format("Found %d duplicate attributes\n", count));
+            count += showAttributeCleanUpDecisions(diffValues, false, sbFull, isShowDetailsEnabled());
+            getAppendable().append(String.format("Found %d duplicate attributes\n", count));
          } finally {
-            if (showDetails) {
+            if (isShowDetailsEnabled()) {
                sbFull.append(AHTML.endMultiColumnTable());
                XResultData rd = new XResultData();
                rd.addRaw(sbFull.toString());

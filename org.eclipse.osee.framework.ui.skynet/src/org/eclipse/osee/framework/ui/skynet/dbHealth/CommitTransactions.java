@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Updates commit transactions so new and then modified objects will be committed with a mod type of new. This BLAM
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * 
  * @author Jeff C. Phillips
  */
-public class CommitTransactions extends DatabaseHealthTask {
+public class CommitTransactions extends DatabaseHealthOperation {
    private static final String GET_COMMIT_TRANSACTIONS =
          "select transaction_id from osee_tx_details where osee_comment like '%Commit%'";
    private static final String UPDATE_NEW_TRANSACTIONS_TO_CURRENT =
@@ -29,20 +29,22 @@ public class CommitTransactions extends DatabaseHealthTask {
    private static final String DELETE_ORPHAN_ATTRIBUTES =
          "delete FROM osee_attribute where gamma_id in (select t3.gamma_id from osee_txs t2, osee_attribute t3 where t2.transaction_id = ? AND t2.gamma_id = t3.gamma_id AND t3.art_id NOT in(SELECT art_id from osee_txs t4, osee_artifact_version t5 WHERE t4.transaction_id = t2.transaction_id AND t4.gamma_id = t5.gamma_id))";
 
-   @Override
-   public String getFixTaskName() {
-      return "Fix commit transactionds by deleting orphan attributes and setting new artifacts that have been modified to a mod type of 1";
+   public CommitTransactions() {
+      super(
+            "commit transactionds by deleting orphan attributes and setting new artifacts that have been modified to a mod type of 1");
    }
 
    @Override
    public String getVerifyTaskName() {
-      return null;
+      return Strings.emptyString();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
+    */
    @Override
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
-
-      if (operation.equals(Operation.Fix)) {
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
+      if (isFixOperationEnabled()) {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
@@ -54,7 +56,8 @@ public class CommitTransactions extends DatabaseHealthTask {
                            transactionNumber);
                int deleteAttrCount = ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, transactionNumber);
 
-               builder.append("For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
+               getAppendable().append(
+                     "For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
             }
          } finally {
             chStmt.close();

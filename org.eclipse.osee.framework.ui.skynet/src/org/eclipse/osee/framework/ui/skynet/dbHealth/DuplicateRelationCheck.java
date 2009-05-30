@@ -19,14 +19,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
  */
-public class DuplicateRelationCheck extends DatabaseHealthTask {
+public class DuplicateRelationCheck extends DatabaseHealthOperation {
    private class LocalRelationLink {
       public int relLinkId1;
       public int relLinkId2;
@@ -93,32 +93,25 @@ public class DuplicateRelationCheck extends DatabaseHealthTask {
 
    private List<LocalRelationLink> relations = null;
 
+   public DuplicateRelationCheck() {
+      super("Multiple Parent Errors");
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
     */
    @Override
    public String getFixTaskName() {
-      return null;
+      return Strings.emptyString();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getVerifyTaskName()
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public String getVerifyTaskName() {
-      return "Check for Multiple Parent Errors";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#run(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation, java.lang.StringBuilder, boolean)
-    */
-   @Override
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
-
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean fix = false;
       boolean verify = true;
-      monitor.beginTask(fix ? getFixTaskName() : getVerifyTaskName(), 100);
-
       if (verify || relations == null) {
          relations = new LinkedList<LocalRelationLink>();
          monitor.subTask("Finding Artifacts with Multiple Parents");
@@ -127,7 +120,7 @@ public class DuplicateRelationCheck extends DatabaseHealthTask {
       }
 
       Map<Integer, List<Integer>> branches = new HashMap<Integer, List<Integer>>();
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          List<Integer> linksfound = new LinkedList<Integer>();
          monitor.subTask("Finding Authors");
          for (LocalRelationLink link : relations) {
@@ -159,7 +152,7 @@ public class DuplicateRelationCheck extends DatabaseHealthTask {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          sbFull.append(AHTML.beginMultiColumnTable(100, 1));
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         displayData(sbFull, builder, verify, false, branches);
+         displayData(sbFull, getAppendable(), verify, false, branches);
          sbFull.append(AHTML.endMultiColumnTable());
          XResultData rd = new XResultData();
          rd.addRaw(sbFull.toString());
@@ -168,7 +161,7 @@ public class DuplicateRelationCheck extends DatabaseHealthTask {
          sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          sbFull.append(AHTML.beginMultiColumnTable(100, 1));
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         displayData(sbFull, builder, verify, true, branches);
+         displayData(sbFull, getAppendable(), verify, true, branches);
          sbFull.append(AHTML.endMultiColumnTable());
          rd = new XResultData();
          rd.addRaw(sbFull.toString());
@@ -213,14 +206,14 @@ public class DuplicateRelationCheck extends DatabaseHealthTask {
          //         monitor.worked(25);
       }
 
-      builder.append(String.format(
-            "%s %d Artifacts with multiple Parents on %d total branches : Updated %d txs Entries\n",
-            verify ? "Found" : "Fixed", branches.size(), relations.size(), numberDeleted));
+      getAppendable().append(
+            String.format("%s %d Artifacts with multiple Parents on %d total branches : Updated %d txs Entries\n",
+                  verify ? "Found" : "Fixed", branches.size(), relations.size(), numberDeleted));
    }
 
    //{"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1", "Parent Art ID 2", "Child Art ID",
    //   "Branch_id", "Archived"};
-   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify, boolean displayAll, Map<Integer, List<Integer>> branches) {
+   private void displayData(StringBuffer sbFull, Appendable builder, boolean verify, boolean displayAll, Map<Integer, List<Integer>> branches) {
       int count = 0;
       sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER, columnHeaders.length));
       for (LocalRelationLink relLink : relations) {

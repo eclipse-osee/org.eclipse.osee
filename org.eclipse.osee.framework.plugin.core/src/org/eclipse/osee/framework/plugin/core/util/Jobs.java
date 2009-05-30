@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.plugin.core.util;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.OperationJob;
+import org.eclipse.osee.framework.core.operation.Operations;
 
 /**
  * @author Ryan D. Brooks
@@ -35,16 +35,6 @@ public final class Jobs {
       return startJob(job, user, null);
    }
 
-   public static Job startJob(Job job, boolean user, IJobChangeListener jobChangeListener) {
-      job.setUser(user);
-      job.setPriority(Job.LONG);
-      if (jobChangeListener != null) {
-         job.addJobChangeListener(jobChangeListener);
-      }
-      job.schedule();
-      return job;
-   }
-
    public static void runInJob(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId) {
       runInJob(name, runnable, clazz, pluginId, true);
    }
@@ -54,6 +44,10 @@ public final class Jobs {
    }
 
    public static void runInJob(AbstractOperation operation, boolean user) {
-      startJob(new OperationJob(operation), user);
+      Operations.executeAsJob(operation, user);
+   }
+
+   public static Job startJob(Job job, boolean user, IJobChangeListener jobChangeListener) {
+      return Operations.scheduleJob(job, user, Job.LONG, jobChangeListener);
    }
 }

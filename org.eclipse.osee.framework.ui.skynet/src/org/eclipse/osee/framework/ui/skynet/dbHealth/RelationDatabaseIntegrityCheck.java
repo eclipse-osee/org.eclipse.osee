@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,14 +21,13 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
  */
-public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
+public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    private class LocalRelationLink {
       public int relLinkId;
       public int gammaId;
@@ -87,31 +87,18 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap = null;
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> updateMap = null;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
-    */
-   @Override
-   public String getFixTaskName() {
-      return "Fix Relation Integrity Errors";
+   public RelationDatabaseIntegrityCheck() {
+      super("Relation Integrity Errors");
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getVerifyTaskName()
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public String getVerifyTaskName() {
-      return "Check for Relation Integrity Errors";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#run(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation, java.lang.StringBuilder, boolean)
-    */
-   @Override
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      boolean fix = operation == Operation.Fix;
+      boolean fix = isFixOperationEnabled();
       boolean verify = !fix;
-      monitor.beginTask(fix ? getFixTaskName() : getVerifyTaskName(), 100);
 
       if (verify || deleteMap == null) {
          deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
@@ -134,9 +121,9 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      displayData(0, sbFull, builder, verify, deleteMap);
+      displayData(0, sbFull, getAppendable(), verify, deleteMap);
       monitor.worked(10);
-      displayData(1, sbFull, builder, verify, updateMap);
+      displayData(1, sbFull, getAppendable(), verify, updateMap);
       monitor.worked(10);
 
       if (fix) {
@@ -181,7 +168,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
          updateMap = null;
       }
 
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          sbFull.append(AHTML.endMultiColumnTable());
          XResultData rd = new XResultData();
          rd.addRaw(sbFull.toString());
@@ -189,7 +176,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       }
    }
 
-   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) {
+   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws IOException {
       int count = 0;
       sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER[x], columnHeaders.length));
       for (LocalRelationLink relLink : map.allValues()) {
@@ -201,7 +188,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       }
 
       builder.append(verify ? "Found " : "Fixed ");
-      builder.append(count);
+      builder.append(String.valueOf(count));
       builder.append(" ");
       builder.append(DESCRIPTION[x]);
    }

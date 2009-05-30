@@ -14,64 +14,64 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Theron Virgin
  */
-public class AttributeTxCurrent extends DatabaseHealthTask {
+public class AttributeTxCurrent extends DatabaseHealthOperation {
+
    private HashSet<LocalTxData> multipleSet = null;
    private HashSet<Pair<Integer, Integer>> noneSet = null;
 
-   public String getFixTaskName() {
-      return "Fix TX_Current Attribute Errors";
+   public AttributeTxCurrent() {
+      super("TX_Current Attribute Errors");
    }
 
-   public String getVerifyTaskName() {
-      return "Check for TX_Current Attribute Errors";
-   }
-
-   public void run(VariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
-      monitor.beginTask("Verify TX_Current Attribute Errors", 100);
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Attr id", "Branch id"};
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with no tx_current set", columnHeaders.length));
       }
-      if (operation.equals(Operation.Verify) || noneSet == null) {
-         noneSet = HealthHelper.getNoTxCurrentSet("attr_id", "osee_attribute", builder, " Attributes");
+      if (!isFixOperationEnabled() || noneSet == null) {
+         noneSet = HealthHelper.getNoTxCurrentSet("attr_id", "osee_attribute", getAppendable(), " Attributes");
          monitor.worked(15);
-         if (monitor.isCanceled()) return;
+         checkForCancelledStatus(monitor);
       }
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          HealthHelper.dumpDataNone(sbFull, noneSet);
          columnHeaders = new String[] {"Count", "Attr id", "Branch id", "Num TX_Currents"};
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with multiple tx_currents set",
                columnHeaders.length));
       }
-      if (operation.equals(Operation.Verify) || multipleSet == null) {
+      if (!isFixOperationEnabled() || multipleSet == null) {
          //Multiple TX Currents Set
-         multipleSet = HealthHelper.getMultipleTxCurrentSet("attr_id", "osee_attribute", builder, " Attributes");
+         multipleSet =
+               HealthHelper.getMultipleTxCurrentSet("attr_id", "osee_attribute", getAppendable(), " Attributes");
       }
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          HealthHelper.dumpDataMultiple(sbFull, multipleSet);
       }
 
-      if (operation.equals(Operation.Fix)) {
+      if (isFixOperationEnabled()) {
          /** Duplicate TX_current Cleanup **/
          monitor.worked(10);
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanMultipleTxCurrent("attr_id", "osee_attribute", builder, multipleSet);
+         HealthHelper.cleanMultipleTxCurrent("attr_id", "osee_attribute", getAppendable(), multipleSet);
          monitor.worked(20);
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanNoTxCurrent("attr_id", "osee_attribute", builder, noneSet);
+         HealthHelper.cleanNoTxCurrent("attr_id", "osee_attribute", getAppendable(), noneSet);
          multipleSet = null;
          noneSet = null;
       }
 
-      if (showDetails) {
+      if (isShowDetailsEnabled()) {
          HealthHelper.endTable(sbFull, getVerifyTaskName());
       }
    }

@@ -13,25 +13,25 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask;
-import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation;
-import org.osgi.framework.Bundle;
+import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 
 /**
  * @author Jeff C. Phillips
  */
 public class DatabaseHealth extends AbstractBlam {
-   private final Map<String, DatabaseHealthTask> dbFix = new TreeMap<String, DatabaseHealthTask>();
-   private final Map<String, DatabaseHealthTask> dbVerify = new TreeMap<String, DatabaseHealthTask>();
+   private final Map<String, DatabaseHealthOperation> dbFix = new TreeMap<String, DatabaseHealthOperation>();
+   private final Map<String, DatabaseHealthOperation> dbVerify = new TreeMap<String, DatabaseHealthOperation>();
    private static final String SHOW_DETAILS_PROMPT = "Show Details of Operations";
    private static final String CLEAN_ALL_PROMPT = "Run all the Cleanup Operations";
    private static final String SHOW_ALL_PROMPT = "Run all the Verification Operations";;
@@ -50,80 +50,25 @@ public class DatabaseHealth extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      runTasks(variableMap, monitor);
-   }
+      boolean isShowDetailsEnabled = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
+      boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
+      boolean verifyAll = variableMap.getBoolean(SHOW_ALL_PROMPT);
 
-   private void loadExtensions() {
-      IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.DBHealthTask");
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         String classname = null;
-         String bundleName = null;
-         for (IConfigurationElement element : elements) {
-            classname = element.getAttribute("class");
-            bundleName = element.getContributor().getName();
+      MasterDbHealthOperation dbHealthOperation = new MasterDbHealthOperation(getName());
+      dbHealthOperation.setShowDetails(isShowDetailsEnabled);
 
-            if (classname != null && bundleName != null) {
-               Bundle bundle = Platform.getBundle(bundleName);
-               try {
-                  Class<?> taskClass = bundle.loadClass(classname);
-                  Object obj = taskClass.newInstance();
-                  DatabaseHealthTask task = (DatabaseHealthTask) obj;
-
-                  if (task.getVerifyTaskName() != null) {
-                     dbVerify.put(task.getVerifyTaskName(), task);
-                  }
-                  if (task.getFixTaskName() != null) {
-                     dbFix.put(task.getFixTaskName(), task);
-                  }
-               } catch (Exception ex) {
-               }
-            }
-         }
-      }
-   }
-
-   private void runTasks(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      int count = 0;
       for (String taskName : dbFix.keySet()) {
-         if (variableMap.getBoolean(taskName)) {
-            count++;
+         if (fixAll || variableMap.getBoolean(taskName)) {
+            dbHealthOperation.addOperation(dbFix.get(taskName), true);
          }
       }
       for (String taskName : dbVerify.keySet()) {
-         if (variableMap.getBoolean(taskName)) {
-            count++;
+         if (verifyAll || variableMap.getBoolean(taskName)) {
+            dbHealthOperation.addOperation(dbVerify.get(taskName), false);
          }
       }
-      monitor.beginTask("Database Health", count);
-      if (AccessControlManager.isOseeAdmin()) {
-         StringBuilder builder = new StringBuilder();
-         boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
-         boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
-         boolean verifyAll = variableMap.getBoolean(SHOW_ALL_PROMPT);
-         for (String taskName : dbFix.keySet()) {
-            if (fixAll || variableMap.getBoolean(taskName)) {
-               monitor.setTaskName(taskName);
-               DatabaseHealthTask task = dbFix.get(taskName);
-               task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Fix, builder, showDetails);
-               monitor.worked(1);
-            }
-         }
-         for (String taskName : dbVerify.keySet()) {
-            if (verifyAll || variableMap.getBoolean(taskName)) {
-               monitor.setTaskName(taskName);
-               DatabaseHealthTask task = dbVerify.get(taskName);
-               task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Verify, builder, showDetails);
-               monitor.worked(1);
-            }
-         }
-         appendResultLine(builder.toString());
-      } else {
-         appendResultLine("Must be a Developer to run this BLAM\n");
-      }
-
+      IStatus status = dbHealthOperation.run(monitor).getStatus();
+      appendResultLine(status.getMessage());
    }
 
    @Override
@@ -158,5 +103,81 @@ public class DatabaseHealth extends AbstractBlam {
 
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
+   }
+
+   private void loadExtensions() {
+      ExtensionDefinedObjects<DatabaseHealthOperation> extensionDefinedObjects =
+            new ExtensionDefinedObjects<DatabaseHealthOperation>(SkynetGuiPlugin.PLUGIN_ID + ".DBHealthTask",
+                  "DBHealthTask", "class");
+      for (DatabaseHealthOperation operation : extensionDefinedObjects.getObjects()) {
+         if (Strings.isValid(operation.getVerifyTaskName())) {
+            dbVerify.put(operation.getVerifyTaskName(), operation);
+         }
+         if (Strings.isValid(operation.getFixTaskName())) {
+            dbFix.put(operation.getFixTaskName(), operation);
+         }
+      }
+   }
+   private final class MasterDbHealthOperation extends AbstractOperation {
+
+      private boolean isShowDetailsEnabled;
+      private Set<DatabaseHealthOperation> fixOperations;
+      private Set<DatabaseHealthOperation> verifyOperations;
+
+      public MasterDbHealthOperation(String operationName) {
+         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
+         this.isShowDetailsEnabled = false;
+      }
+
+      public void setShowDetails(boolean isShowDetailsEnabled) {
+         this.isShowDetailsEnabled = isShowDetailsEnabled;
+      }
+
+      public void addOperation(DatabaseHealthOperation operation, boolean isFixOperation) {
+         if (operation != null) {
+            if (isFixOperation) {
+               fixOperations.add(operation);
+            } else {
+               verifyOperations.add(operation);
+            }
+         }
+      }
+
+      private void executeOperation(IProgressMonitor monitor, DatabaseHealthOperation operation, Appendable appendable, double workPercentage, boolean isFix) throws Exception {
+         checkForCancelledStatus(monitor);
+         if (operation != null) {
+            operation.setFixOperationEnabled(isFix);
+            operation.setShowDetailsEnabled(isShowDetailsEnabled);
+            operation.setAppendable(appendable);
+            doSubWork(operation, monitor, workPercentage);
+            setStatus(operation.getStatus());
+         }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
+       */
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         monitor.beginTask(getName(), getTotalWorkUnits());
+         int totalTasks = fixOperations.size() + verifyOperations.size();
+         double workPercentage = totalTasks / getTotalWorkUnits();
+         try {
+            if (!AccessControlManager.isOseeAdmin()) {
+               throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
+            } else {
+               StringBuilder builder = new StringBuilder();
+               for (DatabaseHealthOperation operation : fixOperations) {
+                  executeOperation(monitor, operation, builder, workPercentage, true);
+               }
+               for (DatabaseHealthOperation operation : verifyOperations) {
+                  executeOperation(monitor, operation, builder, workPercentage, false);
+               }
+               setStatusMessage(builder.toString());
+            }
+         } finally {
+            monitor.done();
+         }
+      }
    }
 }

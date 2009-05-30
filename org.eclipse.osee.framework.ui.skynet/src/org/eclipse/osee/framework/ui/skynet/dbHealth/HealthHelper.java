@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class HealthHelper {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
-   public static void displayForCleanUp(String header, StringBuffer sbFull, StringBuilder builder, boolean verify, List<Object[]> set, String toPrint) {
+   public static void displayForCleanUp(String header, StringBuffer sbFull, Appendable builder, boolean verify, List<Object[]> set, String toPrint) throws IOException {
       int count = 0;
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {header}));
       sbFull.append(AHTML.addRowSpanMultiColumnTable(header + toPrint, 1));
@@ -75,7 +76,7 @@ public class HealthHelper {
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {value[0].toString()}));
       }
       builder.append(verify ? "Found " : "Fixed ");
-      builder.append(count);
+      builder.append(String.valueOf(count));
       builder.append(" ");
       builder.append(header);
       builder.append(toPrint);
@@ -103,7 +104,7 @@ public class HealthHelper {
 
    }
 
-   public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
+   public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, Appendable builder, String data) throws Exception {
       String sql =
             NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + String.format(NO_TX_CURRENT_SET[2],
                   SupportedDatabase.getComplementSql()) + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
@@ -120,7 +121,7 @@ public class HealthHelper {
          chStmt.close();
       }
       builder.append("Found ");
-      builder.append(noneSet.size());
+      builder.append(String.valueOf(noneSet.size()));
       builder.append(data);
       builder.append(" that have no tx_current value set\n");
       if (DEBUG) {
@@ -130,7 +131,7 @@ public class HealthHelper {
       return noneSet;
    }
 
-   public static HashSet<LocalTxData> getMultipleTxCurrentSet(String dataId, String dataTable, StringBuilder builder, String data) throws OseeCoreException {
+   public static HashSet<LocalTxData> getMultipleTxCurrentSet(String dataId, String dataTable, Appendable builder, String data) throws Exception {
       String sql =
             MULTIPLE_TX_CURRENT_SET[0] + dataId + MULTIPLE_TX_CURRENT_SET[1] + dataId + MULTIPLE_TX_CURRENT_SET[2] + dataTable + MULTIPLE_TX_CURRENT_SET[3] + dataId + MULTIPLE_TX_CURRENT_SET[4];
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -144,7 +145,7 @@ public class HealthHelper {
                   chStmt.getInt("numoccurrences")));
          }
          builder.append("Found ");
-         builder.append(multipleSet.size());
+         builder.append(String.valueOf(multipleSet.size()));
          builder.append(data);
          builder.append(" that have multiple tx_current values set\n");
 
@@ -157,7 +158,7 @@ public class HealthHelper {
       return multipleSet;
    }
 
-   public static void cleanMultipleTxCurrent(String dataId, String dataTable, StringBuilder builder, HashSet<LocalTxData> multipleSet) throws OseeCoreException {
+   public static void cleanMultipleTxCurrent(String dataId, String dataTable, Appendable builder, HashSet<LocalTxData> multipleSet) throws Exception {
       String sql =
             DUPLICATE_TX_CURRENT_CLEANUP[0] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[1] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[2] + dataTable + DUPLICATE_TX_CURRENT_CLEANUP[3] + dataId + DUPLICATE_TX_CURRENT_CLEANUP[4];
 
@@ -173,7 +174,7 @@ public class HealthHelper {
       builder.append("Fixed " + total + " Tx_Current duplication errors\n");
    }
 
-   public static void cleanNoTxCurrent(String dataId, String dataTable, StringBuilder builder, HashSet<Pair<Integer, Integer>> noneSet) throws OseeCoreException {
+   public static void cleanNoTxCurrent(String dataId, String dataTable, Appendable builder, HashSet<Pair<Integer, Integer>> noneSet) throws Exception {
       String sql =
             NO_TX_CURRENT_CLEANUP[0] + dataTable + NO_TX_CURRENT_CLEANUP[1] + dataId + NO_TX_CURRENT_CLEANUP[2] + dataTable + NO_TX_CURRENT_CLEANUP[3] + dataId + NO_TX_CURRENT_CLEANUP[4];
 
