@@ -78,7 +78,7 @@ public class UpdateArtifactJob extends UpdateJob {
     * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public IStatus run(IProgressMonitor monitor) {
+   protected IStatus run(IProgressMonitor monitor) {
       try {
          processUpdate();
       } catch (Exception ex) {

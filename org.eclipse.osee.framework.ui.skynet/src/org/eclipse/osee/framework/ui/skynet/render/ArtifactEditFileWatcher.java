@@ -44,10 +44,4 @@ public class ArtifactEditFileWatcher implements IFileWatcherListener {
       }
    }
 
-   /*
-    * Return the instance
-    */
-   public UpdateArtifactJob getUpdateArtifactJob() {
-      return updateJob;
-   }
 }
