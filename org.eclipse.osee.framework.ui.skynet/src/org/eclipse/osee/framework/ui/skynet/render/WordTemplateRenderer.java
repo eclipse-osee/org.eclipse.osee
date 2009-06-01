@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
+import org.eclipse.osee.framework.skynet.core.utility.IFileWatcherListener;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -90,6 +91,15 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     */
    public WordTemplateRenderer() {
       super();
+   }
+
+   public ArtifactEditFileWatcher getFileWatcherListener() {
+      for (IFileWatcherListener listener : FileRenderer.watcher.getListeners()) {
+         if (listener instanceof ArtifactEditFileWatcher) {
+            return (ArtifactEditFileWatcher) listener;
+         }
+      }
+      return null;
    }
 
    /* (non-Javadoc)
