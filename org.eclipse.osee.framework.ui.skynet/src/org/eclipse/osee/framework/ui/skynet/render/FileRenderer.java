@@ -47,8 +47,10 @@ public abstract class FileRenderer extends FileSystemRenderer {
    private static final ResourceAttributes readonlyfileAttributes = new ResourceAttributes();
    private static Random generator = new Random();
 
-   private static final FileWatcher watcher = new ArtifactEditFileWatcher(3, TimeUnit.SECONDS);
+   protected static final FileWatcher watcher = new ArtifactEditFileWatcher(3, TimeUnit.SECONDS);
    private static boolean firstTime = true;
+   private static boolean workbenchSavePopUpDisabled = false;
+
    static {
       readonlyfileAttributes.setReadOnly(true);
       watcher.start();
@@ -152,7 +154,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    private static void monitorFile(File file) {
       watcher.addFile(file);
-      if (firstTime) {
+      if (firstTime && !workbenchSavePopUpDisabled) {
          firstTime = false;
          PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
 
@@ -171,6 +173,20 @@ public abstract class FileRenderer extends FileSystemRenderer {
             }
          });
       }
+   }
+
+   /**
+    * @return the workbenchSavePopUpDisabled
+    */
+   public static boolean isWorkbenchSavePopUpDisabled() {
+      return workbenchSavePopUpDisabled;
+   }
+
+   /**
+    * @param workbenchSavePopUpDisabled the workbenchSavePopUpDisabled to set
+    */
+   public static void setWorkbenchSavePopUpDisabled(boolean workbenchSavePopUpDisabled) {
+      FileRenderer.workbenchSavePopUpDisabled = workbenchSavePopUpDisabled;
    }
 
    private static final class ArtifactEditFileWatcher extends FileWatcher {
