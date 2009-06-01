@@ -235,7 +235,7 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   private Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
+   public Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
       if (showMergeManager) {
          // grab only the transaction that had merge conflicts
          Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
