@@ -5,6 +5,10 @@
  */
 package org.eclipse.osee.framework.skynet.core.test2.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -102,6 +106,42 @@ public class FrameworkTestUtil {
     */
    public static void cleanupSimpleTest(Branch branch, String title) throws Exception {
       cleanupSimpleTest(branch, Arrays.asList(title));
+   }
+
+   private static List<String> executeCommand(List<String> commands) throws IOException, InterruptedException {
+      List<String> resultStrings = new ArrayList<String>();
+      ProcessBuilder myProcessBuilder = new ProcessBuilder();
+      myProcessBuilder.command(commands);
+      Process myProcess = myProcessBuilder.start();
+      myProcess.waitFor();
+      InputStream myInputStream = myProcess.getInputStream();
+      BufferedReader myBufferedReader = new BufferedReader(new InputStreamReader(myInputStream));
+      String line;
+      while ((line = myBufferedReader.readLine()) != null) {
+         resultStrings.add(line);
+      }
+      return resultStrings;
+   }
+
+   public static final List<String> killAllOpenWinword() throws IOException, InterruptedException {
+      List<String> commands = new ArrayList<String>();
+      commands.add("TASKKILL");
+      commands.add("/F");
+      commands.add("/IM");
+      commands.add("WINWORD.EXE");
+      return executeCommand(commands);
+   }
+
+   public static final List<String> findAllWinWordRunning() throws IOException, InterruptedException {
+      List<String> commands = new ArrayList<String>();
+      commands.add("TASKLIST");
+      commands.add("/FI");
+      commands.add("Imagename eq WINWORD.EXE");
+      return executeCommand(commands);
+   }
+
+   public static boolean areWinWordsRunning() throws IOException, InterruptedException {
+      return (findAllWinWordRunning().size() > 0 ? true : false);
    }
 
 }
