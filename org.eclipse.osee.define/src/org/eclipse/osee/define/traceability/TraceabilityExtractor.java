@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class TraceabilityExtractor {
-   private static final Pattern ofpTraceabilityPattern = Pattern.compile("\\^SRS\\s*([^;\n\r]+);");
+   private static final Pattern ofpTraceabilityPattern = Pattern.compile("\\rs^SRS\\s*([^;\n\r]+);");
    private static final Pattern scriptTraceabilityPattern =
-         Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
+         Pattern.compile("addTraceability\\s*\\(\\s*\\\"\\s*(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
    private static final Pattern invalidTraceabilityPattern = Pattern.compile("(\\[[A-Za-z]|USES_).*");
 
    private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
