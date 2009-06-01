@@ -43,8 +43,6 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -265,7 +263,7 @@ public class AtsBranchManager {
    private TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionId> transactionIds = new HashSet<TransactionId>();
       for (TransactionId id : getTransactionIds(showMergeManager)) {
-         if (id.getBranch().getBranchType() == BranchType.WORKING && id.getBranch().getBranchState() == BranchState.COMMITTED) {
+         if (id.getBranch().isWorkingBranch() && id.getBranch().isCommitted()) {
             continue;
          } else {
             transactionIds.add(id);
