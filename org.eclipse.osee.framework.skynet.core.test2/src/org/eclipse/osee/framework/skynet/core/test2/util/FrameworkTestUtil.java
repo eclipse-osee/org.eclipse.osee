@@ -6,11 +6,13 @@
 package org.eclipse.osee.framework.skynet.core.test2.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
@@ -75,6 +77,31 @@ public class FrameworkTestUtil {
       } catch (BranchDoesNotExist ex) {
          // do nothing
       }
+   }
+
+   /**
+    * Deletes all artifacts with names that start with any title given
+    * 
+    * @param titles
+    * @throws Exception
+    */
+   public static void cleanupSimpleTest(Branch branch, Collection<String> titles) throws Exception {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      for (String title : titles) {
+         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", branch, false));
+      }
+      ArtifactPersistenceManager.purgeArtifacts(artifacts);
+      TestUtil.sleep(4000);
+   }
+
+   /**
+    * Deletes any artifact with name that starts with title
+    * 
+    * @param title
+    * @throws Exception
+    */
+   public static void cleanupSimpleTest(Branch branch, String title) throws Exception {
+      cleanupSimpleTest(branch, Arrays.asList(title));
    }
 
 }
