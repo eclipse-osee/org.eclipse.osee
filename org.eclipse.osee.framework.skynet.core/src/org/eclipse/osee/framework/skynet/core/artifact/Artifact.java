@@ -1509,7 +1509,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
-      ModificationType modificationType = modType == ModificationType.NEW ? ModificationType.INTRODUCED : modType;
+      ModificationType modificationType = ModificationType.INTRODUCED;
 
       Artifact reflectedArtifact =
             artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
