@@ -8,4 +8,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit,
  org.eclipse.osee.support.test.util;bundle-version="1.0.0"
 Export-Package: org.eclipse.osee.framework.skynet.core.test2,
- org.eclipse.osee.framework.skynet.core.test2.cases
+ org.eclipse.osee.framework.skynet.core.test2.cases,
+ org.eclipse.osee.framework.skynet.core.test2.util
