@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -92,19 +93,19 @@ public class ArtifactImportOperation extends AbstractOperation {
        */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         StringBuilder builder = new StringBuilder();
+         List<String> errors = new ArrayList<String>();
 
          for (Artifact artifactChanged : importRoot.getDescendants()) {
             IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
-            if (status.matches(IStatus.ERROR)) {
+            if (!status.isOK()) {
                setStatus(status);
-               builder.append(artifactChanged.getDescriptiveName());
-               builder.append(status.getMessage());
-               builder.append("\n");
+               errors.add(String.format("%s:[%s] - %s", artifactChanged.getArtifactTypeName(),
+                     artifactChanged.getDescriptiveName(), status.getMessage()));
             }
          }
-         System.out.println(builder.toString());
-         setStatusMessage(builder.toString());
+         String message = Collections.toString("\n", errors);
+         System.out.println(message);
+         setStatusMessage(message);
       }
    }
 
