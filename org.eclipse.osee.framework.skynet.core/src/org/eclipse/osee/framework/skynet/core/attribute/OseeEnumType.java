@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -33,14 +35,27 @@ public class OseeEnumType {
       this.enumSet = new ArrayList<OseeEnumEntry>();
    }
 
-   protected void addEnum(String name, int ordinal) throws OseeArgumentException {
+   protected void internalAddEnum(String name, int ordinal) throws OseeArgumentException {
       checkEnumEntryName(name);
       checkOrdinal(ordinal);
       OseeEnumEntry entry = new OseeEnumEntry(name, ordinal);
       enumSet.add(entry);
    }
 
+   protected void internalAddEnum(ObjectPair<String, Integer> entry) throws OseeArgumentException {
+      internalAddEnum(entry.object1, entry.object2);
+   }
+
+   protected void internalRemoveEnums(OseeEnumEntry... entries) {
+      if (entries != null) {
+         for (OseeEnumEntry entry : entries) {
+            enumSet.remove(entry);
+         }
+      }
+   }
+
    public OseeEnumEntry[] values() {
+      Collections.sort(enumSet);
       return enumSet.toArray(new OseeEnumEntry[enumSet.size()]);
    }
 
@@ -132,7 +147,7 @@ public class OseeEnumType {
       private final int ordinal;
       private final String name;
 
-      public OseeEnumEntry(String name, int ordinal) {
+      private OseeEnumEntry(String name, int ordinal) {
          this.name = name;
          this.ordinal = ordinal;
       }
@@ -145,12 +160,12 @@ public class OseeEnumType {
          return ordinal;
       }
 
-      public String getTypeName() {
-         return getTypeName();
+      public String getEnumTypeName() {
+         return OseeEnumType.this.getEnumTypeName();
       }
 
       public int getEnumTypeId() {
-         return getEnumTypeId();
+         return OseeEnumType.this.getEnumTypeId();
       }
 
       public OseeEnumType getDeclaringClass() {
@@ -158,7 +173,11 @@ public class OseeEnumType {
       }
 
       public OseeEnumEntry[] values() {
-         return values();
+         return OseeEnumType.this.values();
+      }
+
+      public ObjectPair<String, Integer> asObjectPair() {
+         return new ObjectPair<String, Integer>(name(), ordinal());
       }
 
       /* (non-Javadoc)
@@ -200,8 +219,8 @@ public class OseeEnumType {
        * @see java.lang.Comparable#compareTo(java.lang.Object)
        */
       @Override
-      public int compareTo(OseeEnumEntry o) {
-         return 0;
+      public int compareTo(OseeEnumEntry other) {
+         return this.ordinal() - other.ordinal();
       }
    }
 }
