@@ -72,7 +72,7 @@ public class AttributeActionContribution implements IActionContributor {
       List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
       if (!isAdd) {
          for (AttributeType type : types) {
-            if (type.getMinOccurrences() > 0) {
+            if (type.getMinOccurrences() > 0 && artifact.getAttributeTypes().contains(type)) {
                input.remove(type);
             }
          }

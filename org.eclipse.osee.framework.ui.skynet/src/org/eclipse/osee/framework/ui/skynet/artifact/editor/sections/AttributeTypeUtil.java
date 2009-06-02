@@ -12,9 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
@@ -40,7 +43,14 @@ public class AttributeTypeUtil {
       List<AttributeType> items = new ArrayList<AttributeType>();
       AttributeType nameType = null;
       AttributeType annotations = null;
-      for (AttributeType type : artifact.getAttributeTypes()) {
+      
+      Set<AttributeType> typesInExistence = new HashSet<AttributeType>();
+      List<Attribute<?>> attributeInstances = artifact.getAttributes(false);
+      for (Attribute<?> attribute : attributeInstances) {
+         typesInExistence.add(attribute.getAttributeType());
+      }
+      typesInExistence.addAll(artifact.getAttributeTypes());
+      for (AttributeType type : typesInExistence) {
          if (type.getName().equals("Name")) {
             nameType = type;
          } else {
