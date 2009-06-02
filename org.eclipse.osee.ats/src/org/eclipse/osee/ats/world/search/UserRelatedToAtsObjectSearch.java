@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,8 +77,8 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       smaCriteria.add(currentStateSearch);
 
       if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts = ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch());
-
+      List<Artifact> arts = new ArrayList<Artifact>();
+      arts.addAll(ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch()));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));
