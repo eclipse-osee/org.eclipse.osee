@@ -28,11 +28,17 @@ public class OseeEnumType {
    private final String enumTypeName;
 
    private final List<OseeEnumEntry> enumSet;
+   private boolean isDeleted;
 
    protected OseeEnumType(int enumTypeId, String enumTypeName) {
       this.enumTypeId = enumTypeId;
       this.enumTypeName = enumTypeName;
       this.enumSet = new ArrayList<OseeEnumEntry>();
+      this.isDeleted = false;
+   }
+
+   protected void internalSetDeleted(boolean deleted) {
+      this.isDeleted = deleted;
    }
 
    protected void internalAddEnum(String name, int ordinal) throws OseeArgumentException {
@@ -52,6 +58,10 @@ public class OseeEnumType {
             enumSet.remove(entry);
          }
       }
+   }
+
+   public boolean isDeleted() {
+      return isDeleted;
    }
 
    public OseeEnumEntry[] values() {

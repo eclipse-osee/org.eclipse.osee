@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,37 +66,72 @@ public class OseeEnumTypeManager {
       enumTypeByIdMap = new HashMap<Integer, OseeEnumType>();
    }
 
-   public static OseeEnumType getType(int enumTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static OseeEnumType getType(int enumTypeId, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist {
       instance.checkLoaded();
       OseeEnumType oseeEnumType = instance.enumTypeByIdMap.get(enumTypeId);
-      if (oseeEnumType == null) {
+      if (oseeEnumType == null || !includeDeleted && oseeEnumType.isDeleted()) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with id:[%s] does not exist.", enumTypeId));
       }
       return oseeEnumType;
    }
 
-   public static OseeEnumType getType(String enumTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static OseeEnumType getType(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist {
       instance.checkLoaded();
       OseeEnumType oseeEnumType = instance.enumTypeByNameMap.get(enumTypeName);
-      if (oseeEnumType == null) {
+      if (oseeEnumType == null || !includeDeleted && oseeEnumType.isDeleted()) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with name:[%s] does not exist.", enumTypeName));
       }
       return oseeEnumType;
    }
 
-   public static Collection<String> getAllTypeNames() throws OseeDataStoreException {
+   public static Collection<OseeEnumType> getAllTypes(boolean includeDeleted) throws OseeDataStoreException {
       instance.checkLoaded();
-      return new ArrayList<String>(instance.enumTypeByNameMap.keySet());
+      List<OseeEnumType> items = new ArrayList<OseeEnumType>();
+      for (OseeEnumType types : instance.enumTypeByIdMap.values()) {
+         if (includeDeleted || !types.isDeleted()) {
+            items.add(types);
+         }
+      }
+      return items;
+   }
+
+   public static Collection<String> getAllTypeNames(boolean includeDeleted) throws OseeDataStoreException {
+      List<String> items = new ArrayList<String>();
+      for (OseeEnumType types : getAllTypes(includeDeleted)) {
+         items.add(types.getEnumTypeName());
+      }
+      return items;
+   }
+
+   public static boolean typeExist(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException {
+      instance.checkLoaded();
+      OseeEnumType type = null;
+      try {
+         type = getType(enumTypeName, includeDeleted);
+      } catch (OseeTypeDoesNotExist ex) {
+         // Do Nothing
+      }
+      return type != null;
+   }
+
+   public static OseeEnumType getType(int enumTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return getType(enumTypeId, false);
+   }
+
+   public static OseeEnumType getType(String enumTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return getType(enumTypeName, false);
+   }
+
+   public static Collection<String> getAllTypeNames() throws OseeDataStoreException {
+      return getAllTypeNames(false);
    }
 
    public static Collection<OseeEnumType> getAllTypes() throws OseeDataStoreException {
-      instance.checkLoaded();
-      return new ArrayList<OseeEnumType>(instance.enumTypeByNameMap.values());
+      return getAllTypes(false);
    }
 
    public static boolean typeExist(String enumTypeName) throws OseeDataStoreException {
-      instance.checkLoaded();
-      return instance.enumTypeByNameMap.get(enumTypeName) != null;
+      return typeExist(enumTypeName, false);
    }
 
    private static void checkNull(Object value) throws OseeCoreException {
@@ -210,6 +246,12 @@ public class OseeEnumTypeManager {
       }
    }
 
+   public static void deleteEnumType(OseeEnumType typeToDelete) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(DELETE_ENUM_TYPE_ENTRIES, typeToDelete.getEnumTypeId());
+      typeToDelete.internalSetDeleted(true);
+      //  TODO signal to other clients - Event here
+   }
+
    public static void removeEntries(final OseeEnumType enumType, final OseeEnumEntry... entries) throws OseeCoreException {
       checkNull(entries);
       if (entries.length > 0) {
@@ -230,6 +272,10 @@ public class OseeEnumTypeManager {
       }
    }
 
+   public static void addEntries(final OseeEnumType oseeEnumType, final ObjectPair<String, Integer>... entries) throws OseeCoreException {
+      addEntries(oseeEnumType, Collections.getAggregate(entries));
+   }
+
    public static void addEntries(final OseeEnumType oseeEnumType, final List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
       checkNull(oseeEnumType);
       synchronized (oseeEnumType) {
@@ -238,13 +284,18 @@ public class OseeEnumTypeManager {
          UpdateEnumTx updateEnumTx = new UpdateEnumTx(oseeEnumType, newEntries);
          updateEnumTx.execute();
 
+         boolean wasCreated = false;
          if (!instance.enumTypeByIdMap.containsKey(oseeEnumType.getEnumTypeId())) {
             instance.cache(oseeEnumType);
+            wasCreated = true;
          }
          for (ObjectPair<String, Integer> entry : newEntries) {
             oseeEnumType.internalAddEnum(entry);
          }
          // TODO Signal to other clients - Event here
+         if (wasCreated) {
+            // TODO Signal newly created - Event here
+         }
       }
    }
 
