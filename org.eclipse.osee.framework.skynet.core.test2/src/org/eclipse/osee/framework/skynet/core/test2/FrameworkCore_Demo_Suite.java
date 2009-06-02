@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.test2.cases.Artifact_setAttributeV
 import org.eclipse.osee.framework.skynet.core.test2.cases.BranchPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test2.cases.OseeEnumTypeManagerTest;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +32,7 @@ public class FrameworkCore_Demo_Suite extends TestSuite {
       suite.addTestSuite(Artifact_setAttributeValues.class);
       suite.addTestSuite(CsvArtifactTest.class);
       suite.addTestSuite(NativeArtifactTest.class);
+      suite.addTestSuite(OseeEnumTypeManagerTest.class);
       //$JUnit-END$
       return suite;
    }
