@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.validation;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -77,18 +76,19 @@ public class OseeValidator {
                IStatus status =
                      validate(requiredQualityOfService, artifact, attributeType, (Object) attribute.getValue());
                if (!status.isOK()) {
-                  String messageToUse =
-                        String.format("%s:[%s] - %s", artifact.getArtifactTypeName(), artifact.getDescriptiveName(),
-                              status.getMessage());
-                  if (status.isMultiStatus()) {
-                     MultiStatus mStatus =
-                           new MultiStatus(status.getPlugin(), status.getCode(), messageToUse, status.getException());
-                     mStatus.merge(status);
-                     return mStatus;
-                  } else {
-                     return new Status(status.getSeverity(), status.getPlugin(), status.getCode(), messageToUse,
-                           status.getException());
-                  }
+                  return status;
+                  //                  String messageToUse =
+                  //                        String.format("%s:[%s] - %s", artifact.getArtifactTypeName(), artifact.getDescriptiveName(),
+                  //                              status.getMessage());
+                  //                  if (status.isMultiStatus()) {
+                  //                     MultiStatus mStatus =
+                  //                           new MultiStatus(status.getPlugin(), status.getCode(), messageToUse, status.getException());
+                  //                     mStatus.merge(status);
+                  //                     return mStatus;
+                  //                  } else {
+                  //                     return new Status(status.getSeverity(), status.getPlugin(), status.getCode(), messageToUse,
+                  //                           status.getException());
+                  //                  }
                }
             }
          }

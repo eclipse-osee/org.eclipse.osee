@@ -99,7 +99,8 @@ public class ArtifactImportOperation extends AbstractOperation {
             IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
             if (!status.isOK()) {
                setStatus(status);
-               errors.add(status.getMessage());
+               errors.add(String.format("%s:[%s] - %s", artifactChanged.getArtifactTypeName(),
+                     artifactChanged.getDescriptiveName(), status.getMessage()));
             }
          }
          String message = Collections.toString("\n", errors);
