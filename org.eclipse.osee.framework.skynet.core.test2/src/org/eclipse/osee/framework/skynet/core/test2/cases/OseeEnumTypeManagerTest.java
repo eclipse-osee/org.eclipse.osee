@@ -48,11 +48,12 @@ public class OseeEnumTypeManagerTest extends TestCase {
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
 
       OseeEnumTypeManager.createEnumTypeFromXml(enumTypeName, xmlDefinition);
-      OseeEnumType actual = OseeEnumTypeManager.getType(enumTypeName);
-
-      checkOseeEnumType(enumTypeName, new String[] {"one", "two", "three"}, new Integer[] {0, 1, 2}, actual);
-
-      OseeEnumTypeManager.deleteEnumType(actual);
+      OseeEnumType actual = OseeEnumTypeManager.getUniqueType(enumTypeName);
+      try {
+         checkOseeEnumType(enumTypeName, new String[] {"one", "two", "three"}, new Integer[] {0, 1, 2}, actual);
+      } finally {
+         OseeEnumTypeManager.deleteEnumType(actual);
+      }
       checkOseeEnumTypeDeleted(actual);
    }
 
@@ -67,51 +68,55 @@ public class OseeEnumTypeManagerTest extends TestCase {
       }
 
       OseeEnumTypeManager.createEnumType(enumTypeName, entries);
-      OseeEnumType actual = OseeEnumTypeManager.getType(enumTypeName);
-
-      checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, actual);
-
-      OseeEnumTypeManager.deleteEnumType(actual);
+      OseeEnumType actual = OseeEnumTypeManager.getUniqueType(enumTypeName);
+      try {
+         checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, actual);
+      } finally {
+         OseeEnumTypeManager.deleteEnumType(actual);
+      }
       checkOseeEnumTypeDeleted(actual);
    }
 
    @SuppressWarnings("unchecked")
    public void testAddEntriesToType() throws OseeCoreException {
-      String enumTypeName = "EnumType3";
+      String enumTypeName = "EnumType10";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
       Integer[] entryOrdinals = new Integer[] {0, 1, 2};
 
       OseeEnumType oseeEnumType = OseeEnumTypeManager.createEnumTypeFromXml(enumTypeName, xmlDefinition);
-      checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
-
       try {
-         OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("one", 3));
-         assertTrue("Should have exceptioned - Error", false);
-      } catch (Exception ex) {
-         assertTrue("name violated", ex instanceof OseeArgumentException);
-         // check for no change
          checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+
+         try {
+            OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("one", 3));
+            assertTrue("Should have exceptioned - Error", false);
+         } catch (Exception ex) {
+            assertTrue("name violated", ex instanceof OseeArgumentException);
+            // check for no change
+            checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+         }
+
+         try {
+            OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 2));
+            assertTrue("Should have exceptioned - Error", false);
+         } catch (Exception ex) {
+            assertTrue("Ordinal violated", ex instanceof OseeArgumentException);
+            // Check for no change
+            checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+         }
+
+         OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 3));
+         checkOseeEnumType(enumTypeName, new String[] {"one", "two", "three", "four"}, new Integer[] {0, 1, 2, 3},
+               oseeEnumType);
+
+         OseeEnumType actual = OseeEnumTypeManager.getUniqueType(enumTypeName);
+         assertEquals(oseeEnumType, actual);
+
+      } finally {
+         OseeEnumTypeManager.deleteEnumType(oseeEnumType);
       }
-
-      try {
-         OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 2));
-         assertTrue("Should have exceptioned - Error", false);
-      } catch (Exception ex) {
-         assertTrue("Ordinal violated", ex instanceof OseeArgumentException);
-         // Check for no change
-         checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
-      }
-
-      OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 3));
-      checkOseeEnumType(enumTypeName, new String[] {"one", "two", "three", "four"}, new Integer[] {0, 1, 2, 3},
-            oseeEnumType);
-
-      OseeEnumType actual = OseeEnumTypeManager.getType(enumTypeName);
-      assertEquals(oseeEnumType, actual);
-
-      OseeEnumTypeManager.deleteEnumType(actual);
-      checkOseeEnumTypeDeleted(actual);
+      checkOseeEnumTypeDeleted(oseeEnumType);
    }
 
    public void testRemoveEntriesToType() throws OseeCoreException {
@@ -121,22 +126,25 @@ public class OseeEnumTypeManagerTest extends TestCase {
       Integer[] entryOrdinals = new Integer[] {0, 1, 2};
 
       OseeEnumType oseeEnumType = OseeEnumTypeManager.createEnumTypeFromXml(enumTypeName, xmlDefinition);
-      checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+      try {
+         checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
 
-      List<String> names = Arrays.asList(entryNames);
-      List<Integer> ordinals = Arrays.asList(0, 1, 2);
-      for (OseeEnumEntry entry : oseeEnumType.values()) {
-         OseeEnumTypeManager.removeEntries(oseeEnumType, entry);
-         names.remove(0);
-         ordinals.remove(0);
-         checkOseeEnumType(enumTypeName, names.toArray(new String[names.size()]),
-               ordinals.toArray(new Integer[ordinals.size()]), oseeEnumType);
-         OseeEnumType actual = OseeEnumTypeManager.getType(enumTypeName);
-         assertEquals(oseeEnumType, actual);
+         List<String> names = new ArrayList<String>(Arrays.asList(entryNames));
+         List<Integer> ordinals = new ArrayList<Integer>(Arrays.asList(0, 1, 2));
+         for (OseeEnumEntry entry : oseeEnumType.values()) {
+            OseeEnumTypeManager.removeEntries(oseeEnumType, entry);
+            names.remove(0);
+            ordinals.remove(0);
+            checkOseeEnumType(enumTypeName, names.toArray(new String[names.size()]),
+                  ordinals.toArray(new Integer[ordinals.size()]), oseeEnumType);
+            OseeEnumType actual = OseeEnumTypeManager.getUniqueType(enumTypeName);
+            assertEquals(oseeEnumType, actual);
+         }
+
+         assertEquals(0, oseeEnumType.values().length);
+      } finally {
+         OseeEnumTypeManager.deleteEnumType(oseeEnumType);
       }
-
-      assertEquals(0, oseeEnumType.values().length);
-      OseeEnumTypeManager.deleteEnumType(oseeEnumType);
       checkOseeEnumTypeDeleted(oseeEnumType);
    }
 
@@ -147,9 +155,11 @@ public class OseeEnumTypeManagerTest extends TestCase {
       Integer[] entryOrdinals = new Integer[] {0, 1, 2};
 
       OseeEnumType oseeEnumType = OseeEnumTypeManager.createEnumTypeFromXml(enumTypeName, xmlDefinition);
-      checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
-
-      OseeEnumTypeManager.deleteEnumType(oseeEnumType);
+      try {
+         checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+      } finally {
+         OseeEnumTypeManager.deleteEnumType(oseeEnumType);
+      }
       checkOseeEnumTypeDeleted(oseeEnumType);
 
       assertTrue(OseeEnumTypeManager.getAllTypeNames(true).contains(enumTypeName));
@@ -158,7 +168,7 @@ public class OseeEnumTypeManagerTest extends TestCase {
       OseeEnumType actual = OseeEnumTypeManager.getType(oseeEnumType.getEnumTypeId(), true);
       assertEquals(oseeEnumType, actual);
 
-      actual = OseeEnumTypeManager.getType(enumTypeName, true);
+      actual = OseeEnumTypeManager.getUniqueType(enumTypeName, true);
       assertEquals(oseeEnumType, actual);
    }
 
@@ -190,7 +200,7 @@ public class OseeEnumTypeManagerTest extends TestCase {
          assertTrue(ex instanceof OseeTypeDoesNotExist);
       }
       try {
-         OseeEnumTypeManager.getType(actual.getEnumTypeName());
+         OseeEnumTypeManager.getUniqueType(actual.getEnumTypeName());
       } catch (Exception ex) {
          assertTrue(ex instanceof OseeTypeDoesNotExist);
       }

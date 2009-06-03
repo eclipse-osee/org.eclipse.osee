@@ -27,9 +27,11 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeMultipleEnumTypesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,11 +63,11 @@ public class OseeEnumTypeManager {
 
    private static final OseeEnumTypeManager instance = new OseeEnumTypeManager();
 
-   private final Map<String, OseeEnumType> enumTypeByNameMap;
+   private final HashCollection<String, OseeEnumType> enumTypeByNameMap;
    private final Map<Integer, OseeEnumType> enumTypeByIdMap;
 
    private OseeEnumTypeManager() {
-      enumTypeByNameMap = new HashMap<String, OseeEnumType>();
+      enumTypeByNameMap = new HashCollection<String, OseeEnumType>();
       enumTypeByIdMap = new HashMap<Integer, OseeEnumType>();
    }
 
@@ -78,13 +80,30 @@ public class OseeEnumTypeManager {
       return oseeEnumType;
    }
 
-   public static OseeEnumType getType(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static OseeEnumType getUniqueType(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist, OseeMultipleEnumTypesExist {
+      Collection<OseeEnumType> results = getTypes(enumTypeName, includeDeleted);
+      if (results.size() > 1) {
+         throw new OseeMultipleEnumTypesExist(String.format("Found multiple OSEE enum types matching [%s] name",
+               enumTypeName));
+      }
+      return results.iterator().next();
+   }
+
+   public static Collection<OseeEnumType> getTypes(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist {
       instance.checkLoaded();
-      OseeEnumType oseeEnumType = instance.enumTypeByNameMap.get(enumTypeName);
-      if (oseeEnumType == null || !includeDeleted && oseeEnumType.isDeleted()) {
+      List<OseeEnumType> toReturn = new ArrayList<OseeEnumType>();
+      Collection<OseeEnumType> itemsFound = instance.enumTypeByNameMap.getValues(enumTypeName);
+      if (itemsFound != null) {
+         for (OseeEnumType oseeEnumType : itemsFound) {
+            if (includeDeleted || !oseeEnumType.isDeleted()) {
+               toReturn.add(oseeEnumType);
+            }
+         }
+      }
+      if (toReturn.isEmpty()) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with name:[%s] does not exist.", enumTypeName));
       }
-      return oseeEnumType;
+      return toReturn;
    }
 
    public static Collection<OseeEnumType> getAllTypes(boolean includeDeleted) throws OseeDataStoreException {
@@ -108,21 +127,21 @@ public class OseeEnumTypeManager {
 
    public static boolean typeExist(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException {
       instance.checkLoaded();
-      OseeEnumType type = null;
+      Collection<OseeEnumType> type = null;
       try {
-         type = getType(enumTypeName, includeDeleted);
+         type = getTypes(enumTypeName, includeDeleted);
       } catch (OseeTypeDoesNotExist ex) {
          // Do Nothing
       }
-      return type != null;
+      return type != null && !type.isEmpty();
    }
 
    public static OseeEnumType getType(int enumTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return getType(enumTypeId, false);
    }
 
-   public static OseeEnumType getType(String enumTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return getType(enumTypeName, false);
+   public static OseeEnumType getUniqueType(String enumTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist, OseeMultipleEnumTypesExist {
+      return getUniqueType(enumTypeName, false);
    }
 
    public static Collection<String> getAllTypeNames() throws OseeDataStoreException {
@@ -170,7 +189,7 @@ public class OseeEnumTypeManager {
       checkEntryIntegrity(enumTypeName, entries);
 
       if (typeExist(enumTypeName)) {
-         return getType(enumTypeName);
+         return getUniqueType(enumTypeName);
       }
 
       int oseeEnumTypeId = SequenceManager.getNextOseeEnumTypeId();
@@ -269,20 +288,18 @@ public class OseeEnumTypeManager {
    public static void removeEntries(final OseeEnumType enumType, final OseeEnumEntry... entries) throws OseeCoreException {
       checkNull(entries);
       if (entries.length > 0) {
-         synchronized (enumType) {
-            final List<OseeEnumEntry> itemsToRemove = Arrays.asList(entries);
-            final List<ObjectPair<String, Integer>> newEntries = new ArrayList<ObjectPair<String, Integer>>();
-            for (OseeEnumEntry entry : enumType.values()) {
-               if (!itemsToRemove.contains(entry)) {
-                  newEntries.add(entry.asObjectPair());
-               }
+         final List<OseeEnumEntry> itemsToRemove = Arrays.asList(entries);
+         final List<ObjectPair<String, Integer>> newEntries = new ArrayList<ObjectPair<String, Integer>>();
+         for (OseeEnumEntry entry : enumType.values()) {
+            if (!itemsToRemove.contains(entry)) {
+               newEntries.add(entry.asObjectPair());
             }
-            UpdateEnumTx updateEnumTx = new UpdateEnumTx(enumType, newEntries);
-            updateEnumTx.execute();
-
-            enumType.internalRemoveEnums(entries);
-            // TODO Signal to other clients - Event here 
          }
+         UpdateEnumTx updateEnumTx = new UpdateEnumTx(enumType, newEntries);
+         updateEnumTx.execute();
+
+         enumType.internalRemoveEnums(entries);
+         // TODO Signal to other clients - Event here 
       }
    }
 
@@ -292,24 +309,22 @@ public class OseeEnumTypeManager {
 
    public static void addEntries(final OseeEnumType oseeEnumType, final List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
       checkNull(oseeEnumType);
-      synchronized (oseeEnumType) {
-         final List<ObjectPair<String, Integer>> newEntries = getCombinedEntries(oseeEnumType, entries);
+      final List<ObjectPair<String, Integer>> newEntries = getCombinedEntries(oseeEnumType, entries);
 
-         UpdateEnumTx updateEnumTx = new UpdateEnumTx(oseeEnumType, newEntries);
-         updateEnumTx.execute();
+      UpdateEnumTx updateEnumTx = new UpdateEnumTx(oseeEnumType, newEntries);
+      updateEnumTx.execute();
 
-         boolean wasCreated = false;
-         if (!instance.enumTypeByIdMap.containsKey(oseeEnumType.getEnumTypeId())) {
-            instance.cache(oseeEnumType);
-            wasCreated = true;
-         }
-         for (ObjectPair<String, Integer> entry : newEntries) {
-            oseeEnumType.internalAddEnum(entry);
-         }
-         // TODO Signal to other clients - Event here
-         if (wasCreated) {
-            // TODO Signal newly created - Event here
-         }
+      boolean wasCreated = false;
+      if (!instance.enumTypeByIdMap.containsKey(oseeEnumType.getEnumTypeId())) {
+         instance.cache(oseeEnumType);
+         wasCreated = true;
+      }
+      for (ObjectPair<String, Integer> entry : entries) {
+         oseeEnumType.internalAddEnum(entry);
+      }
+      // TODO Signal to other clients - Event here
+      if (wasCreated) {
+         // TODO Signal newly created - Event here
       }
    }
 
@@ -346,7 +361,7 @@ public class OseeEnumTypeManager {
          }
          ConnectionHandler.runPreparedUpdate(connection, DELETE_ENUM_TYPE_ENTRIES, oseeEnumTypeId);
          if (!data.isEmpty()) {
-            ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, data);
+            ConnectionHandler.runBatchUpdate(connection, INSERT_ENUM_TYPE_DEF, data);
          }
       }
    };

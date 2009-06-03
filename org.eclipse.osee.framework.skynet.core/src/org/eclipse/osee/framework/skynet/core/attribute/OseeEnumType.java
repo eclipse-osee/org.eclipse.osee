@@ -41,7 +41,7 @@ public class OseeEnumType {
       this.isDeleted = deleted;
    }
 
-   protected void internalAddEnum(String name, int ordinal) throws OseeArgumentException {
+   protected synchronized void internalAddEnum(String name, int ordinal) throws OseeArgumentException {
       checkEnumEntryName(name);
       checkOrdinal(ordinal);
       OseeEnumEntry entry = new OseeEnumEntry(name, ordinal);
@@ -52,7 +52,7 @@ public class OseeEnumType {
       internalAddEnum(entry.object1, entry.object2);
    }
 
-   protected void internalRemoveEnums(OseeEnumEntry... entries) {
+   protected synchronized void internalRemoveEnums(OseeEnumEntry... entries) {
       if (entries != null) {
          for (OseeEnumEntry entry : entries) {
             enumSet.remove(entry);
@@ -64,12 +64,12 @@ public class OseeEnumType {
       return isDeleted;
    }
 
-   public OseeEnumEntry[] values() {
+   public synchronized OseeEnumEntry[] values() {
       Collections.sort(enumSet);
       return enumSet.toArray(new OseeEnumEntry[enumSet.size()]);
    }
 
-   public Set<String> valuesAsOrderedStringSet() {
+   public synchronized Set<String> valuesAsOrderedStringSet() {
       Set<String> values = new LinkedHashSet<String>();
       for (OseeEnumEntry oseeEnumEntry : enumSet) {
          values.add(oseeEnumEntry.name());
@@ -85,7 +85,7 @@ public class OseeEnumType {
       return enumTypeName;
    }
 
-   public OseeEnumEntry valueOf(String entryName) {
+   public synchronized OseeEnumEntry valueOf(String entryName) {
       for (OseeEnumEntry entry : enumSet) {
          if (entry.name().equals(entryName)) {
             return entry;
@@ -94,7 +94,7 @@ public class OseeEnumType {
       return null;
    }
 
-   public OseeEnumEntry valueOf(int ordinal) {
+   public synchronized OseeEnumEntry valueOf(int ordinal) {
       for (OseeEnumEntry entry : enumSet) {
          if (entry.ordinal() == ordinal) {
             return entry;
