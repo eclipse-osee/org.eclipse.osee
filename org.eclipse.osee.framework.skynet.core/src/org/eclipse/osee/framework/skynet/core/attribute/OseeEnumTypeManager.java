@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
@@ -55,6 +56,8 @@ public class OseeEnumTypeManager {
          "insert into osee_enum_type_def (ENUM_TYPE_ID, NAME, ORDINAL) values (?,?,?)";
 
    private static final String DELETE_ENUM_TYPE_ENTRIES = "delete from osee_enum_type_def where enum_type_id = ?";
+
+   private static final String DELETE_ENUM_TYPE = "delete from osee_enum_type oet where enum_type_id = ?";
 
    private static final OseeEnumTypeManager instance = new OseeEnumTypeManager();
 
@@ -246,8 +249,19 @@ public class OseeEnumTypeManager {
       }
    }
 
-   public static void deleteEnumType(OseeEnumType typeToDelete) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(DELETE_ENUM_TYPE_ENTRIES, typeToDelete.getEnumTypeId());
+   public static void deleteEnumType(OseeEnumType typeToDelete) throws OseeCoreException {
+      boolean isInUse = false;
+      for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
+         if (typeToDelete.getEnumTypeId() == attrType.getOseeEnumTypeId()) {
+            isInUse = true;
+         }
+      }
+      if (isInUse) {
+         throw new OseeStateException(String.format(
+               "Osee Enum Type: [%s] with id: [%s] is in use by enumerated attributes", typeToDelete.getEnumTypeName(),
+               typeToDelete.getEnumTypeId()));
+      }
+      ConnectionHandler.runPreparedUpdate(DELETE_ENUM_TYPE, typeToDelete.getEnumTypeId());
       typeToDelete.internalSetDeleted(true);
       //  TODO signal to other clients - Event here
    }

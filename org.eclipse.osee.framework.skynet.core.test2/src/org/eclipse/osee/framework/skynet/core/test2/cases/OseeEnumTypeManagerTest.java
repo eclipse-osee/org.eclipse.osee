@@ -13,13 +13,17 @@ package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
@@ -127,7 +131,45 @@ public class OseeEnumTypeManagerTest extends TestCase {
    }
 
    public void testDeletedRetrieval() throws OseeCoreException {
+      String enumTypeName = "EnumType5";
+      String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
+      String[] entryNames = new String[] {"one", "two", "three"};
+      Integer[] entryOrdinals = new Integer[] {0, 1, 2};
 
+      OseeEnumType oseeEnumType = OseeEnumTypeManager.createEnumTypeFromXml(enumTypeName, xmlDefinition);
+      checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
+
+      OseeEnumTypeManager.deleteEnumType(oseeEnumType);
+      checkOseeEnumTypeDeleted(oseeEnumType);
+
+      assertTrue(OseeEnumTypeManager.getAllTypeNames(true).contains(enumTypeName));
+      assertTrue(OseeEnumTypeManager.getAllTypes(true).contains(oseeEnumType));
+
+      OseeEnumType actual = OseeEnumTypeManager.getType(oseeEnumType.getEnumTypeId(), true);
+      assertEquals(oseeEnumType, actual);
+
+      actual = OseeEnumTypeManager.getType(enumTypeName, true);
+      assertEquals(oseeEnumType, actual);
+   }
+
+   public void testDeletedNotAllowedWhileInUseByAttribute() throws OseeCoreException {
+      Collection<OseeEnumType> types = OseeEnumTypeManager.getAllTypes();
+      boolean wasTestedAtLeastOnce = false;
+      for (OseeEnumType type : types) {
+         for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
+            if (attrType.getOseeEnumTypeId() == type.getEnumTypeId()) {
+               // Found an enum that is in use;
+               wasTestedAtLeastOnce = true;
+               try {
+                  OseeEnumTypeManager.deleteEnumType(type);
+               } catch (Exception ex) {
+                  assertTrue(ex instanceof OseeStateException);
+               }
+               assertTrue(!type.isDeleted());
+            }
+         }
+      }
+      assertTrue(wasTestedAtLeastOnce);
    }
 
    private void checkOseeEnumTypeDeleted(OseeEnumType actual) throws OseeDataStoreException {
