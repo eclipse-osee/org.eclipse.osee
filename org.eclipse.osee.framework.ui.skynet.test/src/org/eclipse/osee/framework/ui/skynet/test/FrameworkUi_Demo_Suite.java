@@ -25,6 +25,7 @@ public class FrameworkUi_Demo_Suite extends TestSuite {
       //$JUnit-BEGIN$
       suite.addTestSuite(InterArtifactDropTest.class);
       suite.addTestSuite(WordEditTest.class);
+      suite.addTestSuite(WordTrackedChangesTest.class);
       //      suite.addTestSuite(RebaselineArtifactTest.class);
       //$JUnit-END$
       return suite;
