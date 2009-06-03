@@ -85,36 +85,48 @@ public class OseeEnumType {
       return enumTypeName;
    }
 
-   public synchronized OseeEnumEntry valueOf(String entryName) {
-      for (OseeEnumEntry entry : enumSet) {
-         if (entry.name().equals(entryName)) {
-            return entry;
+   public synchronized OseeEnumEntry valueOf(String entryName) throws OseeArgumentException {
+      if (entryName != null) {
+         for (OseeEnumEntry entry : enumSet) {
+            if (entry.name().equals(entryName)) {
+               return entry;
+            }
          }
       }
-      return null;
+      throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getEnumTypeName(), entryName));
    }
 
-   public synchronized OseeEnumEntry valueOf(int ordinal) {
+   public synchronized OseeEnumEntry valueOf(int ordinal) throws OseeArgumentException {
       for (OseeEnumEntry entry : enumSet) {
          if (entry.ordinal() == ordinal) {
             return entry;
          }
       }
-      return null;
+      throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getEnumTypeName(), ordinal));
    }
 
    private void checkEnumEntryName(String name) throws OseeArgumentException {
       if (!Strings.isValid(name)) throw new OseeArgumentException("Enum entry name cannot be null");
-      OseeEnumEntry entry = valueOf(name);
+      OseeEnumEntry entry = null;
+      try {
+         entry = valueOf(name);
+      } catch (OseeArgumentException ex) {
+         // Do Nothing - expect exception 
+      }
       if (entry != null) throw new OseeArgumentException(String.format(
-            "Unique enum entry name violation - [%s] already exists.", entry));
+            "Unique enum entry name violation - %s already exists.", entry));
    }
 
    private void checkOrdinal(int ordinal) throws OseeArgumentException {
       if (ordinal < 0) throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
-      OseeEnumEntry entry = valueOf(ordinal);
+      OseeEnumEntry entry = null;
+      try {
+         entry = valueOf(ordinal);
+      } catch (OseeArgumentException ex) {
+         // Do Nothing - expect exception 
+      }
       if (entry != null) throw new OseeArgumentException(String.format(
-            "Unique enum entry ordinal violation - [%s] already exists.", entry));
+            "Unique enum entry ordinal violation - %s already exists.", entry));
    }
 
    /* (non-Javadoc)
@@ -222,7 +234,7 @@ public class OseeEnumType {
 
       @Override
       public String toString() {
-         return String.format("<%s:%s>", name, ordinal);
+         return String.format("[%s].[%s:%s]", getEnumTypeName(), name, ordinal);
       }
 
       /* (non-Javadoc)

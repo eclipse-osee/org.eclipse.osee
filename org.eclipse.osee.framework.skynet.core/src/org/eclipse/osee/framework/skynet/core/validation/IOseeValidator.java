@@ -25,5 +25,5 @@ public interface IOseeValidator {
 
    public boolean isApplicable(Artifact artifact, AttributeType attributeType);
 
-   public IStatus validate(Artifact artifact, Object proposedObject) throws OseeCoreException;
+   public IStatus validate(Artifact artifact, AttributeType attributeType, Object proposedObject) throws OseeCoreException;
 }

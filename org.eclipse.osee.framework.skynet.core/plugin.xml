@@ -345,4 +345,10 @@
                  className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchTrackedChanges">
            </commitActions>
         </extension>
+        <extension
+              point="org.eclipse.osee.framework.skynet.core.OseeValidator">
+           <OseeValidator
+                 classname="org.eclipse.osee.framework.skynet.core.attribute.OseeEnumerationValidation">
+           </OseeValidator>
+        </extension>
 </plugin>

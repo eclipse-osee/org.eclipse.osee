@@ -55,7 +55,7 @@ public class OseeValidator {
          try {
             if (requiredQualityOfService >= validator.getQualityOfService()) {
                if (validator.isApplicable(artifact, attributeType)) {
-                  IStatus status = validator.validate(artifact, proposedValue);
+                  IStatus status = validator.validate(artifact, attributeType, proposedValue);
                   if (!status.isOK()) {
                      return status;
                   }
