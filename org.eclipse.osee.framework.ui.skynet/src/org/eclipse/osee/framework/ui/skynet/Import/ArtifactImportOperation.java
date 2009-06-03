@@ -93,19 +93,25 @@ public class ArtifactImportOperation extends AbstractOperation {
        */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         List<String> errors = new ArrayList<String>();
+         monitor.setTaskName("Validating Artifacts");
 
-         for (Artifact artifactChanged : importRoot.getDescendants()) {
-            IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
-            if (!status.isOK()) {
-               setStatus(status);
-               errors.add(String.format("%s:[%s] - %s", artifactChanged.getArtifactTypeName(),
-                     artifactChanged.getDescriptiveName(), status.getMessage()));
+         List<Artifact> artifacts = importRoot.getDescendants();
+         if (!artifacts.isEmpty()) {
+            int workAmount = getTotalWorkUnits() / artifacts.size();
+            List<String> errors = new ArrayList<String>();
+            for (Artifact artifactChanged : artifacts) {
+               IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
+               if (!status.isOK()) {
+                  setStatus(status);
+                  errors.add(String.format("%s:[%s] - %s", artifactChanged.getArtifactTypeName(),
+                        artifactChanged.getDescriptiveName(), status.getMessage()));
+               }
+               monitor.worked(workAmount);
             }
+            String message = Collections.toString("\n", errors);
+            System.out.println(message);
+            setStatusMessage(message);
          }
-         String message = Collections.toString("\n", errors);
-         System.out.println(message);
-         setStatusMessage(message);
       }
    }
 
