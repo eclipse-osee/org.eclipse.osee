@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.group;
 
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -46,6 +49,13 @@ public class GroupLabelProvider extends LabelProvider {
          Artifact artifact = item.getArtifact();
          if (artifact.isDeleted()) throw new IllegalArgumentException("Can not display a deleted artifact");
 
+         try {
+            if (artifact instanceof IGroupExplorerProvider) {
+               return ((IGroupExplorerProvider) artifact).getGroupExplorerName();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         }
          String name = artifact.getDescriptiveName();
          if (name == null) {
             return "";

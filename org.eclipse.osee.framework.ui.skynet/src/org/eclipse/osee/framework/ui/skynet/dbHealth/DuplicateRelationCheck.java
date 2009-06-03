@@ -97,9 +97,6 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
       super("Multiple Parent Errors");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
-    */
    @Override
    public String getFixTaskName() {
       return Strings.emptyString();

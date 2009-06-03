@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -65,7 +66,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
+public abstract class StateMachineArtifact extends ATSArtifact implements IGroupExplorerProvider, IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
 
    protected SMAManager smaMgr;
    private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
@@ -1376,6 +1377,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          return getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName();
       }
       return "";
+   }
+
+   public String getGroupExplorerName() throws OseeCoreException {
+      if (getSmaMgr().isCancelledOrCompleted()) {
+         return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
+      }
+      return getDescriptiveName();
    }
 
 }
