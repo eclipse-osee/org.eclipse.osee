@@ -27,11 +27,21 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeManagerTest extends TestCase {
+
+   /**
+    * @throws java.lang.Exception
+    */
+   @Override
+   protected void setUp() throws Exception {
+      // This test should only be run on test db
+      assertFalse(TestUtil.isProductionDb());
+   }
 
    public void testCreateEnumTypeFromXml() throws OseeCoreException {
       String enumTypeName = "EnumType1";
