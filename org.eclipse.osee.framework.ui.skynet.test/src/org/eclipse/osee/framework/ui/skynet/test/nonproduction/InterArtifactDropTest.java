@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHand
 public class InterArtifactDropTest extends TestCase {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet.test/debug/Junit"));
-   private static Artifact source;
+   private static Artifact sourceArtifact;
    private Branch sourceBranch;
    private Branch destinationBranch;
 
@@ -65,8 +65,8 @@ public class InterArtifactDropTest extends TestCase {
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
-      source = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, sourceBranch);
-      source.persistAttributes();
+      sourceArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, sourceBranch);
+      sourceArtifact.persistAttributes();
 
       destinationBranch =
       BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
@@ -81,13 +81,13 @@ public class InterArtifactDropTest extends TestCase {
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(
-            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {source}, false);
+            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {sourceArtifact}, false);
 
       sleep(5000);
       //Acquire the introduced artifact
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(source.getArtId(), destinationBranch);
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), destinationBranch);
 
-      assertTrue(source.getDescriptiveName().equals(destArtifact.getDescriptiveName()));
+      assertTrue(sourceArtifact.getDescriptiveName().equals(destArtifact.getDescriptiveName()));
    }
 
    public static void sleep(long milliseconds) throws Exception {
