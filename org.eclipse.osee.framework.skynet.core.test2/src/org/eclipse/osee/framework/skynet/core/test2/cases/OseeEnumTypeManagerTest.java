@@ -209,11 +209,16 @@ public class OseeEnumTypeManagerTest extends TestCase {
    }
 
    private void checkEntry(String expectedName, int expectedOrdinal, OseeEnumType parent, OseeEnumEntry entry) {
-      assertEquals(expectedName, entry.getEnumTypeName());
+      assertEquals(expectedName, entry.name());
       assertEquals(expectedOrdinal, entry.ordinal());
       assertEquals(parent, entry.getDeclaringClass());
       assertEquals(parent.getEnumTypeId(), entry.getEnumTypeId());
       assertEquals(parent.getEnumTypeName(), entry.getEnumTypeName());
-      assertEquals(parent.values(), entry.values());
+      OseeEnumEntry[] expected = parent.values();
+      OseeEnumEntry[] actual = entry.values();
+      assertEquals(expected.length, actual.length);
+      for (int index = 0; index < expected.length; index++) {
+         assertEquals(expected[index], actual[index]);
+      }
    }
 }
