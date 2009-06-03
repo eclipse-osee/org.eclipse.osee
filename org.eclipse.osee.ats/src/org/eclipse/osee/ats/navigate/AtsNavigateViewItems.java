@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
@@ -132,7 +133,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(otherItems);
 
          items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
-         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem(null)));
+         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem((Branch) null)));
          items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",

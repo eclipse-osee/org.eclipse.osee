@@ -13,8 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.group;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -37,16 +40,23 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
+import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
+import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
+import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -62,7 +72,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IFrameworkTransactionEventListener, IActionable {
+public class GroupExplorer extends ViewPart implements IFrameworkTransactionEventListener, IActionable, IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -72,6 +82,11 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    private XBranchSelectWidget branchSelect;
    private Branch branch;
    private GroupExplorerDragAndDrop groupExpDnd;
+
+   private NeedProjectMenuListener needProjectListener;
+   private MenuItem openWithMenuItem;
+   private MenuItem openMenuItem;
+   IGlobalMenuHelper globalMenuHelper;
 
    public GroupExplorer() {
    }
@@ -129,12 +144,8 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          }
       });
       treeViewer.getControl().setLayoutData(gridData);
-      treeViewer.getTree().addListener(SWT.MouseUp, new Listener() {
-         public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            if (event.button == 3) getPopupMenu().setVisible(true);
-         }
-      });
 
+      globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
       OseeContributionItem.addTo(this, true);
 
       OseeEventManager.addListener(this);
@@ -144,7 +155,124 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       getSite().setSelectionProvider(treeViewer);
       parent.layout();
       createActions();
+      setupPopupMenu();
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuild()
+    */
+   @Override
+   public void rebuildMenu() {
+      setupPopupMenu();
+   }
+
+   public void setupPopupMenu() {
+
+      Menu popupMenu = new Menu(treeViewer.getTree().getParent());
+      needProjectListener = new NeedProjectMenuListener();
+      popupMenu.addMenuListener(needProjectListener);
+
+      createOpenMenuItem(popupMenu);
+      createOpenWithMenuItem(popupMenu);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+
+      MenuItem item = new MenuItem(popupMenu, SWT.PUSH);
+      item.setText("&Remove from Group");
+      item.setEnabled(isOnlyGroupItemsSelected());
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleRemoveFromGroup();
+         }
+      });
+
+      item = new MenuItem(popupMenu, SWT.PUSH);
+      item.setText("&Delete Group");
+      item.setEnabled(isOnlyGroupsSelected());
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleDeleteGroup();
+         }
+      });
+
+      item = new MenuItem(popupMenu, SWT.PUSH);
+      item.setText("&New Group");
+      item.setEnabled(true);
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleNewGroup();
+         }
+      });
+
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+
+      item = new MenuItem(popupMenu, SWT.PUSH);
+      item.setText("&Select All\tCtrl+A");
+      item.addListener(SWT.Selection, new Listener() {
+         public void handleEvent(org.eclipse.swt.widgets.Event event) {
+            treeViewer.getTree().selectAll();
+         }
+      });
+
+      item = new MenuItem(popupMenu, SWT.PUSH);
+      item.setText("Expand All\tCtrl+X");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            expandAll((IStructuredSelection) treeViewer.getSelection());
+         }
+      });
+
+      treeViewer.getTree().setMenu(popupMenu);
+   }
+
+   private void createOpenMenuItem(Menu parentMenu) {
+      openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      openMenuItem.setText("&Open");
+
+      ArtifactMenuListener listener = new ArtifactMenuListener();
+      parentMenu.addMenuListener(listener);
+      openMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent ev) {
+            for (Artifact art : getSelectedArtifacts()) {
+               RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
+            }
+         }
+      });
+   }
+
+   private void createOpenWithMenuItem(Menu parentMenu) {
+      openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      openWithMenuItem.setText("&Open With");
+      final Menu submenu = new Menu(openWithMenuItem);
+      openWithMenuItem.setMenu(submenu);
+      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
+   }
+   /**
+    * @author Jeff C. Phillips
+    */
+   public class ArtifactMenuListener implements MenuListener {
+
+      public void menuHidden(MenuEvent e) {
+      }
+
+      public void menuShown(MenuEvent e) {
+         // Use this menu listener until all menu items can be moved to
+         // GlobaMenu
+         try {
+            GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+            openMenuItem.setEnabled(permiss.isReadPermission());
+            openWithMenuItem.setEnabled(permiss.isReadPermission());
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+
+      }
    }
 
    private void handleDoubleClick() {
@@ -171,61 +299,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       // IMenuManager manager = getViewSite().getActionBars().getMenuManager();
 
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Group Explorer");
-   }
-
-   private Menu getPopupMenu() {
-
-      Menu previewMenu = new Menu(treeViewer.getTree().getParent());
-
-      MenuItem item = new MenuItem(previewMenu, SWT.PUSH);
-      item.setText("&Remove from Group");
-      item.setEnabled(isOnlyGroupItemsSelected());
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleRemoveFromGroup();
-         }
-      });
-
-      item = new MenuItem(previewMenu, SWT.PUSH);
-      item.setText("&Delete Group");
-      item.setEnabled(isOnlyGroupsSelected());
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleDeleteGroup();
-         }
-      });
-
-      item = new MenuItem(previewMenu, SWT.PUSH);
-      item.setText("&New Group");
-      item.setEnabled(true);
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleNewGroup();
-         }
-      });
-
-      new MenuItem(previewMenu, SWT.SEPARATOR);
-
-      item = new MenuItem(previewMenu, SWT.PUSH);
-      item.setText("&Select All\tCtrl+A");
-      item.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            treeViewer.getTree().selectAll();
-         }
-      });
-
-      item = new MenuItem(previewMenu, SWT.PUSH);
-      item.setText("Expand All\tCtrl+X");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            expandAll((IStructuredSelection) treeViewer.getSelection());
-         }
-      });
-      return previewMenu;
    }
 
    private void handleNewGroup() {
@@ -311,6 +384,14 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       Iterator<?> itemsIter = selection.iterator();
       if (itemsIter.hasNext()) return (GroupExplorerItem) itemsIter.next();
       return null;
+   }
+
+   private Collection<Artifact> getSelectedArtifacts() {
+      Set<Artifact> arts = new HashSet<Artifact>();
+      for (GroupExplorerItem item : getSelectedItems()) {
+         arts.add(item.getArtifact());
+      }
+      return arts;
    }
 
    private ArrayList<GroupExplorerItem> getSelectedItems() {
@@ -430,6 +511,33 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          }
       } catch (Exception ex) {
          // do nothing
+      }
+   }
+   private class NeedProjectMenuListener implements MenuListener {
+      Collection<MenuItem> items;
+
+      public NeedProjectMenuListener() {
+         this.items = new LinkedList<MenuItem>();
+      }
+
+      public void add(MenuItem item) {
+         items.add(item);
+      }
+
+      public void menuHidden(MenuEvent e) {
+      }
+
+      public void menuShown(MenuEvent e) {
+         boolean valid = treeViewer.getInput() != null;
+         for (MenuItem item : items) {
+            if (!(item.getData() instanceof Exception)) {
+               // Only modify
+               // enabling if no
+               // error is
+               // associated
+               item.setEnabled(valid);
+            }
+         }
       }
    }
 

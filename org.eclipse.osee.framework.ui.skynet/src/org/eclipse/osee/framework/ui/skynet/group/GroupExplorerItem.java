@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorerItem {
+public class GroupExplorerItem implements IAdaptable {
 
    private final Artifact artifact;
    private final TreeViewer treeViewer;
@@ -156,5 +157,18 @@ public class GroupExplorerItem {
    @Override
    public int hashCode() {
       return artifact.getGuid().hashCode() + (getParentItem() != null ? getParentItem().getArtifact().getGuid().hashCode() : 0);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      if (adapter == Artifact.class) {
+         return getArtifact();
+      }
+      return null;
    }
 }

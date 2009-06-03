@@ -34,6 +34,8 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
+import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
@@ -43,6 +45,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -54,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IAtsLib;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -307,7 +311,15 @@ public class AtsLib implements IAtsLib {
 
    @Override
    public void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
-      WorldEditor.open(new WorldEditorSimpleProvider(name, artifacts));
+      Set<Artifact> otherArts = new HashSet<Artifact>();
+      for (Artifact art : artifacts) {
+         if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+            WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
+                  TableLoadOption.None));
+         } else
+            otherArts.add(art);
+      }
+      if (otherArts.size() > 0) WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
    }
 
    /* (non-Javadoc)

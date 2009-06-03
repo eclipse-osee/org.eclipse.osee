@@ -27,13 +27,19 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    private Artifact group;
    private Artifact selectedGroup;
-   private final String groupName;
+   private String groupName;
    private final Branch branch;
 
    public GroupWorldSearchItem(String displayName, String groupName, Branch branch) {
       super(displayName, AtsPlugin.getInstance().getImage("group.gif"));
       this.groupName = groupName;
       this.branch = branch;
+   }
+
+   public GroupWorldSearchItem(Artifact group) {
+      super("Group Search", AtsPlugin.getInstance().getImage("group.gif"));
+      this.group = group;
+      this.branch = group.getBranch();
    }
 
    public GroupWorldSearchItem(Branch branch) {

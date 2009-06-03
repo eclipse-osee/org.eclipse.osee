@@ -90,8 +90,8 @@ public class SMAPromptChangeStatus {
                   "Select resolution, enter percent complete and number of hours you spent since last status.", true,
                   options, smas);
       if (tsd.open() == 0) {
-         performChangeStatus(options, tsd.getSelectedOptionDef().getName(), tsd.getHours().getFloat(),
-               tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
+         performChangeStatus(options, tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
+               tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
          return Result.TrueResult;
       }
       return Result.FalseResult;
