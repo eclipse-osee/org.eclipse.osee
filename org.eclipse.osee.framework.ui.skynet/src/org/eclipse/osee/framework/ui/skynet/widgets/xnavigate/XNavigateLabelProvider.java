@@ -33,6 +33,7 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * @return String
     */
    public String getText(Object arg0) {
+      if (arg0 == null) return "";
       return ((XNavigateItem) arg0).getName();
    }
 

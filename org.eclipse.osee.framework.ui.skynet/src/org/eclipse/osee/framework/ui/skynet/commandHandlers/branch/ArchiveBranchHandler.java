@@ -30,6 +30,7 @@ public class ArchiveBranchHandler extends CommandHandler {
     */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
+      if (AWorkbench.getActivePage() == null) return false;
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
@@ -55,7 +56,7 @@ public class ArchiveBranchHandler extends CommandHandler {
          } else {
             BranchManager.archive(branch);
          }
-         
+
          OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getBranchId());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);

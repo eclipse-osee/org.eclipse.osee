@@ -32,12 +32,12 @@ import org.eclipse.swt.widgets.Display;
  */
 public class AccessControlHandler extends CommandHandler {
    private Object object;
-   
+
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       try {
-            PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), object);
-            pd.open();
+         PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), object);
+         pd.open();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -48,21 +48,24 @@ public class AccessControlHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
-      
+
+      if (AWorkbench.getActivePage() == null) return false;
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-  
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(selection);
-      
+
       boolean hasArtifacts = artifacts.size() == 1;
       enabled = hasArtifacts || (branches.size() == 1);
-      
-      if(enabled){
-         object = hasArtifacts? artifacts.iterator().next() : branches.iterator().next();
-         enabled &= (AccessControlManager.isOseeAdmin() || AccessControlManager.checkObjectPermission(object, PermissionEnum.FULLACCESS));
+
+      if (enabled) {
+         object = hasArtifacts ? artifacts.iterator().next() : branches.iterator().next();
+         enabled &=
+               (AccessControlManager.isOseeAdmin() || AccessControlManager.checkObjectPermission(object,
+                     PermissionEnum.FULLACCESS));
       }
-      
+
       return enabled;
    }
 }

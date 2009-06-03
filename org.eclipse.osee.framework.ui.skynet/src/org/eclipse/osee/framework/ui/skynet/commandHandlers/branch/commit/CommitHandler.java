@@ -107,15 +107,15 @@ public abstract class CommitHandler extends CommandHandler {
                                  message.toString(), MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);
                      dialogResult.setValue(dialog.open());
                   } else {
-               MessageDialog dialog =
-                     new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
+                     MessageDialog dialog =
+                           new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
                                  message.toString(), MessageDialog.QUESTION, new String[] {"Ok",
                                        "Launch Merge Manager", "Cancel"}, 0);
-               dialogResult.setValue(dialog.open());
-               if (dialogResult.getValue() == 1) {
-                  MergeView.openView(sourceBranch, destinationBranch, transactionId);
-               }
-            }
+                     dialogResult.setValue(dialog.open());
+                     if (dialogResult.getValue() == 1) {
+                        MergeView.openView(sourceBranch, destinationBranch, transactionId);
+                     }
+                  }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -133,11 +133,11 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-      
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       Branch sourceBranch = branches.iterator().next();
-      
+
       try {
          Branch destinationBranch = null;
          if (useParentBranch) {
@@ -157,21 +157,21 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
-      
+      if (AWorkbench.getActivePage() == null) return enabled;
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-      
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      
-      if(branches.size() == 1){
+
+      if (branches.size() == 1) {
          Branch branch = branches.iterator().next();
          enabled = useParentBranchValid(branch) || (!useParentBranch && AccessControlManager.isOseeAdmin());
       }
       return enabled;
    }
-   
-   protected boolean useParentBranchValid(Branch branch){
-      return branch.hasParentBranch() && useParentBranch && ! branch.isChangeManaged() && !branch.isArchived();
+
+   protected boolean useParentBranchValid(Branch branch) {
+      return branch.hasParentBranch() && useParentBranch && !branch.isChangeManaged() && !branch.isArchived();
    }
 
    private class CommitJob extends Job {

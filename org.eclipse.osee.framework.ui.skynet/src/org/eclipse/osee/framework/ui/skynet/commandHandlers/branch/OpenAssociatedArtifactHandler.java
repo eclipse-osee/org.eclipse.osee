@@ -37,7 +37,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
@@ -45,8 +45,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
             return null;
          }
-         if (AccessControlManager.checkObjectPermission(selectedBranch.getAssociatedArtifact(),
-               PermissionEnum.READ)) {
+         if (AccessControlManager.checkObjectPermission(selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
             if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
             else
@@ -66,9 +65,10 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
+      if (AWorkbench.getActivePage() == null) return false;
       IStructuredSelection selection =
-         (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-  
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       return branches.size() == 1;
    }

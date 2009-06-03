@@ -130,6 +130,7 @@ public class RenameBranchHandler extends CommandHandler {
     */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
+      if (AWorkbench.getActivePage() == null) return false;
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

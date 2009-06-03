@@ -58,6 +58,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
    private Branch getSelectedBranch() {
       Branch branch = null;
+      if (AWorkbench.getActivePage() == null) return null;
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

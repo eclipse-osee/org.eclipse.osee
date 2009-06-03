@@ -30,8 +30,9 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
  * @author Jeff C. Phillips
  */
 public class ToggleFavoriteBranchHandler extends CommandHandler {
-   public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
-   
+   public static String COMMAND_ID =
+         "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
+
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
@@ -41,7 +42,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
       try {
          UserManager.getUser().toggleFavoriteBranch(selectedBranch);
          OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getBranchId());
-         
+
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -51,6 +52,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
+      if (AWorkbench.getActivePage() == null) return false;
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
