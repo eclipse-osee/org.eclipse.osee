@@ -79,7 +79,7 @@ public class EnumPropertySource extends ModelPropertySource {
          }
          return StringPropertyDescriptor.fromModel(enumType != null ? enumType.valuesAsOrderedStringSet().toString() : Strings.emptyString());
       }
-      return false;
+      return 0;
    }
 
    /* (non-Javadoc)
@@ -87,6 +87,8 @@ public class EnumPropertySource extends ModelPropertySource {
     */
    @Override
    public void resetPropertyValue(Object id) {
+      // Here
+      System.out.println("resetPropertyValue");
    }
 
    /* (non-Javadoc)
@@ -94,5 +96,7 @@ public class EnumPropertySource extends ModelPropertySource {
     */
    @Override
    public void setPropertyValue(Object id, Object value) {
+      // Here
+      System.out.println("setPropertyValue");
    }
 }

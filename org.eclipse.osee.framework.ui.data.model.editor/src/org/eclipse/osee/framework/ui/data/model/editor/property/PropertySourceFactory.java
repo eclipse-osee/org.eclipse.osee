@@ -43,7 +43,7 @@ public class PropertySourceFactory {
          toReturn =
                new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_ATTRIBUTE, model),
                      new AttributePropertySource(CATEGORY_ATTRIBUTE + CATEGORY_DATA, model), new EnumPropertySource(
-                           CATEGORY_ENUM + CATEGORY_DATA, model), new NodePropertySource(CATEGORY_WIDGET, model));
+                           CATEGORY_ENUM + CATEGORY_DATA, model));//, new NodePropertySource(CATEGORY_WIDGET, model));
       } else if (model instanceof RelationDataType) {
          toReturn =
                new CompositePropertySource(new DataTypeElementPropertySource(CATEGORY_RELATION, model),
