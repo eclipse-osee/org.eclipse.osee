@@ -37,9 +37,11 @@ public class MasterTestSuite_DemoDbTests extends TestSuite {
 
       TestSetup wrapper = new TestSetup(suite) {
          @Override
-         public void setUp() {
+         public void setUp() throws Exception {
             assertTrue("Demo Application Server must be running.",
                   ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+            assertTrue("Client must authenticate using demo protocol",
+                  ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
          }
       };
       return wrapper;

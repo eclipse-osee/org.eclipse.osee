@@ -33,7 +33,7 @@ public class Sender {
 
    public Sender(NetworkSender networkSender) {
       this(networkSender.sourceObject, new OseeClientSession(networkSender.sessionId, networkSender.machineName,
-            networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion));
+            networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
    }
 
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {

@@ -24,21 +24,28 @@ public class OseeClientSession implements Serializable {
    private String userId;
    private String machineIp;
    private String clientVersion;
+   private String authenticationProtocol;
    private int port;
 
-   public OseeClientSession(String id, String machineName, String userId, String machineIp, int port, String clientVersion) {
+   public OseeClientSession(String id, String machineName, String userId, String machineIp, int port, String clientVersion, String authenticationProtocol) {
       this.id = id;
       this.machineName = machineName;
       this.machineIp = machineIp;
       this.userId = userId;
       this.clientVersion = clientVersion;
       this.port = port;
+      this.authenticationProtocol = authenticationProtocol;
    }
 
    @Override
    public String toString() {
-      return String.format("Session:[%s] User Id:[%s] Version:[%s] Machine Name:[%s] Ip:[%s] Port:[%s]", id, userId,
-            clientVersion, machineName, machineIp, port);
+      return String.format(
+            "Session:[%s] User Id:[%s] Version:[%s] Machine Name:[%s] Ip:[%s] Port:[%s] AuthenticationProtocol:[%s]",
+            id, userId, clientVersion, machineName, machineIp, port, authenticationProtocol);
+   }
+
+   public String getAuthenticationProtocol() {
+      return authenticationProtocol;
    }
 
    public int getPort() {

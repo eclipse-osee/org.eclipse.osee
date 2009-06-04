@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
  * <br>
- * Example test cases would be a test that purges or corrupts databaes data
+ * Example test cases would be a test that purges or corrupts database data
  * 
  * @author Donald G. Dunne
  */
@@ -31,12 +31,11 @@ public class MasterTestSuite_TestDbTests extends TestSuite {
       suite.addTest(AtsTest_TestDb_Suite.suite());
 
       TestSetup wrapper = new TestSetup(suite) {
+
          @Override
-         public void setUp() {
+         public void setUp() throws Exception {
             assertTrue("No authenticatication protocols found.",
                   ClientSessionManager.getAuthenticationProtocols().size() > 0);
-            assertFalse("Invalid 'demo' authentication protocol found.",
-                  ClientSessionManager.getAuthenticationProtocols().contains("demo"));
          }
       };
       return wrapper;
