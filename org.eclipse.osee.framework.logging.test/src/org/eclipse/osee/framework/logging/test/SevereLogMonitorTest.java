@@ -35,7 +35,7 @@ public class SevereLogMonitorTest extends TestCase {
 			OseeLog.log(SevereLogMonitorTest.class, Level.SEVERE, "caught our exception in a junit", ex);
 		}
 		assertTrue(madeItInException);
-		assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()), monitorLog.getSevereLogs().size() == 1);
+		assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()), monitorLog.getAllLogs().size() == 1);
 	}
 	
 }

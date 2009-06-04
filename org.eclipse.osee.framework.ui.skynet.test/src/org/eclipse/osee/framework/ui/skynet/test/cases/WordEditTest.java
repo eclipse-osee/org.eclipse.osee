@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -70,6 +71,7 @@ public class WordEditTest extends TestCase {
    }
 
    public void testCleanUpPost() throws Exception {
+      FrameworkTestUtil.killAllOpenWinword();
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
    }
@@ -134,7 +136,7 @@ public class WordEditTest extends TestCase {
       FileRenderer preRenderer = null;
       String postStreamStr = "";
       try {
-         TestUtil.severeLoggingStart();
+         SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
          FileRenderer.setWorkbenchSavePopUpDisabled(true);
          branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
          Artifact newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, className);
@@ -161,8 +163,7 @@ public class WordEditTest extends TestCase {
          istream.close();
          assertTrue(!preStream.equals(postStreamStr));
          inputStream.close();
-         FrameworkTestUtil.killAllOpenWinword();
-         TestUtil.severeLoggingEnd(null);
+         TestUtil.severeLoggingEnd(monitorLog);
       } catch (Exception ex) {
          System.out.println(ex.toString());
       } finally {

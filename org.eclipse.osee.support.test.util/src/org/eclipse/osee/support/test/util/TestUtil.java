@@ -54,7 +54,7 @@ public class TestUtil {
 
    public static void severeLoggingEnd(SevereLoggingMonitor monitorLog) throws Exception {
       OseeLog.unregisterLoggerListener(monitorLog);
-      Collection<IHealthStatus> healthStatuses = monitorLog.getSevereLogs();
+      Collection<IHealthStatus> healthStatuses = monitorLog.getAllLogs();
       int numExceptions = 0;
       if (healthStatuses.size() > 0) {
          for (IHealthStatus status : healthStatuses) {

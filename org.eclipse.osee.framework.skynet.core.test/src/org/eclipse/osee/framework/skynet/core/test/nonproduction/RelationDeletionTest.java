@@ -83,6 +83,6 @@ public class RelationDeletionTest extends TestCase {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      assertTrue(monitor.toString(), monitor.getSevereLogs().size() == 0);
+      assertTrue(monitor.toString(), monitor.getAllLogs().size() == 0);
    }
 }

@@ -65,7 +65,7 @@ public class XResultData {
    }
 
    public void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog) {
-      List<IHealthStatus> stats = monitorLog.getSevereLogs();
+      List<IHealthStatus> stats = monitorLog.getAllLogs();
       for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
          if (stat.getException() != null) {
             logError("Exception: " + Lib.exceptionToString(stat.getException()));

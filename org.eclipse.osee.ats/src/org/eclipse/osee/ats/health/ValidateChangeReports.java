@@ -165,7 +165,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
       sbFull.append(AHTML.endMultiColumnTable());
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
-      List<IHealthStatus> stats = new ArrayList<IHealthStatus>(monitorLog.getSevereLogs());
+      List<IHealthStatus> stats = new ArrayList<IHealthStatus>(monitorLog.getAllLogs());
       for (IHealthStatus stat : stats) {
          Throwable tr = stat.getException();
          if (tr != null) {

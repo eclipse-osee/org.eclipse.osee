@@ -23,8 +23,20 @@ public class SevereLoggingMonitor implements ILoggerListener {
       status.add(new BaseStatus(loggerName, level, message, th));
    }
 
-   public List<IHealthStatus> getSevereLogs() {
+   public List<IHealthStatus> getAllLogs() {
       return status;
+   }
+   
+   public List<IHealthStatus> getSevereLogs() {
+      List<IHealthStatus> severeStatus = new ArrayList<IHealthStatus>(status.size());
+
+      //Remove all none severe levels
+      for (IHealthStatus healthStatus : status) {
+         if (healthStatus.getLevel() == Level.SEVERE) {
+            severeStatus.add(healthStatus);
+         }
+      }
+      return severeStatus;
    }
 
    public String toString() {
