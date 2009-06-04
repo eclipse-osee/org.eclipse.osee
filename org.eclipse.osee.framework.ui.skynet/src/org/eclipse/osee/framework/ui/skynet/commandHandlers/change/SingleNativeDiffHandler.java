@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -24,6 +25,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -39,11 +41,13 @@ import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -149,10 +153,28 @@ public class SingleNativeDiffHandler extends CommandHandler {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
-               ArtifactExplorer.explore(artifacts);
+               try {
+                  String page = AHTML.simplePageNoPageEncoding(getStatusReport(artifacts));
+                  ResultsEditor.open(new XResultPage("Artifacts with Tracked Changes On", page));
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
             }
          });
       }
+   }
+
+   public String getStatusReport(Collection<Artifact> artifacts) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(AHTML.heading(2, "This table lists the Artifacts that were detected to have tracked changes on.")); //
+      sb.append(AHTML.heading(3, "Please make sure to accept/reject all tracked changes and comment references.")); //      
+      sb.append(AHTML.beginMultiColumnTable(60, 1));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
+      for (Artifact artifact : artifacts) {
+         sb.append(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(), artifact.getHumanReadableId()}));
+      }
+      sb.append(AHTML.endMultiColumnTable());
+      return sb.toString();
    }
 
 }
