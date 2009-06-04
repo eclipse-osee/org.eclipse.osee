@@ -40,6 +40,7 @@ public class WordAttribute extends StringAttribute {
     */
    public WordAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
+      displayTrackedChangesErrorMessage = "";
    }
 
    /* (non-Javadoc)
@@ -49,6 +50,7 @@ public class WordAttribute extends StringAttribute {
    public boolean subClassSetValue(String value) throws OseeCoreException {
       // Do not allow save on tracked changes
       if (WordAnnotationHandler.containsWordAnnotations(value)) {
+         displayTrackedChangesErrorMessage = "Detected tracked changes on for this artifact.";
          displayTrackedChangesErrorDialog();
       } else {
          value = WordUtil.removeWordMarkupSmartTags(value);
@@ -74,8 +76,6 @@ public class WordAttribute extends StringAttribute {
                      Display.getCurrent().getActiveShell(),
                      "Save Error",
                      "Detected tracked changes on for this artifact. Please remove tracked changes to save.\n" + "You must save the document locally if you wish to keep tracking on.");
-            } else {
-               displayTrackedChangesErrorMessage = "Detected tracked changes on for this artifact.";
             }
          }
       }, true);
