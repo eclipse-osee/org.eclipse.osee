@@ -34,7 +34,8 @@ public class OseeEnumerationValidation implements IOseeValidator {
     */
    @Override
    public boolean isApplicable(Artifact artifact, AttributeType attributeType) {
-      return EnumeratedAttribute.class.isInstance(attributeType.getBaseAttributeClass());
+      Class<?> baseClass = attributeType.getBaseAttributeClass();
+      return EnumeratedAttribute.class.isAssignableFrom(baseClass);
    }
 
    /* (non-Javadoc)
