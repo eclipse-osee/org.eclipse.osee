@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.test2.util.FrameworkTestUtil;
@@ -51,29 +52,36 @@ public class WordEditTest extends TestCase {
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordEditTest.xml";
    private static InputStream inputStream;
+   private boolean isWordRunning = false;
 
    /**
     * This test Word Edit's are being saved.
     */
-   public void testCleanUpPre() throws Exception {
+
+   protected void setUp() throws Exception {
+      isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
    }
 
    public void testEditUsingWord() throws Exception {
+      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            FrameworkTestUtil.areWinWordsRunning() == false);
+            isWordRunning == false);
       // use word template renderer
       probeWordEditingCapability(false, getClass().getSimpleName());
       // use renderer manager
       probeWordEditingCapability(true, getClass().getSimpleName());
    }
 
-   public void testCleanUpPost() throws Exception {
-      FrameworkTestUtil.killAllOpenWinword();
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-            getClass().getSimpleName());
+   protected void tearDown() throws Exception {
+      if (!isWordRunning) {
+         WordAttribute.setDisplayTrackedChangesErrorMessage("");
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+               getClass().getSimpleName());
+         FrameworkTestUtil.killAllOpenWinword();
+      }
    }
 
    public static String convertStreamToString(InputStream is) {
