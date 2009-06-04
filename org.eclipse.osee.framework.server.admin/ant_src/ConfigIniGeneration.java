@@ -1,15 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2009 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/*
- * Created on May 27, 2008
- *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-
 /**
+ * Created on May 27, 2008
+ * 
  * @author Andrew M. Finkbeiner
  */
 public class ConfigIniGeneration {
