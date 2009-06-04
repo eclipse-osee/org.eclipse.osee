@@ -9,28 +9,22 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.nonproduction;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.CommitTest;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictDetectionTest;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictResolutionTest;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictedBranchCommitingTest;
-import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.MergeBranchManagementTest;
 
 /**
  * @author Theron Virgin
  */
-public class ConflictTestSuite {
+public class ConflictTestSuite extends TestSuite {
    public static void oneTimeSetUp() throws Exception {
       ConflictTestManager.initializeConflictTest();
    }
 
    public static void oneTimeTearDown() throws Exception {
-      //ConflictTestManager.cleanUpConflictTest();
+      ConflictTestManager.cleanUpConflictTest();
    }
 
    public static Test suite() {

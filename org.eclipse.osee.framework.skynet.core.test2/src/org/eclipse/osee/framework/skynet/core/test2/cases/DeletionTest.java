@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -338,8 +338,8 @@ public class DeletionTest extends TestCase {
 
       }
 
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().size() == 0);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
+            monitorLog.getAllLogs().size() == 0);
       if (DEBUG) {
          fail("Deletion Test was run with tracing enabled to prevent stopping at a failure so no conditions were checked.");
       }

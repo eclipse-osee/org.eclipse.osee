@@ -15,10 +15,10 @@ import junit.framework.TestSuite;
 import org.eclipse.osee.framework.skynet.core.test2.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.Artifact_setAttributeValues;
 import org.eclipse.osee.framework.skynet.core.test2.cases.BranchPurgeTest;
+import org.eclipse.osee.framework.skynet.core.test2.cases.ConflictTestSuite;
 import org.eclipse.osee.framework.skynet.core.test2.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.OseeEnumTypeManagerTest;
-import org.eclipse.osee.framework.skynet.core.test2.cases.OseeEnumerationValidationTest;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +34,7 @@ public class FrameworkCore_Demo_Suite extends TestSuite {
       suite.addTestSuite(CsvArtifactTest.class);
       suite.addTestSuite(NativeArtifactTest.class);
       suite.addTestSuite(OseeEnumTypeManagerTest.class);
-      suite.addTestSuite(OseeEnumerationValidationTest.class);
+      suite.addTest(ConflictTestSuite.suite());
       //$JUnit-END$
       return suite;
    }

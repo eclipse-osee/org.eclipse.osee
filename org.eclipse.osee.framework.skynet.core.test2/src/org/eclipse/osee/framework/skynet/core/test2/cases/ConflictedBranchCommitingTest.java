@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -45,6 +45,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
       }
+      
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
             monitorLog.getSevereLogs().size() == 0);
    }

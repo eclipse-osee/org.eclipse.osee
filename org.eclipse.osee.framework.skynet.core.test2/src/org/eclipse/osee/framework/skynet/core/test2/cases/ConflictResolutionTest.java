@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import java.util.Collection;
 import junit.framework.TestCase;
@@ -86,7 +86,7 @@ public class ConflictResolutionTest extends TestCase {
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().size() == 0);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
+            monitorLog.getAllLogs().size() == 0);
    }
 }

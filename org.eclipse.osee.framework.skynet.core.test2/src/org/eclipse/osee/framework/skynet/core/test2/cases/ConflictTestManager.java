@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import java.util.Collection;
 import java.util.Date;
@@ -72,26 +72,29 @@ public class ConflictTestManager {
       protected String destValue;
       protected String mergeValue;
       protected Class<?> clas;
-      protected boolean deleted;
+      protected boolean sourceDeleted;
+      protected boolean destinationDeleted;
 
       protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) {
-         this(attributeName, sourceValue, destValue, mergeValue, clas, false);
+         this(attributeName, sourceValue, destValue, mergeValue, clas, false, false);
       }
 
-      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean deleted) {
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean sourceDeleted, boolean destinationDeleted) {
          this.attributeName = attributeName;
          this.sourceValue = sourceValue;
          this.destValue = destValue;
          this.mergeValue = mergeValue;
          this.clas = clas;
-         this.deleted = deleted;
+         this.sourceDeleted = sourceDeleted;
+         this.destinationDeleted = destinationDeleted;
       }
 
       protected AttributeValue(String attributeName, String sourceValue, Class<?> clas) {
          this.attributeName = attributeName;
          this.sourceValue = sourceValue;
          this.clas = clas;
-         deleted = false;
+         sourceDeleted = false;
+         destinationDeleted = false;
       }
    }
 
@@ -235,8 +238,9 @@ public class ConflictTestManager {
       // create attribute conflicts
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         //handle source objects
          for (AttributeValue value : conflictDefs[i].values) {
-            if (value.deleted) {
+            if (value.sourceDeleted) {
                sourceArtifacts[i].getSoleAttribute(value.attributeName).delete();
             } else {
                if (value.sourceValue != null) {
@@ -249,9 +253,14 @@ public class ConflictTestManager {
                }
             }
          }
+         
+         ///handle destination objects
          sourceArtifacts[i].persistAttributes();
          for (AttributeValue value : conflictDefs[i].values) {
-            if (value.destValue != null) {
+            if(value.destinationDeleted){
+               destArtifacts[i].getSoleAttribute(value.attributeName).delete();
+            }
+            else if(value.destValue != null) {
                conflictDefs[i].destModified = true;
                destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
             }
@@ -495,6 +504,7 @@ public class ConflictTestManager {
       } else {
          conflict.setAttributeValue(stringToObject(aValue.clas, aValue.mergeValue));
       }
+      conflict.getAttribute();
    }
 
    public static boolean validateCommit() throws Exception {
@@ -513,7 +523,7 @@ public class ConflictTestManager {
                if (value.destValue == null) {
                   expected = value.sourceValue;
                }
-               if (value.deleted) {
+               if (value.sourceDeleted) {
                   if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, "Deleted").equals("Deleted")) {
                      System.err.println("The attribute should have been deleted but wasn't");
                      return false;
@@ -555,7 +565,7 @@ public class ConflictTestManager {
       conflictDefs[1].setValues("Software Requirement", false, false, 0, 0);
 
       conflictDefs[2].setValues("Software Requirement", false, false, 0, 0);
-      conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
+      conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "B", "C", "Destination",
             StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("CSCI", "Sights", "Navigation", "Source", StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Navigation",
@@ -564,7 +574,7 @@ public class ConflictTestManager {
             "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
       conflictDefs[3].setValues("Software Requirement", true, false, 0, 0);
-      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
+      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "B", "C", "Destination",
             StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Source",
             StringAttribute.class));
@@ -575,7 +585,7 @@ public class ConflictTestManager {
       conflictDefs[4].setValues("Software Requirement", false, false, 0, 0);
 
       conflictDefs[5].setValues("Software Requirement", false, true, 0, 0);
-      conflictDefs[5].values.add(new AttributeValue("Safety Criticality", "1", "4", "Source", StringAttribute.class));
+      conflictDefs[5].values.add(new AttributeValue("Safety Criticality", "A", "C", "Source", StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Destination",
             StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
@@ -613,8 +623,8 @@ public class ConflictTestManager {
       conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
             StringAttribute.class));
-      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "5", null, "Source", StringAttribute.class,
-            true));
+      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "E", null, "Source", StringAttribute.class,
+            true, false));
 
       conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
       conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));

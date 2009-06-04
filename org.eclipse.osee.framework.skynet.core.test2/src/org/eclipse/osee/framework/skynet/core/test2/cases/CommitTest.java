@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
+package org.eclipse.osee.framework.skynet.core.test2.cases;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.enums.ModificationType;
