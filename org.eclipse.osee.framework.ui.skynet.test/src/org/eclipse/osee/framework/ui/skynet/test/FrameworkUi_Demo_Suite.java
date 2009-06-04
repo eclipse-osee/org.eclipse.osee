@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
+import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
 import org.eclipse.osee.framework.ui.skynet.test.nonproduction.InterArtifactDropTest;
 
 /**
