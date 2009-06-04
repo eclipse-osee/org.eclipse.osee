@@ -37,8 +37,9 @@ public class OseeEnumerationValidationTest extends TestCase {
       super.setUp();
       Branch branch = BranchManager.getCommonBranch();
       // Create an artifact having an enumerated attribute
-      mockArtifact = ArtifactTypeManager.addArtifact("WordArtifact", branch);
-      enumeratedAttributeType = AttributeTypeManager.getType("Page Type");
+
+      enumeratedAttributeType = AttributeTypeManager.getType("GFE / CFE");
+      mockArtifact = ArtifactTypeManager.addArtifact("Component", branch);
    }
 
    /* (non-Javadoc)
@@ -54,16 +55,22 @@ public class OseeEnumerationValidationTest extends TestCase {
 
    public List<TestData> getEnumerationCases() {
       List<TestData> data = new ArrayList<TestData>();
-      IStatus expected = new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, "");
 
-      data.add(new TestData("Test 1: Null", null, expected));
-      data.add(new TestData("Test 2: Empty String", "", expected));
-      data.add(new TestData("Test 3: Valid", "Portrait", expected));
-      data.add(new TestData("Test 4: Valid", "Landscape", expected));
-      data.add(new TestData("Test 5: Invalid", "Landscape1", expected));
-      data.add(new TestData("Test 6: Invalid", "PORTRAIT", expected));
-      data.add(new TestData("Test 7: Invalid Class", 0, expected));
+      data.add(new TestData("Test 1: Null", null, getErrorStatus("No enum const [GFE / CFE].[null]")));
+      data.add(new TestData("Test 2: Empty String", "", getErrorStatus("No enum const [GFE / CFE].[]")));
+      data.add(new TestData("Test 3: Invalid", "asbasdfasdfa",
+            getErrorStatus("No enum const [GFE / CFE].[asbasdfasdfa]")));
+      data.add(new TestData("Test 4: Valid", "CFE", Status.OK_STATUS));
+      data.add(new TestData("Test 5: Valid", "GFE", Status.OK_STATUS));
+      data.add(new TestData("Test 5: Valid", "Unspecified", Status.OK_STATUS));
+      data.add(new TestData("Test 6: Valid", "cfe", getErrorStatus("No enum const [GFE / CFE].[cfe]")));
+      data.add(new TestData("Test 7: Invalid Class", 0,
+            getErrorStatus("java.lang.Integer cannot be cast to java.lang.String")));
       return data;
+   }
+
+   private IStatus getErrorStatus(String message) {
+      return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, message);
    }
 
    public void testEnumerationData() throws OseeCoreException {
@@ -71,13 +78,13 @@ public class OseeEnumerationValidationTest extends TestCase {
          IStatus actual =
                OseeValidator.getInstance().validate(IOseeValidator.SHORT, mockArtifact, enumeratedAttributeType,
                      data.getValue());
-         checkStatus(data.getExpected(), actual);
+         checkStatus(data.getMessage(), data.getExpected(), actual);
       }
    }
 
-   private void checkStatus(IStatus expected, IStatus actual) {
-      assertEquals(expected.getSeverity(), actual.getSeverity());
-      assertEquals(expected.getMessage(), actual.getMessage());
+   private void checkStatus(String message, IStatus expected, IStatus actual) {
+      assertEquals(message, expected.getSeverity(), actual.getSeverity());
+      assertEquals(message, expected.getMessage(), actual.getMessage());
    }
 
    public static class TestData {
