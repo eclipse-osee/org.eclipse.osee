@@ -16,12 +16,6 @@ import java.util.Map;
 import net.jini.entry.AbstractEntry;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
-/*
- * Created on May 14, 2008
- *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-
 /**
  * @author Ken J. Aguilar
  */
@@ -71,5 +65,5 @@ public class PropertyEntry extends AbstractEntry {
          return false;
       }
    }
-   
+
 }
