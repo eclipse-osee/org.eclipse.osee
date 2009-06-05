@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
 import org.eclipse.osee.framework.ui.skynet.test.nonproduction.InterArtifactDropTest;
@@ -27,6 +28,7 @@ public class FrameworkUi_Demo_Suite extends TestSuite {
       suite.addTestSuite(InterArtifactDropTest.class);
       suite.addTestSuite(WordEditTest.class);
       suite.addTestSuite(WordTrackedChangesTest.class);
+      suite.addTestSuite(PreviewAndMultiPreviewTest.class);
       //      suite.addTestSuite(RebaselineArtifactTest.class);
       //$JUnit-END$
       return suite;
