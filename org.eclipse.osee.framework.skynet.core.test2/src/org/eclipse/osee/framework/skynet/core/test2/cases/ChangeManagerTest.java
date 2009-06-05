@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -35,7 +37,8 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
  * @author Jeff C. Phillips
  */
 public class ChangeManagerTest extends TestCase {
-   private static Artifact artifact;
+   private static Artifact newArtifact;
+   private static Artifact modArtifact;
    private Branch branch;
 
    @Override
@@ -44,6 +47,8 @@ public class ChangeManagerTest extends TestCase {
 
       BranchManager.purgeBranch(branch);
       sleep(5000);
+      
+      modArtifact.persistAttributes();
    }
 
    @Override
@@ -52,29 +57,38 @@ public class ChangeManagerTest extends TestCase {
 
       super.setUp();
 
-      String branchName = "Change Manager Test Branch";
+      modArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, BranchManager.getSystemRootBranch());
+      modArtifact.persistAttributes();
+      
+      sleep(5000);
+      
+      String branchName = "Change Manager Test Branch" + GUID.generateGuidStr();
 
       branch =
             BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), branchName,
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
-      artifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch);
-      artifact.persistAttributes();
+      newArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch);
+      newArtifact.persistAttributes();
       sleep(5000);
    }
 
-   public void testIntroduceCrossBranch() throws Exception {
+   public void testChangeManager() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
 
       sleep(5000);
       
-      assertTrue("Check artifact new", checkArtifactModType(artifact, ModificationType.NEW));
-      artifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
-      assertTrue("Check artifact is still new", checkArtifactModType(artifact, ModificationType.NEW));
+      modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
       
+      assertTrue("Check artifact new", checkArtifactModType(newArtifact, ModificationType.NEW));
+      newArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
+      assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
+      modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
+      modArtifact.persistAttributes();
+      assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.CHANGE));
    }
    
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException{
@@ -82,6 +96,7 @@ public class ChangeManagerTest extends TestCase {
       for(Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new EmptyMonitor())){
          if(change.getArtId() == artifact.getArtId()){
             pass = change.getModificationType() == modificationType;
+            break;
          }
       }
      return pass;
