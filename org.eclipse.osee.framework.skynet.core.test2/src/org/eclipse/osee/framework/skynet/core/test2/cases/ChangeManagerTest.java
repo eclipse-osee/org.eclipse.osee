@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
@@ -63,19 +65,26 @@ public class ChangeManagerTest extends TestCase {
    }
 
    public void testIntroduceCrossBranch() throws Exception {
-      boolean pass = false;
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
 
       sleep(5000);
-
-      for(Change change : ChangeManager.getChangesPerBranch(branch, new EmptyMonitor())){
+      
+      assertTrue("Check artifact new", checkArtifactModType(artifact, ModificationType.NEW));
+      artifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
+      assertTrue("Check artifact is still new", checkArtifactModType(artifact, ModificationType.NEW));
+      
+   }
+   
+   public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException{
+      boolean pass = false;
+      for(Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new EmptyMonitor())){
          if(change.getArtId() == artifact.getArtId()){
-            pass = change.getModificationType() == ModificationType.NEW;
+            pass = change.getModificationType() == modificationType;
          }
       }
-      assertTrue(pass);
+     return pass;
    }
 
    public static void sleep(long milliseconds) throws Exception {
