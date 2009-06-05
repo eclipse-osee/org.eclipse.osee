@@ -15,6 +15,7 @@ import junit.framework.TestSuite;
 import org.eclipse.osee.framework.skynet.core.test2.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.Artifact_setAttributeValues;
 import org.eclipse.osee.framework.skynet.core.test2.cases.BranchPurgeTest;
+import org.eclipse.osee.framework.skynet.core.test2.cases.ChangeManagerTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.ConflictTestSuite;
 import org.eclipse.osee.framework.skynet.core.test2.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
@@ -35,6 +36,7 @@ public class FrameworkCore_Demo_Suite extends TestSuite {
       suite.addTestSuite(NativeArtifactTest.class);
       suite.addTestSuite(OseeEnumTypeManagerTest.class);
       suite.addTest(ConflictTestSuite.suite());
+      suite.addTestSuite(ChangeManagerTest.class);
       //$JUnit-END$
       return suite;
    }
