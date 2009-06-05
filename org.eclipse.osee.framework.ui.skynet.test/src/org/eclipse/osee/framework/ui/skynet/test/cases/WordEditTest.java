@@ -62,13 +62,13 @@ public class WordEditTest extends TestCase {
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
-   }
-
-   public void testEditUsingWord() throws Exception {
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
             isWordRunning == false);
+   }
+
+   public void testEditUsingWord() throws Exception {
       // use word template renderer
       probeWordEditingCapability(false, getClass().getSimpleName());
       // use renderer manager

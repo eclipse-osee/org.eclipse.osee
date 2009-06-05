@@ -52,6 +52,10 @@ public class WordTrackedChangesTest extends TestCase {
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
+      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
+      assertTrue(
+            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
+            isWordRunning == false);
    }
 
    /*
@@ -59,11 +63,6 @@ public class WordTrackedChangesTest extends TestCase {
     */
 
    public void testWordSaveWithTrackChanges() throws Exception {
-
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
 
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
@@ -84,11 +83,6 @@ public class WordTrackedChangesTest extends TestCase {
    }
 
    public void testGeneralWordSaveWithTrackChanges() throws Exception {
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
-
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
