@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import org.eclipse.core.resources.IFile;
@@ -82,6 +84,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
+   private static boolean noPopups = false;
+   private Set<Artifact> artifacts = new HashSet<Artifact>();
 
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
 
@@ -159,34 +163,19 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                generator.initialize(false, false);
                for (int i = 0; i < newerArtifact.size(); i++) {
                   try {
-
                      //Remove tracked changes and display image diffs
                      Pair<String, Boolean> originalValue = null;
                      Pair<String, Boolean> newAnnotationValue = null;
                      Pair<String, Boolean> oldAnnotationValue = null;
-                     if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-                        Attribute attribute;
-                        if (baseArtifacts.get(i) != null) {
-                           attribute = baseArtifacts.get(i).getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-                           if (attribute != null) {
-                              String value = attribute.getValue().toString();
-                              if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                                 oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-                                 attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
-                              }
-                           }
-                        }
-                        if (newerArtifact.get(i) != null) {
-                           attribute = newerArtifact.get(i).getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-                           if (attribute != null) {
-                              String value = attribute.getValue().toString();
-                              if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                                 newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-                                 attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
-                              }
-                           }
-                        }
+
+                     //Check for tracked changes
+                     artifacts.clear();
+                     artifacts.addAll(checkForTrackedChangesOn(baseArtifacts.get(i)));
+                     artifacts.addAll(checkForTrackedChangesOn(newerArtifact.get(i)));
+                     if (!artifacts.isEmpty()) {
+                        continue;
                      }
+
                      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                         originalValue =
                               WordImageChecker.checkForImageDiffs(
@@ -229,7 +218,16 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
                }
                monitor.setTaskName("Running Diff Script");
-               generator.finish(baseFileStr + "/compareDocs.vbs", true);
+               if (!baseFileStr.equals("c:/UserData")) {
+                  generator.finish(baseFileStr + "/compareDocs.vbs", true);
+               }
+               // Let the user know that these artifacts had tracked changes on and we are not handling them
+               // Also, list these artifacts in an artifact explorer
+               if (!artifacts.isEmpty() && !noPopups) {
+                  WordUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+                        "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+                  WordUtil.displayTrackedChangesOnArtifacts(artifacts);
+               }
             } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
@@ -250,63 +248,52 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
 
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute = null;
+      //Check for tracked changes
+      artifacts.clear();
+      artifacts.addAll(checkForTrackedChangesOn(baseVersion));
+      artifacts.addAll(checkForTrackedChangesOn(newerVersion));
 
+      if (artifacts.isEmpty()) {
+         if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+            originalValue =
+                  WordImageChecker.checkForImageDiffs(
+                        baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                        newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null);
+         }
          if (baseVersion != null) {
-            attribute = baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-            if (attribute != null) {
-               String value = attribute.getValue().toString();
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                  oldAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-                  attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
-               }
+            if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+               baseFile = renderForMerge(monitor, baseVersion, presentationType);
+            } else {
+               baseFile = renderForDiff(monitor, baseVersion);
             }
+         } else {
+            baseFile = renderForDiff(monitor, branch);
          }
+
          if (newerVersion != null) {
-            attribute = newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-            if (attribute != null) {
-               String value = attribute.getValue().toString();
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                  newAnnotationValue = new Pair<String, Boolean>(value, attribute.isDirty());
-                  attribute.setValue(WordAnnotationHandler.removeAnnotations(value));
-               }
+            if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+               newerFile = renderForMerge(monitor, newerVersion, presentationType);
+            } else {
+               newerFile = renderForDiff(monitor, newerVersion);
             }
-         }
-      }
-
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
-         originalValue =
-               WordImageChecker.checkForImageDiffs(
-                     baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
-                     newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null);
-      }
-      if (baseVersion != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            baseFile = renderForMerge(monitor, baseVersion, presentationType);
          } else {
-            baseFile = renderForDiff(monitor, baseVersion);
+            newerFile = renderForDiff(monitor, branch);
          }
+         WordImageChecker.restoreOriginalValue(
+               baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+               oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+         WordImageChecker.restoreOriginalValue(
+               newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+               newAnnotationValue);
+         return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
       } else {
-         baseFile = renderForDiff(monitor, branch);
-      }
-
-      if (newerVersion != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            newerFile = renderForMerge(monitor, newerVersion, presentationType);
-         } else {
-            newerFile = renderForDiff(monitor, newerVersion);
+         if (!noPopups) {
+            WordUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+                  "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+            WordUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
-      } else {
-         newerFile = renderForDiff(monitor, branch);
       }
-      WordImageChecker.restoreOriginalValue(
-            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
-            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
-      WordImageChecker.restoreOriginalValue(
-            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
-            newAnnotationValue);
-      return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
+      return "";
    }
 
    @Override
@@ -505,6 +492,53 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
             WordAttribute.WHOLE_WORD_CONTENT);
+   }
+
+   private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+         Attribute attribute;
+         if (artifact != null) {
+            attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            if (attribute != null) {
+               String value = attribute.getValue().toString();
+               // check for track changes
+               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+                  // capture those artifacts that have tracked changes on 
+                  artifacts.add(artifact);
+               }
+            }
+         }
+      }
+      return artifacts;
+   }
+
+   /**
+    * @return the noPopups
+    */
+   public static boolean isNoPopups() {
+      return noPopups;
+   }
+
+   /**
+    * @param noPopups the noPopups to set
+    */
+   public static void setNoPopups(boolean noPopups) {
+      WordTemplateRenderer.noPopups = noPopups;
+   }
+
+   /**
+    * @return the artifacts
+    */
+   public Set<Artifact> getArtifacts() {
+      return artifacts;
+   }
+
+   /**
+    * @param artifacts the artifacts to set
+    */
+   public void setArtifacts(Set<Artifact> artifacts) {
+      this.artifacts = artifacts;
    }
 
 }
