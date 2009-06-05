@@ -18,7 +18,7 @@ import java.util.Properties;
 public class SearchOptions {
 
    public enum SearchOptionsEnum {
-      include_deleted, match_word_order, as_xml, find_all_locations;
+      include_deleted, match_word_order, as_xml, find_all_locations, case_sensitive;
 
       public String asStringOption() {
          return name().replaceAll("_", " ");

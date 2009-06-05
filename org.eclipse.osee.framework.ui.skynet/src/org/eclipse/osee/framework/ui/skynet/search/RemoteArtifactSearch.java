@@ -48,14 +48,16 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private final boolean matchWordOrder;
    private final Branch branch;
    private final boolean findAllMatchLocations;
+   private final boolean isCaseSensitive;
 
-   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, String... attributeTypeNames) {
+   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypeNames) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
       this.attributeTypeNames = attributeTypeNames;
       this.queryString = queryString;
       this.matchWordOrder = matchWordOrder;
       this.findAllMatchLocations = findAllMatchLocations;
+      this.isCaseSensitive = isCaseSensitive;
    }
 
    /* (non-Javadoc)
@@ -75,6 +77,10 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          } else {
             optionsList.add("1st Match Only");
          }
+      }
+
+      if (isCaseSensitive) {
+         optionsList.add("Case Sensitive");
       }
 
       if (attributeTypeNames != null && attributeTypeNames.length > 0) {
@@ -100,7 +106,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       try {
          List<ArtifactMatch> matches =
                ArtifactQuery.getArtifactMatchesFromAttributeWithKeywords(branch, queryString, matchWordOrder,
-                     includeDeleted, findAllMatchLocations, attributeTypeNames);
+                     includeDeleted, findAllMatchLocations, isCaseSensitive, attributeTypeNames);
 
          endOfloadTime = System.currentTimeMillis();
 

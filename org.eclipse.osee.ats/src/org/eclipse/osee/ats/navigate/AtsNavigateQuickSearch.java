@@ -71,7 +71,7 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       try {
          return getExpectedArtifacts(ArtifactQuery.getArtifactsFromAttributeWithKeywords(AtsPlugin.getAtsBranch(),
-               searchStr, false, false));
+               searchStr, false, false, false));
       } catch (Exception ex) {
          OseeLog.log("AtsNavigateQuickSearch.performSearch", Level.SEVERE, ex.getMessage(), ex);
       }

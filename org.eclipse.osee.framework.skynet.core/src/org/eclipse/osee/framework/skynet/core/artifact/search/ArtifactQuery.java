@@ -403,8 +403,8 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, String... attributeTypes) throws OseeCoreException {
-      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, attributeTypes).getArtifacts(
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifacts(
             FULL, null, false, false, allowDeleted);
    }
 
@@ -419,12 +419,13 @@ public class ArtifactQuery {
     * @param allowDeleted
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     *           first one. When returning all match locations, search performance may be slow.
+    * @param isCaseSensitive
     * @param attributeTypes
     * @return artifact matches
     * @throws OseeCoreException
     */
-   public static List<ArtifactMatch> getArtifactMatchesFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, String... attributeTypes) throws OseeCoreException {
-      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, attributeTypes).getArtifactsWithMatches(
+   public static List<ArtifactMatch> getArtifactMatchesFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifactsWithMatches(
             FULL, null, false, false, allowDeleted, findAllMatchLocations);
    }
 

@@ -58,13 +58,15 @@ final class HttpArtifactQuery {
    private final String[] attributeTypes;
    private final boolean includeDeleted;
    private final Branch branch;
+   private final boolean isCaseSensitive;
 
-   protected HttpArtifactQuery(Branch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, String... attributeTypes) {
+   protected HttpArtifactQuery(Branch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, String... attributeTypes) {
       this.branch = branch;
       this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
       this.attributeTypes = attributeTypes != null ? attributeTypes : new String[0];
       this.queryString = queryString;
+      this.isCaseSensitive = isCaseSensitive;
    }
 
    private String getSearchUrl(String sessionId) throws OseeDataStoreException {
@@ -82,6 +84,7 @@ final class HttpArtifactQuery {
       propertyStore.put("include deleted", includeDeleted);
       propertyStore.put("match word order", matchWordOrder);
       propertyStore.put("attributeType", attributeTypes);
+      propertyStore.put("case sensitive", isCaseSensitive);
 
       if (matchWordOrder) {
          propertyStore.put("as xml", withMatches);

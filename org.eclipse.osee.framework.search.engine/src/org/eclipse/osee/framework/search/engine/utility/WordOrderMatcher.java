@@ -33,8 +33,8 @@ public class WordOrderMatcher {
       Reader reader = null;
       try {
          reader = new InputStreamReader(inputStream, "UTF-8");
-
-         char[] charsToSearch = removeExtraSpacesAndSpecialCharacters(toSearch);
+         boolean isCaseInsensitive = !options.getBoolean(SearchOptionsEnum.case_sensitive.asStringOption());
+         char[] charsToSearch = removeExtraSpacesAndSpecialCharacters(toSearch, isCaseInsensitive);
          int charCount = 0;
          int index = 0;
          int value = 0;
@@ -44,7 +44,11 @@ public class WordOrderMatcher {
          while (value != -1) {
             value = reader.read();
             charCount++;
-            char currChar = Character.toLowerCase((char) value);
+            char currChar = (char) value;
+            if (isCaseInsensitive) {
+               currChar = Character.toLowerCase(currChar);
+            }
+
             if (currChar != '\r' && currChar != '\n') {
                if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
                   currChar = ' ';
@@ -93,13 +97,14 @@ public class WordOrderMatcher {
       return matchLocations;
    }
 
-   private static char[] removeExtraSpacesAndSpecialCharacters(String toSearch) {
+   private static char[] removeExtraSpacesAndSpecialCharacters(String toSearch, boolean setAllToLowerCase) {
       boolean lastCharacterAddedWasWhiteSpace = false;
       StringBuilder searchString = new StringBuilder();
       for (int index = 0; index < toSearch.length(); index++) {
          char currChar = toSearch.charAt(index);
-         currChar = Character.toLowerCase(currChar);
-
+         if (setAllToLowerCase) {
+            currChar = Character.toLowerCase(currChar);
+         }
          if (currChar != '\r' && currChar != '\n') {
             if (WordsUtil.isPunctuationOrApostrophe(currChar)) {
                currChar = ' ';

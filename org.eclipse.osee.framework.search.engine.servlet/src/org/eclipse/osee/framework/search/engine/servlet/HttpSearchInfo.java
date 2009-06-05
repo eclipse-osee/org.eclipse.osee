@@ -91,6 +91,7 @@ class HttpSearchInfo {
       options.put(SearchOptionsEnum.match_word_order.asStringOption(), propertyStore.get("match word order"));
       options.put(SearchOptionsEnum.as_xml.asStringOption(), propertyStore.get("as xml"));
       options.put(SearchOptionsEnum.find_all_locations.asStringOption(), propertyStore.get("find all locations"));
+      options.put(SearchOptionsEnum.case_sensitive.asStringOption(), propertyStore.get("case sensitive"));
 
       return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),
             propertyStore.getArray("attributeType"));
