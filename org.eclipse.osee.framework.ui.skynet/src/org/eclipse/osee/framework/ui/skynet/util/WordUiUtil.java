@@ -45,7 +45,7 @@ public class WordUiUtil {
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts)
                   rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
-                        artifact.getHumanReadableId()}));
+                        XResultData.getHyperlink(artifact)}));
                rd.addRaw(AHTML.endMultiColumnTable());
                try {
                   rd.report("Artifacts With Tracked Changes");
@@ -56,4 +56,27 @@ public class WordUiUtil {
          });
       }
    }
+
+   public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts) {
+      if (!artifacts.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               XResultData rd = new XResultData();
+               rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled\n");
+               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
+               for (Artifact artifact : artifacts)
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
+                        XResultData.getHyperlink(artifact)}));
+               rd.addRaw(AHTML.endMultiColumnTable());
+               try {
+                  rd.report("Unhandled Artifacts");
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+      }
+   }
+
 }
