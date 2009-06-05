@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 
 /**
- * Tests the BLAM operation updateFromParentBranch.
+ * Tests cross branch drag and drop.
  * 
  * @author Jeff C. Phillips
  */
@@ -44,10 +44,10 @@ public class InterArtifactDropTest extends TestCase {
    protected void tearDown() throws Exception {
       super.tearDown();
 
-      BranchManager.deleteBranch(sourceBranch);
+      BranchManager.purgeBranch(sourceBranch);
       sleep(5000);
 
-      BranchManager.deleteBranch(destinationBranch);
+      BranchManager.purgeBranch(destinationBranch);
       sleep(5000);
    }
 
