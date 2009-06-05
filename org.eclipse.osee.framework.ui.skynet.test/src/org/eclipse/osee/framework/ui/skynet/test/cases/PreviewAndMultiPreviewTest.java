@@ -185,10 +185,10 @@ public class PreviewAndMultiPreviewTest extends TestCase {
             assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            fail("Whole Word Preview test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         fail("Whoile Word Test failed.");
       }
    }
 
