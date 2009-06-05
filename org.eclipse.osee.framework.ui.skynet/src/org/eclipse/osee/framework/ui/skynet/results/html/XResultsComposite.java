@@ -61,7 +61,7 @@ public class XResultsComposite extends Composite {
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       browser = new Browser(this, SWT.BORDER);
-      browser.addLocationListener(new ResultBrowserListener());
+      browser.addLocationListener(new XResultBrowserListener());
       browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
       browser.setMenu(getPopup(parent));
 

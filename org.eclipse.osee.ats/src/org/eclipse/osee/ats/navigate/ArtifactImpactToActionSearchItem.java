@@ -143,7 +143,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   Artifact assocArt = branch.getAssociatedArtifact();
                   if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
-                           assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
+                           XResultData.getHyperlink(assocArt), assocArt.getDescriptiveName()}));
                   } else {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
                   }

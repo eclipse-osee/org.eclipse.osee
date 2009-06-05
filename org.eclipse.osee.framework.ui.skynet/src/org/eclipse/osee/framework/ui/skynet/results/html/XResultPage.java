@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.swt.program.Program;
 
@@ -39,11 +40,10 @@ public class XResultPage {
    private int numWarnings = Integer.MAX_VALUE;
    private int numErrors = Integer.MAX_VALUE;
    public static enum Manipulations {
-      NONE, HRID_CMD_HYPER, // Replace all HRID strings with hyperlinks; ATS=<hrid> opens Action
-      // editor
+      NONE, // 
+      HRID_CMD_HYPER,
+      // Replace all HRID strings with hyperlinks; ATS=<hrid> opens Action editor
       // ART=<hrid> opens Artifact editor, BOTH=<hrid> allows either
-      HRID_ATS_HYPER, // Replace all HRID strings with hyperlinks to open ATS; this happens after
-      // the HRID_CMD_HYPER replace
       ERROR_RED, // Make all "Error" strings red
       WARNING_YELLOW, // Make all "Warning" strings yellow
       CONVERT_NEWLINES, // Convert all \n to <br>
@@ -78,13 +78,11 @@ public class XResultPage {
       id = GUID.generateGuidStr();
       for (Manipulations man : manipulations) {
          if (man == Manipulations.ALL) {
-            this.manipulations.add(Manipulations.HRID_ATS_HYPER);
             this.manipulations.add(Manipulations.HRID_CMD_HYPER);
             this.manipulations.add(Manipulations.ERROR_RED);
             this.manipulations.add(Manipulations.CONVERT_NEWLINES);
             this.manipulations.add(Manipulations.WARNING_YELLOW);
          } else if (man == Manipulations.HTML_MANIPULATIONS) {
-            this.manipulations.add(Manipulations.HRID_ATS_HYPER);
             this.manipulations.add(Manipulations.HRID_CMD_HYPER);
             this.manipulations.add(Manipulations.ERROR_RED);
             this.manipulations.add(Manipulations.WARNING_YELLOW);
@@ -160,14 +158,14 @@ public class XResultPage {
                   String hrid = value;
                   hrid = hrid.replaceAll("^.*:", "");
                   if (cmdNameHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS-" + name, hrid);
-                     replaceStr += "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE-" + name, hrid);
+                     String replaceStr = hrid + " (" + XResultData.getHyperlinkForAction("ATS-" + name, hrid);
+                     replaceStr += "  " + XResultData.getHyperlinkForArtifactEditor("AE-" + name, hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdNameHrid, replaceStr);
                   } else if (cmdNameHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultHtml.getOpenHyperlinkHtml(name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultData.getHyperlinkForAction(name, hrid));
                   } else if (cmdNameHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultHtml.getOpenArtEditHyperlinkHtml(name, hrid));
+                     str = str.replaceAll(cmdNameHrid, XResultData.getHyperlinkForArtifactEditor(name, hrid));
                   }
                }
                // Retrieve all ATS=HRSID matches and replace with hyperlinking
@@ -179,26 +177,16 @@ public class XResultPage {
                   String hrid = cmdHrid;
                   hrid = hrid.replaceAll("^.*?=", "");
                   if (cmdHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultHtml.getOpenHyperlinkHtml("ATS", hrid);
-                     replaceStr += "  " + XResultHtml.getOpenArtEditHyperlinkHtml("AE", hrid);
+                     String replaceStr = hrid + " (" + XResultData.getHyperlinkForAction("ATS", hrid);
+                     replaceStr += "  " + XResultData.getHyperlinkForArtifactEditor("AE", hrid);
                      replaceStr += ")";
                      str = str.replaceAll(cmdHrid, replaceStr);
                   } else if (cmdHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdHrid, XResultHtml.getOpenHyperlinkHtml(hrid, hrid));
+                     str = str.replaceAll(cmdHrid, XResultData.getHyperlinkForAction(hrid, hrid));
                   } else if (cmdHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdHrid, XResultHtml.getOpenArtEditHyperlinkHtml(hrid, hrid));
+                     str = str.replaceAll(cmdHrid, XResultData.getHyperlinkForArtifactEditor(hrid, hrid));
                   }
                }
-            }
-            if (manipulations.contains(Manipulations.HRID_ATS_HYPER)) {
-               Matcher m =
-                     Pattern.compile("(?<![A-Za-z0-9])([A-Z0-9]{1}[B-DF-HJ-NP-TV-Z0-9]{3}[A-Z0-9]{1})(?![A-Za-z0-9])").matcher(
-                           str);
-               Set<String> hrids = new HashSet<String>();
-               while (m.find())
-                  hrids.add(m.group(1));
-               for (String hrid : hrids)
-                  str = str.replaceAll(hrid, XResultHtml.getOpenHyperlinkHtml(hrid, hrid));
             }
             if (manipulations.contains(Manipulations.ERROR_RED)) {
                str = str.replaceAll("Error:", AHTML.color("red", "Error:"));

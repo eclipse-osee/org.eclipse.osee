@@ -23,10 +23,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultHtml;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -55,8 +56,12 @@ public class XResultData {
          rd.logWarning("This is a warning");
          rd.logError("This is an error");
 
-         rd.log("\n\nExample of hyperlinked hrid: " + UserManager.getUser().getHumanReadableId());
-         rd.log("\n\nExample of hyperlinked hrid on another branch: " + XResultHtml.getOpenHyperlinkHtml(
+         rd.log("\n\nExample of hyperlinked hrid: " + XResultData.getHyperlink(UserManager.getUser()));
+
+         rd.log("Example of hyperlinked artifact different hyperlink string: " + XResultData.getHyperlink(
+               "Different string", UserManager.getUser()));
+
+         rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
                UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
                BranchManager.getCommonBranch().getBranchId()));
 
@@ -156,6 +161,46 @@ public class XResultData {
    public XResultPage getReport(final String title, Manipulations... manipulations) {
       return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
             (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
+   }
+
+   /* 
+    * Creates hyperlink using hrid as name.  Default editor will open.
+    */
+   public static String getHyperlink(Artifact art) {
+      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getBranchId());
+   }
+
+   /* 
+    * Creates hyperlink using name.  Default editor will open.
+    */
+   public static String getHyperlink(String name, Artifact art) {
+      return getHyperlink(name, art.getHumanReadableId(), art.getBranch().getBranchId());
+   }
+
+   /* 
+    * Creates hyperlink using name.  Default editor will open hrid for branchId given
+    */
+   public static String getHyperlink(String name, String hrid, int branchId) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifctBranch,
+            hrid + "(" + branchId + ")"), name);
+   }
+
+   public static String getHyperlinkForArtifactEditor(String name, String hrid) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
+            name);
+   }
+
+   public static String getHyperlinkForAction(String name, String hrid) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, hrid), name);
+   }
+
+   public static String getHyperlinkForAction(Artifact artifact) {
+      return getHyperlinkForAction(artifact.getHumanReadableId(), artifact);
+   }
+
+   public static String getHyperlinkForAction(String name, Artifact art) {
+      return AHTML.getHyperlink(
+            XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
 }

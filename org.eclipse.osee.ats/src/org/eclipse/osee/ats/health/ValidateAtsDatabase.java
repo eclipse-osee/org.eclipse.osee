@@ -157,7 +157,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          // Check that HRIDs not duplicated on Common branch
          if (hrids.contains(artifact.getHumanReadableId())) {
-            xResultData.logError("Duplicate HRIDs: " + artifact.getHumanReadableId());
+            xResultData.logError("Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
          }
          // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
          if (artifact instanceof TeamWorkFlowArtifact) {
@@ -171,7 +171,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      xResultData.logError("Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
                   }
                } else {
-                  legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
+                  legacyPcrIdToParentHrid.put(legacyPcrId, XResultData.getHyperlink(teamArt.getParentActionArtifact()));
                }
             }
          }
@@ -190,7 +190,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   validateBranchId(verArt, parentBranchId);
                }
             } catch (Exception ex) {
-               xResultData.logError(verArt.getArtifactTypeName() + " " + verArt.getHumanReadableId() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+               xResultData.logError(verArt.getArtifactTypeName() + " " + XResultData.getHyperlink(verArt) + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -203,10 +203,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
                if (teamArt.getActionableItemsDam().getActionableItems().size() == 0) {
-                  xResultData.logError("TeamWorkflow " + teamArt.getHumanReadableId() + " has 0 ActionableItems");
+                  xResultData.logError("TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has 0 ActionableItems");
                }
                if (teamArt.getTeamDefinition() == null) {
-                  xResultData.logError("TeamWorkflow " + teamArt.getHumanReadableId() + " has no TeamDefinition");
+                  xResultData.logError("TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has no TeamDefinition");
                }
                String parentBranchId =
                      teamArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
@@ -214,7 +214,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   validateBranchId(teamArt, parentBranchId);
                }
             } catch (Exception ex) {
-               xResultData.logError(teamArt.getArtifactTypeName() + " " + teamArt.getHumanReadableId() + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
+               xResultData.logError(teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -224,10 +224,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
          Branch branch = BranchManager.getBranch(new Integer(parentBranchId));
          if (branch.isArchived()) {
-            xResultData.logError(art.getArtifactTypeName() + " " + art.getHumanReadableId() + " references archived parent in Parent Branch Id: " + parentBranchId);
+            xResultData.logError(art.getArtifactTypeName() + " " + XResultData.getHyperlink(art) + " references archived parent in Parent Branch Id: " + parentBranchId);
          }
       } catch (BranchDoesNotExist ex) {
-         xResultData.logError(art.getArtifactTypeName() + " " + art.getHumanReadableId() + " branch does not exist for Parent Branch Id: " + parentBranchId);
+         xResultData.logError(art.getArtifactTypeName() + " " + XResultData.getHyperlink(art) + " branch does not exist for Parent Branch Id: " + parentBranchId);
       }
    }
 
@@ -251,7 +251,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          // Test for null attribute values 
          for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
-               xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
+               xResultData.logError("Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
                if (fixAttributeValues) {
                   attr.delete();
                }
@@ -265,7 +265,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                      state.getName().equals(DefaultTeamState.Cancelled.name()))) {
                   if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                     xResultData.logError("ats.State error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                     xResultData.logError("ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                      if (fixAttributeValues) {
                         state.setHoursSpent(0);
                         state.setPercentComplete(0);
@@ -284,7 +284,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                   state.getName().equals(DefaultTeamState.Cancelled.name()))) {
                if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                  xResultData.logError("ats.CurrentState error for SMA: " + artifact.getHumanReadableId() + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                  xResultData.logError("ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                   if (fixAttributeValues) {
                      state.setHoursSpent(0);
                      state.setPercentComplete(0);
@@ -306,7 +306,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {
             if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().size() == 0) {
-               xResultData.logError("Action " + artifact.getHumanReadableId() + " has no Team Workflows\n");
+               xResultData.logError("Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
             }
          }
       }
@@ -317,7 +317,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
             if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
-               xResultData.logError("Team " + artifact.getHumanReadableId() + " has no parent Action\n");
+               xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
             }
          }
       }
@@ -329,7 +329,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             if (teamArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version).size() > 1) {
-               xResultData.logError("Team workflow " + teamArt.getHumanReadableId() + " has " + teamArt.getRelatedArtifacts(
+               xResultData.logError("Team workflow " + XResultData.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
                      AtsRelation.TeamWorkflowTargetedForVersion_Version).size() + " versions");
             }
          }
@@ -344,7 +344,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArtifact = (TaskArtifact) artifact;
             if (taskArtifact.getRelatedArtifacts(AtsRelation.SmaToTask_Sma).size() != 1) {
-               xResultData.logError("Task " + taskArtifact.getHumanReadableId() + " has " + taskArtifact.getRelatedArtifacts(
+               xResultData.logError("Task " + XResultData.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
                      AtsRelation.SmaToTask_Sma).size() + " parents.");
                badTasks.add(taskArtifact);
             }
@@ -361,10 +361,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().size() == 0) {
-               xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has defect attribute, but no defects (xml parsing error).");
+               xResultData.logError("Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
             }
             if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().size() == 0) {
-               xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has role attribute, but no roles (xml parsing error).");
+               xResultData.logError("Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
             }
          }
       }
@@ -376,7 +376,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             if (reviewArtifact.getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team).size() == 0 && reviewArtifact.getActionableItemsDam().getActionableItemGuids().size() == 0) {
-               xResultData.logError("Review " + reviewArtifact.getHumanReadableId() + " has 0 related parents and 0 actionable items.");
+               xResultData.logError("Review " + XResultData.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
             }
          }
       }
@@ -391,9 +391,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                ATSLog log = sma.getSmaMgr().getLog();
                if (log.getOriginator() == null) {
                   try {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " originator == null");
+                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " originator == null");
                   } catch (Exception ex) {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing originator: " + ex.getLocalizedMessage());
+                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing originator: " + ex.getLocalizedMessage());
                   }
                }
                for (String stateName : Arrays.asList("Completed", "Cancelled")) {
@@ -401,17 +401,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      LogItem logItem = log.getStateEvent(LogType.StateEntered, stateName);
                      if (logItem == null) {
                         try {
-                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem == null");
+                           xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + stateName + "\" logItem == null");
                         } catch (Exception ex) {
-                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing logItem: " + ex.getLocalizedMessage());
+                           xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing logItem: " + ex.getLocalizedMessage());
 
                         }
                      }
                      if (logItem.getDate() == null) {
                         try {
-                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " state \"" + stateName + "\" logItem.date == null");
+                           xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + stateName + "\" logItem.date == null");
                         } catch (Exception ex) {
-                           xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing logItem.date: " + ex.getLocalizedMessage());
+                           xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
 
                         }
                      }
@@ -422,11 +422,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                // Verify that all users are resolved
                for (LogItem logItem : sma.getSmaMgr().getLog().getLogItems()) {
                   if (logItem.getUser() == null) {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " user == null for userId \"" + logItem.getUserId() + "\"");
+                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " user == null for userId \"" + logItem.getUserId() + "\"");
                   }
                }
             } catch (Exception ex) {
-               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " exception accessing AtsLog: " + ex.getLocalizedMessage());
+               xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -442,7 +442,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                StateMachineArtifact sma = (StateMachineArtifact) art;
                SMAManager smaMgr = new SMAManager(sma);
                if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() > 0) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with attribute assignees");
+                  xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
                      smaMgr.getStateMgr().clearAssignees();
                      smaMgr.getSma().persistAttributesAndRelations();
@@ -451,7 +451,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
                if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
                      unAssignedUser)) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.toString(
+                  xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " is unassigned and assigned => " + Artifacts.toString(
                         "; ", smaMgr.getStateMgr().getAssignees()));
                   if (fixAssignees) {
                      smaMgr.getStateMgr().removeAssignee(unAssignedUser);
@@ -462,13 +462,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   xResultData.logError(art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
                if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
-                  xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
+                  xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
                if (art instanceof StateMachineArtifact) {
                   List<Artifact> relationAssigned =
                         art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
                   if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with related assignees");
+                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
                      if (fixAssignees) {
                         try {
                            ((StateMachineArtifact) art).updateAssigneeRelations();
@@ -481,7 +481,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                      // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
                      if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
-                        xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " attribute assignees doesn't match related assignees");
+                        xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
                         if (fixAssignees) {
                            try {
                               ((StateMachineArtifact) art).updateAssigneeRelations();

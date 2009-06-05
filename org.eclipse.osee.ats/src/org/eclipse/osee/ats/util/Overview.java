@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.results.html.ResultBrowserHyperCmd;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultHtml;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 public class Overview {
@@ -255,26 +255,21 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(String name, String hrid) {
-      return AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openAction, hrid), name);
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, hrid), name);
    }
 
    public static String getOpenArtEditHyperlinkHtml(String name, String hrid) {
-      return AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openArtifactEditor, hrid),
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
             name);
-   }
-
-   public static String getOpenArtViewHyperlinkHtml(String name, String hrid) {
-      return AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openArtifactHyperViewer,
-            hrid), name);
    }
 
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
-      return XResultHtml.getOpenHyperlinkHtml(name, guidOrHrid, branchId);
+      return XResultData.getHyperlink(name, guidOrHrid, branchId);
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {
-      return AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openAction, art.getGuid()),
-            name);
+      return AHTML.getHyperlink(
+            XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
    public void addLog(StateMachineArtifact artifact) throws OseeCoreException {

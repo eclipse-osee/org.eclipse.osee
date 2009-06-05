@@ -16,35 +16,29 @@ import java.util.regex.Pattern;
 /**
  * @author Donald G. Dunne
  */
-public enum ResultBrowserHyperCmd {
-   openAction,
-   openArtifctBranch,
-   openArtifactEditor,
-   openArtifactHyperViewer,
-   openBranch,
-   openChangeReport,
-   openPriorityHelp;
+public enum XResultBrowserHyperCmd {
+   openAction, openArtifctBranch, openArtifactEditor, openBranch, openChangeReport, openPriorityHelp;
 
-   public static String getHyperCmdStr(ResultBrowserHyperCmd resultBrowserHyperCmd, String value) {
-      return String.format("%s=%s", resultBrowserHyperCmd.name(), value);
+   public static String getHyperCmdStr(XResultBrowserHyperCmd xResultBrowserHyperCmd, String value) {
+      return String.format("%s=%s", xResultBrowserHyperCmd.name(), value);
    }
 
-   public static ResultBrowserHyperCmd getCmdStrHyperCmd(String hyperCmdStr) {
+   public static XResultBrowserHyperCmd getCmdStrHyperCmd(String hyperCmdStr) {
       Matcher m = Pattern.compile("(.*?)=(.*)").matcher(hyperCmdStr);
-      if (m.find()) return ResultBrowserHyperCmd.getHyperCmd(m.group(1));
+      if (m.find()) return XResultBrowserHyperCmd.getHyperCmd(m.group(1));
       return null;
    }
 
    public static String getCmdStrValue(String hyperCmdStr) {
       Matcher m = Pattern.compile("(.*?)=(.*)").matcher(hyperCmdStr);
-      if (m.find()) return (String) m.group(2);
+      if (m.find()) return m.group(2);
       return "";
    }
 
-   public static ResultBrowserHyperCmd getHyperCmd(String str) {
-      for (ResultBrowserHyperCmd resultBrowserHyperCmd : ResultBrowserHyperCmd.values()) {
-         if (resultBrowserHyperCmd.toString().equals(str)) return resultBrowserHyperCmd;
+   public static XResultBrowserHyperCmd getHyperCmd(String str) {
+      for (XResultBrowserHyperCmd xResultBrowserHyperCmd : XResultBrowserHyperCmd.values()) {
+         if (xResultBrowserHyperCmd.toString().equals(str)) return xResultBrowserHyperCmd;
       }
-      throw new IllegalArgumentException("Invalid ResultBrowserHyperCmd Name");
+      throw new IllegalArgumentException("Invalid XResultBrowserHyperCmd Name");
    }
 };
