@@ -22,8 +22,11 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultHtml;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -42,18 +45,29 @@ public class XResultData {
    }
 
    public static void runExample() {
-      XResultData rd = new XResultData();
-      rd.log("This is just a normal log message");
-      rd.logWarning("This is a warning");
-      rd.logError("This is an error");
+      runExample("This is my report title");
+   }
 
-      rd.log("Here is a nice table");
-      rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
-      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
-      for (int x = 0; x < 3; x++)
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
-      rd.addRaw(AHTML.endMultiColumnTable());
+   public static void runExample(String title) {
       try {
+         XResultData rd = new XResultData();
+         rd.log("This is just a normal log message");
+         rd.logWarning("This is a warning");
+         rd.logError("This is an error");
+
+         rd.log("\n\nExample of hyperlinked hrid: " + UserManager.getUser().getHumanReadableId());
+         rd.log("\n\nExample of hyperlinked hrid on another branch: " + XResultHtml.getOpenHyperlinkHtml(
+               UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
+               BranchManager.getCommonBranch().getBranchId()));
+
+         rd.log("\n\nHere is a nice table");
+         rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
+         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
+         for (int x = 0; x < 3; x++)
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
+               "Warning: this is warning"}));
+         rd.addRaw(AHTML.endMultiColumnTable());
          rd.report("This is my report title");
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
+import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -189,6 +190,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                AtsPlugin.getInstance().getImage("report.gif"));
          new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
+         new XResultDataExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
          XNavigateItem emailItems = new XNavigateItem(null, "Email", AtsPlugin.getInstance().getImage("email.gif"));
