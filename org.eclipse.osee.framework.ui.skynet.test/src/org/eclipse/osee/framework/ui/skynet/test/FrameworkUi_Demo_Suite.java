@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
+import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
 import org.eclipse.osee.framework.ui.skynet.test.nonproduction.InterArtifactDropTest;
@@ -17,7 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {InterArtifactDropTest.class, WordEditTest.class, WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class})
+@Suite.SuiteClasses( {InterArtifactDropTest.class, WordEditTest.class, WordTrackedChangesTest.class,
+      PreviewAndMultiPreviewTest.class})
 /**
  * @author Donald G. Dunne
  */
