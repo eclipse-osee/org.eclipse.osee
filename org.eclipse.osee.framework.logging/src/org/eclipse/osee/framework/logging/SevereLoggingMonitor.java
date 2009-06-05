@@ -26,7 +26,7 @@ public class SevereLoggingMonitor implements ILoggerListener {
    public List<IHealthStatus> getAllLogs() {
       return status;
    }
-   
+
    public List<IHealthStatus> getSevereLogs() {
       List<IHealthStatus> severeStatus = new ArrayList<IHealthStatus>(status.size());
 
@@ -37,6 +37,18 @@ public class SevereLoggingMonitor implements ILoggerListener {
          }
       }
       return severeStatus;
+   }
+
+   public List<IHealthStatus> getLogsAtLevel(Level level) {
+      List<IHealthStatus> warningStatus = new ArrayList<IHealthStatus>(status.size());
+
+      //Remove all none severe levels
+      for (IHealthStatus healthStatus : status) {
+         if (healthStatus.getLevel() == level) {
+            warningStatus.add(healthStatus);
+         }
+      }
+      return warningStatus;
    }
 
    public String toString() {
