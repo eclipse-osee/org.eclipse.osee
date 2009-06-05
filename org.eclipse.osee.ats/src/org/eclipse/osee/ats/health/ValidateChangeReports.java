@@ -206,7 +206,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
                currentDbGuid, currentChangeData));
          artifactForStore.persistAttributes();
-         resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
+         resultData.log("Stored Change Report for " + XResultData.getHyperlink(teamArt));
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
       // Else, compare the two and report
@@ -216,7 +216,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          if (isXmlChangeDataEqual(currentChangeReport, fStoredChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
          } else {
-            resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
+            resultData.logError("Was/Is Change Report different for " + XResultData.getHyperlink(teamArt));
             if (displayWasIs) {
                resultData.log("Was / Is reports displayed in Results View");
             }
@@ -227,12 +227,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      public void run() {
                         try {
                            String prePage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(fStoredChangeReport));
-                           ResultsEditor.open(new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(),
-                                 prePage));
+                           ResultsEditor.open(new XResultPage(
+                                 "Was Change Report for " + XResultData.getHyperlink(teamArt), prePage));
 
                            String postPage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(currentChangeReport));
-                           ResultsEditor.open(new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(),
-                                 postPage));
+                           ResultsEditor.open(new XResultPage(
+                                 "Is Change Report for " + XResultData.getHyperlink(teamArt), postPage));
 
                         } catch (Exception ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

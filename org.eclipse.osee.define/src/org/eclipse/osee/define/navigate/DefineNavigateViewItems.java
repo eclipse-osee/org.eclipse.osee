@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.define.health.BranchCommitRegressionTest;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +52,6 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
 
          if (AccessControlManager.isOseeAdmin()) {
             XNavigateItem adminItems = new XNavigateItemFolder(null, "Admin");
-            new BranchCommitRegressionTest(adminItems);
             items.add(adminItems);
          }
       } catch (OseeCoreException ex) {
