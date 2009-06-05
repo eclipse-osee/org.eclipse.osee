@@ -90,14 +90,16 @@ public class UpdateArtifactJob extends UpdateJob {
    private void processUpdate() throws Exception {
       int branchId = Branch.getBranchIdFromBranchFolderName(workingFile.getParentFile().getName());
       Branch branch = BranchManager.getBranch(branchId);
-      FileInputStream myFileInputStream = new FileInputStream(workingFile);
+      if (branch.isEditable()) {
+         FileInputStream myFileInputStream = new FileInputStream(workingFile);
 
-      String guid = WordUtil.getGUIDFromFileInputStream(myFileInputStream);
-      if (guid == null) {
-         processNonWholeDocumentUpdates(branch);
-      } else {
-         Artifact myArtifact = ArtifactQuery.getArtifactFromId(guid, branch);
-         updateWholeDocumentArtifact(myArtifact);
+         String guid = WordUtil.getGUIDFromFileInputStream(myFileInputStream);
+         if (guid == null) {
+            processNonWholeDocumentUpdates(branch);
+         } else {
+            Artifact myArtifact = ArtifactQuery.getArtifactFromId(guid, branch);
+            updateWholeDocumentArtifact(myArtifact);
+         }
       }
    }
 
@@ -125,9 +127,18 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
+   private void logUpdateSkip(Artifact artifact) {
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Skipping update - artifact [%s] is read-only",
+            artifact.toString()));
+   }
+
    private void updateNativeArtifact(NativeArtifact artifact) throws OseeCoreException, FileNotFoundException {
-      artifact.setNativeContent(workingFile);
-      artifact.persistAttributes();
+      if (!artifact.isReadOnly()) {
+         artifact.setNativeContent(workingFile);
+         artifact.persistAttributes();
+      } else {
+         logUpdateSkip(artifact);
+      }
    }
 
    private void wordArtifactUpdate(Collection<Element> artElements, Branch branch) throws OseeCoreException {
@@ -142,6 +153,10 @@ public class UpdateArtifactJob extends UpdateJob {
             if (artifact == null) {
                deletedGuids.add(guid);
             } else {
+               if (artifact.isReadOnly()) {
+                  logUpdateSkip(artifact);
+                  continue;
+               }
                containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("");
 
                if (oleDataElement == null && containsOleData) {
@@ -231,12 +246,16 @@ public class UpdateArtifactJob extends UpdateJob {
    private void updateWholeDocumentArtifact(Artifact artifact) throws FileNotFoundException, OseeCoreException {
       InputStream inputStream = null;
       try {
-         inputStream = new FileInputStream(workingFile);
-         String content = Lib.inputStreamToString(inputStream);
-         LinkType linkType = LinkType.OSEE_SERVER_LINK;
-         content = WordMlLinkHandler.unlink(linkType, artifact, content);
-         artifact.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
-         artifact.persistAttributes();
+         if (!artifact.isReadOnly()) {
+            inputStream = new FileInputStream(workingFile);
+            String content = Lib.inputStreamToString(inputStream);
+            LinkType linkType = LinkType.OSEE_SERVER_LINK;
+            content = WordMlLinkHandler.unlink(linkType, artifact, content);
+            artifact.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
+            artifact.persistAttributes();
+         } else {
+            logUpdateSkip(artifact);
+         }
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       } finally {
