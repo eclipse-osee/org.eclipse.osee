@@ -86,8 +86,9 @@ public final class Lib {
    public static int numOccurances(String str, String regex) {
       int x = 0;
       Matcher m = Pattern.compile(regex).matcher(str);
-      while (m.find())
+      while (m.find()) {
          x++;
+      }
       return x;
    }
 
@@ -176,7 +177,7 @@ public final class Lib {
       int size = list.size();
       if (list.contains(obj)) {
          int index = list.indexOf(obj);
-         if (index < (size - 1)) {
+         if (index < size - 1) {
             list.remove(index);
             list.add(index + 1, obj);
             return true;
@@ -340,8 +341,12 @@ public final class Lib {
    }
 
    public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
-      if (inputStream == null) throw new IllegalArgumentException("inputStream was null");
-      if (outputStream == null) throw new IllegalArgumentException("outputStream was null");
+      if (inputStream == null) {
+         throw new IllegalArgumentException("inputStream was null");
+      }
+      if (outputStream == null) {
+         throw new IllegalArgumentException("outputStream was null");
+      }
 
       byte[] buf = new byte[10000];
       int count = -1;
@@ -393,7 +398,9 @@ public final class Lib {
    }
 
    public static java.io.InputStream stringToInputStream(String value) throws Exception {
-      if (value == null) return null;
+      if (value == null) {
+         return null;
+      }
       value = value.trim();
       java.io.InputStream in = null;
       in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
@@ -577,7 +584,9 @@ public final class Lib {
          }
          int count = 0;
          while (errThread.isAlive() || outThread.isAlive()) {
-            if (count > 10) break;
+            if (count > 10) {
+               break;
+            }
             synchronized (Thread.currentThread()) {
                Thread.currentThread().wait(500);
             }
@@ -1148,9 +1157,9 @@ public final class Lib {
          for (int i = 1; i < source.length(); i++) {
             char theChar = source.charAt(i);
 
-            if (theChar == '(')
+            if (theChar == '(') {
                parens++;
-            else if (theChar == ')') {
+            } else if (theChar == ')') {
                parens--;
                if (parens < 0) {
                   theResults.add(source.substring(startPos, i));
@@ -1162,17 +1171,20 @@ public final class Lib {
                currentArg++;
                foundValidChar = false;
             } else if (!foundValidChar) {
-               if (Character.isWhitespace(theChar))
+               if (Character.isWhitespace(theChar)) {
                   startPos++;
-               else
+               } else {
                   foundValidChar = true;
+               }
             }
          }
 
          String[] theTrueResults = new String[theResults.size()];
          theResults.toArray(theTrueResults);
 
-         if (theTrueResults.length != currentArg) System.err.println("In getArguments, number of argument mismatch.");
+         if (theTrueResults.length != currentArg) {
+            System.err.println("In getArguments, number of argument mismatch.");
+         }
 
          return theTrueResults;
       } catch (Exception e) {
@@ -1192,9 +1204,9 @@ public final class Lib {
          for (int i = 1; i < source.length(); i++) {
             char theChar = source.charAt(i);
 
-            if (theChar == '(')
+            if (theChar == '(') {
                parens++;
-            else if (theChar == ')') {
+            } else if (theChar == ')') {
                parens--;
                if (parens < 0) {
                   return i - 1;
@@ -1225,11 +1237,11 @@ public final class Lib {
       for (int i = 0; i < source.length(); i++) {
          char theChar = source.charAt(i);
 
-         if (theChar == '(' || theChar == '{')
+         if (theChar == '(' || theChar == '{') {
             parensCount++;
-         else if (theChar == ')' || theChar == '}')
+         } else if (theChar == ')' || theChar == '}') {
             parensCount--;
-         else if (parensCount == 0 && theChar == ',') {
+         } else if (parensCount == 0 && theChar == ',') {
             theResults.add(source.substring(startPos, i).trim());
             startPos = i + 1;
          }
@@ -1242,15 +1254,17 @@ public final class Lib {
 
    public static String getCommaString(Collection<String> strs) {
       StringBuffer sb = new StringBuffer();
-      for (String str : strs)
+      for (String str : strs) {
          sb.append(str + ", ");
+      }
       return sb.toString().replaceFirst(", ", "");
    }
 
    public static String getCommaString(String[] strs) {
       StringBuffer sb = new StringBuffer();
-      for (String str : strs)
+      for (String str : strs) {
          sb.append(str + ", ");
+      }
       return sb.toString().replaceFirst(", ", "");
    }
 
@@ -1316,8 +1330,9 @@ public final class Lib {
       Matcher matcher = Pattern.compile("_([a-zA-Z])").matcher(changeSet.toString());
 
       changeSet.replace(0, 1, Character.toUpperCase(name.charAt(0)));
-      while (matcher.find())
+      while (matcher.find()) {
          changeSet.replace(matcher.start(), matcher.end(), Character.toUpperCase(matcher.group(1).charAt(0)));
+      }
 
       return changeSet.applyChangesToSelf().toString();
    }
@@ -1338,8 +1353,9 @@ public final class Lib {
                sb.append(Character.toUpperCase(chars[i + 1]));
                i++;
             }
-         } else
+         } else {
             sb.append(chars[i]);
+         }
       }
       return sb.toString();
    }
@@ -1445,11 +1461,7 @@ public final class Lib {
          out = new ZipOutputStream(bos);
          // Add ZIP entry to output stream.
          out.putNextEntry(new ZipEntry(name));
-         byte[] buf = new byte[1024];
-         int count = -1;
-         while ((count = in.read(buf)) > 0) {
-            out.write(buf, 0, count);
-         }
+         inputStreamToOutputStream(in, out);
       } finally {
          if (out != null) {
             out.closeEntry();
@@ -1471,8 +1483,6 @@ public final class Lib {
    private static void compressFile(String basePath, File file, ZipOutputStream outputStream) throws IOException {
       FileInputStream inputStream = null;
       try {
-         byte[] buffer = new byte[4096];
-         int count = -1;
          inputStream = new FileInputStream(file);
          String entryName = file.getPath();
          if (Strings.isValid(basePath) && entryName.startsWith(basePath)) {
@@ -1483,9 +1493,7 @@ public final class Lib {
          }
          ZipEntry entry = new ZipEntry(entryName);
          outputStream.putNextEntry(entry);
-         while ((count = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, count);
-         }
+         inputStreamToOutputStream(inputStream, outputStream);
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -1526,11 +1534,7 @@ public final class Lib {
          ZipEntry entry = zipInputStream.getNextEntry();
          zipEntryName = entry.getName();
          // Transfer bytes from the ZIP file to the output file
-         byte[] buf = new byte[1024];
-         int len;
-         while ((len = zipInputStream.read(buf)) > 0) {
-            outputStream.write(buf, 0, len);
-         }
+         inputStreamToOutputStream(zipInputStream, outputStream);
       } finally {
          if (zipInputStream != null) {
             zipInputStream.close();
@@ -1585,12 +1589,7 @@ public final class Lib {
       // Open the output file
       out = new ByteArrayOutputStream();
 
-      // Transfer bytes from the ZIP file to the output file
-      byte[] buf = new byte[1024];
-      int len;
-      while ((len = in.read(buf)) > 0) {
-         out.write(buf, 0, len);
-      }
+      inputStreamToOutputStream(in, out);
 
       // Close the streams
       out.close();
@@ -1599,7 +1598,9 @@ public final class Lib {
    }
 
    public static void chmod777(File file) {
-      if (file == null || !file.exists()) return;
+      if (file == null || !file.exists()) {
+         return;
+      }
       try {
          String command = "chmod 777 " + file.getAbsolutePath();
          Runtime r = Runtime.getRuntime();
