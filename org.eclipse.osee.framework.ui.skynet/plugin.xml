@@ -1799,4 +1799,12 @@
            class="org.eclipse.osee.framework.ui.skynet.Import.XmlDataExtractor">
      </ArtifactExtractor>
   </extension>
+  <extension
+        id="FindAllTrackChangeEnabledWordContentArtifacts"
+        name="FindAllTrackChangeEnabledWordContentArtifacts"
+        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+     <Operation
+           className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindAllTrackChangeEnabledWordContentArtifacts">
+     </Operation>
+  </extension>
 </plugin>
