@@ -168,7 +168,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
                      MessageDialog.openConfirm(
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                            "OSEE Edit",
-                           "OSEE artifacts were opened for edit. Please save all external edits before continuing. Click OK to continue with shutwdown. Click Cancel to abort the shutdown process.");
+                           "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
                return forced || wasConfirmed;
             }
          });
