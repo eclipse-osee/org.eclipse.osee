@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
@@ -345,7 +344,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          Displays.ensureInDisplayThread(new Runnable() {
 
             public void run() {
-               ArtifactExplorer.explore(artifacts);
+               WordUiUtil.displayUnhandledArtifacts(artifacts);
             }
          });
       }

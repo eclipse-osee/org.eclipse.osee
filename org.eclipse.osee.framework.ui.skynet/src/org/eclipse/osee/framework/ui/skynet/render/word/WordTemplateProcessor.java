@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -58,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 /**
  * @author Robert A. Fisher
@@ -357,7 +357,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(VariableMap variableMap,Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processObjectArtifact(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
@@ -377,7 +377,8 @@ public class WordTemplateProcessor {
             processAttributes(variableMap, artifact, wordMl, presentationType, multipleArtifacts);
             if (recurseChildren) {
                for (Artifact childArtifact : artifact.getChildren()) {
-                  processObjectArtifact(variableMap, childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
+                  processObjectArtifact(variableMap, childArtifact, wordMl, outlineType, presentationType,
+                        multipleArtifacts);
                }
             }
             if (outlining) {
@@ -397,14 +398,14 @@ public class WordTemplateProcessor {
          if (attributeElement.getAttributeName().equals("*")) {
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
                if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
-                  processAttribute(variableMap, artifact, wordMl, attributeElement, attributeTypeName, true, presentationType,
-                        multipleArtifacts);
+                  processAttribute(variableMap, artifact, wordMl, attributeElement, attributeTypeName, true,
+                        presentationType, multipleArtifacts);
                }
             }
          } else {
             if (artifact.isAttributeTypeValid(attributeName)) {
-               processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false, presentationType,
-                     multipleArtifacts);
+               processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false,
+                     presentationType, multipleArtifacts);
             }
          }
       }
@@ -451,24 +452,25 @@ public class WordTemplateProcessor {
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
          }
-         
+
          variableMap = ensureMapIsSetForDocLinks(variableMap, allAttrs);
-         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl, attributeElement);
+         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl,
+               attributeElement);
       }
    }
-   
-   private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException{
+
+   private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException {
       //Do not try to use a null map
-      if(variableMap == null){
+      if (variableMap == null) {
          variableMap = new VariableMap();
       }
       //If someone else set the link leave it set else set it to OSEE server link
-      if(variableMap.getValue("linkType") == null){
+      if (variableMap.getValue("linkType") == null) {
          variableMap.setValue("linkType", LinkType.OSEE_SERVER_LINK);
       }
       //set all attrs
       variableMap.setValue("allAttrs", allAttrs);
-      
+
       return variableMap;
    }
 
@@ -556,7 +558,7 @@ public class WordTemplateProcessor {
             public void run() {
                ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
                nonTempArtifacts.addAll(artifacts);
-               ArtifactExplorer.explore(nonTempArtifacts);
+               WordUiUtil.displayUnhandledArtifacts(artifacts);
             }
          });
       }
