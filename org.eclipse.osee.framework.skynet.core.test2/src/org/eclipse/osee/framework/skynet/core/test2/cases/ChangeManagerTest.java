@@ -78,7 +78,6 @@ public class ChangeManagerTest extends TestCase {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
-
       sleep(5000);
       
       modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
