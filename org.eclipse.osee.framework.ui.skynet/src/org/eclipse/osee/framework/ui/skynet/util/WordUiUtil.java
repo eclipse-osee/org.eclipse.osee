@@ -1,0 +1,61 @@
+/*
+ * Created on Jun 5, 2009
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.ui.skynet.util;
+
+import java.util.Collection;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.swt.widgets.Display;
+
+/**
+ * @author B1375980
+ */
+public class WordUiUtil {
+
+   public static void displayWarningMessageDialog(final String title, final String message) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), title, message);
+         }
+      }, true);
+   }
+
+   public static void displayTrackedChangesOnArtifacts(final Collection<Artifact> artifacts) {
+      if (!artifacts.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               XResultData rd = new XResultData();
+               rd.addRaw(AHTML.heading(2,
+                     "This table lists the Artifacts that were detected to have tracked changes on."));
+               rd.addRaw(AHTML.heading(3,
+                     "Please make sure to accept/reject all tracked changes and comment references."));
+               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID80"}));
+               for (Artifact artifact : artifacts)
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Warning: " + artifact.toString(),
+                        artifact.getHumanReadableId()}));
+               rd.addRaw(AHTML.endMultiColumnTable());
+               try {
+                  rd.report("Artifacts With Tracked Changes");
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+      }
+   }
+}

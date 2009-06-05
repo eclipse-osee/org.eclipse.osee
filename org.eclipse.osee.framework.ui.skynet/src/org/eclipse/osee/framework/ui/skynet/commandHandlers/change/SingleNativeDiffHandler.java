@@ -34,13 +34,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -103,9 +103,9 @@ public class SingleNativeDiffHandler extends CommandHandler {
 
             RendererManager.diff(baseArtifact, newerArtifact, true);
          } else {
-            WordUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                   "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUtil.displayTrackedChangesOnArtifacts(artifacts);
+            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
 
       } catch (OseeCoreException ex) {

@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -224,9 +225,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                // Let the user know that these artifacts had tracked changes on and we are not handling them
                // Also, list these artifacts in an artifact explorer
                if (!artifacts.isEmpty() && !noPopups) {
-                  WordUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+                  WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                         "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-                  WordUtil.displayTrackedChangesOnArtifacts(artifacts);
+                  WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
                }
             } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
@@ -288,9 +289,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
       } else {
          if (!noPopups) {
-            WordUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                   "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUtil.displayTrackedChangesOnArtifacts(artifacts);
+            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
          }
       }
       return "";
