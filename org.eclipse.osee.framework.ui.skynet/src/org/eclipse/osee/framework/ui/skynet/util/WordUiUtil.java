@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * @author B1375980
+ * @author Megumi Telles
  */
 public class WordUiUtil {
 
