@@ -39,14 +39,12 @@ public class WordUiUtil {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                XResultData rd = new XResultData();
-               rd.addRaw(AHTML.heading(2,
-                     "This table lists the Artifacts that were detected to have tracked changes on."));
-               rd.addRaw(AHTML.heading(3,
-                     "Please make sure to accept/reject all tracked changes and comment references."));
+               rd.logWarning("\nYou chose to diff changes and the following Artifacts were detected to have tracked changes on.");
+               rd.log("Please make sure to accept/reject all tracked changes and comment references.\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID80"}));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts)
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Warning: " + artifact.toString(),
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
                         artifact.getHumanReadableId()}));
                rd.addRaw(AHTML.endMultiColumnTable());
                try {
