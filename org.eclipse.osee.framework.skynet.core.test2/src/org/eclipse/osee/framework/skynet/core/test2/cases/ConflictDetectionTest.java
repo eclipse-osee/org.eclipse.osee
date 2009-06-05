@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.HashSet;
 import junit.framework.TestCase;
@@ -23,27 +24,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 /**
  * @author Theron Virgin
  */
-public class ConflictDetectionTest extends TestCase {
+public class ConflictDetectionTest {
 
    /**
     * @param name
     */
    public ConflictDetectionTest(String name) {
-      super(name);
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
    }
 
    /**
@@ -51,7 +37,8 @@ public class ConflictDetectionTest extends TestCase {
     * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
     * .
     */
-   public void testGetConflictsPerBranch() {
+   @org.junit.Test
+public void testGetConflictsPerBranch() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Conflict> conflicts = new HashSet<Conflict>();

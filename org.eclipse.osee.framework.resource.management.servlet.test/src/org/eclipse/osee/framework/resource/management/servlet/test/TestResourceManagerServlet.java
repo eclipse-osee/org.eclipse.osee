@@ -30,7 +30,7 @@ public class TestResourceManagerServlet extends TestCase {
     * @see junit.framework.TestCase#setUp()
     */
    @Override
-   protected void setUp() throws Exception {
+   public void setUp() throws Exception {
       super.setUp();
       int port = OseeServerProperties.getOseeApplicationServerPort();
       httpServiceURL = String.format("http://localhost:%s/%s", port, OseeServerContext.RESOURCE_CONTEXT);
@@ -40,7 +40,7 @@ public class TestResourceManagerServlet extends TestCase {
     * @see junit.framework.TestCase#tearDown()
     */
    @Override
-   protected void tearDown() throws Exception {
+   public void tearDown() throws Exception {
       super.tearDown();
       this.httpServiceURL = null;
    }

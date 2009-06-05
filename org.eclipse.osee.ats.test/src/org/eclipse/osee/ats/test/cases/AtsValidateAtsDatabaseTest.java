@@ -9,10 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+import static org.junit.Assert.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -24,13 +24,14 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * 
  * @author Donald G. Dunne
  */
-public class AtsValidateAtsDatabaseTest extends TestCase {
+public class AtsValidateAtsDatabaseTest  {
 
    public AtsValidateAtsDatabaseTest() {
       AtsBulkLoadCache.run(true);
    }
 
-   public void testValidateAtsDatabase() throws Exception {
+   @org.junit.Test
+public void testValidateAtsDatabase() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       ValidateAtsDatabase validateAtsDatabase = new ValidateAtsDatabase(null);

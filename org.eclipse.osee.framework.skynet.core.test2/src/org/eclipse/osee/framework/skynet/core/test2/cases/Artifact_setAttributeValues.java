@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -23,11 +23,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
-public class Artifact_setAttributeValues extends TestCase {
+public class Artifact_setAttributeValues {
 
    private static List<String> firstSet = Arrays.asList("First", "Second", "Third");
    private static List<String> addOneSet = Arrays.asList("First", "Second", "Third", "Fourth");
@@ -37,15 +38,13 @@ public class Artifact_setAttributeValues extends TestCase {
    private static List<String> addDuplicates_result = Arrays.asList("Second", "Third", "Fifth", "Fourth");
    private static List<String> emptySet = Arrays.asList();
 
+   @BeforeClass
+   @org.junit.Test
    public void testCleanupPre() throws Exception {
       cleanup();
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.Artifact#setAttributeValues(java.lang.String, java.util.Collection)}
-    * .
-    */
+   @org.junit.Test
    public void testSetAttributeValues() throws Exception {
       Artifact artifact =
             ArtifactTypeManager.addArtifact("General Document",
@@ -56,6 +55,7 @@ public class Artifact_setAttributeValues extends TestCase {
       assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
 
+   @org.junit.Test
    public void testSetAttributeValuesAddOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneSet);
@@ -64,6 +64,7 @@ public class Artifact_setAttributeValues extends TestCase {
       assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
 
+   @org.junit.Test
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneRemoveOneSet);
@@ -73,6 +74,7 @@ public class Artifact_setAttributeValues extends TestCase {
             artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
 
+   @org.junit.Test
    public void testSetAttributeValuesRemoveAll() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, emptySet);
@@ -81,6 +83,7 @@ public class Artifact_setAttributeValues extends TestCase {
       assertTrue(artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).size() == 0);
    }
 
+   @org.junit.Test
    public void testSetAttributeValuesWithDuplicates() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addDuplicates_set);
@@ -90,6 +93,7 @@ public class Artifact_setAttributeValues extends TestCase {
             artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
 
+   @org.junit.Test
    public void testCleanupPost() throws Exception {
       cleanup();
    }

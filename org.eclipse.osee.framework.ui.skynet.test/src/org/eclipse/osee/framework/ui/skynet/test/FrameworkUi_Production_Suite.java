@@ -10,23 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.ui.skynet.test.cases.DatabaseIntegrityTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {OseeEmailTest.class})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkUi_Production_Suite extends TestSuite {
-
-   public static Test suite() {
-      TestSuite suite = new TestSuite("FrameworkUi_Production_Suite");
-      //$JUnit-BEGIN$
-      suite.addTestSuite(OseeEmailTest.class);
-      //suite.addTestSuite(DatabaseIntegrityTest.class);
-      //$JUnit-END$
-      return suite;
-   }
-
 }

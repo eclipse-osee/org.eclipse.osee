@@ -11,41 +11,25 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {MergeBranchManagementTest.class, ConflictDetectionTest.class, MergeBranchManagementTest.class,
+      ConflictResolutionTest.class, ConflictedBranchCommitingTest.class, CommitTest.class})
 /**
  * @author Theron Virgin
  */
-public class ConflictTestSuite extends TestSuite {
+public class ConflictTestSuite {
+   //   @BeforeSuite
+   // TODO Not valid for JUnit4, need different way to do this
    public static void oneTimeSetUp() throws Exception {
       ConflictTestManager.initializeConflictTest();
    }
 
+   //   @AfterSuite
    public static void oneTimeTearDown() throws Exception {
       ConflictTestManager.cleanUpConflictTest();
    }
 
-   public static Test suite() {
-      TestSuite suite = new TestSuite();
-      suite.addTest(new MergeBranchManagementTest("testGetMergeBranchNotCreated"));
-      suite.addTest(new ConflictDetectionTest("testGetConflictsPerBranch"));
-      suite.addTest(new MergeBranchManagementTest("testGetMergeBranchCreated"));
-      suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
-      suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithoutResolutionErrors"));
-      suite.addTest(new CommitTest("testCommitFiltering"));
-
-      TestSetup wrapper = new TestSetup(suite) {
-         protected void setUp() throws Exception {
-            oneTimeSetUp();
-         }
-
-         protected void tearDown() throws Exception {
-            oneTimeTearDown();
-         }
-      };
-
-      return wrapper;
-   }
 }

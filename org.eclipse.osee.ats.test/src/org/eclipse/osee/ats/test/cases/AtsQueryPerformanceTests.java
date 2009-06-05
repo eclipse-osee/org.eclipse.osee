@@ -9,10 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
@@ -25,13 +25,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class AtsQueryPerformanceTests extends TestCase {
+public class AtsQueryPerformanceTests  {
 
    public AtsQueryPerformanceTests() {
       AtsBulkLoadCache.run(true);
    }
 
-   public void testUserWorldSearch() throws Exception {
+   @org.junit.Test
+public void testUserWorldSearch() throws Exception {
       User usr = getAUser();
       assertNotNull("User does not exist", usr);
       MyWorldSearchItem search = new MyWorldSearchItem();
@@ -43,7 +44,8 @@ public class AtsQueryPerformanceTests extends TestCase {
       assertTrue("testUserWorldSearch should take less than 2500ms", elapsedTime < 2500);
    }
 
-   public void testTeamWorldSearchItem() throws Exception {
+   @org.junit.Test
+public void testTeamWorldSearchItem() throws Exception {
       TeamWorldSearchItem searchItem =
             new TeamWorldSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true,
                   false, null, null, null, null);

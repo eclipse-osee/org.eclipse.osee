@@ -10,27 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsActionableItemToTeamDefinitionTest;
 import org.eclipse.osee.ats.test.cases.AtsTeamDefintionToWorkflowTest;
 import org.eclipse.osee.ats.test.cases.AtsWorkItemDefinitionTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AtsWorkItemDefinitionTest.class, AtsActionableItemToTeamDefinitionTest.class,
+      AtsTeamDefintionToWorkflowTest.class})
 /**
  * This test suite contains test that can be run against any production db
  * 
  * @author Donald G. Dunne
  */
-public class AtsTest_Config_Suite extends TestSuite {
-
-   public static Test suite() {
-      TestSuite suite = new TestSuite("AtsTest_Config_Suite");
-      //$JUnit-BEGIN$
-      suite.addTestSuite(AtsWorkItemDefinitionTest.class); // Can be run production or testDb
-      suite.addTestSuite(AtsActionableItemToTeamDefinitionTest.class); // Can be run production or testDb
-      suite.addTestSuite(AtsTeamDefintionToWorkflowTest.class); // Can be run production or testDb
-      //$JUnit-END$
-      return suite;
-   }
-
+public class AtsTest_Config_Suite {
 }

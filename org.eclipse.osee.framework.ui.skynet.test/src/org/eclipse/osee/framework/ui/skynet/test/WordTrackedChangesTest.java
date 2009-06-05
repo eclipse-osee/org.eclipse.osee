@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -33,11 +34,13 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * @author Megumi Telles
  */
-public class WordTrackedChangesTest extends TestCase {
+public class WordTrackedChangesTest {
    private static final String TEST_PATH_NAME =
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
@@ -46,7 +49,9 @@ public class WordTrackedChangesTest extends TestCase {
    /**
     * This test Word Edit's are being saved.
     */
-   public void testCleanUpPre() throws Exception {
+   @BeforeClass
+   @org.junit.Test
+public void testCleanUpPre() throws Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
    }
@@ -55,7 +60,8 @@ public class WordTrackedChangesTest extends TestCase {
     * Verifies that the document does not save when it has tracked changes on  
     */
 
-   public void testWordSaveWithTrackChanges() throws Exception {
+   @org.junit.Test
+public void testWordSaveWithTrackChanges() throws Exception {
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
             FrameworkTestUtil.areWinWordsRunning() == false);
@@ -77,7 +83,9 @@ public class WordTrackedChangesTest extends TestCase {
       inputStream.close();
    }
 
-   public void testCleanUpPost() throws Exception {
+   @AfterClass
+   @org.junit.Test
+public void testCleanUpPost() throws Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
    }

@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AtsBranchConfigurationTest.class})
 /**
  * @author Donald G. Dunne
  */
-public class AtsTest_TestDb_Suite extends TestSuite {
-
-   public static TestSuite suite() {
-      TestSuite suite = new TestSuite("AtsTest_TestDb_Suite");
-      //$JUnit-BEGIN$
-      suite.addTestSuite(AtsBranchConfigurationTest.class);
-      //$JUnit-END$
-      return suite;
-   }
+public class AtsTest_TestDb_Suite {
 
 }

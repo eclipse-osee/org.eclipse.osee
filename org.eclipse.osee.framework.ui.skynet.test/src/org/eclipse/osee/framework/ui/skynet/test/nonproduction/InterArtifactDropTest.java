@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.nonproduction;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.logging.Level;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -27,22 +28,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Tests cross branch drag and drop.
  * 
  * @author Jeff C. Phillips
  */
-public class InterArtifactDropTest extends TestCase {
+public class InterArtifactDropTest {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet.test/debug/Junit"));
    private static Artifact sourceArtifact;
    private Branch sourceBranch;
    private Branch destinationBranch;
 
-   @Override
-   protected void tearDown() throws Exception {
-      super.tearDown();
+   @After
+   public void tearDown() throws Exception {
 
       BranchManager.purgeBranch(sourceBranch);
       sleep(5000);
@@ -51,11 +53,9 @@ public class InterArtifactDropTest extends TestCase {
       sleep(5000);
    }
 
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
-
-      super.setUp();
 
       String sourceBranchName = "Source Branch" + GUID.generateGuidStr();
       String destinationBranchName = "Destination Branch" + GUID.generateGuidStr();
@@ -69,19 +69,21 @@ public class InterArtifactDropTest extends TestCase {
       sourceArtifact.persistAttributes();
 
       destinationBranch =
-      BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
-            UserManager.getUser(SystemUser.OseeSystem));
+            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
+                  UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
    }
 
-   public void testIntroduceCrossBranch() throws Exception {
+   @org.junit.Test
+public void testIntroduceCrossBranch() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
       dropHandler.dropArtifactIntoDifferentBranch(
-            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {sourceArtifact}, false);
+            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {sourceArtifact},
+            false);
 
       sleep(5000);
       //Acquire the introduced artifact

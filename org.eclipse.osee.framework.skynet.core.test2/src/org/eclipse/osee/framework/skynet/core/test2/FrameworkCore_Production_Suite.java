@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Production_Suite extends TestSuite {
-
-   public static Test suite() {
-      TestSuite suite = new TestSuite("FrameworkCore_Production_Suite");
-      //$JUnit-BEGIN$
-      //$JUnit-END$
-      return suite;
-   }
-
 }

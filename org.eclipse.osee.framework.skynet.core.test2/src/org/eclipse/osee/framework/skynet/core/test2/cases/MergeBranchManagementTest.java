@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -23,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Theron Virgin
  */
-public class MergeBranchManagementTest extends TestCase {
+public class MergeBranchManagementTest {
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
@@ -32,34 +35,19 @@ public class MergeBranchManagementTest extends TestCase {
     * @param name
     */
    public MergeBranchManagementTest(String name) {
-      super(name);
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
    }
 
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
     */
-   public void testGetMergeBranchNotCreated() {
+   @org.junit.Test
+public void testGetMergeBranchNotCreated() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch());
+               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
       } catch (Exception ex) {
@@ -73,13 +61,13 @@ public class MergeBranchManagementTest extends TestCase {
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
     */
-   public void testGetMergeBranchCreated() {
+   @org.junit.Test
+public void testGetMergeBranchCreated() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch());
+               BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
          if (DEBUG) {

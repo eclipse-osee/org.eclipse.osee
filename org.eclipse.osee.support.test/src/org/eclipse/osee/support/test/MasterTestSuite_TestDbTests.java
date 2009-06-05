@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AtsTest_TestDb_Suite.class})
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
  * <br>
@@ -23,22 +23,12 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
  * 
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_TestDbTests extends TestSuite {
+public class MasterTestSuite_TestDbTests {
 
-   public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("MasterTestSuite_TestDbTests");
-
-      suite.addTest(AtsTest_TestDb_Suite.suite());
-
-      TestSetup wrapper = new TestSetup(suite) {
-
-         @Override
-         public void setUp() throws Exception {
-            assertTrue("No authenticatication protocols found.",
-                  ClientSessionManager.getAuthenticationProtocols().size() > 0);
-         }
-      };
-      return wrapper;
-   }
+   //   @BeforeSuite
+   //   public void setUp() throws Exception {
+   //      assertTrue("No authenticatication protocols found.", ClientSessionManager.getAuthenticationProtocols().size() > 0);
+   //   }
+   //   }
 
 }

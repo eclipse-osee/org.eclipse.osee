@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.LinkedList;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -28,11 +30,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.junit.Before;
 
 /**
  * @author Theron Virgin
  */
-public class DeletionTest extends TestCase {
+public class DeletionTest {
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT =
          "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
@@ -77,22 +80,14 @@ public class DeletionTest extends TestCase {
     * @param name
     */
    public DeletionTest(String name) {
-      super(name);
    }
 
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
     */
+   @Before
    protected void setUp() throws Exception {
-      super.setUp();
       assertFalse(ClientSessionManager.isProductionDataStore());
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
    }
 
    /**

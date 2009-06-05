@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -41,12 +41,14 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Paul K. Waldfogel
  * @author Megumi Telles
  */
-public class WordEditTest extends TestCase {
+public class WordEditTest {
 
    private static final String TEST_PATH_NAME =
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
@@ -57,8 +59,8 @@ public class WordEditTest extends TestCase {
    /**
     * This test Word Edit's are being saved.
     */
-
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
@@ -68,14 +70,16 @@ public class WordEditTest extends TestCase {
             isWordRunning == false);
    }
 
-   public void testEditUsingWord() throws Exception {
+   @org.junit.Test
+public void testEditUsingWord() throws Exception {
       // use word template renderer
       probeWordEditingCapability(false, getClass().getSimpleName());
       // use renderer manager
       probeWordEditingCapability(true, getClass().getSimpleName());
    }
 
-   protected void tearDown() throws Exception {
+   @After
+   public void tearDown() throws Exception {
       if (!isWordRunning) {
          WordAttribute.setDisplayTrackedChangesErrorMessage("");
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),

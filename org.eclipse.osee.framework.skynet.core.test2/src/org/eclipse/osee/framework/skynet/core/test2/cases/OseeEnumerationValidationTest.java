@@ -11,9 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -26,11 +26,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumerationValidationTest extends TestCase {
+public class OseeEnumerationValidationTest {
 
    private Artifact mockArtifact;
    private AttributeType enumeratedAttributeType;
@@ -38,9 +40,8 @@ public class OseeEnumerationValidationTest extends TestCase {
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
     */
-   @Override
-   protected void setUp() throws Exception {
-      super.setUp();
+   @Before
+   public void setUp() throws Exception {
       Branch branch = BranchManager.getCommonBranch();
       // Create an artifact having an enumerated attribute
 
@@ -51,9 +52,8 @@ public class OseeEnumerationValidationTest extends TestCase {
    /* (non-Javadoc)
     * @see junit.framework.TestCase#tearDown()
     */
-   @Override
-   protected void tearDown() throws Exception {
-      super.tearDown();
+   @After
+   public void tearDown() throws Exception {
       mockArtifact.delete();
       mockArtifact = null;
       enumeratedAttributeType = null;
@@ -79,6 +79,7 @@ public class OseeEnumerationValidationTest extends TestCase {
       return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, message);
    }
 
+   @org.junit.Test
    public void testEnumerationData() throws OseeCoreException {
       for (TestData data : getEnumerationCases()) {
          IStatus actual =
@@ -94,9 +95,9 @@ public class OseeEnumerationValidationTest extends TestCase {
    }
 
    public static class TestData {
-      private String message;
-      private IStatus expected;
-      private Object value;
+      private final String message;
+      private final IStatus expected;
+      private final Object value;
 
       public TestData(String message, Object value, IStatus expected) {
          this.message = message;

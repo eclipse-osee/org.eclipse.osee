@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Before;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
@@ -38,7 +39,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * 
  * @author Donald G. Dunne
  */
-public class AtsPurgeTest extends TestCase {
+public class AtsPurgeTest {
 
    private final Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
@@ -50,12 +51,13 @@ public class AtsPurgeTest extends TestCase {
    /**
     * @throws java.lang.Exception
     */
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(AtsPlugin.isProductionDb());
    }
 
+   @org.junit.Test
    public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateActionCount, tables);

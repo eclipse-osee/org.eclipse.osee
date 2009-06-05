@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -19,8 +19,9 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_DemoDbInit extends TestCase {
+public class MasterTestSuite_DemoDbInit {
 
+   @org.junit.Test
    public void testDemoDbInit() throws Exception {
       assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
             "demo"));

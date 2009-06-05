@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -56,28 +58,27 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Before;
 
 /**
  * Run from the ATS Navigator after the DB is configured for either ATS - Dev or Demo
  * 
  * @author Donald G. Dunne
  */
-public class AtsBranchConfigurationTest extends TestCase {
+public class AtsBranchConfigurationTest {
 
    public enum TestType {
       BranchViaTeamDef, BranchViaVersions, BranchViaParallelVersions
    }
 
-   public AtsBranchConfigurationTest() {
-      super("ATS Branch Config Test - TestDb or DemoDb");
-   }
-
+   @Before
    public void testSetup() throws Exception {
       if (AtsPlugin.isProductionDb()) throw new IllegalStateException(
             "BranchConfigThroughTeamDefTest should not be run on production DB");
       AtsBulkLoadCache.run(true);
    }
 
+   @org.junit.Test
    public void testBranchViaVersions() throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -199,6 +200,7 @@ public class AtsBranchConfigurationTest extends TestCase {
       }, true);
    }
 
+   @org.junit.Test
    public void testBranchViaTeamDefinition() throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)

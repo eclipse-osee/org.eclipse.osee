@@ -10,6 +10,7 @@
  *******************************************************************************/
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.Date;

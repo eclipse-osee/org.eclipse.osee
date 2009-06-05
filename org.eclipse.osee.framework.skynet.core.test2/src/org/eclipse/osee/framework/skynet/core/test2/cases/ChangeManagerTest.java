@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.logging.Level;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -30,38 +31,38 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Tests the Change Manager.
  * 
  * @author Jeff C. Phillips
  */
-public class ChangeManagerTest extends TestCase {
+public class ChangeManagerTest {
    private static Artifact newArtifact;
    private static Artifact modArtifact;
    private Branch branch;
 
-   @Override
-   protected void tearDown() throws Exception {
-      super.tearDown();
+   @After
+   public void tearDown() throws Exception {
 
       BranchManager.purgeBranch(branch);
       sleep(5000);
-      
+
       modArtifact.persistAttributes();
    }
 
-   @Override
+   @Before
    protected void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      super.setUp();
-
-      modArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, BranchManager.getSystemRootBranch());
+      modArtifact =
+            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, BranchManager.getSystemRootBranch());
       modArtifact.persistAttributes();
-      
+
       sleep(5000);
-      
+
       String branchName = "Change Manager Test Branch" + GUID.generateGuidStr();
 
       branch =
@@ -74,14 +75,15 @@ public class ChangeManagerTest extends TestCase {
       sleep(5000);
    }
 
+   @org.junit.Test
    public void testChangeManager() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
       sleep(5000);
-      
+
       modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
-      
+
       assertTrue("Check artifact new", checkArtifactModType(newArtifact, ModificationType.NEW));
       newArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
@@ -89,16 +91,16 @@ public class ChangeManagerTest extends TestCase {
       modArtifact.persistAttributes();
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.CHANGE));
    }
-   
-   public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException{
+
+   public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       boolean pass = false;
-      for(Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new EmptyMonitor())){
-         if(change.getArtId() == artifact.getArtId()){
+      for (Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new EmptyMonitor())) {
+         if (change.getArtId() == artifact.getArtId()) {
             pass = change.getModificationType() == modificationType;
             break;
          }
       }
-     return pass;
+      return pass;
    }
 
    public static void sleep(long milliseconds) throws Exception {

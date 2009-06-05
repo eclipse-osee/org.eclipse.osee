@@ -8,4 +8,4 @@ Bundle-Vendor: Boeing
 Eclipse-LazyStart: true
 Import-Package: org.eclipse.osee.framework.logging,
  org.osgi.framework
-Require-Bundle: org.junit
+Require-Bundle: org.junit4

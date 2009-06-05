@@ -8,9 +8,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core;bundle-version="0.5.0",
  org.eclipse.osee.framework.db.connection;bundle-version="0.4.0",
- org.junit;bundle-version="3.8.2",
  org.eclipse.osee.framework.core.client;bundle-version="0.5.0",
- org.eclipse.osee.framework.logging;bundle-version="0.4.0"
+ org.eclipse.osee.framework.logging;bundle-version="0.4.0",
+ org.junit4;bundle-version="4.3.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.support.test.util

@@ -11,11 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -28,22 +30,24 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Before;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumTypeManagerTest extends TestCase {
+public class OseeEnumTypeManagerTest {
 
    /**
     * @throws java.lang.Exception
     */
-   @Override
+   @Before
    protected void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
    }
 
-   public void testCreateEnumTypeFromXml() throws OseeCoreException {
+   @org.junit.Test
+public void testCreateEnumTypeFromXml() throws OseeCoreException {
       String enumTypeName = "EnumType1";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
 
@@ -57,7 +61,8 @@ public class OseeEnumTypeManagerTest extends TestCase {
       checkOseeEnumTypeDeleted(actual);
    }
 
-   public void testCreateEnumType() throws OseeCoreException {
+   @org.junit.Test
+public void testCreateEnumType() throws OseeCoreException {
       String enumTypeName = "EnumType2";
       String[] entryNames = new String[] {"oneA", "twoA", "threeA"};
       Integer[] entryOrdinals = new Integer[] {1, 50, 100};
@@ -78,7 +83,8 @@ public class OseeEnumTypeManagerTest extends TestCase {
    }
 
    @SuppressWarnings("unchecked")
-   public void testAddEntriesToType() throws OseeCoreException {
+   @org.junit.Test
+public void testAddEntriesToType() throws OseeCoreException {
       String enumTypeName = "EnumType10";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -119,7 +125,8 @@ public class OseeEnumTypeManagerTest extends TestCase {
       checkOseeEnumTypeDeleted(oseeEnumType);
    }
 
-   public void testRemoveEntriesToType() throws OseeCoreException {
+   @org.junit.Test
+public void testRemoveEntriesToType() throws OseeCoreException {
       String enumTypeName = "EnumType4";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -148,7 +155,8 @@ public class OseeEnumTypeManagerTest extends TestCase {
       checkOseeEnumTypeDeleted(oseeEnumType);
    }
 
-   public void testDeletedRetrieval() throws OseeCoreException {
+   @org.junit.Test
+public void testDeletedRetrieval() throws OseeCoreException {
       String enumTypeName = "EnumType5";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -172,7 +180,8 @@ public class OseeEnumTypeManagerTest extends TestCase {
       assertEquals(oseeEnumType, actual);
    }
 
-   public void testDeletedNotAllowedWhileInUseByAttribute() throws OseeCoreException {
+   @org.junit.Test
+public void testDeletedNotAllowedWhileInUseByAttribute() throws OseeCoreException {
       Collection<OseeEnumType> types = OseeEnumTypeManager.getAllTypes();
       boolean wasTestedAtLeastOnce = false;
       for (OseeEnumType type : types) {

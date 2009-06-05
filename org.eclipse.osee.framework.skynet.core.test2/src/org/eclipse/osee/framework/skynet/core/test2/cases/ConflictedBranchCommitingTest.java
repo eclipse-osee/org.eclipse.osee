@@ -11,7 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -21,13 +23,12 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 /**
  * @author Theron Virgin
  */
-public class ConflictedBranchCommitingTest extends TestCase {
+public class ConflictedBranchCommitingTest {
 
    /**
     * @param name
     */
    public ConflictedBranchCommitingTest(String name) {
-      super(name);
    }
 
    public void CheckCommitWithoutResolutionErrors() {
@@ -45,7 +46,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
       }
-      
+
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
             monitorLog.getSevereLogs().size() == 0);
    }

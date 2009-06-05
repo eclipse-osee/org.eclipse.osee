@@ -10,23 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsDbInitTest extends TestCase {
+public class AtsDbInitTest {
 
    /**
     * @throws java.lang.Exception
     */
+   @Before
    protected void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(AtsPlugin.isProductionDb());
    }
 
+   @org.junit.Test
    public void testDemoDbInit() throws Exception {
       System.out.println("Begin Database Initialization...");
       DatabaseInitializationOperation.executeWithoutPrompting("ATS - Developer");

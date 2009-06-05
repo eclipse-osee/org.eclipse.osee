@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.testDb.interactive;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -21,27 +22,30 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.test2.cases.ConflictTestManager;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.RebaselineArtifacts;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Tests the BLAM Rebaseline operation.
  * 
  * @author Jeff C. Phillips
  */
-public class RebaselineArtifactTest extends TestCase {
+public class RebaselineArtifactTest {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet.test/debug/Junit"));
 
-   protected void tearDown() throws Exception {
-      super.tearDown();
+   @After
+   public void tearDown() throws Exception {
       ConflictTestManager.cleanUpConflictTest();
    }
 
-   protected void setUp() throws Exception {
-      super.setUp();
+   @Before
+   public void setUp() throws Exception {
       ConflictTestManager.initializeConflictTest();
       assertFalse(ClientSessionManager.isProductionDataStore());
    }
 
+   @org.junit.Test
    public void testRebaseline() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);

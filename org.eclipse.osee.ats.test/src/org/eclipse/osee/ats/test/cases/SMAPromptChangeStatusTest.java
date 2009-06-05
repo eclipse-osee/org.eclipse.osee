@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -26,27 +28,29 @@ import org.eclipse.osee.ats.util.widgets.dialog.SimpleTaskResolutionOptionsRule;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
-public class SMAPromptChangeStatusTest extends TestCase {
+public class SMAPromptChangeStatusTest {
 
    public static TeamWorkFlowArtifact teamArt;
 
-   /**
-    * @throws java.lang.Exception
-    */
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse("Test should not be run in production db", AtsPlugin.isProductionDb());
    }
 
+   @BeforeClass
    public void testCleanupPre() throws Exception {
       DemoTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }
 
+   @org.junit.Test
    public void testInitialize() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
@@ -54,6 +58,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
       assertNotNull(teamArt);
    }
 
+   @org.junit.Test
    public void testChangeTaskStatusNoResolution() throws Exception {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
@@ -88,6 +93,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
 
    }
 
+   @org.junit.Test
    public void testChangeTaskStatusWithResolutionOptions() throws Exception {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
@@ -126,6 +132,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
    }
 
+   @org.junit.Test
    public void testChangeStatusFailsIfTaskCancelled() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       Collection<TaskArtifact> tasks =
@@ -146,6 +153,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
 
    }
 
+   @org.junit.Test
    public void testChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       Collection<TaskArtifact> tasks =
@@ -166,6 +174,7 @@ public class SMAPromptChangeStatusTest extends TestCase {
       assertTrue(result.getText().contains("Task work must be done in"));
    }
 
+   @AfterClass
    public void testCleanupPost() throws Exception {
       DemoTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }

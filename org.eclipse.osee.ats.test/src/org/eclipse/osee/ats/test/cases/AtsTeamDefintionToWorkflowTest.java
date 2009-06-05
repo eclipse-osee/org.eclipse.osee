@@ -10,25 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsTeamDefintionToWorkflowTest extends TestCase {
+public class AtsTeamDefintionToWorkflowTest {
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   @Override
-   protected void setUp() throws Exception {
-      super.setUp();
+   @Before
+   public void setUp() throws Exception {
    }
 
+   @org.junit.Test
    public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,

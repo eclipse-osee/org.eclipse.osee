@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.BeforeClass;
 
 /**
  * This test is intended to be run against a demo database. It tests the branch purge logic by counting the rows of the
@@ -36,7 +37,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * 
  * @author Donald G. Dunne
  */
-public class BranchPurgeTest extends TestCase {
+public class BranchPurgeTest {
 
    private final Map<String, Integer> preCreateCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postCreateBranchCount = new HashMap<String, Integer>();
@@ -48,16 +49,19 @@ public class BranchPurgeTest extends TestCase {
    /**
     * @throws java.lang.Exception
     */
-   @Override
-   protected void setUp() throws Exception {
+   @BeforeClass
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
    }
 
+   @BeforeClass
+   @org.junit.Test
    public void testCleanupPre() throws Exception {
       cleanup();
    }
 
+   @org.junit.Test
    public void testPurgeBranch() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateCount, tables);
@@ -101,6 +105,8 @@ public class BranchPurgeTest extends TestCase {
 
    }
 
+   @BeforeClass
+   @org.junit.Test
    public void testCleanupPost() throws Exception {
       cleanup();
    }

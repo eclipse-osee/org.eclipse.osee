@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
@@ -32,16 +32,17 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AtsNavigateItemsToMassEditorTest extends TestCase {
+public class AtsNavigateItemsToMassEditorTest {
 
    public AtsNavigateItemsToMassEditorTest() {
-      super("AtsNavigateItemsToMassEditorTest");
    }
 
+   @org.junit.Test
    public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
    }
 
+   @org.junit.Test
    public void testTeamVersions() throws Exception {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Versions");

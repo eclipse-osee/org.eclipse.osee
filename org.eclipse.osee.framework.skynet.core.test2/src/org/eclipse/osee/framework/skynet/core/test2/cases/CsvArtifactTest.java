@@ -10,6 +10,7 @@
  *******************************************************************************/
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
+import static org.junit.Assert.*;
 
 import java.util.Collection;
 import junit.framework.TestCase;
@@ -23,17 +24,19 @@ import org.eclipse.osee.support.test.util.DemoSawBuilds;
 /**
  * @author Donald G. Dunne
  */
-public class CsvArtifactTest extends TestCase {
+public class CsvArtifactTest  {
 
    private static String id = "org.csv.artifact.test";
    private static String csvData = "Name, Value1, Value2\narf,1,3\nbarn,3,5";
    private static String appendData = "snarf,6,3";
 
-   public void testCleanupPre() throws Exception {
+   @org.junit.Test
+public void testCleanupPre() throws Exception {
       cleanup();
    }
 
-   public void testCreateCsvArtifact() throws Exception {
+   @org.junit.Test
+public void testCreateCsvArtifact() throws Exception {
       CsvArtifact csv =
             CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
       assertEquals(csv.getCsvData(), "");
@@ -42,7 +45,8 @@ public class CsvArtifactTest extends TestCase {
       csv.getArtifact().persistAttributes();
    }
 
-   public void testgetCsvArtifactAndAppendData() throws Exception {
+   @org.junit.Test
+public void testgetCsvArtifactAndAppendData() throws Exception {
       CsvArtifact csvArt =
             CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       assertNotNull(csvArt);
@@ -51,14 +55,16 @@ public class CsvArtifactTest extends TestCase {
       csvArt.getArtifact().persistAttributes();
    }
 
-   public void testCsvGetData() throws Exception {
+   @org.junit.Test
+public void testCsvGetData() throws Exception {
       CsvArtifact csvArt =
             CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       assertNotNull(csvArt);
       assertEquals(csvData + "\n" + appendData, csvArt.getCsvData());
    }
 
-   public void testCleanupPost() throws Exception {
+   @org.junit.Test
+public void testCleanupPost() throws Exception {
       cleanup();
    }
 

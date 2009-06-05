@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -40,6 +41,8 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * This test must be run against a demo database. It tests the case where a team workflow or action is deleted or purged
@@ -47,12 +50,13 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * 
  * @author Donald G. Dunne
  */
-public class AtsDeleteManagerTest extends TestCase {
+public class AtsDeleteManagerTest {
 
    private enum TestNames {
       TeamArtDeleteOneWorkflow, TeamArtDeleteWithTwoWorkflows, TeamArtPurge, ActionDelete, ActionPurge
    };
 
+   @BeforeClass
    public void testCleanupPre() throws Exception {
       cleanup();
    }
@@ -62,6 +66,7 @@ public class AtsDeleteManagerTest extends TestCase {
     * {@link org.eclipse.osee.ats.util.AtsDeleteManager#handleDeletePurgeAtsObject(java.util.Collection, org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption[])}
     * .
     */
+   @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
       if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
@@ -89,6 +94,7 @@ public class AtsDeleteManagerTest extends TestCase {
     * {@link org.eclipse.osee.ats.util.AtsDeleteManager#handleDeletePurgeAtsObject(java.util.Collection, org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption[])}
     * .
     */
+   @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
       if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
@@ -111,6 +117,7 @@ public class AtsDeleteManagerTest extends TestCase {
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 0, 1, 0, 0);
    }
 
+   @org.junit.Test
    public void testTeamArtPurge() throws Exception {
       if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
@@ -133,6 +140,7 @@ public class AtsDeleteManagerTest extends TestCase {
       verifyExists(TestNames.TeamArtPurge, 0, 0, 0, 0, 0);
    }
 
+   @org.junit.Test
    public void testActionDelete() throws Exception {
       if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
@@ -155,6 +163,7 @@ public class AtsDeleteManagerTest extends TestCase {
       verifyExists(TestNames.ActionDelete, 0, 0, 0, 0, 0);
    }
 
+   @org.junit.Test
    public void testActionPurge() throws Exception {
       if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
@@ -225,6 +234,7 @@ public class AtsDeleteManagerTest extends TestCase {
 
    }
 
+   @AfterClass
    public void testCleanupPost() throws Exception {
       cleanup();
    }

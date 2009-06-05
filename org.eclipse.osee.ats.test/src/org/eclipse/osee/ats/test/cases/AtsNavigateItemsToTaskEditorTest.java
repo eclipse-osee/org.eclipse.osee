@@ -9,13 +9,13 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.navigate.NavigateView;
@@ -39,20 +39,23 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class AtsNavigateItemsToTaskEditorTest extends TestCase {
+public class AtsNavigateItemsToTaskEditorTest  {
 
-   public void testDemoDatabase() throws Exception {
+   @org.junit.Test
+public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
    }
 
-   public void testMyTasksEditor() throws Exception {
+   @org.junit.Test
+public void testMyTasksEditor() throws Exception {
       TaskEditor.closeAll();
       // Place holder for future navigate items opening TaskEditor
       //      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
       //      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 
-   public void testTaskSearch() throws Exception {
+   @org.junit.Test
+public void testTaskSearch() throws Exception {
       Set<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");

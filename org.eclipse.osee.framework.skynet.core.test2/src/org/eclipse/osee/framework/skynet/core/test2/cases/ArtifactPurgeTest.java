@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
@@ -39,7 +41,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  * 
  * @author Donald G. Dunne
  */
-public class ArtifactPurgeTest extends TestCase {
+public class ArtifactPurgeTest {
 
    private final Map<String, Integer> preCreateArtifactsCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postCreateArtifactsCount = new HashMap<String, Integer>();
@@ -52,17 +54,20 @@ public class ArtifactPurgeTest extends TestCase {
    /**
     * @throws java.lang.Exception
     */
-   @Override
-   protected void setUp() throws Exception {
+   @BeforeClass
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
    }
 
-   public void testInitialize() throws Exception {
+   @BeforeClass
+   @org.junit.Test
+public void testInitialize() throws Exception {
       monitorLog = TestUtil.severeLoggingStart();
    }
 
-   public void testPurgeArtifacts() throws Exception {
+   @org.junit.Test
+public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
@@ -99,7 +104,8 @@ public class ArtifactPurgeTest extends TestCase {
 
    }
 
-   public void testPurgeArtifactFromBranch() throws Exception {
+   @org.junit.Test
+public void testPurgeArtifactFromBranch() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
@@ -130,7 +136,9 @@ public class ArtifactPurgeTest extends TestCase {
       TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
    }
 
-   public void testCleanup() throws Exception {
+   @AfterClass
+   @org.junit.Test
+public void testCleanup() throws Exception {
       TestUtil.severeLoggingEnd(monitorLog);
    }
 

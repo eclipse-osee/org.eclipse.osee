@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Production_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AtsTest_Config_Suite.class, FrameworkUi_Production_Suite.class,
+      FrameworkCore_Production_Suite.class})
 /**
  * This suite should contain any test that can be run against a deployed OSEE database.<br>
  * <br>
@@ -23,16 +26,5 @@ import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
  * 
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_ProductionDbTests extends TestSuite {
-
-   public static Test suite() throws ClassNotFoundException {
-      TestSuite suite = new TestSuite("MasterTestSuite_Production");
-
-      suite.addTest(AtsTest_Config_Suite.suite());
-      suite.addTest(FrameworkUi_Production_Suite.suite());
-      suite.addTest(FrameworkCore_Production_Suite.suite());
-
-      return suite;
-   }
-
+public class MasterTestSuite_ProductionDbTests {
 }

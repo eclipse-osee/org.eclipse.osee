@@ -11,17 +11,19 @@
 
 package org.eclipse.osee.framework.skynet.core.test2.cases;
 
+import static org.junit.Assert.*;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.junit.Before;
 
 /**
  * @author Theron Virgin
  */
-public class CommitTest extends TestCase {
+public class CommitTest {
 
    private static final String COMMITTED_NEW_AND_DELETED_ARTIFACTS =
          "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_artifact_version art1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_artifact_version art2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
@@ -49,24 +51,10 @@ public class CommitTest extends TestCase {
     * @param name
     */
    public CommitTest(String name) {
-      super(name);
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-   }
-
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
-   protected void tearDown() throws Exception {
-      super.tearDown();
-   }
-
-   public void testCommitFiltering() throws OseeCoreException {
+   @org.junit.Test
+public void testCommitFiltering() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ARTIFACTS);

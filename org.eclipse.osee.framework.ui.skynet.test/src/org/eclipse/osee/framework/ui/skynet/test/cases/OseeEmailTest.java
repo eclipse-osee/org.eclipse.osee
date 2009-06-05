@@ -10,19 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.Date;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
-public class OseeEmailTest extends TestCase {
+public class OseeEmailTest {
 
    public static String emailAddress = null;
    public static final StringBuffer results = new StringBuffer();
@@ -32,7 +34,7 @@ public class OseeEmailTest extends TestCase {
    /**
     * @throws java.lang.Exception
     */
-   @Override
+   @Before
    protected void setUp() throws Exception {
       if (emailAddress == null) {
          ArtifactEditor.editArtifact(UserManager.getUser());
@@ -42,7 +44,8 @@ public class OseeEmailTest extends TestCase {
       }
    }
 
-   public void testTextEmail() throws Exception {
+   @org.junit.Test
+public void testTextEmail() throws Exception {
       final String TEST_NAME = "Email Test 1/3 - Text Body";
       OseeEmail emailMessage =
             new OseeEmail(emailAddress, TEST_NAME, "Hello World - this is text only" + infoStr, BodyType.Text);
@@ -50,7 +53,8 @@ public class OseeEmailTest extends TestCase {
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }
 
-   public void testHtmlEmail() throws Exception {
+   @org.junit.Test
+public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
       OseeEmail emailMessage =
             new OseeEmail(emailAddress, TEST_NAME,
@@ -59,7 +63,8 @@ public class OseeEmailTest extends TestCase {
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }
 
-   public void testAttachementEmail() throws Exception {
+   @org.junit.Test
+public void testAttachementEmail() throws Exception {
       final String TEST_NAME = "Email Test 3/3 - with Outlook Attachment";
       OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
       //
@@ -83,7 +88,8 @@ public class OseeEmailTest extends TestCase {
     * 
     * @throws Exception
     */
-   public void testReportResults() throws Exception {
+   @org.junit.Test
+public void testReportResults() throws Exception {
       if (!results.toString().equals("")) {
          System.err.println(results.toString());
          assertTrue(false);
