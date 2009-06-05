@@ -26,29 +26,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -244,43 +235,6 @@ public class WordUtil {
          newTemplate = template;
       }
       return newTemplate;
-   }
-
-   public static void displayWarningMessageDialog(final String title, final String message) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            MessageDialog.openWarning(Display.getCurrent().getActiveShell(), title, message);
-         }
-      }, true);
-   }
-
-   public static void displayTrackedChangesOnArtifacts(final Collection<Artifact> artifacts) {
-      if (!artifacts.isEmpty()) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            public void run() {
-               XResultData rd = new XResultData();
-               rd.addRaw(AHTML.heading(2,
-                     "This table lists the Artifacts that were detected to have tracked changes on."));
-               rd.addRaw(AHTML.heading(3,
-                     "Please make sure to accept/reject all tracked changes and comment references."));
-               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
-               for (Artifact artifact : artifacts)
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
-                        artifact.getHumanReadableId()}));
-               rd.addRaw(AHTML.endMultiColumnTable());
-               try {
-                  rd.report("Artifacts With Tracked Changes");
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
-      }
    }
 
    private static final Matcher spellCheck =
