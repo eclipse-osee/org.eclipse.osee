@@ -102,7 +102,7 @@ public class BranchPurgeTest {
    }
 
    @After
-   public static void testCleanupPost() throws Exception {
+   public void testCleanupPost() throws Exception {
       cleanup();
    }
 

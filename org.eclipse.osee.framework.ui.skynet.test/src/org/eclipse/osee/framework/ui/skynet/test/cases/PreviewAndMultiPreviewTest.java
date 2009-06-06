@@ -36,9 +36,9 @@ import org.junit.Before;
 public class PreviewAndMultiPreviewTest {
    private List<Artifact> artifacts = new ArrayList<Artifact>();
    private Artifact newArt;
-   private SevereLoggingMonitor monitorLog = null;
+   private static SevereLoggingMonitor monitorLog = null;
    private Branch branch;
-   private boolean isWordRunning = false;
+   private static boolean isWordRunning = false;
 
    @Before
    public void setUp() throws Exception {
@@ -199,10 +199,10 @@ public class PreviewAndMultiPreviewTest {
    }
 
    @After
-   protected void tearDown() throws Exception {
+   public void tearDown() throws Exception {
       if (!isWordRunning) {
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-               getClass().getSimpleName());
+               PreviewAndMultiPreviewTest.class.getSimpleName());
          TestUtil.severeLoggingEnd(monitorLog);
          Thread.sleep(7000);
          FrameworkTestUtil.killAllOpenWinword();
