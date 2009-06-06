@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
@@ -39,8 +40,7 @@ public class Artifact_setAttributeValues {
    private static List<String> emptySet = Arrays.asList();
 
    @BeforeClass
-   @org.junit.Test
-   public void testCleanupPre() throws Exception {
+   public static void testCleanupPre() throws Exception {
       cleanup();
    }
 
@@ -93,8 +93,8 @@ public class Artifact_setAttributeValues {
             artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
 
-   @org.junit.Test
-   public void testCleanupPost() throws Exception {
+   @AfterClass
+   public static void testCleanupPost() throws Exception {
       cleanup();
    }
 
@@ -103,9 +103,9 @@ public class Artifact_setAttributeValues {
             BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false).iterator().next();
    }
 
-   private void cleanup() throws Exception {
+   private static void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromName(getClass().getSimpleName(),
+            ArtifactQuery.getArtifactsFromName(Artifact_setAttributeValues.class.getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       ArtifactPersistenceManager.purgeArtifacts(arts);
    }

@@ -44,17 +44,8 @@ public class ChangeManagerTest {
    private static Artifact modArtifact;
    private Branch branch;
 
-   @After
-   public void tearDown() throws Exception {
-
-      BranchManager.purgeBranch(branch);
-      sleep(5000);
-
-      modArtifact.persistAttributes();
-   }
-
    @Before
-   protected void setUp() throws Exception {
+   public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
       modArtifact =
@@ -90,6 +81,14 @@ public class ChangeManagerTest {
       modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
       modArtifact.persistAttributes();
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.CHANGE));
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      BranchManager.purgeBranch(branch);
+      sleep(5000);
+
+      modArtifact.persistAttributes();
    }
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {

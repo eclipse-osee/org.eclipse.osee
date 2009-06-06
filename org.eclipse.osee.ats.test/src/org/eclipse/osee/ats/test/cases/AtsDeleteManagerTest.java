@@ -57,7 +57,7 @@ public class AtsDeleteManagerTest {
    };
 
    @BeforeClass
-   public void testCleanupPre() throws Exception {
+   public static void testCleanupPre() throws Exception {
       cleanup();
    }
 
@@ -235,11 +235,11 @@ public class AtsDeleteManagerTest {
    }
 
    @AfterClass
-   public void testCleanupPost() throws Exception {
+   public static void testCleanupPost() throws Exception {
       cleanup();
    }
 
-   public void cleanup() throws Exception {
+   public static void cleanup() throws Exception {
       List<String> names = new ArrayList<String>();
       for (TestNames testName : TestNames.values()) {
          names.add(testName.name());

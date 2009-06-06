@@ -61,13 +61,12 @@ public class ArtifactPurgeTest {
    }
 
    @BeforeClass
-   @org.junit.Test
-public void testInitialize() throws Exception {
+   public static void testInitialize() throws Exception {
       monitorLog = TestUtil.severeLoggingStart();
    }
 
    @org.junit.Test
-public void testPurgeArtifacts() throws Exception {
+   public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
@@ -105,7 +104,7 @@ public void testPurgeArtifacts() throws Exception {
    }
 
    @org.junit.Test
-public void testPurgeArtifactFromBranch() throws Exception {
+   public void testPurgeArtifactFromBranch() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
@@ -137,8 +136,7 @@ public void testPurgeArtifactFromBranch() throws Exception {
    }
 
    @AfterClass
-   @org.junit.Test
-public void testCleanup() throws Exception {
+   public static void testCleanup() throws Exception {
       TestUtil.severeLoggingEnd(monitorLog);
    }
 

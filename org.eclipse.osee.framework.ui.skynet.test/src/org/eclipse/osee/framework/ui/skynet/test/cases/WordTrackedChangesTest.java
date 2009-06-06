@@ -45,16 +45,16 @@ public class WordTrackedChangesTest {
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
    private static final String TEST_GEN_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "GeneralWordTrackedChangesTest.doc";
-   private boolean isWordRunning = false;
+   private static boolean isWordRunning = false;
 
    /**
     * This test Word Edit's are being saved.
     */
    @BeforeClass
-   public void setUp() throws Exception {
+   public static void setUp() throws Exception {
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-            getClass().getSimpleName());
+            WordTrackedChangesTest.class.getSimpleName());
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
@@ -66,7 +66,7 @@ public class WordTrackedChangesTest {
     */
 
    @org.junit.Test
-public void testWordSaveWithTrackChanges() throws Exception {
+   public void testWordSaveWithTrackChanges() throws Exception {
 
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
@@ -87,7 +87,7 @@ public void testWordSaveWithTrackChanges() throws Exception {
    }
 
    @org.junit.Test
-public void testGeneralWordSaveWithTrackChanges() throws Exception {
+   public void testGeneralWordSaveWithTrackChanges() throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
@@ -106,12 +106,13 @@ public void testGeneralWordSaveWithTrackChanges() throws Exception {
    }
 
    @AfterClass
-   public void tearDown() throws Exception {
+   public static void tearDown() throws Exception {
       if (!isWordRunning) {
          WordAttribute.setDisplayTrackedChangesErrorMessage("");
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-               getClass().getSimpleName());
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), getClass().getSimpleName());
+               WordTrackedChangesTest.class.getSimpleName());
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(),
+               WordTrackedChangesTest.class.getSimpleName());
          Thread.sleep(7000);
          FrameworkTestUtil.killAllOpenWinword();
       }

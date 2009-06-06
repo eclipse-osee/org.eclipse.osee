@@ -46,8 +46,8 @@ public class SMAPromptChangeStatusTest {
    }
 
    @BeforeClass
-   public void testCleanupPre() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(getClass().getSimpleName());
+   public static void testCleanupPre() throws Exception {
+      DemoTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
    }
 
    @org.junit.Test
@@ -175,8 +175,8 @@ public class SMAPromptChangeStatusTest {
    }
 
    @AfterClass
-   public void testCleanupPost() throws Exception {
-      DemoTestUtil.cleanupSimpleTest(getClass().getSimpleName());
+   public static void testCleanupPost() throws Exception {
+      DemoTestUtil.cleanupSimpleTest(SMAPromptChangeStatusTest.class.getSimpleName());
    }
 
 }

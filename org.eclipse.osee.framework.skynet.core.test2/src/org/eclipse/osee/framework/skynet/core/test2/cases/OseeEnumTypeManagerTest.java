@@ -41,13 +41,13 @@ public class OseeEnumTypeManagerTest {
     * @throws java.lang.Exception
     */
    @Before
-   protected void setUp() throws Exception {
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
    }
 
    @org.junit.Test
-public void testCreateEnumTypeFromXml() throws OseeCoreException {
+   public void testCreateEnumTypeFromXml() throws OseeCoreException {
       String enumTypeName = "EnumType1";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
 
@@ -62,7 +62,7 @@ public void testCreateEnumTypeFromXml() throws OseeCoreException {
    }
 
    @org.junit.Test
-public void testCreateEnumType() throws OseeCoreException {
+   public void testCreateEnumType() throws OseeCoreException {
       String enumTypeName = "EnumType2";
       String[] entryNames = new String[] {"oneA", "twoA", "threeA"};
       Integer[] entryOrdinals = new Integer[] {1, 50, 100};
@@ -84,7 +84,7 @@ public void testCreateEnumType() throws OseeCoreException {
 
    @SuppressWarnings("unchecked")
    @org.junit.Test
-public void testAddEntriesToType() throws OseeCoreException {
+   public void testAddEntriesToType() throws OseeCoreException {
       String enumTypeName = "EnumType10";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -126,7 +126,7 @@ public void testAddEntriesToType() throws OseeCoreException {
    }
 
    @org.junit.Test
-public void testRemoveEntriesToType() throws OseeCoreException {
+   public void testRemoveEntriesToType() throws OseeCoreException {
       String enumTypeName = "EnumType4";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -156,7 +156,7 @@ public void testRemoveEntriesToType() throws OseeCoreException {
    }
 
    @org.junit.Test
-public void testDeletedRetrieval() throws OseeCoreException {
+   public void testDeletedRetrieval() throws OseeCoreException {
       String enumTypeName = "EnumType5";
       String xmlDefinition = "<Root><Enum>one</Enum><Enum>two</Enum><Enum>three</Enum></Root>";
       String[] entryNames = new String[] {"one", "two", "three"};
@@ -181,7 +181,7 @@ public void testDeletedRetrieval() throws OseeCoreException {
    }
 
    @org.junit.Test
-public void testDeletedNotAllowedWhileInUseByAttribute() throws OseeCoreException {
+   public void testDeletedNotAllowedWhileInUseByAttribute() throws OseeCoreException {
       Collection<OseeEnumType> types = OseeEnumTypeManager.getAllTypes();
       boolean wasTestedAtLeastOnce = false;
       for (OseeEnumType type : types) {

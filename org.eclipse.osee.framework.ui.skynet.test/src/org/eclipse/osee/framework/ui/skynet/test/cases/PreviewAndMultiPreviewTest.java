@@ -5,11 +5,12 @@
  */
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -26,21 +27,21 @@ import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Megumi Telles
  */
-public class PreviewAndMultiPreviewTest extends TestCase {
+public class PreviewAndMultiPreviewTest {
    private List<Artifact> artifacts = new ArrayList<Artifact>();
    private Artifact newArt;
    private SevereLoggingMonitor monitorLog = null;
    private Branch branch;
    private boolean isWordRunning = false;
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
@@ -63,6 +64,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
     * Preview Requirements Artifact (includes a child artifact == general document but should not invoke a
     * warning since only previewing (no recurse)).
     */
+   @org.junit.Test
    public void testPreview() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -87,6 +89,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
    /*
     * Preview Requirements Artifact with valid children. 
     */
+   @org.junit.Test
    public void testPreviewWithChildrenFault() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -113,6 +116,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
    /*
     * Preview Requirement Artifact with a general document child.  Expect Warning.  
     */
+   @org.junit.Test
    public void testPreviewWithChildren() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -140,6 +144,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
    /*
     * Preview multiple Requirement Artifacts
     */
+   @org.junit.Test
    public void testMultiPreview() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -170,6 +175,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
       }
    }
 
+   @org.junit.Test
    public void testWholeWordPreview() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -192,9 +198,7 @@ public class PreviewAndMultiPreviewTest extends TestCase {
       }
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
+   @After
    protected void tearDown() throws Exception {
       if (!isWordRunning) {
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),

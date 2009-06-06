@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * This test is intended to be run against a demo database. It tests the branch purge logic by counting the rows of the
@@ -49,15 +50,10 @@ public class BranchPurgeTest {
    /**
     * @throws java.lang.Exception
     */
-   @BeforeClass
+   @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
-   }
-
-   @BeforeClass
-   @org.junit.Test
-   public void testCleanupPre() throws Exception {
       cleanup();
    }
 
@@ -105,13 +101,12 @@ public class BranchPurgeTest {
 
    }
 
-   @BeforeClass
-   @org.junit.Test
-   public void testCleanupPost() throws Exception {
+   @After
+   public static void testCleanupPost() throws Exception {
       cleanup();
    }
 
-   private void cleanup() throws Exception {
-      FrameworkTestUtil.purgeWorkingBranches(Arrays.asList(getClass().getSimpleName()));
+   private static void cleanup() throws Exception {
+      FrameworkTestUtil.purgeWorkingBranches(Arrays.asList(BranchPurgeTest.class.getSimpleName()));
    }
 }
