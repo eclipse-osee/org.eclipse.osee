@@ -10,26 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.logging.Level;
-import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_DemoDbPopulate extends TestCase {
+public class MasterTestSuite_DemoDbPopulate {
 
    /* (non-Javadoc)
     * @see junit.framework.TestCase#setUp()
     */
-   @Override
-   protected void setUp() throws Exception {
-      super.setUp();
+   @Before
+   public void setUp() throws Exception {
       try {
          assertTrue("Demo Application Server must be running",
                ClientSessionManager.getAuthenticationProtocols().contains("demo"));
@@ -56,6 +58,7 @@ public class MasterTestSuite_DemoDbPopulate extends TestCase {
    /**
     * Test method for {@link org.eclipse.osee.ats.config.demo.config.PopulateDemoActions#run()}.
     */
+   @org.junit.Test
    public void testPopulateDemoDb() throws Exception {
       PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
       populateDemoActions.run(false);
