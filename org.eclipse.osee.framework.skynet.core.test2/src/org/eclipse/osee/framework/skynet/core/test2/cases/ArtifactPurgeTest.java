@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -51,18 +52,18 @@ public class ArtifactPurgeTest {
          Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
                "osee_artifact_version");
 
-   /**
-    * @throws java.lang.Exception
-    */
-   @BeforeClass
-   public void setUp() throws Exception {
-      // This test should only be run on test db
-      assertFalse(TestUtil.isProductionDb());
-   }
-
    @BeforeClass
    public static void testInitialize() throws Exception {
       monitorLog = TestUtil.severeLoggingStart();
+   }
+
+   /**
+    * @throws java.lang.Exception
+    */
+   @Before
+   public void setUp() throws Exception {
+      // This test should only be run on test db
+      assertFalse(TestUtil.isProductionDb());
    }
 
    @org.junit.Test
