@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Megumi Telles
@@ -50,11 +50,12 @@ public class WordTrackedChangesTest {
    /**
     * This test Word Edit's are being saved.
     */
-   @BeforeClass
-   public static void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             WordTrackedChangesTest.class.getSimpleName());
+      WordAttribute.setDisplayTrackedChangesErrorMessage("");
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
@@ -80,12 +81,15 @@ public class WordTrackedChangesTest {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       renderer = WordEditTest.openArtifacts(artifacts);
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(2000);
+      Thread.sleep(5000);
       assertTrue("Detected Tracked Changes Succcessfully", WordAttribute.getDisplayTrackedChangesErrorMessage().equals(
             "Detected tracked changes on for this artifact.") == true);
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
+   /*
+    * Verifies that on a general document the save was success with tracked changes
+    */
    @org.junit.Test
    public void testGeneralWordSaveWithTrackChanges() throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
@@ -99,16 +103,38 @@ public class WordTrackedChangesTest {
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_GEN_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(2000);
+      Thread.sleep(5000);
       assertTrue("Did not Detect Tracked Changes",
             WordAttribute.getDisplayTrackedChangesErrorMessage().equals("") == true);
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
+   /*
+    * Verifies that a whole word document cannot save with tracked changes on
+    */
+   @org.junit.Test
+   public void testWholeWordSaveWithTrackChanges() throws Exception {
+
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+      FileRenderer.setWorkbenchSavePopUpDisabled(true);
+      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      // create a new requirement artifact
+      Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
+      newArt.persistAttributesAndRelations();
+      artifacts = Arrays.asList(newArt);
+      RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
+      FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
+      makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
+      Thread.sleep(5000);
+      assertTrue("Detected Tracked Changes Succcessfully", WordAttribute.getDisplayTrackedChangesErrorMessage().equals(
+            "Detected tracked changes on for this artifact.") == true);
+      TestUtil.severeLoggingEnd(monitorLog);
+   }
+
+   @After
+   public void tearDown() throws Exception {
       if (!isWordRunning) {
-         WordAttribute.setDisplayTrackedChangesErrorMessage("");
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
                WordTrackedChangesTest.class.getSimpleName());
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(),
