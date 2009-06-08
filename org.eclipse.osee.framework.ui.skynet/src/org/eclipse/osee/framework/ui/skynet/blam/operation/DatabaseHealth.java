@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -102,8 +103,8 @@ public class DatabaseHealth extends AbstractBlam {
    private final class MasterDbHealthOperation extends AbstractOperation {
 
       private boolean isShowDetailsEnabled;
-      private Set<DatabaseHealthOperation> fixOperations;
-      private Set<DatabaseHealthOperation> verifyOperations;
+      private Set<DatabaseHealthOperation> fixOperations = new HashSet<DatabaseHealthOperation>();
+      private Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
 
       public MasterDbHealthOperation(String operationName) {
          super(operationName, SkynetGuiPlugin.PLUGIN_ID);
