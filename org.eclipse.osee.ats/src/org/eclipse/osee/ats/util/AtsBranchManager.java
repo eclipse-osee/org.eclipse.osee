@@ -281,6 +281,9 @@ public class AtsBranchManager {
           */
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
+            if(e1 == null || e2 == null){
+               return 0;
+            }
             if (((TransactionId) e1).getTransactionNumber() < ((TransactionId) e2).getTransactionNumber()) {
                return -1;
             } else if (((TransactionId) e1).getTransactionNumber() > ((TransactionId) e2).getTransactionNumber()) {
