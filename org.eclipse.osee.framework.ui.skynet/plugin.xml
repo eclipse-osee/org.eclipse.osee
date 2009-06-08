@@ -1783,4 +1783,10 @@
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateRelationCheck">
      </DatabaseHealthOperation>
   </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateHRID">
+     </DatabaseHealthOperation>
+  </extension>
 </plugin>
