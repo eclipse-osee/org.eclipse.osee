@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,10 +30,13 @@ import org.junit.runners.Suite;
  */
 public class MasterTestSuite_TestDbTests {
 
-   //   @BeforeSuite
-   //   public void setUp() throws Exception {
-   //      assertTrue("No authenticatication protocols found.", ClientSessionManager.getAuthenticationProtocols().size() > 0);
-   //   }
-   //   }
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Should be run on production datbase.", TestUtil.isTestDb());
+      assertFalse("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
+            "demo"));
+      assertFalse("Can't run using Demo Application Server",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 
 }

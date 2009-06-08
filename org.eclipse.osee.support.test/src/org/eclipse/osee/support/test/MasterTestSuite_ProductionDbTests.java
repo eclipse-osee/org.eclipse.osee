@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Production_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -27,4 +32,12 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_ProductionDbTests {
+   @BeforeClass
+   public void setUp() throws Exception {
+      assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
+      assertFalse("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
+            "demo"));
+      assertFalse("Client can't authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 }

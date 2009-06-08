@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class PreviewAndMultiPreviewTest {
 
    @Before
    public void setUp() throws Exception {
+      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",

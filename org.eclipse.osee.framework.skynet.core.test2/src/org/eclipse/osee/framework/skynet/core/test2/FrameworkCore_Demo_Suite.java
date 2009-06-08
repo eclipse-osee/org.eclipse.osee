@@ -18,13 +18,14 @@ import org.eclipse.osee.framework.skynet.core.test2.cases.ConflictTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.NativeArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test2.cases.OseeEnumTypeManagerTest;
+import org.eclipse.osee.framework.skynet.core.test2.cases.SevereLogMonitorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {ArtifactPurgeTest.class, BranchPurgeTest.class, Artifact_setAttributeValues.class,
       CsvArtifactTest.class, NativeArtifactTest.class, OseeEnumTypeManagerTest.class, ConflictTest.class,
-      ChangeManagerTest.class})
+      ChangeManagerTest.class, SevereLogMonitorTest.class})
 /**
  * @author Donald G. Dunne
  */

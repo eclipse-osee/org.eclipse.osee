@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
 import org.eclipse.osee.ats.test.cases.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 import org.eclipse.osee.ats.test.cases.AtsValidateAtsDatabaseTest;
 import org.eclipse.osee.ats.test.cases.SMAPromptChangeStatusTest;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,5 +28,11 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Demo_Suite {
-
+   @BeforeClass
+   public void setUp() throws Exception {
+      assertTrue("Demo Application Server must be running.",
+            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 }

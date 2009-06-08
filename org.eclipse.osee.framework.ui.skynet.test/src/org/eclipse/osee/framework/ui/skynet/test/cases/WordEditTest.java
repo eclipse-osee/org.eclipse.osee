@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -61,6 +62,7 @@ public class WordEditTest {
     */
    @Before
    public void setUp() throws Exception {
+      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
             getClass().getSimpleName());
@@ -71,7 +73,7 @@ public class WordEditTest {
    }
 
    @org.junit.Test
-public void testEditUsingWord() throws Exception {
+   public void testEditUsingWord() throws Exception {
       // use word template renderer
       probeWordEditingCapability(false, getClass().getSimpleName());
       // use renderer manager

@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -27,11 +31,12 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbTests {
-   //   @Before
-   //   public void setUp() throws Exception {
-   //      assertTrue("Demo Application Server must be running.",
-   //            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-   //      assertTrue("Client must authenticate using demo protocol",
-   //            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
-   //   }
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Should be run on demo datbase.", TestUtil.isDemoDb());
+      assertTrue("Demo Application Server must be running.",
+            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 }

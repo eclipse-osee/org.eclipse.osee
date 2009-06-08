@@ -36,6 +36,10 @@ public class TestUtil {
       return ClientSessionManager.isProductionDataStore();
    }
 
+   public static boolean isTestDb() throws OseeCoreException {
+      return !isProductionDb() && !isDemoDb();
+   }
+
    public static boolean isDemoDb() throws OseeCoreException {
       return ClientSessionManager.getAuthenticationProtocols().contains("demo");
    }
