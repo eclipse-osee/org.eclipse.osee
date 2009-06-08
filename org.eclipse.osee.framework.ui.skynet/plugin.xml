@@ -15,8 +15,8 @@
  <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
- <extension-point id="DBHealthTask" name="DBHealthTask" schema="schema/DBHealthTask.exsd"/>
  <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
+ <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
 
 <extension
       point="org.eclipse.ui.popupMenus">
@@ -1290,94 +1290,6 @@
     </Operation>
  </extension>
  <extension
-       id="CommitTransactions"
-       name="CommitTransactions"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">
-    </Task>
- </extension>
- <extension
-       id="ArtifactTxCurrent"
-       name="ArtifactTxCurrent"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.ArtifactTxCurrent">
-    </Task>
- </extension>
- <extension
-       id="AttributeTxCurrent"
-       name="AttributeTxCurrent"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.AttributeTxCurrent">
-    </Task>
- </extension>
- <extension
-       id="RelLinkTxCurrent"
-       name="RelLinkTxCurrent"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RelLinkTxCurrent">
-    </Task>
- </extension>
- <extension
-       id="DuplicateAttributeCheck"
-       name="DuplicateAttributeCheck"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateAttributes">
-    </Task>
- </extension>
- <extension
-       id="CleanUpAddressingData"
-       name="CleanUpAddressingData"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
-    </Task>
- </extension>
- <extension
-       id="CleanUpAddressingData"
-       name="CleanUpAddressingData"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
-    </Task>
- </extension>
- <extension
-       id="RelationIntegrityData"
-       name="RelationIntegrityData"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
-    </Task>
- </extension>
- <extension
-       id="CleanUpBackingData"
-       name="CleanUpBackingData"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
-    </Task>
- </extension>
- <extension
-       id="CommitedNewAndDeleted"
-       name="CommitedNewAndDeleted"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitedNewAndDeleted">
-    </Task>
- </extension>
- <extension
-       id="RemoveAttributesWithoutArtifacts"
-       name="RemoveAttributesWithoutArtifacts"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RemoveAttributesWithoutArtifacts">
-    </Task>
- </extension>
- <extension
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation
                className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationOrderAnalysisOnBranch">
@@ -1388,12 +1300,6 @@
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateWordFormattedContentAttributes">
     </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAttrFromDeletedArt">
-    </Task>
  </extension>
  <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -1414,14 +1320,6 @@
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.FixTemplateContentArtifacts">
     </Operation>
- </extension>
- <extension
-       id="DuplicateRelationCheck"
-       name="DuplicateRelationCheck"
-       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
-    <Task
-          class="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateRelationCheck">
-    </Task>
  </extension>
 <extension
       id="Open With Commands"
@@ -1806,5 +1704,83 @@
      <Operation
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindAllTrackChangeEnabledWordContentArtifacts">
      </Operation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.ArtifactTxCurrent">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.AttributeTxCurrent">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelLinkTxCurrent">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateAttributes">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitedNewAndDeleted">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.RemoveAttributesWithoutArtifacts">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAttrFromDeletedArt">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateRelationCheck">
+     </DatabaseHealthOperation>
   </extension>
 </plugin>
