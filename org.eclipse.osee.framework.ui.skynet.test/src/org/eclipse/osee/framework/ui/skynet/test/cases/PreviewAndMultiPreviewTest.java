@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -34,10 +36,10 @@ import org.junit.Before;
  * @author Megumi Telles
  */
 public class PreviewAndMultiPreviewTest {
-   private List<Artifact> artifacts = new ArrayList<Artifact>();
-   private Artifact newArt;
+   private static List<Artifact> artifacts = new ArrayList<Artifact>();
+   private static Artifact newArt;
    private static SevereLoggingMonitor monitorLog = null;
-   private Branch branch;
+   private static Branch branch;
    private static boolean isWordRunning = false;
 
    @Before
@@ -51,11 +53,13 @@ public class PreviewAndMultiPreviewTest {
 
    private void init() throws Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-            getClass().getSimpleName());
+            PreviewAndMultiPreviewTest.class.getSimpleName());
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
       branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
       // create a new requirement artifact
-      newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
+      newArt =
+            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  PreviewAndMultiPreviewTest.class.getSimpleName());
       newArt.persistAttributesAndRelations();
       artifacts = Arrays.asList(newArt);
    }
@@ -86,11 +90,31 @@ public class PreviewAndMultiPreviewTest {
       }
    }
 
+   @org.junit.Test
+   public void testPreviewUsingRendererManager() throws Exception {
+      if (!artifacts.isEmpty()) {
+         try {
+            monitorLog = TestUtil.severeLoggingStart();
+            Artifact childArt =
+                  ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            newArt.addChild(childArt);
+            RendererManager.previewInJob(artifacts);
+            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
+            fail("Preview with children test failed.");
+         }
+      } else {
+         fail("Preview with children test failed.  There were no artifacts to preview.");
+      }
+   }
+
    /*
     * Preview Requirements Artifact with valid children. 
     */
    @org.junit.Test
-   public void testPreviewWithChildrenFault() throws Exception {
+   public void testPreviewWithChildren() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
@@ -113,11 +137,30 @@ public class PreviewAndMultiPreviewTest {
       }
    }
 
-   /*
-    * Preview Requirement Artifact with a general document child.  Expect Warning.  
-    */
    @org.junit.Test
-   public void testPreviewWithChildren() throws Exception {
+   public void testPreviewWithChildrenUsingRendererManager() throws Exception {
+      if (!artifacts.isEmpty()) {
+         try {
+            monitorLog = TestUtil.severeLoggingStart();
+            Artifact childArt =
+                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                        getClass().getSimpleName() + "1");
+            newArt.addChild(childArt);
+            RendererManager.previewInJob(artifacts);
+            // should get one warning since the child is a general document
+            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
+            fail("Preview with children test failed.");
+         }
+      } else {
+         fail("Preview with children test failed.  There were no artifacts to preview.");
+      }
+   }
+
+   @org.junit.Test
+   public void testPreviewWithChildrenFault() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
@@ -131,6 +174,31 @@ public class PreviewAndMultiPreviewTest {
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 1);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).get(0).getMessage().contains(
                   "You chose to preview/edit artifacts that could not be handled"));
+            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
+            fail("Preview with children test failed.");
+         }
+      } else {
+         fail("Preview with children test failed.  There were no artifacts to preview.");
+      }
+   }
+
+   /*
+    * No warning expected in this fault case because the Renderer Manager resolves which
+    * render to use to preview.  
+    */
+   @org.junit.Test
+   public void testPreviewWithChildrenUsingRendererManagerFault() throws Exception {
+      if (!artifacts.isEmpty()) {
+         try {
+            monitorLog = TestUtil.severeLoggingStart();
+            Artifact childArt =
+                  ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            newArt.addChild(childArt);
+            RendererManager.previewInJob(artifacts);
+            // should get one warning since the child is a general document
+            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
             assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
@@ -163,7 +231,6 @@ public class PreviewAndMultiPreviewTest {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
             renderer.preview(newMultiArts);
-            // should get one warning since the child is a general document
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
             assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
@@ -176,6 +243,37 @@ public class PreviewAndMultiPreviewTest {
    }
 
    @org.junit.Test
+   public void testMultiPreviewUsingRendererManager() throws Exception {
+      if (!artifacts.isEmpty()) {
+         try {
+            monitorLog = TestUtil.severeLoggingStart();
+            List<Artifact> newMultiArts = new ArrayList<Artifact>();
+            Artifact multiArt1 =
+                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                        getClass().getSimpleName() + "3");
+            Artifact multiArt2 =
+                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                        getClass().getSimpleName() + "2");
+            Artifact multiArt3 =
+                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                        getClass().getSimpleName() + "1");
+            newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
+            RendererManager.previewInJob(artifacts);
+            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
+            fail("Preview with children test failed.");
+         }
+      } else {
+         fail("Preview with children test failed.  There were no artifacts to preview.");
+      }
+   }
+
+   /* 
+    * Preview a whole word doc 
+    */
+   @org.junit.Test
    public void testWholeWordPreview() throws Exception {
       if (!artifacts.isEmpty()) {
          try {
@@ -184,9 +282,30 @@ public class PreviewAndMultiPreviewTest {
             Artifact art =
                   ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
             arts = Arrays.asList(art);
-            WordTemplateRenderer renderer = new WordTemplateRenderer();
+            WholeDocumentRenderer renderer = new WholeDocumentRenderer();
             renderer.setOptions(null);
             renderer.preview(arts);
+            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
+            fail("Whole Word Preview test failed.");
+         }
+      } else {
+         fail("Whoile Word Test failed.");
+      }
+   }
+
+   @org.junit.Test
+   public void testWholeWordPreviewUsingRendererManager() throws Exception {
+      if (!artifacts.isEmpty()) {
+         try {
+            monitorLog = TestUtil.severeLoggingStart();
+            List<Artifact> arts = new ArrayList<Artifact>();
+            Artifact art =
+                  ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
+            arts = Arrays.asList(art);
+            RendererManager.previewInJob(artifacts);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
             assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
