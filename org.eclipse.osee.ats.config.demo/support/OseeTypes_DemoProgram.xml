@@ -201,10 +201,10 @@
  </Styles>
  <Worksheet ss:Name="block III">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="='block III'!R95C1:R110C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="='block III'!R97C1:R112C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="256" ss:ExpandedRowCount="112" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="256" ss:ExpandedRowCount="114" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="326.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="294"/>
@@ -282,6 +282,15 @@
     <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">System Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">Test Procedure WML</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">MS Word</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
@@ -648,7 +657,7 @@
     <Cell ss:StyleID="s33"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Span="1"/>
-   <Row ss:Index="45" ss:AutoFitHeight="0" ss:Height="11.25"/>
+   <Row ss:Index="46" ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s34"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s34"><Data ss:Type="String">Attribute Name</Data></Cell>
@@ -777,6 +786,10 @@
     <Cell ss:StyleID="s24"><Data ss:Type="String">Subsystem Design</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Subsystem</Data></Cell>
    </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s35"><Data ss:Type="String">Test Procedure WML</Data></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">Subsystem</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
    <Row ss:AutoFitHeight="0" ss:Height="14.25"/>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -863,7 +876,7 @@
     <Cell ss:StyleID="s36"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="92" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="94" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -1555,21 +1568,17 @@
     <HorizontalResolution>600</HorizontalResolution>
     <VerticalResolution>600</VerticalResolution>
    </Print>
-   <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>9</TopRowVisible>
-   <LeftColumnVisible>2</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>31</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>15</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
    <ProtectScenarios>False</ProtectScenarios>
   </WorksheetOptions>
-  <AutoFilter x:Range="R95C1:R110C4"
+  <AutoFilter x:Range="R97C1:R112C4"
    xmlns="urn:schemas-microsoft-com:office:excel">
   </AutoFilter>
   <Sorting xmlns="urn:schemas-microsoft-com:office:excel">
