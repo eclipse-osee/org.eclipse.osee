@@ -1,0 +1,13 @@
+<one>
+<w:hlink w:dest="http://127.0.0.1:8010/Define?guid=#GUID#">
+	<w:r>
+		<w:rPr>
+			<w:rStyle w:val="Hyperlink"/>
+		</w:rPr>
+		<w:t>Something Here</w:t>
+	</w:r>
+</w:hlink>
+</one>
+<two>
+OSEE_LINK(#GUID#)
+</two>

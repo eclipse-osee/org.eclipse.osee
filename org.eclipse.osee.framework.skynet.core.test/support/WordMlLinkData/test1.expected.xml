@@ -1,0 +1,6 @@
+<one>
+<w:hlink w:dest="http://localhost:8089/osee/client/loopback?sessionId=#SESSION#&amp;guid=#GUID#&amp;cmd=open.artifact&amp;branchId=2&amp;context=osee%2Floopback"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>OSEE System</w:t></w:r></w:hlink>
+</one>
+<two>
+<w:hlink w:dest="http://localhost:8089/osee/client/loopback?sessionId=#SESSION#&amp;guid=#GUID#&amp;cmd=open.artifact&amp;branchId=2&amp;context=osee%2Floopback"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>OSEE System</w:t></w:r></w:hlink>
+</two>

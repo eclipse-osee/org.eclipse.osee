@@ -1,0 +1,6 @@
+<one>
+<w:hlink w:dest="http://localhost:8089/osee/client/loopback?guid=#GUID#&cmd=open&editorId=artifact.editor&branchId=10&context=osee%2Floopback"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Something Here</w:t></w:r></w:hlink>
+</one>
+<two>
+<w:hlink w:dest="http://localhost:8089/osee/client/loopback?guid=#GUID#&cmd=open&editorId=artifact.editor&branchId=10&context=osee%2Floopback"><w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>Something Here</w:t></w:r></w:hlink>
+</two>
