@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
  */
 public class FrameworkUi_Demo_Suite {
    @BeforeClass
-   public void setUp() throws Exception {
+   public static void setUp() throws Exception {
       assertTrue("Demo Application Server must be running.",
             ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",

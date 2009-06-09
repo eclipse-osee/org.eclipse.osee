@@ -34,7 +34,7 @@ public class RelationDeletionTest {
    private static final String ARTIFACT_TYPE = "Folder";
 
    @Before
-   public static void setUp() throws Exception {
+   public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(ClientSessionManager.isProductionDataStore());
    }
