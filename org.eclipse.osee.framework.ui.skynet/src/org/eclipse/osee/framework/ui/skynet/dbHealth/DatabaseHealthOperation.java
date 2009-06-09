@@ -30,7 +30,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
       this.isFixOperationEnabled = false;
       this.isShowDetailsEnabled = false;
-      this.appendableBuffer = null;
+      this.appendableBuffer = new StringBuilder();
       this.itemToFixCount = 0;
    }
 
