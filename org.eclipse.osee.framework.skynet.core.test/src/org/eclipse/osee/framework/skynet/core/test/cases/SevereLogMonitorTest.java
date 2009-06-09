@@ -10,32 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.junit.Assert.assertTrue;
 import java.util.logging.Level;
-
-import junit.framework.TestCase;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Before;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class SevereLogMonitorTest extends TestCase {
+public class SevereLogMonitorTest {
 
-	public void testCatchingOfException(){
-		
-		boolean madeItInException = false;
-		SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-		OseeLog.registerLoggerListener(monitorLog);
-		try{
-			throw new Exception("this is my test exception");
-		} catch (Exception ex){
-			madeItInException = true;
-			OseeLog.log(SevereLogMonitorTest.class, Level.SEVERE, "caught our exception in a junit", ex);
-		}
-		assertTrue(madeItInException);
-		assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()), monitorLog.getAllLogs().size() == 1);
-	}
-	
+   @Before
+   public void setup() throws Exception {
+      assertTrue("Should be run on test or demo datbase.", TestUtil.isDemoDb() || TestUtil.isTestDb());
+   }
+
+   @org.junit.Test
+   public void testCatchingOfException() {
+
+      boolean madeItInException = false;
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
+      try {
+         throw new Exception("this is my test exception");
+      } catch (Exception ex) {
+         madeItInException = true;
+         OseeLog.log(SevereLogMonitorTest.class, Level.SEVERE, "caught our exception in a junit", ex);
+      }
+      assertTrue(madeItInException);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
+            monitorLog.getAllLogs().size() == 1);
+   }
+
 }

@@ -28,7 +28,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -65,6 +67,11 @@ public class StaticIdManagerTest {
          }
          assertTrue("Expected 0 artifacts; Returned " + artifacts.size(), artifacts.size() == 0);
       }
+   }
+
+   @Before
+   public void setup() throws Exception {
+      assertTrue("Should be run on demo datbase.", TestUtil.isDemoDb());
    }
 
    @org.junit.Test
