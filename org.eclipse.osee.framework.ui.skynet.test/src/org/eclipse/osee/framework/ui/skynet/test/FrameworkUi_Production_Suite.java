@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
+import org.eclipse.osee.framework.ui.skynet.test.cases.DatabaseIntegrityTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {OseeEmailTest.class})
+@Suite.SuiteClasses( {OseeEmailTest.class, DatabaseIntegrityTest.class})
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkUi_Production_Suite {
+
 }

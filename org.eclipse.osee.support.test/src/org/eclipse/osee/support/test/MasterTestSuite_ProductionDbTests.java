@@ -33,7 +33,7 @@ import org.junit.runners.Suite;
  */
 public class MasterTestSuite_ProductionDbTests {
    @BeforeClass
-   public void setUp() throws Exception {
+   public static void setUp() throws Exception {
       assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
       assertFalse("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
             "demo"));

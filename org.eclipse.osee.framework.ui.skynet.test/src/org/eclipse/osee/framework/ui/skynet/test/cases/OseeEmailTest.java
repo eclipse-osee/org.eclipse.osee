@@ -35,7 +35,7 @@ public class OseeEmailTest {
     * @throws java.lang.Exception
     */
    @Before
-   protected void setUp() throws Exception {
+   public static void setUp() throws Exception {
       if (emailAddress == null) {
          ArtifactEditor.editArtifact(UserManager.getUser());
          emailAddress = UserManager.getUser().getEmail();
@@ -45,7 +45,7 @@ public class OseeEmailTest {
    }
 
    @org.junit.Test
-public void testTextEmail() throws Exception {
+   public void testTextEmail() throws Exception {
       final String TEST_NAME = "Email Test 1/3 - Text Body";
       OseeEmail emailMessage =
             new OseeEmail(emailAddress, TEST_NAME, "Hello World - this is text only" + infoStr, BodyType.Text);
@@ -54,7 +54,7 @@ public void testTextEmail() throws Exception {
    }
 
    @org.junit.Test
-public void testHtmlEmail() throws Exception {
+   public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
       OseeEmail emailMessage =
             new OseeEmail(emailAddress, TEST_NAME,
@@ -64,7 +64,7 @@ public void testHtmlEmail() throws Exception {
    }
 
    @org.junit.Test
-public void testAttachementEmail() throws Exception {
+   public void testAttachementEmail() throws Exception {
       final String TEST_NAME = "Email Test 3/3 - with Outlook Attachment";
       OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
       //
@@ -89,11 +89,12 @@ public void testAttachementEmail() throws Exception {
     * @throws Exception
     */
    @org.junit.Test
-public void testReportResults() throws Exception {
+   public void testReportResults() throws Exception {
       if (!results.toString().equals("")) {
          System.err.println(results.toString());
          assertTrue(false);
-      } else
+      } else {
          assertTrue(true);
+      }
    }
 }
