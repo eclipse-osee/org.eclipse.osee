@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.session.management.servlet.test;
 import junit.framework.TestCase;
 
 /**
+ * Application Server Test
+ * 
  * @author Roberto E. Escobar
  */
 public class TestSessionManagement extends TestCase {

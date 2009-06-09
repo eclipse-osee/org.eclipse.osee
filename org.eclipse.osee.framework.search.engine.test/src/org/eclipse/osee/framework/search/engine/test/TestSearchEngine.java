@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.search.engine.test;
 import junit.framework.TestCase;
 
 /**
+ * Application Server Test
+ * 
  * @author Roberto E. Escobar
  */
 public class TestSearchEngine extends TestCase {

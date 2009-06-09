@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 
 /**
+ * Application Server Test
+ * 
  * @author Roberto E. Escobar
  */
 public class TestResourceManagerServlet extends TestCase {

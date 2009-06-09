@@ -25,11 +25,13 @@ import org.eclipse.osee.framework.resource.management.Resource;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 
 /**
+ * Application Server Test
+ * 
  * @author Andrew M. Finkbeiner
  */
 public class TestResourceManager extends TestCase {
 
-   private URL testFileURL;
+   private final URL testFileURL;
 
    public TestResourceManager() {
       testFileURL =

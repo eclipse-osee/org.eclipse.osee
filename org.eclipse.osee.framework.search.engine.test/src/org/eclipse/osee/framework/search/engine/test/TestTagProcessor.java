@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 import org.osgi.framework.Bundle;
 
 /**
+ * Application Server Test
+ * 
  * @author Roberto E. Escobar
  */
 public class TestTagProcessor extends TestCase {

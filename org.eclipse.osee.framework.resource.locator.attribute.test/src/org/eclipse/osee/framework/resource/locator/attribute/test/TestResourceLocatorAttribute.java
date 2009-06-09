@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
+ * Application Server Test
+ * 
  * @author Roberto E. Escobar
  */
 public class TestResourceLocatorAttribute extends TestCase {
@@ -92,12 +94,12 @@ public class TestResourceLocatorAttribute extends TestCase {
    }
 
    private final class TestData {
-      private String id;
+      private final String id;
       private String seed;
       private String name;
       private String path;
-      private boolean shouldException;
-      private String expected;
+      private final boolean shouldException;
+      private final String expected;
 
       public TestData(String id, String path, boolean shouldException, String expected) {
          super();
