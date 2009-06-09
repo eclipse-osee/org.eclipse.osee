@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
 
-   HashMap<KeyOne, HashMap<KeyTwo, Value>> k1ToHashMap;
+   private final HashMap<KeyOne, HashMap<KeyTwo, Value>> k1ToHashMap;
 
    public DoubleKeyHashMap() {
       k1ToHashMap = new HashMap<KeyOne, HashMap<KeyTwo, Value>>();
@@ -76,8 +76,13 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       return value;
    }
 
+   @Override
    public String toString() {
       return k1ToHashMap.toString();
+   }
+
+   public int size() {
+      return k1ToHashMap.size();
    }
 
    /**
@@ -107,7 +112,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
    }
 
    public boolean containsKey(KeyOne k1, KeyTwo k2) {
-      return (k1ToHashMap.containsKey(k1) && k1ToHashMap.get(k1).containsKey(k2));
+      return k1ToHashMap.containsKey(k1) && k1ToHashMap.get(k1).containsKey(k2);
    }
 
    public void clear() {

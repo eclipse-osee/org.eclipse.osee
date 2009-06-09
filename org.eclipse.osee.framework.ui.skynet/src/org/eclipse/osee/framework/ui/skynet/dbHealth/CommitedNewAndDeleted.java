@@ -80,23 +80,30 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
          addressing = new HashSet<LocalValues>();
          monitor.subTask("Loading Artifacts that were Introduced as Deleted");
          loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS);
-         monitor.worked(20);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.20));
+
          monitor.subTask("Loading Attributes that were Introduced as Deleted");
          loadData(COMMITTED_NEW_AND_DELETED_ATTRIBUTES);
-         monitor.worked(20);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.20));
+
          monitor.subTask("Loading Relation Links that were Introduced as Deleted");
          loadData(COMMITTED_NEW_AND_DELETED_RELATIONS);
-         monitor.worked(20);
+      } else {
+         monitor.worked(calculateWork(0.40));
       }
       checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      //monitor.subTask(name)
       sbFull.append(AHTML.addRowMultiColumnTable(COLUMN_HEADER));
       displayData(sbFull, getAppendable(), verify);
-      monitor.worked(20);
 
       checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
+      setItemsToFix(addressing != null ? addressing.size() : 0);
 
       if (fix) {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
@@ -106,8 +113,10 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
          if (insertParameters.size() > 0) {
             ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, insertParameters);
          }
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.30));
          addressing = null;
+      } else {
+         monitor.worked(calculateWork(0.30));
       }
 
       if (isShowDetailsEnabled()) {
@@ -116,14 +125,21 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
          rd.addRaw(sbFull.toString());
          rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }
+      monitor.worked(calculateWork(0.10));
    }
 
    private void displayData(StringBuffer sbFull, Appendable builder, boolean verify) throws IOException {
       int attributeCount = 0, artifactCount = 0, relLinkCount = 0;
       for (LocalValues value : addressing) {
-         if (value.artId != 0) artifactCount++;
-         if (value.attributeId != 0) attributeCount++;
-         if (value.relLinkId != 0) relLinkCount++;
+         if (value.artId != 0) {
+            artifactCount++;
+         }
+         if (value.attributeId != 0) {
+            attributeCount++;
+         }
+         if (value.relLinkId != 0) {
+            relLinkCount++;
+         }
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(value.gammaId),
                String.valueOf(value.transactionId), String.valueOf(value.branchId), String.valueOf(value.artId),
                String.valueOf(value.attributeId), String.valueOf(value.relLinkId)}));

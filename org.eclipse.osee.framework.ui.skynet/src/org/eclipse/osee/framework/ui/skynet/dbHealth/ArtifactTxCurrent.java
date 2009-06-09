@@ -37,42 +37,59 @@ public class ArtifactTxCurrent extends DatabaseHealthOperation {
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with no tx_current set", columnHeaders.length));
       }
+      monitor.worked(calculateWork(0.10));
 
       if (!isFixOperationEnabled() || noneSet == null) {
          noneSet = HealthHelper.getNoTxCurrentSet("art_id", "osee_artifact_version", getAppendable(), " Artifacts");
-         monitor.worked(calculateWork(0.15));
-         checkForCancelledStatus(monitor);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
       if (isShowDetailsEnabled()) {
          HealthHelper.dumpDataNone(sbFull, noneSet);
          columnHeaders = new String[] {"Count", "Art id", "Branch id", "Num TX_Currents"};
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with multiple tx_currents set", columnHeaders.length));
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
 
       if (!isFixOperationEnabled() || multipleSet == null) {
          //Multiple TX Currents Set
          multipleSet =
                HealthHelper.getMultipleTxCurrentSet("art_id", "osee_artifact_version", getAppendable(), " Artifacts");
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
       if (isShowDetailsEnabled()) {
          HealthHelper.dumpDataMultiple(sbFull, multipleSet);
       }
 
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
+      int multipleTxCurrentCount = multipleSet != null ? multipleSet.size() : 0;
+      int noTxCurrentCount = noneSet != null ? noneSet.size() : 0;
+      setItemsToFix(noTxCurrentCount + multipleTxCurrentCount);
+
       if (isFixOperationEnabled()) {
          /** Duplicate TX_current Cleanup **/
-         monitor.worked(10);
          monitor.subTask("Cleaning up multiple Tx_currents");
          HealthHelper.cleanMultipleTxCurrent("art_id", "osee_artifact_version", getAppendable(), multipleSet);
-         monitor.worked(20);
+         monitor.worked(calculateWork(0.25));
          monitor.subTask("Cleaning up no Tx_currents");
          HealthHelper.cleanNoTxCurrent("art_id", "osee_artifact_version", getAppendable(), noneSet);
          multipleSet = null;
          noneSet = null;
+      } else {
+         monitor.worked(calculateWork(0.25));
       }
+      monitor.worked(calculateWork(0.20));
 
       if (isShowDetailsEnabled()) {
          HealthHelper.endTable(sbFull, getVerifyTaskName());
       }
+      monitor.worked(calculateWork(0.05));
    }
 }

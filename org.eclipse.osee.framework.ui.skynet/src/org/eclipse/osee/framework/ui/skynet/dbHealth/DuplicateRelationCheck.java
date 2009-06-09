@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -107,65 +108,25 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
     */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      boolean fix = false;
-      boolean verify = true;
-      if (verify || relations == null) {
+      if (relations == null) {
          relations = new LinkedList<LocalRelationLink>();
          monitor.subTask("Finding Artifacts with Multiple Parents");
          loadData();
-         monitor.worked(50);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.20));
 
       Map<Integer, List<Integer>> branches = new HashMap<Integer, List<Integer>>();
       if (isShowDetailsEnabled()) {
-         List<Integer> linksfound = new LinkedList<Integer>();
-         monitor.subTask("Finding Authors");
-         for (LocalRelationLink link : relations) {
-            List<Integer> branchs = branches.get(link.relLinkId1);
-            if (branchs == null) {
-               branchs = new LinkedList<Integer>();
-               branches.put(link.relLinkId1, branchs);
-            }
-            branchs.add(link.branchId);
-            if (!link.time1.equals(link.time2)) {
-               linksfound.add(link.relLinkId1);
-               linksfound.add(link.relLinkId2);
-               setAuthors(link);
-               setData(link);
-            }
-         }
-         for (LocalRelationLink link : relations) {
-            if (link.time1.equals(link.time2)) {
-               if (!(linksfound.contains(link.relLinkId1) && linksfound.contains(link.relLinkId2))) {
-                  link.author1 = "baseline not found";
-                  link.author2 = "baseline not found";
-                  setData(link);
-                  linksfound.add(link.relLinkId1);
-                  linksfound.add(link.relLinkId2);
-               }
-
-            }
-         }
-         StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-         sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         displayData(sbFull, getAppendable(), verify, false, branches);
-         sbFull.append(AHTML.endMultiColumnTable());
-         XResultData rd = new XResultData();
-         rd.addRaw(sbFull.toString());
-         rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
-
-         sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-         sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         displayData(sbFull, getAppendable(), verify, true, branches);
-         sbFull.append(AHTML.endMultiColumnTable());
-         rd = new XResultData();
-         rd.addRaw(sbFull.toString());
-         rd.report(getVerifyTaskName() + " Verbose", Manipulations.RAW_HTML);
+         createAndDisplayReport(monitor, !isFixOperationEnabled(), branches);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.20));
+
+      setItemsToFix(relations != null ? relations.size() : 0);
+
       int numberDeleted = 0;
-      if (fix) {
+      if (isFixOperationEnabled()) {
          //         List<Integer> linksToDelete = new LinkedList<Integer>();
          //         for (LocalRelationLink link : relations) {
          //            if (!link.time1.equals(link.time2)) {
@@ -177,7 +138,7 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
          //               linksToDelete.add(deleteFirst ? link.relLinkId1 : link.relLinkId2);
          //            }
          //         }
-         //         monitor.worked(25);
+         //         monitor.worked(calculateWork(0.25));
          //         for (LocalRelationLink link : relations) {
          //            if (link.time1.equals(link.time2)) {
          //               int toDelete = 0;
@@ -200,12 +161,63 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
          //            }
          //         }
          //         relations = null;
-         //         monitor.worked(25);
+         //         monitor.worked(calculateWork(0.25));
+      } else {
+         monitor.worked(calculateWork(0.50));
       }
 
       getAppendable().append(
             String.format("%s %d Artifacts with multiple Parents on %d total branches : Updated %d txs Entries\n",
-                  verify ? "Found" : "Fixed", branches.size(), relations.size(), numberDeleted));
+                  isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size(), numberDeleted));
+      monitor.worked(calculateWork(0.10));
+   }
+
+   private void createAndDisplayReport(IProgressMonitor monitor, boolean isVerify, Map<Integer, List<Integer>> branches) throws OseeCoreException {
+      List<Integer> linksfound = new LinkedList<Integer>();
+      monitor.subTask("Finding Authors");
+      for (LocalRelationLink link : relations) {
+         List<Integer> branchs = branches.get(link.relLinkId1);
+         if (branchs == null) {
+            branchs = new LinkedList<Integer>();
+            branches.put(link.relLinkId1, branchs);
+         }
+         branchs.add(link.branchId);
+         if (!link.time1.equals(link.time2)) {
+            linksfound.add(link.relLinkId1);
+            linksfound.add(link.relLinkId2);
+            setAuthors(link);
+            setData(link);
+         }
+      }
+      for (LocalRelationLink link : relations) {
+         if (link.time1.equals(link.time2)) {
+            if (!(linksfound.contains(link.relLinkId1) && linksfound.contains(link.relLinkId2))) {
+               link.author1 = "baseline not found";
+               link.author2 = "baseline not found";
+               setData(link);
+               linksfound.add(link.relLinkId1);
+               linksfound.add(link.relLinkId2);
+            }
+
+         }
+      }
+      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      displayData(sbFull, getAppendable(), isVerify, false, branches);
+      sbFull.append(AHTML.endMultiColumnTable());
+      XResultData rd = new XResultData();
+      rd.addRaw(sbFull.toString());
+      rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
+
+      sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      displayData(sbFull, getAppendable(), isVerify, true, branches);
+      sbFull.append(AHTML.endMultiColumnTable());
+      rd = new XResultData();
+      rd.addRaw(sbFull.toString());
+      rd.report(getVerifyTaskName() + " Verbose", Manipulations.RAW_HTML);
    }
 
    //{"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1", "Parent Art ID 2", "Child Art ID",

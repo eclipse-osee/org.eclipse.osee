@@ -31,7 +31,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
 
    public CommitTransactions() {
       super(
-            "commit transactionds by deleting orphan attributes and setting new artifacts that have been modified to a mod type of 1");
+            "commit transactions by deleting orphan attributes and setting new artifacts that have been modified to a mod type of 1");
    }
 
    @Override
@@ -45,9 +45,14 @@ public class CommitTransactions extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       if (isFixOperationEnabled()) {
+         checkForCancelledStatus(monitor);
+
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
+
+            checkForCancelledStatus(monitor);
+            monitor.worked(calculateWork(0.50));
 
             while (chStmt.next()) {
                int transactionNumber = chStmt.getInt("transaction_id");
@@ -62,6 +67,9 @@ public class CommitTransactions extends DatabaseHealthOperation {
          } finally {
             chStmt.close();
          }
+      } else {
+         monitor.worked(calculateWork(0.50));
       }
+      monitor.worked(calculateWork(0.50));
    }
 }

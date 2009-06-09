@@ -65,12 +65,12 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
       LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
+
       ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
       fixErrors = isFixOperationEnabled();
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
 
-      monitor.beginTask("Clean Up Duplicate Attributes", processTxCurrent ? 20 : 8);
       monitor.subTask("Querying for Duplicate Attributes");
       checkForCancelledStatus(monitor);
       try {
@@ -97,7 +97,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
                      duplicateAttribute.gamma1 = chStmt1.getInt("gamma_id_1");
                      duplicateAttribute.gamma2 = chStmt1.getInt("gamma_id_2");
 
-                     if ((duplicateAttribute.value1 != null && duplicateAttribute.value2 != null && duplicateAttribute.value1.equals(duplicateAttribute.value2)) || (duplicateAttribute.uri1 != null && duplicateAttribute.uri2 != null && duplicateAttribute.uri1.equals(duplicateAttribute.uri2)) || (duplicateAttribute.value1 == null && duplicateAttribute.value2 == null && duplicateAttribute.uri1 == null && duplicateAttribute.uri2 == null)) {
+                     if (duplicateAttribute.value1 != null && duplicateAttribute.value2 != null && duplicateAttribute.value1.equals(duplicateAttribute.value2) || duplicateAttribute.uri1 != null && duplicateAttribute.uri2 != null && duplicateAttribute.uri1.equals(duplicateAttribute.uri2) || duplicateAttribute.value1 == null && duplicateAttribute.value2 == null && duplicateAttribute.uri1 == null && duplicateAttribute.uri2 == null) {
                         sameValues.add(duplicateAttribute);
                      } else {
                         diffValues.add(duplicateAttribute);
@@ -111,6 +111,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       } finally {
          chStmt1.close();
       }
+
       monitor.worked(2);
       monitor.subTask("Cleaning Up Attrinbutes");
       checkForCancelledStatus(monitor);

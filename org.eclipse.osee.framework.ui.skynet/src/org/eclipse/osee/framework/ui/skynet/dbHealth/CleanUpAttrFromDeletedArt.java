@@ -37,17 +37,20 @@ public class CleanUpAttrFromDeletedArt extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       if (isFixOperationEnabled()) {
-         monitor.beginTask("Clean up attributes from deleted artifacts", 3);
+         checkForCancelledStatus(monitor);
          monitor.setTaskName("INSERT_ATTRS_TO_ART_COMMIT_TRANSACTION");
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRS_TO_ART_COMMIT_TRANSACTION);
-         monitor.worked(1);
+         monitor.worked(calculateWork(0.45));
          monitor.setTaskName("UPDATE_OLD_ATTRS_NOT_SAME_TRANSACTION");
          ConnectionHandler.runPreparedUpdate(UPDATE_OLD_ATTRS_NOT_SAME_TRANSACTION);
-         monitor.worked(1);
+         monitor.worked(calculateWork(0.45));
          monitor.setTaskName("UPDATE_OLD_ATTRS_SAME_TRANSACTION");
          ConnectionHandler.runPreparedUpdate(UPDATE_OLD_ATTRS_SAME_TRANSACTION);
-         monitor.done();
+      } else {
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.90));
       }
+      monitor.worked(calculateWork(0.10));
    }
 
 }

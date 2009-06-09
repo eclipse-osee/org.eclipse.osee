@@ -47,49 +47,55 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean fix = isFixOperationEnabled();
       boolean verify = !fix;
-      monitor.beginTask(fix ? "Deleting Data with no TXS addressing" : "Checking For Data with no TXS addressing", 100);
-      monitor.worked(5);
 
       if (verify || gammas == null) {
          gammas =
                HealthHelper.runSingleResultQuery(String.format(NOT_ADDRESSESED_GAMMAS,
                      SupportedDatabase.getComplementSql()), "gamma_id");
-         monitor.worked(25);
-         checkForCancelledStatus(monitor);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
       if (verify || transactions == null) {
          transactions =
                HealthHelper.runSingleResultQuery(String.format(NOT_ADDRESSESED_TRANSACTIONS,
                      SupportedDatabase.getComplementSql()), "transaction_id");
-         monitor.worked(25);
-         checkForCancelledStatus(monitor);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       HealthHelper.displayForCleanUp("Gamma Id", sbFull, getAppendable(), verify, gammas, "'s with no TXS addressing\n");
-      monitor.worked(20);
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
       HealthHelper.displayForCleanUp("Transaction Id", sbFull, getAppendable(), verify, transactions,
             "'s with no TXS addressing\n");
-      monitor.worked(20);
-
       checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
+
+      int gammaCount = gammas != null ? gammas.size() : 0;
+      int txCount = transactions != null ? transactions.size() : 0;
+      setItemsToFix(txCount + gammaCount);
 
       if (fix) {
          ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_ARTIFACT, gammas);
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_ATTRIBUTE, gammas);
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          ConnectionHandler.runBatchUpdate(REMOVE_GAMMAS_RELATIONS, gammas);
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          gammas = null;
          transactions = null;
-
+      } else {
+         monitor.worked(calculateWork(0.40));
       }
 
       if (isShowDetailsEnabled()) {
          HealthHelper.endTable(sbFull, getVerifyTaskName());
       }
+      monitor.worked(calculateWork(0.20));
    }
 }

@@ -48,42 +48,49 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
          gammas =
                HealthHelper.runSingleResultQuery(
                      String.format(NOT_BACKED_GAMMAS, SupportedDatabase.getComplementSql()), "gamma_id");
-         monitor.worked(25);
-         checkForCancelledStatus(monitor);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.25));
+
       if (verify || transactions == null) {
          transactions =
                HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS,
                      SupportedDatabase.getComplementSql()), "transaction_id");
-         monitor.worked(25);
-         checkForCancelledStatus(monitor);
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.25));
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       HealthHelper.displayForCleanUp("Gamma Id", sbFull, getAppendable(), verify, gammas, "'s with no backing data\n");
-      monitor.worked(20);
       HealthHelper.displayForCleanUp("Transaction Id", sbFull, getAppendable(), verify, transactions,
             "'s with no backing data\n");
-      monitor.worked(20);
 
       checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.25));
+
+      int gammaCount = gammas != null ? gammas.size() : 0;
+      int txCount = transactions != null ? transactions.size() : 0;
+      setItemsToFix(txCount + gammaCount);
 
       if (fix) {
          if (gammas.size() > 0) {
             ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, gammas);
          }
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          if (transactions.size() > 0) {
             ConnectionHandler.runBatchUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          }
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          gammas = null;
          transactions = null;
+      } else {
+         monitor.worked(calculateWork(0.20));
       }
 
       if (isShowDetailsEnabled()) {
          HealthHelper.endTable(sbFull, getVerifyTaskName());
       }
+      monitor.worked(calculateWork(0.05));
    }
 
 }

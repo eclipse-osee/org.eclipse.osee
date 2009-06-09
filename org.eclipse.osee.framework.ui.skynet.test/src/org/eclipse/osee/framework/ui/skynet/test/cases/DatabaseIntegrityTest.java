@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
 
@@ -25,17 +25,16 @@ public class DatabaseIntegrityTest {
    @org.junit.Test
    public void testDatabaseIntegrity() {
       for (String verifyOpId : DatabaseHealthOpsExtensionManager.getVerifyOperationNames()) {
-         DatabaseHealthOperation healthCheck = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(verifyOpId);
-         healthCheck.setShowDetailsEnabled(false);
-         healthCheck.setFixOperationEnabled(false);
-         IStatus status;
-         try {
-            healthCheck.run(new NullProgressMonitor());
-            status = healthCheck.getStatus();
-            assertTrue(status.getMessage(), status.isOK());
-         } catch (Exception ex) {
-            assertTrue(Lib.exceptionToString(ex), false);
-         }
+         DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(verifyOpId);
+         operation.setShowDetailsEnabled(false);
+         operation.setFixOperationEnabled(false);
+         Operations.executeWork(operation, new NullProgressMonitor(), -1);
+         assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),
+               IStatus.OK, operation.getStatus().getSeverity());
+
+         int totalItemsToFix = operation.getItemsToFixCount();
+         assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
+               totalItemsToFix);
       }
    }
 }

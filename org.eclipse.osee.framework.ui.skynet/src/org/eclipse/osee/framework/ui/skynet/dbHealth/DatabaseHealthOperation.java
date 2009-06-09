@@ -22,6 +22,8 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    private boolean isFixOperationEnabled;
    private boolean isShowDetailsEnabled;
+   private int itemToFixCount;
+
    private Appendable appendableBuffer;
 
    public DatabaseHealthOperation(String operationName) {
@@ -29,14 +31,20 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       this.isFixOperationEnabled = false;
       this.isShowDetailsEnabled = false;
       this.appendableBuffer = null;
+      this.itemToFixCount = 0;
+   }
+
+   @Override
+   public String getName() {
+      return isFixOperationEnabled() ? getFixTaskName() : getVerifyTaskName();
    }
 
    public String getVerifyTaskName() {
-      return String.format("Check for %s", getName());
+      return String.format("Check for %s", super.getName());
    }
 
    public String getFixTaskName() {
-      return String.format("Fix %s", getName());
+      return String.format("Fix %s", super.getName());
    }
 
    public void setFixOperationEnabled(boolean isFixOperationEnabled) {
@@ -63,17 +71,30 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       return appendableBuffer;
    }
 
+   protected void setItemsToFix(int value) {
+      this.itemToFixCount = value;
+   }
+
+   public boolean hadItemsToFix() {
+      return getItemsToFixCount() > 0;
+   }
+
+   public int getItemsToFixCount() {
+      return itemToFixCount;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
-      monitor.beginTask(isFixOperationEnabled() ? getFixTaskName() : getVerifyTaskName(), getTotalWorkUnits());
-      try {
-         doHealthCheck(monitor);
-      } finally {
-         monitor.done();
-      }
+      setItemsToFix(0);
+      //      monitor.beginTask(isFixOperationEnabled() ? getFixTaskName() : getVerifyTaskName(), getTotalWorkUnits());
+      //      try {
+      doHealthCheck(monitor);
+      //      } finally {
+      //         monitor.done();
+      //      }
    }
 
    protected abstract void doHealthCheck(IProgressMonitor monitor) throws Exception;

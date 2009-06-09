@@ -104,39 +104,59 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
          monitor.subTask("Loading Relations with non existant artifacts on the A side");
          loadData(NO_ADDRESSING_ARTIFACTS_A, true);
-         monitor.worked(15);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.10));
+
          monitor.subTask("Loading Relations with non existant artifacts on the B side");
          loadData(NO_ADDRESSING_ARTIFACTS_B, true);
-         monitor.worked(15);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.10));
+      } else {
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.20));
       }
+
       if (verify || updateMap == null) {
          updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
          monitor.subTask("Loading Relations with Deleted artifacts on the A side");
          loadData(DELETED_A_ARTIFACTS, false);
-         monitor.worked(15);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.10));
+
          monitor.subTask("Loading Relations with Deleted artifacts on the B side");
          loadData(DELETED_B_ARTIFACTS, false);
-         monitor.worked(15);
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.10));
+      } else {
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.20));
       }
 
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       displayData(0, sbFull, getAppendable(), verify, deleteMap);
-      monitor.worked(10);
       displayData(1, sbFull, getAppendable(), verify, updateMap);
-      monitor.worked(10);
+
+      monitor.worked(calculateWork(0.10));
+      checkForCancelledStatus(monitor);
+
+      int updateItemCount = updateMap != null ? updateMap.size() : 0;
+      int deleteItemCount = deleteMap != null ? deleteMap.size() : 0;
+      setItemsToFix(updateItemCount + deleteItemCount);
 
       if (fix) {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (LocalRelationLink relLink : deleteMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
          }
+
          monitor.subTask("Deleting Relation Addressing with non existant Artifacts");
          if (insertParameters.size() != 0) {
             ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, insertParameters);
          }
          deleteMap = null;
-         monitor.worked(10);
+
+         monitor.worked(calculateWork(0.10));
 
          insertParameters.clear();
          List<Object[]> insertParametersInsert = new LinkedList<Object[]>();
@@ -151,12 +171,14 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
                insertParametersInsert.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
             }
          }
+         monitor.worked(calculateWork(0.10));
 
          monitor.subTask("Inserting Addressing for Deleted Artifacts");
          if (insertParametersInsert.size() != 0) {
             ConnectionHandler.runBatchUpdate(INSERT_TXS, insertParametersInsert);
          }
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
+
          monitor.subTask("Updating Addressing for Deleted Artifacts");
          if (insertParameters.size() != 0) {
             ConnectionHandler.runBatchUpdate(UPDATE_TXS, insertParameters);
@@ -164,8 +186,10 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          if (insertParametersTransaction.size() != 0) {
             ConnectionHandler.runBatchUpdate(UPDATE_TXS_SAME, insertParametersTransaction);
          }
-         monitor.worked(5);
+         monitor.worked(calculateWork(0.10));
          updateMap = null;
+      } else {
+         monitor.worked(calculateWork(0.40));
       }
 
       if (isShowDetailsEnabled()) {
@@ -174,6 +198,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          rd.addRaw(sbFull.toString());
          rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }
+      monitor.worked(calculateWork(0.10));
    }
 
    private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws IOException {
