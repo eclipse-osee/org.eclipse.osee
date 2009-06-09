@@ -1698,14 +1698,6 @@
      </ArtifactExtractor>
   </extension>
   <extension
-        id="FindAllTrackChangeEnabledWordContentArtifacts"
-        name="FindAllTrackChangeEnabledWordContentArtifacts"
-        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-     <Operation
-           className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindAllTrackChangeEnabledWordContentArtifacts">
-     </Operation>
-  </extension>
-  <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">
@@ -1787,6 +1779,12 @@
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateHRID">
+     </DatabaseHealthOperation>
+  </extension>
+    <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeTrackChangeHealthOperation">
      </DatabaseHealthOperation>
   </extension>
 </plugin>

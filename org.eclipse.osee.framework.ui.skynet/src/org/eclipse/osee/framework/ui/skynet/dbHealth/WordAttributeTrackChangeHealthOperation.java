@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.blam.operation;
+package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,8 +20,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +31,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -43,58 +40,56 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Roberto E. Escobar
  */
-public class FindAllTrackChangeEnabledWordContentArtifacts extends AbstractBlam {
-   @Override
-   public String getName() {
-      return "Find Word Artifacts with Track Changes Enabled";
+public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOperation {
+
+   public WordAttributeTrackChangeHealthOperation() {
+      super("Word Attribute Track Change Enabled");
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixTaskName()
+    */
    @Override
-   public String getXWidgetsXml() {
-      return emptyXWidgetsXml;
+   public String getFixTaskName() {
+      return Strings.emptyString();
    }
 
-   public Collection<String> getCategories() {
-      return Arrays.asList("Admin.Health");
-   }
-
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
+    */
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      if (!AccessControlManager.isOseeAdmin()) {
-         throw new OseeAccessDeniedException(String.format("Only admins can execute: %s", getName()));
-      }
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       List<AttrData> attributesWithErrors = new ArrayList<AttrData>();
-      monitor.beginTask(getName(), IOperation.TOTAL_WORK);
-      try {
-         IOperation operation =
-               new FindAllTrackChangeWordAttributes(getName(), SkynetGuiPlugin.PLUGIN_ID, attributesWithErrors);
-         Operations.executeWork(operation, monitor, 0.90);
-      } finally {
-         try {
-            XResultData rd = createReport(monitor, attributesWithErrors);
-            rd.report(getName(), Manipulations.RAW_HTML);
-         } finally {
-            monitor.subTask("");
-            monitor.done();
-         }
+
+      IOperation operation =
+            new FindAllTrackChangeWordAttributes("Find all Word Attributes with track changes enabled",
+                  getStatus().getPlugin(), attributesWithErrors);
+      doSubWork(operation, monitor, 0.90);
+
+      setItemsToFix(attributesWithErrors.size());
+
+      if (isShowDetailsEnabled()) {
+         XResultData rd = createReport(monitor, attributesWithErrors);
+         rd.report(getName(), Manipulations.RAW_HTML);
       }
+      getAppendable().append(
+            String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
+
+      monitor.worked(calculateWork(0.10));
    }
 
    private XResultData createReport(IProgressMonitor monitor, List<AttrData> attributesWithErrors) {
-      monitor.subTask("Create Report");
+      monitor.subTask(String.format("Create [%s] Report", getName()));
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
@@ -135,18 +130,22 @@ public class FindAllTrackChangeEnabledWordContentArtifacts extends AbstractBlam 
          }
          monitor.worked(calculateWork(0.20));
 
-         int totalAttrs = attrDatas.size();
-         int work = calculateWork(0.80) / totalAttrs;
-         for (int index = 0; index < attrDatas.size(); index++) {
-            checkForCancelledStatus(monitor);
-            AttrData attrData = attrDatas.get(index);
-            monitor.subTask(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
-            Resource resource = ResourceUtil.getResource(attrData.getUri());
-            if (WordAnnotationHandler.containsWordAnnotations(resource.data)) {
-               // Collect Info or Try to fix not sure what to do yet
-               attributesWithErrors.add(attrData);
+         if (!attrDatas.isEmpty()) {
+            int totalAttrs = attrDatas.size();
+            int work = calculateWork(0.80) / totalAttrs;
+            for (int index = 0; index < attrDatas.size(); index++) {
+               checkForCancelledStatus(monitor);
+               AttrData attrData = attrDatas.get(index);
+               monitor.subTask(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
+               Resource resource = ResourceUtil.getResource(attrData.getUri());
+               if (WordAnnotationHandler.containsWordAnnotations(resource.data)) {
+                  // Collect Info or Try to fix not sure what to do yet
+                  attributesWithErrors.add(attrData);
+               }
+               monitor.worked(work);
             }
-            monitor.worked(work);
+         } else {
+            monitor.worked(calculateWork(0.80));
          }
       }
 
@@ -307,5 +306,4 @@ public class FindAllTrackChangeEnabledWordContentArtifacts extends AbstractBlam 
          return uri;
       }
    }
-
 }
