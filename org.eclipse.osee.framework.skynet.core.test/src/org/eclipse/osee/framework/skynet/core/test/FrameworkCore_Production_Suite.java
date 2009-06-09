@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test;
 
+import static org.junit.Assert.assertFalse;
 import junit.framework.TestSuite;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryPerformanceTests;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTest;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -22,4 +25,12 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Production_Suite extends TestSuite {
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertFalse("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
+            "demo"));
+      assertFalse("Client can't authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 }

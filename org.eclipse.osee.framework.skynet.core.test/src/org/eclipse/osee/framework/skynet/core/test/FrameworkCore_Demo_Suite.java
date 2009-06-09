@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test;
 
+import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_setAttributeValues;
 import org.eclipse.osee.framework.skynet.core.test.cases.BranchPurgeTest;
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.OseeEnumTypeManagerTest
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -32,5 +35,12 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class FrameworkCore_Demo_Suite {
+   @BeforeClass
+   public static void setUp() throws Exception {
+      assertTrue("Demo Application Server must be running.",
+            ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+      assertTrue("Client must authenticate using demo protocol",
+            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+   }
 
 }
