@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
-import junit.framework.TestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.cases.OseeEmailTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -20,5 +19,5 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkUi_Production_Suite extends TestSuite {
+public class FrameworkUi_Production_Suite {
 }

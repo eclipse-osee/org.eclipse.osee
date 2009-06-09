@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertFalse;
-import junit.framework.TestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryPerformanceTests;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTest;
@@ -24,7 +23,7 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkCore_Production_Suite extends TestSuite {
+public class FrameworkCore_Production_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
