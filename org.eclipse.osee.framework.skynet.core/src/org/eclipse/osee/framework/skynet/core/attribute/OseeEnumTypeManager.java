@@ -90,6 +90,14 @@ public class OseeEnumTypeManager {
    }
 
    public static Collection<OseeEnumType> getTypes(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      Collection<OseeEnumType> toReturn = getTypesAllowEmpty(enumTypeName, includeDeleted);
+      if (toReturn.isEmpty()) {
+         throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with name:[%s] does not exist.", enumTypeName));
+      }
+      return toReturn;
+   }
+
+   public static Collection<OseeEnumType> getTypesAllowEmpty(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException {
       instance.checkLoaded();
       List<OseeEnumType> toReturn = new ArrayList<OseeEnumType>();
       Collection<OseeEnumType> itemsFound = instance.enumTypeByNameMap.getValues(enumTypeName);
@@ -99,9 +107,6 @@ public class OseeEnumTypeManager {
                toReturn.add(oseeEnumType);
             }
          }
-      }
-      if (toReturn.isEmpty()) {
-         throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with name:[%s] does not exist.", enumTypeName));
       }
       return toReturn;
    }
@@ -126,14 +131,7 @@ public class OseeEnumTypeManager {
    }
 
    public static boolean typeExist(String enumTypeName, boolean includeDeleted) throws OseeDataStoreException {
-      instance.checkLoaded();
-      Collection<OseeEnumType> type = null;
-      try {
-         type = getTypes(enumTypeName, includeDeleted);
-      } catch (OseeTypeDoesNotExist ex) {
-         // Do Nothing
-      }
-      return type != null && !type.isEmpty();
+      return !getTypesAllowEmpty(enumTypeName, includeDeleted).isEmpty();
    }
 
    public static OseeEnumType getType(int enumTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
@@ -157,16 +155,21 @@ public class OseeEnumTypeManager {
    }
 
    private static void checkNull(Object value) throws OseeCoreException {
-      if (value == null) throw new OseeArgumentException("Object cannot be null.");
+      if (value == null) {
+         throw new OseeArgumentException("Object cannot be null.");
+      }
    }
 
    private static void checkEnumTypeName(String enumTypeName) throws OseeCoreException {
-      if (!Strings.isValid(enumTypeName)) throw new OseeArgumentException("Osee Enum Type Name cannot be null.");
+      if (!Strings.isValid(enumTypeName)) {
+         throw new OseeArgumentException("Osee Enum Type Name cannot be null.");
+      }
    }
 
    private static void checkEntryIntegrity(String enumTypeName, List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
-      if (entries == null) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries",
-            enumTypeName));
+      if (entries == null) {
+         throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries", enumTypeName));
+      }
 
       //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
       //            enumTypeName));
@@ -174,12 +177,20 @@ public class OseeEnumTypeManager {
       for (ObjectPair<String, Integer> entry : entries) {
          String name = entry.object1;
          int ordinal = entry.object2;
-         if (!Strings.isValid(name)) throw new OseeArgumentException("Enum entry name cannot be null");
-         if (ordinal < 0) throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
-         if (values.containsKey(name)) throw new OseeArgumentException(String.format(
-               "Unique enum entry name violation - [%s] already exists.", name));
-         if (values.containsValue(ordinal)) throw new OseeArgumentException(String.format(
-               "Unique enum entry ordinal violation - [%s] already exists.", ordinal));
+         if (!Strings.isValid(name)) {
+            throw new OseeArgumentException("Enum entry name cannot be null");
+         }
+         if (ordinal < 0) {
+            throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
+         }
+         if (values.containsKey(name)) {
+            throw new OseeArgumentException(String.format("Unique enum entry name violation - [%s] already exists.",
+                  name));
+         }
+         if (values.containsValue(ordinal)) {
+            throw new OseeArgumentException(String.format("Unique enum entry ordinal violation - [%s] already exists.",
+                  ordinal));
+         }
          values.put(name, ordinal);
       }
    }

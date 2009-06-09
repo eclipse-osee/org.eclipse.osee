@@ -85,7 +85,7 @@ public class OseeEnumType {
       return enumTypeName;
    }
 
-   public synchronized OseeEnumEntry valueOf(String entryName) throws OseeArgumentException {
+   private synchronized OseeEnumEntry valueOfAllowNullReturn(String entryName) {
       if (entryName != null) {
          for (OseeEnumEntry entry : enumSet) {
             if (entry.name().equals(entryName)) {
@@ -93,40 +93,53 @@ public class OseeEnumType {
             }
          }
       }
-      throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getEnumTypeName(), entryName));
+      return null;
    }
 
-   public synchronized OseeEnumEntry valueOf(int ordinal) throws OseeArgumentException {
+   private synchronized OseeEnumEntry valueOfAllowNullReturn(int ordinal) throws OseeArgumentException {
       for (OseeEnumEntry entry : enumSet) {
          if (entry.ordinal() == ordinal) {
             return entry;
          }
       }
-      throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getEnumTypeName(), ordinal));
+      return null;
+   }
+
+   public synchronized OseeEnumEntry valueOf(String entryName) throws OseeArgumentException {
+      OseeEnumEntry toReturn = valueOfAllowNullReturn(entryName);
+      if (toReturn == null) {
+         throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getEnumTypeName(), entryName));
+      }
+      return toReturn;
+   }
+
+   public synchronized OseeEnumEntry valueOf(int ordinal) throws OseeArgumentException {
+      OseeEnumEntry toReturn = valueOfAllowNullReturn(ordinal);
+      if (toReturn == null) {
+         throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getEnumTypeName(), ordinal));
+      }
+      return toReturn;
    }
 
    private void checkEnumEntryName(String name) throws OseeArgumentException {
-      if (!Strings.isValid(name)) throw new OseeArgumentException("Enum entry name cannot be null");
-      OseeEnumEntry entry = null;
-      try {
-         entry = valueOf(name);
-      } catch (OseeArgumentException ex) {
-         // Do Nothing - expect exception 
+      if (!Strings.isValid(name)) {
+         throw new OseeArgumentException("Enum entry name cannot be null");
       }
-      if (entry != null) throw new OseeArgumentException(String.format(
-            "Unique enum entry name violation - %s already exists.", entry));
+      OseeEnumEntry entry = valueOfAllowNullReturn(name);
+      if (entry != null) {
+         throw new OseeArgumentException(String.format("Unique enum entry name violation - %s already exists.", entry));
+      }
    }
 
    private void checkOrdinal(int ordinal) throws OseeArgumentException {
-      if (ordinal < 0) throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
-      OseeEnumEntry entry = null;
-      try {
-         entry = valueOf(ordinal);
-      } catch (OseeArgumentException ex) {
-         // Do Nothing - expect exception 
+      if (ordinal < 0) {
+         throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
       }
-      if (entry != null) throw new OseeArgumentException(String.format(
-            "Unique enum entry ordinal violation - %s already exists.", entry));
+      OseeEnumEntry entry = valueOfAllowNullReturn(ordinal);
+      if (entry != null) {
+         throw new OseeArgumentException(String.format("Unique enum entry ordinal violation - %s already exists.",
+               entry));
+      }
    }
 
    /* (non-Javadoc)
@@ -142,7 +155,7 @@ public class OseeEnumType {
          } else {
             result &= other.getEnumTypeName() == null && getEnumTypeName() == null;
          }
-         return result & (getEnumTypeId() == other.getEnumTypeId());
+         return result & getEnumTypeId() == other.getEnumTypeId();
       }
       return false;
    }
@@ -215,7 +228,7 @@ public class OseeEnumType {
             } else {
                result &= other.name == null && name == null;
             }
-            return result & (ordinal == other.ordinal) & getDeclaringClass().equals(other.getDeclaringClass());
+            return result & ordinal == other.ordinal & getDeclaringClass().equals(other.getDeclaringClass());
          }
          return false;
       }
