@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.skynet.core.test2.FrameworkCore_Demo_Suite;
+import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
