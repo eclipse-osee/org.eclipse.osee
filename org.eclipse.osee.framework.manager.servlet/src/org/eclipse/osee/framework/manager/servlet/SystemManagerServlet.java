@@ -86,7 +86,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       try {
          sb.append(AHTML.heading(2, "OSEE System Manager"));
-         sb.append(getHeader());
+         sb.append(getHeader(request));
          sb.append(AHTML.newline() + getSessionByUserIdEntry(request, response));
          sb.append(getSessions());
       } catch (OseeCoreException ex) {
@@ -95,14 +95,14 @@ public class SystemManagerServlet extends OseeHttpServlet {
       displayResults(sb.toString(), request, response);
    }
 
-   private String getHeader() {
-      return "<a href=\"http://localhost:8089/osee/manager\">Home</a><br>";
+   private String getHeader(HttpServletRequest request) {
+      return "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager\">Home</a><br>";
    }
 
    private String getSessionByUserIdEntry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       StringBuffer sb = new StringBuffer(1000);
       try {
-         sb.append("<form METHOD=GET ACTION=\"http://localhost:8089/osee/manager\">");
+         sb.append("<form METHOD=GET ACTION=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager\">");
          sb.append("By UserId: <input TYPE=\"text\" NAME=\"userId\" SIZE=\"10\" MAXLENGTH=\"10\">");
          sb.append("<input TYPE=\"hidden\" NAME=\"operation\" VALUE=\"user\">");
          sb.append("<INPUT TYPE=SUBMIT></form>");
@@ -121,7 +121,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
             sb.append("Invalid userId [" + userId + "]");
          } else {
             sb.append(AHTML.heading(2, "OSEE System Manager"));
-            sb.append(getHeader());
+            sb.append(getHeader(request));
             sb.append(getSessionsByUserId(userId));
          }
       } catch (OseeCoreException ex) {
