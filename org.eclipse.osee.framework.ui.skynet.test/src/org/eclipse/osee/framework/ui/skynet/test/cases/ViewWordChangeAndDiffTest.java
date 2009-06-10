@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
@@ -60,10 +59,8 @@ public class ViewWordChangeAndDiffTest {
     */
    @Before
    public void setUp() throws Exception {
-      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
+      assertFalse("Not to be run on production database.", TestUtil.isProductionDb());
       isWordRunning = false;
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-            getClass().getSimpleName());
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
@@ -108,8 +105,25 @@ public class ViewWordChangeAndDiffTest {
       assertTrue("Single Native Diff test passed", true);
    }
 
-   @org.junit.Ignore
+   @org.junit.Test
    public void testCompareTwoArtifacts() throws Exception {
+      try {
+         artifactChanges =
+               ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+                     new EmptyMonitor());
+         // get the artifacts from the changed list
+         artifacts = getArtifacts();
+         newerArtifact =
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifacts.get(0).getArtId(),
+                     artifacts.get(0).getTransactionId());
+         baseArtifact =
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifacts.get(1).getArtId(),
+                     artifacts.get(1).getTransactionId());
+         RendererManager.diffInJob(baseArtifact, newerArtifact);
+      } catch (Exception ex) {
+         fail("Compare Two Artifacts test failed");
+         throw ex;
+      }
 
    }
 
@@ -119,9 +133,6 @@ public class ViewWordChangeAndDiffTest {
    @After
    public void tearDown() throws Exception {
       if (!isWordRunning) {
-         WordAttribute.setDisplayTrackedChangesErrorMessage("");
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-               getClass().getSimpleName());
          FrameworkTestUtil.killAllOpenWinword();
       }
    }
