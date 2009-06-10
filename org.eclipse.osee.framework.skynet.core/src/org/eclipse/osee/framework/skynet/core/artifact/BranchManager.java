@@ -283,7 +283,7 @@ public class BranchManager {
    }
 
    public static boolean isMergeBranch(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      return (getMergeBranch(sourceBranch, destBranch)) != null;
+      return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
    public static Collection<Branch> getWorkingBranches(Branch parentBranch) throws OseeCoreException {
@@ -375,7 +375,9 @@ public class BranchManager {
    public static Branch getBranch(Integer branchId) throws OseeDataStoreException, BranchDoesNotExist {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
-      if (branchId == null) throw new BranchDoesNotExist("Branch Id is null");
+      if (branchId == null) {
+         throw new BranchDoesNotExist("Branch Id is null");
+      }
 
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
@@ -504,7 +506,7 @@ public class BranchManager {
 
       ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
             toBranch.getBranchId(), newTransactionNumber, "Commit Branch " + fromTransactionID.getTransactionNumber(),
-            GlobalTime.GreenwichMeanTimestamp(), (userToBlame == null) ? -1 : userToBlame.getArtId(), -1);
+            GlobalTime.GreenwichMeanTimestamp(), userToBlame == null ? -1 : userToBlame.getArtId(), -1);
 
       return newTransactionNumber;
    }
@@ -766,7 +768,9 @@ public class BranchManager {
    }
 
    public static Branch getKeyedBranch(String keyname) throws OseeArgumentException, BranchDoesNotExist, OseeDataStoreException {
-      if (keyname == null) throw new OseeArgumentException("keyname can not be null");
+      if (keyname == null) {
+         throw new OseeArgumentException("keyname can not be null");
+      }
 
       instance.ensurePopulatedCache(false);
       String lowerKeyname = keyname.toLowerCase();
