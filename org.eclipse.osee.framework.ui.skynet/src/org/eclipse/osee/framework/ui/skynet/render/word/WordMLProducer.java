@@ -188,10 +188,10 @@ public class WordMLProducer extends Producer {
 
    public void resetListValue() throws OseeWrappedException {
       startParagraph();
+      endParagraph();
+      startParagraph();
       //The listnum also acts a template delimiter to know when to remove unwanted content.
       addWordMl(LISTNUM_FIELD);
-      append("<w:r><w:t>");
-      append("</w:t></w:r>");
       endParagraph();
    }
 
