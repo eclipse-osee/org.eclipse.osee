@@ -36,7 +36,7 @@ public class WordMLProducer extends Producer {
 
    public static final String LISTNUM_FIELD_HEAD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
    public static final String LISTNUM_FIELD_TAIL =
-         "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM \"listreset\"  \\l 1 \\s 0 </w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r>";
+         "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText>LISTNUM\"listreset\"\\l1\\s0</w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\"1.\"/></w:r>";
 
    //This regular expression pulls out all of the stuff after the inserted listnum reordering stuff.  This needs to be
    //here so that we remove unwanted template information from single editing
@@ -190,6 +190,8 @@ public class WordMLProducer extends Producer {
       startParagraph();
       //The listnum also acts a template delimiter to know when to remove unwanted content.
       addWordMl(LISTNUM_FIELD);
+      append("<w:r><w:t>");
+      append("</w:t></w:r>");
       endParagraph();
    }
 
