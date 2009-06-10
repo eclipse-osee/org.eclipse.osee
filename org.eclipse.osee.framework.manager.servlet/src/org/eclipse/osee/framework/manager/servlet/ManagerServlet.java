@@ -148,29 +148,6 @@ public class ManagerServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
-   //   @Override
-   //   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-   //      String operation = request.getParameter("operation");
-   //      try {
-   //         OperationType operationType = OperationType.fromString(operation);
-   //         switch (operationType) {
-   //            case USER:
-   //               displayUser(request, response);
-   //               break;
-   //            default:
-   //               break;
-   //         }
-   //      } catch (Exception ex) {
-   //         OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
-   //               "Error processing session request [%s]", request.toString()), ex);
-   //         response.getWriter().write(Lib.exceptionToString(ex));
-   //         response.getWriter().flush();
-   //         response.getWriter().close();
-   //      }
-   //   }
    private static final String SESSION_QUERY_ALL = "Select * from osee_session";
    private static final String SESSION_QUERY_USER = "Select * from osee_session where user_id = ?";
 
@@ -200,12 +177,17 @@ public class ManagerServlet extends OseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"User", "Version", "Machine", "Created",
-            "Last Interaction"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"User", "Version", "Machine", "Exceptions", "Info",
+            "Created", "Last Interaction", "IP", "Port"}));
+      int insertLoc = sb.toString().length();
       while (chStmt.next()) {
-         sb.append(AHTML.addRowMultiColumnTable(new String[] {chStmt.getString("user_id"),
+         String clientIp = chStmt.getString("client_address");
+         String clientPort = chStmt.getString("client_port");
+         sb.insert(insertLoc, AHTML.addRowMultiColumnTable(new String[] {chStmt.getString("user_id"),
                chStmt.getString("client_version"), chStmt.getString("client_machine_name"),
-               chStmt.getString("created_on"), chStmt.getString("last_interaction_date")}));
+               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=exceptions\">exceptions</a>",
+               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=info\">info</a>",
+               chStmt.getString("created_on"), chStmt.getString("last_interaction_date"), clientIp, clientPort}));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
