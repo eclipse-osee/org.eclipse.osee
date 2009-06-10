@@ -120,6 +120,8 @@ public class ViewWordChangeAndDiffTest {
                ArtifactPersistenceManager.getInstance().getArtifactFromId(artifacts.get(1).getArtId(),
                      artifacts.get(1).getTransactionId());
          RendererManager.diffInJob(baseArtifact, newerArtifact);
+         // if we get here there were no exceptions on the diff considered successful
+         assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {
          fail("Compare Two Artifacts test failed");
          throw ex;
