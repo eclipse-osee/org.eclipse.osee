@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
-import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
@@ -33,7 +32,7 @@ public class InternalManagerServletActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      managerTracker = new ServiceTracker(context, IBranchCreation.class.getName(), null);
+      managerTracker = new ServiceTracker(context, OseeServerContext.MANAGER_CONTEXT, null);
       managerTracker.open();
 
       httpBranchManagementTracker =
@@ -62,10 +61,6 @@ public class InternalManagerServletActivator implements BundleActivator {
 
    public static ISessionManager getSessionManager() {
       return (ISessionManager) instance.managerTracker.getService();
-   }
-
-   public IBranchCreation getBranchCreation() {
-      return (IBranchCreation) managerTracker.getService();
    }
 
 }
