@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 /**
  * @author Donald G. Dunne
  */
-class HttpManagerCreationInfo {
+class HttpSystemManagerCreationInfo {
 
    enum ManagerFunction {
       userId
@@ -25,7 +25,7 @@ class HttpManagerCreationInfo {
    private ManagerFunction function;
    private final String userId;
 
-   public HttpManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
+   public HttpSystemManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
       userId = req.getParameter("userId");
    }
 

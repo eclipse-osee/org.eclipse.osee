@@ -10,25 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpRequest;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 
 /**
+ * Responds to requests by server for information about client
+ * 
  * @author Donald G. Dunne
  */
-public class ClientRequestHandler implements IHttpServerRequest {
+public class ClientSystemManagerRequestHandler implements IHttpServerRequest {
 
    private enum RequestCmd {
-      exceptions, info
+      log, info
    }
 
    /* (non-Javadoc)
@@ -49,8 +59,8 @@ public class ClientRequestHandler implements IHttpServerRequest {
          if (Strings.isValid(cmd)) {
             RequestCmd requestCmd = RequestCmd.valueOf(cmd);
             switch (requestCmd) {
-               case exceptions:
-                  displayResults(getExceptionString(), httpRequest, httpResponse);
+               case log:
+                  displayResults(getLogString(), httpRequest, httpResponse);
                   break;
                case info:
                   displayResults(getInfoString(), httpRequest, httpResponse);
@@ -69,11 +79,32 @@ public class ClientRequestHandler implements IHttpServerRequest {
    }
 
    private String getInfoString() throws OseeCoreException {
-      return "info...";
+      StringBuffer sb = new StringBuffer(1000);
+      sb.append("\nName: [" + UserManager.getUser().getName() + "]\n");
+      sb.append(ClientSessionManager.getSession().toString().replaceAll("] ", "]\n"));
+      sb.append("\nWorkpace: [" + AWorkspace.getWorkspacePath() + "]");
+      sb.append("\nInstallation Location: [" + Platform.getInstallLocation().getURL() + "]");
+      for (IHealthStatus status : OseeLog.getStatus()) {
+         sb.append("\n" + status.getSourceName() + ": [" + status.getMessage() + "]");
+      }
+      sb.append("\nRemote Event Service: [" + RemoteEventManager.isConnected() + "]");
+      return sb.toString();
    }
 
-   private String getExceptionString() throws OseeCoreException {
-      return "exceptions...";
+   private String getLogString() throws Exception {
+      StringBuffer sb = new StringBuffer(getInfoString() + "\n");
+      // Add log file
+      File file = Platform.getLogFileLocation().toFile();
+      if (file == null) {
+         sb.append("No .log file found");
+      }
+      sb.append("\nLog File Contents:\n--------------------------------\n" + AFile.readFile(file));
+      // Add first backup log file
+      file = AWorkspace.getWorkspaceFile(".metadata/.bak_0.log");
+      if (file != null && file.exists()) {
+         sb.append("\n" + AFile.readFile(file));
+      }
+      return sb.toString();
    }
 
    private void displayResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {

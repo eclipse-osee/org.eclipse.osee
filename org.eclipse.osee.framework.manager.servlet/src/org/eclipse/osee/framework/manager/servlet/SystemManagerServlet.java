@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class ManagerServlet extends OseeHttpServlet {
+public class SystemManagerServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 3334123351267606890L;
 
@@ -71,7 +71,7 @@ public class ManagerServlet extends OseeHttpServlet {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(InternalSystemManagerServletActivator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -115,7 +115,7 @@ public class ManagerServlet extends OseeHttpServlet {
    private void displayUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       StringBuffer sb = new StringBuffer(1000);
       try {
-         HttpManagerCreationInfo info = new HttpManagerCreationInfo(request);
+         HttpSystemManagerCreationInfo info = new HttpSystemManagerCreationInfo(request);
          String userId = info.getUserId();
          if (!Strings.isValid(userId)) {
             sb.append("Invalid userId [" + userId + "]");
@@ -137,7 +137,7 @@ public class ManagerServlet extends OseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(results + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
-         OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(InternalSystemManagerServletActivator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -177,7 +177,7 @@ public class ManagerServlet extends OseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"User", "Version", "Machine", "Exceptions", "Info",
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"User", "Version", "Machine", "Info", "Log",
             "Created", "Last Interaction", "IP", "Port"}));
       int insertLoc = sb.toString().length();
       while (chStmt.next()) {
@@ -185,8 +185,8 @@ public class ManagerServlet extends OseeHttpServlet {
          String clientPort = chStmt.getString("client_port");
          sb.insert(insertLoc, AHTML.addRowMultiColumnTable(new String[] {chStmt.getString("user_id"),
                chStmt.getString("client_version"), chStmt.getString("client_machine_name"),
-               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=exceptions\">exceptions</a>",
                "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=info\">info</a>",
+               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=log\">log</a>",
                chStmt.getString("created_on"), chStmt.getString("last_interaction_date"), clientIp, clientPort}));
       }
       sb.append(AHTML.endMultiColumnTable());

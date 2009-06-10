@@ -20,10 +20,10 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Donald G. Dunne
  */
-public class InternalManagerServletActivator implements BundleActivator {
+public class InternalSystemManagerServletActivator implements BundleActivator {
    private OseeHttpServiceTracker httpBranchManagementTracker;
    private ServiceTracker managerTracker;
-   private static InternalManagerServletActivator instance;
+   private static InternalSystemManagerServletActivator instance;
 
    /*
     * (non-Javadoc)
@@ -36,7 +36,7 @@ public class InternalManagerServletActivator implements BundleActivator {
       managerTracker.open();
 
       httpBranchManagementTracker =
-            new OseeHttpServiceTracker(context, OseeServerContext.MANAGER_CONTEXT, ManagerServlet.class);
+            new OseeHttpServiceTracker(context, OseeServerContext.MANAGER_CONTEXT, SystemManagerServlet.class);
       httpBranchManagementTracker.open();
 
    }
@@ -55,7 +55,7 @@ public class InternalManagerServletActivator implements BundleActivator {
       instance = null;
    }
 
-   public static InternalManagerServletActivator getInstance() {
+   public static InternalSystemManagerServletActivator getInstance() {
       return instance;
    }
 

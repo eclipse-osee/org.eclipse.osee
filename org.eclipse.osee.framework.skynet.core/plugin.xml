@@ -354,7 +354,7 @@
         <extension
               point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
            <IHttpServerRequest
-                 classname="org.eclipse.osee.framework.skynet.core.httpRequests.ClientRequestHandler">
+                 classname="org.eclipse.osee.framework.skynet.core.httpRequests.ClientSystemManagerRequestHandler">
            </IHttpServerRequest>
         </extension>
 </plugin>
