@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -83,14 +84,32 @@ public class ManagerServlet extends OseeHttpServlet {
 
    private void displayOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       StringBuffer sb = new StringBuffer(1000);
-      sb.append(AHTML.heading(2, "OSEE System Manager"));
       try {
+         sb.append(AHTML.heading(2, "OSEE System Manager"));
+         sb.append(getHeader());
+         sb.append(AHTML.newline() + getSessionByUserIdEntry(request, response));
          sb.append(getSessions());
       } catch (OseeCoreException ex) {
          sb.append("Exception: " + ex.getLocalizedMessage());
       }
-      sb.append("<br><br>As of: " + new Date());
       displayResults(sb.toString(), request, response);
+   }
+
+   private String getHeader() {
+      return "<a href=\"http://localhost:8089/osee/manager\">Home</a><br>";
+   }
+
+   private String getSessionByUserIdEntry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      StringBuffer sb = new StringBuffer(1000);
+      try {
+         sb.append("<form METHOD=GET ACTION=\"http://localhost:8089/osee/manager\">");
+         sb.append("By UserId: <input TYPE=\"text\" NAME=\"userId\" SIZE=\"10\" MAXLENGTH=\"10\">");
+         sb.append("<input TYPE=\"hidden\" NAME=\"operation\" VALUE=\"user\">");
+         sb.append("<INPUT TYPE=SUBMIT></form>");
+      } catch (Exception ex) {
+         sb.append("Exception: " + ex.getLocalizedMessage());
+      }
+      return sb.toString();
    }
 
    private void displayUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -98,12 +117,16 @@ public class ManagerServlet extends OseeHttpServlet {
       try {
          HttpManagerCreationInfo info = new HttpManagerCreationInfo(request);
          String userId = info.getUserId();
-         sb.append(AHTML.heading(2, "OSEE System Manager"));
-         sb.append(getSessionsByUserId(userId));
+         if (!Strings.isValid(userId)) {
+            sb.append("Invalid userId [" + userId + "]");
+         } else {
+            sb.append(AHTML.heading(2, "OSEE System Manager"));
+            sb.append(getHeader());
+            sb.append(getSessionsByUserId(userId));
+         }
       } catch (OseeCoreException ex) {
          sb.append("Exception: " + ex.getLocalizedMessage());
       }
-      sb.append("<br><br>As of: " + new Date());
       displayResults(sb.toString(), request, response);
    }
 
@@ -112,7 +135,7 @@ public class ManagerServlet extends OseeHttpServlet {
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/html");
          response.setCharacterEncoding("UTF-8");
-         response.getWriter().write(results);
+         response.getWriter().write(results + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
          OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
@@ -128,25 +151,26 @@ public class ManagerServlet extends OseeHttpServlet {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
-   @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      String operation = request.getParameter("operation");
-      try {
-         OperationType operationType = OperationType.fromString(operation);
-         switch (operationType) {
-            case USER:
-               break;
-            default:
-               break;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
-               "Error processing session request [%s]", request.toString()), ex);
-         response.getWriter().write(Lib.exceptionToString(ex));
-         response.getWriter().flush();
-         response.getWriter().close();
-      }
-   }
+   //   @Override
+   //   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   //      String operation = request.getParameter("operation");
+   //      try {
+   //         OperationType operationType = OperationType.fromString(operation);
+   //         switch (operationType) {
+   //            case USER:
+   //               displayUser(request, response);
+   //               break;
+   //            default:
+   //               break;
+   //         }
+   //      } catch (Exception ex) {
+   //         OseeLog.log(InternalManagerServletActivator.class, Level.SEVERE, String.format(
+   //               "Error processing session request [%s]", request.toString()), ex);
+   //         response.getWriter().write(Lib.exceptionToString(ex));
+   //         response.getWriter().flush();
+   //         response.getWriter().close();
+   //      }
+   //   }
    private static final String SESSION_QUERY_ALL = "Select * from osee_session";
    private static final String SESSION_QUERY_USER = "Select * from osee_session where user_id = ?";
 
