@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareUI;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -49,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.conflict.CompareInput;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -810,6 +813,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
+            
+            CompareConfiguration compareConfiguration =  new CompareConfiguration();
+            compareConfiguration.setLeftEditable(true);
+            compareConfiguration.setRightEditable(false);
+                 CompareUI.openCompareEditor(new CompareInput(compareConfiguration));
+                 
+                 
+            
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
             SkyWalkerView.exploreArtifact(selectedItems.getFirst());

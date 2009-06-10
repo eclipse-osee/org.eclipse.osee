@@ -47,7 +47,8 @@ Import-Package: org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.db.connection.core.transaction,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.skynet.core.conflict
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
