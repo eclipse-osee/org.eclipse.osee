@@ -94,7 +94,17 @@ public class ManagerServlet extends OseeHttpServlet {
    }
 
    private void displayUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      displayResults("User Requested\nDonald G. Dunne", request, response);
+      StringBuffer sb = new StringBuffer(1000);
+      try {
+         HttpManagerCreationInfo info = new HttpManagerCreationInfo(request);
+         String userId = info.getUserId();
+         sb.append(AHTML.heading(2, "OSEE System Manager"));
+         sb.append(getSessionsByUserId(userId));
+      } catch (OseeCoreException ex) {
+         sb.append("Exception: " + ex.getLocalizedMessage());
+      }
+      sb.append("<br><br>As of: " + new Date());
+      displayResults(sb.toString(), request, response);
    }
 
    private void displayResults(String results, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -137,24 +147,41 @@ public class ManagerServlet extends OseeHttpServlet {
          response.getWriter().close();
       }
    }
-   private static final String QUERY = "Select * from osee_session";
+   private static final String SESSION_QUERY_ALL = "Select * from osee_session";
+   private static final String SESSION_QUERY_USER = "Select * from osee_session where user_id = ?";
 
    private String getSessions() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(SESSION_QUERY_ALL);
+         return getSessionResults(chStmt, "Sessions");
+      } finally {
+         chStmt.close();
+      }
+
+   }
+
+   private String getSessionsByUserId(String userId) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(SESSION_QUERY_USER, userId);
+         return getSessionResults(chStmt, "Sessions for [" + userId + "]");
+      } finally {
+         chStmt.close();
+      }
+
+   }
+
+   private String getSessionResults(ConnectionHandlerStatement chStmt, String title) throws OseeCoreException {
       StringBuffer sb = new StringBuffer(1000);
-      sb.append(AHTML.heading(3, "Sessions"));
+      sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"User", "Version", "Machine", "Created",
             "Last Interaction"}));
-      try {
-         chStmt.runPreparedQuery(QUERY);
-         while (chStmt.next()) {
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {chStmt.getString("user_id"),
-                  chStmt.getString("client_version"), chStmt.getString("client_machine_name"),
-                  chStmt.getString("created_on"), chStmt.getString("last_interaction_date")}));
-         }
-      } finally {
-         chStmt.close();
+      while (chStmt.next()) {
+         sb.append(AHTML.addRowMultiColumnTable(new String[] {chStmt.getString("user_id"),
+               chStmt.getString("client_version"), chStmt.getString("client_machine_name"),
+               chStmt.getString("created_on"), chStmt.getString("last_interaction_date")}));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();

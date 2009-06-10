@@ -26,26 +26,7 @@ class HttpManagerCreationInfo {
    private final String userId;
 
    public HttpManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
-      ensureFunctionValid(req.getParameter("function"));
       userId = req.getParameter("userId");
-   }
-
-   private void ensureFunctionValid(String function) throws OseeArgumentException {
-      if (function == null) {
-         throw new OseeArgumentException("A 'function' parameter must be defined.");
-      }
-      try {
-         this.function = ManagerFunction.valueOf(function);
-      } catch (IllegalArgumentException ex) {
-         throw new OseeArgumentException(String.format("[%s] is not a valid function.", function));
-      }
-   }
-
-   /**
-    * @return the function
-    */
-   public ManagerFunction getFunction() {
-      return function;
    }
 
    /**
