@@ -187,6 +187,7 @@ public class WordMLProducer extends Producer {
    }
 
    public void resetListValue() throws OseeWrappedException {
+      // extra paragraph needed to support WORD's bug to add in a trailing zero when using field codes
       startParagraph();
       endParagraph();
       startParagraph();
