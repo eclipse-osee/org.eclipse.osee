@@ -33,6 +33,19 @@ public class CompareInput extends CompareEditorInput {
    private CompareItem left;
    private CompareItem right;
 
+   /*
+    * 
+    * 
+    * 
+    *             
+            CompareConfiguration compareConfiguration =  new CompareConfiguration();
+            compareConfiguration.setLeftEditable(true);
+            compareConfiguration.setRightEditable(false);
+                 CompareUI.openCompareEditor(new CompareInput(compareConfiguration));
+                 
+                 
+            
+    */
    public CompareInput(CompareConfiguration compareConfiguration) {
       super(compareConfiguration);
 
