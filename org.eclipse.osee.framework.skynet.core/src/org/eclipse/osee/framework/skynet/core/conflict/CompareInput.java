@@ -6,22 +6,14 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareViewerSwitchingPane;
-import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.conflict.AnyeditCompareInput.ExclusiveJobRule;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author b1565043
@@ -29,7 +21,6 @@ import org.eclipse.ui.progress.UIJob;
 public class CompareInput extends CompareEditorInput {
    private static final String CONFIRM_SAVE_PROPERTY = "org.eclipse.compare.internal.CONFIRM_SAVE_PROPERTY";
    private Object differences;
-   private boolean createNoDiffNode;
    private CompareItem left;
    private CompareItem right;
 
@@ -112,7 +103,6 @@ public class CompareInput extends CompareEditorInput {
             //              boolean result = commit(monitor, (DiffNode) differences);
             // let the UI re-compare here on changed inputs
             if (true) {
-               reuseEditor();
             }
          } finally {
             setDirty(false);
@@ -120,76 +110,7 @@ public class CompareInput extends CompareEditorInput {
       }
    }
 
-   void reuseEditor() {
-      UIJob job = new UIJob("AnyEdit: re-comparing editor selection") {
-         public IStatus runInUIThread(IProgressMonitor monitor) {
-            if (monitor.isCanceled()) {// || left.isDisposed() || right.isDisposed()){
-               return Status.CANCEL_STATUS;
-            }
 
-            // This causes too much flicker:
-            //              AnyeditCompareInput input = new AnyeditCompareInput(left.recreate(), right
-            //                      .recreate());
-            //              if(monitor.isCanceled()){
-            //                  input.internalDispose();
-            //                  return Status.CANCEL_STATUS;
-            //              }
-            //              CompareUI.reuseCompareEditor(input, (IReusableEditor) getWorkbenchPart());
-
-            CompareInput input = CompareInput.this;
-            // allow "no diff" result to keep the editor open
-            createNoDiffNode = true;
-            try {
-               CompareItem old_left = left;
-               //                  left = old_left.recreate();
-               //                  old_left.dispose();
-               CompareItem old_right = right;
-               //                  right = old_right.recreate();
-               //                  old_right.dispose();
-
-               // calls prepareInput(monitor);
-               input.run(monitor);
-               if (differences != null) {
-                  CompareViewerSwitchingPane pane = getInputPane();
-                  if (pane != null) {
-                     Viewer viewer = pane.getViewer();
-                     if (viewer instanceof TextMergeViewer) {
-                        viewer.setInput(differences);
-                     }
-                  }
-               }
-            } catch (InterruptedException e) {
-               // ignore, we are interrupted
-               return Status.CANCEL_STATUS;
-            } catch (InvocationTargetException e) {
-               return Status.CANCEL_STATUS;
-            } finally {
-               createNoDiffNode = false;
-            }
-            return Status.OK_STATUS;
-         }
-
-         public boolean belongsTo(Object family) {
-            return CompareInput.this == family;
-         }
-
-      };
-      job.setPriority(Job.SHORT);
-      job.setUser(true);
-      job.setRule(new ExclusiveJobRule(this));
-      Job[] jobs = Job.getJobManager().find(this);
-      if (jobs.length > 0) {
-         for (int i = 0; i < jobs.length; i++) {
-            jobs[i].cancel();
-         }
-      }
-      jobs = Job.getJobManager().find(this);
-      if (jobs.length > 0) {
-         job.schedule(1000);
-      } else {
-         job.schedule(500);
-      }
-   }
 
    public CompareViewerSwitchingPane getInputPane() {
       try {
