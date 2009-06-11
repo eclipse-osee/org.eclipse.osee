@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.conflict;
+package org.eclipse.osee.framework.ui.skynet.compare;
 
 import java.lang.reflect.Field;
 import org.eclipse.compare.CompareConfiguration;
