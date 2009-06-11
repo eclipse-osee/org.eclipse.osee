@@ -36,6 +36,11 @@ public class PropertyStoreMessage implements Message, Serializable {
    }
    
    @Override
+   public String toString() {
+      return String.format("PropertyStoreMessage\t[MessageId: %s]\t[source: %s]", messageId, source);
+   }
+   
+   @Override
    public MessageId getId() {
       return messageId;
    }

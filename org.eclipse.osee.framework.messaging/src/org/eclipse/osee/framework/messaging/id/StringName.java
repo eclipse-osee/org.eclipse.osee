@@ -22,6 +22,11 @@ public class StringName implements Name, Serializable {
    public StringName(String name) {
       this.name = name;
    }
+   
+   @Override
+   public String toString() {
+      return name;
+   }
 
    @Override
    public boolean equals(Object arg0) {

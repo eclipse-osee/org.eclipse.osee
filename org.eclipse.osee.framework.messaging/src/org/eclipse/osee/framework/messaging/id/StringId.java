@@ -25,6 +25,11 @@ public abstract class StringId implements Serializable {
       this.namespace = namespace;
       this.name = name;
    }
+   
+   @Override
+   public String toString() {
+      return String.format("StringId (NameSpace: %s, Name: %s)", namespace.toString(), name.toString());
+   }
 
    @Override
    public boolean equals(Object obj) {

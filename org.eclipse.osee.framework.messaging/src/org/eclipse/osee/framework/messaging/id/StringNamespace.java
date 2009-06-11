@@ -22,6 +22,11 @@ public class StringNamespace implements Namespace, Serializable {
    public StringNamespace(String namespace) {
       this.namespace = namespace;
    }
+   
+   @Override
+   public String toString() {
+      return namespace;
+   }
 
    @Override
    public boolean equals(Object arg0) {
