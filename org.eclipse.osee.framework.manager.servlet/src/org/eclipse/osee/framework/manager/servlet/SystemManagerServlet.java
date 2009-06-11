@@ -14,15 +14,16 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,7 +37,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 3334123351267606890L;
 
-   private static enum OperationType {
+   private static enum Command {
       user, delete, invalid, overview;
    }
 
@@ -54,10 +55,11 @@ public class SystemManagerServlet extends OseeHttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         OperationType operationType = OperationType.overview;
-         if (request.getParameter("operation") != null) operationType =
-               OperationType.valueOf(request.getParameter("operation"));
-         switch (operationType) {
+         Command command = Command.overview;
+         if (request.getParameter("cmd") != null) {
+            command = Command.valueOf(request.getParameter("cmd"));
+         }
+         switch (command) {
             case user:
                displayUser(request, response);
                break;
@@ -135,7 +137,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
          if (!Strings.isValid(info.sessionId)) {
             sb.append("Invalid userId [" + info.sessionId + "]");
          } else {
-            deleteSessionBySessionId(request, info.sessionId);
+            InternalSystemManagerServletActivator.getSessionManager().releaseSession(info.sessionId);
             sb.append("Deleted session [" + info.sessionId + "]");
          }
       } catch (OseeCoreException ex) {
@@ -162,60 +164,48 @@ public class SystemManagerServlet extends OseeHttpServlet {
       }
    }
 
-   private static final String SESSION_QUERY_ALL = "Select * from osee_session";
-   private static final String SESSION_QUERY_USER = "Select * from osee_session where user_id = ?";
-   private static final String SESSION_DELETE_QUERY = "Delete from osee_session where session_id = ?";
-
    private String getSessions(HttpServletRequest request) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(SESSION_QUERY_ALL);
-         return getSessionResults(request, chStmt, "Sessions");
-      } finally {
-         chStmt.close();
-      }
-
+      return getSessionResults(request, InternalSystemManagerServletActivator.getSessionManager().getSessions(),
+            "Sessions");
    }
 
    private String getSessionsByUserId(HttpServletRequest request, String userId) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(SESSION_QUERY_USER, userId);
-         return getSessionResults(request, chStmt, "Sessions for [" + userId + "]");
-      } finally {
-         chStmt.close();
-      }
-
+      return getSessionResults(request, InternalSystemManagerServletActivator.getSessionManager().getSessionsByUserId(
+            userId), "Sessions for [" + userId + "]");
    }
-
-   private void deleteSessionBySessionId(HttpServletRequest request, String sessionId) throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(SESSION_DELETE_QUERY, sessionId);
-   }
-
    private static SimpleDateFormat dateFormat = (new SimpleDateFormat("yyyy/MM/dd hh:mm a"));
 
-   private String getSessionResults(HttpServletRequest request, ConnectionHandlerStatement chStmt, String title) throws OseeCoreException {
+   private String getSessionResults(HttpServletRequest request, Collection<SessionData> sessions, String title) throws OseeCoreException {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "User", "Version", "Machine", "Info",
-            "Log", "Last Interaction", "IP", "Port", "Delete"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Alive", "User", "Version", "Machine",
+            "Info", "Log", "Last Interaction", "IP", "Port", "Delete"}));
       ArrayList<String> items = new ArrayList<String>();
-      while (chStmt.next()) {
-         String clientIp = chStmt.getString("client_address");
-         String clientPort = chStmt.getString("client_port");
+      for (SessionData sessionData : sessions) {
+         OseeSession oseeSession = sessionData.getSession();
+         String clientIp = oseeSession.getClientAddress();
+         String clientPort = oseeSession.getPort() + "";
+         String alive = "";
+         try {
+            alive = String.valueOf(InternalSystemManagerServletActivator.getSessionManager().isAlive(oseeSession));
+         } catch (Exception ex) {
+            OseeLog.log(this.getClass(), Level.SEVERE, ex);
+         }
          items.add(AHTML.addRowMultiColumnTable(new String[] {
-               dateFormat.format(chStmt.getTimestamp("created_on")),
-               chStmt.getString("user_id"),
-               chStmt.getString("client_version"),
-               chStmt.getString("client_machine_name"),
+               dateFormat.format(oseeSession.getCreation()),
+               alive,
+               oseeSession.getUserId(),
+               oseeSession.getVersion(),
+               oseeSession.getClientMachineName(),
                "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=info\">info</a>",
-               "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager?cmd=log\">log</a>",
-               dateFormat.format(chStmt.getTimestamp("last_interaction_date")),
+               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=log\">log</a>",
+               dateFormat.format(oseeSession.getLastInteractionDate()),
                clientIp,
                clientPort,
-               "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager?operation=delete&sessionId=" + chStmt.getString("session_id") + "\">delete</a>"}));
+               "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager?cmd=delete&sessionId=" + oseeSession.getSessionId() + "\">delete session</a>"}));
       }
+
       Arrays.sort(items.toArray(new String[items.size()]));
       Collections.reverse(items);
       for (String item : items) {

@@ -62,5 +62,4 @@ public class InternalSystemManagerServletActivator implements BundleActivator {
    public static ISessionManager getSessionManager() {
       return (ISessionManager) instance.managerTracker.getService();
    }
-
 }

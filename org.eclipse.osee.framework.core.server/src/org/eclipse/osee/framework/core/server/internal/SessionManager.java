@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,6 +67,36 @@ public class SessionManager implements ISessionManager {
       synchronized (sessionCache) {
          for (SessionData sessionData : sessionCache.values()) {
             if (sessionData.getSession().getClientAddress().equals(clientAddress)) {
+               toReturn.add(sessionData);
+            }
+         }
+      }
+      return toReturn;
+   }
+
+   public boolean isAlive(OseeSession oseeSession) throws Exception {
+      String results =
+            HttpProcessor.acquireString(new URL(
+                  "http://" + oseeSession.getClientAddress() + ":" + oseeSession.getPort() + "/osee/request?cmd=pingId"));
+      if (!Strings.isValid(results)) return false;
+      return (results.contains(oseeSession.getSessionId()));
+   }
+
+   public Collection<SessionData> getSessions() {
+      synchronized (sessionCache) {
+         return sessionCache.values();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager# ArrayList(java.lang.String)
+    */
+   @Override
+   public List<SessionData> getSessionsByUserId(String userId) {
+      List<SessionData> toReturn = new ArrayList<SessionData>();
+      synchronized (sessionCache) {
+         for (SessionData sessionData : sessionCache.values()) {
+            if (sessionData.getSession().getUserId().equals(userId)) {
                toReturn.add(sessionData);
             }
          }
@@ -235,4 +268,5 @@ public class SessionManager implements ISessionManager {
          }
       }
    }
+
 }

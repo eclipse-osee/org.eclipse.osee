@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,8 +38,8 @@ public class HttpProcessor {
 
    private static final HttpProcessor instance = new HttpProcessor();
 
-   private MultiThreadedHttpConnectionManager connectionManager;
-   private HttpClient httpClient;
+   private final MultiThreadedHttpConnectionManager connectionManager;
+   private final HttpClient httpClient;
 
    private HttpProcessor() {
       connectionManager = new MultiThreadedHttpConnectionManager();
@@ -171,6 +172,19 @@ public class HttpProcessor {
          }
       }
       return contentType;
+   }
+
+   public static String acquireString(URL url) throws Exception {
+      ByteArrayOutputStream sourceOutputStream = new ByteArrayOutputStream();
+      try {
+         AcquireResult result = HttpProcessor.acquire(url, sourceOutputStream);
+         if (result.getCode() == HttpURLConnection.HTTP_OK) {
+            return sourceOutputStream.toString();
+         }
+      } finally {
+         sourceOutputStream.close();
+      }
+      return null;
    }
 
    public static AcquireResult acquire(URL url, OutputStream outputStream) throws Exception {

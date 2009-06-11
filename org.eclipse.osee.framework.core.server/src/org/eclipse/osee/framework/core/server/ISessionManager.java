@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -30,4 +32,11 @@ public interface ISessionManager {
    public SessionData getSessionById(String sessionId);
 
    public List<SessionData> getSessionByClientAddress(String clientAddress);
+
+   public List<SessionData> getSessionsByUserId(String userId);
+
+   public Collection<SessionData> getSessions();
+
+   public boolean isAlive(OseeSession oseeSession) throws Exception;
+
 }

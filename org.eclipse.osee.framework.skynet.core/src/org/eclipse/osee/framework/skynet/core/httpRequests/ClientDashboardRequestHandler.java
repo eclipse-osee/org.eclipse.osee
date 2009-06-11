@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private enum RequestCmd {
-      log, info, ping
+      log, info, pingId
    }
 
    /* (non-Javadoc)
@@ -65,8 +65,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
                case info:
                   sendResults(getInfoString(), httpRequest, httpResponse);
                   break;
-               case ping:
-                  sendResults("ping", httpRequest, httpResponse);
+               case pingId:
+                  sendResults(ClientSessionManager.getSession().getId(), httpRequest, httpResponse);
                   break;
                default:
                   break;
@@ -112,6 +112,9 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private void sendResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
       try {
+         httpResponse.setContentEncoding("UTF-8");
+         httpResponse.setContentType("text/plain");
+         httpResponse.sendResponseHeaders(HttpURLConnection.HTTP_OK, results.length());
          httpResponse.getPrintStream().println(results);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing request for [%s]",
