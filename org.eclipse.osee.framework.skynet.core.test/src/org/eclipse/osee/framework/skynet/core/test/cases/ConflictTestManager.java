@@ -10,7 +10,6 @@
  *******************************************************************************/
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
-import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.Date;
@@ -206,11 +205,7 @@ public class ConflictTestManager {
       cleanUpConflictTest();
       createConflictDefinitions();
       Branch branch;
-      try {
-         branch = BranchManager.getBranch("Block III Main");
-      } catch (Exception ex) {
-         branch = BranchManager.getBranch("SAW_Bld_1");
-      }
+      branch = BranchManager.getBranch("SAW_Bld_1");
       destBranch = BranchManager.createWorkingBranch(branch, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
@@ -254,14 +249,13 @@ public class ConflictTestManager {
                }
             }
          }
-         
+
          ///handle destination objects
          sourceArtifacts[i].persistAttributes();
          for (AttributeValue value : conflictDefs[i].values) {
-            if(value.destinationDeleted){
+            if (value.destinationDeleted) {
                destArtifacts[i].getSoleAttribute(value.attributeName).delete();
-            }
-            else if(value.destValue != null) {
+            } else if (value.destValue != null) {
                conflictDefs[i].destModified = true;
                destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
             }

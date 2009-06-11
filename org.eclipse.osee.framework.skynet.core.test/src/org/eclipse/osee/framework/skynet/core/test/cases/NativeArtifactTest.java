@@ -10,11 +10,12 @@
  *******************************************************************************/
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Collection;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,16 +24,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
-import org.eclipse.osee.framework.ui.plugin.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Ryan D. Brooks
  */
-public class NativeArtifactTest  {
+public class NativeArtifactTest {
 
    @org.junit.Test
-public void testCleanupPre() throws Exception {
+   public void testCleanupPre() throws Exception {
       cleanup();
    }
 
@@ -42,7 +43,7 @@ public void testCleanupPre() throws Exception {
     * .
     */
    @org.junit.Test
-public void testNativeArtifact() throws Exception {
+   public void testNativeArtifact() throws Exception {
       CsvArtifact csvArtifact =
             CsvArtifact.getCsvArtifact(getClass().getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
@@ -54,7 +55,7 @@ public void testNativeArtifact() throws Exception {
     * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getImage()}.
     */
    @org.junit.Test
-public void testGetImage() throws Exception {
+   public void testGetImage() throws Exception {
       NativeArtifact nativeArtifact = getNativeArtifact();
       assertTrue(nativeArtifact.getFileExtension().equals("csv"));
    }
@@ -63,7 +64,7 @@ public void testGetImage() throws Exception {
     * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getFileName()}.
     */
    @org.junit.Test
-public void testGetFileName() throws Exception {
+   public void testGetFileName() throws Exception {
       NativeArtifact nativeArtifact = getNativeArtifact();
       assertEquals(nativeArtifact.getFileName(), "NativeArtifactTest.csv");
    }
@@ -72,7 +73,7 @@ public void testGetFileName() throws Exception {
     * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getFileExtension()}.
     */
    @org.junit.Test
-public void testGetFileExtension() throws Exception {
+   public void testGetFileExtension() throws Exception {
       NativeArtifact nativeArtifact = getNativeArtifact();
       assertTrue(nativeArtifact.getFileExtension().equals("csv"));
    }
@@ -82,7 +83,7 @@ public void testGetFileExtension() throws Exception {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#setNativeContent(java.io.File)}.
     */
    @org.junit.Test
-public void testSetNativeContentFile() throws Exception {
+   public void testSetNativeContentFile() throws Exception {
       File file = OseeData.getFile(GUID.generateGuidStr() + ".txt");
       Lib.writeStringToFile("hello world", file);
       NativeArtifact nativeArtifact = getNativeArtifact();
@@ -96,7 +97,7 @@ public void testSetNativeContentFile() throws Exception {
     * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getNativeContent()}.
     */
    @org.junit.Test
-public void testSetAndGetNativeContent() throws Exception {
+   public void testSetAndGetNativeContent() throws Exception {
       NativeArtifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setNativeContent(Lib.stringToInputStream("hello world"));
       nativeArtifact.persistAttributes();
@@ -105,7 +106,7 @@ public void testSetAndGetNativeContent() throws Exception {
    }
 
    @org.junit.Test
-public void testGetValueAsString() throws Exception {
+   public void testGetValueAsString() throws Exception {
       NativeArtifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setNativeContent(Lib.stringToInputStream("hello world"));
       nativeArtifact.persistAttributes();
@@ -115,7 +116,7 @@ public void testGetValueAsString() throws Exception {
    }
 
    @org.junit.Test
-public void testCleanupPost() throws Exception {
+   public void testCleanupPost() throws Exception {
       cleanup();
    }
 
