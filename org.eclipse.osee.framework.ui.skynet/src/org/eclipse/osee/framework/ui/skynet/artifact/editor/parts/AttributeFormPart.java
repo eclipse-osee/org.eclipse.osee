@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -56,11 +56,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AttributeFormPart extends AbstractFormPart {
 
-   private final NewArtifactEditor editor;
+   private final ArtifactEditor editor;
    private Font defaultLabelFont;
    private Composite composite;
 
-   public AttributeFormPart(NewArtifactEditor editor) {
+   public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
    }
 

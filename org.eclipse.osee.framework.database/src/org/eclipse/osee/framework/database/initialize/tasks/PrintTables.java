@@ -15,7 +15,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
@@ -28,18 +27,18 @@ public class PrintTables implements IDbInitializationTask {
       this.userConfig = userConfig;
    }
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       Set<String> keys = userConfig.keySet();
       for (String key : keys) {
          SchemaData schemaData = userConfig.get(key);
          Set<String> tables = schemaData.getTableMap().keySet();
          for (String tableName : tables) {
-            printTable(connection, tableName);
+            printTable(tableName);
          }
       }
    }
 
-   private void printTable(OseeConnection connection, String tableName) throws OseeDataStoreException {
+   private void printTable(String tableName) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery("select * from " + tableName);

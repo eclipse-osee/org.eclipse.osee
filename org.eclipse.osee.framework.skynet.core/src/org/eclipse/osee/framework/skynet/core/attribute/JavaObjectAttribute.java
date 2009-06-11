@@ -20,8 +20,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
 
@@ -48,7 +48,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
             obj = objectStream.readObject();
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          try {
             if (inputStream != null) {
@@ -80,7 +80,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
          getAttributeDataProvider().setValue(ByteBuffer.wrap(byteStream.toByteArray()));
          getAttributeDataProvider().setDisplayableString(value != null ? value.getClass().getName() : "null");
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return true;
    }

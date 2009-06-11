@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * This abstract class provides a uniform way of executing transactions within an Eclipse Job. It handles exceptions
@@ -71,20 +71,20 @@ public abstract class SkynetTransactionJobTemplate extends Job {
       this.monitor = monitor;
       Result result = performPreprocess();
       if (result.isFalse()) {
-         return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, result.getText(), null);
+         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, result.getText(), null);
       }
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch);
          handleTxWork(transaction);
          transaction.execute();
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
-      } finally{
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+      } finally {
          try {
             handleTxFinally();
          } catch (OseeCoreException ex) {
-            return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+            return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
       }
       return Status.OK_STATUS;
@@ -92,15 +92,16 @@ public abstract class SkynetTransactionJobTemplate extends Job {
 
    /**
     * Provides the transaction's work implementation.
-    * @param transaction 
     * 
+    * @param transaction
     * @throws Exception
     */
    protected abstract void handleTxWork(SkynetTransaction transaction) throws OseeCoreException;
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
-    * the end of the transaction, regardless of exceptions. <br/><b>Override to add additional code to finally block</b>
+    * the end of the transaction, regardless of exceptions. <br/>
+    * <b>Override to add additional code to finally block</b>
     * 
     * @throws Exception
     */

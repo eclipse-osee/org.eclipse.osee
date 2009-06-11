@@ -14,16 +14,15 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -35,8 +34,8 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
     * @see org.eclipse.osee.framework.database.IDbInitializationTask#run(org.eclipse.osee.framework.db.connection.OseeConnection)
     */
    @Override
-   public void run(OseeConnection connection) throws OseeCoreException {
-      OseeLog.log(SkynetActivator.class, Level.INFO, "Post Initialization User Clean-up");
+   public void run() throws OseeCoreException {
+      OseeLog.log(Activator.class, Level.INFO, "Post Initialization User Clean-up");
 
       int authorArtId = 0;
       boolean isUserAuthenticationAllowed = false;
@@ -61,13 +60,13 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          authorArtId = user.getArtId();
       } else {
          // This is an initialization for base import -- users are not available
-         OseeLog.log(SkynetActivator.class, Level.INFO,
+         OseeLog.log(Activator.class, Level.INFO,
                "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
       }
 
       if (authorArtId > 0) {
          // Set author to current authenticated user art id
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_BOOTSTRAP_USER_ID, authorArtId);
+         ConnectionHandler.runPreparedUpdate(UPDATE_BOOTSTRAP_USER_ID, authorArtId);
       }
    }
 }

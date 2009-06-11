@@ -148,7 +148,6 @@ public class MetadataExportItem extends AbstractDbExportItem {
             resultSet = metaData.getColumns(null, null, tableName, null);
          }
          if (resultSet != null) {
-            SupportedDatabase dbType = SupportedDatabase.getDatabaseType(getConnection());
             while (resultSet.next()) {
                ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.COLUMN);
                try {
@@ -156,7 +155,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
                   ExportImportXml.addXmlAttribute(appendable, ExportImportXml.ID, columnId);
 
                   int dataType = resultSet.getInt("DATA_TYPE");
-                  if (dbType.equals(SupportedDatabase.foxpro)) {
+                  if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
                      if (dataType == Types.CHAR) {
                         dataType = Types.VARCHAR;
                      }

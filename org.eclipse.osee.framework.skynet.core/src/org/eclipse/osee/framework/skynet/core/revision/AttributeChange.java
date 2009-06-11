@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Robert A. Fisher
@@ -74,7 +72,7 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     */
    @Override
    public String getChange() {
-      if (getModType() == DELETED)
+      if (getModificationType() == DELETED)
          return "<deleted>";
       else
          return isValue;
@@ -92,14 +90,6 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     */
    public String getName() {
       return name;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IAttributeChange#getImage()
-    */
-   @Override
-   public Image getImage() {
-      return AttributeChangeIcons.getImage(getChangeType(), getModType());
    }
 
    /**

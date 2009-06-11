@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -61,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -71,8 +71,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
 public class Artifact implements IAdaptable, Comparable<Artifact> {
@@ -99,21 +97,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
                "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)"};
-   private static Image overrideImage = null;
-
-   /**
-    * @return the overrideImage
-    */
-   public static Image getOverrideImage() {
-      return overrideImage;
-   }
-
-   /**
-    * @param overrideImage the overrideImage to set
-    */
-   public static void setOverrideImage(Image overrideImage) {
-      Artifact.overrideImage = overrideImage;
-   }
 
    static {
       Arrays.sort(WholeArtifactMatches);
@@ -173,27 +156,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          return ArtifactAnnotation.Type.Warning;
       else if (isAnnotation(ArtifactAnnotation.Type.Info)) return ArtifactAnnotation.Type.Info;
       return ArtifactAnnotation.Type.None;
-   }
-
-   public Image getImage() {
-      if (overrideImage != null) {
-         return overrideImage;
-      }
-      if (AccessControlManager.hasLock(this)) {
-         return artifactType.getLockedImage(AccessControlManager.getInstance().hasLockAccess(this));
-      }
-
-      try {
-         if (getArtifactTypeName().equals("Version")) {
-            boolean next = getSoleAttributeValue("ats.Next Version", false);
-            boolean released = getSoleAttributeValue("ats.Released", false);
-            return artifactType.getImage(next, released);
-         }
-         return artifactType.getAnnotationImage(getMainAnnotationType());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-      return null;
    }
 
    /**
@@ -363,7 +325,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (MultipleArtifactsExist ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -519,7 +481,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          return attribute;
       } catch (Exception ex) {
          // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -740,7 +702,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
             OseeLog.log(
-                  SkynetActivator.class,
+                  Activator.class,
                   Level.SEVERE,
                   "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getDescriptiveName() + "\"");
             return defaultReturnValue;
@@ -960,7 +922,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
       return "";
@@ -1017,20 +979,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns the dirty.
     */
    public boolean isDirty() {
-      return reportIsDirty().isTrue();
-   }
-
-   public Result reportIsDirty() {
-      return reportIsDirty(false);
+      return isDirty(false);
    }
 
    /**
     * @return Returns the dirty.
     */
-   public Result reportIsDirty(boolean includeLinks) {
-      if (dirty) return new Result(true, "dirty flag == true");
-      Result result = reportAnAttributeIsDirty();
-      if (result.isTrue()) return result;
+   public String reportIsDirty(boolean includeLinks) {
+      if (dirty) {
+         return "dirty flag == true";
+      }
+      String result = reportAnAttributeIsDirty();
+      if (result != null) {
+         return result;
+      }
       if (includeLinks) {
          result = RelationManager.reportHasDirtyLinks(this);
       }
@@ -1038,7 +1000,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isDirty(boolean includeLinks) {
-      return reportIsDirty(includeLinks).isTrue();
+      return reportIsDirty(includeLinks) != null;
    }
 
    public boolean isReadOnly() {
@@ -1046,22 +1008,22 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          return isDeleted() || isHistorical() || !getBranch().isEditable() || !AccessControlManager.checkObjectPermission(
                this, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
    }
 
    public boolean anAttributeIsDirty() {
-      return reportAnAttributeIsDirty().isTrue();
+      return reportAnAttributeIsDirty() != null;
    }
 
-   private Result reportAnAttributeIsDirty() {
+   private String reportAnAttributeIsDirty() {
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            return new Result(true, "Attribute: " + attribute.getNameValueDescription());
+            return "Attribute: " + attribute.getNameValueDescription();
          }
       }
-      return Result.FalseResult;
+      return null;
    }
 
    public void revert() throws OseeCoreException {
@@ -1211,7 +1173,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                relations.add(relation);
             }
          } catch (ArtifactDoesNotExist ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return relations;
@@ -1231,7 +1193,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                relations.add(relation);
             }
          } catch (ArtifactDoesNotExist ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return relations;
@@ -1451,35 +1413,35 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param links
     */
-   public Result isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
+   public String isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
       try {
          if (isDirty()) {
 
             for (Attribute<?> attribute : internalGetAttributes()) {
                if (attribute.isDirty()) {
-                  return new Result(true, "===> Dirty Attribute - " + attribute.getAttributeType().getName() + "\n");
+                  return "===> Dirty Attribute - " + attribute.getAttributeType().getName() + "\n";
                }
             }
-            return new Result(true, "Artifact isDirty == true??");
+            return "Artifact isDirty == true??";
          }
          // Loop through all relations
          for (IRelationEnumeration side : links) {
             for (Artifact art : getRelatedArtifacts(side)) {
                // Check artifact dirty
                if (art.isDirty()) {
-                  return new Result(true, art.getArtifactTypeName() + " \"" + art + "\" => dirty\n");
+                  return art.getArtifactTypeName() + " \"" + art + "\" => dirty\n";
                }
                // Check the links to this artifact
                for (RelationLink link : getRelations(side, art))
                   if (link.isDirty()) {
-                     return new Result(true, "Link \"" + link + "\" => dirty\n");
+                     return "Link \"" + link + "\" => dirty\n";
                   }
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return Result.FalseResult;
+      return null;
    }
 
    /**
@@ -1779,7 +1741,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             Attribute<?> attribute = createAttribute(attributeType, true);
             if (!isNewArtifact) {
                attribute.setNotDirty();
-               OseeLog.log(SkynetActivator.class, Level.FINER, String.format(
+               OseeLog.log(Activator.class, Level.FINER, String.format(
                      "artId [%d] - an attribute of type %s was created", getArtId(), attributeType.toString()));
             }
          }

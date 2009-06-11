@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.search.ui.text.Match;
@@ -237,10 +238,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       if (element instanceof AttributeLineElement) {
          toReturn = fLineMatchImage;
       } else if (element instanceof Artifact) {
-         Image artImage = ((Artifact) element).getImage();
-         if (artImage == null) {
-            artImage = SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif");
-         }
+         Image artImage = ImageManager.getImage((Artifact) element);
          int matchCount = getMatchCount(element);
          if (matchCount > 0) {
             toReturn = artImage;

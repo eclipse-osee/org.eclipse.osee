@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -41,9 +42,8 @@ public class XNavigateItemFolder extends XNavigateItem {
    @Override
    public Image getImage() {
       if (getName().contains("Admin")) {
-         return SkynetGuiPlugin.getInstance().getImage("admin.gif");
+         return ImageManager.getImage(FrameworkImage.ADMIN);
       }
-      return SkynetGuiPlugin.getInstance().getImage("folder.gif");
+      return ImageManager.getImage(FrameworkImage.FOLDER);
    }
-
 }

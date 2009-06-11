@@ -51,8 +51,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.IConflictResolver;
@@ -60,9 +60,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.UpdateBranchJob;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.osgi.framework.Bundle;
 
 public class BranchManager {
    private static final BranchManager instance = new BranchManager();
@@ -107,6 +107,7 @@ public class BranchManager {
 
    private final Map<String, Branch> keynameBranchMap = new HashMap<String, Branch>();
    private static final String GET_MAPPED_BRANCH_INFO = "SELECT * FROM osee_branch_definitions";
+   private List<CommitAction> commitActions;
    private Branch lastBranch;
 
    private BranchManager() {
@@ -427,7 +428,7 @@ public class BranchManager {
     */
    public static void purgeBranchInJob(final Branch branch) {
       Jobs.runInJob("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch),
-            instance.getClass(), SkynetActivator.PLUGIN_ID);
+            instance.getClass(), Activator.PLUGIN_ID);
    }
 
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
@@ -471,26 +472,10 @@ public class BranchManager {
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 
-   private static void runCommitExtPointActions(Branch branch) {
-      if (branch != null) {
-         IExtensionPoint point =
-               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.CommitActions");
-         for (IExtension extension : point.getExtensions()) {
-            for (IConfigurationElement element : extension.getConfigurationElements()) {
-               String classname = element.getAttribute("className");
-               String bundleName = element.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     Class<?> taskClass = bundle.loadClass(classname);
-                     ((CommitAction) taskClass.newInstance()).runCommitAction(branch);
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE, "Unable to create Commit Action: " + classname,
-                           ex);
-                  }
-               }
-            }
-         }
+   private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
+      instance.initCommitActions();
+      for (CommitAction commitAction : instance.commitActions) {
+         commitAction.runCommitAction(branch);
       }
    }
 
@@ -674,7 +659,7 @@ public class BranchManager {
             lastBranch = getBranch(Integer.parseInt(branchIdStr));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -692,7 +677,7 @@ public class BranchManager {
                try {
                   defaultBranchProviders.add((IDefaultInitialBranchesProvider) element.createExecutableExtension("class"));
                } catch (Exception ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -707,7 +692,7 @@ public class BranchManager {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.WARNING,
+            OseeLog.log(Activator.class, Level.WARNING,
                   "Exception occurred while trying to determine initial default branch", ex);
          }
       }
@@ -778,6 +763,14 @@ public class BranchManager {
          return instance.keynameBranchMap.get(lowerKeyname);
       } else {
          throw new BranchDoesNotExist("The key \"" + keyname + "\" does not refer to any branch");
+      }
+   }
+
+   private void initCommitActions() {
+      if (commitActions == null) {
+         commitActions =
+               new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
+                     "CommitActions", "className").getObjects();
       }
    }
 }

@@ -68,11 +68,11 @@ public class PostgreSqlManager extends SqlManagerImpl {
    }
 
    @Override
-   public void dropTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " CASCADE";
       OseeLog.log(DatabaseActivator.class, Level.INFO,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute);
+      ConnectionHandler.runPreparedUpdate(toExecute);
    }
 
    protected String formatQuotedString(String value, String splitAt) {

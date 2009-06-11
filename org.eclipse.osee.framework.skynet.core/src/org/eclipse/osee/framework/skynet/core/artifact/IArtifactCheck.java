@@ -12,8 +12,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -27,15 +27,15 @@ public interface IArtifactCheck {
     * @return Result with description of which artifact and why can't delete
     * @throws OseeCoreException
     */
-   public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException;
+   public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException;
 
    /**
     * Checks set of artifacts for validation prior to rename
-    * @param artifacts
     * 
+    * @param artifacts
     * @return Result with description of which artifact and why can't rename
     * @throws OseeCoreException
     */
-   public Result isRenamable(Collection<Artifact> artifacts) throws OseeCoreException;
+   public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException;
 
 }

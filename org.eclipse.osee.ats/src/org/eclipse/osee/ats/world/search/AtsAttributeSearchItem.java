@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -37,7 +39,7 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
    private final String attributeName;
 
    public AtsAttributeSearchItem(String searchName, String attributeName, String searchStr) {
-      super(searchName, AtsPlugin.getInstance().getImage("flashlight.gif"));
+      super(searchName, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
       this.attributeName = attributeName;
       this.searchStr = searchStr;
    }
@@ -51,7 +53,7 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
    }
 
    public AtsAttributeSearchItem(AtsAttributeSearchItem atsAttributeSearchItem) {
-      super(atsAttributeSearchItem, AtsPlugin.getInstance().getImage("flashlight.gif"));
+      super(atsAttributeSearchItem, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
       this.searchStr = atsAttributeSearchItem.searchStr;
       this.attributeName = atsAttributeSearchItem.attributeName;
    }

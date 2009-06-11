@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 public class BackupTableData implements IDbInitializationTask {
@@ -34,13 +33,13 @@ public class BackupTableData implements IDbInitializationTask {
       this.currentDatabaseConfig = currentDatabaseConfig;
    }
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       System.out.println("BackupTableData: ");
       Set<String> dataToBackup = getTablesToBackup();
       if (dataToBackup.size() > 0) {
          System.out.println(dataToBackup.toString().replaceAll(", ", "\n"));
          clearBackupDirectory();
-         DatabaseDataExtractor dbDataExtractor = new DatabaseDataExtractor(connection, schemas, backupDirectory);
+         DatabaseDataExtractor dbDataExtractor = new DatabaseDataExtractor(schemas, backupDirectory);
          Set<String> backupTables = dataToBackup;
          for (String backupTable : backupTables) {
             dbDataExtractor.addTableNameToExtract(backupTable);

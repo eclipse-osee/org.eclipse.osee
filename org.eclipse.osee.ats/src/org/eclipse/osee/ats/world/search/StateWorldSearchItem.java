@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -36,7 +38,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public StateWorldSearchItem(StateWorldSearchItem stateWorldSearchItem) {
-      super(stateWorldSearchItem, AtsPlugin.getInstance().getImage("globe.gif"));
+      super(stateWorldSearchItem, ImageManager.getImage(AtsImage.GLOBE));
       this.stateClass = stateWorldSearchItem.stateClass;
    }
 

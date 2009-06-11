@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -48,7 +47,7 @@ import org.eclipse.osee.support.test.util.DemoUsers;
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
       new DemoTestWorkFlowDefinition().config(WriteType.New, null);

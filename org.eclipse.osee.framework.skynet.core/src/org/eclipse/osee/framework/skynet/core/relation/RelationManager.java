@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -41,8 +40,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Ryan D. Brooks
@@ -182,7 +181,7 @@ public class RelationManager {
                   }
                }
             } catch (ArtifactDoesNotExist ex) {
-               OseeLog.log(SkynetActivator.class, Level.WARNING, ex.getMessage(), ex);
+               OseeLog.log(Activator.class, Level.WARNING, ex.getMessage(), ex);
             }
          }
       }
@@ -376,17 +375,16 @@ public class RelationManager {
       return false;
    }
 
-   public synchronized static Result reportHasDirtyLinks(Artifact artifact) {
+   public synchronized static String reportHasDirtyLinks(Artifact artifact) {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
-      if (selectedRelations == null) {
-         return Result.FalseResult;
-      }
-      for (RelationLink relation : selectedRelations) {
-         if (relation.isDirty()) {
-            return new Result(true, "Relation: " + relation.toString());
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if (relation.isDirty()) {
+               return "Relation: " + relation;
+            }
          }
       }
-      return Result.FalseResult;
+      return null;
    }
 
    /**
@@ -498,7 +496,7 @@ public class RelationManager {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
                   relation.getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -506,9 +504,9 @@ public class RelationManager {
    public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeArgumentException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       // TODO Fix this when fix cross branching (not writing or reading from db correctly)
-//      if (!artifactA.getBranch().equals(artifactB.getBranch())) {
-//         throw new OseeArgumentException("Cross branch linking is not yet supported.");
-//      }
+      //      if (!artifactA.getBranch().equals(artifactB.getBranch())) {
+      //         throw new OseeArgumentException("Cross branch linking is not yet supported.");
+      //      }
       ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
       ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
    }
@@ -719,7 +717,7 @@ public class RelationManager {
          OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
                relation.getABranch(), relationType.getTypeName());
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

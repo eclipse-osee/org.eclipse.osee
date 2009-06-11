@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -87,7 +87,7 @@ public class Sender {
       try {
          remote = (isRemote() ? "Remote" : "Local");
       } catch (OseeAuthenticationRequiredException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return "Sender: " + remote + " [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }

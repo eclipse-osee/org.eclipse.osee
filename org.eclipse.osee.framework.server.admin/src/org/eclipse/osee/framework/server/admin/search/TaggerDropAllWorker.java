@@ -27,7 +27,7 @@ class TaggerDropAllWorker extends BaseCmdWorker {
    @Override
    protected void doWork(long startTime) throws Exception {
       String deleteSql = null;
-      if (SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql) {
+      if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
          deleteSql = TRUNCATE_SQL;
       } else {
          deleteSql = DELETE_TABLE_SQL;

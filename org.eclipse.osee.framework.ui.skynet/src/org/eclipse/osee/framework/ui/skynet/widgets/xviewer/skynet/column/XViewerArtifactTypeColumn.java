@@ -14,6 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
@@ -59,7 +60,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
    @Override
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getImage();
+         return ImageManager.getImage((Artifact) element);
       }
       return super.getColumnImage(element, column, columnIndex);
    }

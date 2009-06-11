@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -74,7 +74,7 @@ public class StaticIdManager {
          }
       }
       if (artifacts.size() > 0) {
-         OseeLog.log(SkynetActivator.class, Level.FINE, "StaticId Load: [" + staticId + "][" + artifactTypeName + "]");
+         OseeLog.log(Activator.class, Level.FINE, "StaticId Load: [" + staticId + "][" + artifactTypeName + "]");
       }
       if (artifacts.size() == 0) {
          // Retrieve database artifacts if cache has none

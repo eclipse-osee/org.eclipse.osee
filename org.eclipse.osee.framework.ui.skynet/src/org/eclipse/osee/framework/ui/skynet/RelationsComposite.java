@@ -833,7 +833,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
                ArtifactDragDropSupport.performDragDrop(event, window,
                      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-               window.createArtifactInformationBox(null);
+               window.createArtifactInformationBox();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

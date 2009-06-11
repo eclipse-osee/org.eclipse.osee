@@ -12,11 +12,12 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -44,7 +45,7 @@ public class VisitedItems extends XNavigateItemAction {
     * @param parent
     */
    public VisitedItems(XNavigateItem parent) {
-      super(parent, "My Recently Visited", AtsPlugin.getInstance().getImage("globe.gif"));
+      super(parent, "My Recently Visited", ImageManager.getImage(AtsImage.GLOBE));
    }
 
    /*

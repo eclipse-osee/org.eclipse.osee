@@ -89,16 +89,16 @@ public class OseeSql {
             "SELECT%s artxs1.art_type_id, attr1.art_id, attr1.attr_id, attr1.gamma_id, attr1.attr_type_id, attr1.value as is_value, txs1.mod_type FROM osee_tx_details txd2, osee_txs txs1, osee_attribute attr1, osee_artifact artxs1 WHERE txd2.transaction_id = ? AND txd2.transaction_id = txs1.transaction_id AND txd2.tx_type = 0 AND artxs1.art_id = attr1.art_id AND attr1.gamma_id = txs1.gamma_id";
 
       private static final String BRANCH_REL_CHANGES =
-            "SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.a_order, rel1.b_order, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id from osee_tx_details txd1, osee_txs txs1, osee_relation_link rel1 where txs1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND txd1.tx_type = 0 AND txd1.branch_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = rel1.gamma_id";
+            "SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.a_order, rel1.b_order, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id, art.art_type_id from osee_tx_details txd1, osee_txs txs1, osee_relation_link rel1, osee_artifact art where txs1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND txd1.tx_type = 0 AND txd1.branch_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = rel1.gamma_id AND rel1.a_art_id = art.art_id";
 
       private static final String TRANSACTION_REL_CHANGES =
-            "SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.a_order, rel1.b_order, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id from osee_tx_details txd1, osee_txs txs1, osee_relation_link rel1 where txd1.tx_type = 0 AND txd1.transaction_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = rel1.gamma_id";
+            "SELECT%s txs1.mod_type, rel1.gamma_id, rel1.b_art_id, rel1.a_art_id, rel1.a_order, rel1.b_order, rel1.rationale, rel1.rel_link_id, rel1.rel_link_type_id, art.art_type_id from osee_tx_details txd1, osee_txs txs1, osee_relation_link rel1, osee_artifact art where txd1.tx_type = 0 AND txd1.transaction_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = rel1.gamma_id AND rel1.a_art_id = art.art_id;";
 
       private static final String BRANCH_ARTIFACT_CHANGES =
-            "select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.branch_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() +  ", " + ModificationType.INTRODUCED.getValue() +")  AND atv1.art_id = art1.art_id";
+            "select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.branch_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ")  AND atv1.art_id = art1.art_id";
 
       private static final String TRANSACTION_ARTIFACT_CHANGES =
-            "select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.transaction_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() +  ", " + ModificationType.INTRODUCED.getValue() +")  AND atv1.art_id = art1.art_id";
+            "select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.transaction_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ")  AND atv1.art_id = art1.art_id";
 
       private static final String MODIFYING_TRANSACTION =
             "SELECT arj.art_id, arj.branch_id, txd.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId();
@@ -167,8 +167,8 @@ public class OseeSql {
             SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.branch_id, al1.art_id";
 
       private static final String SELECT_ALL_CURRENT_ATTRIBUTES_DEFINITION =
-         SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id";
-      
+            SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id";
+
       private static final String SELECT_RELATIONS_DEFINITION =
             "SELECT%s rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order, b_order, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
@@ -190,9 +190,9 @@ public class OseeSql {
          sqlProperties.put(SELECT_CURRENT_ATTRIBUTES, getFormattedSql(SELECT_CURRENT_ATTRIBUTES_DEFINITION,
                HINTS__ORDERED__FIRST_ROWS));
 
-         sqlProperties.put(SELECT_ALL_CURRENT_ATTRIBUTES, getFormattedSql(
-               SELECT_ALL_CURRENT_ATTRIBUTES_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
-         
+         sqlProperties.put(SELECT_ALL_CURRENT_ATTRIBUTES, getFormattedSql(SELECT_ALL_CURRENT_ATTRIBUTES_DEFINITION,
+               HINTS__ORDERED__FIRST_ROWS));
+
          sqlProperties.put(SELECT_CURRENT_ATTRIBUTES_WITH_DELETED, getFormattedSql(
                SELECT_CURRENT_ATTRIBUTES_WITH_DELETED_DEFINITION, HINTS__ORDERED__FIRST_ROWS));
 

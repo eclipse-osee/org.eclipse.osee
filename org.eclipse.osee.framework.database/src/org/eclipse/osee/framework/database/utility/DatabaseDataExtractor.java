@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -55,26 +54,22 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 public class DatabaseDataExtractor {
 
    private static final String SQL_WILD_QUERY = "SELECT * FROM ";
-   private OseeConnection connection;
    private DatabaseSchemaExtractor databaseInfo;
    private Set<String> schemas;
    private File directory;
    private List<Thread> workerThreads;
    private Set<String> extractTables;
-   private SupportedDatabase dbType;
 
    private class ColumnInfo {
       String name;
       SQL3DataType type;
    }
 
-   public DatabaseDataExtractor(OseeConnection connection, Set<String> schemas, File directory) throws OseeDataStoreException {
-      this.connection = connection;
+   public DatabaseDataExtractor(Set<String> schemas, File directory) throws OseeDataStoreException {
       this.schemas = schemas;
       this.directory = directory;
       this.workerThreads = new ArrayList<Thread>();
       this.extractTables = new TreeSet<String>();
-      this.dbType = SupportedDatabase.getDatabaseType(connection);
    }
 
    public void addTableNameToExtract(String fullyQualifiedTableName) {
@@ -99,7 +94,7 @@ public class DatabaseDataExtractor {
       }
 
       public void run() {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             try {
                chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getFullyQualifiedTableName());
@@ -132,7 +127,7 @@ public class DatabaseDataExtractor {
    }
 
    private void extractData() throws OseeDataStoreException {
-      databaseInfo = new DatabaseSchemaExtractor(connection, schemas);
+      databaseInfo = new DatabaseSchemaExtractor(schemas);
       databaseInfo.extractSchemaData();
       Map<String, SchemaData> schemaDataMap = databaseInfo.getSchemas();
       Set<String> schemaKeys = schemaDataMap.keySet();
@@ -166,7 +161,7 @@ public class DatabaseDataExtractor {
          columnInfo.name = columnInfo.name.toUpperCase();
 
          int dataType = chStmt.getColumnType(index);
-         if (dbType.equals(SupportedDatabase.foxpro)) {
+         if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
             if (dataType == Types.CHAR) {
                dataType = Types.VARCHAR;
             }

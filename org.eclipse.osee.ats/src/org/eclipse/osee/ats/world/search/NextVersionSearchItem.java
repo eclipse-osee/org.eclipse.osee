@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -49,7 +51,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
-      super(nextVersionSearchItem, AtsPlugin.getInstance().getImage("version.gif"));
+      super(nextVersionSearchItem, ImageManager.getImage(FrameworkImage.VERSION));
       this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
       this.selectedTeamDef = nextVersionSearchItem.selectedTeamDef;
    }

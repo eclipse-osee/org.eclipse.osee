@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -101,12 +100,10 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          if (render instanceof WordRenderer) {
             contributionItems.addAll(loadCommands(render, presentationType, WordRenderer.getImageDescriptor()));
          } else {
-
             contributionItems.addAll(loadCommands(
                   render,
                   presentationType,
-                  render instanceof NativeRenderer && firstArtifact instanceof NativeArtifact ? SkynetActivator.getInstance().getImageDescriptorForProgram(
-                        ((NativeArtifact) firstArtifact).getFileExtension()) : null));
+                  render instanceof NativeRenderer && firstArtifact instanceof NativeArtifact ? ImageManager.getProgramImageDescriptor(((NativeArtifact) firstArtifact).getFileExtension()) : null));
          }
       }
       return contributionItems;

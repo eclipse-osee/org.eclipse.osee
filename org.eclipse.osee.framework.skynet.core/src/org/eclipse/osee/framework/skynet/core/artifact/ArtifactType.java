@@ -10,32 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
-import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
-import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Description of an Artifact subtype. The descriptor can be used to create new artifacts that are of the type of this
@@ -48,50 +35,23 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final long serialVersionUID = 1L;
-   private static final ImageDescriptor favorite = SkynetActivator.getInstance().getImageDescriptor("favorite.gif");
-   private static final ImageDescriptor subscribed = SkynetActivator.getInstance().getImageDescriptor("subscribed.gif");
-   private static final ImageDescriptor outNew = SkynetActivator.getInstance().getImageDescriptor("out_new.gif");
-   private static final ImageDescriptor outChange = SkynetActivator.getInstance().getImageDescriptor("out_change.gif");
-   private static final ImageDescriptor outDeleted = SkynetActivator.getInstance().getImageDescriptor("out_delete.gif");
-   private static final ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
-   private static final ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
-   private static final ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
-   private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
-   private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
-   private static final ImageDescriptor merge = SkynetActivator.getInstance().getImageDescriptor("branch_merge.gif");
-   private static final ImageDescriptor conChangeSmall =
-         SkynetActivator.getInstance().getImageDescriptor("con_change_2.gif");
-   private static final ImageDescriptor conDeletedSmall =
-         SkynetActivator.getInstance().getImageDescriptor("con_delete_2.gif");
-   private static final ImageDescriptor lockedAccess =
-         SkynetActivator.getInstance().getImageDescriptor("green_lock.gif");
-   private static final ImageDescriptor lockedNoAccess =
-         SkynetActivator.getInstance().getImageDescriptor("red_lock.gif");
-   private static final ImageDescriptor nextImageDesc =
-         SkynetActivator.getInstance().getImageDescriptor("yellowN_8_8.gif");
-   public static final ImageDescriptor releasedImageDesc =
-         SkynetActivator.getInstance().getImageDescriptor("orangeR_8_8.gif");
-   private static final String LOCKED_ACCESS = "locked access";
-   private static final String LOCKED_NO_ACCESS = "locked No access";
-   private static final String SUBSCRIBED = "subscribed";
-   private static final String FAVORITE = "favorite";
-   private static final String NEXT = "next";
-   private static final String RELEASED = "released";
-   private static final String WARNING = "warning";
-   private static final String ERROR = "error";
-   private static final String BASE = "base";
    private final int artTypeId;
+   private byte[] imageData;
    private String name;
    private final String namespace;
-   transient private ImageRegistry imageRegistry;
-   transient private ImageDescriptor imageDescriptor;
 
-   ArtifactType(int artTypeId, String namespace, String name, ImageDescriptor imageDescriptor) {
+   ArtifactType(int artTypeId, String namespace, String name, InputStream imageStream) throws OseeDataStoreException {
       this.artTypeId = artTypeId;
       this.name = name;
       this.namespace = namespace == null ? "" : namespace;
-      this.imageDescriptor = imageDescriptor;
-      this.imageRegistry = null;
+
+      if (imageStream != null) {
+         try {
+            this.imageData = Lib.inputStreamToBytes(imageStream);
+         } catch (IOException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
       ArtifactTypeManager.cache(this);
    }
 
@@ -165,116 +125,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return artifact.getArtTypeId() == artTypeId && getFactory() != null;
    }
 
-   public Image getImage() {
-      checkImageRegistry();
-      return imageRegistry.get(BASE);
-   }
-
-   public Image getLockedImage(boolean access) {
-      checkImageRegistry();
-      return imageRegistry.get(BASE + (access ? LOCKED_ACCESS : LOCKED_NO_ACCESS));
-   }
-
-   public Image getImage(ChangeType changeType, ModificationType modType) {
-      if (changeType == null) throw new IllegalArgumentException("changeType can not be null.");
-      if (modType == null) throw new IllegalArgumentException("modType can not be null.");
-      if (changeType == CONFLICTING && modType == NEW) {
-         return imageRegistry.get(BASE + changeType + ModificationType.CHANGE);
-      }
-
-      checkImageRegistry();
-      return imageRegistry.get(BASE + changeType + modType);
-   }
-
-   public Image getImage(ConflictionType conType) {
-      if (conType == null) throw new IllegalArgumentException("conType can not be null.");
-      checkImageRegistry();
-      return imageRegistry.get(BASE + conType);
-
-   }
-
-   public Image getImage(boolean isSubscribed, boolean isFavorite, ArtifactAnnotation.Type notifyType) {
-      if (Artifact.getOverrideImage() != null) return Artifact.getOverrideImage();
-      checkImageRegistry();
-      String hashKey =
-            BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING));
-      Image image = imageRegistry.get(hashKey);
-      if (image == null) {
-
-         ImageDescriptor imageDesc = imageRegistry.getDescriptor(BASE);
-         if (isSubscribed) imageDesc = new OverlayImage(imageDesc.createImage(), subscribed, 8, 6);
-         if (isFavorite) imageDesc = new OverlayImage(imageDesc.createImage(), favorite, 7, 0);
-         if (notifyType == ArtifactAnnotation.Type.Error)
-            imageDesc =
-                  new OverlayImage(imageDesc.createImage(), ArtifactAnnotation.Type.Error.getImageOverlayDescriptor(),
-                        0, 8);
-         else if (notifyType == ArtifactAnnotation.Type.Warning) imageDesc =
-               new OverlayImage(imageDesc.createImage(), ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(),
-                     0, 8);
-         imageRegistry.put(hashKey, imageDesc);
-         image = imageRegistry.get(hashKey);
-      }
-      return image;
-   }
-
-   public Image getImage(boolean next, boolean released) {
-      checkImageRegistry();
-      String hashKey = BASE + (next ? NEXT : "") + (released ? RELEASED : "");
-      Image image = imageRegistry.get(hashKey);
-      if (image == null) {
-         ImageDescriptor imageDesc = imageRegistry.getDescriptor(BASE);
-         if (next) imageDesc = new OverlayImage(imageDesc.createImage(), nextImageDesc, 8, 8);
-         if (released) imageDesc = new OverlayImage(imageDesc.createImage(), releasedImageDesc, 8, 0);
-         imageRegistry.put(hashKey, imageDesc);
-         image = imageRegistry.get(hashKey);
-      }
-      return image;
-   }
-
-   public Image getAnnotationImage(ArtifactAnnotation.Type type) {
-      checkImageRegistry();
-      if (type == ArtifactAnnotation.Type.Error)
-         return imageRegistry.get(BASE + ERROR);
-      else if (type == ArtifactAnnotation.Type.Warning) return imageRegistry.get(BASE + WARNING);
-      return getImage();
-   }
-
-   private synchronized void checkImageRegistry() {
-      if (imageRegistry == null) {
-         imageRegistry = new ImageRegistry(Display.getDefault());
-
-         imageRegistry.put(BASE, imageDescriptor);
-         imageRegistry.put(BASE + LOCKED_NO_ACCESS, new OverlayImage(imageRegistry.get(BASE), lockedNoAccess, 0, 7));
-         imageRegistry.put(BASE + LOCKED_ACCESS, new OverlayImage(imageRegistry.get(BASE), lockedAccess, 0, 7));
-         imageRegistry.put(BASE + INCOMING + DELETED, new OverlayImage(imageRegistry.get(BASE), incDeleted));
-         imageRegistry.put(BASE + INCOMING + CHANGE, new OverlayImage(imageRegistry.get(BASE), incChange));
-         imageRegistry.put(BASE + INCOMING + NEW, new OverlayImage(imageRegistry.get(BASE), incNew));
-         imageRegistry.put(BASE + OUTGOING + DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
-         imageRegistry.put(BASE + OUTGOING + ARTIFACT_DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
-         imageRegistry.put(BASE + OUTGOING + CHANGE, new OverlayImage(imageRegistry.get(BASE), outChange));
-         imageRegistry.put(BASE + OUTGOING + MERGED, new OverlayImage(imageRegistry.get(BASE), merge));
-         imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));
-         imageRegistry.put(BASE + OUTGOING + INTRODUCED, new OverlayImage(imageRegistry.get(BASE), outNew));
-         imageRegistry.put(BASE + CONFLICTING + DELETED, new OverlayImage(imageRegistry.get(BASE), conDeleted));
-         imageRegistry.put(BASE + CONFLICTING + CHANGE, new OverlayImage(imageRegistry.get(BASE), conChange));
-         imageRegistry.put(BASE + CONFLICTING + DELETED + "Small", new OverlayImage(imageRegistry.get(BASE),
-               conDeletedSmall));
-         imageRegistry.put(BASE + CONFLICTING + CHANGE + "Small", new OverlayImage(imageRegistry.get(BASE),
-               conChangeSmall));
-         imageRegistry.put(BASE + WARNING, new OverlayImage(imageRegistry.get(BASE),
-               ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(), 0, 8));
-         imageRegistry.put(BASE + ERROR, new OverlayImage(imageRegistry.get(BASE),
-               ArtifactAnnotation.Type.Error.getImageOverlayDescriptor(), 0, 8));
-      }
-   }
-
-   /**
-    * @return Returns the imageDescriptor.
-    */
-   public ImageDescriptor getImageDescriptor() {
-      return imageDescriptor;
-   }
-
    @Override
    public String toString() {
       return name;
@@ -315,11 +165,10 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
 
    /**
     * @param imageDescriptor the imageDescriptor to set
+    * @throws IOException
     */
-   public void setImageDescriptor(ImageDescriptor imageDescriptor) {
-      this.imageDescriptor = imageDescriptor;
-      // Clear out the image cache so it will be re-created
-      if (imageRegistry != null) imageRegistry = null;
+   public void setImageData(InputStream imageStream) throws IOException {
+      this.imageData = Lib.inputStreamToBytes(imageStream);
    }
 
    /**
@@ -367,5 +216,12 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
          if (other.namespace != null) return false;
       } else if (!namespace.equals(other.namespace)) return false;
       return true;
+   }
+
+   /**
+    * @return the imageData
+    */
+   public byte[] getImageData() {
+      return imageData;
    }
 }

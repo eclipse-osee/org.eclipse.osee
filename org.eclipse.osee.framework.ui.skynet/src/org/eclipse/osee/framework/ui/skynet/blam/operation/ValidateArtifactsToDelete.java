@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -61,8 +61,10 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       try {
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             try {
-               Result result = check.isDeleteable(artifacts);
-               if (result.isFalse()) rd.logError(result.getText());
+               IStatus result = check.isDeleteable(artifacts);
+               if (!result.isOK()) {
+                  rd.logError(result.getMessage());
+               }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                rd.log("Exception occurred...see error log" + ex.getLocalizedMessage());

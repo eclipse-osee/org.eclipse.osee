@@ -22,10 +22,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.importing.DbOseeDataTypeProcessor;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
@@ -83,7 +83,7 @@ public class MasterSkynetTypesImport {
                String file = el.getAttribute("file");
                Bundle bundle = Platform.getBundle(el.getContributor().getName());
                URL url = bundle.getEntry(file);
-               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Importing [%s] from [%s]", file,
+               OseeLog.log(Activator.class, Level.INFO, String.format("Importing [%s] from [%s]", file,
                      url != null ? url.getPath() : "url was null"));
                importer.extractTypesFromSheet(url.openStream());
             }

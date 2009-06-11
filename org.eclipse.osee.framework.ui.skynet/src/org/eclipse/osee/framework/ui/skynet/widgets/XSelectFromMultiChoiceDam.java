@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
@@ -60,7 +61,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
             new CheckedTreeSelectionDialog(Display.getCurrent().getActiveShell(), new LabelProvider(),
                   new ArrayTreeContentProvider());
       dialog.setTitle(getLabel());
-      dialog.setImage(artifact.getImage());
+      dialog.setImage(ImageManager.getImage(artifact));
       dialog.setMessage("Select from the items below");
       return dialog;
    }

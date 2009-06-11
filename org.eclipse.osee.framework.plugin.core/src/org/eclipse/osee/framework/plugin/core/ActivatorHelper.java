@@ -40,10 +40,6 @@ public class ActivatorHelper {
       this.plugin = plugin;
    }
 
-   public Plugin getOseePlugin(String pluginId) {
-      return pluginIdToOseePlugin.get(pluginId);
-   }
-
    /**
     * returns a File to from the default persistent storage area provided for the bundle by the Framework (.ie.)
     * myworkspace/.metadata/.plugins/org.eclipse.pde.core/myPlugin/...

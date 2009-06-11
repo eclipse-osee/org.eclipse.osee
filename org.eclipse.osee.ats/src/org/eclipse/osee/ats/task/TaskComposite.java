@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -48,6 +48,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -264,7 +266,7 @@ public class TaskComposite extends Composite implements IActionable {
       }
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh Tasks");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -297,7 +299,7 @@ public class TaskComposite extends Composite implements IActionable {
 
       if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
          item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(AtsPlugin.getInstance().getImage("task.gif"));
+         item.setImage(ImageManager.getImage(AtsImage.TASK));
          item.setToolTipText("Open New ATS Task Editor");
          item.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -346,12 +348,10 @@ public class TaskComposite extends Composite implements IActionable {
    }
 
    public void updateExtraInfoLine() throws OseeCoreException {
-      if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
-    	  if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
+      if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection()) if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
          extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
                getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null));
-    	  }
-      else
+      } else
          extraInfoLabel.setText("");
       extraInfoLabel.getParent().layout();
    }

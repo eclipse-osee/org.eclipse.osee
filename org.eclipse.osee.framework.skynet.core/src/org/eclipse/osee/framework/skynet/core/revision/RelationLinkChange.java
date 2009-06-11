@@ -12,26 +12,20 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.RelationChangeIcons;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Robert A. Fisher
  */
 public class RelationLinkChange extends RevisionChange implements IRelationLinkChange {
-   private static final SkynetActivator plugin = SkynetActivator.getInstance();
-   private static final String BASE_IMAGE_STRING = "relate";
    private static final long serialVersionUID = 1L;
-   private static boolean imagesInitialized;
    private int relLinkId;
    private String rationale;
    private int order;
    private String relTypeName;
    private String otherArtifactName;
-   private ArtifactType otherArtifactDescriptor;
+   private ArtifactType otherArtifactType;
 
    /**
     * Constructor for deserialization.
@@ -49,16 +43,16 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
     * @param order
     * @param relTypeName
     * @param otherArtifactName
-    * @param otherArtifactDescriptor
+    * @param otherArtifactType
     */
-   public RelationLinkChange(ChangeType changeType, ModificationType modType, int relLinkId, long gammaId, String rationale, int order, String relTypeName, String otherArtifactName, ArtifactType otherArtifactDescriptor) {
+   public RelationLinkChange(ChangeType changeType, ModificationType modType, int relLinkId, long gammaId, String rationale, int order, String relTypeName, String otherArtifactName, ArtifactType otherArtifactType) {
       super(changeType, modType, gammaId);
       this.relLinkId = relLinkId;
       this.rationale = rationale;
       this.order = order;
       this.relTypeName = relTypeName;
       this.otherArtifactName = otherArtifactName;
-      this.otherArtifactDescriptor = otherArtifactDescriptor;
+      this.otherArtifactType = otherArtifactType;
    }
 
    /**
@@ -67,14 +61,14 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
     * @param gammaId
     * @param relTypeName
     * @param otherArtifactName
-    * @param otherArtifactDescriptor
+    * @param otherArtifactType
     */
-   public RelationLinkChange(ChangeType changeType, int relLinkId, long gammaId, String relTypeName, String otherArtifactName, ArtifactType otherArtifactDescriptor) {
+   public RelationLinkChange(ChangeType changeType, int relLinkId, long gammaId, String relTypeName, String otherArtifactName, ArtifactType otherArtifactType) {
       super(changeType, DELETED, gammaId);
       this.relLinkId = relLinkId;
       this.relTypeName = relTypeName;
       this.otherArtifactName = otherArtifactName;
-      this.otherArtifactDescriptor = otherArtifactDescriptor;
+      this.otherArtifactType = otherArtifactType;
    }
 
    /**
@@ -83,14 +77,6 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
    @Override
    public String getChange() {
       return rationale;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getImage()
-    */
-   @Override
-   public Image getImage() {
-      return RelationChangeIcons.getImage(getChangeType(), getModType());
    }
 
    /**
@@ -103,8 +89,8 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getOtherArtifactDescriptor()
     */
-   public ArtifactType getOtherArtifactDescriptor() {
-      return otherArtifactDescriptor;
+   public ArtifactType getOtherArtifactType() {
+      return otherArtifactType;
    }
 
    /* (non-Javadoc)

@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -177,7 +177,7 @@ public class RelationTypeManager {
                validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(
                      chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
             } catch (OseeCoreException exception) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, exception);
+               OseeLog.log(Activator.class, Level.SEVERE, exception);
             }
          }
       } finally {

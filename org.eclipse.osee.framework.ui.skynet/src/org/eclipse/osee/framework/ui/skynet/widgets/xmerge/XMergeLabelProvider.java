@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -138,11 +139,11 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
          try {
             Conflict conflict = (Conflict) element;
             if (dCol.equals(MergeXViewerFactory.Artifact_Name)) {
-               return conflict.getArtifactImage();
+               return ImageManager.getImage(conflict.getArtifact());
             } else if (dCol.equals(MergeXViewerFactory.Type)) {
-               return conflict.getArtifact().getImage();
+               return ImageManager.getImage(conflict.getArtifact());
             } else if (dCol.equals(MergeXViewerFactory.Change_Item)) {
-               return conflict.getImage();
+               return ImageManager.getConflictImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Source)) {
                return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
             } else if (dCol.equals(MergeXViewerFactory.Destination)) {

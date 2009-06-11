@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -128,7 +129,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          name = user.getDescriptiveName();
       } catch (Exception ex) {
          name = "Could not resolve artId: " + userArtifactId;
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return name;
    }
@@ -208,7 +209,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
                if (user.getUserId().equals(ClientSessionManager.getSession().getId())) {
                   throw ex;
                } else {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -250,7 +251,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
 
          // this is here in case a user is created at an unexpected time
          if (!SkynetDbInit.isDbInit()) {
-            OseeLog.log(SkynetActivator.class, Level.INFO, "Created user " + user, new Exception(
+            OseeLog.log(Activator.class, Level.INFO, "Created user " + user, new Exception(
                   "just wanted the stack trace"));
          }
       }

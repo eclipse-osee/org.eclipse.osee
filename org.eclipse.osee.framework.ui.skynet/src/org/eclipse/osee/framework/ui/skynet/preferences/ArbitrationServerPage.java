@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -107,7 +106,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
     */
    public void init(IWorkbench workbench) {
-      setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
+      setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
       setDescription("See default Arbitration Server below.");
    }
 

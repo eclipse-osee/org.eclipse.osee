@@ -86,12 +86,6 @@ public class ResultSetProcessor {
             toReturn = Lib.inputStreamToBytes(inputStream);
          } catch (IOException ex) {
             throw new OseeWrappedException(ex);
-         } finally {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               throw new OseeWrappedException(ex);
-            }
          }
       }
       return toReturn;

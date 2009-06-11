@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -35,7 +35,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    private AttributeFormPart formPart;
    private IToolBarManager toolBarManager;
 
-   public AttributesFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public AttributesFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
 

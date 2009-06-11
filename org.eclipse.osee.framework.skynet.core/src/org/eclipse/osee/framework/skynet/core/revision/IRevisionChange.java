@@ -11,17 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.io.Serializable;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Robert A. Fisher
  */
 public interface IRevisionChange extends Serializable {
-
-   /**
-    * @return Returns the image for this change.
-    */
-   public Image getImage();
 
    /**
     * This value could be -1 if called from ArtifactChange object where there was no gammaId.

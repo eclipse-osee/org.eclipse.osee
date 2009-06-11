@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.database.data.ReferenceClause;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,11 +35,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class DatabaseConfigurationData {
 
    private List<URL> filesToProcess;
-   private OseeConnection connection;
 
-   public DatabaseConfigurationData(OseeConnection connection, List<URL> filesToProcess) {
+   public DatabaseConfigurationData(List<URL> filesToProcess) {
       this.filesToProcess = filesToProcess;
-      this.connection = connection;
    }
 
    public List<URL> getUserSchemaFilesToProcess() {
@@ -51,7 +49,7 @@ public class DatabaseConfigurationData {
             SchemaConfigUtility.getUserDefinedConfig(getUserSchemaFilesToProcess());
       if (!useFileSpecifiedSchemas()) {
          try {
-            DatabaseMetaData meta = connection.getMetaData();
+            DatabaseMetaData meta = ConnectionHandler.getMetaData();
             if (meta != null) {
                String userName = meta.getUserName();
                if (userName != null && !userName.equals("")) {

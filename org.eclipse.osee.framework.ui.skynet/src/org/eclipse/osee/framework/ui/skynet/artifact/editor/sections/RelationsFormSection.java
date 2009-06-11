@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
@@ -31,7 +31,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
    private RelationsComposite relationComposite;
 
-   public RelationsFormSection(NewArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public RelationsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
 

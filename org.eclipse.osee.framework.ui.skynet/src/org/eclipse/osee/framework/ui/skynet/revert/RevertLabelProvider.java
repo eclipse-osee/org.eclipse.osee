@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
@@ -39,11 +40,11 @@ public class RevertLabelProvider extends LabelProvider { //StyledCellLabelProvid
     */
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getImage();
+         return ImageManager.getImage((Artifact) element);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
-         return ((Artifact) ((Match) element).getElement()).getImage();
+         return ImageManager.getImage((Artifact) ((Match) element).getElement());
       }
-      return plugin.getImage("laser_16_16.gif");
+      return super.getImage(element);
    }
 
    /*

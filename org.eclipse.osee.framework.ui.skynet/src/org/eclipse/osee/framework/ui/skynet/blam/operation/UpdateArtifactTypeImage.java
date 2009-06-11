@@ -11,20 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ryan D. Brooks
@@ -46,36 +40,16 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               String filename = variableMap.getString(SELECT_IMAGE);
-               if (filename == null) {
-                  AWorkbench.popup("ERROR", "Must enter full path to image.");
-                  return;
-               }
-               File imageFile = new File(filename);
-               if (!imageFile.exists()) {
-                  AWorkbench.popup("ERROR", "Invalid image filename.");
-                  return;
-               }
-               ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
-               if (!MessageDialog.openConfirm(
-                     Display.getCurrent().getActiveShell(),
-                     "Update Artifact Type Image",
-                     "Set Image for Artifact Type \"" + artifactSubtypeDescriptor.getName() + "\" to \"" + filename + "?")) {
-                  return;
-               }
-
-               InputStreamImageDescriptor imageDescriptor =
-                     new InputStreamImageDescriptor(imageFile.toURL().openStream());
-               ArtifactTypeManager.updateArtifactTypeImage(artifactSubtypeDescriptor, imageDescriptor);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         };
-      });
-
+      String filename = variableMap.getString(SELECT_IMAGE);
+      if (filename == null) {
+         throw new OseeArgumentException("Must enter full path to image.");
+      }
+      File imageFile = new File(filename);
+      if (!imageFile.exists()) {
+         throw new OseeArgumentException("Invalid image filename.");
+      }
+      ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
+      ArtifactTypeManager.updateArtifactTypeImage(artifactSubtypeDescriptor, new FileInputStream(imageFile));
    }
 
    /* (non-Javadoc)

@@ -54,21 +54,11 @@ public class Result {
    }
 
    public void popup() {
-      popup(false);
-   }
-
-   public void popup(final boolean success) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            AWorkbench.popup(
-                  (success ? "Success" : "ERROR"),
-                  text != null && !text.equals("") ? text : success ? "Success" : "Error Encountered.  See Error Log View");
-         };
-      });
+      AWorkbench.popup((isTrue ? "Success" : "ERROR"),
+            text != null && !text.equals("") ? text : isTrue ? "Success" : "Error Encountered.  See Error Log View");
    }
 
    public void setText(String text) {
       this.text = text;
    }
-
 }

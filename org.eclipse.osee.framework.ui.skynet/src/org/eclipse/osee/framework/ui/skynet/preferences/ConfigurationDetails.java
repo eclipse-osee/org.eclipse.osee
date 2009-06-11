@@ -14,8 +14,8 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
@@ -52,7 +52,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
     */
    public void init(IWorkbench workbench) {
-      setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
+      setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
       setDescription("See below for OSEE configuration details.");
    }
 

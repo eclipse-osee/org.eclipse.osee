@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
@@ -41,7 +42,7 @@ public class RevertLabelProvider extends LabelProvider implements IStyledLabelPr
 
       if (element instanceof TransferObject) {
          TransferObject transferObject = (TransferObject) element;
-         Image artImage = transferObject.getArtifact().getImage();
+         Image artImage = ImageManager.getImage(transferObject.getArtifact());
 
          if (transferObject.getStatus().equals(TransferStatus.ERROR)) {
             imageToReturn = disabledMap.get(artImage);

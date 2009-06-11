@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -217,7 +219,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       newDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      newDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("greenPlus.gif"));
+      newDefectItem.setImage(ImageManager.getImage(FrameworkImage.GREEN_PLUS));
       newDefectItem.setToolTipText("New Defect");
       newDefectItem.addSelectionListener(new SelectionAdapter() {
          @Override

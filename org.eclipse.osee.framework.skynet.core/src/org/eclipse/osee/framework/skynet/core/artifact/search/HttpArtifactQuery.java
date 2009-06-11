@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -43,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -174,36 +172,30 @@ final class HttpArtifactQuery {
 
    private ObjectPair<String, ByteArrayOutputStream> executeSearch(boolean withMatches, boolean findAllMatchLocations) throws OseeCoreException {
       ObjectPair<String, ByteArrayOutputStream> toReturn = null;
-      Result result = SkynetActivator.areOSEEServicesAvailable();
-      if (result.isTrue()) {
-         String sessionId = ClientSessionManager.getSessionId();
-         CharBackedInputStream inputStream = null;
-         try {
-            inputStream = getSearchParameters(sessionId, withMatches, findAllMatchLocations);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            AcquireResult httpRequestResult =
-                  HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8",
-                        outputStream);
-            if (httpRequestResult.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
-               toReturn =
-                     new ObjectPair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
-            } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-               throw new OseeCoreException(String.format("Search error due to bad request: url[%s] status code: [%s]",
-                     inputStream.toString(), httpRequestResult.getCode()));
-            }
-         } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
-         } finally {
-            if (inputStream != null) {
-               try {
-                  inputStream.close();
-               } catch (Exception ex) {
-                  throw new OseeWrappedException(ex);
-               }
+      String sessionId = ClientSessionManager.getSessionId();
+      CharBackedInputStream inputStream = null;
+      try {
+         inputStream = getSearchParameters(sessionId, withMatches, findAllMatchLocations);
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult httpRequestResult =
+               HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8",
+                     outputStream);
+         if (httpRequestResult.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
+            toReturn = new ObjectPair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
+         } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
+            throw new OseeCoreException(String.format("Search error due to bad request: url[%s] status code: [%s]",
+                  inputStream.toString(), httpRequestResult.getCode()));
+         }
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (Exception ex) {
+               throw new OseeWrappedException(ex);
             }
          }
-      } else {
-         throw new OseeCoreException(String.format("Unable to perform search: %s", result.getText()));
       }
       return toReturn;
    }

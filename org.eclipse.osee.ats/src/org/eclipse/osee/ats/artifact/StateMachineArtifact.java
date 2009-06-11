@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
@@ -328,20 +328,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return o.getPage();
    }
 
-   @Override
-   public Image getImage() {
-      boolean subscribed = false;
-      boolean favorite = false;
-      try {
-         subscribed = isSubscribed(UserManager.getUser());
-         favorite = isFavorite(UserManager.getUser());
-         return super.getArtifactType().getImage(subscribed, favorite, getMainAnnotationType());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return null;
-   }
-
    public boolean isUnCancellable() {
       try {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
@@ -396,7 +382,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          if (smaMgr.isAssigneeMe())
             return AtsPlugin.getInstance().getImage("red_user_sm.gif");
          else
-            return ArtifactTypeManager.getType("User").getImage();
+            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
       }
       return null;
    }
@@ -765,7 +751,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
-      return isRelationsAndArtifactsDirty(smaEditorRelations);
+      String resultText = isRelationsAndArtifactsDirty(smaEditorRelations);
+      if (resultText == null) {
+         return Result.FalseResult;
+      }
+      return new Result(true, resultText);
    }
 
    public void saveSMA(SkynetTransaction transaction) {
@@ -907,15 +897,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return "";
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperImage()
-    */
-   public Image getHyperImage() {
-      return getImage();
    }
 
    /*

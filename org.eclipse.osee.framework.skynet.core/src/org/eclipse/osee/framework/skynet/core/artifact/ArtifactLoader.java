@@ -34,9 +34,9 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -218,7 +218,7 @@ public final class ArtifactLoader {
                   loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
                         allowDeleted);
          } finally {
-            OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+            OseeLog.log(Activator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
                   new Exception("Artifact Load Time"));
             clearQuery(queryId);
@@ -303,7 +303,7 @@ public final class ArtifactLoader {
       } finally {
          chStmt.close();
       }
-      OseeLog.log(SkynetActivator.class, Level.FINE,
+      OseeLog.log(Activator.class, Level.FINE,
             String.format("Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time),
                   insertParameters.size()), new Exception("Artifact Selection Time"));
    }

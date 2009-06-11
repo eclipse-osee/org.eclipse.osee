@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -33,8 +33,8 @@ import org.osgi.framework.Bundle;
  */
 public class AttributeExtensionManager {
    private static final String CLASS_ID = "class";
-   private static final String ATTRIBUTE_TYPE = SkynetActivator.PLUGIN_ID + ".AttributeType";
-   private static final String ATTRIBUTE_DATA_PROVIDER_TYPE = SkynetActivator.PLUGIN_ID + ".AttributeDataProvider";
+   private static final String ATTRIBUTE_TYPE = Activator.PLUGIN_ID + ".AttributeType";
+   private static final String ATTRIBUTE_DATA_PROVIDER_TYPE = Activator.PLUGIN_ID + ".AttributeDataProvider";
 
    private static final String[] attributeBaseTypes =
          new String[] {"CharacterBackedAttributeType", "BinaryBackedAttributeType"};

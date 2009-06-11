@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -43,7 +43,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  */
 public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
-   private NewArtifactEditor editor;
+   private ArtifactEditor editor;
 
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
@@ -82,8 +82,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    public void setInput(Object input) {
-      if (input instanceof NewArtifactEditor) {
-         this.editor = (NewArtifactEditor) input;
+      if (input instanceof ArtifactEditor) {
+         this.editor = (ArtifactEditor) input;
          if (getTreeViewer() != null) {
             getTreeViewer().setInput(editor != null ? editor : "No Input Available");
          }
@@ -179,8 +179,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       public Object[] getChildren(Object element) {
          List<Object> items = new ArrayList<Object>();
 
-         if (element instanceof NewArtifactEditor) {
-            BaseArtifactEditorInput editorInput = ((NewArtifactEditor) element).getEditorInput();
+         if (element instanceof ArtifactEditor) {
+            BaseArtifactEditorInput editorInput = ((ArtifactEditor) element).getEditorInput();
             items.add(editorInput);
          } else if (element instanceof BaseArtifactEditorInput) {
             try {

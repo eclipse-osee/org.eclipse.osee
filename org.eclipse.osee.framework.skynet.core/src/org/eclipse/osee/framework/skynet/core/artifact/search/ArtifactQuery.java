@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -449,7 +449,7 @@ public class ArtifactQuery {
 
          if (root == null) {
             if (createIfNecessary) {
-               OseeLog.log(SkynetActivator.class, Level.INFO,
+               OseeLog.log(Activator.class, Level.INFO,
                      "Created " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
                root =
                      ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch,

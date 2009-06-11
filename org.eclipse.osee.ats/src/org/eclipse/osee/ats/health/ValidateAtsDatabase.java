@@ -59,6 +59,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -83,7 +85,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    public ValidateAtsDatabase(String name, XNavigateItem parent) {
-      super(parent, name, AtsPlugin.getInstance().getImage("admin.gif"));
+      super(parent, name, ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /*

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -57,7 +59,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return String.valueOf(change.getArtifact().getLastModified());
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
-            
+
             if (change.getArtifact().isAttributeTypeValid("Imported Paragraph Number")) {
                paragraphNum = change.getArtifact().getSoleAttributeValue("Imported Paragraph Number", "");
             }
@@ -95,17 +97,15 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          Change change = (Change) element;
          if (xCol.equals(ChangeXViewerFactory.Name)) {
             try {
-               return change.getItemKindImage();
-            } catch (IllegalArgumentException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            } catch (Exception ex) {
+               return ImageManager.getChangeKindImage(change);
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else if (xCol.equals(ChangeXViewerFactory.Item_Type)) {
-            return change.getItemTypeImage();
+            return ImageManager.getChangeTypeImage(change);
          }
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

@@ -13,18 +13,18 @@ package org.eclipse.osee.framework.skynet.core.validation;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeValidator {
    private static final String EXTENSION_ELEMENT = "OseeValidator";
-   private static final String EXTENSION_ID = SkynetActivator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
+   private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
    private static final String CLASS_NAME_ATTRIBUTE = "classname";
    private final static OseeValidator instance = new OseeValidator();
 
@@ -45,7 +45,7 @@ public class OseeValidator {
          AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
          status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       }
       return status;
    }
@@ -62,7 +62,7 @@ public class OseeValidator {
                }
             }
          } catch (Exception ex) {
-            return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
       }
       return Status.OK_STATUS;
@@ -93,7 +93,7 @@ public class OseeValidator {
             }
          }
       } catch (Exception ex) {
-         return new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
       }
       return Status.OK_STATUS;
    }

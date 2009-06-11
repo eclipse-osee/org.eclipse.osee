@@ -16,10 +16,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -75,7 +75,7 @@ public class RelationImporter implements RowProcessor {
          try {
             rowArtifact = getSoleArtifact(artifacts);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
             return;
          }
 
@@ -99,7 +99,7 @@ public class RelationImporter implements RowProcessor {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
       }
    }
 

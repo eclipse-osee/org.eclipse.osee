@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -60,7 +60,7 @@ public class UpdateBranchJob extends Job {
          }
       } catch (OseeCoreException ex) {
          status =
-               new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format("Error updating branch [%s]",
+               new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Error updating branch [%s]",
                      originalBranch.getBranchShortName()), ex);
       } finally {
          monitor.done();
@@ -128,7 +128,7 @@ public class UpdateBranchJob extends Job {
          monitor.worked(1);
       } catch (OseeCoreException ex) {
          status =
-               new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, String.format(
+               new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format(
                      "Error merging updates between [%s] and [%s]",
                      conflictManager.getFromBranch().getBranchShortName(),
                      conflictManager.getToBranch().getBranchShortName()), ex);

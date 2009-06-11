@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -24,38 +21,11 @@ public class ArtifactAnnotation {
    private String namespace;
    private String content;
    public static enum Type {
-      None(null, null),
-      Info("info2.gif", null),
-      Warning("warn.gif", "alert_8_8.gif"),
-      Error("errorRound.gif", "error.gif"),
-      Hidden(null, null);
-      private String imageName;
-      private String imageOverlayName;
+      None, Info, Warning, Error, Hidden;
       private static Type[] orderedTypes = new Type[] {Error, Warning, Info, Hidden, None};
-
-      private Type(String imageName, String imageOverlayName) {
-         this.imageName = imageName;
-         this.imageOverlayName = imageOverlayName;
-      }
 
       public static Type[] getOrderedTypes() {
          return orderedTypes;
-      }
-
-      /**
-       * @return the largeImage
-       */
-      public Image getImage() {
-         if (imageName == null) return null;
-         return SkynetActivator.getInstance().getImage(imageName);
-      }
-
-      /**
-       * @return the imageOverlayDescriptor
-       */
-      public ImageDescriptor getImageOverlayDescriptor() {
-         if (imageOverlayName == null) return null;
-         return SkynetActivator.getInstance().getImageDescriptor(imageOverlayName);
       }
    };
 

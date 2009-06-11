@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
@@ -73,7 +71,6 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       OseeEventManager.addListener(this);
       OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
 
-      
       if (PlatformUI.isWorkbenchRunning()) {
          IWorkbench workbench = PlatformUI.getWorkbench();
          workbench.addWorkbenchListener(new IWorkbenchListener() {
@@ -140,7 +137,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error processing shutdown", ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing shutdown", ex);
          }
          final boolean isShutdownRequest = isShutdownAllowed;
          Display.getDefault().asyncExec(new Runnable() {

@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -36,7 +37,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
 
    public AtsNotificationNavigateItem(XNavigateItem parent, boolean sync) {
       super(parent, (sync ? "Sync - " : "") + "Process ATS Notifications",
-            AtsPlugin.getInstance().getImage("admin.gif"));
+            ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /* (non-Javadoc)

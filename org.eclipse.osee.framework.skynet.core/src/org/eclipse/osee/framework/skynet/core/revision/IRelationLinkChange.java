@@ -20,7 +20,7 @@ public interface IRelationLinkChange extends IRevisionChange {
    /**
     * @return Returns the otherArtifactDescriptor.
     */
-   public ArtifactType getOtherArtifactDescriptor();
+   public ArtifactType getOtherArtifactType();
 
    /**
     * @return Returns the otherArtifactName.

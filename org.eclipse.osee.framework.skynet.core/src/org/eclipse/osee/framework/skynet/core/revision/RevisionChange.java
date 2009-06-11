@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -40,18 +39,13 @@ public abstract class RevisionChange implements IRevisionChange, IAdaptable {
    public abstract String getChange();
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IRevisionChange#getImage()
-    */
-   public abstract Image getImage();
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.revision.IRevisionChange#getGammaId()
     */
    public long getGammaId() {
       return gammaId;
    }
 
-   public ModificationType getModType() {
+   public ModificationType getModificationType() {
       return modType;
    }
 
@@ -60,12 +54,5 @@ public abstract class RevisionChange implements IRevisionChange, IAdaptable {
     */
    public ChangeType getChangeType() {
       return changeType;
-   }
-
-   /**
-    * @param changeType The changeType to set.
-    */
-   public void setChangeType(ChangeType changeType) {
-      this.changeType = changeType;
    }
 }

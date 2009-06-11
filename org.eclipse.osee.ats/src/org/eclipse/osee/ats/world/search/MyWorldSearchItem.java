@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +40,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    public MyWorldSearchItem(String name, User user) {
-      super(name, user, AtsPlugin.getInstance().getImage("globe.gif"));
+      super(name, user, ImageManager.getImage(AtsImage.GLOBE));
    }
 
    public MyWorldSearchItem(MyWorldSearchItem myWorldSearchItem) {

@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -32,7 +32,7 @@ public class UniversalGroup {
       try {
          artifacts = ArtifactQuery.getArtifactsFromType(ARTIFACT_TYPE_NAME, branch);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          artifacts = new LinkedList<Artifact>();
       }
       return artifacts;
@@ -42,7 +42,7 @@ public class UniversalGroup {
       try {
          return ArtifactQuery.getArtifactsFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return new ArrayList<Artifact>();
    }

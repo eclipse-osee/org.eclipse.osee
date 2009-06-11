@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -126,7 +126,7 @@ public class CommitDbTx extends DbTransaction {
       this.archiveSourceBranch = archiveSourceBranch;
 
       if (DEBUG) {
-         OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Commiting Branch %s into Branch %s",
+         OseeLog.log(Activator.class, Level.INFO, String.format("Commiting Branch %s into Branch %s",
                conflictManager.getFromBranch().getBranchId(), conflictManager.getToBranch().getBranchId()));
       }
    }

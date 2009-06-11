@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
@@ -111,8 +111,8 @@ public class ArtifactFormPage extends FormPage {
     * @see org.eclipse.ui.forms.editor.FormPage#getEditor()
     */
    @Override
-   public NewArtifactEditor getEditor() {
-      return (NewArtifactEditor) super.getEditor();
+   public ArtifactEditor getEditor() {
+      return (ArtifactEditor) super.getEditor();
    }
 
    private void addMessageDecoration(ScrolledForm form) {
@@ -140,7 +140,7 @@ public class ArtifactFormPage extends FormPage {
       if (add) {
          manager.add(new RefreshAction());
          manager.add(new Separator());
-         ((NewArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(manager);
+         ((ArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(manager);
          manager.update(true);
       } else {
          manager.removeAll();

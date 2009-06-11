@@ -60,10 +60,10 @@ public class WordChangesMadeToHandler extends AbstractHandler {
 
    public void execute(ArtifactChange artifactChange) throws Exception {
       Artifact firstArtifact =
-            artifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+            artifactChange.getModificationType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
       Artifact secondArtifact =
-            artifactChange.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+            artifactChange.getModificationType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
 
       RendererManager.diffInJob(firstArtifact, secondArtifact);

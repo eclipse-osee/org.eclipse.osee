@@ -27,7 +27,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -49,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -438,7 +438,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       try {
          Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
          if (branchAssociatedArtifact != null) {
-            openAssociatedArtifactAction.setImageDescriptor(ImageDescriptor.createFromImage(branchAssociatedArtifact.getImage()));
+            openAssociatedArtifactAction.setImageDescriptor(ImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
          }
       } catch (Exception ex) {

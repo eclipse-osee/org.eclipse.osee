@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
 /**
@@ -59,7 +61,7 @@ public class OpenVersionArtifact extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("version.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.VERSION));
       return action;
    }
 

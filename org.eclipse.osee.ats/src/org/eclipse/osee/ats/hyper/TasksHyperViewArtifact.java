@@ -60,14 +60,6 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperImage()
-    */
-   @Override
-   public Image getHyperImage() {
-      return taskArts.iterator().next().getImage();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
     */
    @Override

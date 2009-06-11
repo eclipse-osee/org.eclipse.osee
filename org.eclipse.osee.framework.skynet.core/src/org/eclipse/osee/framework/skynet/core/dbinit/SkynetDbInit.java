@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -51,8 +50,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -63,25 +62,24 @@ public class SkynetDbInit implements IDbInitializationTask {
          "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
    private static boolean isInDbInit;
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       isInDbInit = true;
-      DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
+      DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
-      DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
+      DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(userSpecifiedConfig.keySet());
       schemaExtractor.extractSchemaData();
       Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
-      SupportedDatabase databaseType = SupportedDatabase.getDatabaseType(connection);
       Set<String> schemas = userSpecifiedConfig.keySet();
-      DbInit.dropViews(connection);
-      DbInit.dropIndeces(schemas, userSpecifiedConfig, connection, databaseType, currentDatabaseConfig);
-      DbInit.dropTables(schemas, userSpecifiedConfig, connection, databaseType, currentDatabaseConfig);
-      if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.postgresql)) {
-         DbInit.dropSchema(connection, schemas);
-         DbInit.createSchema(connection, schemas);
+      DbInit.dropViews();
+      DbInit.dropIndeces(schemas, userSpecifiedConfig, currentDatabaseConfig);
+      DbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
+      if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
+         DbInit.dropSchema(schemas);
+         DbInit.createSchema(schemas);
       }
-      DbInit.addTables(schemas, userSpecifiedConfig, connection, databaseType);
-      DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
-      DbInit.addViews(connection, databaseType);
+      DbInit.addTables(schemas, userSpecifiedConfig);
+      DbInit.addIndeces(schemas, userSpecifiedConfig);
+      DbInit.addViews();
       initializeApplicationServer();
       OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
       populateSequenceTable();
@@ -99,7 +97,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          String url =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
          String response = HttpProcessor.post(new URL(url));
-         OseeLog.log(SkynetActivator.class, Level.INFO, response);
+         OseeLog.log(Activator.class, Level.INFO, response);
       } catch (Exception ex1) {
          throw new OseeDataStoreException(ex1);
       }
@@ -157,7 +155,7 @@ public class SkynetDbInit implements IDbInitializationTask {
                      IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
                      isAllowed = rule.isAllowed();
                   } catch (Exception ex) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
 

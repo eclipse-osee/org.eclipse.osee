@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.database.sql.datatype.FoxProDataType;
 import org.eclipse.osee.framework.database.sql.datatype.MySqlDataType;
 import org.eclipse.osee.framework.database.sql.datatype.OracleSqlDataType;
 import org.eclipse.osee.framework.database.sql.datatype.PostgresqlDataType;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 /**
@@ -26,7 +27,11 @@ public class SqlFactory {
       super();
    }
 
-   public static SqlManager getSqlManager(SupportedDatabase db) {
+   public static SqlManager getSqlManager() throws OseeDataStoreException {
+      return getSqlManager(SupportedDatabase.getDatabaseType());
+   }
+
+   private static SqlManager getSqlManager(SupportedDatabase db) {
       SqlManager instance = null;
       switch (db) {
          case oracle:

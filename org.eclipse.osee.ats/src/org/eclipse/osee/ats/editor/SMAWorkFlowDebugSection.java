@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -69,7 +70,7 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
 
          public void linkActivated(HyperlinkEvent e) {
             Result result = smaMgr.getEditor().isDirtyResult();
-            result.popup(true);
+            AWorkbench.popup("Success", Strings.isValid(result.getText()) ? result.getText() : "Success");
          }
 
       });

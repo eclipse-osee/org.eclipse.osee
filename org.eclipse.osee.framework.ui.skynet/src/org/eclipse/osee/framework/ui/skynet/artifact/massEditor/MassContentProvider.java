@@ -15,16 +15,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.SkynetDebug;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class MassContentProvider implements ITreeContentProvider {
-
    protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final MassXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private final SkynetDebug debug = new SkynetDebug(false, "WorldTreeContentProvider");
 
    public MassContentProvider(MassXViewer xViewer) {
       super();
@@ -93,7 +90,6 @@ public class MassContentProvider implements ITreeContentProvider {
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      debug.report("getChildren");
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
@@ -101,18 +97,15 @@ public class MassContentProvider implements ITreeContentProvider {
    }
 
    public Object getParent(Object element) {
-      debug.report("getParent");
       return null;
    }
 
    public boolean hasChildren(Object element) {
-      debug.report("hasChildren");
       if (element instanceof Collection) return true;
       return false;
    }
 
    public Object[] getElements(Object inputElement) {
-      debug.report("getElements");
       if (inputElement instanceof String) return new Object[] {inputElement};
       return getChildren(inputElement);
    }

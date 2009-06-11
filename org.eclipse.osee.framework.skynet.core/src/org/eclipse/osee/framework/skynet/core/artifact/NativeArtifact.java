@@ -14,11 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Artifact type used to indicate that this artifact is to be rendered by a passing its binary data to a native program
@@ -37,19 +33,6 @@ public class NativeArtifact extends Artifact {
     */
    public NativeArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-   }
-
-   @Override
-   public Image getImage() {
-      try {
-         Image image = SkynetActivator.getInstance().getImageForProgram(getFileExtension());
-         if (image != null) {
-            return image;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-      return super.getImage();
    }
 
    public String getFileName() throws OseeCoreException {

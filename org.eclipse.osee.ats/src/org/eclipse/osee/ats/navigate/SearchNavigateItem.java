@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.swt.graphics.Image;
 
@@ -44,7 +45,7 @@ public class SearchNavigateItem extends XNavigateItem {
    public Image getImage() {
       Image image = wsi.getImage();
       if (image != null) return image;
-      return AtsPlugin.getInstance().getImage("globe.gif");
+      return ImageManager.getImage(AtsImage.GLOBE);
    }
 
 }

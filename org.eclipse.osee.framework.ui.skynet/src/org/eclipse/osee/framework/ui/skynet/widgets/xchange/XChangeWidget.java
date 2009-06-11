@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -216,7 +217,7 @@ public class XChangeWidget extends XWidget implements IActionable {
                   ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
          }
          if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
-            associatedArtifactToolItem.setImage(associatedArtifact.getImage());
+            associatedArtifactToolItem.setImage(ImageManager.getImage(associatedArtifact));
             associatedArtifactToolItem.setEnabled(true);
          }
       } catch (OseeCoreException ex) {

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -37,7 +38,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
-            try {
+      try {
          if (!(element instanceof HistoryTransactionItem)) return "";
          HistoryTransactionItem data = (HistoryTransactionItem) element;
 
@@ -55,7 +56,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             return data.getTimeStamp();
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
             return data.getAuthorName();
-         }else if (cCol.equals(HistoryXViewerFactory.comment)) {
+         } else if (cCol.equals(HistoryXViewerFactory.comment)) {
             return data.getComment();
          }
       } catch (Exception ex) {
@@ -97,7 +98,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
-            return change.getChangeImage();
+            return ImageManager.getChangeImage(change.getRevisionChange());
          }
 
       } catch (Exception ex) {

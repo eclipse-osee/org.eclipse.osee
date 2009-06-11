@@ -16,10 +16,8 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Theron Virgin
@@ -120,14 +118,6 @@ public class ArtifactConflict extends Conflict {
       } else {
          return ARTIFACT_DELETED;
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getImage()
-    */
-   @Override
-   public Image getImage() {
-      return SkynetActivator.getInstance().getImage("laser_16_16.gif");
    }
 
    /* (non-Javadoc)

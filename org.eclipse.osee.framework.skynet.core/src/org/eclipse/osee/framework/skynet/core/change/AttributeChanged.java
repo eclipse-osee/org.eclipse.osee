@@ -17,16 +17,16 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -51,8 +51,10 @@ public class AttributeChanged extends Change {
     * @param sourceContent
     * @param attrId
     * @param attrTypeId
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) {
+   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.isValue = isValue;
@@ -104,11 +106,6 @@ public class AttributeChanged extends Change {
          dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
       }
       return dynamicAttributeDescriptor;
-   }
-
-   @Override
-   public Image getItemTypeImage() {
-      return AttributeChangeIcons.getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)
@@ -202,17 +199,9 @@ public class AttributeChanged extends Change {
             return null;
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getObjectImage()
-    */
-   @Override
-   public Image getItemKindImage() throws OseeCoreException {
-      return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 
    /**
@@ -220,5 +209,13 @@ public class AttributeChanged extends Change {
     */
    public ModificationType getArtModType() {
       return artModType;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemTypeId()
+    */
+   @Override
+   public int getItemTypeId() {
+      return attrTypeId;
    }
 }

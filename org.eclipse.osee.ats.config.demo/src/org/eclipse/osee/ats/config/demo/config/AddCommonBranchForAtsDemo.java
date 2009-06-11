@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -28,8 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustom
 public class AddCommonBranchForAtsDemo extends AddCommonBranch {
 
    @Override
-   public void run(OseeConnection connection) throws OseeCoreException {
-      super.run(connection);
+   public void run() throws OseeCoreException {
+      super.run();
 
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
       // Create Default Users

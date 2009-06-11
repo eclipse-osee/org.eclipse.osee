@@ -89,11 +89,11 @@ public class SingleNativeDiffHandler extends CommandHandler {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       try {
          Artifact baseArtifact =
-               (artifactChange.getModType() == NEW || artifactChange.getModType() == ModificationType.INTRODUCED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+               (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                      artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
          artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
          Artifact newerArtifact =
-               artifactChange.getModType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactPersistenceManager.getInstance().getArtifactFromId(
+               artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactPersistenceManager.getInstance().getArtifactFromId(
                      artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId()) : artifactChange.getArtifact());
          artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
          if (artifacts.isEmpty()) {

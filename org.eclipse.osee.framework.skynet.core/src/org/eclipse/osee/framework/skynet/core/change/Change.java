@@ -15,12 +15,14 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +37,7 @@ public abstract class Change implements IAdaptable {
    private ModificationType modType;
    private final ChangeType changeType;
    private Branch branch;
-   protected int artTypeId;
+   private final ArtifactType artifactType;
    private final boolean isHistorical;
 
    /**
@@ -46,8 +48,10 @@ public abstract class Change implements IAdaptable {
     * @param fromTransactionId
     * @param modType
     * @param changeType
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
+   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -56,7 +60,7 @@ public abstract class Change implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
       this.changeType = changeType;
-      this.artTypeId = artTypeId;
+      this.artifactType = ArtifactTypeManager.getType(artTypeId);
       this.isHistorical = isHistorical;
    }
 
@@ -167,10 +171,18 @@ public abstract class Change implements IAdaptable {
    }
 
    /**
-    * @return the artTypeId
+    * For an artifact change this is the artifact type id. For an attribute this is the attribute type id. For a
+    * relation this is the relation type id.
+    * 
+    * @return typeId
     */
-   public int getArtTypeId() {
-      return artTypeId;
+   public abstract int getItemTypeId();
+
+   /**
+    * @return the artifactType
+    */
+   public ArtifactType getArtifactType() {
+      return artifactType;
    }
 
    /**
@@ -186,10 +198,6 @@ public abstract class Change implements IAdaptable {
    public void setFromTransactionId(TransactionId fromTransactionId) {
       this.fromTransactionId = fromTransactionId;
    }
-
-   public abstract Image getItemKindImage() throws OseeCoreException;
-
-   public abstract Image getItemTypeImage();
 
    public abstract String getIsValue();
 

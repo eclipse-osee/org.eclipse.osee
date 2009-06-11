@@ -58,6 +58,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -148,7 +150,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          setPartName(smaMgr.getSma().getEditorTitle());
          setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
-         setTitleImage(smaMgr.getSma().getImage());
+         setTitleImage(ImageManager.getImage(smaMgr.getSma()));
 
          // Create WorkFlow tab
          try {
@@ -300,8 +302,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
 
-         result = smaMgr.getSma().reportIsDirty(true);
-         return result;
+         return new Result(true, smaMgr.getSma().reportIsDirty(true));
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -411,7 +412,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          if (AtsPlugin.isAtsAdmin()) {
             final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
-            showAllRelationsItem.setImage(AtsPlugin.getInstance().getImage("relate.gif"));
+
+            showAllRelationsItem.setImage(ImageManager.getImage(FrameworkImage.RELATION));
             showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
             showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
                @Override
@@ -428,7 +430,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
 
          ToolItem item = new ToolItem(toolBar, SWT.CHECK);
-         item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
+         item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
          item.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -531,7 +533,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
       smaMgr.getEditor().onDirtied();
       setPartName(smaMgr.getSma().getEditorTitle());
-      setTitleImage(smaMgr.getSma().getImage());
+      setTitleImage(ImageManager.getImage(smaMgr.getSma()));
    }
 
    public static void editArtifact(Artifact artifact) {

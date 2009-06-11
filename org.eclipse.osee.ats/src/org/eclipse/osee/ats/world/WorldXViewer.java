@@ -338,7 +338,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
                Result result = teamArt.convertActionableItems();
-               if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
+               if (result.isFalse() && !result.getText().equals("")) result.popup();
                refresh(getSelectedArtifactItems().iterator().next());
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

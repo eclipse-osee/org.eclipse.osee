@@ -83,7 +83,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
             boolean readPermission = AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
             boolean wordArtifactSelected = artifact.isOfType(WordArtifact.ARTIFACT_NAME);
             boolean modifiedWordArtifactSelected =
-                  wordArtifactSelected && artifactChange.getModType() == ModificationType.CHANGE;
+                  wordArtifactSelected && artifactChange.getModificationType() == ModificationType.CHANGE;
             boolean conflictedWordArtifactSelected =
                   modifiedWordArtifactSelected && artifactChange.getChangeType() == ChangeType.CONFLICTING;
             isEnabled = readPermission && conflictedWordArtifactSelected;

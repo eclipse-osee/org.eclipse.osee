@@ -24,10 +24,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -83,7 +83,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          }
 
          if (guida == null || guidb == null) {
-            OseeLog.log(SkynetActivator.class, Level.WARNING,
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                   "we failed to add a relation because at least on of its guids are null");
          }
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),

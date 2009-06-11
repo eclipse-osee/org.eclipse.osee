@@ -53,97 +53,13 @@
                ArtifactTypeName="Folder"
                ImagePath="images/folder.gif">
          </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Component"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Document"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Support Document"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Root Artifact"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Stylesheet"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Url"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Url"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Group"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
+          <ArtifactImage
                ArtifactTypeName="Global Preferences"
                ImagePath="images/gear.gif">
          </ArtifactImage>
          <ArtifactImage
-               ArtifactTypeName="Visio"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="General Document"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="General Data"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="XViewer Global Customization"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Blam Workflow"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="PowerPoint"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Workspace File"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Word Renderer"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
                ArtifactTypeName="User Group"
                ImagePath="images/users2.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Code Unit"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Spreadsheet"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Component"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Renderer Template"
-               ImagePath="images/laser_16_16.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Test Information Sheet"
-               ImagePath="images/laser_16_16.gif">
          </ArtifactImage>
          <ArtifactImage
                ArtifactTypeName="Work Flow Definition"
@@ -160,10 +76,6 @@
          <ArtifactImage
                ArtifactTypeName="Work Widget Definition"
                ImagePath="images/widget.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Artifact"
-               ImagePath="images/laser_16_16.gif">
          </ArtifactImage>
       </extension>
       <extension

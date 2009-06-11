@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -60,6 +61,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
@@ -141,9 +144,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                false, false)));
 
          XNavigateItem releaseItems =
-               new XNavigateItem(null, "Versions", AtsPlugin.getInstance().getImage("version.gif"));
+               new XNavigateItem(null, "Versions", ImageManager.getImage(FrameworkImage.VERSION));
          new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
-               AtsPlugin.getInstance().getImage("version.gif"));
+               ImageManager.getImage(FrameworkImage.VERSION));
          new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
                LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
@@ -172,7 +175,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);
 
-         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsPlugin.getInstance().getImage("globe.gif"));
+         XNavigateItem stateItems = new XNavigateItem(null, "States", ImageManager.getImage(AtsImage.GLOBE));
          new SearchNavigateItem(stateItems, new StateWorldSearchItem());
          new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
          items.add(stateItems);
@@ -184,16 +187,16 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem("Search ATS Titles", "Name", null)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
-         XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsPlugin.getInstance().getImage("report.gif"));
+         XNavigateItem reportItems = new XNavigateItem(null, "Reports", ImageManager.getImage(AtsImage.REPORT));
          new FirstTimeQualityMetricReportItem(reportItems);
          new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World",
-               AtsPlugin.getInstance().getImage("report.gif"));
+               ImageManager.getImage(AtsImage.REPORT));
          new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
          new XResultDataExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
-         XNavigateItem emailItems = new XNavigateItem(null, "Email", AtsPlugin.getInstance().getImage("email.gif"));
+         XNavigateItem emailItems = new XNavigateItem(null, "Email", ImageManager.getImage(FrameworkImage.EMAIL));
          new EmailTeamsItem(emailItems, null, MemberType.Both);
          new EmailTeamsItem(emailItems, null, MemberType.Leads);
          new EmailTeamsItem(emailItems, null, MemberType.Members);
@@ -209,7 +212,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          BlamOperations.addBlamOperationsToNavigator(items);
 
          if (AtsPlugin.isAtsAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin", AtsPlugin.getInstance().getImage("admin.gif"));
+            XNavigateItem adminItems = new XNavigateItem(null, "Admin", ImageManager.getImage(FrameworkImage.ADMIN));
 
             new AtsNotificationNavigateItem(adminItems);
             new AtsNotificationNavigateItem(adminItems, true);

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 
@@ -176,7 +177,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (element instanceof Branch) {
             try {
                if (((Branch) element).getAssociatedArtifact() != null) {
-                  return ((Branch) element).getAssociatedArtifact().getImage();
+                  return ImageManager.getImage(((Branch) element).getAssociatedArtifact());
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -184,11 +185,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          } else if (element instanceof TransactionId) {
             try {
                if (((TransactionId) element).getCommitArtId() == 0) return null;
-               Artifact art =
+               Artifact artifact =
                      ArtifactQuery.getArtifactFromId(((TransactionId) element).getCommitArtId(),
                            BranchManager.getCommonBranch());
-               if (art != null) {
-                  return art.getImage();
+               if (artifact != null) {
+                  return ImageManager.getImage(artifact);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

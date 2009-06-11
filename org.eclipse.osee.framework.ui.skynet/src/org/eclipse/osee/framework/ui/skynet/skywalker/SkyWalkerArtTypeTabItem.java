@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -69,7 +70,7 @@ public class SkyWalkerArtTypeTabItem {
 
          public Image getImage(Object obj) {
             if (obj instanceof ArtifactType) {
-               return ((ArtifactType) obj).getImage();
+               return ImageManager.getImage((ArtifactType) obj);
             }
             return null;
          }

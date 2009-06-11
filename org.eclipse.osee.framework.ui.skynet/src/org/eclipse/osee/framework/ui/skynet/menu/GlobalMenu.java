@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -178,7 +177,7 @@ public class GlobalMenu {
                      for (GlobalMenuListener listener : listeners) {
                         Result result = listener.actioning(GlobalMenuItem.PurgeArtifacts, artifactsToBePurged);
                         if (result.isFalse()) {
-                           return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, result.getText(), null);
+                           return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, result.getText(), null);
                         }
                      }
                   } catch (Exception ex) {
@@ -202,7 +201,7 @@ public class GlobalMenu {
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                     toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+                     toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
                   } finally {
                      monitor.done();
                   }

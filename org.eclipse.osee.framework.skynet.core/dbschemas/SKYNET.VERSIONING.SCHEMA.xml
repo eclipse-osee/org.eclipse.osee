@@ -70,7 +70,7 @@
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
-	    <Column id="IMAGE" defaultValue="not null" type="BLOB" />
+	    <Column id="IMAGE" type="BLOB" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
 		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>

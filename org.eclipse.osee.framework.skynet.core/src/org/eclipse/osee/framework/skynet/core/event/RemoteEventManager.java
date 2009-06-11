@@ -58,7 +58,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLi
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -68,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -109,7 +109,7 @@ public class RemoteEventManager {
             clientEventListenerRemoteReference =
                   (ISkynetEventListener) OseeJini.getRemoteReference(clientEventListener);
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             clientEventListenerRemoteReference = null;
          }
 
@@ -163,7 +163,7 @@ public class RemoteEventManager {
        * to be modified so this client doesn't think the events came from itself.
        */
       if (InternalEventManager.enableRemoteEventLoopback) {
-         OseeLog.log(SkynetActivator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
+         OseeLog.log(Activator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             /* (non-Javadoc)
              * @see java.lang.Thread#run()
@@ -177,7 +177,7 @@ public class RemoteEventManager {
                   }
                   instance.clientEventListener.onEvent(events);
                } catch (RemoteException ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
 
                }
             }
@@ -209,7 +209,7 @@ public class RemoteEventManager {
          try {
             getReference().kick(events, except);
          } catch (ExportException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } catch (RemoteException ex) {
             disconnectService(ex);
          }
@@ -233,19 +233,19 @@ public class RemoteEventManager {
             try {
                currentEventService.deregister(getClientEventListenerRemoteReference());
             } catch (RemoteException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          currentEventService = service;
       }
 
       private void disconnectService(Exception e) {
-         OseeLog.log(SkynetActivator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
+         OseeLog.log(Activator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
          setEventService(null);
          try {
             OseeEventManager.kickRemoteEventManagerEvent(instance, RemoteEventServiceEventType.DisConnected);
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -255,14 +255,14 @@ public class RemoteEventManager {
             if (clientListener != null) {
                service.register(clientListener);
                setEventService(service);
-               OseeLog.log(SkynetActivator.class, Level.INFO,
+               OseeLog.log(Activator.class, Level.INFO,
                      "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
                OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.Connected);
             } else {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, "Client listener reference was null");
+               OseeLog.log(Activator.class, Level.SEVERE, "Client listener reference was null");
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -341,7 +341,7 @@ public class RemoteEventManager {
                   try {
                      if (sender.isLocal()) continue;
                   } catch (OseeAuthenticationRequiredException ex1) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex1);
                   }
 
                   if (event instanceof NetworkAccessControlArtifactsEvent) {
@@ -356,7 +356,7 @@ public class RemoteEventManager {
                         InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType,
                               loadedArtifacts);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkRenameBranchEvent) {
                      int branchId = ((NetworkRenameBranchEvent) event).getBranchId();
@@ -366,17 +366,17 @@ public class RemoteEventManager {
                         try {
                            InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
                         } catch (Exception ex) {
-                           OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkNewBranchEvent) {
                      int branchId = ((NetworkNewBranchEvent) event).getBranchId();
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
@@ -384,14 +384,14 @@ public class RemoteEventManager {
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkCommitBranchEvent) {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkBroadcastEvent) {
                      try {
@@ -399,7 +399,7 @@ public class RemoteEventManager {
                               BroadcastEventType.valueOf(((NetworkBroadcastEvent) event).getBroadcastEventTypeName());
                         if (broadcastEventType == null) {
                            OseeLog.log(
-                                 SkynetActivator.class,
+                                 Activator.class,
                                  Level.SEVERE,
                                  "Unknown broadcast event type \"" + ((NetworkBroadcastEvent) event).getBroadcastEventTypeName() + "\"",
                                  new IllegalArgumentException());
@@ -409,7 +409,7 @@ public class RemoteEventManager {
                                  ((NetworkBroadcastEvent) event).getMessage());
                         }
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof ISkynetArtifactEvent) {
                      updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
@@ -426,7 +426,7 @@ public class RemoteEventManager {
                         InternalEventManager.kickArtifactsChangeTypeEvent(sender,
                               ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkArtifactPurgeEvent) {
                      try {
@@ -436,14 +436,14 @@ public class RemoteEventManager {
                                     ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkTransactionDeletedEvent) {
                      try {
                         InternalEventManager.kickTransactionsDeletedEvent(sender,
                               ((NetworkTransactionDeletedEvent) event).getTransactionIds());
                      } catch (Exception ex) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   }
                }
@@ -495,7 +495,7 @@ public class RemoteEventManager {
                            if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
                               if (attribute.isDirty()) {
                                  dirtyAttributeName.add(attribute.getNameValueDescription());
-                                 OseeLog.log(SkynetActivator.class, Level.INFO, String.format(
+                                 OseeLog.log(Activator.class, Level.INFO, String.format(
                                        "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
                                        attribute.getAttrId(), attribute.toString()));
                               }
@@ -544,7 +544,7 @@ public class RemoteEventManager {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
@@ -588,12 +588,12 @@ public class RemoteEventManager {
             }
             if (aArtifactLoaded || bArtifactLoaded) {
                //            if (aArtifactLoaded) {
-               //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", aArtifact.toString(),
+               //               OseeLog.log(Activator.class, Level.INFO, String.format("%s - %s - %d", aArtifact.toString(),
                //                     aArtifact.getArtifactTypeName(), aArtifact.getArtId()));
                //               aArtifact.reloadArtifact();
                //            }
                //            if (bArtifactLoaded) {
-               //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", bArtifact.toString(),
+               //               OseeLog.log(Activator.class, Level.INFO, String.format("%s - %s - %d", bArtifact.toString(),
                //                     bArtifact.getArtifactTypeName(), bArtifact.getArtId()));
                //               bArtifact.reloadArtifact();
                //            }
@@ -630,7 +630,7 @@ public class RemoteEventManager {
                         relationModType = RelationModType.RationaleMod;
                      }
                      if (relationModType == null) {
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE,
+                        OseeLog.log(Activator.class, Level.SEVERE,
                               "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
                      } else {
                         relation.setNotDirty();
@@ -678,7 +678,7 @@ public class RemoteEventManager {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 

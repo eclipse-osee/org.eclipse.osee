@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Ryan D. Brooks
@@ -48,8 +48,10 @@ public abstract class Attribute<T> {
       if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            Result result = check.isRenamable(Arrays.asList(artifact));
-            if (result.isFalse()) throw new OseeCoreException(result.getText());
+            IStatus result = check.isRenamable(Arrays.asList(artifact));
+            if (!result.isOK()) {
+               throw new OseeCoreException(result.getMessage());
+            }
          }
       }
 
@@ -62,9 +64,9 @@ public abstract class Attribute<T> {
       if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            Result result = check.isRenamable(Arrays.asList(artifact));
-            if (result.isFalse()) {
-               throw new OseeCoreException(result.getText());
+            IStatus result = check.isRenamable(Arrays.asList(artifact));
+            if (!result.isOK()) {
+               throw new OseeCoreException(result.getMessage());
             }
          }
       }

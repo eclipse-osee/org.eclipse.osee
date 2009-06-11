@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactEditorInput extends BaseArtifactEditorInput {
 
-   /**
-    * @param artifact
-    */
    public ArtifactEditorInput(Artifact artifact) {
       super(artifact);
    }

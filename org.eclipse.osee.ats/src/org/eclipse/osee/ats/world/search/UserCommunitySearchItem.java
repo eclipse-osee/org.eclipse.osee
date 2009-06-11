@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +32,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    private final String userCommName;
 
    public UserCommunitySearchItem(String displayName, String userCommName) {
-      super(displayName, AtsPlugin.getInstance().getImage("globe.gif"));
+      super(displayName, ImageManager.getImage(AtsImage.GLOBE));
       this.userCommName = userCommName;
    }
 
@@ -39,7 +41,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    }
 
    public UserCommunitySearchItem(UserCommunitySearchItem userCommunitySearchItem) {
-      super(userCommunitySearchItem, AtsPlugin.getInstance().getImage("globe.gif"));
+      super(userCommunitySearchItem, ImageManager.getImage(AtsImage.GLOBE));
       this.userComm = userCommunitySearchItem.userComm;
       this.userCommName = userCommunitySearchItem.userCommName;
    }

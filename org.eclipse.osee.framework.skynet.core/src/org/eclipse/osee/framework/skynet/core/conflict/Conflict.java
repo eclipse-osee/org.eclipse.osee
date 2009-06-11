@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -176,10 +175,6 @@ public abstract class Conflict implements IAdaptable {
       return commitTransactionId;
    }
 
-   public Image getArtifactImage() throws OseeCoreException {
-      return getArtifact().getArtifactType().getImage();
-   }
-
    public boolean okToOverwriteMerge() throws OseeCoreException {
       if (status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED)) {
          return false;
@@ -310,8 +305,6 @@ public abstract class Conflict implements IAdaptable {
 
    public void computeEqualsValues() throws OseeCoreException {
    }
-
-   public abstract Image getImage();
 
    public abstract String getSourceDisplayData() throws OseeCoreException;
 

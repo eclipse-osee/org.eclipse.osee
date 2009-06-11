@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -48,7 +48,7 @@ class DeleteBranchJob extends Job {
          BranchManager.archive(branch);
          BranchManager.handleBranchDeletion(branch.getBranchId());
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, SkynetActivator.PLUGIN_ID, "Error - " + getName(), ex);
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error - " + getName(), ex);
       } finally {
          monitor.done();
       }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.File;
 import java.io.InputStream;
@@ -20,9 +20,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * This class provides a front end to writing files to a common osee.data directory in the workspace. This dir is
@@ -33,7 +34,8 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
  * @author Donald G. Dunne
  */
 public class OseeData {
-   private static final IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+   private static final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+   private static final IPath workspacePath = workspaceRoot.getLocation();
    private static String oseeDataPathName = ".osee.data";
    private static final IPath oseeDataPath = workspacePath.append(oseeDataPathName);
    private static final File oseeDir = oseeDataPath.toFile();
@@ -42,7 +44,7 @@ public class OseeData {
    static {
       if (!oseeDir.exists()) {
          if (!oseeDir.mkdir()) {
-            OseeLog.log(OseeUiActivator.class, Level.WARNING, "Can't create " + oseeDataPathName + " dir.");
+            OseeLog.log(Activator.class, Level.SEVERE, "Can't create " + oseeDataPathName + " dir.");
          }
       }
 
@@ -73,9 +75,12 @@ public class OseeData {
       return iFile;
    }
 
+   public static File getWorkspaceFile(String path) {
+      return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
+   }
+
    private static boolean createProject() {
-      IWorkspaceRoot root = OseeUiActivator.getWorkspaceRoot();
-      project = root.getProject(oseeDataPathName);
+      project = workspaceRoot.getProject(oseeDataPathName);
       if (!project.exists()) {
          try {
             project.create(null);

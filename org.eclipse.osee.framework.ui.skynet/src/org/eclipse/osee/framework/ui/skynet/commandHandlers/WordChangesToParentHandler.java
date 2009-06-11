@@ -53,7 +53,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          try {
             Artifact firstArtifact =
-                  selectedArtifactChange.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                  selectedArtifactChange.getModificationType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(),
                         selectedArtifactChange.getBaselineTransactionId());
 
@@ -61,7 +61,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();
 
             secondArtifact =
-                  selectedArtifactChange.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
+                  selectedArtifactChange.getModificationType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(), parentBranch);
 
             RendererManager.diffInJob(firstArtifact, secondArtifact);
@@ -94,7 +94,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             }
             ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
-            if (mySelectedArtifactChange.getModType() == NEW || mySelectedArtifactChange.getModType() == DELETED) {
+            if (mySelectedArtifactChange.getModificationType() == NEW || mySelectedArtifactChange.getModificationType() == DELETED) {
                return (false);
             }
 
@@ -105,7 +105,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
 
             boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
             boolean modifiedWordArtifactSelected =
-                  wordArtifactSelected && mySelectedArtifactChange.getModType() == CHANGE;
+                  wordArtifactSelected && mySelectedArtifactChange.getModificationType() == CHANGE;
             isEnabled = validDiffParent && modifiedWordArtifactSelected && readPermission;
          }
       } catch (Exception ex) {

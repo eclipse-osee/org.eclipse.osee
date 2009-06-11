@@ -52,9 +52,13 @@ public enum SupportedDatabase {
       }
    }
 
+   public static boolean isDatabaseType(SupportedDatabase dbType) throws OseeDataStoreException {
+      return getDatabaseType() == dbType;
+   }
+
    public static boolean areHintsSupported() throws OseeDataStoreException {
       try {
-         if (oracle == SupportedDatabase.getDatabaseType()) {
+         if (SupportedDatabase.isDatabaseType(oracle)) {
             return ConnectionHandler.getMetaData().getDatabaseMajorVersion() > 10;
          }
       } catch (SQLException ex) {
@@ -64,6 +68,6 @@ public enum SupportedDatabase {
    }
 
    public static String getComplementSql() throws OseeDataStoreException {
-      return getDatabaseType() == oracle ? "MINUS" : "EXCEPT";
+      return isDatabaseType(oracle) ? "MINUS" : "EXCEPT";
    }
 }

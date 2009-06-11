@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.database.sql.SqlManager;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,7 +42,6 @@ import org.w3c.dom.NodeList;
  * @author Roberto E. Escobar
  */
 public class DatabaseDataImporter {
-   private OseeConnection connection;
    private File directory;
    private SqlManager sqlManager;
    private List<String> tableOrder;
@@ -66,8 +64,7 @@ public class DatabaseDataImporter {
       }
    }
 
-   public DatabaseDataImporter(OseeConnection connection, File directory, SqlManager sqlManager) {
-      this.connection = connection;
+   public DatabaseDataImporter(File directory, SqlManager sqlManager) {
       this.directory = directory;
       this.sqlManager = sqlManager;
       this.tableFilter = new TreeSet<String>();
@@ -160,7 +157,7 @@ public class DatabaseDataImporter {
             List<List<ColumnDbData>> rows = tableData.getRows();
             if (!rows.isEmpty()) {
                for (List<ColumnDbData> rowData : rows) {
-                  sqlManager.insertData(connection, rowData, tableData);
+                  sqlManager.insertData(rowData, tableData);
                }
             }
          }

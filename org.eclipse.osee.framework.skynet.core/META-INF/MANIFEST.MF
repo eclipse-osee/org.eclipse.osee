@@ -4,7 +4,7 @@ Bundle-Name: Skynet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Eclipse-ExtensibleAPI: true
-Bundle-Activator: org.eclipse.osee.framework.skynet.core.SkynetActivator
+Bundle-Activator: org.eclipse.osee.framework.skynet.core.internal.SkynetActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.resources,
@@ -13,9 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin,
- org.eclipse.ui,
- org.eclipse.compare;bundle-version="3.4.1"
+ org.eclipse.compare
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
@@ -50,7 +48,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.plugin.event
 Bundle-Vendor: Eclipse.org
 DynamicImport-Package: *
-Import-Package: org.eclipse.osee.framework.core.client,
+Import-Package: org.eclipse.debug.core,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

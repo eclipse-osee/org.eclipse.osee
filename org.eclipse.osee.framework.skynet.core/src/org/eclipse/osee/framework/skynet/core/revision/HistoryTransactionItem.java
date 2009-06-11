@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
  */
-public class HistoryTransactionItem implements IAdaptable{
+public class HistoryTransactionItem implements IAdaptable {
    /**
     * @return the transactionData
     */
@@ -27,6 +25,13 @@ public class HistoryTransactionItem implements IAdaptable{
 
    private TransactionData transactionData;
    private RevisionChange revisionChange;
+
+   /**
+    * @return the revisionChange
+    */
+   public RevisionChange getRevisionChange() {
+      return revisionChange;
+   }
 
    public HistoryTransactionItem(TransactionData transactionData, RevisionChange revisionChange) {
       super();
@@ -48,7 +53,7 @@ public class HistoryTransactionItem implements IAdaptable{
          returnValue = ((IAttributeChange) revisionChange).getName();
       } else if (revisionChange instanceof RelationLinkChange) {
          returnValue = ((RelationLinkChange) revisionChange).getRelTypeName();
-      }else if (revisionChange instanceof ArtifactChange) {
+      } else if (revisionChange instanceof ArtifactChange) {
          returnValue = ((ArtifactChange) revisionChange).getChange();
       }
 
@@ -85,23 +90,6 @@ public class HistoryTransactionItem implements IAdaptable{
 
    public String getComment() {
       return transactionData.getComment();
-   }
-
-   public Image getChangeImage() {
-      return revisionChange.getImage();
-   }
-
-   public Image getIsImage() {
-      Image image = null;
-
-      if (revisionChange instanceof RelationLinkChange) {
-         ArtifactType type = ((RelationLinkChange) revisionChange).getOtherArtifactDescriptor();
-
-         if (type != null) {
-            image = type.getImage();
-         }
-      }
-      return image;
    }
 
    /* (non-Javadoc)

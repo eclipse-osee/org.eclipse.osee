@@ -150,11 +150,10 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             resultSet = dbMetaData.getColumns(null, null, tableName, null);
          }
          if (resultSet != null) {
-            SupportedDatabase dbType = SupportedDatabase.getDatabaseType();
             while (resultSet.next()) {
                String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
                int dataType = resultSet.getInt("DATA_TYPE");
-               if (dbType == SupportedDatabase.foxpro) {
+               if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
                   if (dataType == Types.CHAR) {
                      dataType = Types.VARCHAR;
                   }

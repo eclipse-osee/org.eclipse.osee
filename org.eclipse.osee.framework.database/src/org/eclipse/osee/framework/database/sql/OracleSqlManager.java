@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +35,7 @@ public class OracleSqlManager extends SqlManager {
       super(sqlDataType);
    }
 
-   protected String handleColumnCreationSection(OseeConnection connection, Map<String, ColumnMetadata> columns) {
+   protected String handleColumnCreationSection(Map<String, ColumnMetadata> columns) {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();
       for (String key : keys) {
@@ -47,11 +46,11 @@ public class OracleSqlManager extends SqlManager {
       return toExecute;
    }
 
-   public void createTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void createTable(TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " ( \n");
-      toExecute.append(handleColumnCreationSection(connection, tableDef.getColumns()));
+      toExecute.append(handleColumnCreationSection(tableDef.getColumns()));
       toExecute.append(handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName()));
       toExecute.append(handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
             tableDef.getFullyQualifiedTableName()));
@@ -61,7 +60,7 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append("\n");
       OseeLog.log(DatabaseActivator.class, Level.INFO,
             "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 
    /* (non-Javadoc)
@@ -76,12 +75,12 @@ public class OracleSqlManager extends SqlManager {
    }
 
    @Override
-   public void dropTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " cascade constraints purge");
       OseeLog.log(DatabaseActivator.class, Level.INFO,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 }

@@ -13,12 +13,16 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -64,7 +68,6 @@ public class RelationExplorerWindow {
    private ArtifactType descriptor = null;
 
    private final StructuredViewer viewer;
-   private OnCloseListener onCloseListener;
 
    public static final int ADD_NUM = 0;
    public static final int ARTIFACT_NAME_NUM = 1;
@@ -111,20 +114,18 @@ public class RelationExplorerWindow {
       needWindow = true;
    }
 
-   public void createArtifactInformationBox(OnCloseListener onCloseListener) {
-      this.onCloseListener = onCloseListener;
-
+   public void createArtifactInformationBox() throws OseeTypeDoesNotExist, OseeDataStoreException {
       drawWindow();
    }
 
-   private void drawWindow() {
+   private void drawWindow() throws OseeTypeDoesNotExist, OseeDataStoreException {
       shell = new Shell(SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE | SWT.MIN | SWT.MAX | SWT.RESIZE);
 
       // Setup Title
       shell.setText("Artifact Information");
 
       // Setup Icon
-      Image image = SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif");
+      Image image = ImageManager.getImage(ArtifactTypeManager.getType("Artifact"));
       shell.setImage(image);
 
       // Setup Form Layout
@@ -315,19 +316,11 @@ public class RelationExplorerWindow {
       shell.dispose();
       viewer.refresh();
 
-      handleListener();
-
    }
 
    private void cancelSelected() {
       cancelled = true;
       shell.dispose();
-
-      handleListener();
-   }
-
-   private void handleListener() {
-      if (onCloseListener != null) onCloseListener.onClose(cancelled);
    }
 
    /**

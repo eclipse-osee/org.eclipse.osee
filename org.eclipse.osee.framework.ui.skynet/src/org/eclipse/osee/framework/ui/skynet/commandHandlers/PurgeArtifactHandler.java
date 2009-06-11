@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,7 +71,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                  toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+                  toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
                } finally {
                   monitor.done();
                }
@@ -98,8 +97,8 @@ public class PurgeArtifactHandler extends CommandHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
          isEnabled =
-               AccessControlManager.isOseeAdmin() && AccessControlManager.getInstance().checkObjectListPermission(artifacts,
-                     PermissionEnum.WRITE);
+               AccessControlManager.isOseeAdmin() && AccessControlManager.getInstance().checkObjectListPermission(
+                     artifacts, PermissionEnum.WRITE);
       }
       return isEnabled;
    }

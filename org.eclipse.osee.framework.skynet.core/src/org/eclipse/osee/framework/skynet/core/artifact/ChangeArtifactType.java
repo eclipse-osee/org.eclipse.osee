@@ -13,18 +13,21 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -34,6 +37,7 @@ import org.eclipse.swt.widgets.Display;
 public class ChangeArtifactType {
    private static List<Attribute<?>> attributesToPurge;
    private static List<RelationLink> relationsToDelete;
+   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
@@ -127,45 +131,26 @@ public class ChangeArtifactType {
 
    /**
     * @param artifact
-    * @param descriptor
+    * @param artifactType
     * @return true if the user accepts the purging of the attributes and relations that are not compatible for the new
     *         artifact type else false.
     */
-   private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {
+   private static boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType artifactType) {
       if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
-         ArtifactChangeMessageRunnable messageRunnable = new ArtifactChangeMessageRunnable(artifact, descriptor);
-         Displays.ensureInDisplayThread(messageRunnable, true);
-         return messageRunnable.isAccept();
+
+         StringBuffer sb = new StringBuffer(50);
+         getConflictString(sb, artifact, artifactType);
+         try {
+            return (Boolean) DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus,
+                  sb.toString());
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return false;
+         }
       } else {
          return true;
       }
    }
-
-   private static class ArtifactChangeMessageRunnable implements Runnable {
-      private boolean accept = false;
-      private final Artifact artifact;
-      private final ArtifactType artifactType;
-
-      public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactType artifactType) {
-         this.artifact = artifact;
-         this.artifactType = artifactType;
-      }
-
-      public void run() {
-         StringBuffer sb = new StringBuffer(50);
-         getConflictString(sb, artifact, artifactType);
-         accept =
-               MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Confirm Artifact Type Change ",
-                     sb.toString());
-      }
-
-      /**
-       * @return Returns the accept.
-       */
-      public boolean isAccept() {
-         return accept;
-      }
-   };
 
    /**
     * Sets the artifact descriptor.

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -26,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
 
 public class AtsDatabaseConfig implements IDbInitializationTask {
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       createAtsTopLevelConfigObjects();
 
       // Configure WorkItemDefinitions

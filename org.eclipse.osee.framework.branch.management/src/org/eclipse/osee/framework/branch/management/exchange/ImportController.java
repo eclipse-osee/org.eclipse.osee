@@ -85,7 +85,7 @@ final class ImportController {
    }
 
    private void checkPreconditions() throws OseeCoreException {
-      if (SupportedDatabase.getDatabaseType().equals(SupportedDatabase.oracle)) {
+      if (SupportedDatabase.isDatabaseType(SupportedDatabase.oracle)) {
          throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
    }

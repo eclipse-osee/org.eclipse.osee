@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -128,7 +128,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       try {
          populateAccessControlLists();
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       OseeEventManager.addListener(this);
@@ -160,7 +160,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    // }
    // }
    // catch (SQLException ex) {
-   // OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+   // OseeLog.log(Activator.class, Level.SEVERE, ex);
    // }
    // finally {
    // chStmt.close();
@@ -508,7 +508,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             }
             cacheAccessControlData(data);
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -548,7 +548,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          datas = generateAccessControlList(accessObject);
 
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return datas;
    }
@@ -712,7 +712,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsLocked,
                   new LoadedArtifacts(object));
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -813,7 +813,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                AccessControlManager.getInstance().removeAccessControlData(accessControlData, sender.isLocal());
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -838,7 +838,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

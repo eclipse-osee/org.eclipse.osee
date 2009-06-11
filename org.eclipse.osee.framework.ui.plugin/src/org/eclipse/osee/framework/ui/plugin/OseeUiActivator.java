@@ -21,11 +21,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
@@ -33,7 +31,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
@@ -45,7 +42,6 @@ import org.osgi.framework.BundleContext;
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
    protected static final String imagePath = "images/";
-   private ImageRegistry imageRegistry;
    private OseeUiActivator parentPlugin;
    private ActivatorHelper helper;
 
@@ -54,10 +50,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     */
    protected OseeUiActivator() {
       super();
-   }
-
-   public Plugin getOseePlugin(String pluginId) {
-      return helper.getOseePlugin(pluginId);
    }
 
    /**
@@ -111,82 +103,53 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
-      if (imageRegistry != null) {
-         imageRegistry.dispose();
-      }
    }
 
-   private Image getImageFromRegistry(String imageKey) {
-      /*
-       * initialize here rather than the constructor since some O.S.E.E. plug-ins don't use the image
-       * registry and because some plug-ins seem to load before it is safe to construct an image
-       * registry without getting a NullPointerException
-       */
-      if (imageRegistry == null) {
-         imageRegistry = new ImageRegistry();
-      }
-      return imageRegistry.get(imageKey);
+   public Image getImageFromRegistry(String imageKey) {
+      return getImageRegistry().get(imageKey);
    }
 
-   private ImageDescriptor getImageDescriptorFromRegistry(String imageKey) {
-      /*
-       * initialize here rather than the constructor since some O.S.E.E. plug-ins don't use the image
-       * registry and because some plug-ins seem to load before it is safe to construct an image
-       * registry without getting a NullPointerException
-       */
-      if (imageRegistry == null) {
-         imageRegistry = new ImageRegistry(Display.getDefault());
+   /**
+    * Returns the ImageDiscriptor from images/ directory in this bundle with the given name
+    * 
+    * @return the Image object
+    */
+   public ImageDescriptor getImageDescriptorUsingRegistry(String imageFileName) {
+      ImageDescriptor imageDescriptor = getImageRegistry().getDescriptor(imageFileName);
+      if (imageDescriptor == null) {
+         imageDescriptor =
+               AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + imageFileName);
+         getImageRegistry().put(imageFileName, imageDescriptor);
       }
-      return imageRegistry.getDescriptor(imageKey);
+      return imageDescriptor;
    }
 
-   public void addImageToRegistry(String imageKey, ImageDescriptor descriptor) {
-      Image previousImage = getImageFromRegistry(imageKey);
-      if (previousImage == null) {
-         imageRegistry.put(imageKey, descriptor);
-      } else {
-         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
-      }
-   }
-
-   public void addImageToRegistry(String imageKey, Image image) {
-      Image previousImage = getImageFromRegistry(imageKey);
-      if (previousImage == null) {
-         imageRegistry.put(imageKey, image);
-      } else {
-         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
-      }
-   }
-
-   public Image getImageForProgram(String extenstion) {
-      Image image = getImageFromRegistry(extenstion);
-
-      if (image == null && extenstion != null) {
-         Program program = Program.findProgram(extenstion);
-         if (program == null || program.getImageData() == null) {
-            // provide no image (i.e. leave null)
-         } else {
-            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
-            imageRegistry.put(extenstion, imageDescriptor);
-            image = imageRegistry.get(extenstion);
-         }
+   public Image getImageUsingRegistry(String imageName, String imageFileName) {
+      Image image = getImageRegistry().get(imageName);
+      if (image == null) {
+         // cause the image descriptor to be added to the registry
+         getImageDescriptorUsingRegistry(imageFileName);
+         image = getImageRegistry().get(imageName);
       }
       return image;
    }
 
-   public ImageDescriptor getImageDescriptorForProgram(String extenstion) {
-      ImageDescriptor imageDescriptor = getImageDescriptorFromRegistry(extenstion);
-
-      if (imageDescriptor == null && extenstion != null) {
-         Program program = Program.findProgram(extenstion);
-         if (program == null || program.getImageData() == null) {
-            // provide no image (i.e. leave null)
-         } else {
-            imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
-            imageRegistry.put(extenstion, imageDescriptor);
-         }
+   public void addImageToRegistry(String imageKey, ImageDescriptor descriptor) throws IllegalArgumentException {
+      Image previousImage = getImageFromRegistry(imageKey);
+      if (previousImage == null) {
+         getImageRegistry().put(imageKey, descriptor);
+      } else {
+         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
       }
-      return imageDescriptor;
+   }
+
+   public void addImageToRegistry(String imageKey, Image image) throws IllegalArgumentException {
+      Image previousImage = getImageFromRegistry(imageKey);
+      if (previousImage == null) {
+         getImageRegistry().put(imageKey, image);
+      } else {
+         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
+      }
    }
 
    /**
@@ -194,7 +157,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * 
     * @return the Image object
     */
-   public Image getImage(String imageName) throws IllegalArgumentException {
+   public Image getImage(String imageName) {
       Image image = getImageFromRegistry(imageName);
       if (image == null) { // if image is not already cached
          ImageDescriptor descriptor = getImageDescriptor(imageName);
@@ -212,7 +175,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
          image = descriptor.createImage(false);
          if (image != null) { // cache image only if successfully returned
-            imageRegistry.put(imageName, image);
+            addImageToRegistry(imageName, image);
          }
       }
       return image;
@@ -224,7 +187,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * @return the Image object
     */
    public ImageDescriptor getImageDescriptor(String name) {
-      return imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
+      return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
    }
 
    public InputStream getInputStreamForImage(String imageName) throws IOException {
@@ -327,5 +290,20 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
          toReturn = new Result(OseeLog.getStatusReport());
       }
       return toReturn;
+   }
+
+   public ImageDescriptor getImageDescriptorForProgram(String extenstion) {
+      ImageDescriptor imageDescriptor = getImageRegistry().getDescriptor(extenstion);
+
+      if (imageDescriptor == null && extenstion != null) {
+         Program program = Program.findProgram(extenstion);
+         if (program == null || program.getImageData() == null) {
+            // provide no image (i.e. leave null)
+         } else {
+            imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
+            getImageRegistry().put(extenstion, imageDescriptor);
+         }
+      }
+      return imageDescriptor;
    }
 }

@@ -17,6 +17,8 @@
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
  <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
+  <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
+ 
 
 <extension
       point="org.eclipse.ui.popupMenus">
@@ -62,7 +64,6 @@
   </extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
-		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.NewArtifactEditor" name="New Artifact Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
   <editor

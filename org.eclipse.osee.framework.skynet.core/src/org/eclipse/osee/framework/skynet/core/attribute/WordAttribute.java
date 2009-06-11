@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
@@ -51,35 +49,16 @@ public class WordAttribute extends StringAttribute {
       // Do not allow save on tracked changes
       if (WordAnnotationHandler.containsWordAnnotations(value)) {
          displayTrackedChangesErrorMessage = "Detected tracked changes on for this artifact.";
-         displayTrackedChangesErrorDialog();
+         throw new OseeArgumentException(displayTrackedChangesErrorMessage);
       } else {
          value = WordUtil.removeWordMarkupSmartTags(value);
          return super.subClassSetValue(value);
       }
-      return false;
    }
 
    public boolean containsWordAnnotations() throws OseeCoreException {
       String temp = getValue();
       return WordAnnotationHandler.containsWordAnnotations(temp);
-   }
-
-   public void displayTrackedChangesErrorDialog() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-            if (!noPopUps) {
-               MessageDialog.openError(
-                     Display.getCurrent().getActiveShell(),
-                     "Save Error",
-                     "Detected tracked changes on for this artifact. Please remove tracked changes to save.\n" + "You must save the document locally if you wish to keep tracking on.");
-            }
-         }
-      }, true);
-
    }
 
    /* (non-Javadoc)

@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
@@ -49,6 +48,8 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -82,7 +83,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @param parent
     */
    public ValidateChangeReports(XNavigateItem parent) {
-      super(parent, "Validate Change Reports", AtsPlugin.getInstance().getImage("admin.gif"));
+      super(parent, "Validate Change Reports", ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /*
@@ -153,7 +154,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   }
                } catch (Exception ex) {
                   resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
                sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(), teamArt.getSoleAttributeValue(
                      ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
@@ -206,7 +207,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
                currentDbGuid, currentChangeData));
          artifactForStore.persistAttributes();
-         resultData.log("Stored Change Report for " + XResultData.getHyperlink(teamArt));
+         resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
       // Else, compare the two and report
@@ -216,7 +217,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          if (isXmlChangeDataEqual(currentChangeReport, fStoredChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
          } else {
-            resultData.logError("Was/Is Change Report different for " + XResultData.getHyperlink(teamArt));
+            resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
             if (displayWasIs) {
                resultData.log("Was / Is reports displayed in Results View");
             }
@@ -227,12 +228,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      public void run() {
                         try {
                            String prePage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(fStoredChangeReport));
-                           ResultsEditor.open(new XResultPage(
-                                 "Was Change Report for " + XResultData.getHyperlink(teamArt), prePage));
+                           ResultsEditor.open(new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(),
+                                 prePage));
 
                            String postPage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(currentChangeReport));
-                           ResultsEditor.open(new XResultPage(
-                                 "Is Change Report for " + XResultData.getHyperlink(teamArt), postPage));
+                           ResultsEditor.open(new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(),
+                                 postPage));
 
                         } catch (Exception ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -280,7 +281,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static String toXml(RelationChanged change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
-      sb.append(AXml.addTagData("artTId", String.valueOf(change.getArtTypeId())));
+      sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));
@@ -300,7 +301,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static String toXml(ArtifactChanged change) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
-      sb.append(AXml.addTagData("artTId", String.valueOf(change.getArtTypeId())));
+      sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));
@@ -314,7 +315,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static String toXml(AttributeChanged change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
-      sb.append(AXml.addTagData("artTId", String.valueOf(change.getArtTypeId())));
+      sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));

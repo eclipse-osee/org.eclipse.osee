@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -38,14 +39,15 @@ public enum ChangeType {
    }
 
    public Image getImage() {
-      if (this == ChangeType.Problem)
-         return SkynetGuiPlugin.getInstance().getImage("greenBug.gif");
-      else if (this == ChangeType.Improvement)
-         return SkynetGuiPlugin.getInstance().getImage("greenPlus.gif");
-      else if (this == ChangeType.Support) return SkynetGuiPlugin.getInstance().getImage("users2.gif");
+      if (this == ChangeType.Problem) {
+         return ImageManager.getImage(FrameworkImage.PROBLEM);
+      } else if (this == ChangeType.Improvement) {
+         return ImageManager.getImage(FrameworkImage.GREEN_PLUS);
+      } else if (this == ChangeType.Support) {
+         return ImageManager.getImage(FrameworkImage.SUPPORT);
+      }
       return null;
    }
-
    public static class ChangeTypeLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {

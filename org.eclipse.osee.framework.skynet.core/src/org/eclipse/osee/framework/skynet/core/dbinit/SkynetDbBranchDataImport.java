@@ -29,16 +29,15 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.exportImport.HttpBranchExchange;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -46,7 +45,7 @@ import org.osgi.framework.Bundle;
  */
 public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String ELEMENT_NAME = "OseeDbImportData";
-   private static final String EXTENSION_POINT = SkynetActivator.PLUGIN_ID + "." + ELEMENT_NAME;
+   private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + ELEMENT_NAME;
    private static final String BRANCH_NAME = "branchName";
    private static final String BRANCH_DATA = "branchData";
    private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
@@ -55,7 +54,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    @Override
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
@@ -66,13 +65,13 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
 
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
-            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Import Branch Data: [%s]", importData));
+            OseeLog.log(Activator.class, Level.INFO, String.format("Import Branch Data: [%s]", importData));
             try {
                File importFile = importData.getExchangeFile();
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
+               OseeLog.log(Activator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
                      importData), ex);
                throw ex;
             }

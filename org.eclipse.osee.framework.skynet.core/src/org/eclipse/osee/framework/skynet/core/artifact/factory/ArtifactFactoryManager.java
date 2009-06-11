@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -43,7 +43,7 @@ public class ArtifactFactoryManager {
                responsibleFactory = factory;
             } else {
                OseeLog.log(
-                     SkynetActivator.class,
+                     Activator.class,
                      Level.SEVERE,
                      "Multiple ArtifactFactories [" + responsibleFactory + "][" + factory + "]responsible for same artifact type [" + artifactTypeName + "].  Defaulting to DefaultArtifactFactory.");
                return new DefaultArtifactFactory();
@@ -68,7 +68,7 @@ public class ArtifactFactoryManager {
             try {
                String bundleSymbolicName = element.getContributor().getName();
                if (bundleSymbolicName == null) {
-                  OseeLog.log(SkynetActivator.class, Level.WARNING,
+                  OseeLog.log(Activator.class, Level.WARNING,
                         "No bundle associated with the factory class: " + factoryClassName);
                   return;
                }
@@ -77,7 +77,7 @@ public class ArtifactFactoryManager {
                ArtifactFactory factory = (ArtifactFactory) bundle.loadClass(factoryClassName).newInstance();
                factories.add(factory);
             } catch (Exception ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
             }
          }
       }

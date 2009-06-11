@@ -184,7 +184,7 @@ public class AttributeDataStore {
    private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      if (SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql) {
+      if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
          builder.append(POSTGRESQL_CHECK);
       }
 

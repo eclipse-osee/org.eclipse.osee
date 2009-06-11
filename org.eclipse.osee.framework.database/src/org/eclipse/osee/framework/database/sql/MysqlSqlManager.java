@@ -68,11 +68,11 @@ public class MysqlSqlManager extends SqlManagerImpl {
    }
 
    @Override
-   public void dropTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
       OseeLog.log(DatabaseActivator.class, Level.INFO,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute);
+      ConnectionHandler.runPreparedUpdate(toExecute);
    }
 
    protected String formatQuotedString(String value, String splitAt) {
@@ -84,7 +84,7 @@ public class MysqlSqlManager extends SqlManagerImpl {
       return StringFormat.separateWith(array, splitAt.replaceAll("\\\\", ""));
    }
 
-   public void dropIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
@@ -92,11 +92,9 @@ public class MysqlSqlManager extends SqlManagerImpl {
          OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]",
                iData.getId(), tableName));
          if (iData.getId().equals("PRIMARY")) {
-            ConnectionHandler.runPreparedUpdate(connection,
-                  "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
+            ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {
-            ConnectionHandler.runPreparedUpdate(connection,
-                  "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
+            ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
          }
       }
    }

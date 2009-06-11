@@ -48,9 +48,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -175,13 +175,13 @@ public class AtsLib implements IAtsLib {
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       Result result = actionArt.editActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
-      if (result.isFalse()) result.popup(result.isTrue());
+      if (result.isFalse()) result.popup();
    }
 
    public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Result result = teamArt.editActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
-      if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
+      if (result.isFalse() && !result.getText().equals("")) result.popup();
    }
 
    public static void open(String guid, OseeAts.OpenView view) {

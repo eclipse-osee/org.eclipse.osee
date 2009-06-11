@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -90,7 +91,7 @@ final class ClientUser {
       } else {
          if (isGuestNotificationAllowed && newUser.getName().equals(SystemUser.Guest.getName())) {
             isGuestNotificationAllowed = false;
-            OseeLog.log(SkynetActivator.class, Level.INFO,
+            OseeLog.log(Activator.class, Level.INFO,
                   "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
          }
       }

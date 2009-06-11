@@ -11,28 +11,30 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactCheck implements IArtifactCheck {
+   public static final IStatus OK_STATUS = new Status(IStatus.OK, Activator.PLUGIN_ID, null);
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck#isDeleteable(java.util.Collection)
     */
    @Override
-   public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
-      return Result.TrueResult;
+   public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
+      return OK_STATUS;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck#isModifiable(java.util.Collection, java.util.Collection)
     */
    @Override
-   public Result isRenamable(Collection<Artifact> artifacts) throws OseeCoreException {
-      return Result.TrueResult;
+   public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException {
+      return OK_STATUS;
    }
-
 }

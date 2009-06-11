@@ -11,10 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 
@@ -38,11 +39,11 @@ public abstract class WordRenderer extends FileRenderer {
 
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
-      return SkynetActivator.getInstance().getImageForProgram("doc");
+      return ImageManager.getProgramImage("doc");
    }
 
-   public static ImageDescriptor getImageDescriptor() {
-      return SkynetActivator.getInstance().getImageDescriptorForProgram("doc");
+   public static ImageDescriptor getImageDescriptor() throws OseeArgumentException {
+      return ImageManager.getProgramImageDescriptor("doc");
    }
 
    /* (non-Javadoc)

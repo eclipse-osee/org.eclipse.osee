@@ -11,10 +11,11 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -31,7 +32,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
     * @param parent
     */
    public UpdateAtsWorkItemDefinitions(XNavigateItem parent) {
-      super(parent, "Update Ats WorkItemDefinitions", AtsPlugin.getInstance().getImage("admin.gif"));
+      super(parent, "Update Ats WorkItemDefinitions", ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /*

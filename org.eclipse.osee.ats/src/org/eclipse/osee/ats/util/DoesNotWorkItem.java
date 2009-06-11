@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -48,7 +50,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - ??", AtsPlugin.getInstance().getImage("admin.gif"));
+      super(parent, "Does Not Work - ??", ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /*

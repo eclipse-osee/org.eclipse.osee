@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class MassLabelProvider extends XViewerLabelProvider {
@@ -38,7 +39,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
       }
       Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
-      if (columnIndex == 0) return artifact.getImage();
+      if (columnIndex == 0) return ImageManager.getImage(artifact);
       return null;
    }
 

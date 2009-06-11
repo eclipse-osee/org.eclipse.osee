@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -44,7 +44,7 @@ public class ArtifactChecks {
                   tasks.add(check);
                }
             } catch (Exception ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE,
+               OseeLog.log(Activator.class, Level.SEVERE,
                      "Problem loading ArtifactCheck extension \"" + className + "\".  Ignorning.", ex);
             }
          }

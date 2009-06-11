@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -51,7 +53,7 @@ public class EmailActionService extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("email.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EMAIL));
       return action;
    }
 

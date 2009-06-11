@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -41,36 +41,12 @@ public class ArtifactChanged extends Change {
     * @param fromTransactionId
     * @param modType
     * @param changeType
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
+   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
-   }
-
-   /**
-    * @return the dynamicAttributeDescriptor
-    * @throws OseeCoreException
-    */
-   private ArtifactType getDynamicArtifactSubtypeDescriptor() throws OseeCoreException {
-      if (artifactSubtypeDescriptor == null) {
-         artifactSubtypeDescriptor = ArtifactTypeManager.getType(artTypeId);
-      }
-      return artifactSubtypeDescriptor;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getImage()
-    */
-   @Override
-   public Image getItemTypeImage() {
-      Image image = null;
-
-      try {
-         image = getItemKindImage();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
-      return image;
    }
 
    /* (non-Javadoc)
@@ -86,7 +62,7 @@ public class ArtifactChanged extends Change {
     */
    @Override
    public String getItemTypeName() throws OseeCoreException {
-      return getDynamicArtifactSubtypeDescriptor().getName();
+      return getArtifactType().getName();
    }
 
    /* (non-Javadoc)
@@ -122,21 +98,13 @@ public class ArtifactChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
-         if(adapter.isInstance(getToTransactionId()) && isHistorical()){
+         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getObjectImage()
-    */
-   @Override
-   public Image getItemKindImage() throws OseeCoreException {
-      return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)
@@ -155,4 +123,11 @@ public class ArtifactChanged extends Change {
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemTypeId()
+    */
+   @Override
+   public int getItemTypeId() {
+      return getArtifactType().getArtTypeId();
+   }
 }

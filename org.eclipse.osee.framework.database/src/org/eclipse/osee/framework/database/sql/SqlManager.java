@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
@@ -54,11 +53,11 @@ public abstract class SqlManager {
       this.sqlDataType = sqlDataType;
    }
 
-   public abstract void createTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException;
+   public abstract void createTable(TableElement tableDef) throws OseeDataStoreException;
 
-   public abstract void dropTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException;
+   public abstract void dropTable(TableElement tableDef) throws OseeDataStoreException;
 
-   public void insertData(OseeConnection connection, List<ColumnDbData> rowData, TableElement tableMetadata) throws OseeDataStoreException {
+   public void insertData(List<ColumnDbData> rowData, TableElement tableMetadata) throws OseeDataStoreException {
       List<String> columnNames = new ArrayList<String>();
       List<String> placeHolders = new ArrayList<String>();
       List<String> columnValues = new ArrayList<String>();
@@ -88,7 +87,7 @@ public abstract class SqlManager {
       for (int index = 0; index < columnNames.size(); index++) {
          data[index] = preparedStatementHelper(columnTypes.get(index), columnValues.get(index));
       }
-      ConnectionHandler.runPreparedUpdate(connection, toExecute, data);
+      ConnectionHandler.runPreparedUpdate(toExecute, data);
    }
 
    public Object preparedStatementHelper(SQL3DataType columnType, String value) throws OseeDataStoreException {
@@ -237,16 +236,12 @@ public abstract class SqlManager {
       return toReturn.toString();
    }
 
-   public void createSchema(OseeConnection connection, String schema) throws OseeDataStoreException {
-      StringBuilder toExecute = new StringBuilder();
-      toExecute.append(CREATE_STRING + " SCHEMA \"" + schema + "\"");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
+   public void createSchema(String schema) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(CREATE_STRING + " SCHEMA \"" + schema + "\"");
    }
 
-   public void dropSchema(OseeConnection connection, String schema) throws OseeDataStoreException {
-      StringBuilder toExecute = new StringBuilder();
-      toExecute.append(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
-      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
+   public void dropSchema(String schema) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
    }
 
    protected String insertDataToSQL(String fullyQualifiedTableName, List<String> columns, List<String> columnData) {
@@ -259,7 +254,7 @@ public abstract class SqlManager {
       return toExecute.toString();
    }
 
-   public void createIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void createIndex(TableElement tableDef) throws OseeDataStoreException {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String indexId = null;
       StringBuilder appliesTo = new StringBuilder();
@@ -293,7 +288,7 @@ public abstract class SqlManager {
                      appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
          OseeLog.log(DatabaseActivator.class, Level.INFO, toExecute + "\n");
-         ConnectionHandler.runPreparedUpdate(connection, toExecute);
+         ConnectionHandler.runPreparedUpdate(toExecute);
       }
    }
 
@@ -301,13 +296,13 @@ public abstract class SqlManager {
       return original;
    }
 
-   public void dropIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
          OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n",
                iData.getId(), tableName));
-         ConnectionHandler.runPreparedUpdate(connection, DROP_STRING + " INDEX " + iData.getId());
+         ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }
    }
 }

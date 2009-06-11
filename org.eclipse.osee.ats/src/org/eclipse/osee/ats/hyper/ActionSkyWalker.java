@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -116,7 +115,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          else
             super.explore(getTopArtifact((ATSArtifact) artifact));
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          clear();
       }
    }

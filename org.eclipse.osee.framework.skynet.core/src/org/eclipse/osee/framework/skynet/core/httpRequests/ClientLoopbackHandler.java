@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 public class ClientLoopbackHandler implements IHttpServerRequest {
 
    private static final ExtensionDefinedObjects<IClientLoopbackCmd> commands =
-         new ExtensionDefinedObjects<IClientLoopbackCmd>(SkynetActivator.PLUGIN_ID + ".ClientLoopbackCmd",
+         new ExtensionDefinedObjects<IClientLoopbackCmd>(Activator.PLUGIN_ID + ".ClientLoopbackCmd",
                "ClientLoopbackCmd", "className");
 
    /* (non-Javadoc)

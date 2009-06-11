@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
@@ -107,21 +107,21 @@ public class HttpAttributeTagger {
                   HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
                         parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            OseeLog.log(SkynetActivator.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
+            OseeLog.log(Activator.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
                   System.currentTimeMillis() - start));
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");
             }
             response.append(ex.getLocalizedMessage());
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, response.toString(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, response.toString(), ex);
          } finally {
             changedGammas.clear();
             if (inputStream != null) {
                try {
                   inputStream.close();
                } catch (IOException ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
                }
             }
          }
@@ -163,7 +163,7 @@ public class HttpAttributeTagger {
          //            //            String response = HttpProcessor.delete(new URL(url));
          //
          //         } catch (Exception ex) {
-         //            OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
+         //            OseeLog.log(Activator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
          //         }
       }
 
@@ -205,7 +205,7 @@ public class HttpAttributeTagger {
                try {
                   future.get();
                } catch (Exception ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
                }
             }
          }

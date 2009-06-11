@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,7 +37,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       this.userSpecifiedConfig = userSpecifiedConfig;
    }
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       Set<String> importConnections = getImportConnections();
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
@@ -52,14 +51,13 @@ public class ImportDataFromDbService implements IDbInitializationTask {
             Set<String> schemasToGet = new TreeSet<String>();
             schemasToGet.add(userName.toUpperCase());
 
-            Map<String, Set<String>> dataToImport = getTablesToImport(connection, userName.toUpperCase(), schemasToGet);
+            Map<String, Set<String>> dataToImport = getTablesToImport(userName.toUpperCase(), schemasToGet);
             if (dataToImport.size() > 0) {
                System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
                makeBackupDirectoryIfItDoesntExist();
 
                System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
-               DatabaseDataExtractor dbDataExtractor =
-                     new DatabaseDataExtractor(connection, schemasToGet, backupDirectory);
+               DatabaseDataExtractor dbDataExtractor = new DatabaseDataExtractor(schemasToGet, backupDirectory);
 
                Set<String> tablesToImport;
                if (importFromDbService.equals(determineDefaultConnection())) {
@@ -128,14 +126,14 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       return true;
    }
 
-   private Map<String, SchemaData> getAvailableSchemasFromImportDb(OseeConnection importConnection, Set<String> schemas) throws OseeDataStoreException {
-      DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(importConnection, schemas);
+   private Map<String, SchemaData> getAvailableSchemasFromImportDb(Set<String> schemas) throws OseeDataStoreException {
+      DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(schemas);
       schemaExtractor.extractSchemaData();
       return schemaExtractor.getSchemas();
    }
 
-   private Map<String, Set<String>> getTablesToImport(OseeConnection importConnection, String userName, Set<String> schemasToGet) throws OseeDataStoreException {
-      Map<String, SchemaData> currentDbSchemas = getAvailableSchemasFromImportDb(importConnection, schemasToGet);
+   private Map<String, Set<String>> getTablesToImport(String userName, Set<String> schemasToGet) throws OseeDataStoreException {
+      Map<String, SchemaData> currentDbSchemas = getAvailableSchemasFromImportDb(schemasToGet);
       Set<String> userSchemas = userSpecifiedConfig.keySet();
 
       SchemaData schemaData = currentDbSchemas.get(userName);

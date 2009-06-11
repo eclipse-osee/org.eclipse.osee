@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -42,14 +44,14 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
 
    public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
       super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
-            AtsPlugin.getInstance().getImage("version.gif"));
+            ImageManager.getImage(FrameworkImage.VERSION));
       this.teamDef = teamDef;
       this.versionArt = versionArt;
       this.returnAction = returnAction;
    }
 
    public VersionTargetedForTeamSearchItem(VersionTargetedForTeamSearchItem versionTargetedForTeamSearchItem) {
-      super(versionTargetedForTeamSearchItem, AtsPlugin.getInstance().getImage("version.gif"));
+      super(versionTargetedForTeamSearchItem, ImageManager.getImage(FrameworkImage.VERSION));
       this.versionArt = versionTargetedForTeamSearchItem.versionArt;
       this.returnAction = versionTargetedForTeamSearchItem.returnAction;
       this.teamDef = versionTargetedForTeamSearchItem.teamDef;

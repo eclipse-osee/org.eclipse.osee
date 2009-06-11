@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -31,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /*
  * @author Jeff C. Phillips
@@ -187,11 +186,6 @@ public class AttributeConflict extends Conflict {
       return destObject;
    }
 
-   @Override
-   public Image getImage() {
-      return SkynetActivator.getInstance().getImage("molecule.gif");
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -215,7 +209,7 @@ public class AttributeConflict extends Conflict {
             return attribute;
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       return null;

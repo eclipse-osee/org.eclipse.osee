@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -46,22 +45,6 @@ public class NativeRenderer extends FileRenderer {
       }
 
       return commandIds;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
-    */
-   @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
-      Image image = null;
-      if (artifact.isOfType("Native")) {
-         image = artifact.getImage();
-      }
-
-      if (image == null) {
-         image = super.getImage(artifact);
-      }
-      return image;
    }
 
    /**

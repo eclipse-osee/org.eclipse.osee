@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -344,7 +343,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
          parent.layout();
 
-         OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
+         OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
 
          OseeContributionItem.addTo(this, false);
          getViewSite().getActionBars().updateActionBars();

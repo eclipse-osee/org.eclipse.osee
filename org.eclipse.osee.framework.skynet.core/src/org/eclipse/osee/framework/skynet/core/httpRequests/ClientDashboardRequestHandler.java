@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 
 /**
  * Responds to requests by server for information about client
@@ -85,7 +85,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       StringBuffer sb = new StringBuffer(1000);
       sb.append("\nName: [" + UserManager.getUser().getName() + "]\n");
       sb.append(ClientSessionManager.getSession().toString().replaceAll("] ", "]\n"));
-      sb.append("\nWorkpace: [" + AWorkspace.getWorkspacePath() + "]");
+      sb.append("\nOSEE Data Path: [" + OseeData.getPath() + "]");
       sb.append("\nInstallation Location: [" + Platform.getInstallLocation().getURL() + "]");
       for (IHealthStatus status : OseeLog.getStatus()) {
          sb.append("\n" + status.getSourceName() + ": [" + status.getMessage() + "]");
@@ -103,9 +103,9 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       }
       sb.append("\nLog File Contents:\n--------------------------------\n" + AFile.readFile(file));
       // Add first backup log file
-      file = AWorkspace.getWorkspaceFile(".metadata/.bak_0.log");
+      file = OseeData.getWorkspaceFile(".metadata/.bak_0.log");
       if (file != null && file.exists()) {
-         sb.append("\n" + AFile.readFile(file));
+         sb.append("\n" + Lib.fileToString(file));
       }
       return sb.toString();
    }
@@ -114,7 +114,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       try {
          httpResponse.getPrintStream().println(results);
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, String.format("Error processing request for [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing request for [%s]",
                httpRequest.toString()), ex);
          httpResponse.getPrintStream().println(Lib.exceptionToString(ex));
       } finally {

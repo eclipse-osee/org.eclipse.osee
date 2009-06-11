@@ -240,9 +240,9 @@ public class InternalChangeManager {
                artIds.add(aArtId);
                artIds.add(bArtId);
 
-               changes.add(new RelationChanged(sourceBranch, -1, chStmt.getInt("gamma_id"), aArtId, toTransactionId,
-                     fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId, relLinkId, rationale,
-                     chStmt.getInt("a_order"), chStmt.getInt("b_order"),
+               changes.add(new RelationChanged(sourceBranch, chStmt.getInt("art_type_id"), chStmt.getInt("gamma_id"),
+                     aArtId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId,
+                     relLinkId, rationale, chStmt.getInt("a_order"), chStmt.getInt("b_order"),
                      RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
@@ -325,8 +325,8 @@ public class InternalChangeManager {
                // NEW or DELETED
                if (artModType == ModificationType.CHANGE && !modifiedArtifacts.contains(artId)) {
                   ArtifactChanged artifactChanged =
-                        new ArtifactChanged(sourceBranch, artTypeId, -1, artId, toTransactionId,
-                              fromTransactionId, ModificationType.CHANGE, ChangeType.OUTGOING, !hasBranch);
+                        new ArtifactChanged(sourceBranch, artTypeId, -1, artId, toTransactionId, fromTransactionId,
+                              ModificationType.CHANGE, ChangeType.OUTGOING, !hasBranch);
 
                   changes.add(artifactChanged);
                   modifiedArtifacts.add(artId);
@@ -353,7 +353,7 @@ public class InternalChangeManager {
          }
          monitor.updateWork(13);
          monitor.setSubtaskName("Gathering Was values");
-         
+
          loadAttributeWasValues(sourceBranch, transactionId, artIds, monitor, attributesWasValueCache, hasBranch);
       } finally {
          chStmt1.close();
@@ -396,8 +396,7 @@ public class InternalChangeManager {
          try {
             // insert into the artifact_join_table
             for (int artId : artIds) {
-               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(),
-                     SQL3DataType.INTEGER});
+               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(), SQL3DataType.INTEGER});
             }
             ArtifactLoader.insertIntoArtifactJoin(datas);
             chStmt2.runPreparedQuery(sql, sqlParamter, queryId);
@@ -406,17 +405,17 @@ public class InternalChangeManager {
             while (chStmt2.next()) {
                count++;
                int attrId = chStmt2.getInt("attr_id");
-               
+
                if (previousAttrId != attrId) {
                   String wasValue = chStmt2.getString("was_value");
                   if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
                      AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
-                     
-                     if(changed.getArtModType() != ModificationType.NEW){
-                     	if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-                     	changed.setModType(ModificationType.CHANGE);
-                     	}
-                     	changed.setWasValue(wasValue);
+
+                     if (changed.getArtModType() != ModificationType.NEW) {
+                        if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+                           changed.setModType(ModificationType.CHANGE);
+                        }
+                        changed.setWasValue(wasValue);
                      }
                   }
                   previousAttrId = attrId;

@@ -25,7 +25,7 @@ public class DemoDbConnectionInfo implements IDbConnectionInformationContributor
     */
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
-      URL url = Activator.getInstance().getBundleContext().getBundle().getEntry("/support/osee.demo.db.connection.xml");
+      URL url = Activator.getEntry("/support/osee.demo.db.connection.xml");
       return DatabaseInfoManager.readFromXml(url.openStream());
    }
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.plugin.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
@@ -30,14 +29,6 @@ public class OseeActivator extends Plugin {
    }
 
    /**
-    * returns a File to from the default persistent storage area provided for the bundle by the Framework (.ie.)
-    * myworkspace/.metadata/.plugins/org.eclipse.pde.core/myPlugin/...
-    */
-   public File getPluginStoreFile(String path) {
-      return helper.getPluginStoreFile(path);
-   }
-
-   /**
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regualar file
     * 
     * @param path
@@ -46,10 +37,6 @@ public class OseeActivator extends Plugin {
     */
    public File getPluginFile(String path) throws IOException {
       return helper.getPluginFile(path);
-   }
-
-   public InputStream getInputStream(String resource) throws IOException {
-      return helper.getInputStream(resource);
    }
 
    /**

@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * A modified artifact description. Used by the Change Report View, this supplies a way to describe an Artifact whether
@@ -22,7 +21,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Robert A. Fisher
  */
-public class ArtifactChange extends RevisionChange{
+public class ArtifactChange extends RevisionChange {
 
    private static final long serialVersionUID = 1L;
    private TransactionId baseParentTransactionId;
@@ -74,13 +73,6 @@ public class ArtifactChange extends RevisionChange{
     */
    public boolean isHistorical() {
       return isHistorical;
-   }
-
-   /**
-    * @return Returns the image for the artifact type overlayed with the modtype image.
-    */
-   public Image getImage() {
-      return artifact.getArtifactType().getImage(getChangeType(), getModType());
    }
 
    /**
@@ -139,7 +131,7 @@ public class ArtifactChange extends RevisionChange{
     */
    @Override
    public String getChange() {
-      return "Artifact - "+getModType().getDisplayName();
+      return "Artifact - " + getModificationType().getDisplayName();
    }
 
    /**
@@ -173,7 +165,7 @@ public class ArtifactChange extends RevisionChange{
       }
       return null;
    }
-   
+
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */
@@ -182,11 +174,11 @@ public class ArtifactChange extends RevisionChange{
       if (obj instanceof ArtifactChange) {
          ArtifactChange otherArtifactChnage = (ArtifactChange) obj;
          return getArtifact().equals(otherArtifactChnage.getArtifact());
-      }else{
+      } else {
          return false;
       }
    }
-   
+
    /* (non-Javadoc)
     * @see java.lang.Object#hashCode()
     */

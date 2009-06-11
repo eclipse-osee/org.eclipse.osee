@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -77,7 +77,7 @@ public class ArtifactDataType extends DataType {
    }
 
    public Image getImage() {
-      return image != null ? image : ImageDescriptor.getMissingImageDescriptor().createImage();
+      return image == null ? ImageManager.getMissingImage() : image;
    }
 
    public void setImage(Image image) {

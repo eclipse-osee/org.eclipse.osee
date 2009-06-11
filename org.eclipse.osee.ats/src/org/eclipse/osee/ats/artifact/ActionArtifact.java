@@ -598,15 +598,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperImage()
-    */
-   public Image getHyperImage() {
-      return getImage();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
     */
    public Image getHyperAssigneeImage() throws OseeCoreException {

@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -32,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -76,7 +77,7 @@ public class OseeDataTypeDatastore {
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          ArtifactDataType artifactDataType =
                new ArtifactDataType(String.valueOf(artifactType.getArtTypeId()), artifactType.getNamespace(),
-                     artifactType.getName(), artifactType.getImage());
+                     artifactType.getName(), ImageManager.getImage(artifactType));
          artifactDataTypes.add(artifactDataType);
       }
       return artifactDataTypes;
@@ -91,7 +92,7 @@ public class OseeDataTypeDatastore {
             try {
                toReturn.put(chStmt.getString("art_type_id"), chStmt.getString("attr_type_id"));
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -117,7 +118,7 @@ public class OseeDataTypeDatastore {
 
                toReturn.put(key, multiplicity);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -135,7 +136,7 @@ public class OseeDataTypeDatastore {
             try {
                toReturn.put(chStmt.getString("art_type_ancestor_id"), chStmt.getString("art_type_descendant_id"));
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       } finally {

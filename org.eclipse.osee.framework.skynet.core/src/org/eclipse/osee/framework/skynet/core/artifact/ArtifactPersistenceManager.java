@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Ryan D. Brooks
@@ -328,8 +328,10 @@ public class ArtifactPersistenceManager {
       if (!overrideDeleteCheck) {
          // Confirm artifacts are fit to delete
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            Result result = check.isDeleteable(Arrays.asList(artifacts));
-            if (result.isFalse()) throw new OseeStateException(result.getText());
+            IStatus result = check.isDeleteable(Arrays.asList(artifacts));
+            if (!result.isOK()) {
+               throw new OseeStateException(result.getMessage());
+            }
          }
       }
       //Bulk Load Artifacts

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -51,7 +53,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    private final String teamDefName;
 
    public FirstTimeQualityMetricReportItem(XNavigateItem parent, String name, String teamDefName) {
-      super(parent, name, AtsPlugin.getInstance().getImage("report.gif"));
+      super(parent, name, ImageManager.getImage(AtsImage.REPORT));
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }

@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -39,7 +41,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
     * @param parent
     */
    public UpdateAssigneesRelations(XNavigateItem parent) {
-      super(parent, "Update Assignees Relations", AtsPlugin.getInstance().getImage("admin.gif"));
+      super(parent, "Update Assignees Relations", ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /*

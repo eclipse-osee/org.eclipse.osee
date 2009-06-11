@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.database.initialize.DbFactory;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.View;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -29,34 +28,19 @@ import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class DbInit {
 
-   private static String oracleCreateViewCmd = "CREATE OR REPLACE FORCE VIEW ";
-   private static String derbyCreateViewCmd = "CREATE VIEW ";
-   private static String mysqlCreateViewCmd = "CREATE VIEW ";
-   private static String postgresqlCreateViewCmd = "CREATE VIEW ";
-
    /**
     * @param connection
     * @param databaseType
     * @param databaseType2
     * @throws OseeDataStoreException
     */
-   public static void addViews(OseeConnection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
+   public static void addViews() throws OseeDataStoreException {
       for (View view : SkynetDatabase.getSkynetViews()) {
-         String viewCreateCmd = "";
-         if (databaseType == SupportedDatabase.derby)
-            viewCreateCmd = derbyCreateViewCmd;
-         else if (databaseType == SupportedDatabase.oracle)
-            viewCreateCmd = oracleCreateViewCmd;
-         else if (databaseType == SupportedDatabase.mysql)
-            viewCreateCmd = mysqlCreateViewCmd;
-         else if (databaseType == SupportedDatabase.postgresql) {
-            viewCreateCmd = postgresqlCreateViewCmd;
-         } else
-            throw new IllegalArgumentException("Unhandled database type.");
+         String viewCreateCmd =
+               SupportedDatabase.isDatabaseType(SupportedDatabase.oracle) ? "CREATE OR REPLACE FORCE VIEW " : "CREATE VIEW ";
 
-         ConnectionHandler.runPreparedUpdate(connection, viewCreateCmd + view.toString() + view.getDefinition());
-         ConnectionHandler.runPreparedUpdate(connection,
-               "create OR REPLACE public synonym " + view.toString() + " for " + view.toString());
+         ConnectionHandler.runPreparedUpdate(viewCreateCmd + view.toString() + view.getDefinition());
+         ConnectionHandler.runPreparedUpdate("create OR REPLACE public synonym " + view.toString() + " for " + view.toString());
       }
    }
 
@@ -70,11 +54,11 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, OseeConnection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
+   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
-            DbFactory userDbFactory = new DbFactory(connection, databaseType, userSpecifiedSchemaData);
+            DbFactory userDbFactory = new DbFactory(userSpecifiedSchemaData);
             userDbFactory.createIndeces();
          }
       }
@@ -86,11 +70,11 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, OseeConnection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
+   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
-            DbFactory userDbFactory = new DbFactory(connection, databaseType, userSpecifiedSchemaData);
+            DbFactory userDbFactory = new DbFactory(userSpecifiedSchemaData);
             userDbFactory.createTables();
          }
       }
@@ -104,7 +88,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, OseeConnection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -120,7 +104,7 @@ public class DbInit {
                   toDrop.addTableDefinition(currentDBmap.get(userKey));
                }
             }
-            DbFactory currentDbFactory = new DbFactory(connection, databaseType, toDrop);
+            DbFactory currentDbFactory = new DbFactory(toDrop);
             currentDbFactory.dropTables();
          }
       }
@@ -134,7 +118,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, OseeConnection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       System.out.println("Drop Indeces");
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
@@ -151,7 +135,7 @@ public class DbInit {
                   toDrop.addTableDefinition(currentDBmap.get(userKey));
                }
             }
-            DbFactory currentDbFactory = new DbFactory(connection, databaseType, toDrop);
+            DbFactory currentDbFactory = new DbFactory(toDrop);
             currentDbFactory.dropIndeces();
          }
       }
@@ -160,15 +144,15 @@ public class DbInit {
    /**
     * @param connection
     */
-   public static void dropViews(OseeConnection connection) throws OseeDataStoreException {
+   public static void dropViews() throws OseeDataStoreException {
       try {
-         DatabaseMetaData dbData = connection.getMetaData();
+         DatabaseMetaData dbData = ConnectionHandler.getMetaData();
          ResultSet tables = dbData.getTables(null, null, null, new String[] {"VIEW"});
          while (tables.next()) {
             String viewName = tables.getString("TABLE_NAME").toUpperCase();
             for (View viewToDrop : SkynetDatabase.getSkynetViews()) {
                if (viewToDrop.toString().equalsIgnoreCase(viewName)) {
-                  ConnectionHandler.runPreparedUpdate(connection, "DROP VIEW " + viewName);
+                  ConnectionHandler.runPreparedUpdate("DROP VIEW " + viewName);
                }
             }
          }
@@ -177,17 +161,17 @@ public class DbInit {
       }
    }
 
-   public static void createSchema(OseeConnection connection, Set<String> schemas) throws OseeDataStoreException {
-      SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
+   public static void createSchema(Set<String> schemas) throws OseeDataStoreException {
+      SqlManager manager = SqlFactory.getSqlManager();
       for (String schemaId : schemas) {
-         manager.createSchema(connection, schemaId.toLowerCase());
+         manager.createSchema(schemaId.toLowerCase());
       }
    }
 
-   public static void dropSchema(OseeConnection connection, Set<String> schemas) throws OseeDataStoreException {
-      SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
+   public static void dropSchema(Set<String> schemas) throws OseeDataStoreException {
+      SqlManager manager = SqlFactory.getSqlManager();
       for (String schemaId : schemas) {
-         manager.dropSchema(connection, schemaId.toLowerCase());
+         manager.dropSchema(schemaId.toLowerCase());
       }
    }
 }

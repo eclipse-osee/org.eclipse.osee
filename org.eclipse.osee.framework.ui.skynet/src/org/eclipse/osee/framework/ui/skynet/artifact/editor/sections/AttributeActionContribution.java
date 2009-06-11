@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.implementations.NewArtifactEditor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
@@ -40,9 +40,9 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
  */
 public class AttributeActionContribution implements IActionContributor {
 
-   private final NewArtifactEditor editor;
+   private final ArtifactEditor editor;
 
-   public AttributeActionContribution(NewArtifactEditor editor) {
+   public AttributeActionContribution(ArtifactEditor editor) {
       this.editor = editor;
    }
 

@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Theron Virgin
@@ -80,14 +79,6 @@ public class RelationConflict extends Conflict {
     */
    @Override
    public String getDestDisplayData() {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getImage()
-    */
-   @Override
-   public Image getImage() {
       return null;
    }
 

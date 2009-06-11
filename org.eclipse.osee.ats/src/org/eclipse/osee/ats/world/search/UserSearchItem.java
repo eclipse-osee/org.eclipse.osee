@@ -11,10 +11,11 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -160,7 +161,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    public Image getImage() {
       Image image = super.getImage();
       if (image != null) return image;
-      return AtsPlugin.getInstance().getImage("user.gif");
+      return ImageManager.getImage(FrameworkImage.USER);
    }
 
 }

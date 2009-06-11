@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -270,7 +270,7 @@ public class OseeEnumTypeManager {
                   }
                   oseeEnumType.internalAddEnum(chStmt.getString("name"), chStmt.getInt("ordinal"));
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          } finally {

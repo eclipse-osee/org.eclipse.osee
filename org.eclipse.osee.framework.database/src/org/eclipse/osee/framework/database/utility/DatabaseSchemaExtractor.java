@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -63,16 +63,14 @@ public class DatabaseSchemaExtractor {
    private List<String> filter;
    private Set<String> tablesToExtract;
    private Set<String> schemas;
-   private SupportedDatabase dbType;
 
    private static final String DEFAULT_FILTER = "BIN.*";
 
-   public DatabaseSchemaExtractor(OseeConnection connection, Set<String> schemas) throws OseeDataStoreException {
+   public DatabaseSchemaExtractor(Set<String> schemas) throws OseeDataStoreException {
       try {
-         this.dbData = connection.getMetaData();
+         this.dbData = ConnectionHandler.getMetaData();
          this.dbName = dbData.getDatabaseProductName();
          this.dbVersion = dbData.getDatabaseProductVersion();
-         this.dbType = SupportedDatabase.getDatabaseType(connection);
          this.filter = new ArrayList<String>();
          filter.add(DEFAULT_FILTER);
          this.tablesToExtract = new TreeSet<String>();
@@ -195,7 +193,7 @@ public class DatabaseSchemaExtractor {
                   getColumnInformation(tableEntry);
                   getColumnPrimaryKey(tableEntry);
 
-                  if (!(dbType.equals(SupportedDatabase.foxpro) || dbType.equals(SupportedDatabase.postgresql))) {
+                  if (!(SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro) || SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql))) {
                      getColumnForeignKey(tableEntry);
                   }
                   getIndexInfo(tableEntry);
@@ -210,7 +208,7 @@ public class DatabaseSchemaExtractor {
       }
    }
 
-   private void getColumnInformation(TableElement aTable) throws SQLException {
+   private void getColumnInformation(TableElement aTable) throws SQLException, OseeDataStoreException {
       ResultSet columns = null;
       try {
          columns = dbData.getColumns(null, aTable.getSchema(), aTable.getName(), null);
@@ -223,7 +221,7 @@ public class DatabaseSchemaExtractor {
          ColumnMetadata column = new ColumnMetadata(id);
 
          int dataType = columns.getInt("DATA_TYPE");
-         if (dbType.equals(SupportedDatabase.foxpro)) {
+         if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
             if (dataType == Types.CHAR) {
                dataType = Types.VARCHAR;
             }
@@ -251,7 +249,7 @@ public class DatabaseSchemaExtractor {
             column.addColumnField(ColumnFields.defaultValue, defaultValue);
          }
 
-         if (!dbType.equals(SupportedDatabase.foxpro)) {
+         if (!SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
             // int dataType = columns.getInt("DATA_TYPE");
             switch (dataType) {
                case java.sql.Types.CHAR:

@@ -15,15 +15,15 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -53,8 +53,10 @@ public class RelationChanged extends Change {
     * @param rationale
     * @param aLinkOrder
     * @param relationType
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public RelationChanged(Branch branch, int aArtTypeId, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) {
+   public RelationChanged(Branch branch, int aArtTypeId, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super(branch, aArtTypeId, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.bArtId = bArtId;
@@ -63,14 +65,6 @@ public class RelationChanged extends Change {
       this.aLinkOrder = aLinkOrder;
       this.bLinkOrder = bLinkOrder;
       this.relationType = relationType;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getImage()
-    */
-   @Override
-   public Image getItemTypeImage() {
-      return RelationChangeIcons.getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)
@@ -86,13 +80,13 @@ public class RelationChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
          }
-         if(adapter.isInstance(getToTransactionId()) && isHistorical()){
+         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
          }
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } catch (ArtifactDoesNotExist ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -199,14 +193,6 @@ public class RelationChanged extends Change {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getArtifactImage()
-    */
-   @Override
-   public Image getItemKindImage() throws OseeCoreException {
-      return getItemTypeImage();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemKind()
     */
    @Override
@@ -222,4 +208,11 @@ public class RelationChanged extends Change {
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemTypeId()
+    */
+   @Override
+   public int getItemTypeId() {
+      return relationType.getRelationTypeId();
+   }
 }

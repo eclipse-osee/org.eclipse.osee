@@ -21,30 +21,26 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.database.utility.DatabaseDataImporter;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class RestoreTableData implements IDbInitializationTask {
    private Set<String> schemas;
    private Map<String, SchemaData> userSpecifiedConfig;
-   private SupportedDatabase databaseType;
    private static final File backupDirectory = new File("backupDirectory");
 
-   public RestoreTableData(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, SupportedDatabase databaseType) {
+   public RestoreTableData(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) {
       this.schemas = schemas;
       this.userSpecifiedConfig = userSpecifiedConfig;
-      this.databaseType = databaseType;
    }
 
-   public void run(OseeConnection connection) throws OseeCoreException {
+   public void run() throws OseeCoreException {
       System.out.println("RestoreTables");
       System.out.flush();
-      SqlManager sqlManager = SqlFactory.getSqlManager(databaseType);
+      SqlManager sqlManager = SqlFactory.getSqlManager();
 
       for (String schemaKey : schemas) {
          if (userSpecifiedConfig.containsKey(schemaKey)) {
-            DatabaseDataImporter importer = new DatabaseDataImporter(connection, backupDirectory, sqlManager);
+            DatabaseDataImporter importer = new DatabaseDataImporter(backupDirectory, sqlManager);
             SchemaData schemaData = userSpecifiedConfig.get(schemaKey);
 
             setImportOrder(importer, schemaData);

@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -42,7 +43,7 @@ public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
    public class ArtifactLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
-         return ((Artifact) arg0).getImage();
+         return ImageManager.getImage((Artifact) arg0);
       }
 
       public String getText(Object arg0) {

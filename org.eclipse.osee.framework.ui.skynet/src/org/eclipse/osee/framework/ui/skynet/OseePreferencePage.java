@@ -21,9 +21,7 @@ import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -46,7 +44,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class OseePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;
-   private OseeUiActivator plugin = SkynetActivator.getInstance();
 
    private void createNetworkAdapterArea(Composite parent) {
       addDialogControls(parent);
@@ -117,7 +114,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    private void setupWordWrapChkButton() {
-      IPreferenceStore prefStore = plugin.getPreferenceStore();
+      IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
             PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
    }
@@ -145,7 +142,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
     */
    public void init(IWorkbench workbench) {
       // Initialize the preference store we wish to use
-      setPreferenceStore(plugin.getPreferenceStore());
+      setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
    }
 
    protected void performDefaults() {
@@ -165,7 +162,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          }
       }
 
-      SkynetActivator.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
+      SkynetGuiPlugin.getInstance().getPreferenceStore().putValue(PreferenceConstants.WORDWRAP_KEY,
             wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();

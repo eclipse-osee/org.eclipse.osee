@@ -16,6 +16,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -25,12 +27,12 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
    private final Collection<String> artifactTypeNames;
 
    public ArtifactTypesSearchItem(String name, Collection<String> artifactTypeNames) {
-      super(name, AtsPlugin.getInstance().getImage("flashlight.gif"));
+      super(name, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
       this.artifactTypeNames = artifactTypeNames;
    }
 
    public ArtifactTypesSearchItem(ArtifactTypesSearchItem artifactTypesSearchItem) {
-      super(artifactTypesSearchItem, AtsPlugin.getInstance().getImage("flashlight.gif"));
+      super(artifactTypesSearchItem, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
       this.artifactTypeNames = artifactTypesSearchItem.artifactTypeNames;
    }
 

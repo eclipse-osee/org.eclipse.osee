@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -85,7 +85,7 @@ public class AttributeTypeManager {
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
             } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -240,7 +240,7 @@ public class AttributeTypeManager {
          OseeEnumType enumType = OseeEnumTypeManager.getType(oseeEnumTypeId);
          return enumType.valuesAsOrderedStringSet();
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return Collections.emptySet();
       }
    }

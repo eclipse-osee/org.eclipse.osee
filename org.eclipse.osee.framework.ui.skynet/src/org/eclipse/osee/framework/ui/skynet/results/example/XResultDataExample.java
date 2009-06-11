@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.example;
 
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -27,7 +28,7 @@ public class XResultDataExample extends XNavigateItemAction {
     * @param parent
     */
    public XResultDataExample(XNavigateItem parent) {
-      super(parent, TITLE, SkynetGuiPlugin.getInstance().getImage("admin.gif"));
+      super(parent, TITLE, ImageManager.getImage(FrameworkImage.ADMIN));
    }
 
    /* (non-Javadoc)

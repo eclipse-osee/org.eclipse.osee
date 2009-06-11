@@ -44,7 +44,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       } else if (element instanceof RelationLink && columnIndex == 0) {
          RelationLink relation = (RelationLink) element;
          try {
-            return relation.getArtifactOnOtherSide(artifact).getArtifactType().getImage();
+            return ImageManager.getImage(relation.getArtifactOnOtherSide(artifact));
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

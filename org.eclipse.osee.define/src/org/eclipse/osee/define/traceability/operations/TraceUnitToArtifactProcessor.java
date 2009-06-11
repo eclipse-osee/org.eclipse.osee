@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -324,7 +323,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
                ArtifactCache.putByTextId(key, folder);
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetActivator.class, Level.INFO, "Created " + folderName + " because was not found.");
+            OseeLog.log(DefinePlugin.class, Level.INFO, "Created " + folderName + " because was not found.");
             folder = ArtifactTypeManager.addArtifact("Folder", branch, folderName);
             folder.persistAttributes(transaction);
             ArtifactCache.putByTextId(key, folder);

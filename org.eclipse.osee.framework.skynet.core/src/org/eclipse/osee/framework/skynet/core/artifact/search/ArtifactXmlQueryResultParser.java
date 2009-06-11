@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -56,7 +56,7 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
    }
 
    private void handleError(Throwable ex) {
-      OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      OseeLog.log(Activator.class, Level.SEVERE, ex);
    }
 
    public List<XmlArtifactSearchResult> getResults() {

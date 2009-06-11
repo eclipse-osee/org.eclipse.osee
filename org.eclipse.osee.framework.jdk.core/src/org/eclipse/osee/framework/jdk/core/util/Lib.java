@@ -379,6 +379,7 @@ public final class Lib {
       while ((numBytesRead = in.read(bytes)) != -1) {
          out.write(bytes, 0, numBytesRead);
       }
+      in.close();
       return out.toByteArray();
    }
 

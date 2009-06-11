@@ -16,7 +16,7 @@ import java.util.logging.LogRecord;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -42,7 +42,7 @@ public class SkynetUsageHandler extends Handler {
             log.writeOutLog();
          }
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -55,7 +55,7 @@ public class SkynetUsageHandler extends Handler {
       try {
          if (!OseeDbConnection.hasOpenConnection()) return;
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       if (record.getLevel().intValue() == Level.SEVERE.intValue() && record.getThrown() instanceof Exception) {
          UsageLog.getInstance().addEntry(new ExceptionEntry((Exception) record.getThrown()));

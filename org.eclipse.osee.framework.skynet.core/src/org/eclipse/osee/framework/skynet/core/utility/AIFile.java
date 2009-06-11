@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.IOException;
 import java.io.InputStream;

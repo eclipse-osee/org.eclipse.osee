@@ -80,7 +80,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
     */
    @Override
    public String getDescriptionUsage() {
-      return "Removes trace marks from files selected.\n*** WARNING: When \"Persist Changes\" is selected, files will be modified in place.\n There is no way to undo this operation - make sure you know what you are doing. ***\n ";
+      return "Removes trace marks from files selected.\n*** WARNING_OVERLAY: When \"Persist Changes\" is selected, files will be modified in place.\n There is no way to undo this operation - make sure you know what you are doing. ***\n ";
    }
 
    /* (non-Javadoc)

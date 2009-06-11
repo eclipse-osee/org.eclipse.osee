@@ -30,8 +30,6 @@ import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.IDbInitializationRule;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -94,13 +92,11 @@ public class DatabaseInitializationOperation {
             OseeLog.log(DatabaseActivator.class, Level.INFO, "Configuring Database...");
             long startTime = System.currentTimeMillis();
 
-            OseeConnection connection = OseeDbConnection.getConnection();
             try {
-               processTask(connection);
+               processTask();
             } catch (Throwable ex) {
                OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
             } finally {
-               connection.close();
                System.out.println(String.format("Database Configurationg completed in [%s] ms",
                      Lib.getElapseString(startTime)));
             }
@@ -112,7 +108,7 @@ public class DatabaseInitializationOperation {
       }
    }
 
-   private void processTask(OseeConnection connection) throws InvalidRegistryObjectException {
+   private void processTask() throws InvalidRegistryObjectException {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
 
       for (String pointId : getDbInitTasks()) {
@@ -123,7 +119,7 @@ public class DatabaseInitializationOperation {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
                try {
-                  runDbInitTasks(extension, connection);
+                  runDbInitTasks(extension);
                } catch (Throwable th) {
                   OseeLog.log(DatabaseActivator.class, Level.SEVERE, th);
                }
@@ -194,7 +190,7 @@ public class DatabaseInitializationOperation {
     * @throws IllegalAccessException
     * @throws InstantiationException
     */
-   private static void runDbInitTasks(IExtension extension, OseeConnection connection) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+   private static void runDbInitTasks(IExtension extension) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -221,7 +217,7 @@ public class DatabaseInitializationOperation {
                extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
          if (isExecutionAllowed) {
             IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
-            task.run(connection);
+            task.run();
          }
       }
    }

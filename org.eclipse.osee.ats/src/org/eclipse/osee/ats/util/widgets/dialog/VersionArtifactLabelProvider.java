@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
 
@@ -46,7 +47,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
    @Override
    public Image getImage(Object element) {
       if (element instanceof VersionArtifact) {
-         return ((VersionArtifact) element).getImage();
+         return ImageManager.getImage((VersionArtifact) element);
       }
       return null;
    }

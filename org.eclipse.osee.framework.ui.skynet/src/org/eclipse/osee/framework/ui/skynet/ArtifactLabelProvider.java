@@ -78,11 +78,11 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
     */
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getImage();
+         return ImageManager.getImage((Artifact) element);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
-         return ((Artifact) ((Match) element).getElement()).getImage();
+         return ImageManager.getImage((Artifact) ((Match) element).getElement());
       }
-      return plugin.getImage("laser_16_16.gif");
+      return ImageManager.getMissingImage();
    }
 
    /*
