@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.initialize;
 import java.util.List;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
  */
 public class DbFactory {
    private SchemaData schemaData;
-   protected SqlManager sqlManager;
+   protected SqlManager sqlManager = SqlFactory.getSqlManager();
 
    public DbFactory(SchemaData schemaData) throws OseeDataStoreException {
       this.schemaData = schemaData;
