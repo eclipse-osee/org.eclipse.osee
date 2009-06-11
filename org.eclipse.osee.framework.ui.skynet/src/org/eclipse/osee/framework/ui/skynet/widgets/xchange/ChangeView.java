@@ -56,7 +56,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ChangeView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
 
-   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView";
+   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
    private XChangeWidget xChangeWidget;
    private Branch branch;
