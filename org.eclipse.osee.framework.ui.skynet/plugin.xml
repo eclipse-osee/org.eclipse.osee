@@ -677,7 +677,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
+                    value="org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
               </equals>
            </with>
            <with
