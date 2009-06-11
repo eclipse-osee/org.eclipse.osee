@@ -35,10 +35,10 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
  * 
  * @author Donald G. Dunne
  */
-public class ClientSystemManagerRequestHandler implements IHttpServerRequest {
+public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private enum RequestCmd {
-      log, info
+      log, info, ping
    }
 
    /* (non-Javadoc)
@@ -60,10 +60,13 @@ public class ClientSystemManagerRequestHandler implements IHttpServerRequest {
             RequestCmd requestCmd = RequestCmd.valueOf(cmd);
             switch (requestCmd) {
                case log:
-                  displayResults(getLogString(), httpRequest, httpResponse);
+                  sendResults(getLogString(), httpRequest, httpResponse);
                   break;
                case info:
-                  displayResults(getInfoString(), httpRequest, httpResponse);
+                  sendResults(getInfoString(), httpRequest, httpResponse);
+                  break;
+               case ping:
+                  sendResults("ping", httpRequest, httpResponse);
                   break;
                default:
                   break;
@@ -107,7 +110,7 @@ public class ClientSystemManagerRequestHandler implements IHttpServerRequest {
       return sb.toString();
    }
 
-   private void displayResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
+   private void sendResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
       try {
          httpResponse.getPrintStream().println(results);
       } catch (Exception ex) {

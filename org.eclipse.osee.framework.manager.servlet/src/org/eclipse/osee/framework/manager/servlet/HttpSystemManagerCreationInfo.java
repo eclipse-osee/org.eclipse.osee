@@ -19,21 +19,15 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 class HttpSystemManagerCreationInfo {
 
    enum ManagerFunction {
-      userId
+      userId, sessionId
    };
 
-   private ManagerFunction function;
-   private final String userId;
+   protected final String userId;
+   protected final String sessionId;
 
    public HttpSystemManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
       userId = req.getParameter("userId");
-   }
-
-   /**
-    * @return the userId
-    */
-   public String getUserId() {
-      return userId;
+      sessionId = req.getParameter("sessionId").replaceAll(" ", "+");
    }
 
 }
