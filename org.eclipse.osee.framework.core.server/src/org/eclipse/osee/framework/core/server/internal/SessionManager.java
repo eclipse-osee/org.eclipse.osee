@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -75,11 +77,19 @@ public class SessionManager implements ISessionManager {
    }
 
    public boolean isAlive(OseeSession oseeSession) throws Exception {
-      String results =
-            HttpProcessor.acquireString(new URL(
-                  "http://" + oseeSession.getClientAddress() + ":" + oseeSession.getPort() + "/osee/request?cmd=pingId"));
-      if (!Strings.isValid(results)) return false;
-      return (results.contains(oseeSession.getSessionId()));
+      boolean wasAlive = false;
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      URL url =
+            new URL(String.format("http://%s:%s/osee/request?cmd=pingId", oseeSession.getClientAddress(),
+                  oseeSession.getPort()));
+      AcquireResult result = HttpProcessor.acquire(url, outputStream);
+      if (result.wasSuccessful()) {
+         String sessionId = outputStream.toString(result.getEncoding());
+         if (Strings.isValid(sessionId)) {
+            wasAlive = sessionId.contains(oseeSession.getSessionId());
+         }
+      }
+      return wasAlive;
    }
 
    public Collection<SessionData> getSessions() {
