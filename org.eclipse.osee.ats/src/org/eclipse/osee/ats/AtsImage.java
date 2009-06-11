@@ -22,7 +22,9 @@ public enum AtsImage implements OseeImage {
    SUBSCRIBED("subscribed.gif"),
    GLOBE("globe.gif"),
    REPORT("report.gif"),
-   TASK("task.gif");
+   TASK("task.gif"),
+   ACTION("action.gif"),
+   ACTIONABLE_ITEM("AI.gif");
 
    private final String fileName;
 

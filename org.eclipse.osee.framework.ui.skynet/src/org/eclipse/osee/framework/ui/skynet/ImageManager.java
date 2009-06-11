@@ -161,7 +161,7 @@ public class ImageManager {
       return missingImage;
    }
 
-   public static Image getImage(Artifact artifact, OseeImage overlay, Location location) {
+   public static Image getImage(Artifact artifact, OseeImage overlay, Location location) throws OseeArgumentException {
       return instance.imageRegistry.get(instance.setupImageWithOverlay(instance.setupBaseImage(artifact), overlay,
             location));
    }
@@ -170,7 +170,7 @@ public class ImageManager {
       instance.providersMap.put(artifactType, imageProvider);
    }
 
-   public static Image getImage(ArtifactAnnotation.Type annotationType) {
+   public static Image getImage(ArtifactAnnotation.Type annotationType) throws OseeArgumentException {
       if (annotationType == ArtifactAnnotation.Type.Warning) {
          return getImage(FrameworkImage.WARNING);
       } else if (annotationType == ArtifactAnnotation.Type.Error) {
@@ -179,89 +179,11 @@ public class ImageManager {
       return getMissingImage();
    }
 
-   public static synchronized Image getImage(Artifact artifact) {/*
-                                                                                                                                                                     if (instance.imageRegistry.get("overrideImage") != null) {
-                                                                                                                                                                        return instance.imageRegistry.get("overrideImage");
-                                                                                                                                                                     }
-
-                                                                                                                                                                     String baseImageName = artifact.getArtifactTypeName();
-                                                                                                                                                                     Image baseImage;
-                                                                                                                                                                     if (artifact instanceof NativeArtifact) {
-                                                                                                                                                                        try {
-                                                                                                                                                                           baseImage = getImageForProgram(((NativeArtifact) artifact).getFileExtension());
-                                                                                                                                                                        } catch (Exception ex) {
-                                                                                                                                                                           baseImage = getBaseImage(artifact.getArtifactType());
-                                                                                                                                                                        }
-                                                                                                                                                                     } else {
-                                                                                                                                                                        baseImage = getBaseImage(artifact.getArtifactType());
-                                                                                                                                                                     }
-
-                                                                                                                                                                     if (AccessControlManager.hasLock(artifact)) {
-                                                                                                                                                                        OseeImage overlay =
-                                                                                                                                                                              AccessControlManager.getInstance().hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
-                                                                                                                                                                        return instance.getImageWithOverlay(baseImageName, baseImage, overlay.getFileName(), Location.TOP_LEFT);
-                                                                                                                                                                     }
-
-                                                                                                                                                                     try {
-
-                                                                                                                                                                        if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
-                                                                                                                                                                           return instance.getImageWithOverlay(baseImageName, baseImage, FrameworkImage.ERROR_OVERLAY.getFileName(),
-                                                                                                                                                                                 Location.BOT_LEFT);
-                                                                                                                                                                        } else if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
-                                                                                                                                                                           return instance.getImageWithOverlay(baseImageName, baseImage, FrameworkImage.WARNING_OVERLAY.getFileName(),
-                                                                                                                                                                                 Location.BOT_LEFT);
-                                                                                                                                                                        }
-                                                                                                                                                                     } catch (OseeCoreException ex) {
-                                                                                                                                                                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                                                                                                                                                                     }
-                                                                                                                                                                     return baseImage;*/
+   public static synchronized Image getImage(Artifact artifact) throws OseeArgumentException {
       return instance.imageRegistry.get(instance.setupImage(artifact));
    }
 
-   public static synchronized ImageDescriptor getImageDescriptor(Artifact artifact) {
-      /*
-       if (instance.imageRegistry.getDescriptor("overrideImage") != null) {
-          return instance.imageRegistry.getDescriptor("overrideImage");
-       }
-
-       String baseImageName = artifact.getArtifactTypeName();
-       ImageDescriptor baseImageDescriptor;
-       Image baseImage;
-       if (artifact instanceof NativeArtifact) {
-          try {
-             String extension = ((NativeArtifact) artifact).getFileExtension();
-             baseImageDescriptor = getImageDescriptorForProgram(extension);
-             baseImage = getImageForProgram(extension);
-          } catch (Exception ex) {
-             baseImageDescriptor = getBaseImageDescriptor(artifact.getArtifactType());
-             baseImage = getBaseImage(artifact.getArtifactType());
-          }
-       } else {
-          baseImageDescriptor = getBaseImageDescriptor(artifact.getArtifactType());
-          baseImage = getBaseImage(artifact.getArtifactType());
-       }
-
-       if (AccessControlManager.hasLock(artifact)) {
-          OseeImage overlay =
-                AccessControlManager.getInstance().hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
-          return instance.getImageDescriptorWithOverlay(baseImageName, baseImage, overlay.getFileName(),
-                Location.TOP_LEFT);
-       }
-
-       try {
-
-          if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
-             return instance.getImageDescriptorWithOverlay(baseImageName, baseImage,
-                   FrameworkImage.ERROR_OVERLAY.getFileName(), Location.BOT_LEFT);
-          } else if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
-             return instance.getImageDescriptorWithOverlay(baseImageName, baseImage,
-                   FrameworkImage.WARNING_OVERLAY.getFileName(), Location.BOT_LEFT);
-          }
-       } catch (OseeCoreException ex) {
-          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-       }
-       return baseImageDescriptor;
-       */
+   public static synchronized ImageDescriptor getImageDescriptor(Artifact artifact) throws OseeArgumentException {
       return instance.imageRegistry.getDescriptor(instance.setupImage(artifact));
    }
 
@@ -278,30 +200,32 @@ public class ImageManager {
     * 
     * @param artifactType
     * @return
+    * @throws OseeArgumentException
     */
-   public static synchronized Image getBaseImage(ArtifactType artifactType) {
+   public static synchronized Image getBaseImage(ArtifactType artifactType) throws OseeArgumentException {
       return instance.imageRegistry.get(instance.setupBaseImage(artifactType));
    }
 
-   public static synchronized Image getImage(OseeImage imageEnum) {
+   public static synchronized Image getImage(OseeImage imageEnum) throws OseeArgumentException {
       return instance.imageRegistry.get(instance.setupImage(imageEnum));
    }
 
-   public static synchronized ImageDescriptor getImageDescriptor(OseeImage imageEnum) {
+   public static synchronized ImageDescriptor getImageDescriptor(OseeImage imageEnum) throws OseeArgumentException {
       return instance.imageRegistry.getDescriptor(instance.setupImage(imageEnum));
    }
 
    /**
     * @param imageEnum representing the image that will be returned for all artifacts and artifact types
+    * @throws OseeArgumentException
     */
-   public static synchronized void setupOverrideImage(OseeImage imageEnum) {
+   public static synchronized void setupOverrideImage(OseeImage imageEnum) throws OseeArgumentException {
       instance.imageRegistry.remove("overrideImage");
       // causes the image descriptor to be put in the registry
       instance.setupImage(imageEnum.getSymbolicBundleName(), "overrideImage", imageEnum.getPath(),
             imageEnum.getFileName());
    }
 
-   private synchronized String setupBaseImage(Artifact artifact) {
+   private synchronized String setupBaseImage(Artifact artifact) throws OseeArgumentException {
       if (imageRegistry.getDescriptor("overrideImage") != null) {
          return "overrideImage";
       }
@@ -317,7 +241,7 @@ public class ImageManager {
       return setupBaseImage(artifact.getArtifactType());
    }
 
-   private synchronized String setupImage(Artifact artifact) {
+   private synchronized String setupImage(Artifact artifact) throws OseeArgumentException {
       String baseImageName = setupBaseImage(artifact);
 
       if (AccessControlManager.hasLock(artifact)) {
@@ -343,8 +267,9 @@ public class ImageManager {
     * @param overlay
     * @param location
     * @return
+    * @throws OseeArgumentException
     */
-   private synchronized String setupImageWithOverlay(String baseImageName, OseeImage overlay, Location location) {
+   private synchronized String setupImageWithOverlay(String baseImageName, OseeImage overlay, Location location) throws OseeArgumentException {
       String imageName = baseImageName + "_" + overlay.toString();
       ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(imageName);
       if (imageDescriptor == null) {
@@ -355,7 +280,7 @@ public class ImageManager {
       return imageName;
    }
 
-   private synchronized String setupBaseImage(ArtifactType artifactType) {
+   private synchronized String setupBaseImage(ArtifactType artifactType) throws OseeArgumentException {
       String imageName = artifactType.getName();
       if (imageRegistry.getDescriptor(imageName) == null) {
          if (artifactType.getImageData() == null) {
@@ -370,16 +295,20 @@ public class ImageManager {
       return imageName;
    }
 
-   private String setupImage(OseeImage imageEnum) {
+   private String setupImage(OseeImage imageEnum) throws OseeArgumentException {
       return setupImage(imageEnum.getSymbolicBundleName(), imageEnum.toString(), imageEnum.getPath(),
             imageEnum.getFileName());
    }
 
-   private synchronized String setupImage(String symbolicBundleName, String imageName, String imagePath, String imageFileName) {
+   private synchronized String setupImage(String symbolicBundleName, String imageName, String imagePath, String imageFileName) throws OseeArgumentException {
       if (imageRegistry.getDescriptor(imageName) == null) {
+         String imageFullName = imagePath + File.separator + imageFileName;
          ImageDescriptor imageDescriptor =
-               AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName,
-                     imagePath + File.separator + imageFileName);
+               AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imageFullName);
+         if (imageDescriptor == null) {
+            throw new OseeArgumentException(String.format("Unable to load [%s] from bundle [%s]", imageFullName,
+                  symbolicBundleName));
+         }
          imageRegistry.put(imageName, imageDescriptor);
       }
       return imageName;
