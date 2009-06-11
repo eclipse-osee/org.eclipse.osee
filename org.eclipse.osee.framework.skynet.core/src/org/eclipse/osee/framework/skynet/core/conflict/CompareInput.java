@@ -13,7 +13,6 @@ import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author b1565043
@@ -66,10 +65,10 @@ public class CompareInput extends CompareEditorInput {
       }
 
       cc.setLeftLabel(nameLeft);
-      cc.setLeftImage(Artifact.getOverrideImage());
+//      cc.setLeftImage(Artifact.getOverrideImage());
 
       cc.setRightLabel(nameRight);
-      cc.setRightImage(Artifact.getOverrideImage());
+//      cc.setRightImage(Artifact.getOverrideImage());
 
 //      cc.setLeftEditable(true);
 //      cc.setRightEditable(true);
