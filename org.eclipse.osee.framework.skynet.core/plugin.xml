@@ -77,6 +77,10 @@
                ArtifactTypeName="Work Widget Definition"
                ImagePath="images/widget.gif">
          </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Universal Group"
+               ImagePath="images/group.gif">
+         </ArtifactImage>
       </extension>
       <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">

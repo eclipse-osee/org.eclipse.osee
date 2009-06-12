@@ -38,7 +38,6 @@ public class GroupLabelProvider extends LabelProvider {
          return ImageManager.getImage(item.getArtifact());
       }
       return ImageManager.getImage(FrameworkImage.MISSING);
-
    }
 
    /*
