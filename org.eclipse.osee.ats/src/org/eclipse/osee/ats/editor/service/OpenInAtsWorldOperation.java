@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.service;
 
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -67,7 +69,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globe.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
       return action;
    }
 

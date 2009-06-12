@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import java.util.ArrayList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.ui.PlatformUI;
@@ -42,12 +44,13 @@ public class AddNoteOperation extends WorkPageService {
    @Override
    public Action createToolbarService() {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performAddNote();
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newNote.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_NOTE));
       return action;
    }
 

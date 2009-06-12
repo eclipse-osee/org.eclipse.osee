@@ -12,7 +12,8 @@ package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 
 /**
@@ -34,12 +35,13 @@ public class OpenInSkyWalkerOperation extends WorkPageService {
    @Override
    public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performOpen();
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("skywalker.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER));
       return action;
    }
 

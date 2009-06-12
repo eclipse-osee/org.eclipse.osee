@@ -11,7 +11,8 @@
 package org.eclipse.osee.ats.workflow.editor.actions;
 
 import org.eclipse.gef.palette.ToolEntry;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -25,8 +26,8 @@ public class ValidateDiagramToolEntry extends ToolEntry {
     * @param iconLarge
     */
    public ValidateDiagramToolEntry() {
-      super("Validate Diagram", "Validate", AtsPlugin.getInstance().getImageDescriptor("check.gif"),
-            AtsPlugin.getInstance().getImageDescriptor("check.gif"), ValidateDiagramTool.class);
+      super("Validate Diagram", "Validate", ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE),
+            ImageManager.getImageDescriptor(AtsImage.CHECK_BLUE), ValidateDiagramTool.class);
    }
 
 }

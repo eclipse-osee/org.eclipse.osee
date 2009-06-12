@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -44,7 +46,7 @@ public class PrivilegedEditService extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("privEdit.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.PRIVILEDGED_EDIT));
       return action;
    }
 

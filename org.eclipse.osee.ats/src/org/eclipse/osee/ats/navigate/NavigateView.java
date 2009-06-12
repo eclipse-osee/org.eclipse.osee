@@ -15,6 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
@@ -27,6 +28,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AudioFile;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -222,7 +225,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
+      myWorldAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.MY_WORLD));
       myWorldAction.setToolTipText("My World");
 
       Action myFavoritesAction = new Action("My Favorites") {
@@ -237,7 +240,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      myFavoritesAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("star.gif"));
+      myFavoritesAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.FAVORITE));
       myFavoritesAction.setToolTipText("My Favorites");
 
       Action collapseAction = new Action("Collapse All") {
@@ -247,7 +250,7 @@ public class NavigateView extends ViewPart implements IActionable {
             xNavComp.refresh();
          }
       };
-      collapseAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
+      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
       collapseAction.setToolTipText("Collapse All");
 
       Action expandAction = new Action("Expand All") {
@@ -257,7 +260,7 @@ public class NavigateView extends ViewPart implements IActionable {
             xNavComp.getFilteredTree().getViewer().expandAll();
          }
       };
-      expandAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("expandAll.gif"));
+      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPAND_ALL));
       expandAction.setToolTipText("Expand All");
 
       Action openByIdAction = new Action("Open by Id") {
@@ -272,7 +275,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      openByIdAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("openId.gif"));
+      openByIdAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.OPEN_BY_ID));
       openByIdAction.setToolTipText("Open by Id");
 
       Action openChangeReportById = new Action("Open Change Report by Id") {
@@ -286,7 +289,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      openChangeReportById.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      openChangeReportById.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
       openChangeReportById.setToolTipText("Open Change Report by Id");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();

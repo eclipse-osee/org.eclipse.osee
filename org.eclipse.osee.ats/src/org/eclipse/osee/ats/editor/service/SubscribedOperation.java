@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 public class SubscribedOperation extends WorkPageService {
 
    private Action action;
-   private static ImageDescriptor subscribeEmailDescriptor;
 
    public SubscribedOperation(SMAManager smaMgr) {
       super(smaMgr);
@@ -40,10 +39,7 @@ public class SubscribedOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      if (subscribeEmailDescriptor == null) {
-         subscribeEmailDescriptor = AtsPlugin.getInstance().getImageDescriptor("subscribedEmail.gif");
-      }
-      action.setImageDescriptor(subscribeEmailDescriptor);
+      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED_EMAIL));
       return action;
    }
 

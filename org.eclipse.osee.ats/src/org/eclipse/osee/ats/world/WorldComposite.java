@@ -349,7 +349,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          }
       };
-      newWorldEditor.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globe.gif"));
+      newWorldEditor.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
       newWorldEditor.setToolTipText("Open in ATS World Editor");
 
       Action newWorldEditorSelected = new Action("Open Selected in ATS World Editor") {
@@ -369,7 +369,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
          }
       };
-      newWorldEditorSelected.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("globeSelect.gif"));
+      newWorldEditorSelected.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE_SELECT));
       newWorldEditorSelected.setToolTipText("Open Selected in ATS World Editor");
 
       Action expandAllAction = new Action("Expand All") {
@@ -379,7 +379,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             worldXViewer.expandAll();
          }
       };
-      expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("expandAll.gif"));
+      expandAllAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPAND_ALL));
       expandAllAction.setToolTipText("Expand All");
 
       Action collapseAllAction = new Action("Collapse All") {
@@ -389,7 +389,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             worldXViewer.collapseAll();
          }
       };
-      collapseAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
+      collapseAllAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
       collapseAllAction.setToolTipText("Collapse All");
 
       filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {

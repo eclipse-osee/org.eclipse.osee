@@ -36,6 +36,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ActionDebug;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -831,7 +832,7 @@ public class HyperView extends ViewPart implements IPartListener {
       };
       centerAction.setText("Center");
       centerAction.setToolTipText("Center");
-      centerAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("center.gif"));
+      centerAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.CENTER));
 
       if (provideBackForwardActions()) {
          // Back Action
@@ -907,7 +908,7 @@ public class HyperView extends ViewPart implements IPartListener {
       };
       zoomInAction.setText("Zoom In");
       zoomInAction.setToolTipText("Zoom In");
-      zoomInAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("zoom_in.gif"));
+      zoomInAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ZOOM_IN));
       // Zoom Out
       Action zoomOutAction = new Action() {
 
@@ -931,7 +932,7 @@ public class HyperView extends ViewPart implements IPartListener {
       };
       zoomOutAction.setText("Zoom Out");
       zoomOutAction.setToolTipText("Zoom Out");
-      zoomOutAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("zoom_out.gif"));
+      zoomOutAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ZOOM_OUT));
 
       titleAction = new Action("Expand Titles", IAction.AS_CHECK_BOX) {
 

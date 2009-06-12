@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -47,7 +48,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       };
       toolBarAction.setToolTipText(getName());
-      toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_merge.gif"));
+      toolBarAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTGOING_Merged));
 
       OseeEventManager.addListener(this);
       refresh();

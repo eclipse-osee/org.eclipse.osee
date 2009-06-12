@@ -13,7 +13,8 @@ package org.eclipse.osee.define.navigate;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -40,12 +41,14 @@ public class DefineNavigateView extends ViewPart implements IActionable {
    public DefineNavigateView() {
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
@@ -61,11 +64,12 @@ public class DefineNavigateView extends ViewPart implements IActionable {
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             xNavComp.refresh();
          }
       };
-      refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       OseeAts.addBugToViewToolbar(this, this, DefinePlugin.getInstance(), VIEW_ID, "Define Navigator");

@@ -13,7 +13,8 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
 /**
@@ -36,12 +37,13 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
    public Action createToolbarService() {
       if (!AtsPlugin.isAtsAdmin()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performOpen();
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("artifact_editor.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
       return action;
    }
 

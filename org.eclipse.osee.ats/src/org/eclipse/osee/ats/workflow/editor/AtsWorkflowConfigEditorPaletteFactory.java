@@ -25,6 +25,7 @@ import org.eclipse.gef.requests.SimpleFactory;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.ValidateDiagramToolEntry;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.widgets.Display;
 
@@ -58,23 +60,22 @@ final class AtsWorkflowConfigEditorPaletteFactory {
 
       CombinedTemplateCreationEntry component =
             new CombinedTemplateCreationEntry("State", "Create a new Workflow State", WorkPageShape.class,
-                  new SimpleFactory(WorkPageShape.class),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle24.gif"));
+                  new SimpleFactory(WorkPageShape.class), ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       component =
             new CombinedTemplateCreationEntry("Completed State", "Create a Completed State",
                   CompletedWorkPageShape.class, new SimpleFactory(CompletedWorkPageShape.class),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle24.gif"));
+                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       component =
             new CombinedTemplateCreationEntry("Cancelled State", "Create a Cancelled State",
                   CancelledWorkPageShape.class, new SimpleFactory(CancelledWorkPageShape.class),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("rectangle24.gif"));
+                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       return componentsDrawer;
@@ -93,8 +94,8 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                public Object getObjectType() {
                   return DefaultTransitionConnection.class;
                }
-            }, AtsPlugin.getInstance().getImageDescriptor("connection_s16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("connection_s24.gif"));
+            }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+                  ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
       componentsDrawer.add(tool);
 
       tool =
@@ -106,8 +107,8 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                public Object getObjectType() {
                   return TransitionConnection.class;
                }
-            }, AtsPlugin.getInstance().getImageDescriptor("connection_s16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("connection_s24.gif"));
+            }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+                  ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
       componentsDrawer.add(tool);
 
       tool =
@@ -119,8 +120,8 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                public Object getObjectType() {
                   return ReturnTransitionConnection.class;
                }
-            }, AtsPlugin.getInstance().getImageDescriptor("connection_d16.gif"),
-                  AtsPlugin.getInstance().getImageDescriptor("connection_d24.gif"));
+            }, ImageManager.getImageDescriptor(AtsImage.CONECTION_16),
+                  ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
       componentsDrawer.add(tool);
 
       return componentsDrawer;

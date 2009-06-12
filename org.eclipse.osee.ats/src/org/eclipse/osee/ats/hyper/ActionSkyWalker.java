@@ -30,7 +30,8 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
@@ -89,7 +90,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       };
       action.setText("Refresh");
       action.setToolTipText("Refresh");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       tbm.add(action);
    }
 

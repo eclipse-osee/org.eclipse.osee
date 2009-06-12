@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -85,7 +87,7 @@ public class AdminView extends ViewPart implements IActionable {
             save();
          }
       };
-      saveAction.setImageDescriptor(plugin.getImageDescriptor("saved.gif"));
+      saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVED));
       saveAction.setToolTipText("Save");
 
       Action refreshAction = new Action("Refresh") {
@@ -99,7 +101,7 @@ public class AdminView extends ViewPart implements IActionable {
             }
          }
       };
-      refreshAction.setImageDescriptor(plugin.getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       Action broadcastMessage = new Action("Broadcast Message") {
@@ -121,7 +123,7 @@ public class AdminView extends ViewPart implements IActionable {
          }
       };
 
-      pingAction.setImageDescriptor(plugin.getImageDescriptor("help.gif"));
+      pingAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.HELP));
       pingAction.setToolTipText("Ping OSEE Clients");
       pingAction.setEnabled(AccessControlManager.isOseeAdmin());
 
@@ -220,9 +222,9 @@ public class AdminView extends ViewPart implements IActionable {
    public static void setSaveNeeded(boolean needed) {
 
       if (needed)
-         saveAction.setImageDescriptor(plugin.getImageDescriptor("needSave.gif"));
+         saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE_NEEDED));
       else
-         saveAction.setImageDescriptor(plugin.getImageDescriptor("saved.gif"));
+         saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVED));
    }
 
    /*
