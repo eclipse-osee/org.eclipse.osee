@@ -135,6 +135,7 @@ public class ViewWordChangeAndDiffTest {
    @After
    public void tearDown() throws Exception {
       if (!isWordRunning) {
+         Thread.sleep(7000);
          FrameworkTestUtil.killAllOpenWinword();
       }
    }
