@@ -212,7 +212,7 @@ public class ImageManager {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      return baseImageEnum.getImageKey();
+      return setupImage(baseImageEnum);
    }
 
    /**
