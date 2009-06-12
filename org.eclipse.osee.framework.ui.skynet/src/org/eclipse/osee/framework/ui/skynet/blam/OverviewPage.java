@@ -129,7 +129,7 @@ public class OverviewPage extends FormPage implements IActionable {
          }
       };
       runAction.setToolTipText("Starts the BLAM");
-      runAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("run_exc.gif"));
+      runAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.RUN_EXC));
       form.getToolBarManager().add(runAction);
 
       OseeAts.addButtonToEditorToolBar(editor, this, SkynetGuiPlugin.getInstance(), form.getToolBarManager(),

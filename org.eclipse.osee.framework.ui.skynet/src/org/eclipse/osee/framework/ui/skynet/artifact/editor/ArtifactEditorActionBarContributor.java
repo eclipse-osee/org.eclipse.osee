@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -96,10 +98,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private final class RevealBranchAction extends Action {
       public RevealBranchAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH));
          setToolTipText("Reveal the branch this artifact is on in the Branch Manager");
       }
 
+      @Override
       public void run() {
          try {
             BranchView.revealBranch(getSelectedArtifact().getBranch());
@@ -114,7 +117,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
       public DeleteArtifactAction() {
          super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("delete.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
       }
 
       @Override
@@ -137,10 +140,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
       public OpenHistoryAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("DBiconBlueEdit.GIF"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE));
          setToolTipText("Show this artifact in the Resource History");
       }
 
+      @Override
       public void run() {
          try {
             HistoryView.open(getSelectedArtifact());
@@ -153,10 +157,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private final class RevealInExplorerAction extends Action {
       public RevealInExplorerAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("magnify.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY));
          setToolTipText("Reveal this artifact in the Artifact Explorer");
       }
 
+      @Override
       public void run() {
          try {
             ArtifactExplorer.revealArtifact(getSelectedArtifact());
@@ -169,10 +174,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private final class AccessControlAction extends Action {
       public AccessControlAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("authenticated.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.AUTHENTICATED));
          setToolTipText("Access Control");
       }
 
+      @Override
       public void run() {
          try {
             PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), getSelectedArtifact());
@@ -186,10 +192,11 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private final class CopyArtifactURLAction extends Action {
       public CopyArtifactURLAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("copyToClipboard.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COPYTOCLIPBOARD));
          setToolTipText("Copy artifact url link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
       }
 
+      @Override
       public void run() {
          if (getSelectedArtifact() != null) {
             Clipboard clipboard = null;
@@ -218,6 +225,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
          setToolTipText("Open Outline");
       }
 
+      @Override
       public void run() {
          try {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(

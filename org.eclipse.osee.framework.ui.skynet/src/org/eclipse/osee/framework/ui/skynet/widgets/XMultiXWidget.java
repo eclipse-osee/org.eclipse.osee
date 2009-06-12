@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -64,7 +66,7 @@ public class XMultiXWidget extends XWidget {
       // Create add label / icon
       Label addLabel = new Label(group, SWT.NONE);
       if (toolkit != null) toolkit.adapt(addLabel, true, true);
-      Image image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("add.gif") : null;
+      Image image = SkynetGuiPlugin.getInstance() != null ? ImageManager.getImage(FrameworkImage.ADD_GREEN) : null;
       if (image != null)
          addLabel.setImage(image);
       else

@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.swt.SWT;
@@ -68,7 +70,7 @@ public class SkyWalkerView extends ViewPart {
    private String storedGuid;
    private String storedBrandId;
    private final SkyWalkerOptions options = new SkyWalkerOptions();
-   private List<Artifact> history = new LinkedList<Artifact>();
+   private final List<Artifact> history = new LinkedList<Artifact>();
    private Action filterAction;
    private Composite viewerComp;
    protected SashForm sashForm;
@@ -162,6 +164,7 @@ public class SkyWalkerView extends ViewPart {
       IToolBarManager tbm = bars.getToolBarManager();
 
       filterAction = new Action("Enable Filters", Action.AS_CHECK_BOX) {
+         @Override
          public void run() {
             options.setFilterEnabled(filterAction.isChecked());
             redraw();
@@ -173,6 +176,7 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(filterAction);
 
       Action action = new Action() {
+         @Override
          public void run() {
             ArtifactDoubleClick.openArtifact(viewer.getSelection());
          }
@@ -183,6 +187,7 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(action);
 
       action = new Action() {
+         @Override
          public void run() {
             if (history.size() > 0) {
                Artifact art = history.get(history.size() - 1);
@@ -197,6 +202,7 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(action);
 
       action = new Action() {
+         @Override
          public void run() {
             ImageCapture imgCapture = new ImageCapture(viewerComp);
             imgCapture.popupDialog();
@@ -208,6 +214,7 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(action);
 
       action = new Action() {
+         @Override
          public void run() {
             handleSaveOptions();
          }
@@ -218,6 +225,7 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(action);
 
       action = new Action() {
+         @Override
          public void run() {
             handleLoadOptions();
          }
@@ -228,13 +236,14 @@ public class SkyWalkerView extends ViewPart {
       tbm.add(action);
 
       action = new Action() {
+         @Override
          public void run() {
             redraw();
          }
       };
       action.setText("Refresh");
       action.setToolTipText("Refresh");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       tbm.add(action);
    }
 

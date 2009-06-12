@@ -30,7 +30,7 @@ public class ArtifactDecorator {
    private Action showArtVersion;
    private ShowAttributeAction attributesAction;
    private StructuredViewer viewer;
-   private String preferenceKey;
+   private final String preferenceKey;
 
    public ArtifactDecorator(StructuredViewer viewer, String preferenceKey) {
       this.viewer = viewer;
@@ -59,7 +59,7 @@ public class ArtifactDecorator {
                viewer.refresh();
             }
          };
-         showArtType.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+         showArtType.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       }
       if (showArtVersion == null) {
          showArtVersion = new Action("Show Artifact Version") {
@@ -70,7 +70,7 @@ public class ArtifactDecorator {
                viewer.refresh();
             }
          };
-         showArtVersion.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+         showArtVersion.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       }
 
       if (attributesAction == null) {
@@ -86,7 +86,7 @@ public class ArtifactDecorator {
                viewer.refresh();
             }
          };
-         showArtIds.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+         showArtIds.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       }
    }
 

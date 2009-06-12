@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -552,6 +553,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setId(COMPLETE_COMMIT_ACTION_ID);
       }
 
+      @Override
       public void run() {
          if (sourceBranch.isRebaselined()) {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
@@ -568,6 +570,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setEnabled(false);
       }
 
+      @Override
       public void run() {
          try {
             Branch sourceBranch = conflicts[0].getSourceBranch();
@@ -594,6 +597,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setToolTipText("Show Source Branch Change Report");
       }
 
+      @Override
       public void run() {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
@@ -621,6 +625,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setToolTipText("Show Destination Branch Change Report");
       }
 
+      @Override
       public void run() {
          if (conflicts.length != 0) {
             try {
@@ -636,11 +641,12 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       public RefreshAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
          setToolTipText("Refresh");
          setId(REFRESH_ACTION_ID);
       }
 
+      @Override
       public void run() {
          setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, true);
       }
@@ -653,6 +659,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setToolTipText("Customize Table");
       }
 
+      @Override
       public void run() {
          mergeXViewer.getCustomizeMgr().handleTableCustomization();
       }
@@ -665,6 +672,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          setToolTipText("Apply Merge Results From Prior Merge");
       }
 
+      @Override
       public void run() {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {

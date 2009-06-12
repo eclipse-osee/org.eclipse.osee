@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -435,25 +434,25 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    private void addOpenQuickSearchAction() {
-      ImageDescriptor descriptor = SkynetGuiPlugin.getInstance().getImageDescriptor("artifact_search.gif");
-      Action openQuickSearch = new Action("Quick Search", descriptor) {
-         @Override
-         public void run() {
-            try {
-               IViewPart viewPart =
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                           QuickSearchView.VIEW_ID);
-               if (viewPart != null) {
-                  Branch branch = getBranch();
-                  if (branch != null) {
-                     ((QuickSearchView) viewPart).setBranch(branch);
+      Action openQuickSearch =
+            new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
+               @Override
+               public void run() {
+                  try {
+                     IViewPart viewPart =
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                                 QuickSearchView.VIEW_ID);
+                     if (viewPart != null) {
+                        Branch branch = getBranch();
+                        if (branch != null) {
+                           ((QuickSearchView) viewPart).setBranch(branch);
+                        }
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
+            };
       openQuickSearch.setToolTipText("Opens Quick Search View");
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(openQuickSearch);
@@ -483,7 +482,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
       };
 
-      upAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("up.gif"));
+      upAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARROW_UP_YELLOW));
       upAction.setToolTipText("View Parent");
       updateEnablementsEtAl();
 
@@ -510,7 +509,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
       };
 
-      newArtifactExplorer.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("artifact_explorer.gif"));
+      newArtifactExplorer.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER));
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(newArtifactExplorer);
@@ -528,7 +527,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
       };
 
-      showChangeReport.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      showChangeReport.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(showChangeReport);
@@ -545,7 +544,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
       };
 
-      collapseAllAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
+      collapseAllAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAllAction);

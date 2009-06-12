@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.swt.SWT;
@@ -67,9 +69,10 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
                   Command command = commandService.getCommand(commandId);
                   CommandContributionItem contributionItem = null;
                   String label = selectedBranch.isArchived() ? "Unarchive" : "Archive";
-                  ImageDescriptor descriptor = selectedBranch.isArchived()? SkynetGuiPlugin.getInstance().getImageDescriptor("unarchive.gif") : SkynetGuiPlugin.getInstance().getImageDescriptor("archive.gif");
+                  ImageDescriptor descriptor =
+                        selectedBranch.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
                   contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
-                  
+
                   if (command != null && command.isEnabled()) {
                      contributionItems.add(contributionItem);
                   }
@@ -87,8 +90,8 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
 
       contributionItem =
             new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, descriptor,
-                  null, null, label, null, null, SWT.NONE, null, false));
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP,
+                  descriptor, null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

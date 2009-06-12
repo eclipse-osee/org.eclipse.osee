@@ -16,10 +16,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
@@ -56,7 +56,7 @@ public class ArtifactFormPage extends FormPage {
       Attributes, Relations, Details;
    }
 
-   private Map<SectionEnum, SectionPart> sectionParts;
+   private final Map<SectionEnum, SectionPart> sectionParts;
    private FormText infoText;
 
    public ArtifactFormPage(FormEditor editor, String id, String title) {
@@ -118,6 +118,7 @@ public class ArtifactFormPage extends FormPage {
    private void addMessageDecoration(ScrolledForm form) {
       form.getForm().addMessageHyperlinkListener(new HyperlinkAdapter() {
 
+         @Override
          public void linkActivated(HyperlinkEvent e) {
             String title = e.getLabel();
             Object href = e.getHref();
@@ -140,7 +141,7 @@ public class ArtifactFormPage extends FormPage {
       if (add) {
          manager.add(new RefreshAction());
          manager.add(new Separator());
-         ((ArtifactEditor) getEditor()).getActionBarContributor().contributeToToolBar(manager);
+         (getEditor()).getActionBarContributor().contributeToToolBar(manager);
          manager.update(true);
       } else {
          manager.removeAll();
@@ -254,11 +255,11 @@ public class ArtifactFormPage extends FormPage {
 
       public RefreshAction() {
          super();
-         ImageDescriptor refreshAction = SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif");
-         setImageDescriptor(refreshAction);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
          setToolTipText("Refresh Editor");
       }
 
+      @Override
       public void run() {
          refresh();
       }

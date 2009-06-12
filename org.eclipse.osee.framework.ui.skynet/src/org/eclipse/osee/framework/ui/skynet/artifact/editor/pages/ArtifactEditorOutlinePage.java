@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -61,7 +60,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       setInput(editor != null ? editor : "No Input Available");
 
       getSite().getActionBars().getToolBarManager().add(
-            new Action("Refresh", SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif")) {
+            new Action("Refresh", ImageManager.getImageDescriptor(FrameworkImage.REFRESH)) {
                @Override
                public void run() {
                   refresh();

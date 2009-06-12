@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.db.connection.core.query.QueryLog;
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -58,7 +60,8 @@ public class QueryLogView extends ViewPart implements IActionable {
       parent.setLayout(new GridLayout(1, false));
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      viewer = new XViewer(parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION, new QueryLogXViewerFactory(), false, false);
+      viewer =
+            new XViewer(parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION, new QueryLogXViewerFactory(), false, false);
       viewer.setContentProvider(new QueryLogContentProvider());
       viewer.setLabelProvider(new QueryLogLabelProvider(viewer));
       viewer.setInput(QueryLog.getInstance());
@@ -84,7 +87,7 @@ public class QueryLogView extends ViewPart implements IActionable {
             viewer.refresh();
          }
       };
-      refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       Action clearLogAction = new Action("Delete Log") {
