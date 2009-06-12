@@ -120,6 +120,8 @@ public class Operations {
       try {
          operation.run(monitor);
       } finally {
+         monitor.subTask("");
+         monitor.setTaskName("");
          monitor.done();
       }
    }
