@@ -112,7 +112,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          }
       }
 
-      XNavigateItem adminItems = new XNavigateItem(jhuItem, "JHU Admin");
+      XNavigateItem adminItems = new XNavigateItem(jhuItem, "JHU Admin", FrameworkImage.LASER);
 
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
@@ -121,7 +121,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
-      XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
+      XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);
 
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", FrameworkImage.ADMIN);

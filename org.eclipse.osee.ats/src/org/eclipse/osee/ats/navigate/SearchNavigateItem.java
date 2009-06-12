@@ -30,7 +30,7 @@ public class SearchNavigateItem extends XNavigateItem {
     * @throws OseeCoreException
     */
    public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) throws OseeCoreException {
-      super(parent, wsi.getName());
+      super(parent, wsi.getName(), AtsImage.GLOBE);
       this.wsi = wsi;
    }
 

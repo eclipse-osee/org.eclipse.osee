@@ -27,14 +27,17 @@ public class XNavigateItem {
    private XNavigateItem parent;
    private final Image image;
 
-   public XNavigateItem(XNavigateItem parent, String name) {
-      this(parent, name, null);
-   }
-
    public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
       this.parent = parent;
       this.name = name;
       this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
+      if (parent != null) parent.addChild(this);
+   }
+   
+   public XNavigateItem(XNavigateItem parent, String name, Image oseeImage) {
+      this.parent = parent;
+      this.name = name;
+      this.image = oseeImage;
       if (parent != null) parent.addChild(this);
    }
 

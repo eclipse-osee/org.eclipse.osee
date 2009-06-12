@@ -15,6 +15,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -41,10 +42,6 @@ public class XNavigateItemAction extends XNavigateItem {
       this.promptFirst = promptFirst;
    }
 
-   public XNavigateItemAction(XNavigateItem parent, Action action) {
-      this(parent, action, null, false);
-   }
-
    public XNavigateItemAction(XNavigateItem parent, Action action, OseeImage oseeImage) {
       this(parent, action, oseeImage, false);
    }
@@ -55,6 +52,13 @@ public class XNavigateItemAction extends XNavigateItem {
       this.promptFirst = promptFirst;
    }
 
+   @Deprecated
+   public XNavigateItemAction(XNavigateItem parent, Action action, Image oseeImage, boolean promptFirst) {
+      super(parent, action.getText(), oseeImage);
+      this.action = action;
+      this.promptFirst = promptFirst;
+   }
+   
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       if (action != null) {
