@@ -23,27 +23,26 @@
    </url>
 
    <includes
+         id="org.eclipse.osee.external.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.osee.framework.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.ats.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.define.feature"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.osee.framework.ui.feature"
          version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.osee.define.feature"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.osee.ats.feature"
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.external.feature"
-         version="0.0.0"/>
-
 </feature>
