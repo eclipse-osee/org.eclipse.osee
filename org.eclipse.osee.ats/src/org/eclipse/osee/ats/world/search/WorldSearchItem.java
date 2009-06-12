@@ -52,7 +52,7 @@ public abstract class WorldSearchItem {
       this.name = name;
       this.loadView = loadView;
       this.cancelled = cancelled;
-      this.image = ImageManager.getImage(oseeImage);
+      this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
    }
 
    public WorldSearchItem(String name, LoadView loadView, OseeImage oseeImage) {

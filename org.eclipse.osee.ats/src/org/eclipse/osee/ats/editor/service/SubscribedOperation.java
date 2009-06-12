@@ -39,7 +39,7 @@ public class SubscribedOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED_EMAIL));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED));
       return action;
    }
 

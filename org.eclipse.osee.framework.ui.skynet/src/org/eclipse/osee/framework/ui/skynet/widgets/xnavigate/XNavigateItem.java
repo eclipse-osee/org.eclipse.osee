@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XNavigateItem {
 
-   private List<XNavigateItem> children = new ArrayList<XNavigateItem>();
+   private final List<XNavigateItem> children = new ArrayList<XNavigateItem>();
    private String name;
    private XNavigateItem parent;
    private final Image image;
@@ -34,7 +34,7 @@ public class XNavigateItem {
    public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
       this.parent = parent;
       this.name = name;
-      this.image = ImageManager.getImage(oseeImage);
+      this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
       if (parent != null) parent.addChild(this);
    }
 
@@ -86,6 +86,7 @@ public class XNavigateItem {
       this.parent = parent;
    }
 
+   @Override
    public String toString() {
       return getName();
    }

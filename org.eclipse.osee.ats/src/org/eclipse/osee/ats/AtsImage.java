@@ -20,9 +20,10 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 public enum AtsImage implements OseeImage {
    RELEASED("orangeR_8_8.gif"),
    NEXT("yellowN_8_8.gif"),
-   FAVORITE("favorite.gif"),
-   SUBSCRIBED("subscribed.gif"),
-   SUBSCRIBED_EMAIL("subscribedEmail.gif"),
+   FAVORITE_OVERLAY("favorite.gif"),
+   FAVORITE("star.gif"),
+   SUBSCRIBED_OVERLAY("subscribed.gif"),
+   SUBSCRIBED("subscribedEmail.gif"),
    GLOBE("globe.gif"),
    GLOBE_SELECT("globeSelect.gif"),
    REPORT("report.gif"),
