@@ -34,13 +34,13 @@ import com.lowagie.text.rtf.RtfWriter2;
  */
 public class TableWriterAdaptor {
    public static final String ENCODING = "ISO-8859-1";
-   public final String PDF = "pdf";
-   public final String HTML = "html";
-   public final String RTF = "rtf";
+   public static final String PDF = "pdf";
+   public static final String HTML = "html";
+   public static final String RTF = "rtf";
 
-   private Document document;
+   private final Document document;
    private Table table;
-   private OutputStream outputStream;
+   private final OutputStream outputStream;
    private boolean complete;
    private String title;
    private DocWriter writer;
@@ -129,7 +129,7 @@ public class TableWriterAdaptor {
       document.addKeywords("Metadata, iText");
       document.addCreationDate();
       if (writer instanceof PdfWriter) {
-         PdfWriter pdfWriter = ((PdfWriter) writer);
+         PdfWriter pdfWriter = (PdfWriter) writer;
          pdfWriter.createXmpMetadata();
       }
       document.open();
