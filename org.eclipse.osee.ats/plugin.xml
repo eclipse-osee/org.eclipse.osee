@@ -201,26 +201,11 @@
             ArtifactTypeName="Review"
             ImagePath="images/R.gif"/>
       <ArtifactImage
-            ArtifactTypeName="Config Definition"
-            ImagePath="images/configDef.gif"/>
-      <ArtifactImage
             ArtifactTypeName="Reviewer"
             ImagePath="images/reviewer.gif"/>
       <ArtifactImage
-            ArtifactTypeName="Product Impact"
-            ImagePath="images/product.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Product Definition"
-            ImagePath="images/productDef.gif"/>
-      <ArtifactImage
             ArtifactTypeName="Version"
             ImagePath="images/version.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Aspect Definition"
-            ImagePath="images/aspectDef.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Aspect Impact"
-            ImagePath="images/aspect.gif"/>
       <ArtifactImage
             ArtifactTypeName="Task"
             ImagePath="images/task.gif"/>
@@ -233,9 +218,6 @@
       <ArtifactImage
             ArtifactTypeName="Team Workflow"
             ImagePath="images/workflow.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="User Community"
-            ImagePath="images/community.gif"/>
       <ArtifactImage
             ArtifactTypeName="Team Definition"
             ImagePath="images/team.gif"/>
