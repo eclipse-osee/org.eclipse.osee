@@ -11,7 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.Import;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,13 +24,15 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Robert A. Fisher
@@ -36,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class ArtifactImportOperation extends AbstractOperation {
    private final File file;
    private final IArtifactImportResolver artifactResolver;
-   private ArtifactExtractor extractor;
+   private final ArtifactExtractor extractor;
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;
@@ -74,7 +79,7 @@ public class ArtifactImportOperation extends AbstractOperation {
          doSubWork(subOperation, monitor, 0.20);
 
          importRoot.persistAttributesAndRelations(transaction);
-         monitor.setTaskName("Committing Transaction");
+         monitor.subTask("Committing Transaction");
          transaction.execute();
          monitor.worked(calculateWork(0.20));
 
@@ -93,24 +98,38 @@ public class ArtifactImportOperation extends AbstractOperation {
        */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         monitor.setTaskName("Validating Artifacts");
-
+         monitor.subTask("Validating Artifacts");
          List<Artifact> artifacts = importRoot.getDescendants();
          if (!artifacts.isEmpty()) {
-            int workAmount = getTotalWorkUnits() / artifacts.size();
-            List<String> errors = new ArrayList<String>();
-            for (Artifact artifactChanged : artifacts) {
-               IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
-               if (!status.isOK()) {
-                  setStatus(status);
-                  errors.add(String.format("%s:[%s] - %s", artifactChanged.getArtifactTypeName(),
-                        artifactChanged.getDescriptiveName(), status.getMessage()));
+            Writer writer = null;
+            try {
+               File file = null;
+               int totalArts = artifacts.size();
+               int workAmount = getTotalWorkUnits() / totalArts;
+               for (int index = 0; index < totalArts; index++) {
+                  monitor.subTask(String.format("Validating Artifacts: [%s of %s]", index + 1, totalArts));
+                  Artifact artifactChanged = artifacts.get(index);
+                  IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
+                  if (!status.isOK()) {
+                     setStatus(status);
+                     if (writer == null) {
+                        file = OseeData.getFile(String.format("OseeValidationErrors%s.txt", Lib.getDateTimeString()));
+                        writer = new BufferedWriter(new FileWriter(file));
+                     }
+                     writer.write(String.format("%s:[%s] - %s\n", artifactChanged.getArtifactTypeName(),
+                           artifactChanged.getDescriptiveName(), status.getMessage()));
+                  }
+                  monitor.worked(workAmount);
                }
-               monitor.worked(workAmount);
+            } finally {
+               if (writer != null) {
+                  writer.flush();
+                  writer.close();
+               }
             }
-            String message = Collections.toString("\n", errors);
-            System.out.println(message);
-            setStatusMessage(message);
+            if (file != null) {
+               Program.launch(file.getAbsolutePath());
+            }
          }
       }
    }
