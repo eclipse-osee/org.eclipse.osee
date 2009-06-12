@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.Collection;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,23 +51,23 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
 
-   public TeamWorkflowSearchWorkflowSearchItem() {
-      super("Team Workflow Search", AtsPlugin.getInstance().getImage("workflow.gif"));
+   public TeamWorkflowSearchWorkflowSearchItem() throws OseeArgumentException {
+      super("Team Workflow Search", AtsImage.TEAM_WORKFLOW);
    }
 
-   public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) {
-      super(editTeamWorkflowSearchItem, AtsPlugin.getInstance().getImage("workflow.gif"));
+   public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) throws OseeArgumentException {
+      super(editTeamWorkflowSearchItem, AtsImage.TEAM_WORKFLOW);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
     */
    @Override
-   public TeamWorkflowSearchWorkflowSearchItem copy() {
+   public TeamWorkflowSearchWorkflowSearchItem copy() throws OseeArgumentException {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
-   public TeamWorkflowSearchWorkflowSearchItem copyProvider() {
+   public TeamWorkflowSearchWorkflowSearchItem copyProvider() throws OseeArgumentException {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 

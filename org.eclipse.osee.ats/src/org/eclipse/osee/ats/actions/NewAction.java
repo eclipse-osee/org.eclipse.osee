@@ -13,12 +13,14 @@ package org.eclipse.osee.ats.actions;
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -36,7 +38,7 @@ public class NewAction extends Action {
    public NewAction(String actionableItem) {
       super("Create New Action");
       this.actionableItem = actionableItem;
-      setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newAction.gif"));
+      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_ACTION));
       setToolTipText("Create New Action");
    }
 

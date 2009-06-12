@@ -23,10 +23,19 @@ public enum AtsImage implements OseeImage {
    FAVORITE("favorite.gif"),
    SUBSCRIBED("subscribed.gif"),
    GLOBE("globe.gif"),
+   GLOBE_SELECT("globeSelect.gif"),
    REPORT("report.gif"),
    TASK("task.gif"),
    ACTION("action.gif"),
-   ACTIONABLE_ITEM("AI.gif");
+   ACTIONABLE_ITEM("AI.gif"),
+   CUSTOMIZE("customize.gif"),
+   NEW_ACTION("newAction.gif"),
+   ART_VIEW("artView.gif"),
+   PIN_EDITOR("pinEditor.gif"),
+   REVIEW("R.gif"),
+   TEAM_WORKFLOW("workflow.gif"),
+   OPEN_BY_ID("openId.gif"),
+   TOOL("tool.gif");
 
    private final String fileName;
 

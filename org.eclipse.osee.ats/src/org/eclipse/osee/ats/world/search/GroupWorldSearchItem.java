@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -31,13 +31,13 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private final Branch branch;
 
    public GroupWorldSearchItem(String displayName, String groupName, Branch branch) {
-      super(displayName, AtsPlugin.getInstance().getImage("group.gif"));
+      super(displayName, FrameworkImage.GROUP);
       this.groupName = groupName;
       this.branch = branch;
    }
 
    public GroupWorldSearchItem(Artifact group) {
-      super("Group Search", AtsPlugin.getInstance().getImage("group.gif"));
+      super("Group Search", FrameworkImage.GROUP);
       this.group = group;
       this.branch = group.getBranch();
    }
@@ -47,7 +47,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem, int toDifferentiateFromBranch) {
-      super(groupWorldSearchItem, AtsPlugin.getInstance().getImage("group.gif"));
+      super(groupWorldSearchItem, FrameworkImage.GROUP);
       this.group = groupWorldSearchItem.group;
       this.groupName = groupWorldSearchItem.groupName;
       this.selectedGroup = groupWorldSearchItem.selectedGroup;

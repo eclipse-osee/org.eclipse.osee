@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +34,7 @@ public class MyOrigSearchItem extends UserSearchItem {
    };
 
    public MyOrigSearchItem(String name, User user, OriginatedState originatedState) {
-      super(name, user, AtsPlugin.getInstance().getImage("user.gif"));
+      super(name, user, FrameworkImage.USER);
       this.originatedState = originatedState;
    }
 

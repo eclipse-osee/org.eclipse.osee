@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
@@ -103,7 +102,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
-         items.add(new XNavigateItemAction(null, new NewAction(), AtsPlugin.getInstance().getImage("newAction.gif")));
+         items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
          XNavigateItem otherItems = new XNavigateItemFolder(null, "Other My Searches");
@@ -145,7 +144,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          XNavigateItem releaseItems = new XNavigateItem(null, "Versions", FrameworkImage.VERSION);
          new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
-               ImageManager.getImage(FrameworkImage.VERSION));
+               FrameworkImage.VERSION);
          new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
                LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
@@ -157,7 +156,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          addExtensionPointItems(items);
 
-         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsPlugin.getInstance().getImage("R.gif"));
+         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s", DecisionReviewArtifact.ARTIFACT_NAME, false,
                false));
@@ -203,7 +202,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(reportItems);
 
-         XNavigateItem importItems = new XNavigateItem(null, "Import", AtsPlugin.getInstance().getImage("import.gif"));
+         XNavigateItem importItems = new XNavigateItem(null, "Import", FrameworkImage.IMPORT);
          new ImportActionsViaSpreadsheet(importItems);
          items.add(importItems);
 

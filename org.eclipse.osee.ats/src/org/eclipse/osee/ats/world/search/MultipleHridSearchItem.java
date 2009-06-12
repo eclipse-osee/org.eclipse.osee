@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -49,7 +50,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    private Branch branch;
 
    public MultipleHridSearchItem(String name) {
-      super(name, AtsPlugin.getInstance().getImage("openId.gif"));
+      super(name, AtsImage.OPEN_BY_ID);
    }
 
    public MultipleHridSearchItem() {
@@ -57,7 +58,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    }
 
    public MultipleHridSearchItem(MultipleHridSearchItem multipleHridSearchItem) {
-      super(multipleHridSearchItem, AtsPlugin.getInstance().getImage("openId.gif"));
+      super(multipleHridSearchItem, AtsImage.OPEN_BY_ID);
       this.enteredIds = multipleHridSearchItem.enteredIds;
    }
 

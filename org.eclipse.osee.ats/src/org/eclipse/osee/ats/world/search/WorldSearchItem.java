@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +67,7 @@ public abstract class WorldSearchItem {
       this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
    }
 
-   public abstract WorldSearchItem copy();
+   public abstract WorldSearchItem copy() throws OseeArgumentException;
 
    public String getName() throws OseeCoreException {
       return name;

@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Date;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -37,7 +38,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
     * @param parent
     */
    public NewPeerToPeerReviewItem(XNavigateItem parent) {
-      super(parent, "New Stand-alone Peer To Peer Review", AtsPlugin.getInstance().getImage("R.gif"));
+      super(parent, "New Stand-alone Peer To Peer Review", AtsImage.REVIEW);
    }
 
    /*

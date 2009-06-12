@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -40,12 +41,12 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    };
 
    public MyReviewWorkflowItem(String name, User user, ReviewState reviewState) {
-      super(name, user, AtsPlugin.getInstance().getImage("R.gif"));
+      super(name, user, AtsImage.REVIEW);
       this.reviewState = reviewState;
    }
 
    public MyReviewWorkflowItem(MyReviewWorkflowItem myReviewWorkflowItem) {
-      super(myReviewWorkflowItem, AtsPlugin.getInstance().getImage("R.gif"));
+      super(myReviewWorkflowItem, AtsImage.REVIEW);
       this.reviewState = myReviewWorkflowItem.reviewState;
    }
 

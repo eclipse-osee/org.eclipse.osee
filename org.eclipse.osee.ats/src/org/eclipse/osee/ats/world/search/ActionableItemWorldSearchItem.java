@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -45,7 +46,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private final Collection<String> actionItemNames;
 
    public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean recurseChildren) {
-      super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
+      super(displayName, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = actionItemNames;
       this.showFinished = showFinished;
       this.selectedShowFinished = showFinished; // Set as default in case UI is not used
@@ -54,7 +55,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean recurseChildren) {
-      super(displayName, AtsPlugin.getInstance().getImage("AI.gif"));
+      super(displayName, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = null;
       this.actionItems = actionItems;
       this.showFinished = showFinished;
@@ -62,7 +63,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    }
 
    public ActionableItemWorldSearchItem(ActionableItemWorldSearchItem item) {
-      super(item, AtsPlugin.getInstance().getImage("AI.gif"));
+      super(item, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = item.actionItemNames;
       this.actionItems = item.actionItems;
       this.showFinished = item.showFinished;

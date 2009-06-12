@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -47,7 +48,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public OpenChangeReportByIdItem(XNavigateItem parent) {
-      super(parent, "Open Change Report by ID", AtsPlugin.getInstance().getImage("openId.gif"));
+      super(parent, "Open Change Report by ID", AtsImage.OPEN_BY_ID);
    }
 
    /*

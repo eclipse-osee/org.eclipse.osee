@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -31,11 +31,11 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    public MyFavoritesSearchItem(String name, User user) {
-      super(name, user, AtsPlugin.getInstance().getImage("star.gif"));
+      super(name, user, AtsImage.FAVORITE);
    }
 
    public MyFavoritesSearchItem(MyFavoritesSearchItem myFavoritesSearchItem) {
-      super(myFavoritesSearchItem, AtsPlugin.getInstance().getImage("star.gif"));
+      super(myFavoritesSearchItem, AtsImage.FAVORITE);
    }
 
    @Override

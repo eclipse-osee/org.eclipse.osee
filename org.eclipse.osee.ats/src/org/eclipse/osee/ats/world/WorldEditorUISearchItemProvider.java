@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,7 +51,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
     */
    @Override
-   public IWorldEditorProvider copyProvider() {
+   public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
             tableLoadOptions);
    }

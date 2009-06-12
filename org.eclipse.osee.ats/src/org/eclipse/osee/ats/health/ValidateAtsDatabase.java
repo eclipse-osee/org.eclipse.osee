@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -79,13 +79,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    /**
     * @param parent
+    * @throws OseeArgumentException
     */
-   public ValidateAtsDatabase(XNavigateItem parent) {
+   public ValidateAtsDatabase(XNavigateItem parent) throws OseeArgumentException {
       this("Validate ATS Database", parent);
    }
 
-   public ValidateAtsDatabase(String name, XNavigateItem parent) {
-      super(parent, name, ImageManager.getImage(FrameworkImage.ADMIN));
+   public ValidateAtsDatabase(String name, XNavigateItem parent) throws OseeArgumentException {
+      super(parent, name, FrameworkImage.ADMIN);
    }
 
    /*

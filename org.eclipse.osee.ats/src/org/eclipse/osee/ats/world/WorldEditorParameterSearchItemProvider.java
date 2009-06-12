@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +51,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
     * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
     */
    @Override
-   public IWorldEditorProvider copyProvider() {
+   public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorParameterSearchItemProvider(
             (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
@@ -91,7 +92,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions);
       job.setUser(false);
       job.setPriority(Job.LONG);
-      job.schedule();           
+      job.schedule();
       if (forcePend) {
          try {
             job.join();

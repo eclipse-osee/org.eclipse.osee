@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -50,6 +51,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -499,16 +501,16 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       toReview.setToolTipText("Re-display as Reviews");
 
       if (toolBar != null) {
-         actionToToolItem(toolBar, refreshAction, "refresh.gif");
+         actionToToolItem(toolBar, refreshAction, FrameworkImage.REFRESH);
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, expandAllAction, "expandAll.gif");
-         actionToToolItem(toolBar, collapseAllAction, "collapseAll.gif");
-         actionToToolItem(toolBar, worldXViewer.getCustomizeAction(), "customize.gif");
+         actionToToolItem(toolBar, expandAllAction, FrameworkImage.EXPAND_ALL);
+         actionToToolItem(toolBar, collapseAllAction, FrameworkImage.COLLAPSE_ALL);
+         actionToToolItem(toolBar, worldXViewer.getCustomizeAction(), AtsImage.CUSTOMIZE);
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, newWorldEditor, "globe.gif");
-         actionToToolItem(toolBar, newWorldEditorSelected, "globeSelect.gif");
+         actionToToolItem(toolBar, newWorldEditor, AtsImage.GLOBE);
+         actionToToolItem(toolBar, newWorldEditorSelected, AtsImage.GLOBE_SELECT);
          new ToolItem(toolBar, SWT.SEPARATOR);
-         actionToToolItem(toolBar, new NewAction(), "newAction.gif");
+         actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
 
          OseeAts.addButtonToEditorToolBar(worldEditor, AtsPlugin.getInstance(), toolBar, WorldEditor.EDITOR_ID,
                "ATS World");
@@ -571,10 +573,10 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    }
 
-   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, String imageName) {
+   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, OseeImage imageEnum) {
       final Action fAction = action;
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(AtsPlugin.getInstance().getImage(imageName));
+      item.setImage(ImageManager.getImage(imageEnum));
       item.setToolTipText(action.getToolTipText());
       item.addSelectionListener(new SelectionAdapter() {
          @Override

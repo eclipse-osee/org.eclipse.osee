@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -56,7 +57,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final ReleasedOption releasedOption;
 
    public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
-      super(displayName, AtsPlugin.getInstance().getImage("workflow.gif"));
+      super(displayName, AtsImage.TEAM_WORKFLOW);
       this.versionArt = versionArt;
       this.userArt = userArt;
       if (teamDefNames != null) {
@@ -72,7 +73,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
-      super(displayName, AtsPlugin.getInstance().getImage("workflow.gif"));
+      super(displayName, AtsImage.TEAM_WORKFLOW);
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.recurseChildren = recurseChildren;
@@ -85,7 +86,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public TeamWorldSearchItem(TeamWorldSearchItem teamWorldUISearchItem) {
-      super(teamWorldUISearchItem, AtsPlugin.getInstance().getImage("workflow.gif"));
+      super(teamWorldUISearchItem, AtsImage.TEAM_WORKFLOW);
       this.versionArt = null;
       this.userArt = null;
       this.releasedOption = null;

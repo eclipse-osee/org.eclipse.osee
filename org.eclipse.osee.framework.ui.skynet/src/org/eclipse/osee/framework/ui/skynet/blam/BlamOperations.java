@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
@@ -53,8 +52,7 @@ public class BlamOperations {
 
    public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
-      XNavigateItem blamOperationItems =
-            new XNavigateItem(null, "Blam Operations", SkynetGuiPlugin.getInstance().getImage("blam.gif"));
+      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
       for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
 
          // Create categories first (so can have them up top)

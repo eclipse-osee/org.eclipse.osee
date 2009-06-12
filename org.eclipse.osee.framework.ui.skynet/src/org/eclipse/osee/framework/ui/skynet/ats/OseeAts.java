@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -78,7 +80,7 @@ public class OseeAts {
          }
       };
       bugAction.setToolTipText(BUG_TITLE);
-      bugAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("bug.gif"));
+      bugAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BUG));
       toolBar.add(bugAction);
    }
 
@@ -99,7 +101,7 @@ public class OseeAts {
 
       if (toolBar != null) {
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(SkynetGuiPlugin.getInstance().getImage("bug.gif"));
+         item.setImage(ImageManager.getImage(FrameworkImage.BUG));
          item.setToolTipText(BUG_TITLE);
          item.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -116,7 +118,7 @@ public class OseeAts {
       } else if (comp != null) {
          Button bugButton = new Button(comp, SWT.PUSH);
          bugButton.setToolTipText(BUG_TITLE);
-         bugButton.setImage(SkynetGuiPlugin.getInstance().getImage("bug.gif"));
+         bugButton.setImage(ImageManager.getImage(FrameworkImage.BUG));
          bugButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -172,7 +174,7 @@ public class OseeAts {
             createActionViaBug(desc, actionableItem);
          }
       };
-      bugAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("bug.gif"));
+      bugAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BUG));
       bugAction.setToolTipText("Generate Action Against This View");
 
       IToolBarManager toolbarManager = viewPart.getViewSite().getActionBars().getToolBarManager();
@@ -251,7 +253,7 @@ public class OseeAts {
          this.target = target;
          this.actionableItem = actionableItem;
          setToolTipText(BUG_TITLE);
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("bug.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BUG));
       }
 
       @Override

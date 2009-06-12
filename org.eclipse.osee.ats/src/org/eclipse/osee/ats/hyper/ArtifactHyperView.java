@@ -20,6 +20,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.ActionDebug;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -232,7 +234,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          }
       };
       pinAction.setToolTipText("Keep viewer from updating based on open Actions.");
-      pinAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("pinEditor.gif"));
+      pinAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.PIN_EDITOR));
 
       Action openArtAction = new Action("Open Artifact") {
 
@@ -242,7 +244,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          }
       };
       openArtAction.setToolTipText("Open Artifact");
-      openArtAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("artView.gif"));
+      openArtAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ART_VIEW));
 
       Action openByIdAction = new Action("Open by Id", IAction.AS_PUSH_BUTTON) {
 

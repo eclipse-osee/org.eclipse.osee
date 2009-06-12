@@ -338,7 +338,7 @@ public class TaskComposite extends Composite implements IActionable {
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
-      WorldComposite.actionToToolItem(toolBar, new NewAction(), "newAction.gif");
+      WorldComposite.actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
       OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
