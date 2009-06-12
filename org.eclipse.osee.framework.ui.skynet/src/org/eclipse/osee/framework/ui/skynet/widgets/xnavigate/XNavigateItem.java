@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.graphics.Image;
 
@@ -29,10 +31,10 @@ public class XNavigateItem {
       this(parent, name, null);
    }
 
-   public XNavigateItem(XNavigateItem parent, String name, Image image) {
+   public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
       this.parent = parent;
       this.name = name;
-      this.image = image;
+      this.image = ImageManager.getImage(oseeImage);
       if (parent != null) parent.addChild(this);
    }
 

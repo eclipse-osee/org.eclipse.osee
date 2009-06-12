@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -46,19 +45,19 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    private final String teamDefName;
 
    public GenerateFullVersionReportItem(XNavigateItem parent) {
-      super(parent, "Generate Full Version Report", ImageManager.getImage(FrameworkImage.VERSION));
+      super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
       this.teamDefName = null;
       this.teamDef = null;
    }
 
    public GenerateFullVersionReportItem(XNavigateItem parent, TeamDefinitionArtifact teamDef) {
-      super(parent, "Generate Full Version Report", ImageManager.getImage(FrameworkImage.VERSION));
+      super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
       this.teamDefName = null;
       this.teamDef = teamDef;
    }
 
    public GenerateFullVersionReportItem(XNavigateItem parent, String teamDefName) {
-      super(parent, "Generate Full Version Report", ImageManager.getImage(FrameworkImage.VERSION));
+      super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }

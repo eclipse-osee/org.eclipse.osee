@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -46,7 +45,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     */
    public CreateNewVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
       super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + " Version",
-            ImageManager.getImage(FrameworkImage.VERSION));
+            FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 

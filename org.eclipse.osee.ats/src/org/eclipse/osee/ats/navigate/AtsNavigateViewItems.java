@@ -143,8 +143,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
                false, false)));
 
-         XNavigateItem releaseItems =
-               new XNavigateItem(null, "Versions", ImageManager.getImage(FrameworkImage.VERSION));
+         XNavigateItem releaseItems = new XNavigateItem(null, "Versions", FrameworkImage.VERSION);
          new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
                ImageManager.getImage(FrameworkImage.VERSION));
          new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
@@ -175,7 +174,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);
 
-         XNavigateItem stateItems = new XNavigateItem(null, "States", ImageManager.getImage(AtsImage.GLOBE));
+         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.GLOBE);
          new SearchNavigateItem(stateItems, new StateWorldSearchItem());
          new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
          items.add(stateItems);
@@ -187,16 +186,15 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem("Search ATS Titles", "Name", null)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
-         XNavigateItem reportItems = new XNavigateItem(null, "Reports", ImageManager.getImage(AtsImage.REPORT));
+         XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);
          new FirstTimeQualityMetricReportItem(reportItems);
-         new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World",
-               ImageManager.getImage(AtsImage.REPORT));
+         new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World", AtsImage.REPORT);
          new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
          new XResultDataExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
-         XNavigateItem emailItems = new XNavigateItem(null, "Email", ImageManager.getImage(FrameworkImage.EMAIL));
+         XNavigateItem emailItems = new XNavigateItem(null, "Email", FrameworkImage.EMAIL);
          new EmailTeamsItem(emailItems, null, MemberType.Both);
          new EmailTeamsItem(emailItems, null, MemberType.Leads);
          new EmailTeamsItem(emailItems, null, MemberType.Members);
@@ -212,7 +210,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          BlamOperations.addBlamOperationsToNavigator(items);
 
          if (AtsPlugin.isAtsAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin", ImageManager.getImage(FrameworkImage.ADMIN));
+            XNavigateItem adminItems = new XNavigateItem(null, "Admin", FrameworkImage.ADMIN);
 
             new AtsNotificationNavigateItem(adminItems);
             new AtsNotificationNavigateItem(adminItems, true);

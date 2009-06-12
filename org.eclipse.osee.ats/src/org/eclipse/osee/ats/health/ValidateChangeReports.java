@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -83,7 +82,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @param parent
     */
    public ValidateChangeReports(XNavigateItem parent) {
-      super(parent, "Validate Change Reports", ImageManager.getImage(FrameworkImage.ADMIN));
+      super(parent, "Validate Change Reports", FrameworkImage.ADMIN);
    }
 
    /*

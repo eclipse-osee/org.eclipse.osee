@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -39,19 +39,19 @@ public class NextVersionSearchItem extends WorldUISearchItem {
 
    /**
     * @param name
+    * @throws OseeArgumentException
     */
    public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
       this(null, teamDefHoldingVersions, loadView);
    }
 
    public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
-      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, AtsPlugin.getInstance().getImage(
-            "version.gif"));
+      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
    public NextVersionSearchItem(NextVersionSearchItem nextVersionSearchItem) {
-      super(nextVersionSearchItem, ImageManager.getImage(FrameworkImage.VERSION));
+      super(nextVersionSearchItem, FrameworkImage.VERSION);
       this.teamDefHoldingVersions = nextVersionSearchItem.teamDefHoldingVersions;
       this.selectedTeamDef = nextVersionSearchItem.selectedTeamDef;
    }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -45,7 +47,8 @@ public enum FrameworkImage implements OseeImage {
    RELATION("relate.gif"),
    REFRESH("refresh.gif"),
    EMAIL("email.gif"),
-   VERSION("version.gif");
+   VERSION("version.gif"),
+   MISSING("missing");
 
    private final String fileName;
 
@@ -54,26 +57,21 @@ public enum FrameworkImage implements OseeImage {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getSymbolicBundleName()
+    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageDescriptor()
     */
    @Override
-   public String getSymbolicBundleName() {
-      return SkynetGuiPlugin.PLUGIN_ID;
+   public ImageDescriptor createImageDescriptor() {
+      if (this == MISSING) {
+         return ImageDescriptor.getMissingImageDescriptor();
+      }
+      return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getFileName()
+    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
     */
    @Override
-   public String getFileName() {
+   public String getImageKey() {
       return fileName;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getPath()
-    */
-   @Override
-   public String getPath() {
-      return "images";
    }
 }

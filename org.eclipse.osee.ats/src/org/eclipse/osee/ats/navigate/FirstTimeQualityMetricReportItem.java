@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -53,7 +52,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    private final String teamDefName;
 
    public FirstTimeQualityMetricReportItem(XNavigateItem parent, String name, String teamDefName) {
-      super(parent, name, ImageManager.getImage(AtsImage.REPORT));
+      super(parent, name, AtsImage.REPORT);
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }

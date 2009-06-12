@@ -46,7 +46,7 @@ public enum ChangeType {
       } else if (this == ChangeType.Support) {
          return ImageManager.getImage(FrameworkImage.SUPPORT);
       }
-      return null;
+      return ImageManager.getImage(FrameworkImage.MISSING);
    }
    public static class ChangeTypeLabelProvider implements ILabelProvider {
 

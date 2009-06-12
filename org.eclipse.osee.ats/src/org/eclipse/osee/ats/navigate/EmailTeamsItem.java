@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -50,7 +49,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
             parent,
             "Email " + (teamDef == null ? "Team " : "\"" + teamDef + "\" Team ") + (Arrays.asList(memberType).contains(
                   MemberType.Both) ? "Leads / Members" : (Arrays.asList(memberType).contains(MemberType.Leads) ? "Leads" : "Members")),
-            ImageManager.getImage(FrameworkImage.EMAIL));
+            FrameworkImage.EMAIL);
       memberTypes = Arrays.asList(memberType);
       this.teamDef = teamDef;
    }

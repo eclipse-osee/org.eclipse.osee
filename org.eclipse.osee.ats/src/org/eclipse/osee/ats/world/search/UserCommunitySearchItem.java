@@ -16,11 +16,11 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -31,17 +31,17 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    private String selectedUserComm;
    private final String userCommName;
 
-   public UserCommunitySearchItem(String displayName, String userCommName) {
-      super(displayName, ImageManager.getImage(AtsImage.GLOBE));
+   public UserCommunitySearchItem(String displayName, String userCommName) throws OseeArgumentException {
+      super(displayName, AtsImage.GLOBE);
       this.userCommName = userCommName;
    }
 
-   public UserCommunitySearchItem() {
+   public UserCommunitySearchItem() throws OseeArgumentException {
       this("User Community Search", null);
    }
 
    public UserCommunitySearchItem(UserCommunitySearchItem userCommunitySearchItem) {
-      super(userCommunitySearchItem, ImageManager.getImage(AtsImage.GLOBE));
+      super(userCommunitySearchItem, AtsImage.GLOBE);
       this.userComm = userCommunitySearchItem.userComm;
       this.userCommName = userCommunitySearchItem.userCommName;
    }

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -33,8 +34,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this.user = user;
    }
 
-   public UserSearchItem(String name, User user, Image image) {
-      super(name, image);
+   public UserSearchItem(String name, User user, OseeImage oseeImage) {
+      super(name, oseeImage);
       this.user = user;
    }
 
@@ -42,8 +43,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this(userSearchItem, null);
    }
 
-   public UserSearchItem(UserSearchItem userSearchItem, Image image) {
-      super(userSearchItem, image);
+   public UserSearchItem(UserSearchItem userSearchItem, OseeImage oseeImage) {
+      super(userSearchItem, oseeImage);
       this.user = userSearchItem.user;
       this.selectedUser = userSearchItem.selectedUser;
    }

@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
@@ -53,7 +52,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
     * @param parent
     */
    public ArtifactImpactToActionSearchItem(XNavigateItem parent) {
-      super(parent, TITLE, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
+      super(parent, TITLE, FrameworkImage.FLASHLIGHT);
    }
 
    /*

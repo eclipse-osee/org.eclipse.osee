@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateUrlItem;
@@ -125,7 +124,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
       new ValidateAtsDatabase(healthItems);
 
-      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", ImageManager.getImage(FrameworkImage.ADMIN));
+      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", FrameworkImage.ADMIN);
       new PopulateDemoActions(demoItems);
 
       return items;

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -91,8 +92,7 @@ public class BlamOperations {
       // Create new folder category
       if (thisCategoryItem == null) {
          // Add to parentItem
-         thisCategoryItem =
-               new XNavigateItem(parentItem, firstElement, SkynetGuiPlugin.getInstance().getImage("folder.gif"));
+         thisCategoryItem = new XNavigateItem(parentItem, firstElement, FrameworkImage.FOLDER);
          String catName = "";
          for (int x = 0; x <= index; x++) {
             if (!catName.equals("")) {

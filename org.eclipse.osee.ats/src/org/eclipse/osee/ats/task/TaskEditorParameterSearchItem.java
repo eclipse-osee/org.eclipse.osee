@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.task;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
@@ -30,16 +30,18 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
 
    /**
     * @param name
+    * @throws OseeArgumentException
     */
    public TaskEditorParameterSearchItem(String name) {
-      super(name, LoadView.TaskEditor, ImageManager.getImage(AtsImage.TASK));
+      super(name, LoadView.TaskEditor, AtsImage.TASK);
    }
 
    /**
     * @param worldSearchItem
+    * @throws OseeArgumentException
     */
    public TaskEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
-      super(worldSearchItem, ImageManager.getImage(AtsImage.TASK));
+      super(worldSearchItem, AtsImage.TASK);
    }
 
    /* (non-Javadoc)

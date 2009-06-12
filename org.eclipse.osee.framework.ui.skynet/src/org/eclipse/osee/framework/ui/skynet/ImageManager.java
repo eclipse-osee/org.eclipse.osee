@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -45,8 +43,6 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.program.Program;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
@@ -85,12 +81,12 @@ public class ImageManager {
       throw new OseeArgumentException("Conflict not of supported type");
    }
 
-   private static Image getChangeTypeImageInternal(String baseImageName, ChangeType changeType, ModificationType modType) throws OseeArgumentException {
+   private static Image getChangeTypeImageInternal(OseeImage baseImage, ChangeType changeType, ModificationType modType) {
       if (changeType == CONFLICTING && modType == NEW) {
          modType = ModificationType.CHANGE;
       }
       OseeImage overlay = FrameworkImage.valueOf(changeType + "_" + modType.getDisplayName());
-      return instance.imageRegistry.get(instance.setupImageWithOverlay(baseImageName, overlay, Location.TOP_LEFT));
+      return instance.imageRegistry.get(instance.setupImageWithOverlay(baseImage, overlay, Location.TOP_LEFT));
    }
 
    public static Image getChangeTypeImage(Change change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
@@ -128,41 +124,32 @@ public class ImageManager {
       throw new OseeArgumentException("Change not of supported type");
    }
 
-   private static Image getArtifactChangeImage(ArtifactType artifactType, ChangeType changeType, ModificationType modType) throws OseeArgumentException {
-      return getChangeTypeImageInternal(instance.setupBaseImage(artifactType), changeType, modType);
+   private static Image getArtifactChangeImage(ArtifactType artifactType, ChangeType changeType, ModificationType modType) {
+      return getChangeTypeImageInternal(BaseImage.getBaseImageEnum(artifactType), changeType, modType);
    }
 
-   private static Image getAttributeChangeImage(ChangeType changeType, ModificationType modType) throws OseeArgumentException {
-      return getChangeTypeImageInternal(instance.setupImage(FrameworkImage.ATTRIBUTE), changeType, modType);
+   private static Image getAttributeChangeImage(ChangeType changeType, ModificationType modType) {
+      return getChangeTypeImageInternal(FrameworkImage.ATTRIBUTE, changeType, modType);
    }
 
-   private static Image getRelationChangeImage(ChangeType changeType, ModificationType modType) throws OseeArgumentException {
-      return getChangeTypeImageInternal(instance.setupImage(FrameworkImage.RELATION), changeType, modType);
+   private static Image getRelationChangeImage(ChangeType changeType, ModificationType modType) {
+      return getChangeTypeImageInternal(FrameworkImage.RELATION, changeType, modType);
    }
 
    public static Image getImage(ArtifactType artifactType) {
       try {
          ArtifactImageProvider imageProvider = instance.providersMap.get(artifactType);
          if (imageProvider == null) {
-            return getBaseImage(artifactType);
+            return getImage(BaseImage.getBaseImageEnum(artifactType));
          }
          return imageProvider.getImage(artifactType);
       } catch (OseeCoreException ex) {
-         return getMissingImage();
+         return getImage(FrameworkImage.MISSING);
       }
    }
 
-   public static synchronized Image getMissingImage() {
-      Image missingImage = instance.imageRegistry.get("missing");
-      if (missingImage == null) {
-         instance.imageRegistry.put("missing", ImageDescriptor.getMissingImageDescriptor());
-         missingImage = instance.imageRegistry.get("missing");
-      }
-      return missingImage;
-   }
-
-   public static Image getImage(Artifact artifact, OseeImage overlay, Location location) throws OseeArgumentException {
-      return instance.imageRegistry.get(instance.setupImageWithOverlay(instance.setupBaseImage(artifact), overlay,
+   public static Image getImage(Artifact artifact, OseeImage overlay, Location location) {
+      return instance.imageRegistry.get(instance.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay,
             location));
    }
 
@@ -170,96 +157,62 @@ public class ImageManager {
       instance.providersMap.put(artifactType, imageProvider);
    }
 
-   public static Image getImage(ArtifactAnnotation.Type annotationType) throws OseeArgumentException {
+   public static Image getImage(ArtifactAnnotation.Type annotationType) {
       if (annotationType == ArtifactAnnotation.Type.Warning) {
          return getImage(FrameworkImage.WARNING);
       } else if (annotationType == ArtifactAnnotation.Type.Error) {
          return getImage(FrameworkImage.ERROR);
       }
-      return getMissingImage();
+      return getImage(FrameworkImage.MISSING);
    }
 
-   public static synchronized Image getImage(Artifact artifact) throws OseeArgumentException {
+   public static synchronized Image getImage(Artifact artifact) {
       return instance.imageRegistry.get(instance.setupImage(artifact));
    }
 
-   public static synchronized ImageDescriptor getImageDescriptor(Artifact artifact) throws OseeArgumentException {
+   public static synchronized ImageDescriptor getImageDescriptor(Artifact artifact) {
       return instance.imageRegistry.getDescriptor(instance.setupImage(artifact));
    }
 
-   public static synchronized Image getProgramImage(String extenstion) throws OseeArgumentException {
-      return instance.imageRegistry.get(instance.setupProgramImage(extenstion));
+   public static synchronized Image getProgramImage(String extension) {
+      return getImage(new ProgramImage(extension));
    }
 
-   public static synchronized ImageDescriptor getProgramImageDescriptor(String extenstion) throws OseeArgumentException {
-      return instance.imageRegistry.getDescriptor(instance.setupProgramImage(extenstion));
+   public static synchronized ImageDescriptor getProgramImageDescriptor(String extension) {
+      return getImageDescriptor(new ProgramImage(extension));
    }
 
-   /**
-    * This method is intended to only be called by ArtifactImageProviders
-    * 
-    * @param artifactType
-    * @return
-    * @throws OseeArgumentException
-    */
-   public static synchronized Image getBaseImage(ArtifactType artifactType) throws OseeArgumentException {
-      return instance.imageRegistry.get(instance.setupBaseImage(artifactType));
+   public static synchronized Image getImage(OseeImage imageEnum) {
+      return instance.imageRegistry.get(setupImage(imageEnum));
    }
 
-   public static synchronized Image getImage(OseeImage imageEnum) throws OseeArgumentException {
-      return instance.imageRegistry.get(instance.setupImage(imageEnum));
+   public static synchronized ImageDescriptor getImageDescriptor(OseeImage imageEnum) {
+      return instance.imageRegistry.getDescriptor(setupImage(imageEnum));
    }
 
-   public static synchronized ImageDescriptor getImageDescriptor(OseeImage imageEnum) throws OseeArgumentException {
-      return instance.imageRegistry.getDescriptor(instance.setupImage(imageEnum));
+   public static ImageDescriptor createImageDescriptor(String symbolicBundleName, String imagePath, String imageFileName) {
+      return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imagePath + File.separator + imageFileName);
    }
 
-   /**
-    * @param imageEnum representing the image that will be returned for all artifacts and artifact types
-    * @throws OseeArgumentException
-    */
-   public static synchronized void setupOverrideImage(OseeImage imageEnum) throws OseeArgumentException {
-      instance.imageRegistry.remove("overrideImage");
-      // causes the image descriptor to be put in the registry
-      instance.setupImage(imageEnum.getSymbolicBundleName(), "overrideImage", imageEnum.getPath(),
-            imageEnum.getFileName());
-   }
-
-   private synchronized String setupBaseImage(Artifact artifact) throws OseeArgumentException {
-      if (imageRegistry.getDescriptor("overrideImage") != null) {
-         return "overrideImage";
-      }
-
-      if (artifact instanceof NativeArtifact) {
-         try {
-            String extension = ((NativeArtifact) artifact).getFileExtension();
-            return setupProgramImage(extension);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-      return setupBaseImage(artifact.getArtifactType());
-   }
-
-   private synchronized String setupImage(Artifact artifact) throws OseeArgumentException {
-      String baseImageName = setupBaseImage(artifact);
+   private synchronized String setupImage(Artifact artifact) {
+      OseeImage baseImageEnum = BaseImage.getBaseImageEnum(artifact);
 
       if (AccessControlManager.hasLock(artifact)) {
          OseeImage overlay =
                AccessControlManager.getInstance().hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
-         return setupImageWithOverlay(baseImageName, overlay, Location.TOP_LEFT);
+         return setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT);
       }
 
       try {
          if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
-            return setupImageWithOverlay(baseImageName, FrameworkImage.ERROR_OVERLAY, Location.BOT_LEFT);
+            return setupImageWithOverlay(baseImageEnum, FrameworkImage.ERROR_OVERLAY, Location.BOT_LEFT);
          } else if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
-            return setupImageWithOverlay(baseImageName, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT);
+            return setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      return baseImageName;
+      return baseImageEnum.getImageKey();
    }
 
    /**
@@ -269,10 +222,10 @@ public class ImageManager {
     * @return
     * @throws OseeArgumentException
     */
-   private synchronized String setupImageWithOverlay(String baseImageName, OseeImage overlay, Location location) throws OseeArgumentException {
-      String imageName = baseImageName + "_" + overlay.toString();
-      ImageDescriptor imageDescriptor = imageRegistry.getDescriptor(imageName);
-      if (imageDescriptor == null) {
+   private synchronized String setupImageWithOverlay(OseeImage baseImageEnum, OseeImage overlay, Location location) {
+      String baseImageName = setupImage(baseImageEnum);
+      String imageName = baseImageName + "_" + overlay.getImageKey();
+      if (imageRegistry.getDescriptor(imageName) == null) {
          Image baseImage = imageRegistry.get(baseImageName);
          ImageDescriptor overlayDescriptor = imageRegistry.getDescriptor(setupImage(overlay));
          imageRegistry.put(imageName, new OverlayImage(baseImage, overlayDescriptor, location));
@@ -280,55 +233,20 @@ public class ImageManager {
       return imageName;
    }
 
-   private synchronized String setupBaseImage(ArtifactType artifactType) throws OseeArgumentException {
-      String imageName = artifactType.getName();
-      if (imageRegistry.getDescriptor(imageName) == null) {
-         if (artifactType.getImageData() == null) {
-            imageName = setupImage(FrameworkImage.LASER);
-         } else {
-            ImageDescriptor baseDescriptor =
-                  ImageDescriptor.createFromImageData(new ImageData(new ByteArrayInputStream(
-                        artifactType.getImageData())));
-            imageRegistry.put(imageName, baseDescriptor);
-         }
-      }
-      return imageName;
+   private static String setupImage(OseeImage imageEnum) {
+      return instance.setupImage(imageEnum.getImageKey(), imageEnum);
    }
 
-   private String setupImage(OseeImage imageEnum) throws OseeArgumentException {
-      return setupImage(imageEnum.getSymbolicBundleName(), imageEnum.toString(), imageEnum.getPath(),
-            imageEnum.getFileName());
-   }
-
-   private synchronized String setupImage(String symbolicBundleName, String imageName, String imagePath, String imageFileName) throws OseeArgumentException {
-      if (imageRegistry.getDescriptor(imageName) == null) {
-         String imageFullName = imagePath + File.separator + imageFileName;
-         ImageDescriptor imageDescriptor =
-               AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imageFullName);
+   private synchronized String setupImage(String imageKey, OseeImage imageEnum) {
+      if (imageRegistry.getDescriptor(imageKey) == null) {
+         ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {
-            throw new OseeArgumentException(String.format("Unable to load [%s] from bundle [%s]", imageFullName,
-                  symbolicBundleName));
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format("Unable to load the image for [%s]",
+                  imageEnum.toString()));
+            return setupImage(FrameworkImage.MISSING);
          }
-         imageRegistry.put(imageName, imageDescriptor);
+         imageRegistry.put(imageKey, imageDescriptor);
       }
-      return imageName;
-   }
-
-   private synchronized String setupProgramImage(String extenstion) throws OseeArgumentException {
-      if (extenstion == null) {
-         throw new OseeArgumentException("extenstion can not be null");
-      }
-      String imageName = "program" + extenstion;
-
-      if (imageRegistry.getDescriptor(imageName) == null) {
-         Program program = Program.findProgram(extenstion);
-         if (program == null || program.getImageData() == null) {
-            throw new OseeArgumentException("no program exists for this extenstion");
-         } else {
-            ImageDescriptor imageDescriptor = ImageDescriptor.createFromImageData(program.getImageData());
-            imageRegistry.put(imageName, imageDescriptor);
-         }
-      }
-      return imageName;
+      return imageKey;
    }
 }

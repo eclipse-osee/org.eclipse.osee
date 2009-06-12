@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -49,7 +48,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
     */
    public ReleaseVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
       super(parent, "Release " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version",
-            ImageManager.getImage(FrameworkImage.VERSION));
+            FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 

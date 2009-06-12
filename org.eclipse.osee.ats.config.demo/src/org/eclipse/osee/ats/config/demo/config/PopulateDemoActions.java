@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperation;
 import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;
@@ -87,7 +86,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
 
    public PopulateDemoActions(XNavigateItem parent) {
-      super(parent, "Populate Demo Actions", ImageManager.getImage(FrameworkImage.ADMIN));
+      super(parent, "Populate Demo Actions", FrameworkImage.ADMIN);
    }
 
    @Override

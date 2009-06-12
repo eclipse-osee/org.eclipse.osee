@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -44,23 +46,24 @@ public abstract class WorldSearchItem {
       this(name, loadView, null);
    }
 
-   public WorldSearchItem(String name, LoadView loadView, Image image) {
+   public WorldSearchItem(String name, LoadView loadView, boolean cancelled, OseeImage oseeImage) {
       super();
       this.name = name;
       this.loadView = loadView;
-      this.cancelled = false;
-      this.image = image;
+      this.cancelled = cancelled;
+      this.image = ImageManager.getImage(oseeImage);
+   }
+
+   public WorldSearchItem(String name, LoadView loadView, OseeImage oseeImage) {
+      this(name, loadView, false, oseeImage);
    }
 
    public WorldSearchItem(WorldSearchItem worldSearchItem) {
       this(worldSearchItem, null);
    }
 
-   public WorldSearchItem(WorldSearchItem worldSearchItem, Image image) {
-      this.name = worldSearchItem.name;
-      this.cancelled = worldSearchItem.cancelled;
-      this.loadView = worldSearchItem.loadView;
-      this.image = image;
+   public WorldSearchItem(WorldSearchItem worldSearchItem, OseeImage oseeImage) {
+      this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
    }
 
    public abstract WorldSearchItem copy();

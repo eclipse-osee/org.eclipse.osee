@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -31,12 +31,12 @@ public class XNavigateItemAction extends XNavigateItem {
       this(parent, name, null);
    }
 
-   public XNavigateItemAction(XNavigateItem parent, String name, Image image) {
-      this(parent, name, false, image);
+   public XNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) {
+      this(parent, name, false, oseeImage);
    }
 
-   public XNavigateItemAction(XNavigateItem parent, String name, boolean promptFirst, Image image) {
-      super(parent, name, image);
+   public XNavigateItemAction(XNavigateItem parent, String name, boolean promptFirst, OseeImage oseeImage) {
+      super(parent, name, oseeImage);
       this.action = null;
       this.promptFirst = promptFirst;
    }
@@ -45,12 +45,12 @@ public class XNavigateItemAction extends XNavigateItem {
       this(parent, action, null, false);
    }
 
-   public XNavigateItemAction(XNavigateItem parent, Action action, Image image) {
-      this(parent, action, image, false);
+   public XNavigateItemAction(XNavigateItem parent, Action action, OseeImage oseeImage) {
+      this(parent, action, oseeImage, false);
    }
 
-   public XNavigateItemAction(XNavigateItem parent, Action action, Image image, boolean promptFirst) {
-      super(parent, action.getText(), image);
+   public XNavigateItemAction(XNavigateItem parent, Action action, OseeImage oseeImage, boolean promptFirst) {
+      super(parent, action.getText(), oseeImage);
       this.action = action;
       this.promptFirst = promptFirst;
    }

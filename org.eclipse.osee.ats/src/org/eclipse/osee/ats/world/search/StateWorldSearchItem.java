@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -38,7 +37,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public StateWorldSearchItem(StateWorldSearchItem stateWorldSearchItem) {
-      super(stateWorldSearchItem, ImageManager.getImage(AtsImage.GLOBE));
+      super(stateWorldSearchItem, AtsImage.GLOBE);
       this.stateClass = stateWorldSearchItem.stateClass;
    }
 

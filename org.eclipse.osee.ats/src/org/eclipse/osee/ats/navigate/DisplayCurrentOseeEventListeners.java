@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -33,7 +32,7 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
     * @param parent
     */
    public DisplayCurrentOseeEventListeners(XNavigateItem parent) {
-      super(parent, "Display Current OSEE Event Listeners", ImageManager.getImage(FrameworkImage.ADMIN));
+      super(parent, "Display Current OSEE Event Listeners", FrameworkImage.ADMIN);
    }
 
    /*

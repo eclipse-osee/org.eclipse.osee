@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,22 +38,22 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
    private String searchStr;
    private final String attributeName;
 
-   public AtsAttributeSearchItem(String searchName, String attributeName, String searchStr) {
-      super(searchName, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
+   public AtsAttributeSearchItem(String searchName, String attributeName, String searchStr) throws OseeArgumentException {
+      super(searchName, FrameworkImage.FLASHLIGHT);
       this.attributeName = attributeName;
       this.searchStr = searchStr;
    }
 
-   public AtsAttributeSearchItem(String searchName, String searchStr) {
+   public AtsAttributeSearchItem(String searchName, String searchStr) throws OseeArgumentException {
       this("%", searchName, searchStr);
    }
 
-   public AtsAttributeSearchItem() {
+   public AtsAttributeSearchItem() throws OseeArgumentException {
       this("Search ATS Attributes", "%", "");
    }
 
    public AtsAttributeSearchItem(AtsAttributeSearchItem atsAttributeSearchItem) {
-      super(atsAttributeSearchItem, ImageManager.getImage(FrameworkImage.FLASHLIGHT));
+      super(atsAttributeSearchItem, FrameworkImage.FLASHLIGHT);
       this.searchStr = atsAttributeSearchItem.searchStr;
       this.attributeName = atsAttributeSearchItem.attributeName;
    }

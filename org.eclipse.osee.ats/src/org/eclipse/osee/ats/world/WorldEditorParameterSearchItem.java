@@ -12,13 +12,14 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -31,28 +32,30 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    /**
     * @param name
     * @param loadView
+    * @throws OseeArgumentException
     */
-   public WorldEditorParameterSearchItem(String name, Image image) {
-      super(name, LoadView.WorldEditor, image);
+   public WorldEditorParameterSearchItem(String name, OseeImage oseeImage) throws OseeArgumentException {
+      super(name, LoadView.WorldEditor, oseeImage);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView) {
+   public WorldEditorParameterSearchItem(String name, LoadView loadView) throws OseeArgumentException {
       this(name, loadView, null);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView, Image image) {
-      super(name, loadView, image);
+   public WorldEditorParameterSearchItem(String name, LoadView loadView, OseeImage oseeImage) throws OseeArgumentException {
+      super(name, loadView, oseeImage);
    }
 
    /**
     * @param worldSearchItem
+    * @throws OseeArgumentException
     */
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) throws OseeArgumentException {
       this(worldSearchItem, null);
    }
 
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, Image image) {
-      super(worldSearchItem, image);
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, OseeImage oseeImage) throws OseeArgumentException {
+      super(worldSearchItem, oseeImage);
    }
 
    public abstract String getParameterXWidgetXml() throws OseeCoreException;

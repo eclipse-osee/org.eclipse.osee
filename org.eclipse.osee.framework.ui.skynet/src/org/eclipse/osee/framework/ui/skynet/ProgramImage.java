@@ -8,30 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats;
+package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum AtsImage implements OseeImage {
-   RELEASED("orangeR_8_8.gif"),
-   NEXT("yellowN_8_8.gif"),
-   FAVORITE("favorite.gif"),
-   SUBSCRIBED("subscribed.gif"),
-   GLOBE("globe.gif"),
-   REPORT("report.gif"),
-   TASK("task.gif"),
-   ACTION("action.gif"),
-   ACTIONABLE_ITEM("AI.gif");
+public class ProgramImage implements OseeImage {
+   private final String extension;
 
-   private final String fileName;
-
-   private AtsImage(String fileName) {
-      this.fileName = fileName;
+   /**
+    * @param extension
+    */
+   public ProgramImage(String extension) {
+      this.extension = extension;
    }
 
    /* (non-Javadoc)
@@ -39,7 +31,11 @@ public enum AtsImage implements OseeImage {
     */
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(AtsPlugin.PLUGIN_ID, "images", fileName);
+      Program program = Program.findProgram(extension);
+      if (program == null || program.getImageData() == null) {
+         return null;
+      }
+      return ImageDescriptor.createFromImageData(program.getImageData());
    }
 
    /* (non-Javadoc)
@@ -47,6 +43,7 @@ public enum AtsImage implements OseeImage {
     */
    @Override
    public String getImageKey() {
-      return fileName;
+      return "program" + extension;
    }
+
 }

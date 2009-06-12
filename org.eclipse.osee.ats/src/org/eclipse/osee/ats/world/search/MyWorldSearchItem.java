@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +39,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    public MyWorldSearchItem(String name, User user) {
-      super(name, user, ImageManager.getImage(AtsImage.GLOBE));
+      super(name, user, AtsImage.GLOBE);
    }
 
    public MyWorldSearchItem(MyWorldSearchItem myWorldSearchItem) {

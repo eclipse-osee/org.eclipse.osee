@@ -45,7 +45,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -83,7 +82,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
     * @param parent
     */
    public ResultsEditorExample(XNavigateItem parent) {
-      super(parent, TITLE, ImageManager.getImage(FrameworkImage.ADMIN));
+      super(parent, TITLE, FrameworkImage.ADMIN);
    }
 
    public String getStatusReport() {

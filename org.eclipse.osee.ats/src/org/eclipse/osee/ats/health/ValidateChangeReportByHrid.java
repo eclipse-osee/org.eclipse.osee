@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.OseeInfo;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -36,9 +36,10 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
 
    /**
     * @param parent
+    * @throws OseeArgumentException
     */
-   public ValidateChangeReportByHrid(XNavigateItem parent) {
-      super(parent, "Validate Change Reports by HRID", ImageManager.getImage(FrameworkImage.ADMIN));
+   public ValidateChangeReportByHrid(XNavigateItem parent) throws OseeArgumentException {
+      super(parent, "Validate Change Reports by HRID", FrameworkImage.ADMIN);
    }
 
    /*

@@ -22,7 +22,7 @@ public abstract class ArtifactImageProvider {
    public abstract Image getImage(Artifact artifact) throws OseeCoreException;
 
    public Image getImage(ArtifactType artifactType) throws OseeCoreException {
-      return ImageManager.getBaseImage(artifactType);
+      return ImageManager.getImage(BaseImage.getBaseImageEnum(artifactType));
    }
 
    public abstract void init() throws OseeCoreException;

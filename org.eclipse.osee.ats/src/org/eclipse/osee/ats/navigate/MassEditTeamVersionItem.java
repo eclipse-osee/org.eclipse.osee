@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -37,22 +37,22 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    private final TeamDefinitionArtifact teamDef;
    private TeamDefinitionArtifact selectedTeamDef;
 
-   public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName, Image image) {
-      this("Show Team Versions", parent, teamDefName, image);
+   public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName, OseeImage oseeImage) {
+      this("Show Team Versions", parent, teamDefName, oseeImage);
    }
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, String teamDefName, Image image) {
-      super(parent, name, image);
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, String teamDefName, OseeImage oseeImage) {
+      super(parent, name, oseeImage);
       this.teamDefName = teamDefName;
       this.teamDef = null;
    }
 
-   public MassEditTeamVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, Image image) {
-      this("Show Team Versions", parent, teamDef, image);
+   public MassEditTeamVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDef, OseeImage oseeImage) {
+      this("Show Team Versions", parent, teamDef, oseeImage);
    }
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, TeamDefinitionArtifact teamDef, Image image) {
-      super(parent, name, image);
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, TeamDefinitionArtifact teamDef, OseeImage oseeImage) {
+      super(parent, name, oseeImage);
       this.teamDef = teamDef;
       this.teamDefName = null;
    }

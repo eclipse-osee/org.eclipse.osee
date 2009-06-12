@@ -10,22 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 /**
  * @author Ryan D. Brooks
  */
 public interface OseeImage {
-   /**
-    * @return the simple fileName of this image
-    */
-   public abstract String getFileName();
+   public abstract ImageDescriptor createImageDescriptor();
 
-   /**
-    * @return the bundle id as return by bundle.getSymbolicName()
-    */
-   public abstract String getSymbolicBundleName();
-
-   /**
-    * @return the bundle relative path of the directory containing this image
-    */
-   public abstract String getPath();
+   public abstract String getImageKey();
 }

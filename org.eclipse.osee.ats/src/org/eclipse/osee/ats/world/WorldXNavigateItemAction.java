@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -26,70 +25,30 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
    /**
     * @param parent
     * @param name
+    * @param oseeImage
+    * @throws OseeArgumentException
     */
-   public WorldXNavigateItemAction(XNavigateItem parent, String name) {
-      super(parent, name);
+   public WorldXNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) throws OseeArgumentException {
+      super(parent, name, oseeImage);
    }
 
    /**
     * @param parent
     * @param name
-    * @param image
+    * @throws OseeArgumentException
     */
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, Image image) {
-      super(parent, name, image);
+   public WorldXNavigateItemAction(XNavigateItem parent, String name) throws OseeArgumentException {
+      super(parent, name, determineImage(name));
    }
 
-   /**
-    * @param parent
-    * @param name
-    * @param promptFirst
-    * @param image
-    */
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, boolean promptFirst, Image image) {
-      super(parent, name, promptFirst, image);
-   }
-
-   /**
-    * @param parent
-    * @param action
-    */
-   public WorldXNavigateItemAction(XNavigateItem parent, Action action) {
-      super(parent, action);
-   }
-
-   /**
-    * @param parent
-    * @param action
-    * @param image
-    */
-   public WorldXNavigateItemAction(XNavigateItem parent, Action action, Image image) {
-      super(parent, action, image);
-   }
-
-   /**
-    * @param parent
-    * @param action
-    * @param image
-    * @param promptFirst
-    */
-   public WorldXNavigateItemAction(XNavigateItem parent, Action action, Image image, boolean promptFirst) {
-      super(parent, action, image, promptFirst);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#getImage()
-    */
-   @Override
-   public Image getImage() {
-      if (getName().contains("Report")) {
-         return ImageManager.getImage(AtsImage.REPORT);
-      } else if (getName().contains("Search")) {
-         return ImageManager.getImage(FrameworkImage.FLASHLIGHT);
-      } else if (getName().contains("Task")) {
-         return ImageManager.getImage(AtsImage.TASK);
+   private static OseeImage determineImage(String name) {
+      if (name.contains("Report")) {
+         return AtsImage.REPORT;
+      } else if (name.contains("Search")) {
+         return FrameworkImage.FLASHLIGHT;
+      } else if (name.contains("Task")) {
+         return AtsImage.TASK;
       }
-      return ImageManager.getImage(AtsImage.GLOBE);
+      return AtsImage.GLOBE;
    }
-
 }
