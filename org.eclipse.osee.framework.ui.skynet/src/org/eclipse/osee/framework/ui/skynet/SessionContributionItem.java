@@ -38,9 +38,9 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
 
    private static final String ID = "session.contribution.item";
 
-   private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
    private static final Image DISABLED_IMAGE =
-         new OverlayImage(ENABLED_IMAGE, SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
+         new OverlayImage(ImageManager.getImage(FrameworkImage.USER),
+               ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
 
    private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
    private static String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
@@ -149,7 +149,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
     */
    @Override
    protected Image getEnabledImage() {
-      return ENABLED_IMAGE;
+      return ImageManager.getImage(FrameworkImage.USER);
    }
 
    /* (non-Javadoc)

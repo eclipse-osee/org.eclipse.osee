@@ -134,7 +134,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
    @Override
    public void fill(final ToolBar parent, int index) {
       final ToolItem toolItem = new ToolItem(parent, SWT.DROP_DOWN);
-      toolItem.setImage(SkynetGuiPlugin.getInstance().getImage("open.gif"));
+      toolItem.setImage(ImageManager.getImage(FrameworkImage.OPEN));
       toolItem.setToolTipText("Open the Artifact");
 
       OpenWithToolItemListener listener = new OpenWithToolItemListener(parent.getShell());
@@ -208,8 +208,8 @@ public class OpenWithContributionItem extends CompoundContributionItem {
    }
 
    private final class OpenWithToolItemListener implements Listener {
-      private Menu previewMenu;
-      private boolean isPreviewEnabled;
+      private final Menu previewMenu;
+      private final boolean isPreviewEnabled;
 
       public OpenWithToolItemListener(Shell shell) {
          previewMenu = new Menu(shell, SWT.POP_UP);

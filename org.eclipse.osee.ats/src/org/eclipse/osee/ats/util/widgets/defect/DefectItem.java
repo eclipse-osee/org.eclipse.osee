@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
 
@@ -51,10 +52,10 @@ public class DefectItem {
 
       public static Image getImage(Severity sev) {
          if (sev == Major)
-            return SkynetGuiPlugin.getInstance().getImage("major.gif");
+            return ImageManager.getImage(FrameworkImage.SEVERITY_MAJOR);
          else if (sev == Minor)
-            return SkynetGuiPlugin.getInstance().getImage("minor.gif");
-         else if (sev == Issue) return SkynetGuiPlugin.getInstance().getImage("issue.gif");
+            return ImageManager.getImage(FrameworkImage.SEVERITY_MINOR);
+         else if (sev == Issue) return ImageManager.getImage(FrameworkImage.SEVERITY_ISSUE);
          return null;
       }
    };
@@ -94,10 +95,10 @@ public class DefectItem {
 
       public static Image getImage(Disposition sev) {
          if (sev == Accept)
-            return SkynetGuiPlugin.getInstance().getImage("accept.gif");
+            return ImageManager.getImage(FrameworkImage.ACCEPT);
          else if (sev == Reject)
-            return SkynetGuiPlugin.getInstance().getImage("reject.gif");
-         else if (sev == Duplicate) return SkynetGuiPlugin.getInstance().getImage("duplicate.gif");
+            return ImageManager.getImage(FrameworkImage.REJECT);
+         else if (sev == Duplicate) return ImageManager.getImage(FrameworkImage.DUPLICATE);
          return null;
       }
    };
@@ -177,6 +178,7 @@ public class DefectItem {
       this.date = date;
    }
 
+   @Override
    public String toString() {
       return severity + " - " + disposition + " - " + injectionActivity + " - " + user + " on " + getCreatedDate(XDate.MMDDYYHHMM) + "\n";
    }

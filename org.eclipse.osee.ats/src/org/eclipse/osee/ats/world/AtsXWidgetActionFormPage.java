@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
@@ -167,7 +169,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (Widgets.isAccessible(warningLabel)) {
-               warningLabel.setImage(warning ? AtsPlugin.getInstance().getImage("warn.gif") : null);
+               warningLabel.setImage(warning ? ImageManager.getImage(FrameworkImage.WARNING) : null);
             }
             if (Widgets.isAccessible(searchNameLabel)) {
                searchNameLabel.setText(title);

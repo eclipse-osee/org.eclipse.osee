@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -380,7 +381,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       if (isDeleted()) return null;
       if (smaMgr.getStateMgr().getAssignees().size() > 0) {
          if (smaMgr.isAssigneeMe())
-            return AtsPlugin.getInstance().getImage("red_user_sm.gif");
+            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
          else
             return ImageManager.getImage(ArtifactTypeManager.getType("User"));
       }

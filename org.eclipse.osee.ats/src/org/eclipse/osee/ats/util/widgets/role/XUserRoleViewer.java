@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -36,6 +37,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -156,7 +159,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       ToolItem item = null;
 
       newUserRoleItem = new ToolItem(toolBar, SWT.PUSH);
-      newUserRoleItem.setImage(AtsPlugin.getInstance().getImage("userAdd.gif"));
+      newUserRoleItem.setImage(ImageManager.getImage(FrameworkImage.USER_ADD));
       newUserRoleItem.setToolTipText("New Role");
       newUserRoleItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -166,7 +169,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
 
       deleteUserRoleItem = new ToolItem(toolBar, SWT.PUSH);
-      deleteUserRoleItem.setImage(SkynetGuiPlugin.getInstance().getImage("redRemove.gif"));
+      deleteUserRoleItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
       deleteUserRoleItem.setToolTipText("Delete Role");
       deleteUserRoleItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -176,7 +179,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh Roles");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -186,7 +189,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

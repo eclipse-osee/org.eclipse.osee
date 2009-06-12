@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.widgets.Display;
@@ -60,22 +61,22 @@ final class AtsWorkflowConfigEditorPaletteFactory {
 
       CombinedTemplateCreationEntry component =
             new CombinedTemplateCreationEntry("State", "Create a new Workflow State", WorkPageShape.class,
-                  new SimpleFactory(WorkPageShape.class), ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
-                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
+                  new SimpleFactory(WorkPageShape.class), ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       component =
             new CombinedTemplateCreationEntry("Completed State", "Create a Completed State",
                   CompletedWorkPageShape.class, new SimpleFactory(CompletedWorkPageShape.class),
-                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
-                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
+                  ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       component =
             new CombinedTemplateCreationEntry("Cancelled State", "Create a Cancelled State",
                   CancelledWorkPageShape.class, new SimpleFactory(CancelledWorkPageShape.class),
-                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_16),
-                  ImageManager.getImageDescriptor(AtsImage.RECTANGLE_24));
+                  ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_16),
+                  ImageManager.getImageDescriptor(FrameworkImage.RECTANGLE_24));
       componentsDrawer.add(component);
 
       return componentsDrawer;

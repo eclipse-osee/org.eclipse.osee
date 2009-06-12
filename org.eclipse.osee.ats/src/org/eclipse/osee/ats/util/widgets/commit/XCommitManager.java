@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -38,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
@@ -206,7 +209,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -216,7 +219,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

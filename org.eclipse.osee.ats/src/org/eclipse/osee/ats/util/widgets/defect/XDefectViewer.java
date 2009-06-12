@@ -197,7 +197,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       ToolItem item = null;
 
       expandDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      expandDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("expandAll.gif"));
+      expandDefectItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
       expandDefectItem.setToolTipText("Expand Defect List");
       expandDefectItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -208,7 +208,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       collapseDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      collapseDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("collapseAll.gif"));
+      collapseDefectItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
       collapseDefectItem.setToolTipText("Collapse Defect List");
       collapseDefectItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -229,7 +229,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       deleteDefectItem = new ToolItem(toolBar, SWT.PUSH);
-      deleteDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("redRemove.gif"));
+      deleteDefectItem.setImage(ImageManager.getImage(FrameworkImage.X_RED));
       deleteDefectItem.setToolTipText("Delete Defect");
       deleteDefectItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -239,7 +239,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh Defects");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -249,7 +249,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

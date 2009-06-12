@@ -21,9 +21,6 @@ public class AdminContributionItem extends OseeContributionItem {
 
    private static final String ID = "ats.admin";
 
-   private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("redExclaim.gif");
-   private static final Image DISABLED_IMAGE = ENABLED_IMAGE;
-
    private static String ENABLED_TOOLTIP = "AtsAdmin";
    private static String DISABLED_TOOLTIP = "";
 
@@ -54,7 +51,7 @@ public class AdminContributionItem extends OseeContributionItem {
     */
    @Override
    protected Image getDisabledImage() {
-      return DISABLED_IMAGE;
+      return ImageManager.getImage(FrameworkImage.EXCLAIM_RED);
    }
 
    /* (non-Javadoc)
@@ -70,7 +67,7 @@ public class AdminContributionItem extends OseeContributionItem {
     */
    @Override
    protected Image getEnabledImage() {
-      return ENABLED_IMAGE;
+      return ImageManager.getImage(FrameworkImage.EXCLAIM_RED);
    }
 
    /* (non-Javadoc)

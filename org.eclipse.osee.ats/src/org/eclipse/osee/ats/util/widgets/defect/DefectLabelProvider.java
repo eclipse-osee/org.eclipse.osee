@@ -13,13 +13,14 @@ package org.eclipse.osee.ats.util.widgets.defect;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -42,15 +43,14 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       if (dCol.equals(DefectXViewerFactory.Severity_Col))
          return Severity.getImage(defectItem.getSeverity());
       else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col))
-         return AtsPlugin.getInstance().getImage("info.gif");
+         return ImageManager.getImage(AtsImage.INFO);
       else if (dCol.equals(DefectXViewerFactory.Disposition_Col))
          return Disposition.getImage(defectItem.getDisposition());
       else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
-         return defectItem.isClosed() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
-               "chkbox_disabled.gif");
+         return defectItem.isClosed() ? ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED) : ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
          if (defectItem.getUser().equals(UserManager.getUser()))
-            return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
+            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
          else
             return ImageManager.getImage(ArtifactTypeManager.getType("User"));
       }

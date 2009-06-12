@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -186,7 +188,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    private void createChangeReportMenuItem(Menu popupMenu) {
       final MenuItem changeReportMenuItem = new MenuItem(popupMenu, SWT.CASCADE);
       changeReportMenuItem.setText("&Change Report");
-      changeReportMenuItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+      changeReportMenuItem.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
       popupMenu.addMenuListener(new MenuListener() {
 
          @Override

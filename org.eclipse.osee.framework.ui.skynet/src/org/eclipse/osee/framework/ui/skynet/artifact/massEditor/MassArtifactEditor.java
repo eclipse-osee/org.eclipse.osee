@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -141,7 +143,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -151,7 +153,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

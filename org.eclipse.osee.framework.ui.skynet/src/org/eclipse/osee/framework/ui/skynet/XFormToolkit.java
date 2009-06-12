@@ -74,9 +74,10 @@ public class XFormToolkit extends FormToolkit {
       }
       ImageHyperlink helpLink = new ImageHyperlink(parent, SWT.NULL);
       adapt(helpLink, true, true);
-      helpLink.setImage(SkynetGuiPlugin.getInstance().getImage("help.gif"));
+      helpLink.setImage(ImageManager.getImage(FrameworkImage.HELP));
       helpLink.setBackground(section.getTitleBarGradientBackground());
       helpLink.addHyperlinkListener(new HyperlinkAdapter() {
+         @Override
          public void linkActivated(HyperlinkEvent e) {
             PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(helpPath);
          }

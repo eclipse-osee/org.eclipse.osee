@@ -13,14 +13,14 @@ package org.eclipse.osee.ats.util.widgets.role;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -39,16 +39,15 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       UserRole roleItem = (UserRole) element;
       if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
          if (roleItem.getUser().equals(UserManager.getUser()))
-            return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
+            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
          else
             return ImageManager.getImage(ArtifactTypeManager.getType("User"));
       } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
-         return AtsPlugin.getInstance().getImage("role.gif");
+         return ImageManager.getImage(AtsImage.ROLE);
       } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return SkynetGuiPlugin.getInstance().getImage("clock.gif");
+         return ImageManager.getImage(FrameworkImage.CLOCK);
       } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-         return roleItem.isCompleted() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
-               "chkbox_disabled.gif");
+         return roleItem.isCompleted() ? ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED) : ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
          return Severity.getImage(Severity.Major);
       } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {

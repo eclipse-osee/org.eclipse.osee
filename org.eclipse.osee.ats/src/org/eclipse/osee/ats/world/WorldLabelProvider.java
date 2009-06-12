@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -50,7 +51,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          else if (xCol.equals(WorldXViewerFactory.Assignees_Col))
             return wva.getAssigneeImage();
          else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            if (wva.isWorldViewDeadlineAlerting().isTrue()) return AtsPlugin.getInstance().getImage("warn.gif");
+            if (wva.isWorldViewDeadlineAlerting().isTrue()) return ImageManager.getImage(FrameworkImage.WARNING);
          } else if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) {
             return ImageManager.getImage((Artifact) wva);
          }

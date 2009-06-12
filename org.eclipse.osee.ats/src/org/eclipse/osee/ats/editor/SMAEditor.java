@@ -379,7 +379,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          ToolBar toolBar = createToolBar(composite);
 
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
+         item.setImage(ImageManager.getImage(FrameworkImage.SAVED));
          item.setToolTipText("Save attributes changes only");
          item.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -478,7 +478,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("DBiconBlueEdit.GIF"));
+      item.setImage(ImageManager.getImage(FrameworkImage.EDIT_BLUE));
       item.setToolTipText("Show this artifact in the Resource History");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -494,7 +494,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("authenticated.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
       item.setToolTipText("Access Control");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -505,7 +505,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("dirty.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.DIRTY));
       item.setToolTipText("Show what attribute or relation making editor dirty.");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

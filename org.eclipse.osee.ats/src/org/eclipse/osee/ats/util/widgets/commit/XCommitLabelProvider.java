@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -39,7 +41,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
       Branch branch = configArt.getParentBranch();
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         return SkynetGuiPlugin.getInstance().getImage("nav_forward.gif");
+         return ImageManager.getImage(FrameworkImage.ARROW_RIGHT_YELLOW);
       }
       if (branch == null) return null;
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
@@ -53,17 +55,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             commitStatus == CommitStatus.Commit_Needed ||
             //
             commitStatus == CommitStatus.Working_Branch_Not_Created) {
-               return SkynetGuiPlugin.getInstance().getImage("red_light.gif");
+               return ImageManager.getImage(FrameworkImage.DOT_RED);
             }
 
             if (commitStatus == CommitStatus.Merge_In_Progress) {
-               return SkynetGuiPlugin.getInstance().getImage("yellow_light.gif");
+               return ImageManager.getImage(FrameworkImage.DOT_YELLOW);
             }
 
             if (commitStatus == CommitStatus.Committed ||
             //
             commitStatus == CommitStatus.Committed_With_Merge) {
-               return SkynetGuiPlugin.getInstance().getImage("green_light.gif");
+               return ImageManager.getImage(FrameworkImage.DOT_GREEN);
             }
             return null;
          } catch (Exception ex) {
@@ -74,7 +76,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             CommitStatus commitStatus =
                   commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
-               return SkynetGuiPlugin.getInstance().getImage("branch_merge.gif");
+               return ImageManager.getImage(FrameworkImage.OUTGOING_Merged);
             }
             return null;
          } catch (Exception ex) {

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
@@ -43,8 +44,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    private final AbstractArtifactSearchViewPage fPage;
    private final Comparator fMatchComparator;
-   private ArtifactDecorator artifactDecorator;
-   private final Image fLineMatchImage;
+   private final ArtifactDecorator artifactDecorator;
 
    private final Map<Image, Image> disabledImageMap;
 
@@ -52,7 +52,6 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       this.artifactDecorator = artifactDecorator;
       this.disabledImageMap = new HashMap<Image, Image>();
       fPage = page;
-      fLineMatchImage = SkynetGuiPlugin.getInstance().getImage("line_match.gif");
       fMatchComparator = new Comparator() {
          public int compare(Object o1, Object o2) {
             return ((AttributeMatch) o1).getOriginalOffset() - ((AttributeMatch) o2).getOriginalOffset();
@@ -63,6 +62,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
     */
+   @Override
    public String getText(Object object) {
       return getStyledText(object).getString();
    }
@@ -233,10 +233,11 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
     */
+   @Override
    public Image getImage(Object element) {
       Image toReturn = null;
       if (element instanceof AttributeLineElement) {
-         toReturn = fLineMatchImage;
+         toReturn = ImageManager.getImage(FrameworkImage.LINE_MATCH);
       } else if (element instanceof Artifact) {
          Image artImage = ImageManager.getImage((Artifact) element);
          int matchCount = getMatchCount(element);

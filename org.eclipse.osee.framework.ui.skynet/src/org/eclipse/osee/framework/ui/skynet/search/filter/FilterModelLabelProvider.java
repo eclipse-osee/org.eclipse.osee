@@ -13,13 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.search.filter;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class FilterModelLabelProvider implements ITableLabelProvider {
-
-   private static final Image deleteImage = SkynetGuiPlugin.getInstance().getImage("remove.gif");
-   private static final Image notImage = SkynetGuiPlugin.getInstance().getImage("not_equal.gif");
 
    public FilterModelLabelProvider() {
       super();
@@ -55,17 +53,16 @@ public class FilterModelLabelProvider implements ITableLabelProvider {
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
     */
    public Image getColumnImage(Object element, int columnIndex) {
-      Image result = null;
-
       switch (columnIndex) {
          case FilterTableViewer.DELETE_NUM:
-            result = deleteImage;
-            break;
+            return ImageManager.getImage(FrameworkImage.REMOVE);
          case FilterTableViewer.SEARCH_NUM:
-            if (((FilterModel) element).getSearchPrimitive() instanceof NotSearch) result = notImage;
+            if (((FilterModel) element).getSearchPrimitive() instanceof NotSearch) {
+               return ImageManager.getImage(FrameworkImage.NOT_EQUAL);
+            }
             break;
       }
-      return result;
+      return null;
    }
 
    /*

@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
@@ -60,6 +62,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       getSite().getActionBars().getToolBarManager().add(
             new Action("Refresh", SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif")) {
+               @Override
                public void run() {
                   refresh();
                }
@@ -98,24 +101,11 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    private final class InternalLabelProvider extends LabelProvider {
-      private Image EDIT_ATTRIBUTE_IMAGE;
-      private Image NON_EDIT_ATTRIBUTE_IMAGE;
-      private Image ATTRIBUTE_IMAGE;
-      private Image NON_ACTIVE_ATTRIBUTE_IMAGE;
 
-      private List<AttributeTypeContainer> containers;
+      private final List<AttributeTypeContainer> containers;
 
       public InternalLabelProvider() {
          this.containers = new ArrayList<AttributeTypeContainer>();
-      }
-
-      private void checkImages() {
-         if (EDIT_ATTRIBUTE_IMAGE == null) {
-            EDIT_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("edit_artifact.gif");
-            NON_EDIT_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("add.gif");
-            ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("attribute.gif");
-            NON_ACTIVE_ATTRIBUTE_IMAGE = SkynetGuiPlugin.getInstance().getImage("disabled_attribute.gif");
-         }
       }
 
       /* (non-Javadoc)
@@ -136,19 +126,18 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
        */
       @Override
       public Image getImage(Object element) {
-         checkImages();
          if (element instanceof BaseArtifactEditorInput) {
             containers.clear();
             return ((BaseArtifactEditorInput) element).getImage();
          } else if (element instanceof AttributeTypeContainer) {
             AttributeTypeContainer container = ((AttributeTypeContainer) element);
             containers.add(container);
-            return container.isEditable() ? EDIT_ATTRIBUTE_IMAGE : NON_EDIT_ATTRIBUTE_IMAGE;
+            return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(FrameworkImage.ADD_GREEN);
          } else if (element instanceof AttributeType) {
             AttributeType type = (AttributeType) element;
             for (AttributeTypeContainer container : containers) {
                if (container.contains(type)) {
-                  return container.isEditable() ? ATTRIBUTE_IMAGE : NON_ACTIVE_ATTRIBUTE_IMAGE;
+                  return container.isEditable() ? ImageManager.getImage(FrameworkImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(FrameworkImage.ATTRIBUTE_DISABLED);
                }
             }
          }
@@ -248,8 +237,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
    private final static class AttributeTypeContainer {
       private List<AttributeType> types;
-      private String name;
-      private boolean editable;
+      private final String name;
+      private final boolean editable;
 
       public AttributeTypeContainer(String name, boolean editable, AttributeType... data) {
          this.name = name;

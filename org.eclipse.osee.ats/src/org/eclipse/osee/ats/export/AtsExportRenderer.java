@@ -12,11 +12,12 @@ package org.eclipse.osee.ats.export;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.swt.graphics.Image;
@@ -46,7 +47,7 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
     */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
-      return AtsPlugin.getInstance().getImage("export2.gif");
+      return ImageManager.getImage(FrameworkImage.EXPORT_DATA);
    }
 
    /* (non-Javadoc)

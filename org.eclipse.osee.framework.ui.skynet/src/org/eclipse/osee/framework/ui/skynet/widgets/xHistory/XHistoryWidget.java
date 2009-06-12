@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -144,7 +146,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -154,7 +156,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -21,25 +21,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class GraphImageConstants {
 
-   public static final String IMG_FILTER_CONNECTIONS = "filter_connections.gif";
-   public static final String IMG_FILTER_TXS = "DBiconBlue.GIF";
-
-   private static final String IMG_SYSTEM_ROOT = "branchYellow.gif";
-   private static final String IMG_TOP_LEVEL = "top.gif";
-   private static final String IMG_BASELINE = "baseline.gif";
-   private static final String IMG_WORKING = "working.gif";
-   private static final String IMG_MERGE = "merge.gif";
-   public static final String TX_IMAGE = "DBiconBlue.GIF";
-
    private GraphImageConstants() {
-   }
-
-   public static Image getImage(String imageName) {
-      return BranchGraphActivator.getInstance().getImage(imageName);
-   }
-
-   public static ImageDescriptor getImageDescriptor(String imageName) {
-      return BranchGraphActivator.getInstance().getImageDescriptor(imageName);
    }
 
    public static Image getImage(Branch branch) {
@@ -47,19 +29,19 @@ public class GraphImageConstants {
       BranchType branchType = branch.getBranchType();
       switch (branchType) {
          case SYSTEM_ROOT:
-            image = getImage(GraphImageConstants.IMG_SYSTEM_ROOT);
+            image = ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
             break;
          case TOP_LEVEL:
-            image = getImage(GraphImageConstants.IMG_TOP_LEVEL);
+            image = ImageManager.getImage(FrameworkImage.BRANCH_TOP);
             break;
          case BASELINE:
-            image = getImage(GraphImageConstants.IMG_BASELINE);
+            image = ImageManager.getImage(FrameworkImage.BRANCH_BASELINE);
             break;
          case WORKING:
-            image = getImage(GraphImageConstants.IMG_WORKING);
+            image = ImageManager.getImage(FrameworkImage.BRANCH_WORKING);
             break;
          case MERGE:
-            image = getImage(GraphImageConstants.IMG_MERGE);
+            image = ImageManager.getImage(FrameworkImage.BRANCH_MERGE);
             break;
       }
       return image;

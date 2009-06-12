@@ -16,7 +16,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
@@ -39,11 +41,10 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Ryan D. Brooks
  */
 public class WorkflowDataPage extends FormPage {
-   private BlamWorkflow workflow;
-   private static final SkynetGuiPlugin plugin = SkynetGuiPlugin.getInstance();
+   private final BlamWorkflow workflow;
    private final XFormToolkit toolkit;
-   private List<Text> parameters;
-   private List<Text> localVariables;
+   private final List<Text> parameters;
+   private final List<Text> localVariables;
    private final OverviewPage overviewPage;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
 
@@ -58,6 +59,7 @@ public class WorkflowDataPage extends FormPage {
       this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
    }
 
+   @Override
    protected void createFormContent(IManagedForm managedForm) {
       ScrolledForm form = managedForm.getForm();
       form.setText("Workflow Data");
@@ -69,6 +71,7 @@ public class WorkflowDataPage extends FormPage {
 
    private void createToolBarActions(final ScrolledForm form) {
       Action runAction = new Action("Generate Workflow Overview Page", Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             StringBuilder strB = new StringBuilder(parameters.size() * 140);
             strB.append("<Widgets>");
@@ -93,7 +96,7 @@ public class WorkflowDataPage extends FormPage {
          }
       };
       runAction.setToolTipText("Generates or regenerates the workflow overview page based on the widgets defined here");
-      runAction.setImageDescriptor(plugin.getImageDescriptor("gear.gif"));
+      runAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
       form.getToolBarManager().add(runAction);
    }
 
@@ -132,16 +135,16 @@ public class WorkflowDataPage extends FormPage {
    private void addNewVariableLinkToSection(final Section section, Composite variablesComposite, List<Text> variableTexts) {
       ImageHyperlink addLink = new ImageHyperlink(section, SWT.NULL);
       toolkit.adapt(addLink, true, true);
-      addLink.setImage(plugin.getImage("add.gif"));
+      addLink.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
       addLink.setBackground(section.getTitleBarGradientBackground());
       addLink.addHyperlinkListener(new AddListener(variablesComposite, variableTexts));
       section.setTextClient(addLink);
    }
 
    private class AddListener extends HyperlinkAdapter {
-      private Composite variablesComposite;
-      private List<Text> variableTexts;
-      private RemoveListener removeListener;
+      private final Composite variablesComposite;
+      private final List<Text> variableTexts;
+      private final RemoveListener removeListener;
 
       public AddListener(Composite variablesComposite, List<Text> variableTexts) {
          this.variablesComposite = variablesComposite;
@@ -149,10 +152,11 @@ public class WorkflowDataPage extends FormPage {
          removeListener = new RemoveListener(variableTexts);
       }
 
+      @Override
       public void linkActivated(HyperlinkEvent ev) {
          ImageHyperlink removeLink = new ImageHyperlink(variablesComposite, SWT.NULL);
          toolkit.adapt(removeLink, true, true);
-         removeLink.setImage(plugin.getImage("remove.gif"));
+         removeLink.setImage(ImageManager.getImage(FrameworkImage.REMOVE));
          removeLink.addHyperlinkListener(removeListener);
 
          Text variableWidget =
@@ -166,12 +170,13 @@ public class WorkflowDataPage extends FormPage {
    }
 
    private class RemoveListener extends HyperlinkAdapter {
-      private List<Text> variableTexts;
+      private final List<Text> variableTexts;
 
       public RemoveListener(List<Text> variableTexts) {
          this.variableTexts = variableTexts;
       }
 
+      @Override
       public void linkActivated(HyperlinkEvent ev) {
          ImageHyperlink removeLink = (ImageHyperlink) ev.widget;
          Text variableWidget = (Text) removeLink.getData();

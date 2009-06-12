@@ -156,7 +156,9 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * Returns the Image for the icon with the given path under images/
     * 
     * @return the Image object
+    * @use ImageManager.getImage
     */
+   @Deprecated
    public Image getImage(String imageName) {
       Image image = getImageFromRegistry(imageName);
       if (image == null) { // if image is not already cached
@@ -185,7 +187,9 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * Returns the ImageDiscriptor from images/ with the given icon name
     * 
     * @return the Image object
+    * @use ImageManager.getImageDescriptor
     */
+   @Deprecated
    public ImageDescriptor getImageDescriptor(String name) {
       return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
    }

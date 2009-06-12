@@ -20,10 +20,11 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
 import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPart;
-import org.eclipse.osee.framework.ui.branch.graph.utility.GraphImageConstants;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.ConnectionFilter;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.TxFilter;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
@@ -33,22 +34,26 @@ import org.eclipse.ui.IEditorPart;
  */
 public class BranchGraphActionBarContributor extends ActionBarContributor {
    private BranchGraphEditor editor;
-   private IPreferenceStore store = BranchGraphActivator.getInstance().getPreferenceStore();
+   private final IPreferenceStore store = BranchGraphActivator.getInstance().getPreferenceStore();
 
    private static ToggleFilterConnectionAction[] toggleFilterConnectionAction;
    private static ToggleTxFilterAction[] toggleTxFilterAction;
 
+   @Override
    public void setActiveEditor(IEditorPart editor) {
       super.setActiveEditor(editor);
       this.editor = (BranchGraphEditor) editor;
    }
 
+   @Override
    protected void buildActions() {
    }
 
+   @Override
    protected void declareGlobalActionKeys() {
    }
 
+   @Override
    public void contributeToToolBar(IToolBarManager toolBarManager) {
       super.contributeToToolBar(toolBarManager);
       toolBarManager.add(new Separator());
@@ -82,6 +87,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          setChecked(show.ordinal() == store.getInt(GraphOptions.FILTER_CONNECTIONS_PREFERENCE));
       }
 
+      @Override
       public void run() {
          if (isChecked()) {
             store.setValue(GraphOptions.FILTER_CONNECTIONS_PREFERENCE, show.ordinal());
@@ -101,6 +107,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
          setChecked(show.ordinal() == store.getInt(GraphOptions.TRANSACTION_FILTER));
       }
 
+      @Override
       public void run() {
          if (isChecked()) {
             store.setValue(GraphOptions.TRANSACTION_FILTER, show.ordinal());
@@ -116,7 +123,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public FilterTxAction() {
          setText("Filter transactions");
          setToolTipText("Filter transactions");
-         setImageDescriptor(GraphImageConstants.getImageDescriptor(GraphImageConstants.IMG_FILTER_TXS));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE));
          setMenuCreator(this);
       }
 
@@ -153,7 +160,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public FilterConnectionAction() {
          setText("Filter connections");
          setToolTipText("Filter connections");
-         setImageDescriptor(GraphImageConstants.getImageDescriptor(GraphImageConstants.IMG_FILTER_CONNECTIONS));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
          setMenuCreator(this);
       }
 

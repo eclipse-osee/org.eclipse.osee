@@ -15,7 +15,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -196,7 +198,7 @@ public class OverviewPage extends FormPage implements IActionable {
       outputComp.setLayout(new GridLayout(1, false));
 
       Button button = toolkit.createButton(outputComp, "Run this BLAM", SWT.PUSH);
-      button.setImage(SkynetGuiPlugin.getInstance().getImage("run_exc.gif"));
+      button.setImage(ImageManager.getImage(FrameworkImage.RUN_EXC));
       button.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {

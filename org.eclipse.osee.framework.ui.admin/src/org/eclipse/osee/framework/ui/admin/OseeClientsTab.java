@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -47,7 +49,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 public class OseeClientsTab {
-   private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
 
    private final User whoAmI;
    private final ArrayList<User> users;
@@ -130,7 +131,7 @@ public class OseeClientsTab {
 
       Label image = new Label(composite, SWT.NONE);
       image.setLayoutData(new GridData(SWT.END, SWT.CENTER, true, true));
-      image.setImage(ACCESS_DENIED_IMAGE);
+      image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_KEY));
       image.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);

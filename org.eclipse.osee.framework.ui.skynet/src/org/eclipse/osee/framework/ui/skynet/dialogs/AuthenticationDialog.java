@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.panels.AuthenticationComposite;
 import org.eclipse.osee.framework.ui.swt.OseeMessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -42,12 +42,11 @@ public class AuthenticationDialog extends OseeMessageDialog {
    private Button cancelButton;
    protected AuthenticationComposite authenticationComposite;
    private boolean selectionOk;
-   private static final Image LOCK_AND_KEY = OseePluginUiActivator.getInstance().getImage("lockkey.gif");
    private static final int MAX_RETRIES = 3;
 
    public AuthenticationDialog(Shell parentShell) {
       super(parentShell, "OSEE Authenticate", null, "Enter your user id (email address), password, and domain.",
-            LOCK_AND_KEY, new String[] {"Enter", "Cancel"}, 0);
+            ImageManager.getImage(FrameworkImage.LOCKED_KEY), new String[] {"Enter", "Cancel"}, 0);
 
       selectionOk = false;
       authenticationComposite = new AuthenticationComposite(parentShell, SWT.NONE, false);
@@ -77,6 +76,7 @@ public class AuthenticationDialog extends OseeMessageDialog {
       authenticationComposite.getShell().setDefaultButton(okButton);
 
       cancelButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectionOk = false;
          }

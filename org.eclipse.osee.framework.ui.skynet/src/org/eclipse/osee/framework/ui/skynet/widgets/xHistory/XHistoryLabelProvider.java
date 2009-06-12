@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
@@ -91,7 +92,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          HistoryTransactionItem change = (HistoryTransactionItem) element;
          if (xCol.equals(HistoryXViewerFactory.transaction)) {
             try {
-               return SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
+               return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
             } catch (IllegalArgumentException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             } catch (Exception ex) {

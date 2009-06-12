@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.viewers.ICellEditorValidator;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -62,10 +61,6 @@ public abstract class Shape extends ModelElement {
    protected abstract String getName();
 
    protected abstract String getToolTip();
-
-   protected static Image createImage(String name) {
-      return AtsPlugin.getInstance().getImage(name);
-   }
 
    /** Location of this shape. */
    private final Point location = new Point(0, 0);

@@ -14,7 +14,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyTableViewer.Columns;
 import org.eclipse.swt.graphics.Image;
 
@@ -57,7 +58,7 @@ public class PolicyLabelProvider implements ITableLabelProvider {
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
     */
    public Image getColumnImage(Object element, int columnIndex) {
-      if (columnIndex == Columns.Delete.ordinal()) return OseePluginUiActivator.getInstance().getImage("remove.gif");
+      if (columnIndex == Columns.Delete.ordinal()) return ImageManager.getImage(FrameworkImage.REMOVE);
       return null;
    }
 

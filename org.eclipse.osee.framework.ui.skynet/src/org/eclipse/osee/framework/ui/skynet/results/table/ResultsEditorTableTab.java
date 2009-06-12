@@ -15,7 +15,8 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerContentProvider;
@@ -90,7 +91,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    private void addToolBarItems(ToolBar toolBar) {
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("export.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.EXPORT_TABLE));
       item.setToolTipText("Export Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

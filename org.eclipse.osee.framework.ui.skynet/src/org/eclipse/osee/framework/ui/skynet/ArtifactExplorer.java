@@ -108,7 +108,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -137,7 +136,6 @@ import org.eclipse.ui.part.ViewPart;
  * @author Ryan D. Brooks
  */
 public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, IAccessControlEventListener, IRelationModifiedEventListener, IArtifactModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider, IBranchProvider {
-   private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -229,7 +227,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       Label image = new Label(composite, SWT.NONE);
       image.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-      image.setImage(ACCESS_DENIED_IMAGE);
+      image.setImage(ImageManager.getImage(FrameworkImage.LOCKED_NO_ACCESS));
       image.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);

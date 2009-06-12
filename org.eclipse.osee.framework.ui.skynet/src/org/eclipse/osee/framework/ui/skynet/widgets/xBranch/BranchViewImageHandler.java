@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 
@@ -25,9 +27,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class BranchViewImageHandler {
-   private static Image branchImage = SkynetGuiPlugin.getInstance().getImage("branch.gif");
-   private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
-   private static Image systemBranchImage = SkynetGuiPlugin.getInstance().getImage("branchYellow.gif");
    private static Image favoriteBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
    private static int X_LOCATION = 0;
@@ -52,16 +51,16 @@ public class BranchViewImageHandler {
             boolean isSystemBranch = branch.isSystemRootBranch();
 
             if (isSystemBranch) {
-               returnImage = systemBranchImage;
+               return ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
             } else {
                if (favorite && isChangeManaged) {
                   returnImage = favoriteChangeManagedBranchImage;
                } else if (favorite) {
                   returnImage = favoriteBranchImage;
                } else if (isChangeManaged) {
-                  returnImage = changeManagedBranchImage;
+                  return ImageManager.getImage(FrameworkImage.BRANCH_CHANGE_MANAGED);
                } else {
-                  returnImage = branchImage;
+                  returnImage = ImageManager.getImage(FrameworkImage.BRANCH);
                }
             }
          } catch (OseeCoreException ex) {
@@ -69,7 +68,7 @@ public class BranchViewImageHandler {
          }
 
       } else if (element instanceof TransactionId && columnIndex == 0) {
-         returnImage = SkynetGuiPlugin.getInstance().getImage("DBiconBlue.GIF");
+         returnImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
 
       }
       return returnImage;
@@ -78,10 +77,11 @@ public class BranchViewImageHandler {
    private static synchronized void checkImages() {
       if (favoriteBranchImage == null) {
          favoriteBranchImage =
-               new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), X_LOCATION, Y_LOCATION).createImage();
+               new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH),
+                     ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
          favoriteChangeManagedBranchImage =
-               new OverlayImage(changeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                     "star_9_9.gif"), X_LOCATION, Y_LOCATION).createImage();
+               new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE_MANAGED),
+                     ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
       }
    }
 

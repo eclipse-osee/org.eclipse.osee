@@ -522,7 +522,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    public void createToolBarPulldown(final ToolBar toolBar, Composite composite) {
       final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
-      dropDown.setImage(AtsPlugin.getInstance().getImage("downTriangle.gif"));
+      dropDown.setImage(ImageManager.getImage(AtsImage.DOWN_TRIANGLE));
       final Menu menu = new Menu(composite);
 
       dropDown.addListener(SWT.Selection, new Listener() {

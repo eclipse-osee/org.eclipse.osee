@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model;
 
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -23,11 +25,10 @@ import org.eclipse.swt.graphics.Image;
 public class EllipticalShape extends Shape {
 
    /** A 16x16 pictogram of an elliptical shape. */
-   private static final Image ELLIPSE_ICON = createImage("ellipse16.gif");
 
    @Override
    public Image getIcon() {
-      return ELLIPSE_ICON;
+      return ImageManager.getImage(AtsImage.ELLIPSE_ICON);
    }
 
    /* (non-Javadoc)

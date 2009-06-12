@@ -14,6 +14,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -23,7 +25,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class RectangleShape extends Shape {
    /** A 16x16 pictogram of a rectangular shape. */
-   private static final Image RECTANGLE_ICON = createImage("rectangle16.gif");
 
    public RectangleShape() {
       setSize(new Dimension(100, 50));
@@ -39,7 +40,7 @@ public class RectangleShape extends Shape {
 
    @Override
    public Image getIcon() {
-      return RECTANGLE_ICON;
+      return ImageManager.getImage(FrameworkImage.RECTANGLE_16);
    }
 
    /* (non-Javadoc)

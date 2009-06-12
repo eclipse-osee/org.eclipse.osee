@@ -30,6 +30,8 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
@@ -132,12 +134,12 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       });
 
       if (AtsPlugin.getInstance() != null) {
-         createBranchButton.setImage(AtsPlugin.getInstance().getImage("branch.gif"));
-         purgeBranchButton.setImage(AtsPlugin.getInstance().getImage("trash.gif"));
+         createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
+         purgeBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
       }
       if (SkynetGuiPlugin.getInstance() != null) {
-         showArtifactExplorer.setImage(SkynetGuiPlugin.getInstance().getImage("artifact_explorer.gif"));
-         showChangeReport.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+         showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
+         showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
       }
       refresh();
    }

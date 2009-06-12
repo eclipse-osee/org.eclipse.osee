@@ -22,7 +22,9 @@ import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
-import org.eclipse.osee.framework.ui.branch.graph.utility.GraphImageConstants;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.widgets.Display;
 
@@ -33,7 +35,7 @@ public class BranchGraphPaletteProvider {
 
    private static final String[] drawerNames = new String[] {"Filters"};
    private PaletteRoot paletteRoot;
-   private BranchGraphEditor editor;
+   private final BranchGraphEditor editor;
 
    public BranchGraphPaletteProvider(BranchGraphEditor editor) {
       this.paletteRoot = null;
@@ -56,18 +58,17 @@ public class BranchGraphPaletteProvider {
          String name = "one";
          String description = "example";
          Class<?> clazz = Object.class;
-         String smallImage = "rectangle16.gif";
-         String largeImage = "rectangle24.gif";
 
-         container.add(createComponent(name, description, clazz, smallImage, largeImage));
+         container.add(createComponent(name, description, clazz, FrameworkImage.RECTANGLE_16,
+               FrameworkImage.RECTANGLE_24));
          paletteRoot.add(container);
       }
    }
 
-   private ToolEntry createComponent(String label, String description, Class<?> clazz, String smallImage, String largeImage) {
+   private ToolEntry createComponent(String label, String description, Class<?> clazz, OseeImage smallImage, OseeImage largeImage) {
       ToolEntry toolEntry =
-            new ToolEntry(label, description, GraphImageConstants.getImageDescriptor(smallImage),
-                  GraphImageConstants.getImageDescriptor(largeImage)) {
+            new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
+                  ImageManager.getImageDescriptor(largeImage)) {
 
             };
       return toolEntry;

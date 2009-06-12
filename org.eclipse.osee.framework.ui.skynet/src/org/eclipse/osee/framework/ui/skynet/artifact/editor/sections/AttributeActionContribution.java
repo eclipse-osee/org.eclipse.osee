@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
@@ -111,16 +113,17 @@ public class AttributeActionContribution implements IActionContributor {
    private final class OpenAddAttributeTypeDialogAction extends Action {
       public OpenAddAttributeTypeDialogAction() {
          super();
-         ImageDescriptor addImage = SkynetGuiPlugin.getInstance().getImageDescriptor("add.gif");
+         ImageDescriptor addImage = ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN);
          setImageDescriptor(addImage);
          setToolTipText("Opens a dialog to select which attribute type instances to create on the artifact");
       }
 
+      @Override
       public void run() {
          try {
             Artifact artifact = editor.getEditorInput().getArtifact();
-            Image image = SkynetGuiPlugin.getInstance().getImage("add.gif");
-            handleAttributeTypeEdits(artifact, true, "Add Attribute Types", image);
+            handleAttributeTypeEdits(artifact, true, "Add Attribute Types",
+                  ImageManager.getImage(FrameworkImage.ADD_GREEN));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -130,16 +133,16 @@ public class AttributeActionContribution implements IActionContributor {
    private final class OpenDeleteAttributeTypeDialogAction extends Action {
       public OpenDeleteAttributeTypeDialogAction() {
          super();
-         ImageDescriptor deleteImage = SkynetGuiPlugin.getInstance().getImageDescriptor("delete.gif");
-         setImageDescriptor(deleteImage);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE));
          setToolTipText("Opens a dialog to select which attribute type instances to remove from the artifact");
       }
 
+      @Override
       public void run() {
          try {
             Artifact artifact = editor.getEditorInput().getArtifact();
-            Image image = SkynetGuiPlugin.getInstance().getImage("delete.gif");
-            handleAttributeTypeEdits(artifact, false, "Delete Attribute Types", image);
+            handleAttributeTypeEdits(artifact, false, "Delete Attribute Types",
+                  ImageManager.getImage(FrameworkImage.DELETE));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.Display;
  */
 public class OseeServicesStatusContributionItem extends OseeContributionItem implements IStatusListener {
    private static final String ID = "osee.service.status";
-   private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("appserver.gif");
    private static final Image DISABLED_IMAGE =
-         new OverlayImage(ENABLED_IMAGE, SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
+         new OverlayImage(ImageManager.getImage(FrameworkImage.APPLICATION_SERVER),
+               ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
 
    private static String errorMessage;
    private static String okMessage;
@@ -82,7 +82,7 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
     */
    @Override
    protected Image getEnabledImage() {
-      return ENABLED_IMAGE;
+      return ImageManager.getImage(FrameworkImage.APPLICATION_SERVER);
    }
 
    /* (non-Javadoc)

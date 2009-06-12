@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
@@ -60,20 +61,6 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    Font font = null;
 
    private final MergeXViewer mergeXViewer;
-
-   private final static String SOURCE_IMAGE = "green_s.gif";
-   private final static String DEST_IMAGE = "blue_d.gif";
-   private final static String MERGE_IMAGE = "yellow_m.gif";
-   private final static String START_WIZARD_IMAGE = "conflict.gif";
-   private final static String MARKED_MERGED_IMAGE = "chkbox_enabled.gif";
-   private final static String EDITED_IMAGE = "chkbox_disabled.gif";
-   private final static String OUT_OF_DATE_IMAGE = "chkbox_red.gif";
-   private final static String OUT_OF_DATE_COMMITTED_IMAGE = "chkbox_enabled_conflicted.gif";
-   private final static String NO_CONFLICT_IMAGE = "accept.gif";
-   private final static String NOT_RESOLVABLE_IMAGE = "red_light.gif";
-   private final static String INFORMATION_IMAGE = "issue.gif";
-   private final static String MERGE_SUCCESS_IMAGE = "icon_success.gif";
-   private final static String MERGE_CAUTION_IMAGE = "icon_warning.gif";
 
    public XMergeLabelProvider(MergeXViewer mergeXViewer) {
       super(mergeXViewer);
@@ -145,25 +132,21 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             } else if (dCol.equals(MergeXViewerFactory.Change_Item)) {
                return ImageManager.getConflictImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Source)) {
-               return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
+               return ImageManager.getImage(FrameworkImage.MERGE_SOURCE);
             } else if (dCol.equals(MergeXViewerFactory.Destination)) {
-               return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
+               return ImageManager.getImage(FrameworkImage.MERGE_DEST);
             } else if (dCol.equals(MergeXViewerFactory.Merged)) {
                return getMergeImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
                if (conflict.statusUntouched()) return null;
-               if (conflict.statusEdited()) return SkynetGuiPlugin.getInstance().getImage(EDITED_IMAGE);
-               if (conflict.statusResolved() || conflict.statusCommitted()) return SkynetGuiPlugin.getInstance().getImage(
-                     MARKED_MERGED_IMAGE);
-               if (conflict.statusOutOfDate()) return SkynetGuiPlugin.getInstance().getImage(OUT_OF_DATE_IMAGE);
-               if (conflict.statusOutOfDateCommitted()) return SkynetGuiPlugin.getInstance().getImage(
-                     OUT_OF_DATE_COMMITTED_IMAGE);
-               if (conflict.statusPreviousMergeAppliedSuccess()) return SkynetGuiPlugin.getInstance().getImage(
-                     MERGE_SUCCESS_IMAGE);
-               if (conflict.statusPreviousMergeAppliedCaution()) return SkynetGuiPlugin.getInstance().getImage(
-                     MERGE_CAUTION_IMAGE);
-               if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(NOT_RESOLVABLE_IMAGE);
-               if (conflict.statusInformational()) return SkynetGuiPlugin.getInstance().getImage(INFORMATION_IMAGE);
+               if (conflict.statusEdited()) return ImageManager.getImage(FrameworkImage.MERGE_EDITED);
+               if (conflict.statusResolved() || conflict.statusCommitted()) return ImageManager.getImage(FrameworkImage.MERGE_MARKED);
+               if (conflict.statusOutOfDate()) return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE);
+               if (conflict.statusOutOfDateCommitted()) return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE_COMMITTED);
+               if (conflict.statusPreviousMergeAppliedSuccess()) return ImageManager.getImage(FrameworkImage.MERGE_SUCCESS);
+               if (conflict.statusPreviousMergeAppliedCaution()) return ImageManager.getImage(FrameworkImage.MERGE_CAUTION);
+               if (conflict.statusNotResolvable()) return ImageManager.getImage(FrameworkImage.MERGE_NOT_RESOLVEABLE);
+               if (conflict.statusInformational()) return ImageManager.getImage(FrameworkImage.MERGE_INFO);
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -174,15 +157,14 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
 
    public static Image getMergeImage(Conflict conflict) throws OseeCoreException {
       if (conflict.statusInformational()) return null;
-      if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(START_WIZARD_IMAGE);
-      if ((conflict.sourceEqualsDestination()) && (conflict.mergeEqualsSource())) return SkynetGuiPlugin.getInstance().getImage(
-            NO_CONFLICT_IMAGE);
-      if (conflict.statusUntouched()) return SkynetGuiPlugin.getInstance().getImage(START_WIZARD_IMAGE);
-      if (conflict.mergeEqualsDestination()) return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
+      if (conflict.statusNotResolvable()) return ImageManager.getImage(FrameworkImage.MERGE_START);
+      if ((conflict.sourceEqualsDestination()) && (conflict.mergeEqualsSource())) return ImageManager.getImage(FrameworkImage.MERGE_NO_CONFLICT);
+      if (conflict.statusUntouched()) return ImageManager.getImage(FrameworkImage.MERGE_START);
+      if (conflict.mergeEqualsDestination()) return ImageManager.getImage(FrameworkImage.MERGE_DEST);
       if (conflict.mergeEqualsSource())
-         return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
+         return ImageManager.getImage(FrameworkImage.MERGE_SOURCE);
       else
-         return SkynetGuiPlugin.getInstance().getImage(MERGE_IMAGE);
+         return ImageManager.getImage(FrameworkImage.MERGE_YELLOW_M);
    }
 
 }

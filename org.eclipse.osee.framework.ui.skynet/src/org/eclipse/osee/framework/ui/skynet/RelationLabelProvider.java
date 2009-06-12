@@ -26,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Ryan D. Brooks
  */
 public class RelationLabelProvider implements ITableLabelProvider, ILabelProvider {
-   private static Image RELATION_IMAGE = SkynetGuiPlugin.getInstance().getImage("relate.gif");
    private Artifact artifact;
 
    public RelationLabelProvider(Artifact artifact) {
@@ -40,7 +39,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     */
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof RelationType && columnIndex == 0) {
-         return RELATION_IMAGE;
+         return ImageManager.getImage(FrameworkImage.RELATION);
       } else if (element instanceof RelationLink && columnIndex == 0) {
          RelationLink relation = (RelationLink) element;
          try {

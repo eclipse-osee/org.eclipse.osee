@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -242,7 +241,7 @@ public class TaskComposite extends Composite implements IActionable {
       if (iXTaskViewer.isTaskable()) {
 
          item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(AtsPlugin.getInstance().getImage("newTask.gif"));
+         item.setImage(ImageManager.getImage(AtsImage.NEW_TASK));
          item.setToolTipText("New Task");
          item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
          item.addSelectionListener(new SelectionAdapter() {
@@ -253,7 +252,7 @@ public class TaskComposite extends Composite implements IActionable {
          });
 
          item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(AtsPlugin.getInstance().getImage("redRemove.gif"));
+         item.setImage(ImageManager.getImage(FrameworkImage.X_RED));
          item.setToolTipText("Delete Task");
          item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
          item.addSelectionListener(new SelectionAdapter() {
@@ -286,7 +285,7 @@ public class TaskComposite extends Composite implements IActionable {
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -318,7 +317,7 @@ public class TaskComposite extends Composite implements IActionable {
       }
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(AtsPlugin.getInstance().getImage("taskSelected.gif"));
+      item.setImage(ImageManager.getImage(AtsImage.TASK_SELECTED));
       item.setToolTipText("Open Selected in ATS Task Editor");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -358,7 +357,7 @@ public class TaskComposite extends Composite implements IActionable {
 
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
       final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
-      dropDown.setImage(AtsPlugin.getInstance().getImage("downTriangle.gif"));
+      dropDown.setImage(ImageManager.getImage(AtsImage.DOWN_TRIANGLE));
       final Menu menu = new Menu(composite);
 
       dropDown.addListener(SWT.Selection, new Listener() {

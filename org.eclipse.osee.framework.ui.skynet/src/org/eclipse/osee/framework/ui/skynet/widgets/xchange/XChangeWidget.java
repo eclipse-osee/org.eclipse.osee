@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -155,7 +156,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -166,7 +167,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -176,7 +177,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       });
 
       associatedArtifactToolItem = new ToolItem(toolBar, SWT.PUSH);
-      associatedArtifactToolItem.setImage(SkynetGuiPlugin.getInstance().getImage("edit.gif"));
+      associatedArtifactToolItem.setImage(ImageManager.getImage(FrameworkImage.EDIT));
       associatedArtifactToolItem.setToolTipText("Open Associated Artifact");
       associatedArtifactToolItem.setEnabled(false);
       associatedArtifactToolItem.addSelectionListener(new SelectionAdapter() {

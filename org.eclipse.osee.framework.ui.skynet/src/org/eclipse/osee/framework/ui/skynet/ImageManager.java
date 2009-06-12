@@ -76,7 +76,7 @@ public class ImageManager {
 
    public static Image getConflictImage(Conflict conflict) throws OseeCoreException {
       if (conflict instanceof AttributeConflict) {
-         return getImage(FrameworkImage.ATTRIBUTE);
+         return getImage(FrameworkImage.ATTRIBUTE_MOLECULE);
       }
       if (conflict instanceof ArtifactConflict) {
          return getImage(conflict.getArtifact());
@@ -132,7 +132,7 @@ public class ImageManager {
    }
 
    private static Image getAttributeChangeImage(ChangeType changeType, ModificationType modType) {
-      return getChangeTypeImageInternal(FrameworkImage.ATTRIBUTE, changeType, modType);
+      return getChangeTypeImageInternal(FrameworkImage.ATTRIBUTE_MOLECULE, changeType, modType);
    }
 
    private static Image getRelationChangeImage(ChangeType changeType, ModificationType modType) {

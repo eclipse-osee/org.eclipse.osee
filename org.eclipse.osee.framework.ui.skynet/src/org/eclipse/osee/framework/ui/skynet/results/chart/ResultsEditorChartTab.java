@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.results.chart;
 
 import org.eclipse.birt.chart.model.Chart;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -82,7 +83,7 @@ public class ResultsEditorChartTab implements IResultsEditorChartTab {
 
    private void createToolbar(ToolBar toolBar) {
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("print.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.PRINT));
       item.setToolTipText("Print this tab");
       item.addSelectionListener(new SelectionAdapter() {
          @Override

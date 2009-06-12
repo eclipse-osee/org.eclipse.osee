@@ -16,6 +16,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
@@ -39,7 +41,7 @@ public class BlamEditor extends AbstractArtifactEditor implements IBlamEventList
          addPage(overviewPage);
          addPage(new WorkflowDataPage(this, overviewPage));
          setPartName("BLAM: " + getWorkflow().getDescriptiveName());
-         setTitleImage(SkynetGuiPlugin.getInstance().getImage("blam.gif"));
+         setTitleImage(ImageManager.getImage(FrameworkImage.BLAM));
       } catch (PartInitException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -35,7 +37,6 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,7 +52,6 @@ import org.eclipse.ui.IMemento;
  * @author Roberto E. Escobar
  */
 public class QuickSearchOptionComposite extends Composite {
-   private static final Image CONFIG_IMAGE = SkynetGuiPlugin.getInstance().getImage("gear.gif");
    private static final String CONFIG_BUTTON_TOOLTIP = "Select to configure option.";
 
    private static final String OPTIONS_KEY_ID = "searchOption";
@@ -234,7 +234,7 @@ public class QuickSearchOptionComposite extends Composite {
          Button filterConfig = new Button(mainComposite, SWT.PUSH);
          String configToolTip = configHandler.getConfigToolTip();
          filterConfig.setToolTipText(Strings.isValid(configToolTip) ? configToolTip : CONFIG_BUTTON_TOOLTIP);
-         filterConfig.setImage(CONFIG_IMAGE);
+         filterConfig.setImage(ImageManager.getImage(FrameworkImage.GEAR));
          filterConfig.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {

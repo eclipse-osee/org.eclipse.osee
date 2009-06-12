@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -32,8 +31,6 @@ import org.eclipse.swt.graphics.Cursor;
  */
 public class AtsPlugin extends OseeUiActivator {
    private static AtsPlugin pluginInstance;
-   private static Cursor handCursor;
-   private static Cursor waitCursor;
    public static ActionDebug debug = new ActionDebug(false, "AtsPlugin");
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
    private static boolean emailEnabled = true;

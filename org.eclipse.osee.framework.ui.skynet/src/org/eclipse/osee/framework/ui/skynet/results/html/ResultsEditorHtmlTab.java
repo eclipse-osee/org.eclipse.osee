@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -90,7 +92,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
 
    private void createToolbar(ToolBar toolBar) {
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("print.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.PRINT));
       item.setToolTipText("Print this tab");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -100,7 +102,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("email.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
       item.setToolTipText("Email");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -112,7 +114,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("export.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.EXPORT_TABLE));
       item.setToolTipText("Export Table");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -122,7 +124,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.SAVED));
       item.setToolTipText("Save Report");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -132,7 +134,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("load.gif"));
+      item.setImage(ImageManager.getImage(FrameworkImage.FOLDER));
       item.setToolTipText("Import Saved Results Report");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
