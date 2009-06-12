@@ -45,4 +45,6 @@
    <includes
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
+         
+    <includes id="org.eclipse.osee.define.feature.source" version="0.0.0"/>
 </feature>
