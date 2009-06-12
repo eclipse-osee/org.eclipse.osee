@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +35,13 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
     */
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerProvider(this, ArtifactTypeManager.getType("Version"));
+      ImageManager.registerProvider(this, ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME));
+      ImageManager.registerProvider(this, ArtifactTypeManager.getType(TaskArtifact.ARTIFACT_NAME));
+      ImageManager.registerProvider(this, ArtifactTypeManager.getType(PeerToPeerReviewArtifact.ARTIFACT_NAME));
+      ImageManager.registerProvider(this, ArtifactTypeManager.getType(DecisionReviewArtifact.ARTIFACT_NAME));
+      for (String artName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+         ImageManager.registerProvider(this, ArtifactTypeManager.getType(artName));
+      }
    }
 
    /* (non-Javadoc)
@@ -38,7 +49,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
     */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType("Version")) {
+      if (artifact.isOfType(VersionArtifact.ARTIFACT_NAME)) {
          if (artifact.getSoleAttributeValue("ats.Next Version", false)) {
             return ImageManager.getImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
          }

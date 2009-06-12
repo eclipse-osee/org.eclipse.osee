@@ -452,4 +452,10 @@
             classname="org.eclipse.osee.ats.world.AtsWorldEditorItem">
       </AtsWorldEditorItem>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
+      <ArtifactImageProvider
+            class="org.eclipse.osee.ats.AtsArtifactImageProvider">
+      </ArtifactImageProvider>
+   </extension>
 </plugin>

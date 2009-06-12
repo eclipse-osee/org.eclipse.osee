@@ -54,11 +54,7 @@ public class ImageManager {
 
    private static final ImageManager instance = new ImageManager();
 
-   private final Map<ArtifactType, ArtifactImageProvider> providersMap =
-         Collections.synchronizedMap(new HashMap<ArtifactType, ArtifactImageProvider>());
-   private final ImageRegistry imageRegistry = SkynetGuiPlugin.getInstance().getImageRegistry();
-
-   private ImageManager() {
+   static {
       List<ArtifactImageProvider> providers =
             new ExtensionDefinedObjects<ArtifactImageProvider>(EXTENSION_ID, EXTENSION_ELEMENT, "class").getObjects();
 
@@ -69,6 +65,13 @@ public class ImageManager {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
+   }
+
+   private final Map<ArtifactType, ArtifactImageProvider> providersMap =
+         Collections.synchronizedMap(new HashMap<ArtifactType, ArtifactImageProvider>());
+   private final ImageRegistry imageRegistry = SkynetGuiPlugin.getInstance().getImageRegistry();
+
+   private ImageManager() {
    }
 
    public static Image getConflictImage(Conflict conflict) throws OseeCoreException {

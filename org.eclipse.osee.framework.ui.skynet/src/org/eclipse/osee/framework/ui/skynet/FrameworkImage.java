@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public enum FrameworkImage implements OseeImage {
    LOCKED_WITH_ACCESS("green_lock.gif"),
    LOCKED_NO_ACCESS("red_lock.gif"),
+   WARNING("warn.gif"),
    WARNING_OVERLAY("alert_8_8.gif"),
    ERROR_OVERLAY("error.gif"),
    PURPLE("purple.gif"),
@@ -26,7 +27,6 @@ public enum FrameworkImage implements OseeImage {
    USER("user.gif"),
    SAVED("saved.gif"),
    SAVE_NEEDED("needSave.gif"),
-   WARNING("warn.gif"),
    ERROR("errorRound.gif"),
    BUG("bug.gif"),
    SKYWALKER("skywalker.gif"),
