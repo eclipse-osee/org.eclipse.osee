@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
  */
 public class ControlPlugin extends OseeUiActivator {
 
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.service.control.ControlPlugin";
    private static ControlPlugin pluginInstance; // The shared instance.
 
    /**
