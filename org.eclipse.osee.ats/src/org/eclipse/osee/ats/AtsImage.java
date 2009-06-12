@@ -75,6 +75,6 @@ public enum AtsImage implements OseeImage {
     */
    @Override
    public String getImageKey() {
-      return fileName;
+      return AtsPlugin.PLUGIN_ID + "." + fileName;
    }
 }
