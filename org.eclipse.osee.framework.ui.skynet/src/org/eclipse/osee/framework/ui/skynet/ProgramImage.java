@@ -43,7 +43,6 @@ public class ProgramImage implements OseeImage {
     */
    @Override
    public String getImageKey() {
-      return "program" + extension;
+      return SkynetGuiPlugin.PLUGIN_ID + ".program." + extension;
    }
-
 }

@@ -68,8 +68,7 @@ public class BaseImage implements OseeImage {
     */
    @Override
    public String getImageKey() {
-      // TODO Auto-generated method stub
-      return null;
+      return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
    }
 
    /**

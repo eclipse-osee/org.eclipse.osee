@@ -87,6 +87,6 @@ public enum FrameworkImage implements OseeImage {
     */
    @Override
    public String getImageKey() {
-      return fileName;
+      return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;
    }
 }
