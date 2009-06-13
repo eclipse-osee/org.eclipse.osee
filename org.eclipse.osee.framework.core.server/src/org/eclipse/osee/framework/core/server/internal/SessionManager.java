@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.core.server.SessionData.SessionState;
 import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -76,38 +76,57 @@ public class SessionManager implements ISessionManager {
       return toReturn;
    }
 
-   public boolean isAlive(OseeSession oseeSession) throws Exception {
+   public boolean isAlive(OseeSession oseeSession) throws OseeCoreException {
       boolean wasAlive = false;
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      URL url =
-            new URL(String.format("http://%s:%s/osee/request?cmd=pingId", oseeSession.getClientAddress(),
-                  oseeSession.getPort()));
-      AcquireResult result = HttpProcessor.acquire(url, outputStream);
-      if (result.wasSuccessful()) {
-         String sessionId = outputStream.toString(result.getEncoding());
-         if (Strings.isValid(sessionId)) {
-            wasAlive = sessionId.contains(oseeSession.getSessionId());
+      try {
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         URL url =
+               new URL(String.format("http://%s:%s/osee/request?cmd=pingId", oseeSession.getClientAddress(),
+                     oseeSession.getPort()));
+         AcquireResult result = HttpProcessor.acquire(url, outputStream);
+         if (result.wasSuccessful()) {
+            String sessionId = outputStream.toString(result.getEncoding());
+            if (Strings.isValid(sessionId)) {
+               wasAlive = sessionId.contains(oseeSession.getSessionId());
+            }
          }
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       }
       return wasAlive;
    }
 
-   public Collection<SessionData> getSessions() {
-      synchronized (sessionCache) {
-         return sessionCache.values();
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessions(java.lang.String, boolean includeNonServerManagedSessions)
+    */
+   @Override
+   public List<SessionData> getAllSessions(boolean includeNonServerManagedSessions) throws OseeDataStoreException {
+      List<SessionData> toReturn = null;
+      if (includeNonServerManagedSessions) {
+         toReturn = SessionDataStore.getAllSessions();
+      } else {
+         synchronized (sessionCache) {
+            toReturn = new ArrayList<SessionData>(sessionCache.values());
+         }
       }
+      return toReturn;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager# ArrayList(java.lang.String)
+    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionsByUserId(java.lang.String, boolean)
     */
    @Override
-   public List<SessionData> getSessionsByUserId(String userId) {
-      List<SessionData> toReturn = new ArrayList<SessionData>();
-      synchronized (sessionCache) {
-         for (SessionData sessionData : sessionCache.values()) {
-            if (sessionData.getSession().getUserId().equals(userId)) {
-               toReturn.add(sessionData);
+   public List<SessionData> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException {
+      List<SessionData> toReturn = null;
+      if (includeNonServerManagedSessions) {
+         toReturn = SessionDataStore.getAllSessions();
+      } else {
+         toReturn = new ArrayList<SessionData>();
+         synchronized (sessionCache) {
+            for (SessionData sessionData : sessionCache.values()) {
+               if (sessionData.getSession().getUserId().equals(userId)) {
+                  toReturn.add(sessionData);
+               }
             }
          }
       }
@@ -180,6 +199,17 @@ public class SessionManager implements ISessionManager {
          sessionData.getSession().setLastInteractionDate(GlobalTime.GreenwichMeanTimestamp());
       } else {
          throw new OseeInvalidSessionException(String.format("Session was invalid: [%s]", sessionId));
+      }
+   }
+
+   public void releaseSessionImmediate(String... sessionIds) throws OseeCoreException {
+      if (sessionIds != null && sessionIds.length > 0) {
+         SessionDataStore.deleteSession(sessionIds);
+         synchronized (sessionCache) {
+            for (String session : sessionIds) {
+               sessionCache.remove(session);
+            }
+         }
       }
    }
 

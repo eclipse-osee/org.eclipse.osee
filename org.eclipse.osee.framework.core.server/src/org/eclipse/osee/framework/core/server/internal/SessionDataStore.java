@@ -36,7 +36,9 @@ public class SessionDataStore {
 
    private static final String LOAD_SESSIONS_BY_SERVER_ID = "select * from osee_session WHERE managed_by_server_id = ?";
 
-   //   private static final String FIND_SESSION = "select * from osee_session WHERE session_id = ?";
+   private static final String GET_ALL_SESSIONS = "select * from osee_session";
+
+   private static final String GET_SESSIONS_FOR_USER_ID = "select * from osee_session where user_id  = ?";
 
    private SessionDataStore() {
    }
@@ -78,10 +80,6 @@ public class SessionDataStore {
       }
    }
 
-   /**
-    * @param sessionId
-    * @throws OseeDataStoreException
-    */
    public static void loadSessions(String serverId, Map<String, SessionData> sessionCache) throws OseeDataStoreException {
       if (Strings.isValid(serverId)) {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -90,18 +88,51 @@ public class SessionDataStore {
             while (chStmt.next()) {
                String sessionId = chStmt.getString("session_id");
                if (!sessionCache.containsKey(sessionId)) {
-                  OseeSession session =
-                        new OseeSession(chStmt.getString("session_id"), chStmt.getString("user_id"),
-                              chStmt.getTimestamp("created_on"), chStmt.getString("client_machine_name"),
-                              chStmt.getString("client_address"), chStmt.getInt("client_port"),
-                              chStmt.getString("client_version"), chStmt.getTimestamp("last_interaction_date"),
-                              chStmt.getString("last_interaction"));
-                  sessionCache.put(sessionId, new SessionData(SessionState.CURRENT, session));
+                  sessionCache.put(sessionId, toSessionData(sessionId, chStmt));
                }
             }
          } finally {
             chStmt.close();
          }
       }
+   }
+
+   public static List<SessionData> getSessionsForUserId(String userId) throws OseeDataStoreException {
+      List<SessionData> toReturn = new ArrayList<SessionData>();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(GET_SESSIONS_FOR_USER_ID, userId);
+         while (chStmt.next()) {
+            String sessionId = chStmt.getString("session_id");
+            toReturn.add(toSessionData(sessionId, chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return toReturn;
+   }
+
+   public static List<SessionData> getAllSessions() throws OseeDataStoreException {
+      List<SessionData> toReturn = new ArrayList<SessionData>();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(GET_ALL_SESSIONS);
+         while (chStmt.next()) {
+            String sessionId = chStmt.getString("session_id");
+            toReturn.add(toSessionData(sessionId, chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return toReturn;
+   }
+
+   private static SessionData toSessionData(String sessionId, ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+      OseeSession session =
+            new OseeSession(sessionId, chStmt.getString("user_id"), chStmt.getTimestamp("created_on"),
+                  chStmt.getString("client_machine_name"), chStmt.getString("client_address"),
+                  chStmt.getInt("client_port"), chStmt.getString("client_version"),
+                  chStmt.getTimestamp("last_interaction_date"), chStmt.getString("last_interaction"));
+      return new SessionData(SessionState.CURRENT, session);
    }
 }

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -33,10 +33,12 @@ public interface ISessionManager {
 
    public List<SessionData> getSessionByClientAddress(String clientAddress);
 
-   public List<SessionData> getSessionsByUserId(String userId);
+   public List<SessionData> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
 
-   public Collection<SessionData> getSessions();
+   public List<SessionData> getAllSessions(boolean includeNonServerManagedSessions) throws OseeDataStoreException;
 
-   public boolean isAlive(OseeSession oseeSession) throws Exception;
+   public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
+
+   public boolean isAlive(OseeSession oseeSession) throws OseeCoreException;
 
 }
