@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Source Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.ui.feature.source;singleton:=true
-Bundle-Version: 0.4.0.qualifier
-Bundle-Vendor: Eclipse.org
