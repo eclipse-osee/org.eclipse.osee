@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.test;
 
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
+import org.eclipse.osee.ats.test.cases.AtsImageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsBranchConfigurationTest.class})
+@Suite.SuiteClasses( {AtsImageTest.class, AtsBranchConfigurationTest.class})
 /**
  * @author Donald G. Dunne
  */

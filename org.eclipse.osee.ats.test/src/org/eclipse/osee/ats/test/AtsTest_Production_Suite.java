@@ -8,19 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test;
+package org.eclipse.osee.ats.test;
 
-import org.eclipse.osee.framework.ui.skynet.test.cases.DatabaseIntegrityTest;
-import org.eclipse.osee.framework.ui.skynet.test.cases.FrameworkImageTest;
+import org.eclipse.osee.ats.test.cases.AtsImageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkImageTest.class, DatabaseIntegrityTest.class})
-//Suite.SuiteClasses( {ImageManagerTest.class, DatabaseIntegrityTest.class, OseeEmailTest.class})
+@Suite.SuiteClasses( {AtsImageTest.class})
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkUi_Production_Suite {
-
+public class AtsTest_Production_Suite {
 }

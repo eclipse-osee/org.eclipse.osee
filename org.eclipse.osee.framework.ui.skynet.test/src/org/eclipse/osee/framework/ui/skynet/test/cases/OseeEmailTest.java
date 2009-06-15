@@ -35,7 +35,7 @@ public class OseeEmailTest {
     * @throws java.lang.Exception
     */
    @Before
-   public static void setUp() throws Exception {
+   public void setUp() throws Exception {
       if (emailAddress == null) {
          ArtifactEditor.editArtifact(UserManager.getUser());
          emailAddress = UserManager.getUser().getEmail();

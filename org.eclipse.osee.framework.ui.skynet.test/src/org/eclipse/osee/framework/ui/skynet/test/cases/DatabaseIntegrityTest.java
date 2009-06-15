@@ -37,7 +37,7 @@ public class DatabaseIntegrityTest {
       this.operationId = operationId;
    }
 
-   @Test
+   @Test(timeout = 3000)
    public void testDatabaseIntegrity() {
       DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
 

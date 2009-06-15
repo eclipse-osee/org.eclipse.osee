@@ -6,5 +6,7 @@ Bundle-Version: 1.0.0
 Fragment-Host: org.eclipse.osee.framework.ui.skynet
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.ui.skynet.test,
- org.eclipse.osee.framework.ui.skynet.test.cases
+ org.eclipse.osee.framework.ui.skynet.test.cases,
+ org.eclipse.osee.framework.ui.skynet.test.nonproduction,
+ org.eclipse.osee.framework.ui.skynet.test.testDb.interactive
 Require-Bundle: org.eclipse.osee.support.test.util;bundle-version="1.0.0"
