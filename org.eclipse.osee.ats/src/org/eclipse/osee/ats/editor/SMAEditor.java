@@ -298,12 +298,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       try {
          Result result = workFlowTab.isXWidgetDirty();
          if (result.isTrue()) return result;
-
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
-
-         return new Result(true, smaMgr.getSma().reportIsDirty(true));
-
+         String rString = smaMgr.getSma().reportIsDirty(true);
+         return new Result((rString != null), rString);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result(true, ex.getLocalizedMessage());
