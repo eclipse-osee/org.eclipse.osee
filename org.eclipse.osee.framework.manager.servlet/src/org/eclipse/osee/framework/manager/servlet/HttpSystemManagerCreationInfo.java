@@ -27,7 +27,7 @@ class HttpSystemManagerCreationInfo {
 
    public HttpSystemManagerCreationInfo(HttpServletRequest req) throws OseeArgumentException {
       userId = req.getParameter("userId");
-      sessionId = req.getParameter("sessionId").replaceAll(" ", "+");
+      sessionId = req.getParameter("sessionId");
    }
 
 }

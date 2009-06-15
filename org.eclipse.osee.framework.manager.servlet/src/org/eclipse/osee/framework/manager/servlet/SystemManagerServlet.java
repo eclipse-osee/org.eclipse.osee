@@ -11,16 +11,20 @@
 package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.SessionData;
@@ -83,20 +87,21 @@ public class SystemManagerServlet extends OseeHttpServlet {
    }
 
    private void displayOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      String requestAddress = request.getLocalAddr();
+      String requestPort = String.valueOf(request.getLocalPort());
+
       StringBuffer sb = new StringBuffer(1000);
       try {
          sb.append(AHTML.heading(2, "OSEE Dashboard"));
-         sb.append(getHeader(request));
-         sb.append(AHTML.newline() + getSessionByUserIdEntry(request, response));
-         sb.append(getSessions(request));
-      } catch (OseeCoreException ex) {
-         sb.append("Exception: " + ex.getLocalizedMessage());
+         sb.append(createAnchor(AnchorType.MANAGER_HOME_ANCHOR, null, requestAddress, requestPort));
+         sb.append(AHTML.newline(2));
+         sb.append(getSessionByUserIdEntry(request, response));
+         sb.append(getSessions(requestAddress, requestPort));
+      } catch (Exception ex) {
+         sb.append("Exception: ");
+         sb.append(Lib.exceptionToString(ex));
       }
       displayResults(sb.toString(), request, response);
-   }
-
-   private String getHeader(HttpServletRequest request) {
-      return "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager\">Home</a><br>";
    }
 
    private String getSessionByUserIdEntry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -107,7 +112,8 @@ public class SystemManagerServlet extends OseeHttpServlet {
          sb.append("<input TYPE=\"hidden\" NAME=\"operation\" VALUE=\"user\">");
          sb.append("<INPUT TYPE=SUBMIT></form>");
       } catch (Exception ex) {
-         sb.append("Exception: " + ex.getLocalizedMessage());
+         sb.append("Exception: ");
+         sb.append(Lib.exceptionToString(ex));
       }
       return sb.toString();
    }
@@ -116,16 +122,20 @@ public class SystemManagerServlet extends OseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       try {
          HttpSystemManagerCreationInfo info = new HttpSystemManagerCreationInfo(request);
+         String requestAddress = request.getLocalAddr();
+         String requestPort = String.valueOf(request.getLocalPort());
          String userId = info.userId;
          if (!Strings.isValid(userId)) {
             sb.append("Invalid userId [" + userId + "]");
          } else {
             sb.append(AHTML.heading(2, "OSEE System Manager"));
-            sb.append(getHeader(request));
-            sb.append(getSessionsByUserId(request, userId));
+            sb.append(createAnchor(AnchorType.MANAGER_HOME_ANCHOR, null, requestAddress, requestPort));
+            sb.append(AHTML.newline(1));
+            sb.append(getSessionsByUserId(userId, requestAddress, requestPort));
          }
-      } catch (OseeCoreException ex) {
-         sb.append("Exception: " + ex.getLocalizedMessage());
+      } catch (Exception ex) {
+         sb.append("Exception: ");
+         sb.append(Lib.exceptionToString(ex));
       }
       displayResults(sb.toString(), request, response);
    }
@@ -137,7 +147,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
          if (!Strings.isValid(info.sessionId)) {
             sb.append("Invalid userId [" + info.sessionId + "]");
          } else {
-            InternalSystemManagerServletActivator.getSessionManager().releaseSession(info.sessionId);
+            InternalSystemManagerServletActivator.getSessionManager().releaseSessionImmediate(info.sessionId);
             sb.append("Deleted session [" + info.sessionId + "]");
          }
       } catch (OseeCoreException ex) {
@@ -164,48 +174,76 @@ public class SystemManagerServlet extends OseeHttpServlet {
       }
    }
 
-   private String getSessions(HttpServletRequest request) throws OseeCoreException {
-      return getSessionResults(request, InternalSystemManagerServletActivator.getSessionManager().getSessions(),
-            "Sessions");
+   private String getSessions(String requestAddress, String requestPort) throws Exception {
+      Collection<SessionData> sessionData =
+            InternalSystemManagerServletActivator.getSessionManager().getAllSessions(true);
+      return createSessionTable(sessionData, "Sessions", requestAddress, requestPort);
    }
 
-   private String getSessionsByUserId(HttpServletRequest request, String userId) throws OseeCoreException {
-      return getSessionResults(request, InternalSystemManagerServletActivator.getSessionManager().getSessionsByUserId(
-            userId), "Sessions for [" + userId + "]");
+   private String getSessionsByUserId(String userId, String requestAddress, String requestPort) throws Exception {
+      Collection<SessionData> sessionData =
+            InternalSystemManagerServletActivator.getSessionManager().getSessionsByUserId(userId, true);
+      return createSessionTable(sessionData, "Sessions for [" + userId + "]", requestAddress, requestPort);
    }
-   private static SimpleDateFormat dateFormat = (new SimpleDateFormat("yyyy/MM/dd hh:mm a"));
 
-   private String getSessionResults(HttpServletRequest request, Collection<SessionData> sessions, String title) throws OseeCoreException {
+   private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm a");
+
+   enum AnchorType {
+      INFO_ANCHOR, LOG_ANCHOR, DELETE_ANCHOR, MANAGER_HOME_ANCHOR;
+   }
+
+   private String createAnchor(AnchorType anchorType, String sessionId, String address, String port) throws UnsupportedEncodingException {
+      String toReturn = Strings.emptyString();
+      switch (anchorType) {
+         case INFO_ANCHOR:
+            toReturn = String.format("<a href=\"http://%s:%s/osee/request?cmd=info\">info</a>", address, port);
+            break;
+         case LOG_ANCHOR:
+            toReturn = String.format("<a href=\"http://%s:%s/osee/request?cmd=log\">log</a>", address, port);
+            break;
+         case DELETE_ANCHOR:
+            String encodedSessionId = URLEncoder.encode(sessionId, "UTF-8");
+            toReturn =
+                  String.format("<a href=\"http://%s:%s/%s?operation=delete&sessionId=%s\">delete</a>", address, port,
+                        OseeServerContext.MANAGER_CONTEXT, encodedSessionId);
+            break;
+         case MANAGER_HOME_ANCHOR:
+            toReturn =
+                  String.format("<a href=\"http://%s:%s/%s\">Home</a>", address, port,
+                        OseeServerContext.MANAGER_CONTEXT);
+            break;
+         default:
+            break;
+      }
+      return toReturn;
+   }
+
+   private String createSessionTable(Collection<SessionData> sessionDatas, String title, String requestAddress, String requestPort) throws Exception {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Alive", "User", "Version", "Machine",
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Status", "User", "Version", "Machine",
             "Info", "Log", "Last Interaction", "IP", "Port", "Delete"}));
-      ArrayList<String> items = new ArrayList<String>();
-      for (SessionData sessionData : sessions) {
-         OseeSession oseeSession = sessionData.getSession();
-         String clientIp = oseeSession.getClientAddress();
-         String clientPort = oseeSession.getPort() + "";
-         String alive = "";
-         try {
-            alive = String.valueOf(InternalSystemManagerServletActivator.getSessionManager().isAlive(oseeSession));
-         } catch (Exception ex) {
-            OseeLog.log(this.getClass(), Level.SEVERE, ex);
-         }
-         items.add(AHTML.addRowMultiColumnTable(new String[] {
-               dateFormat.format(oseeSession.getCreation()),
-               alive,
-               oseeSession.getUserId(),
-               oseeSession.getVersion(),
-               oseeSession.getClientMachineName(),
-               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=info\">info</a>",
-               "<a href=\"http://" + clientIp + ":" + clientPort + "/osee/request?cmd=log\">log</a>",
-               dateFormat.format(oseeSession.getLastInteractionDate()),
-               clientIp,
-               clientPort,
-               "<a href=\"http://" + request.getLocalAddr() + ":" + request.getLocalPort() + "/osee/manager?cmd=delete&sessionId=" + oseeSession.getSessionId() + "\">delete session</a>"}));
-      }
 
+      List<String> items = new ArrayList<String>();
+      for (SessionData sessionData : sessionDatas) {
+         OseeSession session = sessionData.getSession();
+         String sessionId = session.getSessionId();
+         String clientAddress = session.getClientAddress();
+         String clientPort = String.valueOf(session.getPort());
+         boolean isOk = false;
+         try {
+            isOk = InternalSystemManagerServletActivator.getSessionManager().isAlive(session);
+         } catch (Exception ex) {
+            // OseeLog.log(this.getClass(), Level.SEVERE, ex);
+         }
+         items.add(AHTML.addRowMultiColumnTable(new String[] {dateFormat.format(session.getCreation()),
+               String.valueOf(isOk), session.getUserId(), session.getVersion(), session.getClientMachineName(),
+               createAnchor(AnchorType.INFO_ANCHOR, sessionId, clientAddress, clientPort),
+               createAnchor(AnchorType.LOG_ANCHOR, sessionId, clientAddress, clientPort),
+               dateFormat.format(session.getLastInteractionDate()), clientAddress, clientPort,
+               createAnchor(AnchorType.DELETE_ANCHOR, sessionId, requestAddress, requestPort)}));
+      }
       Arrays.sort(items.toArray(new String[items.size()]));
       Collections.reverse(items);
       for (String item : items) {

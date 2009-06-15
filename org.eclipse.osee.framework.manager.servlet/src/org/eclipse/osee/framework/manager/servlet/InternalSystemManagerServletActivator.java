@@ -32,7 +32,7 @@ public class InternalSystemManagerServletActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      managerTracker = new ServiceTracker(context, OseeServerContext.MANAGER_CONTEXT, null);
+      managerTracker = new ServiceTracker(context, ISessionManager.class.getName(), null);
       managerTracker.open();
 
       httpBranchManagementTracker =
@@ -46,11 +46,15 @@ public class InternalSystemManagerServletActivator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      httpBranchManagementTracker.close();
-      httpBranchManagementTracker = null;
+      if (httpBranchManagementTracker != null) {
+         httpBranchManagementTracker.close();
+         httpBranchManagementTracker = null;
+      }
 
-      managerTracker.close();
-      managerTracker = null;
+      if (managerTracker != null) {
+         managerTracker.close();
+         managerTracker = null;
+      }
 
       instance = null;
    }
@@ -62,4 +66,5 @@ public class InternalSystemManagerServletActivator implements BundleActivator {
    public static ISessionManager getSessionManager() {
       return (ISessionManager) instance.managerTracker.getService();
    }
+
 }

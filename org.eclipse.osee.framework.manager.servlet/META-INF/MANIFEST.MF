@@ -4,18 +4,20 @@ Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.manager.servlet.InternalSystemManagerServletActivator
-Import-Package: javax.servlet,
+Bundle-ActivationPolicy: lazy
+Import-Package: com.lowagie.text,
+ javax.servlet,
  javax.servlet.http,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.core.server,
  org.osgi.framework,
  org.osgi.service.http,
- org.osgi.util.tracker,
- org.eclipse.osee.framework.core.data
-Bundle-ActivationPolicy: lazy
+ org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
