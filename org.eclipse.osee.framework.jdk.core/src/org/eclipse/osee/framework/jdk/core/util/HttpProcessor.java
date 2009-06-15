@@ -49,6 +49,29 @@ public class HttpProcessor {
       return instance.httpClient;
    }
 
+   public static boolean isAlive(String serverAddress, int port) {
+      boolean result = false;
+      try {
+         String portString = Strings.emptyString();
+         if (port > -1) {
+            portString = String.format(":%s", String.valueOf(port));
+         }
+         URL url = new URL(String.format("http://%s%s", serverAddress, portString));
+         GetMethod method = new GetMethod(url.toString());
+         try {
+            int responseCode = getHttpClient().executeMethod(method);
+            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+               result = true;
+            }
+         } finally {
+            method.releaseConnection();
+         }
+      } catch (Exception ex) {
+         // Do Nothing
+      }
+      return result;
+   }
+
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
       String locator = put(url, inputStream, contentType, encoding);
       return new URI(locator);

@@ -60,8 +60,9 @@ public class SystemManagerServlet extends OseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          Command command = Command.overview;
-         if (request.getParameter("cmd") != null) {
-            command = Command.valueOf(request.getParameter("cmd"));
+         String cmd = request.getParameter("cmd");
+         if (Strings.isValid(cmd)) {
+            command = Command.valueOf(cmd);
          }
          switch (command) {
             case user:
@@ -222,7 +223,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Status", "User", "Version", "Machine",
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Alive", "User", "Version", "Machine",
             "Info", "Log", "Last Interaction", "IP", "Port", "Delete"}));
 
       List<String> items = new ArrayList<String>();

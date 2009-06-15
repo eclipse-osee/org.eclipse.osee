@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +19,7 @@ import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -90,19 +89,6 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
    }
 
    private boolean isServerAlive(OseeServerInfo info) {
-      boolean result = false;
-      try {
-         String serverAddress = String.format("http://%s:%s", info.getServerAddress(), info.getPort());
-         URL url = new URL(serverAddress);
-
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-         int response = connection.getResponseCode();
-         if (response == HttpURLConnection.HTTP_NOT_FOUND) {
-            result = true;
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return result;
+      return HttpProcessor.isAlive(info.getServerAddress(), info.getPort());
    }
 }

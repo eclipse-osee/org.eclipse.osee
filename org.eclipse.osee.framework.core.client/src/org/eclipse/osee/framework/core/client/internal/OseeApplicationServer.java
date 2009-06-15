@@ -81,33 +81,18 @@ public class OseeApplicationServer {
          }
       }
       DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-      if (oseeServer == null) {
+      if (serverInfo == null) {
          OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.SEVERE, "Application server address was null"));
       } else {
-         isServerAlive = checkStatus();
+         isServerAlive = HttpProcessor.isAlive(serverInfo.getServerAddress(), serverInfo.getPort());
          if (isServerAlive) {
             OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.INFO, "%s %s Running Since: %s", oseeServer,
                   Arrays.deepToString(serverInfo.getVersion()), format.format(serverInfo.getDateStarted())));
+         } else {
+            OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.SEVERE, "Unable to Connect to [%s]",
+                  oseeServer));
          }
       }
-   }
-
-   private static boolean checkStatus() {
-      boolean canConnect = false;
-      HttpURLConnection connection = null;
-      try {
-         URL url = new URL(oseeServer);
-         connection = (HttpURLConnection) url.openConnection();
-         connection.connect();
-         canConnect = true;
-      } catch (Exception ex) {
-         OseeLog.reportStatus(new BaseStatus(ApplicationServer, Level.SEVERE, ex));
-      } finally {
-         if (connection != null) {
-            connection.disconnect();
-         }
-      }
-      return canConnect;
    }
 
    public static OseeServerInfo fromString(String value) {
