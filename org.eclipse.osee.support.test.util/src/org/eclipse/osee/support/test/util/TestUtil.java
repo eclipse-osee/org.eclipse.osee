@@ -30,7 +30,8 @@ public class TestUtil {
    public static String DEMO_CODE_TEAM_WORKFLOW_ARTIFACT = "Demo Code Team Workflow";
    public static String DEMO_REQ_TEAM_WORKFLOW_ARTIFACT = "Demo Req Team Workflow";
    public static String DEMO_TEST_TEAM_WORKFLOW_ARTIFACT = "Demo Test Team Workflow";
-   public static Collection<String> ignoreLogging = Arrays.asList("No image was defined for art type");
+   public static Collection<String> ignoreLogging =
+         Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
 
    public static boolean isProductionDb() throws OseeCoreException {
       return ClientSessionManager.isProductionDataStore();
@@ -54,6 +55,19 @@ public class TestUtil {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       return monitorLog;
+   }
+
+   public static int getNumberOfLogsAtLevel(SevereLoggingMonitor monitorLog, Level level) {
+      int count = 0;
+      for (IHealthStatus hStatus : monitorLog.getLogsAtLevel(level)) {
+         // do not count the valid ignored logs
+         for (String str : ignoreLogging) {
+            if (hStatus.getMessage().startsWith(str) == false) {
+               count++;
+            }
+         }
+      }
+      return count++;
    }
 
    public static void severeLoggingEnd(SevereLoggingMonitor monitorLog) throws Exception {

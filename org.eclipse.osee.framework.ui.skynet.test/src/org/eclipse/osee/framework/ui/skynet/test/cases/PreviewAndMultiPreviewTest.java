@@ -54,10 +54,10 @@ public class PreviewAndMultiPreviewTest {
    }
 
    private void init() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       // create a new requirement artifact
       newArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
@@ -176,7 +176,7 @@ public class PreviewAndMultiPreviewTest {
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 1);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).get(0).getMessage().contains(
                   "You chose to preview/edit artifacts that could not be handled"));
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            assertTrue(TestUtil.getNumberOfLogsAtLevel(monitorLog, Level.SEVERE) == 0);
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
             fail("Preview with children test failed.");
@@ -322,7 +322,7 @@ public class PreviewAndMultiPreviewTest {
    @After
    public void tearDown() throws Exception {
       if (!isWordRunning) {
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
                PreviewAndMultiPreviewTest.class.getSimpleName());
          TestUtil.severeLoggingEnd(monitorLog);
          Thread.sleep(7000);

@@ -55,7 +55,7 @@ public class WordTrackedChangesTest {
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       isWordRunning = false;
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             WordTrackedChangesTest.class.getSimpleName());
       WordAttribute.setDisplayTrackedChangesErrorMessage("");
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
@@ -74,7 +74,7 @@ public class WordTrackedChangesTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       // create a new requirement artifact
       Artifact newArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
@@ -120,7 +120,7 @@ public class WordTrackedChangesTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       // create a new requirement artifact
       Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
       newArt.persistAttributesAndRelations();
@@ -137,7 +137,7 @@ public class WordTrackedChangesTest {
    @After
    public void tearDown() throws Exception {
       if (!isWordRunning) {
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
                WordTrackedChangesTest.class.getSimpleName());
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(),
                WordTrackedChangesTest.class.getSimpleName());

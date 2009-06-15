@@ -64,7 +64,7 @@ public class WordEditTest {
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       isWordRunning = false;
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             getClass().getSimpleName());
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
       assertTrue(
@@ -84,7 +84,7 @@ public class WordEditTest {
    public void tearDown() throws Exception {
       if (!isWordRunning) {
          WordAttribute.setDisplayTrackedChangesErrorMessage("");
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
                getClass().getSimpleName());
          FrameworkTestUtil.killAllOpenWinword();
       }
@@ -152,7 +152,7 @@ public class WordEditTest {
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
          FileRenderer.setWorkbenchSavePopUpDisabled(true);
-         branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+         branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
          Artifact newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, className);
          newArt.persistAttributesAndRelations();
          // open the artifacts; testing one artifact for now

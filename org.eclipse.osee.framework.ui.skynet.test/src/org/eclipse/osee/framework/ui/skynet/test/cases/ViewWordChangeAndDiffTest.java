@@ -92,7 +92,7 @@ public class ViewWordChangeAndDiffTest {
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
       artifactChanges =
-            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
                   new EmptyMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
