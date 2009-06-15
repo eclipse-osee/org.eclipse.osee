@@ -491,18 +491,6 @@
    
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
-	<!--                                  OSEE Usage                -->
-	<!--                                                            -->
-	<!-- __________________________________________________________ -->
-   
-   <Table name="OSEE_USAGE" schema="OSEE" tablespace="osee_data">
-		<Column id="USER_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
-		<Column id="EVENT_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="DETAILS" limits="4000" type="VARCHAR" />
-   </Table>
-	<!-- __________________________________________________________ -->
-	<!--                                                            -->
 	<!--                                  OSEE SEQUENCES-->
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->

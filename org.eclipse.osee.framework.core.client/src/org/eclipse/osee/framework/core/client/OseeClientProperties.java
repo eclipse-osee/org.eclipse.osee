@@ -36,7 +36,6 @@ public class OseeClientProperties extends OseeProperties {
 
    private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
    private static final String OSEE_LOCAL_HTTP_WORKER_PORT = "osee.local.http.worker.port";
-   private static final String OSEE_USAGE_LOG = "osee.record.activity";
 
    // Database Initialization Properties
    private static final String OSEE_IMPORT_DURING_DB_INIT = "osee.import.on.db.init";
@@ -146,15 +145,6 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static boolean isLocalApplicationServerRequired() {
       return Boolean.valueOf(getProperty(OSEE_LOCAL_APPLICATION_SERVER));
-   }
-
-   /**
-    * Retrieves settings for user activity logging. The default is true.
-    * 
-    * @return <b>true</b> if user activity should be logged
-    */
-   public static boolean isActivityLoggingEnabled() {
-      return Boolean.valueOf(getProperty(OSEE_USAGE_LOG, "true"));
    }
 
    /**
