@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -33,11 +32,21 @@ public abstract class ImageManagerTest {
       this.oseeImages = oseeImages;
    }
 
+   /**
+    * Test that image that is not found, returns MISSING image
+    * 
+    * @throws Exception
+    */
    @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
       assertEquals(ImageManager.getImage(MissingImage.ACCEPT), ImageManager.getImage(FrameworkImage.MISSING));
    }
 
+   /**
+    * Test that all image enums have associated immage files. (Non return missing image)
+    * 
+    * @throws Exception
+    */
    @org.junit.Test
    public void testFrameworkImageEnums() throws Exception {
       StringBuffer sb = new StringBuffer();
@@ -52,14 +61,17 @@ public abstract class ImageManagerTest {
       assertEquals("", sb.toString());
    }
 
+   /**
+    * Test that all artifact types that have declared images via extension points, have valid image files associated
+    * 
+    * @throws Exception
+    */
    @org.junit.Test
-   public void testArtifactImage() throws Exception {
-      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         assertNotNull(String.format("[%s] Image not defined for artifactType [%s]", imageClassName, artifactType),
-               ImageManager.getImage(artifactType));
-      }
+   public void testArtifactTypeImageExtensionDeclarations() throws Exception {
+      StringBuffer sb = new StringBuffer();
+      ArtifactTypeManager.testArtifactTypeImageLoading(sb);
+      assertEquals("", sb.toString());
    }
-
    public enum MissingImage implements OseeImage {
       ACCEPT("nothere.gif");
 

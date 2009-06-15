@@ -253,17 +253,7 @@ public class ArtifactTypeManager {
 
       InputStream imageStream = null;
       try {
-         Pair<String, String> imagelocation = imageMap.get(typeName);
-         if (imagelocation != null) {
-            URL url = getUrl(imagelocation);
-            if (url == null) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format(
-                     "Unable to get url for type [%s] bundle [%s] file [%s] ", typeName, imagelocation.getKey(),
-                     imagelocation.getValue()));
-            } else {
-               imageStream = url.openStream();
-            }
-         }
+         imageStream = getInputStreamForImage(typeName);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Icon for Artifact type " + typeName + " not found.", ex);
       }
@@ -271,9 +261,41 @@ public class ArtifactTypeManager {
       return imageStream;
    }
 
-   /**
-    * 
+   /*
+    * For Testing purposes only.  If sb empty, no errors.
     */
+   public static void testArtifactTypeImageLoading(StringBuffer sb) throws OseeCoreException {
+      instance.loadImageData();
+      for (String typeName : instance.imageMap.keySet()) {
+         Pair<String, String> imagelocation = instance.imageMap.get(typeName);
+         try {
+            InputStream inputStream = instance.getInputStreamForImage(typeName);
+            if (inputStream == null) {
+               sb.append(String.format("\nArtifactImageType image null for [%s] [%s] [%s] ", imagelocation.getKey(),
+                     typeName, imagelocation.getValue()));
+            }
+         } catch (Exception ex) {
+            sb.append(String.format("\nException loading ArtifactImageType image for [%s] [%s] [%s] ",
+                  imagelocation.getKey(), typeName, imagelocation.getValue()));
+         }
+      }
+   }
+
+   private InputStream getInputStreamForImage(String typeName) throws Exception {
+      Pair<String, String> imagelocation = imageMap.get(typeName);
+      if (imagelocation != null) {
+         URL url = getUrl(imagelocation);
+         if (url == null) {
+            OseeLog.log(Activator.class, Level.WARNING, String.format(
+                  "Unable to get url for type [%s] bundle [%s] file [%s] ", typeName, imagelocation.getKey(),
+                  imagelocation.getValue()));
+         } else {
+            return url.openStream();
+         }
+      }
+      return null;
+   }
+
    private void loadImageData() {
       if (imageMap == null) {
          imageMap = new HashMap<String, Pair<String, String>>();
@@ -363,7 +385,6 @@ public class ArtifactTypeManager {
     * 
     * @param purgeArtifactTypes
     * @param newArtifactType
-    * @return report
     * @throws OseeCoreException
     */
    public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {

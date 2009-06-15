@@ -198,12 +198,6 @@
             ArtifactTypeName="Action"
             ImagePath="images/action.gif"/>
       <ArtifactImage
-            ArtifactTypeName="Review"
-            ImagePath="images/R.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Reviewer"
-            ImagePath="images/reviewer.gif"/>
-      <ArtifactImage
             ArtifactTypeName="Version"
             ImagePath="images/version.gif"/>
       <ArtifactImage
@@ -212,9 +206,6 @@
       <ArtifactImage
             ArtifactTypeName="Actionable Item"
             ImagePath="images/AI.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Universal Group"
-            ImagePath="images/group.gif"/>
       <ArtifactImage
             ArtifactTypeName="Team Workflow"
             ImagePath="images/workflow.gif"/>
