@@ -257,8 +257,9 @@ public class ArtifactTypeManager {
          if (imagelocation != null) {
             URL url = getUrl(imagelocation);
             if (url == null) {
-               OseeLog.log(Activator.class, Level.WARNING,
-                     "Unable to get url for type [" + typeName + "] bundle path " + imagelocation.getValue());
+               OseeLog.log(Activator.class, Level.WARNING, String.format(
+                     "Unable to get url for type [%s] bundle [%s] file [%s] ", typeName, imagelocation.getKey(),
+                     imagelocation.getValue()));
             } else {
                imageStream = url.openStream();
             }
