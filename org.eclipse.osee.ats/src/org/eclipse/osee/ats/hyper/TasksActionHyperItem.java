@@ -16,6 +16,9 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -45,6 +48,15 @@ public class TasksActionHyperItem extends ActionHyperItem {
    @Override
    public void calculateCurrent(Artifact currentArtifact) {
       setCurrent(taskArtifacts.contains(currentArtifact));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.hyper.ActionHyperItem#getImage()
+    */
+   @Override
+   public Image getImage() throws OseeCoreException {
+      return ImageManager.getImage(ArtifactTypeManager.getType(TaskArtifact.ARTIFACT_NAME));
+
    }
 
 }

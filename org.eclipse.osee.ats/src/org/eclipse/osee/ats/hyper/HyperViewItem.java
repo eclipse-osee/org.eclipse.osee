@@ -11,15 +11,16 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.graphics.Image;
 
 public class HyperViewItem {
 
-   private ArrayList<HyperViewItem> bottoms = new ArrayList<HyperViewItem>(); // bottom
-   private ArrayList<HyperViewItem> tops = new ArrayList<HyperViewItem>(); // top
-   private ArrayList<HyperViewItem> lefts = new ArrayList<HyperViewItem>(); // left
-   private ArrayList<HyperViewItem> rights = new ArrayList<HyperViewItem>(); // right
+   private final ArrayList<HyperViewItem> bottoms = new ArrayList<HyperViewItem>(); // bottom
+   private final ArrayList<HyperViewItem> tops = new ArrayList<HyperViewItem>(); // top
+   private final ArrayList<HyperViewItem> lefts = new ArrayList<HyperViewItem>(); // left
+   private final ArrayList<HyperViewItem> rights = new ArrayList<HyperViewItem>(); // right
    private String guid;
    private final String title;
    private Image image;
@@ -113,7 +114,7 @@ public class HyperViewItem {
       return data;
    }
 
-   public Image getImage() {
+   public Image getImage() throws OseeCoreException {
       return image;
    }
 

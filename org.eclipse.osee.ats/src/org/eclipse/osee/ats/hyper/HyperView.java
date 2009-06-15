@@ -646,7 +646,13 @@ public class HyperView extends ViewPart implements IPartListener {
             title = title.substring(0, 30);
          }
       }
-      Label nameLabel = new Label(title, hvi.getImage());
+      Label nameLabel = null;
+      try {
+         nameLabel = new Label(title, hvi.getImage());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         nameLabel = new Label(title, null);
+      }
       Image markImage = hvi.getMarkImage();
       if (markImage != null) infoLabel = new Label(null, markImage);
 

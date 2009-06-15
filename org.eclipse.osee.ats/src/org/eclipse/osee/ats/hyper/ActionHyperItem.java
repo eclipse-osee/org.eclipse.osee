@@ -45,7 +45,8 @@ public class ActionHyperItem extends HyperViewItem {
    }
 
    @Override
-   public Image getImage() {
+   public Image getImage() throws OseeCoreException {
+      if (iHyperartifact.getHyperArtifact() == null) return null;
       if (iHyperartifact.isDeleted()) return null;
       return ImageManager.getImage(iHyperartifact.getHyperArtifact());
    }
