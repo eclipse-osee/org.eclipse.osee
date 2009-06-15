@@ -260,10 +260,23 @@ public class AtsBranchManager {
       return earliestTransactionId;
    }
 
+   /**
+    * Either return a single commit transaction or user must choose from a list of valid commit transactions
+    * 
+    * @param title
+    * @param showMergeManager
+    * @return
+    * @throws OseeCoreException
+    */
    private TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionId> transactionIds = new HashSet<TransactionId>();
       for (TransactionId id : getTransactionIds(showMergeManager)) {
+         // ignore working branches that have been committed
          if (id.getBranch().isWorkingBranch() && id.getBranch().isCommitted()) {
+            continue;
+         }
+         // ignore working branches that have been re-baselined (e.g. update form parent branch)
+         else if (id.getBranch().isWorkingBranch() && id.getBranch().isRebaselined()) {
             continue;
          } else {
             transactionIds.add(id);
@@ -281,7 +294,7 @@ public class AtsBranchManager {
           */
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            if(e1 == null || e2 == null){
+            if (e1 == null || e2 == null) {
                return 0;
             }
             if (((TransactionId) e1).getTransactionNumber() < ((TransactionId) e2).getTransactionNumber()) {
