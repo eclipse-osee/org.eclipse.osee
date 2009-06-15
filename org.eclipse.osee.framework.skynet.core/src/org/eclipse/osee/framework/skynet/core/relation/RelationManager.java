@@ -375,6 +375,9 @@ public class RelationManager {
       return false;
    }
 
+   /*
+    * Return what relation is dirty otherwise null
+    */
    public synchronized static String reportHasDirtyLinks(Artifact artifact) {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
       if (selectedRelations != null) {
