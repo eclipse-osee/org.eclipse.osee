@@ -775,6 +775,7 @@ public class AtsBranchManager {
 
             commit(commitPopup, workflowWorkingBranch, destinationBranch, archiveWorkingBranch);
          } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }
          return Status.OK_STATUS;
