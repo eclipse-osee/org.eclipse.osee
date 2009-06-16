@@ -28,7 +28,7 @@ public enum AtsImage implements OseeImage {
    COPY_TO_CLIPBOARD("copyToClipboard.gif"),
    CUSTOMIZE("customize.gif"),
    DOWN_TRIANGLE("downTriangle.gif"),
-   ELLIPSE_ICON("ellipasfse16.gif"),
+   ELLIPSE_ICON("ellipse16.gif"),
    FAVORITE("star.gif"),
    FAVORITE_OVERLAY("favorite.gif"),
    GLOBE("globe.gif"),
