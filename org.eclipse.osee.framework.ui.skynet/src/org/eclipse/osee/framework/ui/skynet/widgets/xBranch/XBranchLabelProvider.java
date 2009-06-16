@@ -90,44 +90,41 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    }
 
    private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
-      String columnText = "";
-      StringBuilder stringBuilder = new StringBuilder();
-
-      try {
-         if (AccessControlManager.isOseeAdmin()) {
-            stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getBranchName());
-         } else {
-            stringBuilder.append(branch.getBranchName());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-      if (branch.isArchived()) {
-         stringBuilder.insert(0, "[Archived] - ");
-      }
-
       if (cCol.equals(BranchXViewerFactory.branch_name)) {
-         columnText = stringBuilder.toString();
-      }
-      if (cCol.equals(BranchXViewerFactory.time_stamp)) {
-         columnText = String.valueOf(branch.getCreationDate());
+         StringBuilder stringBuilder = new StringBuilder();
+         try {
+            if (AccessControlManager.isOseeAdmin()) {
+               stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getBranchName());
+            } else {
+               stringBuilder.append(branch.getBranchName());
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+         if (branch.isArchived()) {
+            stringBuilder.insert(0, "[Archived] - ");
+         }
+         return stringBuilder.toString();
+      } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
+         return String.valueOf(branch.getCreationDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
-         columnText = UserManager.getUserNameById(branch.getAuthorId());
+         return UserManager.getUserNameById(branch.getAuthorId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
-         columnText = branch.getCreationComment();
+         return branch.getCreationComment();
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
             if (branch.getAssociatedArtifact() != null) {
-               columnText = branch.getAssociatedArtifact().getDescriptiveName();
+               return branch.getAssociatedArtifact().getDescriptiveName();
             }
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
-      } else if (cCol.equals(BranchXViewerFactory.BRANCH_STATE)) {
+      } else if (cCol.equals(BranchXViewerFactory.branchState)) {
          return branch.getBranchState().name();
+      } else if (cCol.equals(BranchXViewerFactory.branchType)) {
+         return branch.getBranchType().name();
       }
-      return columnText;
+      return "";
    }
 
    private String getTransactionText(TransactionId transaction, XViewerColumn cCol, int columnIndex) {
