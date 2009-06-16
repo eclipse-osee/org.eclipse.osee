@@ -98,7 +98,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addRowMultiColumnTable(COLUMN_HEADER));
-      displayData(sbFull, getAppendable(), verify);
+      displayData(sbFull, getSummary(), verify);
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));

@@ -32,24 +32,26 @@ public class ArtifactTxCurrent extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Art id", "Branch id"};
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+
       if (isShowDetailsEnabled()) {
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with no tx_current set", columnHeaders.length));
+         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Artifacts with no tx_current set", columnHeaders.length));
       }
       monitor.worked(calculateWork(0.10));
 
       if (!isFixOperationEnabled() || noneSet == null) {
-         noneSet = HealthHelper.getNoTxCurrentSet("art_id", "osee_artifact_version", getAppendable(), " Artifacts");
+         noneSet = HealthHelper.getNoTxCurrentSet("art_id", "osee_artifact_version", getSummary(), " Artifacts");
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataNone(sbFull, noneSet);
+         HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
          columnHeaders = new String[] {"Count", "Art id", "Branch id", "Num TX_Currents"};
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with multiple tx_currents set", columnHeaders.length));
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Artifacts with multiple tx_currents set",
+               columnHeaders.length));
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -57,13 +59,13 @@ public class ArtifactTxCurrent extends DatabaseHealthOperation {
       if (!isFixOperationEnabled() || multipleSet == null) {
          //Multiple TX Currents Set
          multipleSet =
-               HealthHelper.getMultipleTxCurrentSet("art_id", "osee_artifact_version", getAppendable(), " Artifacts");
+               HealthHelper.getMultipleTxCurrentSet("art_id", "osee_artifact_version", getSummary(), " Artifacts");
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataMultiple(sbFull, multipleSet);
+         HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
       }
 
       checkForCancelledStatus(monitor);
@@ -76,10 +78,10 @@ public class ArtifactTxCurrent extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          /** Duplicate TX_current Cleanup **/
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanMultipleTxCurrent("art_id", "osee_artifact_version", getAppendable(), multipleSet);
+         HealthHelper.cleanMultipleTxCurrent("art_id", "osee_artifact_version", getSummary(), multipleSet);
          monitor.worked(calculateWork(0.25));
          monitor.subTask("Cleaning up no Tx_currents");
-         HealthHelper.cleanNoTxCurrent("art_id", "osee_artifact_version", getAppendable(), noneSet);
+         HealthHelper.cleanNoTxCurrent("art_id", "osee_artifact_version", getSummary(), noneSet);
          multipleSet = null;
          noneSet = null;
       } else {
@@ -88,7 +90,7 @@ public class ArtifactTxCurrent extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.20));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.endTable(sbFull, getVerifyTaskName());
+         appendToDetails(AHTML.endMultiColumnTable());
       }
       monitor.worked(calculateWork(0.05));
    }

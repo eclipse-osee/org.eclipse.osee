@@ -116,7 +116,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       monitor.subTask("Cleaning Up Attrinbutes");
       checkForCancelledStatus(monitor);
       if (sameValues.isEmpty() && diffValues.isEmpty()) {
-         getAppendable().append("No Duplicate Attributes Found\n");
+         getSummary().append("No Duplicate Attributes Found\n");
       } else {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          try {
@@ -129,7 +129,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
             int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull, isShowDetailsEnabled());
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with different values", columnHeaders.length));
             count += showAttributeCleanUpDecisions(diffValues, false, sbFull, isShowDetailsEnabled());
-            getAppendable().append(String.format("Found %d duplicate attributes\n", count));
+            getSummary().append(String.format("Found %d duplicate attributes\n", count));
          } finally {
             if (isShowDetailsEnabled()) {
                sbFull.append(AHTML.endMultiColumnTable());

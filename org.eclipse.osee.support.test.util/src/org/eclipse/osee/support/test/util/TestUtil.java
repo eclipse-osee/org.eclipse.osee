@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -26,11 +27,11 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
  * @author Donald G. Dunne
  */
 public class TestUtil {
-
-   public static String DEMO_CODE_TEAM_WORKFLOW_ARTIFACT = "Demo Code Team Workflow";
-   public static String DEMO_REQ_TEAM_WORKFLOW_ARTIFACT = "Demo Req Team Workflow";
-   public static String DEMO_TEST_TEAM_WORKFLOW_ARTIFACT = "Demo Test Team Workflow";
-   public static Collection<String> ignoreLogging =
+   private static final String DEMO_DB_TYPE = "demo";
+   public static final String DEMO_CODE_TEAM_WORKFLOW_ARTIFACT = "Demo Code Team Workflow";
+   public static final String DEMO_REQ_TEAM_WORKFLOW_ARTIFACT = "Demo Req Team Workflow";
+   public static final String DEMO_TEST_TEAM_WORKFLOW_ARTIFACT = "Demo Test Team Workflow";
+   public static final Collection<String> ignoreLogging =
          Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
 
    public static boolean isProductionDb() throws OseeCoreException {
@@ -38,11 +39,12 @@ public class TestUtil {
    }
 
    public static boolean isTestDb() throws OseeCoreException {
-      return !isProductionDb() && !isDemoDb();
+      return !isProductionDb(); // && !isDemoDb();
    }
 
    public static boolean isDemoDb() throws OseeCoreException {
-      return ClientSessionManager.getAuthenticationProtocols().contains("demo");
+      String dbType = OseeInfo.getValue("osee.db.type");
+      return DEMO_DB_TYPE.equals(dbType);
    }
 
    public static void sleep(long milliseconds) throws Exception {
@@ -79,9 +81,13 @@ public class TestUtil {
             if (status.getLevel() != Level.INFO) {
                boolean ignoreIt = false;
                for (String str : ignoreLogging) {
-                  if (status.getMessage().startsWith(str)) ignoreIt = true;
+                  if (status.getMessage().startsWith(str)) {
+                     ignoreIt = true;
+                  }
                }
-               if (ignoreIt) continue;
+               if (ignoreIt) {
+                  continue;
+               }
                if (status.getException() != null) {
                   StringBuilder sb = new StringBuilder();
                   exceptionToString(status.getException(), sb);

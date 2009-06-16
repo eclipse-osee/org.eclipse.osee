@@ -95,7 +95,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
          monitor.worked(calculateWork(0.50));
       }
 
-      getAppendable().append(String.format("[%s] Duplicate Human Readable Ids found\n", diffValues.size()));
+      getSummary().append(String.format("[%s] Duplicate Human Readable Ids found\n", diffValues.size()));
       monitor.worked(calculateWork(0.10));
    }
 

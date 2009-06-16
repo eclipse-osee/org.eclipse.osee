@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.io.IOException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -25,12 +26,14 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
    private int itemToFixCount;
 
    private Appendable appendableBuffer;
+   private final Appendable detailedReport;
 
    public DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
       this.isFixOperationEnabled = false;
       this.isShowDetailsEnabled = false;
       this.appendableBuffer = new StringBuilder();
+      this.detailedReport = new StringBuilder();
       this.itemToFixCount = 0;
    }
 
@@ -63,12 +66,20 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       return isShowDetailsEnabled;
    }
 
-   public void setAppendable(Appendable appendableBuffer) {
+   public void setSummary(Appendable appendableBuffer) {
       this.appendableBuffer = appendableBuffer;
    }
 
-   public Appendable getAppendable() {
+   public Appendable getSummary() {
       return appendableBuffer;
+   }
+
+   public void appendToDetails(String value) throws IOException {
+      getDetailedReport().append(value);
+   }
+
+   public Appendable getDetailedReport() {
+      return detailedReport;
    }
 
    protected void setItemsToFix(int value) {

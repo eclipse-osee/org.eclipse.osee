@@ -82,7 +82,7 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
          XResultData rd = createReport(monitor, attributesWithErrors);
          rd.report(getName(), Manipulations.RAW_HTML);
       }
-      getAppendable().append(
+      getSummary().append(
             String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
 
       monitor.worked(calculateWork(0.10));

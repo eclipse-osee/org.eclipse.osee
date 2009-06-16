@@ -166,7 +166,7 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
          monitor.worked(calculateWork(0.50));
       }
 
-      getAppendable().append(
+      getSummary().append(
             String.format("%s %d Artifacts with multiple Parents on %d total branches : Updated %d txs Entries\n",
                   isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size(), numberDeleted));
       monitor.worked(calculateWork(0.10));
@@ -204,7 +204,7 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      displayData(sbFull, getAppendable(), isVerify, false, branches);
+      displayData(sbFull, getSummary(), isVerify, false, branches);
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
@@ -213,7 +213,7 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
       sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      displayData(sbFull, getAppendable(), isVerify, true, branches);
+      displayData(sbFull, getSummary(), isVerify, true, branches);
       sbFull.append(AHTML.endMultiColumnTable());
       rd = new XResultData();
       rd.addRaw(sbFull.toString());

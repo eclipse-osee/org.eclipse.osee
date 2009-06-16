@@ -33,27 +33,27 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Rel Link Id", "Branch id"};
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+
       if (isShowDetailsEnabled()) {
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Relation Links with no tx_current set", columnHeaders.length));
+         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with no tx_current set", columnHeaders.length));
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (!isFixOperationEnabled() || noneSet == null) {
-         noneSet =
-               HealthHelper.getNoTxCurrentSet("rel_link_id", "osee_relation_link", getAppendable(), " Relation Links");
+         noneSet = HealthHelper.getNoTxCurrentSet("rel_link_id", "osee_relation_link", getSummary(), " Relation Links");
       }
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataNone(sbFull, noneSet);
+         HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
          columnHeaders = new String[] {"Count", "Relation Link id", "Branch id", "Num TX_Currents"};
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Relation Links with multiple tx_currents set",
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with multiple tx_currents set",
                columnHeaders.length));
       }
 
@@ -63,7 +63,7 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       if (!isFixOperationEnabled() || multipleSet == null) {
          //Multiple TX Currents Set
          multipleSet =
-               HealthHelper.getMultipleTxCurrentSet("rel_link_id", "osee_relation_link", getAppendable(),
+               HealthHelper.getMultipleTxCurrentSet("rel_link_id", "osee_relation_link", getSummary(),
                      " Relation Links");
       }
 
@@ -71,7 +71,7 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataMultiple(sbFull, multipleSet);
+         HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -83,11 +83,11 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          /** Duplicate TX_current Cleanup **/
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanMultipleTxCurrent("rel_link_id", "osee_relation_link", getAppendable(), multipleSet);
+         HealthHelper.cleanMultipleTxCurrent("rel_link_id", "osee_relation_link", getSummary(), multipleSet);
          monitor.worked(calculateWork(0.25));
 
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanNoTxCurrent("rel_link_id", "osee_relation_link", getAppendable(), noneSet);
+         HealthHelper.cleanNoTxCurrent("rel_link_id", "osee_relation_link", getSummary(), noneSet);
          multipleSet = null;
          noneSet = null;
       } else {
@@ -96,7 +96,7 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.20));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.endTable(sbFull, getVerifyTaskName());
+         appendToDetails(AHTML.endMultiColumnTable());
       }
       monitor.worked(calculateWork(0.05));
    }

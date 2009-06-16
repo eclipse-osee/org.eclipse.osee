@@ -16,7 +16,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.dbHealth.HealthHelper;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
@@ -49,7 +50,10 @@ public class ShowRevertTransactions extends AbstractBlam {
                chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
                chStmt.getDate("time").toString()}));
       }
-      HealthHelper.endTable(sbFull, "Revert Transactions");
+      sbFull.append(AHTML.endMultiColumnTable());
+      XResultData rd = new XResultData();
+      rd.addRaw(sbFull.toString());
+      rd.report("Revert Transactions", Manipulations.RAW_HTML);
    }
 
    /*

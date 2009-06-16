@@ -52,7 +52,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthOperation {
       try {
          if (verify) {
             loadData();
-            displayData(sbFull, getAppendable(), verify);
+            displayData(sbFull, getSummary(), verify);
          }
 
          if (fix) {
@@ -60,7 +60,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthOperation {
                loadData();
             }
             fixAttributes();
-            displayData(sbFull, getAppendable(), verify);
+            displayData(sbFull, getSummary(), verify);
          }
       } finally {
          if (isShowDetailsEnabled()) {

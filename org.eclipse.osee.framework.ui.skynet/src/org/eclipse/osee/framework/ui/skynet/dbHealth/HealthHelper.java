@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
@@ -67,19 +65,19 @@ public class HealthHelper {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
-   public static void displayForCleanUp(String header, StringBuffer sbFull, Appendable builder, boolean verify, List<Object[]> set, String toPrint) throws IOException {
+   public static void displayForCleanUp(String header, Appendable detailedReport, Appendable summary, boolean verify, List<Object[]> set, String toPrint) throws IOException {
       int count = 0;
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {header}));
-      sbFull.append(AHTML.addRowSpanMultiColumnTable(header + toPrint, 1));
+      detailedReport.append(AHTML.addHeaderRowMultiColumnTable(new String[] {header}));
+      detailedReport.append(AHTML.addRowSpanMultiColumnTable(header + toPrint, 1));
       for (Object[] value : set) {
          count++;
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {value[0].toString()}));
+         detailedReport.append(AHTML.addRowMultiColumnTable(new String[] {value[0].toString()}));
       }
-      builder.append(verify ? "Found " : "Fixed ");
-      builder.append(String.valueOf(count));
-      builder.append(" ");
-      builder.append(header);
-      builder.append(toPrint);
+      summary.append(verify ? "Found " : "Fixed ");
+      summary.append(String.valueOf(count));
+      summary.append(" ");
+      summary.append(header);
+      summary.append(toPrint);
    }
 
    public static List<Object[]> runSingleResultQuery(String sql, String dbColumn) throws OseeCoreException {
@@ -94,14 +92,6 @@ public class HealthHelper {
          chStmt.close();
       }
       return foundItems;
-   }
-
-   public static void endTable(StringBuffer sbFull, String taskName) throws OseeCoreException {
-      sbFull.append(AHTML.endMultiColumnTable());
-      XResultData rd = new XResultData();
-      rd.addRaw(sbFull.toString());
-      rd.report(taskName, Manipulations.RAW_HTML);
-
    }
 
    public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, Appendable builder, String data) throws Exception {
@@ -190,7 +180,7 @@ public class HealthHelper {
       builder.append("Fixed " + total + " Tx_Current not set errors\n");
    }
 
-   public static void dumpDataNone(StringBuffer sbFull, HashSet<Pair<Integer, Integer>> noneSet) {
+   public static void dumpDataNone(Appendable sbFull, HashSet<Pair<Integer, Integer>> noneSet) throws IOException {
       int counter = 0;
       for (Pair<Integer, Integer> pairs : noneSet) {
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(counter++),
@@ -198,7 +188,7 @@ public class HealthHelper {
       }
    }
 
-   public static void dumpDataMultiple(StringBuffer sbFull, HashSet<LocalTxData> multipleSet) {
+   public static void dumpDataMultiple(Appendable sbFull, HashSet<LocalTxData> multipleSet) throws IOException {
       int counter = 0;
       for (LocalTxData link : multipleSet) {
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(counter++),

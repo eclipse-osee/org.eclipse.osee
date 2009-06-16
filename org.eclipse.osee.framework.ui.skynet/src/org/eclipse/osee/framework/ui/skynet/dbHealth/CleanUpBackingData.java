@@ -64,12 +64,13 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      HealthHelper.displayForCleanUp("Gamma Id", sbFull, getAppendable(), verify, gammas, "'s with no TXS addressing\n");
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      HealthHelper.displayForCleanUp("Gamma Id", getDetailedReport(), getSummary(), verify, gammas,
+            "'s with no TXS addressing\n");
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      HealthHelper.displayForCleanUp("Transaction Id", sbFull, getAppendable(), verify, transactions,
+      HealthHelper.displayForCleanUp("Transaction Id", getDetailedReport(), getSummary(), verify, transactions,
             "'s with no TXS addressing\n");
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -94,7 +95,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       }
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.endTable(sbFull, getVerifyTaskName());
+         appendToDetails(AHTML.endMultiColumnTable());
       }
       monitor.worked(calculateWork(0.20));
    }

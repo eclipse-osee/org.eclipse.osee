@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.update.IConflictResolver;
+import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -47,7 +47,7 @@ public class UpdateBranchHandler extends CommandHandler {
       if (hasValidParent) {
          try {
             hasValidParent = !branch.getParentBranch().equals(BranchManager.getSystemRootBranch());
-            hasValidParent &= (!branch.isArchived() && branch.isWorkingBranch()) || AccessControlManager.isOseeAdmin();
+            hasValidParent &= !branch.isArchived() && branch.isWorkingBranch() || AccessControlManager.isOseeAdmin();
             hasValidParent &= branch.getChildBranches().isEmpty();
          } catch (Exception ex) {
             hasValidParent = false;
@@ -58,7 +58,9 @@ public class UpdateBranchHandler extends CommandHandler {
 
    private Branch getSelectedBranch() {
       Branch branch = null;
-      if (AWorkbench.getActivePage() == null) return null;
+      if (AWorkbench.getActivePage() == null) {
+         return null;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
@@ -100,19 +102,20 @@ public class UpdateBranchHandler extends CommandHandler {
       return null;
    }
 
-   private final class UserConflictResolver implements IConflictResolver {
+   private final class UserConflictResolver extends ConflictResolverOperation {
+
+      public UserConflictResolver() {
+         super("Launch Merge Manager", SkynetGuiPlugin.PLUGIN_ID);
+      }
 
       /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.artifact.update.IConflictResolver#resolveConflicts(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal)
+       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
        */
       @Override
-      public IStatus resolveConflicts(IProgressMonitor monitor, ConflictManagerExternal conflictManager) throws OseeCoreException {
-         monitor.beginTask("Launch Merge Manager", 100);
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         ConflictManagerExternal conflictManager = getConflictManager();
          Job job = createMergeViewJob(conflictManager.getFromBranch(), conflictManager.getToBranch());
          Jobs.startJob(job);
-         monitor.worked(100);
-         monitor.done();
-         return Status.OK_STATUS;
       }
 
       private Job createMergeViewJob(final Branch sourceBranch, final Branch destinationBranch) {
@@ -141,5 +144,6 @@ public class UpdateBranchHandler extends CommandHandler {
          };
          return job;
       }
+
    }
 }

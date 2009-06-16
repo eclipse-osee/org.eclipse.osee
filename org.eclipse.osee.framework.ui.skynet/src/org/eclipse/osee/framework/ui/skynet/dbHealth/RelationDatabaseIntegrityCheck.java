@@ -134,8 +134,8 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
 
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      displayData(0, sbFull, getAppendable(), verify, deleteMap);
-      displayData(1, sbFull, getAppendable(), verify, updateMap);
+      displayData(0, sbFull, getSummary(), verify, deleteMap);
+      displayData(1, sbFull, getSummary(), verify, updateMap);
 
       monitor.worked(calculateWork(0.10));
       checkForCancelledStatus(monitor);

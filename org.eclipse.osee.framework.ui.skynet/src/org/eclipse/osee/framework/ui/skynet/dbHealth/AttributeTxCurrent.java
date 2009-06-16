@@ -33,27 +33,27 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Attr id", "Branch id"};
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       if (isShowDetailsEnabled()) {
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with no tx_current set", columnHeaders.length));
+         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with no tx_current set", columnHeaders.length));
       }
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (!isFixOperationEnabled() || noneSet == null) {
-         noneSet = HealthHelper.getNoTxCurrentSet("attr_id", "osee_attribute", getAppendable(), " Attributes");
+         noneSet = HealthHelper.getNoTxCurrentSet("attr_id", "osee_attribute", getSummary(), " Attributes");
       }
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataNone(sbFull, noneSet);
+         HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
          columnHeaders = new String[] {"Count", "Attr id", "Branch id", "Num TX_Currents"};
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with multiple tx_currents set",
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with multiple tx_currents set",
                columnHeaders.length));
       }
 
@@ -62,15 +62,14 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
 
       if (!isFixOperationEnabled() || multipleSet == null) {
          //Multiple TX Currents Set
-         multipleSet =
-               HealthHelper.getMultipleTxCurrentSet("attr_id", "osee_attribute", getAppendable(), " Attributes");
+         multipleSet = HealthHelper.getMultipleTxCurrentSet("attr_id", "osee_attribute", getSummary(), " Attributes");
       }
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataMultiple(sbFull, multipleSet);
+         HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -82,11 +81,11 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          /** Duplicate TX_current Cleanup **/
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanMultipleTxCurrent("attr_id", "osee_attribute", getAppendable(), multipleSet);
+         HealthHelper.cleanMultipleTxCurrent("attr_id", "osee_attribute", getSummary(), multipleSet);
          monitor.worked(calculateWork(0.25));
 
          monitor.subTask("Cleaning up multiple Tx_currents");
-         HealthHelper.cleanNoTxCurrent("attr_id", "osee_attribute", getAppendable(), noneSet);
+         HealthHelper.cleanNoTxCurrent("attr_id", "osee_attribute", getSummary(), noneSet);
          multipleSet = null;
          noneSet = null;
       } else {
@@ -95,7 +94,7 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.20));
 
       if (isShowDetailsEnabled()) {
-         HealthHelper.endTable(sbFull, getVerifyTaskName());
+         appendToDetails(AHTML.endMultiColumnTable());
       }
       monitor.worked(calculateWork(0.05));
    }

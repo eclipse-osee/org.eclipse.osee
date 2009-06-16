@@ -18,11 +18,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Jeff C. Phillips
@@ -103,8 +106,8 @@ public class DatabaseHealth extends AbstractBlam {
    private final class MasterDbHealthOperation extends AbstractOperation {
 
       private boolean isShowDetailsEnabled;
-      private Set<DatabaseHealthOperation> fixOperations = new HashSet<DatabaseHealthOperation>();
-      private Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
+      private final Set<DatabaseHealthOperation> fixOperations = new HashSet<DatabaseHealthOperation>();
+      private final Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
 
       public MasterDbHealthOperation(String operationName) {
          super(operationName, SkynetGuiPlugin.PLUGIN_ID);
@@ -130,9 +133,18 @@ public class DatabaseHealth extends AbstractBlam {
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);
             operation.setShowDetailsEnabled(isShowDetailsEnabled);
-            operation.setAppendable(appendable);
+            operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
             setStatus(operation.getStatus());
+
+            if (operation.isShowDetailsEnabled()) {
+               String detailedReport = operation.getDetailedReport().toString();
+               if (Strings.isValid(detailedReport)) {
+                  XResultData result = new XResultData();
+                  result.addRaw(detailedReport.toString());
+                  result.report(operation.getName(), Manipulations.RAW_HTML);
+               }
+            }
          }
       }
 
@@ -152,7 +164,9 @@ public class DatabaseHealth extends AbstractBlam {
             }
             for (DatabaseHealthOperation operation : verifyOperations) {
                executeOperation(monitor, operation, builder, workPercentage, false);
+
             }
+
             setStatusMessage(builder.toString());
          }
       }

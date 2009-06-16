@@ -61,7 +61,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
                            transactionNumber);
                int deleteAttrCount = ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, transactionNumber);
 
-               getAppendable().append(
+               getSummary().append(
                      "For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
             }
          } finally {
