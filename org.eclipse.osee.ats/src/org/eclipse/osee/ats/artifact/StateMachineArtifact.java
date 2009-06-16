@@ -380,9 +380,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public Image getAssigneeImage() throws OseeCoreException {
       if (isDeleted()) return null;
       if (smaMgr.getStateMgr().getAssignees().size() > 0) {
-         if (smaMgr.isAssigneeMe())
-            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
-         else
+         if (smaMgr.isUserSystem()) {
+            return ImageManager.getImage(FrameworkImage.USER_GREY);
+         } else if (smaMgr.isUserInactive()) {
+            return ImageManager.getImage(FrameworkImage.USER_YELLOW);
+         } else if (smaMgr.isAssigneeMe()) {
+            return ImageManager.getImage(FrameworkImage.USER_RED);
+         } else
             return ImageManager.getImage(ArtifactTypeManager.getType("User"));
       }
       return null;

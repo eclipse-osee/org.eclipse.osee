@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -17,6 +18,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -40,7 +43,12 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerProvider(this, ArtifactTypeManager.getType(PeerToPeerReviewArtifact.ARTIFACT_NAME));
       ImageManager.registerProvider(this, ArtifactTypeManager.getType(DecisionReviewArtifact.ARTIFACT_NAME));
       for (String artName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         ImageManager.registerProvider(this, ArtifactTypeManager.getType(artName));
+         System.out.println(String.format("Registering for Team Workflow [%s]", artName));
+         try {
+            ImageManager.registerProvider(this, ArtifactTypeManager.getType(artName));
+         } catch (OseeTypeDoesNotExist ex) {
+            OseeLog.log(AtsPlugin.class, Level.INFO, ex);
+         }
       }
    }
 

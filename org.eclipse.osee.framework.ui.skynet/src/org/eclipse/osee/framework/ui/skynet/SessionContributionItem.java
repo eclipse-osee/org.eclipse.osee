@@ -39,7 +39,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
    private static final String ID = "session.contribution.item";
 
    private static final Image DISABLED_IMAGE =
-         new OverlayImage(ImageManager.getImage(FrameworkImage.USER),
+         new OverlayImage(ImageManager.getImage(FrameworkImage.USER_PURPLE),
                ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
 
    private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
@@ -149,7 +149,7 @@ public class SessionContributionItem extends OseeContributionItem implements IAc
     */
    @Override
    protected Image getEnabledImage() {
-      return ImageManager.getImage(FrameworkImage.USER);
+      return ImageManager.getImage(FrameworkImage.USER_PURPLE);
    }
 
    /* (non-Javadoc)

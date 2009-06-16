@@ -270,8 +270,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       for (SMAWorkFlowSection section : sections)
          section.dispose();
-      toolbarArea.dispose();
-      toolkit.dispose();
+      if (toolbarArea != null) {
+         toolbarArea.dispose();
+      }
+      if (toolkit != null) {
+         toolkit.dispose();
+      }
    }
 
    public String getActionDescription() {

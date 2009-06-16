@@ -178,14 +178,14 @@ public class AttributeFindReplaceDialog extends Dialog {
                   artifact.persistAttributes(transaction);
                   monitor.worked(1);
                   if (monitor.isCanceled()) {
-                     throw new IllegalStateException("USER CANCELLED");
+                     throw new IllegalStateException("USER_PURPLE CANCELLED");
                   }
                }
 
                transaction.execute();
                toReturn = Status.OK_STATUS;
             } catch (Exception ex) {
-               if (ex.getMessage().equals("USER CANCELLED")) {
+               if (ex.getMessage().equals("USER_PURPLE CANCELLED")) {
                   toReturn = Status.CANCEL_STATUS;
                } else {
                   toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getMessage(), ex);

@@ -17,8 +17,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Font;
@@ -38,10 +36,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       UserRole roleItem = (UserRole) element;
       if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-         if (roleItem.getUser().equals(UserManager.getUser()))
-            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
-         else
-            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
+         return ImageManager.getImage(roleItem.getUser());
       } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
          return ImageManager.getImage(AtsImage.ROLE);
       } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {

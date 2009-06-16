@@ -46,10 +46,6 @@
                ImagePath="images/narrative.gif">
          </ArtifactImage>
          <ArtifactImage
-               ArtifactTypeName="User"
-               ImagePath="images/user.gif">
-         </ArtifactImage>
-         <ArtifactImage
                ArtifactTypeName="Folder"
                ImagePath="images/folder.gif">
          </ArtifactImage>

@@ -18,11 +18,8 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -49,10 +46,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
          return defectItem.isClosed() ? ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED) : ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
-         if (defectItem.getUser().equals(UserManager.getUser()))
-            return ImageManager.getImage(FrameworkImage.USER_SM_RED);
-         else
-            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
+         return ImageManager.getImage(defectItem.getUser());
       }
       return null;
    }

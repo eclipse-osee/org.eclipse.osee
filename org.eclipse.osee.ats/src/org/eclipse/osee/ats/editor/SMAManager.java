@@ -115,6 +115,22 @@ public class SMAManager {
       SMAEditor.close(sma, save);
    }
 
+   public boolean isUserInactive() throws OseeCoreException {
+      for (User user : stateMgr.getAssignees()) {
+         if (!user.isActive()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean isUserSystem() throws OseeCoreException {
+      for (User user : stateMgr.getAssignees()) {
+         if (user.isSystemUser()) return true;
+      }
+      return false;
+   }
+
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       return sma.getPrivilegedUsers();
    }
