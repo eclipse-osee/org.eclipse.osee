@@ -64,16 +64,31 @@ public class RelationManager {
 
    private static final int LINKED_LIST_KEY = -1;
 
-   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) {
+   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted){
       List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            if (!relation.isDeleted() && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
+            if ((includeDeleted || !relation.isDeleted()) && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
                return relation;
             }
          }
       }
       return null;
+   }
+
+   /**
+    * @return Returns all cached relations including deleted relations
+    * @throws OseeArgumentException 
+    */
+   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
+      RelationLink relationLink = getLoadedRelation(artifact, aArtifactId, bArtifactId, relationType, false);
+
+      if (relationLink == null) {
+         throw new OseeArgumentException(
+               "A relation link of type: " + relationType.getTypeName() + "does exist in the cache between a artifact: " + aArtifactId + " and b artifact:" + bArtifactId);
+      }
+
+      return relationLink;
    }
 
    /**
@@ -89,13 +104,12 @@ public class RelationManager {
    public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       Artifact artifactA = ArtifactCache.getActive(aArtifactId, aBranch);
       Artifact artifactB = ArtifactCache.getActive(bArtifactId, bBranch);
-
       RelationLink relation = null;
       if (artifactA != null) {
-         relation = getLoadedRelation(artifactA, aArtifactId, bArtifactId, relationType);
+         relation = getLoadedRelation(artifactA, aArtifactId, bArtifactId, relationType, true);
       }
       if (artifactB != null && relation == null) {
-         relation = getLoadedRelation(artifactB, aArtifactId, bArtifactId, relationType);
+         relation = getLoadedRelation(artifactB, aArtifactId, bArtifactId, relationType, true);
       }
       return relation;
    }
@@ -483,7 +497,7 @@ public class RelationManager {
     * @throws OseeCoreException
     */
    public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
+      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
@@ -542,7 +556,7 @@ public class RelationManager {
       }
    }
 
-   public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist {
+   public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist, OseeArgumentException {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
       relation.delete(true);
    }
@@ -625,7 +639,7 @@ public class RelationManager {
     */
    public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
+      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
          relation = new RelationLink(artifactA, artifactB, relationType, rationale);
@@ -672,11 +686,7 @@ public class RelationManager {
 
          RelationLink targetRelation =
                getLoadedRelation(sourceArtifact, artA.getArtId(), artB.getArtId(), relation.getRelationType());
-         if (targetRelation == null) {
-            throw new OseeCoreException(String.format(
-                  "No Relation exists on [%s] of type [%s] between aArtId[%d] and bArtId[%d].", artA.toString(),
-                  relation.getRelationType().toString(), artA.getArtId(), artB.getArtId()));
-         }
+    
          List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relation.getRelationType());
          if (selectedRelations.remove(relation)) {
             int targetIndex = selectedRelations.indexOf(targetRelation);
