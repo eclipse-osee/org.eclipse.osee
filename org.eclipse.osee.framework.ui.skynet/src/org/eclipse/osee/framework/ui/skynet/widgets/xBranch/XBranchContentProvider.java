@@ -81,7 +81,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
             Collection<Branch> childBrances =
-                  showArchivedBranches ? branch.getAllChildBranches() : branch.getChildBranches();
+                  showArchivedBranches ? branch.getDescendents() : branch.getChildBranches();
 
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
@@ -163,7 +163,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             try {
                if (!showChildBranchesAtMainLevel) {
                   hasChildren =
-                        showArchivedBranches ? !((Branch) element).getAllChildBranches().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                        showArchivedBranches ? !((Branch) element).getDescendents().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
                } else {
                   hasChildren = false;
                }

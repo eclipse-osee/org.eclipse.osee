@@ -201,7 +201,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    /**
     * @return Returns all children branches including archived branches
     */
-   public Collection<Branch> getAllChildBranches() throws OseeCoreException {
+   public Collection<Branch> getDescendents() throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
       getAllChildBranches(this, children, false);
 
