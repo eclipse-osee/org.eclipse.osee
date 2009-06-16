@@ -102,8 +102,8 @@ public class ArtifactImportOperation extends AbstractOperation {
          List<Artifact> artifacts = importRoot.getDescendants();
          if (!artifacts.isEmpty()) {
             Writer writer = null;
+            File file = null;
             try {
-               File file = null;
                int totalArts = artifacts.size();
                int workAmount = getTotalWorkUnits() / totalArts;
                for (int index = 0; index < totalArts; index++) {
