@@ -10,15 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.update;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IConflictResolver {
+public abstract class ConflictResolverOperation extends AbstractOperation {
 
-   public IStatus resolveConflicts(IProgressMonitor monitor, ConflictManagerExternal conflictManager) throws OseeCoreException;
+   private ConflictManagerExternal conflictManager;
+
+   public ConflictResolverOperation(String operationName, String pluginId) {
+      super(operationName, pluginId);
+      this.conflictManager = null;
+   }
+
+   public void setConflictManager(ConflictManagerExternal conflictManager) {
+      this.conflictManager = conflictManager;
+   }
+
+   public ConflictManagerExternal getConflictManager() {
+      return this.conflictManager;
+   }
 }

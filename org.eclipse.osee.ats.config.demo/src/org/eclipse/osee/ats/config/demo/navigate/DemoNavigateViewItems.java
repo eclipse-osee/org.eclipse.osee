@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -61,14 +61,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
          if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
       XNavigateItem jhuItem = new XNavigateItemFolder(null, "John Hopkins Univ (JHU)");
@@ -108,7 +108,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new CreateNewVersionItem(teamItems, teamDef);
             }
          } catch (Exception ex) {
-            OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
          }
       }
 

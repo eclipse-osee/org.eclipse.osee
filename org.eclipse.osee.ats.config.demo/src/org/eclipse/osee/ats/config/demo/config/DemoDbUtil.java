@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -54,9 +54,9 @@ public class DemoDbUtil {
    }
 
    public static void sleep(long milliseconds) throws Exception {
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Sleeping " + milliseconds);
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Awake");
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Awake");
    }
 
    public static Result isDbPopulatedWithDemoData(Branch branch) throws Exception {
@@ -70,12 +70,12 @@ public class DemoDbUtil {
    }
 
    public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr, Branch branch) throws Exception {
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getBranchName());
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       return arts;
    }
    public static enum SoftwareRequirementStrs {
@@ -84,7 +84,7 @@ public class DemoDbUtil {
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
    public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws Exception {
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO,
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
             branch);

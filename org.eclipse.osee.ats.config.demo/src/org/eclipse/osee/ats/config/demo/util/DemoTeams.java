@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config.demo.util;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +45,7 @@ public class DemoTeams {
          return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
                team.name().replaceAll("_", " "), AtsPlugin.getAtsBranch());
       } catch (Exception ex) {
-         OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
       return null;
    }

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
@@ -56,7 +56,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram
-      executeLoadAIsAndTeamsAction(OseeAtsConfigDemoPlugin.PLUGIN_ID);
+      executeLoadAIsAndTeamsAction(OseeAtsConfigDemoActivator.PLUGIN_ID);
 
       // Create initial version artifacts for Widget teams
       createVersionArtifacts();
@@ -85,7 +85,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
       transaction.execute();
 
-      OseeInfo.putValue(Requirements.OSEE_INFO_TEST_CASE_KEY, "Test Case");
+      OseeInfo.putValue("osee.db.type", "demo");
    }
 
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
@@ -137,7 +137,9 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      AtsPlugin.getAtsBranch(), verName);
-         if (verName.contains("1")) ver.setReleased(true);
+         if (verName.contains("1")) {
+            ver.setReleased(true);
+         }
          if (verName.contains("2")) {
             ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
@@ -153,8 +155,12 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      AtsPlugin.getAtsBranch(), verName);
-         if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         if (verName.contains("1")) {
+            ver.setReleased(true);
+         }
+         if (verName.contains("2")) {
+            ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         }
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }

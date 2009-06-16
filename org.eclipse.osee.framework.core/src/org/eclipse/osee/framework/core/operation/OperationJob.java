@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author Ryan D. Brooks
  */
 class OperationJob extends Job {
-   private final AbstractOperation operation;
+   private final IOperation operation;
 
    /**
     * @param operation the operation that will be executed in this Job
     */
-   public OperationJob(AbstractOperation operation) {
+   public OperationJob(IOperation operation) {
       super(operation.getName());
       this.operation = operation;
    }

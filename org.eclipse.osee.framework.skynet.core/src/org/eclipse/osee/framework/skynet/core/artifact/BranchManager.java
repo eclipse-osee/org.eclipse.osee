@@ -29,8 +29,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -38,6 +36,8 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchStorageState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -55,8 +55,9 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.update.IConflictResolver;
-import org.eclipse.osee.framework.skynet.core.artifact.update.UpdateBranchJob;
+import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
@@ -399,8 +400,9 @@ public class BranchManager {
     * 
     * @param Job
     */
-   public static Job updateBranch(final Branch branch, final IConflictResolver resolver) {
-      return Jobs.startJob(new UpdateBranchJob(branch, resolver));
+   public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
+      IOperation operation = new UpdateBranchOperation(Activator.PLUGIN_ID, branch, resolver);
+      return Operations.executeAsJob(operation, true);
    }
 
    /**
@@ -410,15 +412,10 @@ public class BranchManager {
     * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
-      Job job = new Job("Complete Update") {
-
-         @Override
-         protected IStatus run(IProgressMonitor monitor) {
-            return UpdateBranchJob.completeUpdate(monitor, conflictManager, archiveSourceBranch,
+      IOperation operation =
+            new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
                   overwriteUnresolvedConflicts);
-         }
-      };
-      return Jobs.startJob(job);
+      return Operations.executeAsJob(operation, true);
    }
 
    /**

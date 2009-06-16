@@ -126,7 +126,7 @@ public class Operations {
       }
    }
 
-   public static Job executeAsJob(AbstractOperation operation, boolean user) {
+   public static Job executeAsJob(IOperation operation, boolean user) {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 

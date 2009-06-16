@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.config.demo;
+package org.eclipse.osee.ats.config.demo.internal;
 
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
@@ -16,20 +16,20 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class OseeAtsConfigDemoPlugin extends OseeActivator {
+public class OseeAtsConfigDemoActivator extends OseeActivator {
    // The shared instance.
-   private static OseeAtsConfigDemoPlugin plugin;
+   private static OseeAtsConfigDemoActivator plugin;
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.config.demo";
 
    /**
     * The constructor.
     */
-   public OseeAtsConfigDemoPlugin() {
+   public OseeAtsConfigDemoActivator() {
       super();
       plugin = this;
    }
 
-   public static OseeAtsConfigDemoPlugin getInstance() {
+   public static OseeAtsConfigDemoActivator getInstance() {
       return plugin;
    }
 

@@ -46,7 +46,6 @@ public class Requirements {
    public static String ABSTRACT_TEST_UNIT = "Abstract Test Unit";
 
    public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
-   public static String OSEE_INFO_TEST_CASE_KEY = "Test Case Type Name";
    public static String TEST_CASE = "Test Case";
    public static String TEST_RUN = "Test Run";
    public static String TEST_SUPPORT = "Test Support";

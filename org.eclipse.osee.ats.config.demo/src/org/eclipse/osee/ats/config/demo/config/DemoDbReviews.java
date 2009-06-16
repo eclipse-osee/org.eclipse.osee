@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoTestTeamWorkflowArtifact;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
@@ -61,7 +61,7 @@ public class DemoDbReviews {
     */
    public static void createDecisionReviews(SkynetTransaction transaction) throws Exception {
 
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Create Decision reviews");
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Decision reviews");
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
@@ -118,7 +118,7 @@ public class DemoDbReviews {
     */
    public static void createPeerToPeerReviews(SkynetTransaction transaction) throws Exception {
 
-      OseeLog.log(OseeAtsConfigDemoPlugin.class, Level.INFO, "Create Peer To Peer reviews");
+      OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Peer To Peer reviews");
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
       TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
 

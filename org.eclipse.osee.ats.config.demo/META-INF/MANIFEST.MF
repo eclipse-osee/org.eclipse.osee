@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Demo Plug-in
 Bundle-SymbolicName: org.eclipse.osee.ats.config.demo;singleton:=true
 Bundle-Version: 1.0.1.qualifier
-Bundle-Activator: org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin
+Bundle-Activator: org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator
 Bundle-Vendor: Boeing
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -26,7 +26,7 @@ Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
-Export-Package: org.eclipse.osee.ats.config.demo,
+Export-Package: 
  org.eclipse.osee.ats.config.demo.artifact,
  org.eclipse.osee.ats.config.demo.config,
  org.eclipse.osee.ats.config.demo.navigate,
