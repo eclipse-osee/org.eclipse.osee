@@ -109,7 +109,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @param branchName The branchName to set.
     */
    public void setBranchName(String branchName) {
-      if (branchName == null) throw new IllegalArgumentException("The branchName parameter can not be null.");
+      if (branchName == null) {
+         throw new IllegalArgumentException("The branchName parameter can not be null.");
+      }
       this.branchName = branchName;
    }
 
@@ -138,8 +140,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public void setAssociatedArtifact(Artifact artifact) throws OseeCoreException {
       // TODO: this method should allow the artifact to be on any branch, not just common
-      if (artifact.getBranch() != BranchManager.getCommonBranch()) throw new OseeArgumentException(
-            "Setting associated artifact for branch only valid for common branch artifact.");
+      if (artifact.getBranch() != BranchManager.getCommonBranch()) {
+         throw new OseeArgumentException(
+               "Setting associated artifact for branch only valid for common branch artifact.");
+      }
 
       ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET associated_art_id = ? WHERE branch_id = ?",
             artifact.getArtId(), branchId);
@@ -342,14 +346,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return associatedArtifactId;
    }
 
-   /**
-    * @return Returns the branch short name if provided else a truncated branch name.
-    */
-   public String getDisplayName() {
-      return getBranchShortName() != null && getBranchShortName().length() > 0 ? getBranchShortName() : StringFormat.truncate(
-            getBranchName(), 22);
-   }
-
    public String asFolderName() {
       String branchName = this.getBranchShortName();
 
@@ -372,7 +368,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter.isInstance(this)) {
          return this;
@@ -403,11 +401,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean matchesState(BranchArchivedState branchState) {
-      return branchState == BranchArchivedState.ALL || (isArchived() && branchState == BranchArchivedState.ARCHIVED) || (!isArchived() && branchState == BranchArchivedState.UNARCHIVED);
+      return branchState == BranchArchivedState.ALL || isArchived() && branchState == BranchArchivedState.ARCHIVED || !isArchived() && branchState == BranchArchivedState.UNARCHIVED;
    }
 
    public boolean matchesControlled(BranchControlled branchControlled) {
-      return branchControlled == BranchControlled.ALL || (isChangeManaged() && branchControlled == BranchControlled.CHANGE_MANAGED) || (!isChangeManaged() && branchControlled == BranchControlled.NOT_CHANGE_MANAGED);
+      return branchControlled == BranchControlled.ALL || isChangeManaged() && branchControlled == BranchControlled.CHANGE_MANAGED || !isChangeManaged() && branchControlled == BranchControlled.NOT_CHANGE_MANAGED;
    }
 
    public void setDeleted() {

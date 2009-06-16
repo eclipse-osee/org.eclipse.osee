@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -23,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.junit.Before;
@@ -137,14 +140,34 @@ public class UpdateBranchTest {
          // Update the branch
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
+
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
          assertTrue("UpdateBranch was not successful", job.getResult().isOK());
 
-         checkBranchWasRebaselinedForConflicts(originalBranchName, workingBranch);
+         assertTrue("Branch was archived", !workingBranch.isArchived());
+         assertTrue("Branch was editable", !workingBranch.isEditable());
+         assertTrue("Branch state was not set as rebaselined", workingBranch.isRebaselined());
+         assertEquals("Branch name was changed before update was complete", originalBranchName,
+               workingBranch.getBranchName());
 
-         // Resolve Conflicts
+         // Check that a new destination branch exists
+         Branch destinationBranch = resolverOperation.getConflictManager().getToBranch();
+         assertTrue("Branch name not set correctly", destinationBranch.getBranchName().startsWith(
+               String.format("%s - for update -", originalBranchName)));
+         assertTrue("Branch was editable", !destinationBranch.isEditable());
+
+         // Check that we have a merge branch
+         Branch mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
+         assertTrue("MergeBranch was not editable", mergeBranch.isEditable());
 
          // Run FinishBranchUpdate and check
+         FinishUpdateBranchOperation finishUpdateOperation =
+               new FinishUpdateBranchOperation("Update Branch Test 2", resolverOperation.getConflictManager(), true,
+                     true);
+         Operations.executeWork(finishUpdateOperation, new NullProgressMonitor(), -1);
+         assertTrue("FinishUpdateBranch was not successful", finishUpdateOperation.getStatus().isOK());
+
+         checkBranchWasRebaselined(originalBranchName, workingBranch);
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -153,6 +176,10 @@ public class UpdateBranchTest {
          assertTrue(workingBranch.getBranchId() != newWorkingBranch.getBranchId());
          assertEquals(originalBranchName, newWorkingBranch.getBranchName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
+
+         // Swapped successfully
+         assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
+
       } finally {
          if (workingBranch != null) {
             BranchManager.purgeBranch(workingBranch);
@@ -166,14 +193,6 @@ public class UpdateBranchTest {
             ArtifactPersistenceManager.purgeArtifacts(itemsToPurge);
          }
       }
-   }
-
-   private void checkBranchWasRebaselinedForConflicts(String originalBranchName, Branch branchToCheck) {
-      assertTrue("Branch was archived", !branchToCheck.isArchived());
-      assertTrue("Branch was not editable", branchToCheck.isEditable());
-      assertTrue("Branch state was not set as rebaselined", branchToCheck.isRebaselined());
-      assertTrue("Branch name not set correctly", branchToCheck.getBranchName().startsWith(
-            String.format("%s - for update -", originalBranchName)));
    }
 
    private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {
