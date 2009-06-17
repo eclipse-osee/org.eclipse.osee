@@ -462,10 +462,10 @@ public class BranchManager {
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
-      if (!conflictManager.getToBranch().isEditable()) {
+      if (!conflictManager.getDestinationBranch().isEditable()) {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
-      runCommitExtPointActions(conflictManager.getFromBranch());
+      runCommitExtPointActions(conflictManager.getSourceBranch());
       new CommitDbTx(conflictManager, archiveSourceBranch).execute();
    }
 

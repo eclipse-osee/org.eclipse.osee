@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -189,20 +190,7 @@ public class BranchStateTest {
          assertEquals(originalBranchName, newWorkingBranch.getBranchName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
       } finally {
-         for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
-            for (Branch child : branch.getChildBranches(true)) {
-               BranchManager.purgeBranch(child);
-            }
-            BranchManager.purgeBranch(branch);
-         }
-         if (workingBranch != null) {
-            BranchManager.purgeBranch(workingBranch);
-         }
-         if (baseArtifact != null) {
-            List<Artifact> itemsToPurge = new ArrayList<Artifact>();
-            itemsToPurge.add(baseArtifact);
-            ArtifactPersistenceManager.purgeArtifacts(itemsToPurge);
-         }
+         cleanup(originalBranchName, baseArtifact, workingBranch, null);
       }
    }
 
@@ -284,23 +272,27 @@ public class BranchStateTest {
          // Swapped successfully
          assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
       } finally {
-         if (mergeBranch != null) {
-            BranchManager.purgeBranch(mergeBranch);
+         cleanup(originalBranchName, baseArtifact, workingBranch, mergeBranch);
+      }
+   }
+
+   private void cleanup(String originalBranchName, Artifact baseArtifact, Branch workingBranch, Branch mergeBranch) throws OseeDataStoreException, OseeCoreException {
+      for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
+         for (Branch child : branch.getChildBranches(true)) {
+            BranchManager.purgeBranch(child);
          }
-         for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
-            for (Branch child : branch.getChildBranches(true)) {
-               BranchManager.purgeBranch(child);
-            }
-            BranchManager.purgeBranch(branch);
-         }
-         if (workingBranch != null) {
-            BranchManager.purgeBranch(workingBranch);
-         }
-         if (baseArtifact != null) {
-            List<Artifact> itemsToPurge = new ArrayList<Artifact>();
-            itemsToPurge.add(baseArtifact);
-            ArtifactPersistenceManager.purgeArtifacts(itemsToPurge);
-         }
+         BranchManager.purgeBranch(branch);
+      }
+      if (mergeBranch != null) {
+         BranchManager.purgeBranch(mergeBranch);
+      }
+      if (workingBranch != null) {
+         BranchManager.purgeBranch(workingBranch);
+      }
+      if (baseArtifact != null) {
+         List<Artifact> itemsToPurge = new ArrayList<Artifact>();
+         itemsToPurge.add(baseArtifact);
+         ArtifactPersistenceManager.purgeArtifacts(itemsToPurge);
       }
    }
 
