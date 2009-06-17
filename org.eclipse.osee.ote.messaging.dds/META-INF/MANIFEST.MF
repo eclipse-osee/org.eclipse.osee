@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DDS Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.messaging.dds;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Vendor: Eclipse.org
+Bundle-Localization: plugin
+Export-Package: org.eclipse.osee.ote.messaging.dds,
+ org.eclipse.osee.ote.messaging.dds.condition,
+ org.eclipse.osee.ote.messaging.dds.entity,
+ org.eclipse.osee.ote.messaging.dds.listener,
+ org.eclipse.osee.ote.messaging.dds.qos,
+ org.eclipse.osee.ote.messaging.dds.service,
+ org.eclipse.osee.ote.messaging.dds.status,
+ org.eclipse.osee.ote.messaging.dds.test,
+ org.eclipse.osee.ote.messaging.dds.test.data
+Require-Bundle: org.eclipse.osee.framework.jdk.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
