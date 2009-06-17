@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.config.demo.artifact;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -73,11 +75,14 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     * 
     * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow#getTeamWorkflowArtifactNames()
     */
-   public Collection<String> getTeamWorkflowArtifactNames() {
+   public Collection<String> getTeamWorkflowArtifactNames() throws OseeCoreException {
       if (workflowArtifactNames == null) {
-         workflowArtifactNames =
-               Arrays.asList(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME, DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
-                     DemoReqTeamWorkflowArtifact.ARTIFACT_NAME);
+         if (TestUtil.isDemoDb()) {
+            workflowArtifactNames =
+                  Arrays.asList(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME, DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
+                        DemoReqTeamWorkflowArtifact.ARTIFACT_NAME);
+         } else
+            workflowArtifactNames = Collections.emptyList();
       }
       return workflowArtifactNames;
    }

@@ -69,11 +69,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          StateMachineArtifact stateMachine = (StateMachineArtifact) artifact;
          if (stateMachine.isSubscribed(UserManager.getUser())) {
             // was 8,6
-            return ImageManager.setupImage(artifact, AtsImage.SUBSCRIBED, Location.BOT_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
          if (stateMachine.isFavorite(UserManager.getUser())) {
             // was 7,0
-            return ImageManager.setupImage(artifact, AtsImage.FAVORITE, Location.TOP_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }
       }
 
