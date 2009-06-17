@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="OteSystemLibsNature"
+         name="OTE System Libraries Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.osee.ote.runtimemanager.OteSystemLibsNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="OteUserLibsNature"
+         name="OTE User Libraries Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.osee.ote.runtimemanager.OteUserLibsNature">
+         </run>
+      </runtime>
+   </extension>
+   
+  <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.osee.ote.runtimemanager.EarlyStartup">
+      </startup>
+   </extension>
+
+</plugin>
