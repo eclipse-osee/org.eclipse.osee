@@ -50,8 +50,6 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 
-//import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 /**
  * @author Roberto E. Escobar
  */
@@ -116,7 +114,11 @@ public class DragDropHandler {
          if (selection.size() > 0) {
             URI[] iFiles = toResourceArray(selection.toArray());
             if (iFiles.length > 0) {
-               handleResourceDrops(iFiles);
+               try {
+                  handleResourceDrops(iFiles);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+               }
             } else {
                OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "No valid files dropped");
             }
@@ -168,7 +170,7 @@ public class DragDropHandler {
       addArtifactsToTable(new ArrayList<Artifact>(artifactsToAdd));
    }
 
-   private void handleResourceDrops(URI[] iFiles) {
+   private void handleResourceDrops(URI[] iFiles) throws OseeCoreException {
       Branch branch = BranchComboDialog.getBranchFromUser();
       if (branch != null) {
          OutfileToArtifactJob artifactJob = new OutfileToArtifactJob(branch, iFiles);

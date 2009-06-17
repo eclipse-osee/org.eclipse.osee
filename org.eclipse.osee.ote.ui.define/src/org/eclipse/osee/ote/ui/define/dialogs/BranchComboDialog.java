@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
@@ -129,30 +130,34 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          }
 
          Branch branch = getSelection();
-         if (branch != null && branch.hasParentBranch() != false) {
-            String lastBranchSelected = Integer.toString(branch.getBranchId());
+         try {
+            if (branch != null && branch.hasParentBranch()) {
+               String lastBranchSelected = Integer.toString(branch.getBranchId());
 
-            List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
-            history.remove(lastBranchSelected);
-            history.add(0, lastBranchSelected);
-            if (history.size() > COMBO_HISTORY_LENGTH) {
-               history.remove(COMBO_HISTORY_LENGTH);
-            }
-            branchIds = new String[history.size()];
-            history.toArray(branchIds);
+               List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
+               history.remove(lastBranchSelected);
+               history.add(0, lastBranchSelected);
+               if (history.size() > COMBO_HISTORY_LENGTH) {
+                  history.remove(COMBO_HISTORY_LENGTH);
+               }
+               branchIds = new String[history.size()];
+               history.toArray(branchIds);
 
-            settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
-            settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
-            try {
-               settings.save(this.getClass().getName());
-            } catch (IOException ex) {
-               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+               settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
+               settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
+               try {
+                  settings.save(this.getClass().getName());
+               } catch (IOException ex) {
+                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
          }
       }
    }
 
-   public static Branch getBranchFromUser() {
+   public static Branch getBranchFromUser() throws OseeCoreException {
       Branch toReturn = null;
       BranchComboDialog branchSelection =
             new BranchComboDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
