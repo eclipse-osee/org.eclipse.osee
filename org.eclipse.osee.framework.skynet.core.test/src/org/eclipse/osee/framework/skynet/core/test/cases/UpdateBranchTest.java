@@ -77,8 +77,8 @@ public class UpdateBranchTest {
 
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
-         assertTrue("Resolver was executed", !resolverOperation.wasExecuted());
          assertTrue("UpdateBranch was not successful", job.getResult().isOK());
+         assertTrue("Resolver was executed", !resolverOperation.wasExecuted());
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
 
@@ -90,10 +90,10 @@ public class UpdateBranchTest {
          assertEquals(originalBranchName, newWorkingBranch.getBranchName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
       } finally {
-         if (workingBranch != null) {
-            BranchManager.purgeBranch(workingBranch);
-         }
          for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
+            for (Branch child : branch.getChildBranches(true)) {
+               BranchManager.purgeBranch(child);
+            }
             BranchManager.purgeBranch(branch);
          }
          if (baseArtifact != null) {
@@ -110,6 +110,7 @@ public class UpdateBranchTest {
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
+      Branch mergeBranch = null;
       try {
          baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
@@ -141,8 +142,8 @@ public class UpdateBranchTest {
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
 
+         assertTrue("UpdateBranch was not successful\n" + job.getResult().getMessage(), job.getResult().isOK());
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
-         assertTrue("UpdateBranch was not successful", job.getResult().isOK());
 
          assertTrue("Branch was archived", !workingBranch.isArchived());
          assertTrue("Branch was editable", !workingBranch.isEditable());
@@ -154,10 +155,10 @@ public class UpdateBranchTest {
          Branch destinationBranch = resolverOperation.getConflictManager().getToBranch();
          assertTrue("Branch name not set correctly", destinationBranch.getBranchName().startsWith(
                String.format("%s - for update -", originalBranchName)));
-         assertTrue("Branch was editable", !destinationBranch.isEditable());
+         assertTrue("Branch was not editable", destinationBranch.isEditable());
 
          // Check that we have a merge branch
-         Branch mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
+         mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
          assertTrue("MergeBranch was not editable", mergeBranch.isEditable());
 
          // Run FinishBranchUpdate and check
@@ -179,14 +180,17 @@ public class UpdateBranchTest {
 
          // Swapped successfully
          assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
-
       } finally {
-         if (workingBranch != null) {
-            BranchManager.purgeBranch(workingBranch);
+         if (mergeBranch != null) {
+            BranchManager.purgeBranch(mergeBranch);
          }
          for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
+            for (Branch child : branch.getChildBranches(true)) {
+               BranchManager.purgeBranch(child);
+            }
             BranchManager.purgeBranch(branch);
          }
+
          if (baseArtifact != null) {
             List<Artifact> itemsToPurge = new ArrayList<Artifact>();
             itemsToPurge.add(baseArtifact);
