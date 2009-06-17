@@ -59,7 +59,7 @@ public class AnnotationComposite extends Composite {
                   continue;
                }
                Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-               iconLabel.setImage(ImageManager.getImage(notify.getType()));
+               iconLabel.setImage(ImageManager.getAnnotationImage(notify.getType()));
 
                Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
                alertLabel.setText(notify.getType().name() + ": " + notify.getContent());

@@ -13,16 +13,22 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class ArtifactImageProvider {
-   public abstract Image getImage(Artifact artifact) throws OseeCoreException;
+   /**
+    * Providers can return null to defer to the basic implementation
+    * 
+    * @param artifact
+    * @return
+    * @throws OseeCoreException
+    */
+   public abstract String setupImage(Artifact artifact) throws OseeCoreException;
 
-   public Image getImage(ArtifactType artifactType) throws OseeCoreException {
-      return ImageManager.getImage(BaseImage.getBaseImageEnum(artifactType));
+   public String setupImage(ArtifactType artifactType) throws OseeCoreException {
+      return ImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }
 
    public abstract void init() throws OseeCoreException;

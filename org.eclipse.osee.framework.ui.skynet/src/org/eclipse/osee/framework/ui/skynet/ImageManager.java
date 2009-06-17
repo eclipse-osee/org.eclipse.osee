@@ -89,7 +89,7 @@ public class ImageManager {
          modType = ModificationType.CHANGE;
       }
       OseeImage overlay = FrameworkImage.valueOf(changeType + "_" + modType.getDisplayName());
-      return instance.imageRegistry.get(instance.setupImageWithOverlay(baseImage, overlay, Location.TOP_LEFT));
+      return instance.imageRegistry.get(setupImageWithOverlay(baseImage, overlay, Location.TOP_LEFT));
    }
 
    public static Image getChangeTypeImage(Change change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
@@ -145,22 +145,30 @@ public class ImageManager {
          if (imageProvider == null) {
             return getImage(BaseImage.getBaseImageEnum(artifactType));
          }
-         return imageProvider.getImage(artifactType);
+
+         String imageKey = imageProvider.setupImage(artifactType);
+         if (imageKey != null) {
+            return instance.imageRegistry.get(imageKey);
+         }
       } catch (OseeCoreException ex) {
-         return getImage(FrameworkImage.MISSING);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+      return getImage(FrameworkImage.MISSING);
    }
 
    public static Image getImage(Artifact artifact, OseeImage overlay, Location location) {
-      return instance.imageRegistry.get(instance.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay,
-            location));
+      return instance.imageRegistry.get(setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location));
+   }
+
+   public static String setupImage(Artifact artifact, OseeImage overlay, Location location) {
+      return setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location);
    }
 
    public static void registerProvider(ArtifactImageProvider imageProvider, ArtifactType artifactType) {
       instance.providersMap.put(artifactType, imageProvider);
    }
 
-   public static Image getImage(ArtifactAnnotation.Type annotationType) {
+   public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
       if (annotationType == ArtifactAnnotation.Type.Warning) {
          return getImage(FrameworkImage.WARNING);
       } else if (annotationType == ArtifactAnnotation.Type.Error) {
@@ -198,6 +206,18 @@ public class ImageManager {
    }
 
    private synchronized String setupImage(Artifact artifact) {
+      try {
+         ArtifactImageProvider imageProvider = instance.providersMap.get(artifact.getArtifactType());
+         if (imageProvider != null) {
+            String imageKey = imageProvider.setupImage(artifact);
+            if (imageKey != null) {
+               return imageKey;
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+
       OseeImage baseImageEnum = BaseImage.getBaseImageEnum(artifact);
 
       if (AccessControlManager.hasLock(artifact)) {
@@ -222,21 +242,21 @@ public class ImageManager {
     * @param baseImageName must refer to an image that is already mapped to this key in the imageregistry
     * @param overlay
     * @param location
-    * @return
+    * @return the image registry key to the resulting image descriptor
     * @throws OseeArgumentException
     */
-   private synchronized String setupImageWithOverlay(OseeImage baseImageEnum, OseeImage overlay, Location location) {
+   public static synchronized String setupImageWithOverlay(OseeImage baseImageEnum, OseeImage overlay, Location location) {
       String baseImageName = setupImage(baseImageEnum);
       String imageName = baseImageName + "_" + overlay.getImageKey();
-      if (imageRegistry.getDescriptor(imageName) == null) {
-         Image baseImage = imageRegistry.get(baseImageName);
-         ImageDescriptor overlayDescriptor = imageRegistry.getDescriptor(setupImage(overlay));
-         imageRegistry.put(imageName, new OverlayImage(baseImage, overlayDescriptor, location));
+      if (instance.imageRegistry.getDescriptor(imageName) == null) {
+         Image baseImage = instance.imageRegistry.get(baseImageName);
+         ImageDescriptor overlayDescriptor = instance.imageRegistry.getDescriptor(setupImage(overlay));
+         instance.imageRegistry.put(imageName, new OverlayImage(baseImage, overlayDescriptor, location));
       }
       return imageName;
    }
 
-   private static String setupImage(OseeImage imageEnum) {
+   public static String setupImage(OseeImage imageEnum) {
       return instance.setupImage(imageEnum.getImageKey(), imageEnum);
    }
 

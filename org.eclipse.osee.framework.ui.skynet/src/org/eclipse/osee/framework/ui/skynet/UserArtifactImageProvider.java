@@ -10,7 +10,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -29,17 +28,16 @@ public class UserArtifactImageProvider extends ArtifactImageProvider {
     * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public String setupImage(Artifact artifact) throws OseeCoreException {
       if (artifact.isDeleted()) {
-         return ImageManager.getImage(ArtifactTypeManager.getType(User.ARTIFACT_NAME));
+         return null;
       } else if (((User) artifact).isSystemUser()) {
-         ImageManager.getImage(FrameworkImage.USER_GREY);
+         return ImageManager.setupImage(FrameworkImage.USER_GREY);
       } else if (!((User) artifact).isActive()) {
-         ImageManager.getImage(FrameworkImage.USER_YELLOW);
+         return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
       } else if (((User) artifact).equals(UserManager.getUser())) {
-         ImageManager.getImage(FrameworkImage.USER_RED);
+         return ImageManager.setupImage(FrameworkImage.USER_RED);
       }
-      return ImageManager.getImage(artifact);
+      return null;
    }
-
 }

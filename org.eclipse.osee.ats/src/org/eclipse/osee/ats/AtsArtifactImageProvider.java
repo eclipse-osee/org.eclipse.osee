@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
@@ -56,13 +55,13 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
     * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public Image getImage(Artifact artifact) throws OseeCoreException {
+   public String setupImage(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(VersionArtifact.ARTIFACT_NAME)) {
          if (artifact.getSoleAttributeValue("ats.Next Version", false)) {
-            return ImageManager.getImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
          }
          if (artifact.getSoleAttributeValue("ats.Released", false)) {
-            return ImageManager.getImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
          }
       }
 
@@ -70,14 +69,14 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          StateMachineArtifact stateMachine = (StateMachineArtifact) artifact;
          if (stateMachine.isSubscribed(UserManager.getUser())) {
             // was 8,6
-            return ImageManager.getImage(artifact, AtsImage.SUBSCRIBED, Location.BOT_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.SUBSCRIBED, Location.BOT_RIGHT);
          }
          if (stateMachine.isFavorite(UserManager.getUser())) {
             // was 7,0
-            return ImageManager.getImage(artifact, AtsImage.FAVORITE, Location.TOP_RIGHT);
+            return ImageManager.setupImage(artifact, AtsImage.FAVORITE, Location.TOP_RIGHT);
          }
       }
 
-      return ImageManager.getImage(artifact);
+      return null;
    }
 }
