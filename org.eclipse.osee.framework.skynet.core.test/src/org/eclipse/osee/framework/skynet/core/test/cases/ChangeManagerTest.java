@@ -80,7 +80,7 @@ public class ChangeManagerTest {
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
       modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
       modArtifact.persistAttributes();
-      assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.CHANGE));
+      assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.MODIFIED));
    }
 
    @After
