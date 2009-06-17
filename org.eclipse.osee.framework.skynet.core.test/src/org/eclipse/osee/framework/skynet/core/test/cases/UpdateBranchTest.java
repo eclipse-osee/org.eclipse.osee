@@ -96,6 +96,9 @@ public class UpdateBranchTest {
             }
             BranchManager.purgeBranch(branch);
          }
+         if (workingBranch != null) {
+            BranchManager.purgeBranch(workingBranch);
+         }
          if (baseArtifact != null) {
             List<Artifact> itemsToPurge = new ArrayList<Artifact>();
             itemsToPurge.add(baseArtifact);
@@ -190,7 +193,9 @@ public class UpdateBranchTest {
             }
             BranchManager.purgeBranch(branch);
          }
-
+         if (workingBranch != null) {
+            BranchManager.purgeBranch(workingBranch);
+         }
          if (baseArtifact != null) {
             List<Artifact> itemsToPurge = new ArrayList<Artifact>();
             itemsToPurge.add(baseArtifact);
