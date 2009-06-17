@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  
+   <extension
+         id="WorkspaceStarterNature"
+         name="Workspace Starter Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.osee.framework.ui.workspacebundlelodaer.WorkspaceStarterNature">
+            <parameter
+                  name="org.eclipse.osee.benchWorkspaceStarter.parameter1"
+                  value="org.eclipse.osee.benchWorkspaceStarter.parameter1">
+            </parameter>
+         </run>
+      </runtime>
+   </extension>
+
+   
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.eclipse.osee.framework.ui.workspacebundlelodaer.EarlyStartup">
+      </startup>
+   </extension>
+</plugin>
