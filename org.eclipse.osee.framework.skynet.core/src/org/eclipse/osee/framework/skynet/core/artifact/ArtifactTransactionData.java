@@ -105,7 +105,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
       ArtifactModType artifactModType;
       switch (getModificationType()) {
-         case CHANGE:
+         case MODIFIED:
             artifactModType = ArtifactModType.Changed;
             break;
          case DELETED:

@@ -76,7 +76,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             CommitStatus commitStatus =
                   commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
-               return ImageManager.getImage(FrameworkImage.OUTGOING_Merged);
+               return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
             return null;
          } catch (Exception ex) {

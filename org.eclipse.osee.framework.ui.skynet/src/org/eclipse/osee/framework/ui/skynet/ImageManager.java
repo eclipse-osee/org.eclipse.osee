@@ -86,9 +86,9 @@ public class ImageManager {
 
    private static Image getChangeTypeImageInternal(OseeImage baseImage, ChangeType changeType, ModificationType modType) {
       if (changeType == CONFLICTING && modType == NEW) {
-         modType = ModificationType.CHANGE;
+         modType = ModificationType.MODIFIED;
       }
-      OseeImage overlay = FrameworkImage.valueOf(changeType + "_" + modType.getDisplayName());
+      OseeImage overlay = FrameworkImage.valueOf(changeType + "_" + modType.toString());
       return instance.imageRegistry.get(setupImageWithOverlay(baseImage, overlay, Location.TOP_LEFT));
    }
 

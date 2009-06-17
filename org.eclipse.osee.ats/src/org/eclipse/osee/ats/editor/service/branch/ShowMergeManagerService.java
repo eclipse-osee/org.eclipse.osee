@@ -48,7 +48,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       };
       toolBarAction.setToolTipText(getName());
-      toolBarAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTGOING_Merged));
+      toolBarAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTGOING_MERGED));
 
       OseeEventManager.addListener(this);
       refresh();

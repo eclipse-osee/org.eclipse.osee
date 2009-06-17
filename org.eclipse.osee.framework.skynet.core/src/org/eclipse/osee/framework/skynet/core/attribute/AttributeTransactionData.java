@@ -59,7 +59,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
-         if (getModificationType() == ModificationType.CHANGE || getModificationType() == ModificationType.NEW) {
+         if (getModificationType() == ModificationType.MODIFIED || getModificationType() == ModificationType.NEW) {
             attribute.getAttributeDataProvider().persist(getGammaId());
             daoToSql.setData(attribute.getAttributeDataProvider().getData());
          }

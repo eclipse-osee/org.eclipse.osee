@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -30,10 +30,11 @@ public class Query {
     * @param sql The SQL statement to use to acquire a ResultSet.
     * @param processor The RsetProcessor used for providing and validating items.
     * @param <A> The type of object being placed into the collection.
+    * @throws OseeCoreException
     */
    @Deprecated
    // all code that uses this is also Deprecated
-   public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws OseeDataStoreException {
+   public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws OseeCoreException {
       A item;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {

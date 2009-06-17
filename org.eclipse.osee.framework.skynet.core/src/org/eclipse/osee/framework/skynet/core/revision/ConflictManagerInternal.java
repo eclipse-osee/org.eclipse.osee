@@ -267,7 +267,7 @@ public class ConflictManagerInternal {
             if (artId != nextArtId) {
                artId = nextArtId;
 
-               if ((destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) || (destModType == ModificationType.CHANGE.getValue() && sourceModType == ModificationType.DELETED.getValue())) {
+               if ((destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.MODIFIED.getValue()) || (destModType == ModificationType.MODIFIED.getValue() && sourceModType == ModificationType.DELETED.getValue())) {
 
                   artifactConflictBuilder =
                         new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,

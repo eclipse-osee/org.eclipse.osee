@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.List;
@@ -105,7 +105,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
 
             boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
             boolean modifiedWordArtifactSelected =
-                  wordArtifactSelected && mySelectedArtifactChange.getModificationType() == CHANGE;
+                  wordArtifactSelected && mySelectedArtifactChange.getModificationType() == MODIFIED;
             isEnabled = validDiffParent && modifiedWordArtifactSelected && readPermission;
          }
       } catch (Exception ex) {

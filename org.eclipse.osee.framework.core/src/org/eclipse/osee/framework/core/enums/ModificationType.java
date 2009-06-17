@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import java.io.Serializable;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks
@@ -23,7 +24,7 @@ public enum ModificationType implements Serializable {
    // Artifact if any Attribute was changed (not Relation)
    // Attribute if it's value was modified
    // Relation if rationale or ordering change
-   CHANGE("Modified", 2),
+   MODIFIED("Modified", 2),
 
    // Artifact, Attribute or Relation was deleted
    DELETED("Deleted", 3),
@@ -36,7 +37,7 @@ public enum ModificationType implements Serializable {
    // Artifact: Not Valid
    // Attribute or Relation: was deleted as a direct result of Artifact delete, will be marked as ARTIFACT_DELETED
    ARTIFACT_DELETED("Artifact Deleted", 5),
-   
+
    // Artifact, Attribute or Relation has been reflected from another branch
    INTRODUCED("Introduced", 6);
 
@@ -55,11 +56,6 @@ public enum ModificationType implements Serializable {
       return value;
    }
 
-   @Override
-   public String toString() {
-      return String.valueOf(value);
-   }
-
    public String getDisplayName() {
       return displayName;
    }
@@ -67,14 +63,15 @@ public enum ModificationType implements Serializable {
    /**
     * @param value The value of the ModificationType to get.
     * @return The ModificationType that has the value passed.
+    * @throws OseeArgumentException
     */
-   public static ModificationType getMod(int value) {
+   public static ModificationType getMod(int value) throws OseeArgumentException {
       for (ModificationType modtype : values())
-         if (modtype.getValue() == value) return modtype;
-      return null;
+         if (modtype.value == value) return modtype;
+      throw new OseeArgumentException(value + " does not correspond to any defined ModificationType enumerations");
    }
 
    public boolean isDeleted() {
-      return this == ModificationType.DELETED || this == ModificationType.ARTIFACT_DELETED;
+      return this == DELETED || this == ARTIFACT_DELETED;
    }
 }

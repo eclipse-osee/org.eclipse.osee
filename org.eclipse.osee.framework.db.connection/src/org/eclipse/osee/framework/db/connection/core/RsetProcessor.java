@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.db.connection.core;
 
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Robert A. Fisher
  */
 public interface RsetProcessor<T> {
-   public T process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException;
+   public T process(ConnectionHandlerStatement chStmt) throws OseeCoreException;
 
    public boolean validate(T item);
 }

@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
@@ -197,7 +198,7 @@ public class RevisionManager {
 
       try {
          Query.acquireCollection(revisions, new AttributeChangeProcessor(changeType), sql, dataList.toArray());
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
@@ -232,7 +233,7 @@ public class RevisionManager {
          Query.acquireCollection(revisions,
                new RelationLinkChangeProcessor(changeType, artifactNameDescriptorResolver), sql, dataList.toArray());
 
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
@@ -284,7 +285,7 @@ public class RevisionManager {
          this.changeType = changeType;
       }
 
-      public AttributeChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+      public AttributeChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, OseeArgumentException {
          ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
          if (modType == ModificationType.DELETED) {
             String wasValue = chStmt.getString("was_value");
@@ -327,7 +328,7 @@ public class RevisionManager {
          this.artifactNameDescriptorResolver = artifactNameDescriptorResolver;
       }
 
-      public RelationLinkChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+      public RelationLinkChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, OseeArgumentException {
 
          ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
 

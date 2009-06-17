@@ -316,24 +316,24 @@ public class InternalChangeManager {
             if (artModTypes.containsKey(artId)) {
                artModType = artModTypes.get(artId);
             } else {
-               artModType = ModificationType.CHANGE;
+               artModType = ModificationType.MODIFIED;
             }
 
             //This will be false iff the artifact was new and then deleted
             if (!newAndDeletedArtifactIds.contains(artId)) {
                // Want to add an artifact changed item once if any attribute was modified && artifact was not
                // NEW or DELETED
-               if (artModType == ModificationType.CHANGE && !modifiedArtifacts.contains(artId)) {
+               if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
                   ArtifactChanged artifactChanged =
                         new ArtifactChanged(sourceBranch, artTypeId, -1, artId, toTransactionId, fromTransactionId,
-                              ModificationType.CHANGE, ChangeType.OUTGOING, !hasBranch);
+                              ModificationType.MODIFIED, ChangeType.OUTGOING, !hasBranch);
 
                   changes.add(artifactChanged);
                   modifiedArtifacts.add(artId);
                }
 
                //Modtypes will be temporarily set to new and then revised for based on the existence of a was value
-               if (modificationType == ModificationType.CHANGE && artModType != ModificationType.INTRODUCED) {
+               if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
 
@@ -413,7 +413,7 @@ public class InternalChangeManager {
 
                      if (changed.getArtModType() != ModificationType.NEW) {
                         if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-                           changed.setModType(ModificationType.CHANGE);
+                           changed.setModType(ModificationType.MODIFIED);
                         }
                         changed.setWasValue(wasValue);
                      }

@@ -238,7 +238,7 @@ public class SkynetTransaction extends DbTransaction {
             if (artifact.isDeleted()) {
                modificationType = ModificationType.DELETED;
             } else {
-               modificationType = ModificationType.CHANGE;
+               modificationType = ModificationType.MODIFIED;
             }
          }
 
@@ -277,7 +277,7 @@ public class SkynetTransaction extends DbTransaction {
          modificationType = attribute.getModificationType();
       } else {
          if (attribute.isInDb()) {
-            modificationType = ModificationType.CHANGE;
+            modificationType = ModificationType.MODIFIED;
          } else {
             modificationType = ModificationType.NEW;
          }
@@ -346,7 +346,7 @@ public class SkynetTransaction extends DbTransaction {
                modificationType = ModificationType.DELETED;
             }
          } else {
-            modificationType = ModificationType.CHANGE;
+            modificationType = ModificationType.MODIFIED;
          }
       } else {
          if (link.isDeleted()) return;

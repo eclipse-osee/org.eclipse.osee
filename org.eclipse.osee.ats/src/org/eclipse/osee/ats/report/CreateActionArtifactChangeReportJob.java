@@ -126,7 +126,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData(commitConfigArt);
-      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.CHANGE)) {
+      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
@@ -141,7 +141,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
-            ModificationType.CHANGE)) {
+            ModificationType.MODIFIED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
