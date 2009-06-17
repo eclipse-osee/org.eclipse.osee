@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Msg Plug-in  (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.client.msg;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.eclipse.osee.ote.client.msg.core.internal.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.client,
+ org.eclipse.osee.ote.connection.service,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.ote.messaging.dds,
+ org.eclipse.osee.framework.plugin.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.ote.client.msg,
+ org.eclipse.osee.ote.client.msg.core,
+ org.eclipse.osee.ote.client.msg.core.db
+Bundle-Vendor: Eclipse.org
