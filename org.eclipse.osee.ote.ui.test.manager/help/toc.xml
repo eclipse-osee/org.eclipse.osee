@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.eclipse.osee.ote.core/help/toc.xml#tools" label="OSEE Test Manager Users Guide"  topic="help/help.html">
+
+	<topic label="Test Manager">
+			<topic label="Overview" href="help/overview.html" />
+				<topic label="Overview Page" href="help/overviewPage.html" />
+				<topic label="Hosts Page" href="help/hostsPage.html" />
+				<topic label="Scripts Page" href="help/scriptsPage.html" />
+				<topic label="Advanced Page" href="help/advancedPage.html" />
+				<topic label="Source Page" href="help/sourcePage.html" />
+	</topic>		
+	
+</toc>

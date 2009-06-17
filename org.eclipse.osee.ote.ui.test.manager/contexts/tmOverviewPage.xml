@@ -1,0 +1,6 @@
+<contexts>
+	<context id="tm_overview_page" title="Test Manager Overview Page">
+		<description>Displays overview information and provides a bug report mechanism.</description>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+</contexts>

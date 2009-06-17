@@ -1,0 +1,6 @@
+<contexts>
+	<context id="tm_scripts_page" title="Test Manager Scripts Page">
+		<description>Controls the exections of test programs.</description>
+		<topic href="references/tm_scriptsPage.html" label="Running Test Programs"/>
+	</context>
+</contexts>

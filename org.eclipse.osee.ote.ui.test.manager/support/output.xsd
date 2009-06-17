@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- ====================== -->
+	<!--  AUTHOR: Charles Shaw  -->
+	<!-- ====================== -->
+	
+	<!-- This is included only once as the first element in TestScript -->
+	<xs:element name="Config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ScriptName" type="xs:string"/>
+				<xs:element name="Environment" type="xs:string"/>
+				<xs:element name="TestEnvironmentVersion" type="xs:string"/>
+				<xs:element name="UserName" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- This is included only once as the last element in TestScript -->
+	<xs:element name="ScriptResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ElapsedTime" type="xs:integer"/>
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>
+	
+	<!-- Location is used in multiple elements -->
+	<xs:element name="Location">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Source" type="xs:string"/>
+				<xs:element name="Line" type="xs:integer"/>
+				<xs:element name="Time" type="xs:integer"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="Debug">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Location"/>
+				<xs:element name="Message"  type="xs:string"/>			
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="Support">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Location"/>
+				<xs:element name="Message"  type="xs:string"/>			
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>	
+	
+	<xs:element name="Severe">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Location"/>
+				<xs:element name="Message"  type="xs:string"/>			
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>
+	
+	<xs:element name="Warning">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Location"/>
+				<xs:element name="Message"  type="xs:string"/>			
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>
+	
+	<xs:element name="Attention">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Location"/>
+				<xs:element name="Message"  type="xs:string"/>			
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>
+	
+	<!-- CheckPoint and CheckGroup are both used by TestPoint -->
+	<xs:element name="CheckPoint">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TestPointName" type="xs:string"/>
+				<xs:element name="Expected"  type="xs:string"/>
+				<xs:element name="Actual"  type="xs:string"/>		
+				<xs:element name="Result" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Used to build permutations or the elements in the group -->
+	<xs:group name="Checks">
+		<xs:choice>
+			<xs:element ref="CheckPoint" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="CheckGroup" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:choice>
+	</xs:group>
+	
+	<xs:element name="CheckGroup">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="GroupName"/>
+				<xs:element name="Result"/>
+				<xs:group ref="Checks" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="Mode" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="TestPoint">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Number" type="xs:integer"/>
+				<xs:element name="Result"  type="xs:string"/>
+				<xs:element ref="Location"/>	
+				<xs:group ref="Checks" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Used to build permutations or the elements in the group -->
+	<xs:group name="Messages">
+		<xs:choice>
+			<xs:element ref="Trace" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Debug" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="TestPoint" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Support" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Severe" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Warning" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Attention" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:choice>	
+	</xs:group>
+	
+	<!-- Both Trace and TestCase can hold any element, any number of times -->
+	<!-- With the exception that only TestScript can hold a TestCase -->
+	<xs:element name="Trace">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ObjectName" type="xs:string"/>
+				<xs:element name="MethodName" type="xs:string"/>
+				<xs:element name="MethodArgument" type="xs:string"/>
+				<xs:element ref="Location"/>
+				<xs:group ref="Messages" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<xs:element name="Tracability">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="RequirementId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>			
+			</xs:sequence>
+		</xs:complexType>	
+	</xs:element>
+	
+	<xs:element name="TestCase">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Number" type="xs:integer"/>
+				<xs:element ref="Tracability"/>
+				<xs:group ref="Messages" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="ScriptInit">
+		<xs:complexType>
+			<xs:group ref="Messages" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Base Element in the XML -->
+	<xs:element name="TestScript">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Config"/>
+				<xs:element ref="ScriptInit"/>
+				<xs:element ref="TestCase" maxOccurs="unbounded"/>
+				<xs:element ref="ScriptResult"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

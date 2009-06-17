@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Training" topic="help/training.html">
+	<topic label="OSEE Workbench" href="help/train_wbench.html">
+		<link toc = "../org.eclipse.platform.doc.user/topics_GettingStarted.xml"/>
+		<link toc = "../org.eclipse.platform.doc.user/topics_Concepts.xml"/>
+	</topic>
+	<topic label="OSEE Java Development Environment" 
+		href="help/train_javadev.html">
+		<link toc = "../org.eclipse.jdt.doc.user/topics_GettingStarted.xml"/>
+		<link toc = "../org.eclipse.jdt.doc.user/topics_Concepts.xml"/>		
+	</topic>
+	<topic label="Java Programming Language" href="help/train_javaprog.html"/>
+</toc>
+
+

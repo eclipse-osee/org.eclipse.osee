@@ -1,0 +1,8 @@
+<contexts>
+	<context id="tm_advanced_page" title="Test Manager Advanced Page">
+		<description>Provides options of the execution and analysis of OSEE test programs.</description>
+		<topic href="references/tm_advancedPage_scriptOptions.html" label="Script Options"/>
+		<topic href="references/tm_advancedPage_executionOptions.html" label="Execution Options"/>
+		<topic href="references/tm_advancedPage_markerOptions.html" label="Marker Options"/>
+	</context>
+</contexts>

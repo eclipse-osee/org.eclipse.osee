@@ -1,0 +1,6 @@
+<contexts>
+	<context id="tm_hosts_page" title="Test Manager Hosts Page">
+		<description>Displays available test servers, and allows you to connect to them and look at there current status.</description>
+		<topic href="references/tm_hostsPage.html" label="Connecting to and Viewing Test Servers"/>
+	</context>
+</contexts>
