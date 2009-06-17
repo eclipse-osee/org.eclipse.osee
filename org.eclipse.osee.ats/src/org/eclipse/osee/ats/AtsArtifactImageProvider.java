@@ -76,6 +76,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          }
       }
 
-      return null;
+      return super.setupImage(artifact);
    }
 }

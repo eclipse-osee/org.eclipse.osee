@@ -38,6 +38,7 @@ public class UserArtifactImageProvider extends ArtifactImageProvider {
       } else if (((User) artifact).equals(UserManager.getUser())) {
          return ImageManager.setupImage(FrameworkImage.USER_RED);
       }
-      return null;
+
+      return super.setupImage(artifact);
    }
 }
