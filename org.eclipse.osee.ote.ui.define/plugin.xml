@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="ITestRunReport" name="ITestRunReport" schema="schema/ITestRunReport.exsd"/>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="org.eclipse.osee.define.import.category"
+            class="org.eclipse.osee.ote.ui.define.importer.OutfileImportWizard"
+            icon="images/outfile_import.gif"
+            id="org.eclipse.osee.ote.ui.define.importer.outfileImportWizard"
+            name="Test Outfiles">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="osee.test.category"
+            name="OSEE Test">
+      </category>
+      <view
+            allowMultiple="false"
+            category="osee.test.category"
+            class="org.eclipse.osee.ote.ui.define.views.TestRunView"
+            icon="images/testRunView.gif"
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView"
+            name="Test Run View">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ote.ui.OteNavigateItem">
+      <IOteNavigateItem
+            classname="org.eclipse.osee.ote.ui.define.views.TestRunViewNavigateItem">
+      </IOteNavigateItem>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.osee.ote.ui.define.views.TestRunView">
+         <viewShortcut
+               id="org.eclipse.osee.ote.ui.define.views.TestRunView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
+      <IHttpServerRequest
+            classname="org.eclipse.osee.ote.ui.define.reports.HttpReportRequest">
+      </IHttpServerRequest>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Display test runs grouped by branch"
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView.flatPresentation.command"
+            name="By Branch">
+      </command>
+      <command
+            description="Displays test runs grouped by script name and revision"
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedPresentation.command"
+            name="By Script Revision">
+      </command>
+      <command
+            description="Displays items in long notation"
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView.longNamesPresentation.command"
+            name="Long">
+      </command>
+      <command
+            description="Displays items in short notation"
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView.shortNamesPresentation.command"
+            name="Short">
+      </command>
+      <command
+            description="Displays the latest test run of each script."
+            id="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterHandler.command"
+            name="Show only the latest run">
+      </command>
+   </extension>
+   <extension
+         name="Test Run View Commands"
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.ote.ui.define.views.handlers.FlatPresentationHandler"
+            commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.flatPresentation.command">
+      </handler>
+      <handler
+            class="org.eclipse.osee.ote.ui.define.views.handlers.GroupedPresentationHandler"
+            commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedPresentation.command">
+      </handler>
+      <handler
+            class="org.eclipse.osee.ote.ui.define.views.handlers.LongNamesPresentationHandler"
+            commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.longNamesPresentation.command">
+      </handler>
+      <handler
+            class="org.eclipse.osee.ote.ui.define.views.handlers.ShortNamesPresentationHandler"
+            commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.shortNamesPresentation.command">
+      </handler>
+      <handler
+            class="org.eclipse.osee.ote.ui.define.views.handlers.ToggleFilterHandler"
+            commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterHandler.command">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.osee.ote.ui.define.views.TestRunView">
+         <menu
+               label="Group By">
+            <command
+                  commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedPresentation.command"
+                  icon="images/tree_layout.gif"
+                  id="org.eclipse.osee.ote.ui.define.views.TestRunView.groupedCommand"
+                  style="radio">
+            </command>
+            <command
+                  commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.flatPresentation.command"
+                  icon="images/flat_layout.gif"
+                  id="org.eclipse.osee.ote.ui.define.views.TestRunView.flatCommand"
+                  style="radio">
+            </command>
+         </menu>
+         <menu
+               label="Notation">
+            <command
+                  commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.longNamesPresentation.command"
+                  id="org.eclipse.osee.ote.ui.define.views.TestRunView.longNamesCommand"
+                  style="radio">
+            </command>
+            <command
+                  commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.shortNamesPresentation.command"
+                  id="org.eclipse.osee.ote.ui.define.views.TestRunView.shortNamesCommand"
+                  style="radio">
+            </command>
+         </menu>
+         <menu
+               label="Filters">
+            <command
+                  commandId="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterHandler.command"
+                  icon="images/latest_versions.gif"
+                  id="org.eclipse.osee.ote.ui.define.views.TestRunView.latestOnlyFilterCommand"
+                  style="toggle">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         id="org.eclipse.osee.ote.ui.define.reports.HighLevelSummary"
+         name="High Level Test Run Summary"
+         point="org.eclipse.osee.ote.ui.define.ITestRunReport">
+      <ITestRunReport
+            classname="org.eclipse.osee.ote.ui.define.reports.HighLevelSummary"
+            icon="images/latest_versions.gif">
+      </ITestRunReport>
+   </extension>
+   <extension
+         id="org.eclipse.osee.ote.ui.define.reports.HistoricalTestRunData"
+         name="Historical Test Run Report"
+         point="org.eclipse.osee.ote.ui.define.ITestRunReport">
+      <ITestRunReport
+            classname="org.eclipse.osee.ote.ui.define.reports.HistoricalTestRunData"
+            icon="images/latest_versions.gif">
+      </ITestRunReport>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ote.ui.test.manager.AdvancedPageContribution">
+      <AdvancedPageContribution
+            classname="org.eclipse.osee.ote.ui.define.test.manager.TestRunArtifactOptions">
+      </AdvancedPageContribution>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="help/contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/toc.xml"
+            primary="false">
+      </toc>
+   </extension>
+</plugin>

@@ -1,0 +1,43 @@
+<link rel="stylesheet" type="text/css" href="resources/css/ext-all.css" />
+<script type="text/javascript" src="adapter/ext/ext-base.js"></script>
+
+<script type="text/javascript" src="ext-all.js"></script>
+<link rel="stylesheet" type="text/css" href="examples/grid/grid-examples.css" />
+<link rel="stylesheet" type="text/css" href="examples/examples.css" />
+<link rel="stylesheet" type="text/css" href="examples/lib.css" />
+<script type="text/javascript">
+		  Ext.onReady(function(){
+		  Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+			
+		  var myData = [##TABLE_DATA##];
+    
+    	  ##CUSTOM_FUNCTIONS##
+    
+        // create the data store
+        var store = new Ext.data.SimpleStore({
+            fields: [##COLUMN_DATA##]
+        });
+        store.loadData(myData);
+    
+        // create the Grid
+        var grid = new Ext.grid.GridPanel({
+            store: store,
+            columns: [ ##COLUMN_CUSTOMIZATIONS_DATA##],
+            stripeRows: true,
+            viewConfig: {
+              autoFill: true
+    			},
+    			sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
+            ##HEIGHT##,
+            ##WIDTH##, 
+            autoSizeColumns: true,   			
+            ##AUTO_EXPAND_COLUMN##,
+            renderTo: '##ELEMENT_NAME##',
+            title:'##TABLE_TITLE##'
+        });
+        grid
+        grid.getSelectionModel().selectFirstRow();
+});
+</script>
+
+
