@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Markers Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.markers;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.osee.ote.ui.markers.MarkerPlugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.ui,
+ org.eclipse.osee.framework.ui.plugin
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.osee.ote.ui.markers
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.core.framework.saxparse,
+ org.eclipse.osee.ote.core.framework.saxparse.elements
+Bundle-Vendor: Eclipse.org
