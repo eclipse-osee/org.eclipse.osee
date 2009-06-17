@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="OutfileParser" name="OutfileParser" schema="schema/OutfileParser.exsd"/>
+   <extension
+         id="OseeTypesOTE"
+         name="OseeTypesOTE"
+         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+      <ExcelFile
+            file="support/OseeTypes_OTE.xml">
+      </ExcelFile>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
+      <ArtifactImage
+            ArtifactTypeName="Test Procedure"
+            ImagePath="images/procedure.gif">
+      </ArtifactImage>
+      <ArtifactImage
+            ArtifactTypeName="Test Configuration"
+            ImagePath="images/config.gif">
+      </ArtifactImage>
+      <ArtifactImage
+            ArtifactTypeName="Test Run"
+            ImagePath="images/testrun.gif">
+      </ArtifactImage>
+      <ArtifactImage
+            ArtifactTypeName="Test Case"
+            ImagePath="images/file.gif">
+      </ArtifactImage>
+      <ArtifactImage
+            ArtifactTypeName="Test Support"
+            ImagePath="images/function.gif">
+      </ArtifactImage>
+   </extension>
+   <extension
+         id="MappedAttributeDataProvider"
+         name="MappedAttributeDataProvider"
+         point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+      <BinaryAttributeDataProvider
+            class="org.eclipse.osee.ote.define.artifacts.MappedAttributeDataProvider">
+      </BinaryAttributeDataProvider>
+   </extension>
+   <extension
+         id="OteOutfileParser"
+         point="org.eclipse.osee.ote.define.OutfileParser">
+      <OutfileParser
+            classname="org.eclipse.osee.ote.define.parser.OteOutfileParser"
+            supportedExtensions="tmo">
+      </OutfileParser>
+   </extension>
+</plugin>
