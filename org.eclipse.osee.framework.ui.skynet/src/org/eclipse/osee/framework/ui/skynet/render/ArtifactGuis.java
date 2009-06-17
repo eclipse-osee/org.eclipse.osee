@@ -34,7 +34,7 @@ public class ArtifactGuis {
 
       Set<Branch> otherBranches = new HashSet<Branch>();
       for (Artifact artifact : artifacts) {
-         otherBranches.addAll(RevisionManager.getInstance().getOtherEdittedBranches(artifact));
+         otherBranches.addAll(RevisionManager.getOtherEdittedBranches(artifact));
       }
 
       if (!otherBranches.isEmpty()) {
@@ -67,7 +67,7 @@ public class ArtifactGuis {
 
       return goAhead;
    }
-   
+
    private static class AskQuestion implements Runnable {
 
       private Object notifee;

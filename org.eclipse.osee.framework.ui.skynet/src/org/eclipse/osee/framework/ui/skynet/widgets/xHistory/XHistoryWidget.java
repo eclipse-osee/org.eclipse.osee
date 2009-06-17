@@ -245,10 +245,8 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
             try {
                if (loadHistory) {
-                  for (TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(
-                        artifact, true)) {
-                     for (RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(
-                           transactionData)) {
+                  for (TransactionData transactionData : RevisionManager.getTransactionsPerArtifact(artifact, true)) {
+                     for (RevisionChange revisionChange : RevisionManager.getTransactionChanges(transactionData)) {
                         historyItems.add(new HistoryTransactionItem(transactionData, revisionChange));
                      }
                   }

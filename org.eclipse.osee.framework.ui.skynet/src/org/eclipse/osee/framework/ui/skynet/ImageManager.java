@@ -209,15 +209,16 @@ public class ImageManager {
       try {
          ArtifactImageProvider imageProvider = instance.providersMap.get(artifact.getArtifactType());
          if (imageProvider != null) {
-            String imageKey = imageProvider.setupImage(artifact);
-            if (imageKey != null) {
-               return imageKey;
-            }
+            return imageProvider.setupImage(artifact);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
+      return setupImageNoProviders(artifact);
+   }
+
+   protected static synchronized String setupImageNoProviders(Artifact artifact) {
       OseeImage baseImageEnum = BaseImage.getBaseImageEnum(artifact);
 
       if (AccessControlManager.hasLock(artifact)) {

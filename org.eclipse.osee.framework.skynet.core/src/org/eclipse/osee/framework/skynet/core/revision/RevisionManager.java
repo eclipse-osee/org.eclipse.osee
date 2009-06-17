@@ -56,14 +56,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  */
 public class RevisionManager {
-   private static final String SELECT_TRANSACTIONS =
-         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
-
    private static final String GET_CHANGED_ARTIFACTS =
          "SELECT arv2.gamma_id, txs1.mod_type FROM osee_artifact ar1, osee_artifact_version arv2, osee_txs txs1, osee_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd4.transaction_id AND txd4.branch_id = ?";
-
-   private static final String GET_DELETED_ARTIFACTS =
-         "SELECT txd10.branch_id, att8.value AS name, art5.art_id, ary6.name AS type_name, arv7.modification_id, arv7.gamma_id, (SELECT MAX(txd3.transaction_id) FROM osee_ARTIFACT_VERSION arv1,osee_TXS txs2,osee_TX_DETAILS txd3 WHERE arv1.art_id=arv7.art_id AND arv1.modification_id<> 3 AND arv1.gamma_id=txs2.gamma_id AND txs2.transaction_id=txd3.transaction_id AND txd3.branch_id=txd10.branch_id AND txd3.transaction_id< txd10.transaction_id) as last_good_transaction, txs4.transaction_id as deleted_transaction FROM osee_txs txs4,osee_ARTIFACT art5, osee_ARTIFACT_TYPE ary6, osee_ARTIFACT_VERSION arv7, osee_ATTRIBUTE att8,osee_TXS txs9,osee_TX_DETAILS txd10, osee_TX_DETAILS txd11, (SELECT MAX(att11.gamma_id) as gamma_id FROM osee_ATTRIBUTE att11, osee_ATTRIBUTE_TYPE aty12 WHERE att11.attr_type_id=aty12.attr_type_id AND aty12.name=? GROUP BY att11.art_id) ATTR_GAMMA WHERE txd11.branch_id = txd10.branch_id AND txd11.transaction_id = txs4.transaction_id AND txs4.gamma_id = arv7.gamma_id AND txd10.branch_id=? AND txd10.transaction_id=txs9.transaction_id AND txs9.transaction_id > ?  AND txs9.transaction_id <= ? AND txs9.gamma_id=arv7.gamma_id AND arv7.art_id=art5.art_id AND arv7.modification_id=? AND art5.art_type_id=ary6.art_type_id AND art5.art_id=att8.art_id AND att8.gamma_id= ATTR_GAMMA.gamma_id";
 
    private static final Table TX_DATA = new Table("tx_data");
    private static final String SELECT_TRANSACTIONS_FOR_ARTIFACT =
@@ -82,24 +76,8 @@ public class RevisionManager {
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
 
    private static final Pair<String, ArtifactType> UNKNOWN_DATA = new Pair<String, ArtifactType>(null, null);
-   private static final RevisionManager instance = new RevisionManager();
 
    private RevisionManager() {
-   }
-
-   public static RevisionManager getInstance() {
-      return instance;
-   }
-
-   /**
-    * Returns the transactions associated with an artifact for the branch the artifact is on
-    * 
-    * @param artifact
-    * @return - Collection<TransactionData>
-    */
-   @Deprecated
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact) throws OseeCoreException {
-      return getTransactionsPerArtifact(artifact, false);
    }
 
    /**
@@ -110,7 +88,7 @@ public class RevisionManager {
     * @return - Collection<TransactionData>
     */
    @Deprecated
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException {
+   public static Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -155,7 +133,7 @@ public class RevisionManager {
     * @throws TransactionDoesNotExist
     */
    @Deprecated
-   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws OseeCoreException {
+   public static Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws OseeCoreException {
       IArtifactNameDescriptorResolver resolver = new ArtifactNameDescriptorResolver(tData.getBranch());
 
       return getTransactionChanges(OUTGOING, tData.getTransactionId(), tData.getTransactionId(),
@@ -163,7 +141,7 @@ public class RevisionManager {
    }
 
    @Deprecated
-   private Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
+   private static Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
       Collection<AttributeChange> attributeChanges =
             getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
                   toTransactionId.getTransactionNumber(), artId);
@@ -182,7 +160,7 @@ public class RevisionManager {
    }
 
    @Deprecated
-   private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
+   private static Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
 
       Collection<AttributeChange> revisions = new LinkedList<AttributeChange>();
       String sql =
@@ -206,7 +184,7 @@ public class RevisionManager {
    }
 
    @Deprecated
-   private Collection<RelationLinkChange> getRelationLinkChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) {
+   private static Collection<RelationLinkChange> getRelationLinkChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) {
 
       String transactionCheck =
             fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?";
@@ -241,7 +219,7 @@ public class RevisionManager {
    }
 
    @Deprecated
-   private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
+   private static Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
       Collection<ArtifactChange> changes = new LinkedList<ArtifactChange>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
@@ -354,7 +332,7 @@ public class RevisionManager {
       }
    }
 
-   public boolean branchHasChanges(Branch branch) throws OseeCoreException {
+   public static boolean branchHasChanges(Branch branch) throws OseeCoreException {
       Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
    }
@@ -369,7 +347,7 @@ public class RevisionManager {
     * @throws OseeDataStoreException
     * @throws BranchDoesNotExist
     */
-   public Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeDataStoreException, BranchDoesNotExist {
       Collection<Branch> otherBranches = new LinkedList<Branch>();
 
       // Can only be on other branches it has already been saved

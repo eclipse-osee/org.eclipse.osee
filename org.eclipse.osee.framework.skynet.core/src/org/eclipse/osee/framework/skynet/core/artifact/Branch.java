@@ -260,7 +260,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean hasChanges() throws OseeCoreException {
-      return RevisionManager.getInstance().branchHasChanges(this);
+      return RevisionManager.branchHasChanges(this);
    }
 
    public int getAuthorId() {
