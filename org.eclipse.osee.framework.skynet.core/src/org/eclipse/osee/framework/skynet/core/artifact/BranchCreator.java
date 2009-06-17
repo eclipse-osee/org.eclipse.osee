@@ -24,13 +24,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -75,8 +73,8 @@ public class BranchCreator {
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
-            initializeBranch(connection, sourceTransactionId, childBranchShortName, childBranchName, userId, timestamp,
-                  comment, associatedArtifact, branchType, branchState);
+            initializeBranch(connection, sourceTransactionId, childBranchName, userId, timestamp, comment,
+                  associatedArtifact, branchType, branchState);
 
       // insert the new transaction data first.
       int newTransactionNumber = SequenceManager.getNextTransactionId();
@@ -101,13 +99,7 @@ public class BranchCreator {
     * @return branch object that represents the newly created branch
     * @throws OseeCoreException
     */
-   private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchShortName, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType, BranchState branchState) throws OseeCoreException {
-      branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
-
-      if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
-         throw new OseeArgumentException("A branch with the name " + branchName + " already exists");
-      }
-
+   private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType, BranchState branchState) throws OseeCoreException {
       int branchId = SequenceManager.getNextBranchId();
       int parentBranchNumber = sourceTransactionId.getBranchId();
       int parentTransactionIdNumnber = sourceTransactionId.getTransactionNumber();
