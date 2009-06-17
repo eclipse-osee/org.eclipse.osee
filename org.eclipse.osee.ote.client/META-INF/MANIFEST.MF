@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE Service  (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.client;singleton:=true
+Bundle-Version: 1.0.1.qualifier
+Bundle-Activator: org.eclipse.osee.ote.service.Activator
+Bundle-Vendor: Eclipse.org
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.osee.connection.service,
+ org.eclipse.osee.framework.jini.service.interfaces,
+ org.eclipse.osee.framework.messaging,
+ org.eclipse.osee.framework.messaging.id,
+ org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.core.enums,
+ org.eclipse.osee.ote.core.environment,
+ org.eclipse.osee.ote.core.environment.interfaces,
+ org.eclipse.osee.ote.core.environment.status,
+ org.eclipse.osee.ote.core.framework,
+ org.eclipse.osee.ote.core.framework.prompt,
+ org.eclipse.osee.ote.message,
+ org.osgi.framework,
+ org.osgi.util.tracker
+Export-Package: org.eclipse.osee.ote.service,
+ org.eclipse.osee.ote.service.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.osee.framework.logging
