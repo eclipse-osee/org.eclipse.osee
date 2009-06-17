@@ -1,0 +1,6 @@
+<contexts>
+	<context id="oteNavigator" title="OTE Navigator">
+		<description>Shortcut view to common OTE tasks.</description>
+		<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>
+	</context>
+</contexts>

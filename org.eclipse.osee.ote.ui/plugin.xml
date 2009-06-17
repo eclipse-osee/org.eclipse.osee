@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="OteNavigateItem" name="OteNavigateItem" schema="schema/OteNavigateItem.exsd"/>
+   <extension-point id="WorkspaceSetup" name="WorkspaceSetup" schema="schema/WorkspaceSetup.exsd"/>
+     <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="OSEE Test"
+            id="osee.test.category">
+      </category>
+      <view
+            allowMultiple="false"
+            category="osee.test.category"
+            class="org.eclipse.osee.ote.ui.navigate.OteNavigateView"
+            icon="images/welcome_item3.gif"
+            id="org.eclipse.osee.ote.ui.navigate.OteNavigateView"
+            name="OTE Navigator"/>
+   </extension>
+     <extension
+           point="org.eclipse.osee.ote.ui.OteNavigateItem">
+        <IOteNavigateItem
+              classname="org.eclipse.osee.ote.ui.navigate.WorkspaceSetupViewItems">
+        </IOteNavigateItem>
+     </extension>
+     <extension
+           id="testnature"
+           name="Test Nature"
+           point="org.eclipse.core.resources.natures">
+        <runtime>
+           <run
+                 class="org.eclipse.osee.ote.ui.ProjectNatureTest">
+           </run>
+        </runtime>
+     </extension>
+     <extension
+           id="OteUI"
+           point="org.eclipse.help.contexts">
+        <contexts
+              file="help/contexts.xml">
+        </contexts>
+     </extension>
+     <extension
+           point="org.eclipse.help.toc">
+        <toc
+              file="help/toc.xml"
+              primary="false">
+        </toc>
+     </extension>
+     <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.osee.ote.ui.TestPerspective"
+            fixed="false"
+            icon="images/welcome_item3.gif"
+            id="org.eclipse.osee.ote.ui.TestPerspective"
+            name="OSEE Test"/>
+   </extension>
+     
+</plugin>
