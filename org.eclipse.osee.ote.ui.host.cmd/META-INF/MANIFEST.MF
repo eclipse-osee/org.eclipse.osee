@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OTE UI Host Cmd Plugin (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.host.cmd;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.osee.ote.ui.host.cmd.UiPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.framework.jini,
+ net.jini,
+ org.eclipse.osee.framework.ui.service.control,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osgi,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.osee.ote.ui.host.cmd
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging

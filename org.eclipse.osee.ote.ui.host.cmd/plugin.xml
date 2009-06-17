@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.osee.framework.ui.service.control.ServiceView">
+      <ServiceHandler
+            ServiceIcon="images/test_server.gif"
+            ServiceInterface="org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment"
+            ServiceRenderer="org.eclipse.osee.ote.ui.host.cmd.TestServerConsoleServiceRenderer"/>
+   </extension>
+
+</plugin>
