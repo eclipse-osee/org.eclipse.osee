@@ -42,7 +42,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerProvider(this, ArtifactTypeManager.getType(PeerToPeerReviewArtifact.ARTIFACT_NAME));
       ImageManager.registerProvider(this, ArtifactTypeManager.getType(DecisionReviewArtifact.ARTIFACT_NAME));
       for (String artName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         System.out.println(String.format("Registering for Team Workflow [%s]", artName));
          try {
             ImageManager.registerProvider(this, ArtifactTypeManager.getType(artName));
          } catch (OseeTypeDoesNotExist ex) {
