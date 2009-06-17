@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+  
+     <extension
+         id="TestInterface"
+         name="TestInterface"
+         point="org.eclipse.osee.framework.jini.JiniInterface">
+      <Interface classname="org.eclipse.osee.ote.core.TestClient"/>
+      <Interface classname="org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback"/>
+      <Interface classname="org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole"/>
+      <Interface
+            classname="org.eclipse.osee.ote.core.environment.status.IServiceStatusData">
+      </Interface>
+      <Interface
+            classname="org.eclipse.osee.ote.core.environment.status.IServiceStatusDataCommand">
+      </Interface>
+      </extension>
+   <extension
+         id="TestBundle"
+         name="TestBundle"
+         point="org.eclipse.osee.framework.jini.JiniInterface">
+      <RegisterBundle/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+
+</plugin>
