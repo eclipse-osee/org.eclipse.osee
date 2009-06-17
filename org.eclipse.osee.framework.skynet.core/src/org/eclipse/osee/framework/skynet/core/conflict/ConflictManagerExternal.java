@@ -61,11 +61,11 @@ public class ConflictManagerExternal {
       return getRemainingConflicts().size() > 0;
    }
 
-   public Branch getToBranch() {
+   public Branch getDestinationBranch() {
       return destinationBranch;
    }
 
-   public Branch getFromBranch() {
+   public Branch getSourceBranch() {
       return sourceBranch;
    }
 }

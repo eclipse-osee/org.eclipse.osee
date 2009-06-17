@@ -70,7 +70,7 @@ public class SkynetTransaction extends DbTransaction {
    private final Branch branch;
    private boolean madeChanges = false;
    private boolean executedWithException = false;
-   private String comment;
+   private final String comment;
 
    public SkynetTransaction(Branch branch) throws OseeCoreException {
       this(branch, "");
@@ -108,11 +108,37 @@ public class SkynetTransaction extends DbTransaction {
       ensureBranchIsEditable(artifact);
    }
 
+   /**
+    * Performs branch validation checks
+    */
+   private void checkBranch(RelationLink link) throws OseeStateException {
+      ensureCorrectBranch(link);
+      ensureBranchIsEditable(link);
+   }
+
+   private void ensureCorrectBranch(RelationLink link) throws OseeStateException {
+      if (!link.getBranch().equals(branch)) {
+         String msg =
+               String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
+                     link.getRelationId(), link.getBranch(), branch);
+         throw new OseeStateException(msg);
+      }
+   }
+
    private void ensureCorrectBranch(Artifact artifact) throws OseeStateException {
       if (!artifact.getBranch().equals(branch)) {
          String msg =
                String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
                      artifact.getHumanReadableId(), artifact.getBranch(), branch);
+         throw new OseeStateException(msg);
+      }
+   }
+
+   private void ensureBranchIsEditable(RelationLink link) throws OseeStateException {
+      if (!link.getBranch().isEditable()) {
+         String msg =
+               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getRelationId(),
+                     link.getBranch());
          throw new OseeStateException(msg);
       }
    }
@@ -170,6 +196,7 @@ public class SkynetTransaction extends DbTransaction {
       dataInsertOrder.put(insertPriority, insertSql);
    }
 
+   @Override
    public void execute() throws OseeCoreException {
       if (madeChanges) {
          super.execute();
@@ -199,8 +226,10 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
-      if (!artifact.isInDb()) return;
       checkBranch(artifact);
+      if (!artifact.isInDb()) {
+         return;
+      }
       madeChanges = true;
 
       addArtifactHelper(artifact, ModificationType.DELETED);
@@ -210,6 +239,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void addReflectedArtifact(Artifact artifact) throws OseeCoreException {
+      checkBranch(artifact);
       addArtifactHelper(artifact, artifact.getModType());
 
       // Add Attributes to Transaction
@@ -329,8 +359,8 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public void addRelation(RelationLink link) throws OseeCoreException {
+      checkBranch(link);
       madeChanges = true;
-
       link.setNotDirty();
 
       ModificationType modificationType;
@@ -340,7 +370,7 @@ public class SkynetTransaction extends DbTransaction {
             Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
             Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
 
-            if ((aArtifact != null && aArtifact.isDeleted()) || (bArtifact != null && bArtifact.isDeleted())) {
+            if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
                modificationType = ModificationType.ARTIFACT_DELETED;
             } else {
                modificationType = ModificationType.DELETED;
@@ -349,7 +379,9 @@ public class SkynetTransaction extends DbTransaction {
             modificationType = ModificationType.MODIFIED;
          }
       } else {
-         if (link.isDeleted()) return;
+         if (link.isDeleted()) {
+            return;
+         }
 
          Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
          if (!aArtifact.isInDb()) {

@@ -428,7 +428,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return Returns whether the branch is editable.
     */
    public boolean isEditable() {
-      return !isCommitted() && !isRebaselined() && !isArchived();
+      return !isCommitted() && !isRebaselined() && !isArchived() && !isDeleted();
    }
 
    public boolean isCommitted() {

@@ -110,8 +110,8 @@ public class CommitDbTx extends DbTransaction {
    private final ConflictManagerExternal conflictManager;
 
    private int newTransactionNumber = -1;
-   private final Branch toBranch;
-   private final Branch fromBranch;
+   private final Branch destinationBranch;
+   private final Branch sourceBranch;
    private boolean success = true;
    private int fromBranchId = -1;
    private final List<Object[]> relLinks = new ArrayList<Object[]>();
@@ -121,13 +121,13 @@ public class CommitDbTx extends DbTransaction {
 
    protected CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       this.conflictManager = conflictManager;
-      this.toBranch = conflictManager.getToBranch();
-      this.fromBranch = conflictManager.getFromBranch();
+      this.destinationBranch = conflictManager.getDestinationBranch();
+      this.sourceBranch = conflictManager.getSourceBranch();
       this.archiveSourceBranch = archiveSourceBranch;
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, String.format("Commiting Branch %s into Branch %s",
-               conflictManager.getFromBranch().getBranchId(), conflictManager.getToBranch().getBranchId()));
+               conflictManager.getSourceBranch().getBranchId(), conflictManager.getDestinationBranch().getBranchId()));
       }
    }
 
@@ -138,7 +138,7 @@ public class CommitDbTx extends DbTransaction {
     */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      branchesInCommit.add(this.fromBranch);
+      branchesInCommit.add(this.sourceBranch);
       User userToBlame = UserManager.getUser();
 
       long time = System.currentTimeMillis();
@@ -148,7 +148,7 @@ public class CommitDbTx extends DbTransaction {
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         chStmt.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(), fromBranch.getBranchId());
+         chStmt.runPreparedQuery(REVERT_DELETED_NEW, sourceBranch.getBranchId(), sourceBranch.getBranchId());
 
          while (chStmt.next()) {
             ArtifactPersistenceManager.revertArtifact(connection, chStmt.getInt("branch_id"), chStmt.getInt("art_id"));
@@ -165,7 +165,7 @@ public class CommitDbTx extends DbTransaction {
       time = System.currentTimeMillis();
       count = 0;
       try {
-         chStmt.runPreparedQuery(REVERT_DELETED_NEW_ATTRIBUTE, fromBranch.getBranchId(), fromBranch.getBranchId());
+         chStmt.runPreparedQuery(REVERT_DELETED_NEW_ATTRIBUTE, sourceBranch.getBranchId(), sourceBranch.getBranchId());
 
          while (chStmt.next()) {
             ArtifactPersistenceManager.revertAttribute(connection, chStmt.getInt("branch_id"), chStmt.getInt("art_id"),
@@ -185,7 +185,7 @@ public class CommitDbTx extends DbTransaction {
       time = System.currentTimeMillis();
 
       try {
-         chStmt.runPreparedQuery(REVERT_DELETED_NEW_REL_LINK, fromBranch.getBranchId(), fromBranch.getBranchId());
+         chStmt.runPreparedQuery(REVERT_DELETED_NEW_REL_LINK, sourceBranch.getBranchId(), sourceBranch.getBranchId());
 
          while (chStmt.next()) {
             relLinks.add(new Object[] {chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")});
@@ -207,10 +207,11 @@ public class CommitDbTx extends DbTransaction {
                relLinks.size(), Lib.getElapseString(time)));
       }
       time = System.currentTimeMillis();
-      if (fromBranch != null) {
-         newTransactionNumber = addCommitTransactionToDatabase(connection, toBranch, fromBranch, userToBlame);
-         fromBranchId = fromBranch.getBranchId();
-         AccessControlManager.getInstance().removeAllPermissionsFromBranch(connection, fromBranch);
+      if (sourceBranch != null) {
+         newTransactionNumber =
+               addCommitTransactionToDatabase(connection, destinationBranch, sourceBranch, userToBlame);
+         fromBranchId = sourceBranch.getBranchId();
+         AccessControlManager.getInstance().removeAllPermissionsFromBranch(connection, sourceBranch);
       } else {
          //Commit transaction instead of a branch
       }
@@ -222,8 +223,8 @@ public class CommitDbTx extends DbTransaction {
       time = System.currentTimeMillis();
       //Set the tx_current on the destination branch to 0 for the attributes that will be updated
       int insertCount =
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ATTRIBUTES, toBranch.getBranchId(),
-                  fromBranchId);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ATTRIBUTES,
+                  destinationBranch.getBranchId(), fromBranchId);
       if (DEBUG) {
          count = insertCount;
          System.out.println(String.format("   Updated %d TX_Current values on Destination Branch for Attributes in %s",
@@ -242,8 +243,8 @@ public class CommitDbTx extends DbTransaction {
 
       time = System.currentTimeMillis();
       insertCount +=
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
-                  fromBranchId);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_ARTIFACTS,
+                  destinationBranch.getBranchId(), fromBranchId);
       if (DEBUG) {
          System.out.println(String.format("   Updated %d TX_Current values on Destination Branch for Artifacts in %s",
                insertCount - count, Lib.getElapseString(time)));
@@ -261,8 +262,8 @@ public class CommitDbTx extends DbTransaction {
 
       time = System.currentTimeMillis();
       insertCount +=
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
-                  fromBranchId);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CURRENT_COMMIT_RELATIONS,
+                  destinationBranch.getBranchId(), fromBranchId);
       if (DEBUG) {
          System.out.println(String.format("   Updated %d TX_Current values on Destination Branch for Relations in %s",
                insertCount - count, Lib.getElapseString(time)));
@@ -313,13 +314,13 @@ public class CommitDbTx extends DbTransaction {
          time = System.currentTimeMillis();
          //insert transaction id into the branch table
          ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
-               fromBranch.getBranchId(), toBranch.getBranchId());
+               sourceBranch.getBranchId(), destinationBranch.getBranchId());
          if (DEBUG) {
             System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",
                   Lib.getElapseString(time)));
          }
 
-         Branch mergeBranch = BranchManager.getMergeBranch(fromBranch, toBranch);
+         Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
          BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
          time = System.currentTimeMillis();
          if (DEBUG) {
@@ -336,8 +337,11 @@ public class CommitDbTx extends DbTransaction {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
 
-      if (toBranch.getBranchState() == BranchState.CREATED) {
-         BranchManager.setBranchState(connection, toBranch, BranchState.MODIFIED);
+      if (destinationBranch.getBranchState() == BranchState.CREATED) {
+         BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
+      }
+      if (!sourceBranch.isRebaselined() && !sourceBranch.isCommitted()) {
+         BranchManager.setBranchState(connection, sourceBranch, BranchState.COMMITTED);
       }
       success = true;
    }
@@ -349,14 +353,15 @@ public class CommitDbTx extends DbTransaction {
    protected void handleTxFinally() throws OseeCoreException {
       if (success) {
          // Update commit artifact cache with new information
-         if (fromBranch.getAssociatedArtifactId() > 0) {
-            TransactionIdManager.cacheCommittedArtifactTransaction(fromBranch.getAssociatedArtifact(),
+         if (sourceBranch.getAssociatedArtifactId() > 0) {
+            TransactionIdManager.cacheCommittedArtifactTransaction(sourceBranch.getAssociatedArtifact(),
                   TransactionIdManager.getTransactionId(newTransactionNumber));
          }
 
          long time = System.currentTimeMillis();
          Object[] dataList =
-               new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(), newTransactionNumber};
+               new Object[] {destinationBranch.getBranchId(), newTransactionNumber, destinationBranch.getBranchId(),
+                     newTransactionNumber};
          // reload the committed artifacts since the commit changed them on the destination branch
          ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
          if (DEBUG) {
@@ -365,17 +370,16 @@ public class CommitDbTx extends DbTransaction {
          }
 
          if (archiveSourceBranch) {
-            fromBranch.archive();
+            sourceBranch.archive();
          }
-
-         branchesInCommit.remove(this.fromBranch);
+         branchesInCommit.remove(this.sourceBranch);
          OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
 
          if (DEBUG) {
             System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
          }
       } else {
-         branchesInCommit.remove(this.fromBranch);
+         branchesInCommit.remove(this.sourceBranch);
       }
    }
 
@@ -387,7 +391,7 @@ public class CommitDbTx extends DbTransaction {
    @Override
    protected void handleTxException(Exception ex) {
       success = false;
-      branchesInCommit.remove(this.fromBranch);
+      branchesInCommit.remove(this.sourceBranch);
    }
 
    private static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeCoreException {
@@ -395,7 +399,7 @@ public class CommitDbTx extends DbTransaction {
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = BranchManager.COMMIT_COMMENT + childBranch.getBranchName();
-      int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
+      int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(connection, BranchManager.COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), parentBranch.getBranchId(), newTransactionNumber, comment,
             timestamp, authorId, childBranch.getAssociatedArtifactId());
@@ -404,6 +408,6 @@ public class CommitDbTx extends DbTransaction {
    }
 
    public static boolean isBranchInCommit(Branch branch) {
-      return (branchesInCommit.contains(branch));
+      return branchesInCommit.contains(branch);
    }
 }

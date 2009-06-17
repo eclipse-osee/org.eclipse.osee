@@ -12,11 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -55,13 +53,13 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       BranchManager.commitBranch(conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       monitor.worked(calculateWork(0.60));
 
-      Branch sourceBranch = conflictManager.getFromBranch();
-      Branch destinationBranch = conflictManager.getToBranch();
+      Branch sourceBranch = conflictManager.getSourceBranch();
+      Branch destinationBranch = conflictManager.getDestinationBranch();
 
       String originalBranchName = sourceBranch.getBranchName();
       Artifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
-      sourceBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
+      //      sourceBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
       sourceBranch.rename(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
@@ -78,7 +76,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-            conflictManager.getFromBranch().getBranchShortName(), conflictManager.getToBranch().getBranchShortName()));
+            conflictManager.getSourceBranch().getBranchShortName(), conflictManager.getDestinationBranch().getBranchShortName()));
       return super.createErrorStatus(error);
    }
 

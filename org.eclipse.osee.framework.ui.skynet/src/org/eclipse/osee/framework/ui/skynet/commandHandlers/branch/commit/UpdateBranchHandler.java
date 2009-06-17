@@ -114,7 +114,7 @@ public class UpdateBranchHandler extends CommandHandler {
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          ConflictManagerExternal conflictManager = getConflictManager();
-         Job job = createMergeViewJob(conflictManager.getFromBranch(), conflictManager.getToBranch());
+         Job job = createMergeViewJob(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
          Jobs.startJob(job);
       }
 
