@@ -230,6 +230,17 @@ public class AtsBranchManager {
       }
    }
 
+   public Collection<TransactionId> getTransactionIdsForBaslineBranches() throws OseeCoreException {
+      Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
+      for (TransactionId transactionId : TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
+         // exclude working branches including branch states that are re-baselined 
+         if (transactionId.getBranch().isBaselineBranch()) {
+            transactionIds.add(transactionId);
+         }
+      }
+      return transactionIds;
+   }
+
    /**
     * @return TransactionId associated with this state machine artifact
     */
@@ -237,14 +248,14 @@ public class AtsBranchManager {
       if (showMergeManager) {
          // grab only the transaction that had merge conflicts
          Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
-         for (TransactionId transactionId : TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
+         for (TransactionId transactionId : getTransactionIdsForBaslineBranches()) {
             if (isMergeBranchExists(transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
          }
          return transactionIds;
       } else {
-         return TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+         return getTransactionIdsForBaslineBranches();
       }
    }
 
@@ -329,6 +340,9 @@ public class AtsBranchManager {
             return new Result(false,
                   "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
          }
+         if (!smaMgr.getTargetedForVersion().getParentBranch().isBaselineBranch()) {
+            return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
+         }
          return Result.TrueResult;
 
       } else {
@@ -338,6 +352,9 @@ public class AtsBranchManager {
          if (teamArt.getTeamDefinition().getParentBranch() == null) {
             return new Result(false,
                   "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
+         }
+         if (!teamArt.getTeamDefinition().getParentBranch().isBaselineBranch()) {
+            return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
       }

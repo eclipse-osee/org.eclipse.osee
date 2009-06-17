@@ -638,7 +638,13 @@ public class BranchManager {
    }
 
    public static List<Branch> getTopLevelBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.TOP_LEVEL);
+      List<Branch> topLevelBranches = new ArrayList<Branch>();
+      for (Branch branch : getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL)) {
+         if (branch.isTopLevelBranch()) {
+            topLevelBranches.add(branch);
+         }
+      }
+      return topLevelBranches;
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {

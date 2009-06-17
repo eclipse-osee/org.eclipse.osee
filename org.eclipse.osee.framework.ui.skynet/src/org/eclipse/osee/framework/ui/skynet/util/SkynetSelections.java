@@ -33,7 +33,7 @@ public final class SkynetSelections {
       return selection.size() == 1 && boilDownObject(selection.getFirstElement()) instanceof Branch;
    }
 
-   public static boolean oneDescendantBranchSelected(IStructuredSelection selection) {
+   public static boolean oneDescendantBranchSelected(IStructuredSelection selection) throws OseeCoreException {
       Object object = boilDownObject(selection.getFirstElement());
       return selection.size() == 1 && object instanceof Branch && ((Branch) object).hasParentBranch();
    }

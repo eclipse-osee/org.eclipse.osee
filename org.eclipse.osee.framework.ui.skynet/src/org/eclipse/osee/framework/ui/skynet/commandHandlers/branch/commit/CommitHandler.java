@@ -170,7 +170,7 @@ public abstract class CommitHandler extends CommandHandler {
       return enabled;
    }
 
-   protected boolean useParentBranchValid(Branch branch) {
+   protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
       return branch.hasParentBranch() && useParentBranch && !branch.isChangeManaged() && !branch.isArchived();
    }
 

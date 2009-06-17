@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
@@ -146,6 +147,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testReviewsHaveParentWorkflowOrActionableItems();
       testReviewsHaveValidDefectAndRoleXml();
       testTeamWorkflows();
+      testTeamDefinitions();
       testVersionArtifacts();
       testStateMachineAssignees();
       testAtsLogs();
@@ -199,6 +201,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
+   private void testTeamDefinitions() throws OseeCoreException {
+      xResultData.log(monitor, "testTeamDefinitions");
+      for (Artifact art : artifacts) {
+         if (art instanceof TeamDefinitionArtifact) {
+            TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
+            try {
+               String parentBranchId =
+                     teamDef.getSoleAttributeValueAsString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
+                           null);
+               if (parentBranchId != null) {
+                  validateBranchId(teamDef, parentBranchId);
+               }
+            } catch (Exception ex) {
+               xResultData.logError(teamDef.getArtifactTypeName() + " " + XResultData.getHyperlink(teamDef) + " exception testing testTeamDefinitions: " + ex.getLocalizedMessage());
+            }
+         }
+      }
+   }
+
    private void testTeamWorkflows() throws OseeCoreException {
       xResultData.log(monitor, "testTeamWorkflows");
       for (Artifact art : artifacts) {
@@ -211,11 +232,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (teamArt.getTeamDefinition() == null) {
                   xResultData.logError("TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has no TeamDefinition");
                }
-               String parentBranchId =
-                     teamArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
-               if (parentBranchId != null) {
-                  validateBranchId(teamArt, parentBranchId);
-               }
             } catch (Exception ex) {
                xResultData.logError(teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
             }
@@ -227,10 +243,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
          Branch branch = BranchManager.getBranch(new Integer(parentBranchId));
          if (branch.isArchived()) {
-            xResultData.logError(art.getArtifactTypeName() + " " + XResultData.getHyperlink(art) + " references archived parent in Parent Branch Id: " + parentBranchId);
+            xResultData.logError(String.format("Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]",
+                  parentBranchId, branch, art.getHumanReadableId(), art));
+         } else if (branch.isWorkingBranch()) {
+            xResultData.logError(String.format("Parent Branch Id [%s][%s] can't be Working branch for [%s][%s]",
+                  parentBranchId, branch, art.getHumanReadableId(), art));
+         } else if (!branch.isBaselineBranch()) {
+            xResultData.logError(String.format("Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]",
+                  parentBranchId, branch, art.getHumanReadableId(), art));
          }
       } catch (BranchDoesNotExist ex) {
-         xResultData.logError(art.getArtifactTypeName() + " " + XResultData.getHyperlink(art) + " branch does not exist for Parent Branch Id: " + parentBranchId);
+         xResultData.logError(String.format("Parent Branch Id [%s] references non-existant branch for [%s][%s]",
+               parentBranchId, art.getHumanReadableId(), art));
       }
    }
 

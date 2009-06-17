@@ -118,11 +118,15 @@ public class GraphLoader {
 
       if (systemRootTx != null) {
          for (BranchModel branchModel : models) {
-            if (branchModel.getBranch().isTopLevelBranch()) {
-               TxModel txModel = branchModel.getFirstTx();
-               if (txModel != null) {
-                  connect(systemRootTx, txModel);
+            try {
+               if (branchModel.getBranch().isTopLevelBranch()) {
+                  TxModel txModel = branchModel.getFirstTx();
+                  if (txModel != null) {
+                     connect(systemRootTx, txModel);
+                  }
                }
+            } catch (Exception ex) {
+               // do nothing
             }
          }
       }

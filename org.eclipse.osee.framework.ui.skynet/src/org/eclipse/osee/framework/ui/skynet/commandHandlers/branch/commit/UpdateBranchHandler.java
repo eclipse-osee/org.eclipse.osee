@@ -42,7 +42,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class UpdateBranchHandler extends CommandHandler {
 
-   protected boolean useParentBranchValid(Branch branch) {
+   protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
       boolean hasValidParent = branch.hasParentBranch();
       if (hasValidParent) {
          try {

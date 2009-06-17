@@ -166,7 +166,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return BranchManager.getBranch(getParentBranchId());
    }
 
-   public boolean hasParentBranch() {
+   public boolean hasParentBranch() throws OseeCoreException {
       return !isTopLevelBranch();
    }
 
@@ -315,16 +315,19 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       }
    }
 
+   /*
+    * True if baseline or top level branch
+    */
    public boolean isBaselineBranch() {
-      return branchType.equals(BranchType.BASELINE);
+      return branchType.equals(BranchType.BASELINE) || branchType.equals(BranchType.TOP_LEVEL);
    }
 
    public boolean isSystemRootBranch() {
       return branchType.equals(BranchType.SYSTEM_ROOT);
    }
 
-   public boolean isTopLevelBranch() {
-      return branchType.equals(BranchType.TOP_LEVEL);
+   public boolean isTopLevelBranch() throws OseeCoreException {
+      return getParentBranch() != null && getParentBranch().getBranchType().equals(BranchType.SYSTEM_ROOT);
    }
 
    public BranchType getBranchType() {
