@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MuxTool Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.mux;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.osee.ote.ui.mux.MuxToolPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.client,
+ org.eclipse.osee.ote.ui,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.ote.connection.service,
+ org.eclipse.help
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging

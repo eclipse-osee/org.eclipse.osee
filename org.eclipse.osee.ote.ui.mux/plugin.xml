@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="OSEE Test"
+            id="osee.test.category">
+      </category>
+      <view
+            name="MuxView"
+            icon="icons/1553.gif"
+            category="osee.test.category"
+            class="org.eclipse.osee.ote.ui.mux.view.MuxView"
+            id="osee.test.muxTool.views.MuxView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.osee.ote.ui.TestPerspective">
+         <viewShortcut
+               id="osee.test.muxTool.views.MuxView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ote.ui.OteNavigateItem">
+      <IOteNavigateItem
+            category="Messaging"
+            classname="org.eclipse.osee.ote.ui.mux.actions.MuxViewNavigatorItem">
+      </IOteNavigateItem>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="help/toc.xml"
+            primary="false">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="help/contexts.xml">
+      </contexts>
+   </extension>
+</plugin>
