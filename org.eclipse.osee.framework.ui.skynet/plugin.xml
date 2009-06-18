@@ -200,9 +200,6 @@
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
-	<extension id="UpdateFromParentBranch" name="Update From Parent Branch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.RebaselineArtifacts"/>
-	</extension>
        <extension
              id="CopyTransactionDataToBaseline"
              name="Copy Transaction Data To Baseline"
