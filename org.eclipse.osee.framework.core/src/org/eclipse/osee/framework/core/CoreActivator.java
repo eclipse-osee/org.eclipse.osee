@@ -36,11 +36,7 @@ public class CoreActivator implements BundleActivator {
       instance = null;
    }
 
-   public static CoreActivator getInstance() {
-      return instance;
-   }
-
-   public BundleContext getBundleContext() {
-      return bundleContext;
+   public static BundleContext getBundleContext() {
+      return instance.bundleContext;
    }
 }
