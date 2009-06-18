@@ -59,6 +59,9 @@ public class HttpProcessor {
          URL url = new URL(String.format("http://%s%s", serverAddress, portString));
          GetMethod method = new GetMethod(url.toString());
          try {
+            HttpMethodParams params = new HttpMethodParams();
+            params.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+            method.setParams(params);
             int responseCode = getHttpClient().executeMethod(method);
             if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
                result = true;
