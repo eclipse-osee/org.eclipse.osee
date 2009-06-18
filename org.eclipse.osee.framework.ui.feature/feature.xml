@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.framework.ui.feature"
-      label="Eclipse OSEE Framework UI (Incubation)"
+      label="%featureName"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org"
+      provider-name="%providerName"
       plugin="org.eclipse.osee.framework.ui.product">
 
    <description url="http://www.example.com/description">

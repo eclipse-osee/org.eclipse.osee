@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.ote.feature"
-      label="Eclipse OSEE Test Environment (Incubation)"
+      label="%featureName"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org"
+      provider-name="%providerName"
       plugin="org.eclipse.osee.framework.ui.product">
 
    <description url="http://www.example.com/description">
@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+      <update label="%updateSiteName" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
    <plugin
