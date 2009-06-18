@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
@@ -42,18 +41,18 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class UpdateBranchHandler extends CommandHandler {
 
-   protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
-      boolean hasValidParent = branch.hasParentBranch();
-      if (hasValidParent) {
+   protected boolean isValid(Branch branch) throws OseeCoreException {
+      boolean result = false;
+      if (branch.hasParentBranch()) {
          try {
-            hasValidParent = !branch.getParentBranch().equals(BranchManager.getSystemRootBranch());
-            hasValidParent &= !branch.isArchived() && branch.isWorkingBranch() || AccessControlManager.isOseeAdmin();
-            hasValidParent &= branch.getChildBranches().isEmpty();
+            result = !branch.getParentBranch().equals(BranchManager.getSystemRootBranch());
+            result &= branch.isEditable() && branch.isWorkingBranch();
+            result &= branch.getChildBranches().isEmpty();
          } catch (Exception ex) {
-            hasValidParent = false;
+            result = false;
          }
       }
-      return hasValidParent;
+      return result;
    }
 
    private Branch getSelectedBranch() {
@@ -79,7 +78,7 @@ public class UpdateBranchHandler extends CommandHandler {
       boolean enabled = false;
       Branch branch = getSelectedBranch();
       if (branch != null) {
-         enabled = useParentBranchValid(branch);
+         enabled = isValid(branch);
       }
       return enabled;
    }
