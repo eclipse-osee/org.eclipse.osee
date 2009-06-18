@@ -1788,6 +1788,12 @@
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeTrackChangeHealthOperation">
      </DatabaseHealthOperation>
   </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.BranchStateHealthCheck">
+     </DatabaseHealthOperation>
+  </extension>
     <extension
           point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
        <ArtifactImageProvider
