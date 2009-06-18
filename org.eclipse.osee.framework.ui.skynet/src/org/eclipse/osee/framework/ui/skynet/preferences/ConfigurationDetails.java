@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -90,6 +91,8 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       builder.append("<table class=\"oseeTable\" width=\"100%\">");
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Info", "Status"}));
 
+      builder.append(AHTML.addRowMultiColumnTable(new String[] {"<b>OSEE Client Version</b>",
+            OseeCodeVersion.getVersion(), "<font color=\"green\"><b>Ok</b></font>"}));
       for (IHealthStatus status : OseeLog.getStatus()) {
          builder.append(AHTML.addRowMultiColumnTable(new String[] {
                "<b>" + status.getSourceName() + "</b>",
