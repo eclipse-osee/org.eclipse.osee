@@ -435,14 +435,18 @@ public class AtsBranchManager {
 
    /**
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
-    * with the cache being updated by local and remote events.
+    * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
+    * branches also).
     * 
     * @param includeDeleted TODO
     * @return Branch
     */
    public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
-      Set<Branch> branches =
-            BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted);
+      Set<Branch> branches = new HashSet<Branch>();
+      for (Branch branch : BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted)) {
+         if (branch.isRebaselined()) continue;
+         branches.add(branch);
+      }
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
