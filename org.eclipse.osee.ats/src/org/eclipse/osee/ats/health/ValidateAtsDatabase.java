@@ -176,7 +176,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      xResultData.logError("Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
                   }
                } else {
-                  legacyPcrIdToParentHrid.put(legacyPcrId, XResultData.getHyperlink(teamArt.getParentActionArtifact()));
+                  legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
                }
             }
          }
