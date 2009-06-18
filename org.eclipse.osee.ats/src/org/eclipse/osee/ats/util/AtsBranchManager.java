@@ -109,7 +109,9 @@ public class AtsBranchManager {
 
          } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
-            if (transactionId == null) return;
+            if (transactionId == null) {
+               return;
+            }
             MergeView.openView(transactionId);
          }
       } catch (Exception ex) {
@@ -139,7 +141,9 @@ public class AtsBranchManager {
 
    public CommitStatus getCommitStatus(ICommitConfigArtifact configArt) throws OseeCoreException {
       Branch branch = configArt.getParentBranch();
-      if (branch == null) return CommitStatus.Branch_Not_Configured;
+      if (branch == null) {
+         return CommitStatus.Branch_Not_Configured;
+      }
 
       Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), false, false);
       if (branches.contains(branch)) {
@@ -199,32 +203,45 @@ public class AtsBranchManager {
    }
 
    public Integer getBranchId() throws OseeCoreException {
-      if (getWorkingBranch() == null) return null;
+      if (getWorkingBranch() == null) {
+         return null;
+      }
       return getWorkingBranch().getBranchId();
    }
 
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public void deleteWorkingBranch(boolean popup) {
+   public void deleteWorkingBranch(boolean promptUser) {
+      boolean isExecutionAllowed = !promptUser;
       try {
          Branch branch = getWorkingBranch();
-         if (branch.hasChanges() && popup) {
-            if (!MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Delete Working Branch",
-                  String.format(
-                        "Warning: Changes have been made on this branch.\n\nAre you sure you want to delete the branch: %s",
-                        branch))) return;
-         } else if (popup && !MessageDialog.openQuestion(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Branch", String.format(
-                     "Are you sure you want to delete the branch: %s", branch))) {
+         if (promptUser) {
+            StringBuilder message = new StringBuilder();
+            if (branch.hasChanges()) {
+               message.append("Warning: Changes have been made on this branch.\n\n");
+            }
+            message.append("Are you sure you want to delete the branch: ");
+            message.append(branch);
+
+            isExecutionAllowed =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Delete Working Branch", message.toString());
          }
-         Job job = BranchManager.deleteBranch(branch);
-         job.join();
 
-         if (popup) AWorkbench.popup("Delete Complete", "Branch delete was successful.");
-
+         if (isExecutionAllowed) {
+            Job job = BranchManager.deleteBranch(branch);
+            job.join();
+            IStatus status = job.getResult();
+            if (promptUser) {
+               AWorkbench.popup("Delete Complete",
+                     status.isOK() ? "Branch delete was successful." : "Branch delete failed.\n" + status.getMessage());
+            } else {
+               if (!status.isOK()) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, status.getMessage(), status.getException());
+               }
+            }
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.");
       }
@@ -261,7 +278,9 @@ public class AtsBranchManager {
 
    public TransactionId getEarliestTransactionId() throws OseeCoreException {
       Collection<TransactionId> transactionIds = getTransactionIds(false);
-      if (transactionIds.size() == 1) return transactionIds.iterator().next();
+      if (transactionIds.size() == 1) {
+         return transactionIds.iterator().next();
+      }
       TransactionId earliestTransactionId = transactionIds.iterator().next();
       for (TransactionId transactionId : transactionIds) {
          if (transactionId.getTransactionNumber() < earliestTransactionId.getTransactionNumber()) {
@@ -326,7 +345,9 @@ public class AtsBranchManager {
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return Result.FalseResult;
+      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
+         return Result.FalseResult;
+      }
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) smaMgr.getSma();
 
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -334,7 +355,9 @@ public class AtsBranchManager {
             return new Result(false, "Workflow not targeted for Version");
          }
          Result result = smaMgr.getTargetedForVersion().isCreateBranchAllowed();
-         if (result.isFalse()) return result;
+         if (result.isFalse()) {
+            return result;
+         }
 
          if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
@@ -347,7 +370,9 @@ public class AtsBranchManager {
 
       } else {
          Result result = teamArt.getTeamDefinition().isCreateBranchAllowed();
-         if (result.isFalse()) return result;
+         if (result.isFalse()) {
+            return result;
+         }
 
          if (teamArt.getTeamDefinition().getParentBranch() == null) {
             return new Result(false,
@@ -361,7 +386,9 @@ public class AtsBranchManager {
    }
 
    public Result isCommitBranchAllowed(ICommitConfigArtifact configArt) throws OseeCoreException {
-      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return Result.FalseResult;
+      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
+         return Result.FalseResult;
+      }
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) smaMgr.getSma();
 
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -369,7 +396,9 @@ public class AtsBranchManager {
             return new Result(false, "Workflow not targeted for Version");
          }
          Result result = smaMgr.getTargetedForVersion().isCommitBranchAllowed();
-         if (result.isFalse()) return result;
+         if (result.isFalse()) {
+            return result;
+         }
 
          if (smaMgr.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
@@ -379,7 +408,9 @@ public class AtsBranchManager {
 
       } else {
          Result result = teamArt.getTeamDefinition().isCommitBranchAllowed();
-         if (result.isFalse()) return result;
+         if (result.isFalse()) {
+            return result;
+         }
 
          if (teamArt.getTeamDefinition().getParentBranch() == null) {
             return new Result(false,
@@ -398,7 +429,9 @@ public class AtsBranchManager {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
-            if (transactionId == null) return;
+            if (transactionId == null) {
+               return;
+            }
             ChangeView.open(transactionId);
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
@@ -444,7 +477,9 @@ public class AtsBranchManager {
    public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted)) {
-         if (branch.isRebaselined()) continue;
+         if (branch.isRebaselined()) {
+            continue;
+         }
          branches.add(branch);
       }
       if (branches.size() == 0) {
@@ -509,7 +544,7 @@ public class AtsBranchManager {
             smaMgr.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
-         if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
             configObjects.add(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition());
          }
       }
@@ -522,7 +557,7 @@ public class AtsBranchManager {
             return smaMgr.getTargetedForVersion();
          }
       } else {
-         if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch() != null) {
             return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition();
          }
       }
@@ -547,9 +582,9 @@ public class AtsBranchManager {
    public Collection<Branch> getBranchesToCommitTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (Object obj : getConfigArtifactsConfiguredToCommitTo()) {
-         if ((obj instanceof VersionArtifact) && ((VersionArtifact) obj).getParentBranch() != null) {
+         if (obj instanceof VersionArtifact && ((VersionArtifact) obj).getParentBranch() != null) {
             branches.add(((VersionArtifact) obj).getParentBranch());
-         } else if ((obj instanceof TeamDefinitionArtifact) && ((TeamDefinitionArtifact) obj).getParentBranch() != null) {
+         } else if (obj instanceof TeamDefinitionArtifact && ((TeamDefinitionArtifact) obj).getParentBranch() != null) {
             branches.add(((TeamDefinitionArtifact) obj).getParentBranch());
          }
       }
@@ -568,7 +603,7 @@ public class AtsBranchManager {
     * @return true if there is at least one destination branch committed to
     */
    public boolean isCommittedBranchExists() throws OseeCoreException {
-      return isAllObjectsToCommitToConfigured() && (getBranchesCommittedTo().size() > 0);
+      return isAllObjectsToCommitToConfigured() && getBranchesCommittedTo().size() > 0;
    }
 
    /**
@@ -597,27 +632,34 @@ public class AtsBranchManager {
    public Result createWorkingBranch(String pageId, boolean popup) {
       try {
          if (isCommittedBranchExists()) {
-            if (popup) AWorkbench.popup("ERROR",
-                  "Can not create another working branch once changes have been committed.");
+            if (popup) {
+               AWorkbench.popup("ERROR", "Can not create another working branch once changes have been committed.");
+            }
             return new Result("Committed branch already exists.");
          }
          Branch parentBranch = getConfiguredBranchForWorkflow();
          if (parentBranch == null) {
             String errorStr =
                   "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
-            if (popup) AWorkbench.popup("ERROR", errorStr);
+            if (popup) {
+               AWorkbench.popup("ERROR", errorStr);
+            }
             return new Result(errorStr);
          }
          Result result = isCreateBranchAllowed();
          if (result.isFalse()) {
-            if (popup) result.popup();
+            if (popup) {
+               result.popup();
+            }
             return result;
          }
          // Retrieve parent branch to create working branch from
          if (popup && !MessageDialog.openConfirm(
                Display.getCurrent().getActiveShell(),
                "Create Working Branch",
-               "Create a working branch from parent branch\n\n\"" + parentBranch.getBranchName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) return Result.FalseResult;
+               "Create a working branch from parent branch\n\n\"" + parentBranch.getBranchName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+            return Result.FalseResult;
+         }
          createWorkingBranch(pageId, parentBranch);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -639,11 +681,15 @@ public class AtsBranchManager {
                   DecisionReviewArtifact decArt =
                         AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
                               DecisionRuleOption.TransitionToDecision);
-                  if (decArt != null) decArt.persistAttributesAndRelations(transaction);
+                  if (decArt != null) {
+                     decArt.persistAttributesAndRelations(transaction);
+                  }
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
                         AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
-                  if (peerArt != null) peerArt.persistAttributesAndRelations(transaction);
+                  if (peerArt != null) {
+                     peerArt.persistAttributesAndRelations(transaction);
+                  }
                }
             }
          }
@@ -665,7 +711,7 @@ public class AtsBranchManager {
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
+      if (parentBranch == null && smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
          parentBranch = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getParentBranch();
       }
 
@@ -684,7 +730,9 @@ public class AtsBranchManager {
    public void createWorkingBranch(String pageId, final Branch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String title = stateMachineArtifact.getDescriptiveName();
-      if (title.length() > 40) title = title.substring(0, 39) + "...";
+      if (title.length() > 40) {
+         title = title.substring(0, 39) + "...";
+      }
       final String branchName =
             String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(),
                   stateMachineArtifact.getDescriptiveName(), title);
@@ -716,8 +764,9 @@ public class AtsBranchManager {
                   }
                }
                // If subject doesn't have access, add it
-               for (User user : smaMgr.getStateMgr().getAssignees())
+               for (User user : smaMgr.getStateMgr().getAssignees()) {
                   AccessControlManager.getInstance().setPermission(user, branch, PermissionEnum.FULLACCESS);
+               }
             }
          }
       }
@@ -789,7 +838,9 @@ public class AtsBranchManager {
                            }
                         }, true);
                      }
-                     if (!adminOverride) return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
+                     if (!adminOverride) {
+                        return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
+                     }
                   }
                }
             }
@@ -822,7 +873,9 @@ public class AtsBranchManager {
    }
 
    public boolean isBranchInCommit() throws OseeCoreException {
-      if (!isWorkingBranchInWork()) return false;
+      if (!isWorkingBranchInWork()) {
+         return false;
+      }
       return BranchManager.isBranchInCommit(getWorkingBranch());
    }
 
