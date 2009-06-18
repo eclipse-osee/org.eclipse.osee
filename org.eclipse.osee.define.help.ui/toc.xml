@@ -3,13 +3,49 @@
 
 <toc label="OSEE Define User Guide">
  <anchor id="before-reference" />
- <topic label="Feature Reference">
+ <topic label="Getting Started">
   	<anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE Define Reference-toc.xml"/>
+    <link toc="userguide/OSEE Define Intro-toc.xml"/>
     <anchor id="after-reference-content"/>
     <anchor id="additions-reference" />
  </topic>
-  	<anchor id="after-reference" />
+ <topic label="Concepts">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Define Concepts-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic label="Tasks">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Define Tasks-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic label="Feature Reference">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Define Reference-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic href="userguide/OSEE Define Tips.html" label="Tips and Tricks">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Define New-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic href="userguide/OSEE Define New.html" label="What&apos;s New">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Define New-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic href="../org.eclipse.osee.framework.help.ui/userguide/OSEE Update.html" label="Updating this Document">
+    <anchor id="before-reference-content"/>
+    <link toc="../org.eclipse.osee.framework.help.ui/userguide/OSEE New-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+   <anchor id="after-reference"/>
   	<anchor id="additions" />
 </toc>
 

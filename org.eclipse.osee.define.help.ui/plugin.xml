@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
 <extension
-         id="org.eclipse.osee.define.help.docs"
+         id="org.eclipse.osee.define.help.ui.docs"
          name="OSEE OTE"
          point="org.eclipse.help.toc">
       <toc
@@ -10,7 +10,27 @@
             primary="true">
       </toc>
       <toc
+            file="userguide/OSEE Define Intro-toc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="userguide/OSEE Define Concepts-toc.xml"
+            primary="false">
+      </toc>
+      <toc
             file="userguide/OSEE Define Reference-toc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="userguide/OSEE Define Tasks-toc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="userguide/OSEE Define Tips-toc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="userguide/OSEE Define New-toc.xml"
             primary="false">
       </toc>
    </extension>

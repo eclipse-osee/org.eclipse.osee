@@ -11,16 +11,64 @@
 	</description>
 
 	<property name="osee.help.doc.url.base" value="http://wiki.eclipse.org" />
-	<property name="osee.help.doc" value="OSEE/Define/Users_Guide" />
 	<property name="osee.help.image.folder" value="images" />
-	<property name="osee.help.base.file.name" value="OSEE Define Reference" />
 
-	<target name="all" depends="init"
+	<property name="osee.help.define.intro" value="OSEE/Define/Users_Guide/Intro" />
+	<property name="osee.help.define.concepts" value="OSEE/Define/Users_Guide/Concepts" />
+	<property name="osee.help.define.tasks" value="OSEE/Define/Users_Guide/Tasks" />
+	<property name="osee.help.define.reference" value="OSEE/Define/Users_Guide/Reference" />
+	<property name="osee.help.define.tips" value="OSEE/Define/Users_Guide/Tips" />
+	<property name="osee.help.define.new" value="OSEE/Define/Users_Guide/New" />
+	
+	<property name="osee.help.define.intro.file.name" value="OSEE Define Intro" />
+	<property name="osee.help.define.concepts.file.name" value="OSEE Define Concepts" />
+	<property name="osee.help.define.tasks.file.name" value="OSEE Define Tasks" />
+	<property name="osee.help.define.reference.file.name" value="OSEE Define Reference" />
+	<property name="osee.help.define.tips.file.name" value="OSEE Define Tips" />
+	<property name="osee.help.define.new.file.name" value="OSEE Define New" />
+
+	<target name="all"
 		description="Generate Eclipse help content for the OSEE Define user guide">
-		<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-			wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc}"
-			help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc}"
-			help.doc.filenameNoExtension="${osee.help.base.file.name}"
-			help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+		<sequential>
+			<delete>
+				<fileset dir="userguide" />
+			</delete>
+			
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.define.intro}"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.define.intro}"
+							help.doc.filenameNoExtension="${osee.help.define.intro.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+			
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.define.concepts}"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.define.concepts}"
+							help.doc.filenameNoExtension="${osee.help.define.concepts.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+			
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.define.tasks}"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.define.tasks}"
+							help.doc.filenameNoExtension="${osee.help.define.tasks.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+			
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.define.reference}"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.define.reference}"
+							help.doc.filenameNoExtension="${osee.help.define.reference.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+	
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/OSEE/Define/Users_Guide/Tips"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/OSEE/Define/Users_Guide/Tips"
+							help.doc.filenameNoExtension="${osee.help.define.tips.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+					
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+							wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/OSEE/Define/Users_Guide/New"
+							help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/OSEE/Define/Users_Guide/New"
+							help.doc.filenameNoExtension="${osee.help.define.new.file.name}"
+							help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+		</sequential>
 	</target>
 </project>
