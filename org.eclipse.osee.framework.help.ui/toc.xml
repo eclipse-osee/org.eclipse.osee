@@ -3,14 +3,42 @@
 
 <toc label="OSEE User Guide">
  <anchor id="before-reference" />
+ <topic label="Getting Started">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Intro-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic label="Concepts">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Concepts-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
  <topic label="Feature Reference">
   	<anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE Reference-toc.xml"/>
+    <link toc="userguide/OSEE Features-toc.xml"/>
     <anchor id="after-reference-content"/>
     <anchor id="additions-reference" />
+ </topic>
+ <topic href="userguide/OSEE Tips.html" label="Tips and Tricks">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Tips-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic href="userguide/OSEE New.html" label="What&apos;s New">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE New-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
+ </topic>
+ <topic href="userguide/OSEE Update.html" label="Updating this Document">
+    <anchor id="before-reference-content"/>
+    <link toc="userguide/OSEE Update-toc.xml"/>
+    <anchor id="after-reference-content"/>
+    <anchor id="additions-reference"/>
  </topic>
   	<anchor id="after-reference" />
   	<anchor id="additions" />
 </toc>
-
-

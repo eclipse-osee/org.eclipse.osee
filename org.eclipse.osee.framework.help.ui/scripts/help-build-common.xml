@@ -2,24 +2,39 @@
 <project name="help.common" basedir=".">
 
 	<property name="extract.style.sheet" value="${ant.file.imported}/extract-markup.xsl" />
-		
-	<path id="tasks.classpath" >
-		<pathelement location="../org.eclipse.mylyn.help.ui/@dot" />
-		<pathelement location="../org.eclipse.mylyn.help.ui/bin" />
+
+	<property name="eclipse.plugin.dir" value="${eclipse.home}/plugins" />
+
+	<property name="bugzilla.build" value="3.0.5.v20090218-1800-e3x" />
+	<property name="ui.build" value="3.1.1.v20090411-0400-e3x" />
+	<property name="wikitext.build" value="1.0.1.v20090411-0400-e3x" />
+
+	<path id="tasks.classpath">
+		<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
+<!--	<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.bugzilla.core_${bugzilla.build}.jar" />
+	 	<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.help.ui_${ui.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.mediawiki.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_1.0.1.v20090411-0400-e3x.jar" />-->
 	</path>
-	
+
 	<path id="wikitext.tasks.classpath">
-		<pathelement location="../org.eclipse.mylyn.wikitext.core/@dot" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.mediawiki.core_${wikitext.build}.jar" />
+<!--	<pathelement location="../org.eclipse.mylyn.wikitext.core/@dot" />
 		<pathelement location="../org.eclipse.mylyn.wikitext.core/bin" />
 		<pathelement location="../org.eclipse.mylyn.wikitext.mediawiki.core/@dot" />
 		<pathelement location="../org.eclipse.mylyn.wikitext.mediawiki.core/bin" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.twiki.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.confluence.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_${wikitext.build}.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_1.0.1.v20090411-0400-e3x.jar" />
+		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.tracwiki.core_${wikitext.build}.jar" />-->
 	</path>
-
-	<taskdef classpathref="tasks.classpath"
-		resource="org/eclipse/mylyn/internal/help/ui/anttask/tasks.properties" />
-	<taskdef classpathref="wikitext.tasks.classpath"
-		resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
-
+	
+	<taskdef classpathref="tasks.classpath" resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties" />
+	<taskdef classpathref="wikitext.tasks.classpath" resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
 
 	<target name="init">
 		<mkdir dir="tmp" />
@@ -39,35 +54,21 @@
 		<attribute name="help.doc.filenameNoExtension" />
 		<attribute name="help.imageFolder" />
 		<attribute name="targetFolder" />
+
 		<sequential>
+			<antcall target="init" />
 			<get dest="tmp/help.doc.xml" src="@{help.doc.url.xml}" />
 			<get dest="tmp/help.doc.html" src="@{help.doc.url.html}" />
 
 			<copy todir="tmp">
 				<fileset dir="images" />
 			</copy>
-			<mediawiki-fetch-images src="tmp/help.doc.html"
-				dest="tmp" base="@{help.doc.url.base}" />
+			<osee-mediawiki-fetch-images src="tmp/help.doc.html" 
+				dest="tmp/" base="@{help.doc.url.base}" />
 
-			<xslt style="${extract.style.sheet}" in="tmp/help.doc.xml"
-				out="tmp/@{help.doc.filenameNoExtension}.mediawiki" />
-			<echo append="true" file="tmp/@{help.doc.filenameNoExtension}.mediawiki">
+			<xslt style="${extract.style.sheet}" in="tmp/help.doc.xml" out="tmp/@{help.doc.filenameNoExtension}.mediawiki" />
 
-				= Updating This Document =
-
-				This document
-				is maintained in a collaborative wiki. If you wish to
-				update or
-				modify this document please visit
-				@{help.doc.url.html}
-			</echo>
-
-			<wikitext-to-eclipse-help
-				markupLanguage="org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage"
-				multipleOutputFiles="true" navigationImages="true" helpPrefix="@{targetFolder}"
-				internallinkpattern="@{wiki.url.base}/{0}" validate="true"
-				failonvalidationerror="true" prependImagePrefix="@{help.imageFolder}"
-				formatoutput="true">
+			<wikitext-to-eclipse-help markupLanguage="org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage" multipleOutputFiles="true" navigationImages="true" helpPrefix="@{targetFolder}" internallinkpattern="@{wiki.url.base}/{0}" validate="true" failonvalidationerror="true" prependImagePrefix="@{help.imageFolder}" formatoutput="true">
 				<!--defaultAbsoluteLinkTarget="osee_external"-->
 				<fileset dir="tmp" includes="**/*.mediawiki" />
 				<stylesheet url="book.css" />
@@ -76,8 +77,10 @@
 			<mkdir dir="@{targetFolder}/@{help.imageFolder}" />
 			<copy todir="@{targetFolder}/@{help.imageFolder}" overwrite="true">
 				<fileset dir="tmp">
-					<include name="*.gif" />
-					<include name="*.png" />
+					<exclude name="*.html" />
+					<exclude name="*.mediawiki" />
+					<exclude name="*.xml" />
+					<exclude name="*.dtd" />
 				</fileset>
 			</copy>
 			<copy todir="@{targetFolder}" overwrite="true">
@@ -87,37 +90,29 @@
 					<exclude name="help.doc.html" />
 				</fileset>
 			</copy>
+			<mkdir dir="@{targetFolder}/@{help.imageFolder}/@{help.imageFolder}" />
+			<copy todir="@{targetFolder}/@{help.imageFolder}/@{help.imageFolder}" overwrite="true">
+				<fileset dir="${ant.file.imported}/commonImages" />
+			</copy>
 			<antcall target="test" />
 			<antcall target="clean" />
 		</sequential>
 	</macrodef>
 
 
-	<target name="test" depends="init"
-		description="verify that all of the HTML files are well-formed XML">
+	<target name="test" depends="init" description="verify that all of the HTML files are well-formed XML">
 		<echo level="info">
-			Validating help content XML and HTML files: The
-			Eclipse help system expects
-			well-formed XML
-
-			If validation fails it is
-			because either:
-
+			Validating help content XML and HTML files: The	Eclipse help system expects well-formed XML.
+			If validation fails it is because either:
 			* the userguide source code is poorly formed, or
-			* the
-			WikiText MediaWiki parser has a bug
+			* the WikiText MediaWiki parser has a bug
 
-			Problems with userguide source are
-			usually caused by improper use of HTML
-			markup in the MediaWiki source,
-			or inadvertently starting a line with a space character (in MediaWiki
-			this starts a preformatted block)
+			Problems with userguide source are usually caused by improper use of HTML markup in the MediaWiki source,
+			or inadvertently starting a line with a space character (in MediaWiki this starts a preformatted block).
 		</echo>
 
-		<!--
-			Don't bother with DTD validation: we only care if the files are
-			well-formed. We therefore provide an empty DTD
-		-->
+		<!--Don't bother with DTD validation: we only care if the files are well-formed. We therefore provide an empty DTD-->
+
 		<echo file="tmp/__empty.dtd" message="" />
 		<xmlvalidate lenient="true">
 			<fileset dir="userguide">
