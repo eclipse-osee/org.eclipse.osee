@@ -92,11 +92,11 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       setItemsToFix(itemsToFix.size());
-      if (false && isFixOperationEnabled() && getItemsToFixCount() > 0) {
+      if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
          monitor.setTaskName("Fixing Branch State data");
          List<Object[]> data = new ArrayList<Object[]>();
          for (BranchData branchData : itemsToFix) {
-            data.add(new Object[] {branchData.getBranchState().ordinal(), branchData.getBranchId()});
+            data.add(new Object[] {branchData.getBranchState().getValue(), branchData.getBranchId()});
          }
          ConnectionHandler.runBatchUpdate("update osee_branch set branch_state = ? where branch_id = ?", data);
       }
