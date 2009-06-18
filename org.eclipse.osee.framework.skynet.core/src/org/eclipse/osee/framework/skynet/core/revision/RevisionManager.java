@@ -112,7 +112,7 @@ public class RevisionManager {
             chStmt.close();
          }
 
-         if (includeAncestry && branch.hasParentBranch()) {
+         if (includeAncestry && branch.hasParentBranch() && transactionDetails.size() > 0) {
             branch = branch.getParentBranch();
             limit = transactionDetails.get(transactionDetails.size() - 1).getTransactionNumber();
          } else {
