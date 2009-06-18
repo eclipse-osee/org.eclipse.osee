@@ -5,32 +5,15 @@
 
 	<property name="eclipse.plugin.dir" value="${eclipse.home}/plugins" />
 
-	<property name="bugzilla.build" value="3.0.5.v20090218-1800-e3x" />
-	<property name="ui.build" value="3.1.1.v20090411-0400-e3x" />
 	<property name="wikitext.build" value="1.0.1.v20090411-0400-e3x" />
 
 	<path id="tasks.classpath">
 		<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
-<!--	<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.bugzilla.core_${bugzilla.build}.jar" />
-	 	<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.help.ui_${ui.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.mediawiki.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_1.0.1.v20090411-0400-e3x.jar" />-->
 	</path>
 
 	<path id="wikitext.tasks.classpath">
 		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.core_${wikitext.build}.jar" />
 		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.mediawiki.core_${wikitext.build}.jar" />
-<!--	<pathelement location="../org.eclipse.mylyn.wikitext.core/@dot" />
-		<pathelement location="../org.eclipse.mylyn.wikitext.core/bin" />
-		<pathelement location="../org.eclipse.mylyn.wikitext.mediawiki.core/@dot" />
-		<pathelement location="../org.eclipse.mylyn.wikitext.mediawiki.core/bin" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.twiki.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.confluence.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.textile.core_1.0.1.v20090411-0400-e3x.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.tracwiki.core_${wikitext.build}.jar" />-->
 	</path>
 	
 	<taskdef classpathref="tasks.classpath" resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties" />
