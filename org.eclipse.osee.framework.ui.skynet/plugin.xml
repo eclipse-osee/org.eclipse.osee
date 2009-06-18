@@ -935,18 +935,6 @@
       </enabledWhen>
    </handler>
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NewArtifactEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
       <enabledWhen>
