@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
       testEnvTracker.open(true);
       
       messageWatchActivator = new MessageWatchActivator(context);
-      messageWatchActivator.open();
+      messageWatchActivator.open(true);
    }
 
    @Override
