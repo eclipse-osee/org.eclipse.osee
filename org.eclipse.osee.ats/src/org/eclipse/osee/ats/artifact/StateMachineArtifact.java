@@ -191,7 +191,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public Collection<User> getImplementersByState(String stateName) throws OseeCoreException {
       if (smaMgr.isCancelled()) {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
          return Arrays.asList(smaMgr.getLog().getCancelledLogItem().getUser());
       }
       Collection<User> users = new HashSet<User>(smaMgr.getStateMgr().getAssignees(stateName));
@@ -1370,6 +1369,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
       }
       return getDescriptiveName();
+   }
+
+   @Override
+   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException {
+      return getParentActionArtifact().getWorldViewOriginatingWorkflowStr();
+   }
+
+   @Override
+   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException {
+      return getParentActionArtifact().getWorldViewOriginatingWorkflows();
    }
 
 }

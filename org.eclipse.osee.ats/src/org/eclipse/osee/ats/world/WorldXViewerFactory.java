@@ -243,6 +243,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Artifact_Type_Col =
          new XViewerColumn("ats.column.artType", "Artifact Type", 150, SWT.LEFT, false, SortDataType.String, false,
                null);
+   public static final XViewerColumn Originating_Workflow =
+         new XViewerColumn("ats.column.origWf", "Originating Workflow", 150, SWT.LEFT, false, SortDataType.String,
+               false,
+               "Team Workflow(s) that were created upon origination of this Action.  Cancelled workflows not included.");
    public static final XViewerColumn Actions_Initiating_Workflow_Col =
          new XViewerColumn("ats.column.initWf", "Action's Initiating Workflow", 150, SWT.LEFT, false,
                SortDataType.String, false, "This is the first workflow(s) that created the initiation of the Action");
@@ -259,8 +263,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col,
                Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
                Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
-               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Parent_ID_Col, Days_In_Current_State,
-               Parent_State_Col};
+               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Originating_Workflow, Parent_ID_Col,
+               Days_In_Current_State, Parent_State_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

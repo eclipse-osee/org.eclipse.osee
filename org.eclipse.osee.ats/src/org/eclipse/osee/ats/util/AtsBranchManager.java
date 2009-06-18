@@ -230,8 +230,8 @@ public class AtsBranchManager {
          }
 
          if (isExecutionAllowed) {
-            Job job = BranchManager.deleteBranch(branch);
-            job.join();
+         Job job = BranchManager.deleteBranch(branch);
+         job.join();
             IStatus status = job.getResult();
             if (promptUser) {
                AWorkbench.popup("Delete Complete",
@@ -477,10 +477,9 @@ public class AtsBranchManager {
    public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted)) {
-         if (branch.isRebaselined()) {
-            continue;
+         if (!branch.isRebaselined()) {
+            branches.add(branch);
          }
-         branches.add(branch);
       }
       if (branches.size() == 0) {
          return null;
@@ -766,10 +765,10 @@ public class AtsBranchManager {
                // If subject doesn't have access, add it
                for (User user : smaMgr.getStateMgr().getAssignees()) {
                   AccessControlManager.getInstance().setPermission(user, branch, PermissionEnum.FULLACCESS);
-               }
             }
          }
       }
+   }
    }
 
    private final class AtsCommitJob extends Job {

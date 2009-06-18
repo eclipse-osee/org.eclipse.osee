@@ -181,6 +181,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
          }
          if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) return ((Artifact) wva).getArtifactTypeName();
+         if (xCol.equals(WorldXViewerFactory.Originating_Workflow)) {
+            return wva.getWorldViewOriginatingWorkflowStr();
+         }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             if (item.isXColumnProvider(xCol)) {
                String text = item.getColumnText(element, xCol, columnIndex);

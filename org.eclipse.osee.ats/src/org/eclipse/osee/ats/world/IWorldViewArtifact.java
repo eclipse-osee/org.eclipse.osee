@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -28,6 +30,10 @@ public interface IWorldViewArtifact {
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
 
    public String getWorldViewBranchStatus() throws OseeCoreException;
+
+   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException;
+
+   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException;
 
    public Date getWorldViewCancelledDate() throws OseeCoreException;
 

@@ -1305,4 +1305,32 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewParentState() throws OseeCoreException {
       return null;
    }
+
+   @Override
+   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows()) {
+         strs.add(team.getWorldViewTeam());
+      }
+      return Collections.toString(";", strs);
+   }
+
+   @Override
+   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException {
+      if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts();
+      Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
+      Date origDate = null;
+      for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
+         if (teamArt.getSmaMgr().isCancelled()) continue;
+         if (origDate == null || teamArt.getWorldViewCreatedDate().before(origDate)) {
+            results.clear();
+            origDate = teamArt.getWorldViewCreatedDate();
+            results.add(teamArt);
+         } else if (origDate.equals(teamArt.getWorldViewCreatedDate())) {
+            results.add(teamArt);
+         }
+      }
+      return results;
+   }
+
 }
