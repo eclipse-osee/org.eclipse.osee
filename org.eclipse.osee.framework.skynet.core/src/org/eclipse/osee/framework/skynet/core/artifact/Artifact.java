@@ -1463,9 +1463,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public Artifact reflect(Branch branch) throws OseeCoreException {
-      Artifact reflectedArtifact = reflectHelper(branch);
-      reflectedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
+   public Artifact reflect(Branch destinationBranch) throws OseeCoreException {
+      if (branch.equals(destinationBranch)) {
+         return this;
+      }
+      Artifact reflectedArtifact = reflectHelper(destinationBranch);
+      reflectedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(destinationBranch);
       reflectedArtifact.reflected = true;
       return reflectedArtifact;
    }
