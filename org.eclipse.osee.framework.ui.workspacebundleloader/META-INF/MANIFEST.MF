@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Workspacebundlelodaer Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.workspacebundleloader;singleton:=true
 Bundle-Version: 0.8.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.ui.workspacebundlelodaer.internal.Activator
+Bundle-Activator: org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator
 Bundle-Vendor: Eclpse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.resources,
@@ -16,4 +16,4 @@ Import-Package: org.eclipse.core.resources,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.osee.framework.ui.workspacebundlelodaer
+Export-Package: org.eclipse.osee.framework.ui.workspacebundleloader

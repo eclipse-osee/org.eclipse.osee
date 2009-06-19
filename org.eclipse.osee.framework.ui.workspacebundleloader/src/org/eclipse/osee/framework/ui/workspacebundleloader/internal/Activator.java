@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.workspacebundlelodaer.internal;
+package org.eclipse.osee.framework.ui.workspacebundleloader.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

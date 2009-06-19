@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.workspacebundlelodaer;
+package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.net.URL;
 import java.util.Collection;
@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
-import org.eclipse.osee.framework.ui.workspacebundlelodaer.internal.Activator;
+import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;

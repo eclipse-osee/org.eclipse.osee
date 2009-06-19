@@ -8,7 +8,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.eclipse.osee.framework.ui.workspacebundlelodaer.WorkspaceStarterNature">
+               class="org.eclipse.osee.framework.ui.workspacebundleloader.WorkspaceStarterNature">
             <parameter
                   name="org.eclipse.osee.benchWorkspaceStarter.parameter1"
                   value="org.eclipse.osee.benchWorkspaceStarter.parameter1">
@@ -21,7 +21,7 @@
    <extension
          point="org.eclipse.ui.startup">
       <startup
-            class="org.eclipse.osee.framework.ui.workspacebundlelodaer.EarlyStartup">
+            class="org.eclipse.osee.framework.ui.workspacebundleloader.EarlyStartup">
       </startup>
    </extension>
 </plugin>

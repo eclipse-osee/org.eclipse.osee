@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.workspacebundlelodaer;
+package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.net.URL;
 

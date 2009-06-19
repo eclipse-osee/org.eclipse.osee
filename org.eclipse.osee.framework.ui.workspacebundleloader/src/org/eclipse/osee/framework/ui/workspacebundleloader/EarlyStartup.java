@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.workspacebundlelodaer;
+package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.workspacebundlelodaer.internal.Activator;
+import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.Bundle;
@@ -32,7 +32,7 @@ public class EarlyStartup implements IStartup {
          @Override
          public void run() {
             try {
-               Bundle bundle = Platform.getBundle("org.eclipse.osee.benchWorkspaceStarter");
+               Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.ui.workspacebundleloader");
                bundle.start();
                workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
                workspaceTracker.open(true);
