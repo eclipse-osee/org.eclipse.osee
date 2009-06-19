@@ -235,6 +235,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+      if (branchId != branch.getBranchId()) return;
       if (branchModType == BranchEventType.Deleted) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
