@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import org.eclipse.osee.framework.ui.workspacebundlelodaer.IJarChangeListener;
-import org.eclipse.osee.framework.ui.workspacebundlelodaer.JarCollectionNature;
+import org.eclipse.osee.framework.ui.workspacebundleloader.IJarChangeListener;
+import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 
 /**
  * @author Robert A. Fisher

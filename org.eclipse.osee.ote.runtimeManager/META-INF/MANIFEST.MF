@@ -15,7 +15,7 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.osee.framework.plugin.core.server,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.workspace,
- org.eclipse.osee.framework.ui.workspacebundlelodaer,
+ org.eclipse.osee.framework.ui.workspacebundleloader,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
  org.osgi.framework

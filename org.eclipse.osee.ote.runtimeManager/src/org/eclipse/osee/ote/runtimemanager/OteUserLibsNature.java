@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.runtimemanager;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osee.framework.ui.workspacebundlelodaer.JarCollectionNature;
+import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 
 public class OteUserLibsNature extends JarCollectionNature {
    public static final String NATURE_ID = "org.eclipse.osee.ote.runtimeManager.OteUserLibsNature";

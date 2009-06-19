@@ -18,16 +18,14 @@ import org.eclipse.core.runtime.CoreException;
  * @author Andrew M. Finkbeiner
  */
 public class WorkspaceStarterNature extends JarCollectionNature {
-   public static final String NATURE_ID = "org.eclipse.osee.benchWorkspaceStarter.WorkspaceStarterNature";
+   public static final String NATURE_ID = "org.eclipse.osee.framework.ui.workspacebundleloader.WorkspaceStarterNature";
    static final String BUNDLE_PATH_ATTRIBUTE = "WorkspaceBundlePath";
 
    public WorkspaceStarterNature() {
       super(BUNDLE_PATH_ATTRIBUTE);
-      System.out.println("workspace starter thing 1");
    }
 
    public static Collection<WorkspaceStarterNature> getWorkspaceProjects() throws CoreException {
-      System.out.println("workspace starter thing 2");
       return getWorkspaceProjects(NATURE_ID, WorkspaceStarterNature.class);
    }
 }
