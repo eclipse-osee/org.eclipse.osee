@@ -320,12 +320,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * hasParent() to safely determine whether
     */
    public Artifact getParent() throws OseeCoreException {
-      try {
+      if (hasParent()) {
          return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
-      } catch (ArtifactDoesNotExist ex) {
-         return null;
-      } catch (MultipleArtifactsExist ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -930,7 +926,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public String getDescriptiveName() {
       try {
-         String name = (String) getAttributesIncludeDeleted("Name").get(0).getValue();
+         String name = null;
+         List<Attribute<String>> nameAttributes = getAttributesIncludeDeleted("Name");
+         if (nameAttributes.size() == 1) {
+            name = nameAttributes.get(0).getValue();
+         } else if (nameAttributes.size() == 0) {
+            name = UNNAMED;
+         }
          return name == null ? UNNAMED : name;
       } catch (Exception ex) {
          return ex.getLocalizedMessage();
@@ -1486,12 +1488,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       reflectedArtifact.dirty = true;
 
-      for (Attribute<?> attribute : attributes.getValues()) {
-         if (attribute.isInDb()) {
-            Attribute.initializeAttribute(reflectedArtifact, attribute.getAttributeType().getAttrTypeId(),
-                  attribute.getAttrId(), attribute.getGammaId(),
-                  attribute.isDeleted() ? ModificationType.DELETED : null,
-                  attribute.getAttributeDataProvider().getData());
+      for (Attribute<?> sourceAttribute : attributes.getValues()) {
+         if (sourceAttribute.isInDb()) {
+            Attribute.initializeAttribute(reflectedArtifact, sourceAttribute.getAttributeType().getAttrTypeId(),
+                  sourceAttribute.getAttrId(), sourceAttribute.getGammaId(),
+                  sourceAttribute.isDeleted() ? ModificationType.DELETED : null, true,
+                  sourceAttribute.getAttributeDataProvider().getData());
          }
       }
       return reflectedArtifact;

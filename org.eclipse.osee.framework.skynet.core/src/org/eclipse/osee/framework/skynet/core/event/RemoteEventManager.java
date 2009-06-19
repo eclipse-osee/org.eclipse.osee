@@ -511,12 +511,10 @@ public class RemoteEventManager {
                            }
                         }
                         if (attributeNeedsCreation) {
-                           Attribute<?> attribute =
-                                 Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
-                                       skynetAttributeChange.getTypeId()).getAttrTypeId(),
-                                       skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
-                                       skynetAttributeChange.getData());
-                           attribute.setNotDirty();
+                           Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
+                                 skynetAttributeChange.getTypeId()).getAttrTypeId(),
+                                 skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                                 skynetAttributeChange.getData());
                         }
                      }
                   }

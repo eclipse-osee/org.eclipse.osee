@@ -82,14 +82,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      Attribute<?> attribute = artifact.getSoleAttribute(NativeArtifact.EXTENSION);
-      //If the native artifact has been created without an extension make it XML
-      if (attribute == null) {
-         attribute = artifact.createAttribute(AttributeTypeManager.getType(NativeArtifact.EXTENSION), true);
-         attribute.setFromString("xml");
-         artifact.persistAttributes();
-      }
-      return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "");
+      return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "xml");
    }
 
    /* (non-Javadoc)

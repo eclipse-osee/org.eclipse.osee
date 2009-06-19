@@ -119,16 +119,20 @@ public class ArtifactPersistenceManager {
     * since all caching is performed by the factory.
     * 
     * @param guid The guid of the artifact.
-    * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
+    * @return The <code>Artifact</code> from the database that corresponds to the supplied guid. call the method below
+    *         directly instead
+    * @see ArtifactQuery#getHistoricalArtifactFromId(String, TransactionId, boolean)
     */
+   @Deprecated
    public Artifact getArtifact(String guid, TransactionId transactionId) throws OseeCoreException {
-      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, guid, -1, true);
+      return ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, true);
    }
 
    public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws OseeCoreException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, null, artId, false);
    }
 
+   @Deprecated
    private Artifact getArtifactInternal(TransactionId transactionLimit, String query, String guid, int artId, boolean useGuid) throws OseeCoreException {
       // First try to acquire the artifact from cache
       Artifact artifact;
@@ -319,7 +323,7 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * @param transaction TODO
+    * @param transaction if the transaction is null then persist is not called otherwise
     * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
     * @param artifacts The artifacts to delete.
     */

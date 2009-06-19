@@ -248,8 +248,8 @@ public class SkynetTransaction extends DbTransaction {
       if (artifact.anAttributeIsDirty()) {
          // Add Attributes to Transaction
          for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-            if (attribute != null) {
-               if (modificationType == ModificationType.INTRODUCED || attribute.isDirty()) {
+            if (attribute != null) { // TODO: is it really possible to get a null in the attribute list and if so WHY!!!
+               if (attribute.isDirty()) {
                   addAttribute(artifact, attribute);
                }
             }

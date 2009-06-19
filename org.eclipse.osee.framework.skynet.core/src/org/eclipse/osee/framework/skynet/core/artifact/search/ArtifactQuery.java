@@ -154,6 +154,14 @@ public class ArtifactQuery {
       return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(QueryType.GET);
    }
 
+   public static int countArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).countArtifacts();
+   }
+
+   public static List<Integer> selectArtifactIdsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).selectArtifacts(2);
+   }
+
    /**
     * Checks for existence of an artifact based on its type and name
     * 

@@ -308,10 +308,10 @@ public abstract class Attribute<T> {
    }
 
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
-      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, data);
+      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, false, data);
    }
 
-   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, Object... data) throws OseeCoreException {
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
       Attribute<?> attribute = artifact.createAttribute(attributeType, false);
       attribute.getAttributeDataProvider().loadData(data);
@@ -321,6 +321,8 @@ public abstract class Attribute<T> {
       if (modificationType == ModificationType.DELETED) {
          attribute.internalSetDeleted();
       }
+
+      attribute.dirty = markDirty;
       return attribute;
    }
 }

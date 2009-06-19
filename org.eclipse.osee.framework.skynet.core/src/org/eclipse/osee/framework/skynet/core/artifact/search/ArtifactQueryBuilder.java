@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -56,7 +57,6 @@ public class ArtifactQueryBuilder {
    private boolean firstTable = true;
    private final boolean tableOrderForward;
    private final TransactionId transactionId;
-   
 
    /**
     * @param artId
@@ -433,6 +433,23 @@ public class ArtifactQueryBuilder {
       clearCriteria();
    }
 
+   public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      List<Integer> artifactIds = new ArrayList<Integer>(artifactCountEstimate);
+
+      try {
+         chStmt.runPreparedQuery(artifactCountEstimate, getArtifactSelectSql(), queryParameters.toArray());
+
+         while (chStmt.next()) {
+            artifactIds.add(chStmt.getInt("art_id"));
+         }
+      } finally {
+         chStmt.close();
+      }
+      clearCriteria();
+      return artifactIds;
+   }
+
    public int countArtifacts() throws OseeCoreException {
       if (emptyCriteria) {
          return 0;
@@ -463,7 +480,7 @@ public class ArtifactQueryBuilder {
       }
       return artifacts.iterator().next();
    }
-   
+
    private String getSoleExceptionMessage(int artifactCount) {
       StringBuilder message = new StringBuilder(250);
       if (artifactCount == 0) {
