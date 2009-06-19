@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.nonproduction;
+package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

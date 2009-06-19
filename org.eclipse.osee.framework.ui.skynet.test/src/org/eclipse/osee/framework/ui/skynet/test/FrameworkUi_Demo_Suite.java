@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.ui.skynet.test.cases.InterArtifactDropTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
-import org.eclipse.osee.framework.ui.skynet.test.nonproduction.InterArtifactDropTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
