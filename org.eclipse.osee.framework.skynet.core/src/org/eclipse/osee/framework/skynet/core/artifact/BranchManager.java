@@ -236,6 +236,7 @@ public class BranchManager {
                } else {
                   cachedBranch.setBranchName(chStmt.getString("branch_name"));
                   cachedBranch.setArchived(chStmt.getInt("archived") == 1);
+                  cachedBranch.setBranchType(chStmt.getInt("branch_type"));
                }
 
                if (cachedBranch.isSystemRootBranch()) {

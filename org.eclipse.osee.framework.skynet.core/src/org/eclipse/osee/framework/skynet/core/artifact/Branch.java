@@ -59,7 +59,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private Artifact associatedArtifact;
    private final Timestamp creationDate;
    private final String creationComment;
-   private final BranchType branchType;
+   private BranchType branchType;
    private Branch sourceBranch;
    private Branch destBranch;
    private BranchState branchState;
@@ -332,6 +332,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public BranchType getBranchType() {
       return branchType;
+   }
+
+   protected void setBranchType(int type) {
+      branchType = BranchType.getBranchType(type);
    }
 
    public boolean isMergeBranch() {
