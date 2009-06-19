@@ -213,8 +213,17 @@ public class QuickSearchOptionComposite extends Composite {
                      }
                   }
                }
-
                optionsMap.put((String) button.getData(), button.getSelection());
+
+               Object data = button.getData();
+               boolean selection = optionsMap.get(SearchOption.By_Id.asLabel()).booleanValue();
+               if (data.equals(SearchOption.By_Id.asLabel()) && selection) {
+                  optionsMap.put(SearchOption.Match_Word_Order.asLabel(), false);
+                  optionsButtons.get(SearchOption.Match_Word_Order.asLabel()).setSelection(false);
+               } else if (data.equals(SearchOption.Match_Word_Order.asLabel()) && selection) {
+                  optionsMap.put(SearchOption.By_Id.asLabel(), false);
+                  optionsButtons.get(SearchOption.By_Id.asLabel()).setSelection(false);
+               }
                updateMatchWordOrderOptions();
             }
          }
@@ -354,7 +363,7 @@ public class QuickSearchOptionComposite extends Composite {
       Attribute_Type_Filter("quick_search_attribute_type_filter", "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
       By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
       Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false),
-      Match_Word_Order("quick_search_word_order_option", "When selected, search will match query word order.", true),
+      Match_Word_Order("quick_search_word_order_option", "When selected, search will match query word order.", false),
       All_Match_Locations("quick_search_all_match_locations_option", "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),
       Case_Sensitive("quick_search_case_sensitive_option", "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.", false);
 
