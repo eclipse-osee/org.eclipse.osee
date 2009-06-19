@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
@@ -29,6 +31,7 @@ import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -112,6 +115,9 @@ public class CommitDbTx extends DbTransaction {
    private int newTransactionNumber = -1;
    private final Branch destinationBranch;
    private final Branch sourceBranch;
+
+   private final Map<Branch, BranchState> savedBranchStates;
+
    private boolean success = true;
    private int fromBranchId = -1;
    private final List<Object[]> relLinks = new ArrayList<Object[]>();
@@ -120,10 +126,14 @@ public class CommitDbTx extends DbTransaction {
    private static Set<Branch> branchesInCommit = new HashSet<Branch>();
 
    protected CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+      this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.conflictManager = conflictManager;
       this.destinationBranch = conflictManager.getDestinationBranch();
       this.sourceBranch = conflictManager.getSourceBranch();
       this.archiveSourceBranch = archiveSourceBranch;
+
+      savedBranchStates.put(sourceBranch, sourceBranch.getBranchState());
+      savedBranchStates.put(destinationBranch, destinationBranch.getBranchState());
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, String.format("Commiting Branch %s into Branch %s",
@@ -321,6 +331,7 @@ public class CommitDbTx extends DbTransaction {
          }
 
          Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
+         savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
          BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
          time = System.currentTimeMillis();
          if (DEBUG) {
@@ -337,10 +348,9 @@ public class CommitDbTx extends DbTransaction {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
 
-      if (destinationBranch.getBranchState() == BranchState.CREATED) {
-         BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
-      }
-      if (!sourceBranch.isRebaselined() && !sourceBranch.isCommitted()) {
+      BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
+
+      if (!sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress() && !sourceBranch.isCommitted()) {
          BranchManager.setBranchState(connection, sourceBranch, BranchState.COMMITTED);
       }
       success = true;
@@ -372,14 +382,15 @@ public class CommitDbTx extends DbTransaction {
          if (archiveSourceBranch) {
             sourceBranch.archive();
          }
-         branchesInCommit.remove(this.sourceBranch);
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
+      }
+      branchesInCommit.remove(this.sourceBranch);
 
-         if (DEBUG) {
-            System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
-         }
-      } else {
-         branchesInCommit.remove(this.sourceBranch);
+      if (success) {
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
+      }
+
+      if (DEBUG) {
+         System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(startTime)));
       }
    }
 
@@ -391,7 +402,12 @@ public class CommitDbTx extends DbTransaction {
    @Override
    protected void handleTxException(Exception ex) {
       success = false;
-      branchesInCommit.remove(this.sourceBranch);
+      // Restore Original Branch States
+      try {
+         BranchManager.setBranchState(null, savedBranchStates);
+      } catch (OseeDataStoreException ex1) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex1);
+      }
    }
 
    private static int addCommitTransactionToDatabase(OseeConnection connection, Branch parentBranch, Branch childBranch, User userToBlame) throws OseeCoreException {

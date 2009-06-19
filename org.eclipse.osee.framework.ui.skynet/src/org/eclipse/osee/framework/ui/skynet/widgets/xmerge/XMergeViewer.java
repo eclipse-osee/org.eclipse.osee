@@ -121,7 +121,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       createTaskActionBar(mainComp);
 
@@ -143,7 +145,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          }
       });
 
-      if (toolkit != null) toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
+      }
 
       Tree tree = mergeXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -266,8 +270,12 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    @SuppressWarnings("unchecked")
    public ArrayList<Conflict> getSelectedConflicts() {
       ArrayList<Conflict> items = new ArrayList<Conflict>();
-      if (mergeXViewer == null) return items;
-      if (mergeXViewer.getSelection().isEmpty()) return items;
+      if (mergeXViewer == null) {
+         return items;
+      }
+      if (mergeXViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) mergeXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -311,7 +319,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
          }
       }
       checkForCompleteCommit();
@@ -468,10 +476,10 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          } else {
             displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
          }
-         if (resolved == (conflicts.length - informational)) {
+         if (resolved == conflicts.length - informational) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
          }
       }
 
@@ -537,10 +545,18 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       @Override
       public String getActionDescription() {
          StringBuilder sb = new StringBuilder();
-         if (sourceBranch != null) sb.append("\nSource Branch: " + sourceBranch);
-         if (destBranch != null) sb.append("\nDestination Branch: " + destBranch);
-         if (tranId != null) sb.append("\nTransactionId: " + tranId);
-         if (commitTrans != null) sb.append("\nCommit TransactionId: " + commitTrans);
+         if (sourceBranch != null) {
+            sb.append("\nSource Branch: " + sourceBranch);
+         }
+         if (destBranch != null) {
+            sb.append("\nDestination Branch: " + destBranch);
+         }
+         if (tranId != null) {
+            sb.append("\nTransactionId: " + tranId);
+         }
+         if (commitTrans != null) {
+            sb.append("\nCommit TransactionId: " + commitTrans);
+         }
          return sb.toString();
       }
    }
@@ -548,14 +564,14 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private final class CompleteCommitAction extends Action {
       public CompleteCommitAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("commitBranch.gif"));
+         setImageDescriptor(FrameworkImage.BRANCH_COMMIT.createImageDescriptor());
          setToolTipText("Commit changes into destination branch");
          setId(COMPLETE_COMMIT_ACTION_ID);
       }
 
       @Override
       public void run() {
-         if (sourceBranch.isRebaselined()) {
+         if (sourceBranch.isRebaselineInProgress()) {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
             BranchManager.completeUpdateBranch(conflictManager, true, false);
          }

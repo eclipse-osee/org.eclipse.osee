@@ -236,8 +236,10 @@ public class BranchStateTest {
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
          assertTrue("Branch was archived", !workingBranch.isArchived());
-         assertTrue("Branch was editable", !workingBranch.isEditable());
-         assertTrue("Branch state was not set as rebaselined", workingBranch.isRebaselined());
+         assertTrue("Branch was not marked as rebaseline in progress", workingBranch.isRebaselineInProgress());
+         assertTrue("Branch was not editable", workingBranch.isEditable());
+         assertTrue("Branch state was set to rebaselined before complete", !workingBranch.isRebaselined());
+
          assertEquals("Branch name was changed before update was complete", originalBranchName,
                workingBranch.getBranchName());
 

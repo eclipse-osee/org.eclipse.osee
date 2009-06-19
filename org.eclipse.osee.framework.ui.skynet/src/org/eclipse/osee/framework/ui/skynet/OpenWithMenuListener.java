@@ -20,8 +20,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -68,14 +71,13 @@ public class OpenWithMenuListener implements MenuListener {
    public void menuShown(MenuEvent e) {
       try {
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-         
-         if(selection.isEmpty()){
+
+         if (selection.isEmpty()) {
             return;
          }
-         
+
          rebuildMenuListener.rebuildMenu();
-         
-         
+
          Iterator<?> iterator = selection.iterator();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selection.size());
 
@@ -87,13 +89,22 @@ public class OpenWithMenuListener implements MenuListener {
                artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
             } else if (object instanceof Match) {
                artifact = (Artifact) ((Match) object).getElement();
+            } else if (object instanceof RelationLink) {
+               RelationLink link = (RelationLink) object;
+               try {
+                  List<Artifact> edittedArtifacts =
+                        Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getSelection());
+                  artifact = link.getArtifactOnOtherSide(edittedArtifacts.iterator().next());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
             }
             artifacts.add(artifact);
          }
 
-            if (loadMenuItems(parentMenu, PresentationType.PREVIEW, artifacts)) {
-               new MenuItem(parentMenu, SWT.SEPARATOR);
-            }
+         if (loadMenuItems(parentMenu, PresentationType.PREVIEW, artifacts)) {
+            new MenuItem(parentMenu, SWT.SEPARATOR);
+         }
          loadMenuItems(parentMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
 
       } catch (Exception ex) {

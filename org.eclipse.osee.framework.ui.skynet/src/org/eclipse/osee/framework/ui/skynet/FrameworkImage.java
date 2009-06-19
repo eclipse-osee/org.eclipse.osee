@@ -42,6 +42,7 @@ public enum FrameworkImage implements OseeImage {
    BRANCH_WORKING("working.gif"),
    BRANCH_FAVORITE_OVERLAY("star_9_9.gif"),
    BRANCH_CHANGE_MANAGED("change_managed_branch.gif"),
+   BRANCH_COMMIT("commitBranch.gif"),
    BUG("bug.gif"),
    CHECKBOX_ENABLED("chkbox_enabled.gif"),
    CHECKBOX_DISABLED("chkbox_disabled.gif"),

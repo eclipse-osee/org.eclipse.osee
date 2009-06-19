@@ -73,7 +73,9 @@ public class ConflictManagerInternal {
    public static List<Conflict> getConflictsPerBranch(TransactionId commitTransaction, IStatusMonitor monitor) throws OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
-      if (monitor == null) monitor = new EmptyMonitor();
+      if (monitor == null) {
+         monitor = new EmptyMonitor();
+      }
       monitor.startJob(String.format("Loading Merge Manager for Transaction %d",
             commitTransaction.getTransactionNumber()), 100);
       monitor.setSubtaskName("Finding Database stored conflicts");
@@ -123,7 +125,9 @@ public class ConflictManagerInternal {
       Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
 
       //Check to see if the branch has already been committed than use the transaction version
-      if (monitor == null) monitor = new EmptyMonitor();
+      if (monitor == null) {
+         monitor = new EmptyMonitor();
+      }
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId != 0) {
          try {
@@ -144,14 +148,14 @@ public class ConflictManagerInternal {
             totalTime = System.currentTimeMillis();
          }
       }
-      if ((sourceBranch == null) || (destinationBranch == null)) {
+      if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
                sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
 
-      if (!sourceBranch.isCommitted() && !sourceBranch.isRebaselined()) {
-         BranchManager.setBranchState(sourceBranch, BranchState.COMMITTED);
+      if (!sourceBranch.isCommitted() && !sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress()) {
+         BranchManager.setBranchState(sourceBranch, BranchState.COMMIT_IN_PROGRESS);
       }
 
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
@@ -162,7 +166,9 @@ public class ConflictManagerInternal {
       for (Integer integer : artIdSetDontAdd) {
          artIdSet.remove(integer);
       }
-      if (artIdSet.isEmpty()) return conflicts;
+      if (artIdSet.isEmpty()) {
+         return conflicts;
+      }
 
       if (DEBUG) {
          System.out.println(String.format(" Conflicts found in %s", Lib.getElapseString(totalTime)));
@@ -267,7 +273,7 @@ public class ConflictManagerInternal {
             if (artId != nextArtId) {
                artId = nextArtId;
 
-               if ((destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.MODIFIED.getValue()) || (destModType == ModificationType.MODIFIED.getValue() && sourceModType == ModificationType.DELETED.getValue())) {
+               if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.MODIFIED.getValue() || destModType == ModificationType.MODIFIED.getValue() && sourceModType == ModificationType.DELETED.getValue()) {
 
                   artifactConflictBuilder =
                         new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,

@@ -530,6 +530,25 @@ public class BranchManager {
    }
 
    /**
+    * Sets the branch states
+    * 
+    * @throws OseeDataStoreException
+    */
+   public static void setBranchState(OseeConnection connection, Map<Branch, BranchState> itemsToUpdate) throws OseeDataStoreException {
+      if (!itemsToUpdate.isEmpty()) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (Branch branch : itemsToUpdate.keySet()) {
+            data.add(new Object[] {itemsToUpdate.get(branch).getValue(), branch.getBranchId()});
+         }
+         ConnectionHandler.runBatchUpdate(connection, UPDATE_BRANCH_STATE, data);
+
+         for (Branch branch : itemsToUpdate.keySet()) {
+            branch.setBranchState(itemsToUpdate.get(branch));
+         }
+      }
+   }
+
+   /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     * 
     * @param transactionIdNumber

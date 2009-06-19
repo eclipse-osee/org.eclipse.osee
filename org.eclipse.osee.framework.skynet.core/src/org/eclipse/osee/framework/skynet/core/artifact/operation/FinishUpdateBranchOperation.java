@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
@@ -59,7 +60,6 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       String originalBranchName = sourceBranch.getBranchName();
       Artifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
-      //      sourceBranch.setAssociatedArtifact(UserManager.getUser(SystemUser.OseeSystem));
       sourceBranch.rename(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
@@ -67,6 +67,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       if (originalAssociatedArtifact != null) {
          destinationBranch.setAssociatedArtifact(originalAssociatedArtifact);
       }
+      BranchManager.setBranchState(sourceBranch, BranchState.REBASELINED);
       monitor.worked(calculateWork(0.20));
    }
 
@@ -76,7 +77,8 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-            conflictManager.getSourceBranch().getBranchShortName(), conflictManager.getDestinationBranch().getBranchShortName()));
+            conflictManager.getSourceBranch().getBranchShortName(),
+            conflictManager.getDestinationBranch().getBranchShortName()));
       return super.createErrorStatus(error);
    }
 

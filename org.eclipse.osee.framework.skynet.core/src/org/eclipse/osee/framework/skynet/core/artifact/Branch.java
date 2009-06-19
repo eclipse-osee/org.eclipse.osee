@@ -446,6 +446,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return getBranchState() == BranchState.REBASELINED;
    }
 
+   public boolean isRebaselineInProgress() {
+      return getBranchState() == BranchState.REBASELINE_IN_PROGRESS;
+   }
+
    /**
     * @return the parentTransactionId
     * @throws OseeCoreException
