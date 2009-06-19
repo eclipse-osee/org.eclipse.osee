@@ -930,7 +930,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public String getDescriptiveName() {
       try {
-         String name = getSoleAttributeValue("Name");
+         String name = (String) getAttributesIncludeDeleted("Name").get(0).getValue();
          return name == null ? UNNAMED : name;
       } catch (Exception ex) {
          return ex.getLocalizedMessage();
@@ -1204,7 +1204,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void delete() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(branch);
-      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+      delete(transaction);
       transaction.execute();
    }
 
