@@ -353,7 +353,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
-               item.getArtifact().delete(transaction);
+               item.getArtifact().deleteAndPersist(transaction);
             }
             transaction.execute();
          } catch (Exception ex) {

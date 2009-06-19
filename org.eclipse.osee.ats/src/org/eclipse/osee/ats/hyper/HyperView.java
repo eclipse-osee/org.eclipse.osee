@@ -781,7 +781,7 @@ public class HyperView extends ViewPart implements IPartListener {
                      if (art != null) {
                         if (art instanceof StateMachineArtifact) SMAEditor.close((StateMachineArtifact) art, false);
                         try {
-                           art.delete();
+                           art.deleteAndPersist();
                         } catch (Exception ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }

@@ -128,7 +128,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == Window.OK) {
-               getSelectedArtifact().delete();
+               getSelectedArtifact().deleteAndPersist();
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

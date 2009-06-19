@@ -499,7 +499,7 @@ public class TaskComposite extends Composite implements IActionable {
             delItems.addAll(items);
             for (TaskArtifact taskArt : delItems) {
                SMAEditor.close(taskArt, false);
-               taskArt.delete(transaction);
+               taskArt.deleteAndPersist(transaction);
             }
             transaction.execute();
          } catch (Exception ex) {

@@ -47,6 +47,7 @@ public class ArtifactImportOperation extends AbstractOperation {
    private final Branch branch;
    private final Artifact importRoot;
    private final RoughArtifact rootRoughArtifact;
+   private final boolean stopOnError = false;
 
    public ArtifactImportOperation(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       super("Importing Artifacts", SkynetGuiPlugin.PLUGIN_ID);
@@ -111,7 +112,9 @@ public class ArtifactImportOperation extends AbstractOperation {
                   Artifact artifactChanged = artifacts.get(index);
                   IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
                   if (!status.isOK()) {
-                     setStatus(status);
+                     if (stopOnError) {
+                        setStatus(status);
+                     }
                      if (writer == null) {
                         file = OseeData.getFile(String.format("OseeValidationErrors%s.txt", Lib.getDateTimeString()));
                         writer = new BufferedWriter(new FileWriter(file));

@@ -1202,17 +1202,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * Removes artifact from a specific branch
     */
-   public void delete() throws OseeCoreException {
+   public void deleteAndPersist() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(branch);
-      delete(transaction);
+      deleteAndPersist(transaction);
       transaction.execute();
    }
 
    /**
     * Removes artifact from a specific branch
     */
-   public void delete(SkynetTransaction transaction) throws OseeCoreException {
+   public void deleteAndPersist(SkynetTransaction transaction) throws OseeCoreException {
       ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+   }
+
+   public void delete() throws OseeCoreException {
+      ArtifactPersistenceManager.deleteArtifact(null, false, this);
    }
 
    /**

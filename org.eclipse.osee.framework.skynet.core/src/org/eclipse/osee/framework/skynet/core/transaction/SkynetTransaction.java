@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedE
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
@@ -225,59 +224,34 @@ public class SkynetTransaction extends DbTransaction {
       return transactionId;
    }
 
-   public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
-      checkBranch(artifact);
-      if (!artifact.isInDb()) {
-         return;
-      }
-      madeChanges = true;
-
-      addArtifactHelper(artifact, ModificationType.DELETED);
-      RelationManager.deleteRelationsAll(artifact, reorderRelations);
-
-      artifact.persistAttributesAndRelations(this);
-   }
-
-   public void addReflectedArtifact(Artifact artifact) throws OseeCoreException {
-      checkBranch(artifact);
-      addArtifactHelper(artifact, artifact.getModType());
-
-      // Add Attributes to Transaction
-      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-         if (attribute != null) {
-            addReflectedAttribute(artifact, attribute);
-         }
-      }
-   }
-
    public void addArtifact(Artifact artifact) throws OseeCoreException {
       checkBranch(artifact);
-      madeChanges = true;
+      ModificationType modificationType = artifact.getModType();
 
-      if (artifact.isReflected()) {
-         addReflectedArtifact(artifact);
-      }
-
-      ModificationType modificationType;
-
-      if (artifact.anAttributeIsDirty()) {
-
-         if (!artifact.isInDb() && artifact.getModType() != ModificationType.INTRODUCED) {
-            modificationType = ModificationType.NEW;
-         } else {
-            if (artifact.isDeleted()) {
-               modificationType = ModificationType.DELETED;
-            } else {
+      if (artifact.isDeleted()) {
+         if (!artifact.isInDb()) {
+            return;
+         }
+      } else {
+         if (modificationType != ModificationType.INTRODUCED) {
+            if (artifact.isInDb()) {
                modificationType = ModificationType.MODIFIED;
+            } else {
+               modificationType = ModificationType.NEW;
             }
          }
+      }
 
-         addArtifactHelper(artifact, modificationType);
+      madeChanges = true;
+      addArtifactHelper(artifact, modificationType);
 
+      if (artifact.anAttributeIsDirty()) {
          // Add Attributes to Transaction
          for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-            if (attribute != null && attribute.isDirty()) {
-               addAttribute(artifact, attribute);
+            if (attribute != null) {
+               if (modificationType == ModificationType.INTRODUCED || attribute.isDirty()) {
+                  addAttribute(artifact, attribute);
+               }
             }
          }
       }
@@ -294,22 +268,22 @@ public class SkynetTransaction extends DbTransaction {
 
    }
 
-   private void addReflectedAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      addAttributeHelper(artifact, attribute, attribute.isDeleted() ? ModificationType.DELETED : artifact.getModType());
-   }
-
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      ModificationType modificationType;
+      ModificationType modificationType = attribute.getModificationType();
+
       if (attribute.isDeleted()) {
          if (!attribute.isInDb()) {
             return;
          }
-         modificationType = attribute.getModificationType();
       } else {
-         if (attribute.isInDb()) {
-            modificationType = ModificationType.MODIFIED;
+         if (artifact.getModType() == ModificationType.INTRODUCED) {
+            modificationType = ModificationType.INTRODUCED;
          } else {
-            modificationType = ModificationType.NEW;
+            if (attribute.isInDb()) {
+               modificationType = ModificationType.MODIFIED;
+            } else {
+               modificationType = ModificationType.NEW;
+            }
          }
       }
       addAttributeHelper(artifact, attribute, modificationType);

@@ -246,7 +246,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
                (new StringBuilder("Deleting artifact => ")).append(art).toString());
-         art.delete();
+         art.deleteAndPersist();
       }
 
       // Add three new artifacts
@@ -349,7 +349,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
                (new StringBuilder("Deleting artifact => ")).append(art).toString());
-         art.delete();
+         art.deleteAndPersist();
       }
 
       // Add two new artifacts

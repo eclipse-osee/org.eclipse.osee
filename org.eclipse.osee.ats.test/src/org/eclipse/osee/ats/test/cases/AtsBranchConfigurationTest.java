@@ -331,9 +331,9 @@ public class AtsBranchConfigurationTest {
                      testType.name() + " Req Changes", AtsPlugin.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
             SMAEditor.close(teamArt, false);
-            teamArt.delete(transaction);
+            teamArt.deleteAndPersist(transaction);
          }
-         aArt.delete(transaction);
+         aArt.deleteAndPersist(transaction);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -343,7 +343,7 @@ public class AtsBranchConfigurationTest {
       transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
       for (Artifact verArt : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
          if (verArt.getDescriptiveName().contains(testType.name())) {
-            verArt.delete(transaction);
+            verArt.deleteAndPersist(transaction);
          }
       }
       transaction.execute();
@@ -354,7 +354,7 @@ public class AtsBranchConfigurationTest {
          Artifact art =
                ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
                      AtsPlugin.getAtsBranch());
-         art.delete(transaction);
+         art.deleteAndPersist(transaction);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -367,9 +367,9 @@ public class AtsBranchConfigurationTest {
                ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
                      AtsPlugin.getAtsBranch());
          for (Artifact childArt : art.getChildren()) {
-            childArt.delete(transaction);
+            childArt.deleteAndPersist(transaction);
          }
-         art.delete(transaction);
+         art.deleteAndPersist(transaction);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -379,13 +379,13 @@ public class AtsBranchConfigurationTest {
       for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
          if (workArt.getDescriptiveName().startsWith(namespace)) {
-            workArt.delete(transaction);
+            workArt.deleteAndPersist(transaction);
          }
       }
       for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
             AtsPlugin.getAtsBranch())) {
          if (workArt.getDescriptiveName().startsWith(namespace)) {
-            workArt.delete(transaction);
+            workArt.deleteAndPersist(transaction);
          }
       }
       transaction.execute();

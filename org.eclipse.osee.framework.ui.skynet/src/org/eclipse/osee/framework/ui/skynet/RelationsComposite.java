@@ -602,7 +602,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                   "Delete Artifact (s)?\n\n\"" + Collections.toString(",", artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
 
                for (Artifact artifact : artifactsToBeDeleted) {
-                  artifact.delete();
+                  artifact.deleteAndPersist();
                }
             }
          }

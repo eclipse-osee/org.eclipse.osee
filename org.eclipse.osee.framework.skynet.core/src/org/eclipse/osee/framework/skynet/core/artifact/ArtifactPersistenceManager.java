@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -365,7 +366,10 @@ public class ArtifactPersistenceManager {
          }
          try {
             artifact.setDeleted();
-            transaction.deleteArtifact(artifact, reorderRelations);
+            RelationManager.deleteRelationsAll(artifact, reorderRelations);
+            if (transaction != null) {
+               artifact.persistAttributesAndRelations(transaction);
+            }
          } catch (OseeCoreException ex) {
             artifact.resetToPreviousModType();
             throw ex;
