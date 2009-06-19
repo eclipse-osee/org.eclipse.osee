@@ -35,50 +35,7 @@
                classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbBranchDataImport">
          </DatabaseTask>
       </extension>
-      <extension
-            point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
-         <ArtifactImage
-               ArtifactTypeName="Heading"
-               ImagePath="images/heading.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Narrative"
-               ImagePath="images/narrative.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Folder"
-               ImagePath="images/folder.gif">
-         </ArtifactImage>
-          <ArtifactImage
-               ArtifactTypeName="Global Preferences"
-               ImagePath="images/gear.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="User Group"
-               ImagePath="images/users2.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Work Flow Definition"
-               ImagePath="images/workflow.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Work Page Definition"
-               ImagePath="images/page.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Work Rule Definition"
-               ImagePath="images/rule.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Work Widget Definition"
-               ImagePath="images/widget.gif">
-         </ArtifactImage>
-         <ArtifactImage
-               ArtifactTypeName="Universal Group"
-               ImagePath="images/group.gif">
-         </ArtifactImage>
-      </extension>
-      <extension
+       <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory
                classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetCoreArtifactFactory">
