@@ -54,7 +54,7 @@ public class OseeEnumerationValidationTest {
     */
    @After
    public void tearDown() throws Exception {
-      mockArtifact.delete();
+      mockArtifact.deleteAndPersist();
       mockArtifact = null;
       enumeratedAttributeType = null;
    }

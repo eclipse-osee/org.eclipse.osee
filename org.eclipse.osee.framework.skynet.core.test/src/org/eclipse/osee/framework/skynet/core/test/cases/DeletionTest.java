@@ -118,7 +118,7 @@ public class DeletionTest {
          System.err.println("Deleting the first set of artifacts");
       }
       for (Artifact artifact : artifacts) {
-         artifact.delete();
+         artifact.deleteAndPersist();
          if (DEBUG) {
             System.err.println("Deleting Artifact " + artifact.getArtId());
          }

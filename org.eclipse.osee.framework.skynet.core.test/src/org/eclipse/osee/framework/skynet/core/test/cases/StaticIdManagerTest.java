@@ -52,7 +52,7 @@ public class StaticIdManagerTest {
             STATIC_ID_EEE)) {
          for (Artifact artifact : ArtifactQuery.getArtifactsFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
                staticIdValue, BranchManager.getCommonBranch())) {
-            artifact.delete(transaction);
+            artifact.deleteAndPersist(transaction);
             System.out.println("Deleting " + artifact.getHumanReadableId());
          }
       }

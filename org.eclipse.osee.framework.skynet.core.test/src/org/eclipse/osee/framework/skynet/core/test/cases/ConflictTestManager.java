@@ -266,11 +266,11 @@ public class ConflictTestManager {
 
          if (conflictDefs[i].destDelete) {
             System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
-            destArtifacts[i].delete();
+            destArtifacts[i].deleteAndPersist();
          }
          if (conflictDefs[i].sourceDelete) {
             System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId() + " index " + i);
-            sourceArtifacts[i].delete();
+            sourceArtifacts[i].deleteAndPersist();
          }
          if (DEBUG) {
             DeletionTest.dumpArtifact(sourceArtifacts[i]);
@@ -317,7 +317,7 @@ public class ConflictTestManager {
                switch (modification.itemToChange) {
                   case ARTIFACT:
                      createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                           modification.Name).delete();
+                           modification.Name).deleteAndPersist();
                      break;
                   case ATTRIBUTE:
                      createAttribute((Artifact) modification.object, modification.Name, modification.clas,
