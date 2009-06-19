@@ -174,7 +174,7 @@ public class ImageManager {
       } else if (annotationType == ArtifactAnnotation.Type.Error) {
          return getImage(FrameworkImage.ERROR);
       }
-      return getImage(FrameworkImage.MISSING);
+      return getImage(FrameworkImage.INFO_LG);
    }
 
    public static synchronized Image getImage(Artifact artifact) {

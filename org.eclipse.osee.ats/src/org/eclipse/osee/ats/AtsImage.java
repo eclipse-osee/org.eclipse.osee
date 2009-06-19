@@ -34,7 +34,6 @@ public enum AtsImage implements OseeImage {
    GLOBE("globe.gif"),
    GLOBE_SELECT("globeSelect.gif"),
    HOME("home.gif"),
-   INFO("info.gif"),
    MY_WORLD("MyWorld.gif"),
    NEW_ACTION("newAction.gif"),
    NEW_NOTE("newNote.gif"),

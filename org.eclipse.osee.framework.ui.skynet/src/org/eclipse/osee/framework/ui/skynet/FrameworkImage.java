@@ -82,6 +82,8 @@ public enum FrameworkImage implements OseeImage {
    INCOMING_INTRODUCED("INCOMING_New.gif"),
    INCOMING_MODIFIED("INCOMING_Modified.gif"),
    INCOMING_NEW("INCOMING_New.gif"),
+   INFO_SM("info_sm.gif"),
+   INFO_LG("info_lg.gif"),
    LASER("laser_16_16.gif"),
    LASER_OVERLAY("laser_8_8.gif"),
    LINE_MATCH("line_match.gif"),

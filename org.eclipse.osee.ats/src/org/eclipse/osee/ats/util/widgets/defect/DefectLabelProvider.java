@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.util.widgets.defect;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -40,7 +39,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       if (dCol.equals(DefectXViewerFactory.Severity_Col))
          return Severity.getImage(defectItem.getSeverity());
       else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col))
-         return ImageManager.getImage(AtsImage.INFO);
+         return ImageManager.getImage(FrameworkImage.INFO_SM);
       else if (dCol.equals(DefectXViewerFactory.Disposition_Col))
          return Disposition.getImage(defectItem.getDisposition());
       else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
