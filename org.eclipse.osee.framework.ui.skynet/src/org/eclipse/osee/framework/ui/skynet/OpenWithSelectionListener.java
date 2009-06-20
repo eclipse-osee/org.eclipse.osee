@@ -23,8 +23,8 @@ import org.eclipse.ui.handlers.IHandlerService;
  * @author Jeff C. Phillips
  */
 public class OpenWithSelectionListener extends SelectionAdapter {
-   private Command command;
-   private IHandlerService handlerService;
+   private final Command command;
+   private final IHandlerService handlerService;
 
    public OpenWithSelectionListener(Command command) {
       super();

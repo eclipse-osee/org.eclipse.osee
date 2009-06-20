@@ -249,7 +249,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       popupMenu.addMenuListener(needSelectedArtifactListener);
 
       createOpenMenuItem(popupMenu);
-      createOpenWithMenuItem(popupMenu);
+      //      createOpenWithMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createEditMenuItem(popupMenu);
       createMassEditMenuItem(popupMenu);
@@ -646,12 +646,12 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     */
    private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist {
       if (artifact.isReadOnly()) {
-              MessageDialog.openError(
-                    Display.getCurrent().getActiveShell(),
-                    "Delete Relation Error",
-                    "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
-              return;
-           }
+         MessageDialog.openError(
+               Display.getCurrent().getActiveShell(),
+               "Delete Relation Error",
+               "Access control has restricted this action. The current user does not have sufficient permission to delete objects on this artifact.");
+         return;
+      }
 
       Object[] objects = selection.toArray();
       for (Object object : objects) {
