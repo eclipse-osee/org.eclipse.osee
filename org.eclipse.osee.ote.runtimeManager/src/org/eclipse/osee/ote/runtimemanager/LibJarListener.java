@@ -23,12 +23,11 @@ import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 
 /**
  * @author Robert A. Fisher
- *
  */
 public class LibJarListener<T extends JarCollectionNature> implements IJarChangeListener<T> {
 
    private static final boolean VERBOSE_DEBUG = true;
-   
+
    private final Object bundleSynchronizer;
    private final Set<URL> newBundles;
    private final Set<URL> changedBundles;
@@ -40,7 +39,7 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
       this.changedBundles = new HashSet<URL>();
       this.removedBundles = new HashSet<URL>();
    }
-   
+
    @Override
    public void handleBundleAdded(URL url) {
       synchronized (bundleSynchronizer) {
@@ -70,7 +69,7 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
       }
       debugEcho(url);
    }
-   
+
    /**
     * @param url
     */
@@ -96,7 +95,7 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
    public void handlePostChange() {
       System.out.println("Bunch of changes just finished");
    }
-   
+
    private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
       synchronized (bundleSynchronizer) {
          Set<S> returnBundles = new HashSet<S>(set);
@@ -135,7 +134,7 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
       File file;
       try {
          file = new File(url.toURI());
-      } catch(URISyntaxException ex) {
+      } catch (URISyntaxException ex) {
          file = new File(url.getPath());
       }
 
