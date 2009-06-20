@@ -82,7 +82,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          chStmt.close();
       }
       Collection<RelationInfo> values = relationInfo.values();
-      this.appendResultLine(String.format("Found [%d] potential conflicts.", values.size()));
+      this.print(String.format("Found [%d] potential conflicts.", values.size()));
 
       int oddCases = 0;
       int goodCases = 0;

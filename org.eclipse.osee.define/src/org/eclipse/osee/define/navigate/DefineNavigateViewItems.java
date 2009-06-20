@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
@@ -48,7 +48,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       try {
-         BlamOperations.addBlamOperationsToNavigator(items);
+         BlamContributionManager.addBlamOperationsToNavigator(items);
 
          if (AccessControlManager.isOseeAdmin()) {
             XNavigateItem adminItems = new XNavigateItemFolder(null, "Admin");

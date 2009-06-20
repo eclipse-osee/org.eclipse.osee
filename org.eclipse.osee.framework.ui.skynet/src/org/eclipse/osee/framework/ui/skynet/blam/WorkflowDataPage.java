@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,13 +46,13 @@ public class WorkflowDataPage extends FormPage {
    private final XFormToolkit toolkit;
    private final List<Text> parameters;
    private final List<Text> localVariables;
-   private final OverviewPage overviewPage;
+   private final BlamOverviewPage overviewPage;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
 
-   public WorkflowDataPage(BlamEditor editor, OverviewPage overviewPage) {
+   public WorkflowDataPage(BlamEditor editor, BlamOverviewPage overviewPage) {
       super(editor, "overview", "Workflow Data");
 
-      this.workflow = (BlamWorkflow) ((BlamEditorInput) editor.getEditorInput()).getArtifact();
+      this.workflow = editor.getEditorInput().getArtifact();
       this.toolkit = editor.getToolkit();
       this.parameters = new LinkedList<Text>();
       this.localVariables = new LinkedList<Text>();
@@ -79,14 +80,14 @@ public class WorkflowDataPage extends FormPage {
                strB.append(variableText.getText());
             }
             strB.append("</Widgets>");
-            XWidgetParser widgetParser = new XWidgetParser();
+            //            XWidgetParser widgetParser = new XWidgetParser();
 
             String widgetXml = strB.toString();
 
             try {
                dynamicXWidgetLayout.addWorkLayoutDatas(XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout,
                      widgetXml));
-               overviewPage.update(dynamicXWidgetLayout);
+               overviewPage.setDynamicXWidgetLayouts(Arrays.asList(dynamicXWidgetLayout));
 
                workflow.saveLayoutData(widgetXml);
             } catch (Exception ex) {
@@ -181,12 +182,12 @@ public class WorkflowDataPage extends FormPage {
          ImageHyperlink removeLink = (ImageHyperlink) ev.widget;
          Text variableWidget = (Text) removeLink.getData();
 
-         GridData gridData = ((GridData) variableWidget.getLayoutData());
+         GridData gridData = (GridData) variableWidget.getLayoutData();
          gridData.exclude = true;
          variableWidget.setVisible(false);
          variableTexts.remove(variableWidget);
 
-         gridData = ((GridData) removeLink.getLayoutData());
+         gridData = (GridData) removeLink.getLayoutData();
          gridData.exclude = true;
          removeLink.setVisible(false);
          removeLink.getParent().getParent().getParent().layout();

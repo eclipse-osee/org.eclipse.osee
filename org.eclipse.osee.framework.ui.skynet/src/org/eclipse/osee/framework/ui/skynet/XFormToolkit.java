@@ -64,16 +64,18 @@ public class XFormToolkit extends FormToolkit {
       return container;
    }
 
-   public void addHelpLinkToSection(Section section, final String helpPath) {
+   public void addHelpLinkToSection(final Section section, final String helpPath) {
+      addHelpLinkToSection(this, section, helpPath);
+   }
+
+   public static void addHelpLinkToSection(final FormToolkit toolkit, final Section section, final String helpPath) {
       Control control = section.getTextClient();
-      Composite parent = null;
-      if (control == null) {
-         parent = section;
-      } else {
-         parent = (Composite) control; // assumes that if this link is being added with exising controls they are contained in a composite
+      Composite parent = section;
+      if (control != null) {
+         parent = (Composite) control; // assumes that if this link is being added with existing controls they are contained in a composite
       }
       ImageHyperlink helpLink = new ImageHyperlink(parent, SWT.NULL);
-      adapt(helpLink, true, true);
+      toolkit.adapt(helpLink, true, true);
       helpLink.setImage(ImageManager.getImage(FrameworkImage.HELP));
       helpLink.setBackground(section.getTitleBarGradientBackground());
       helpLink.addHyperlinkListener(new HyperlinkAdapter() {

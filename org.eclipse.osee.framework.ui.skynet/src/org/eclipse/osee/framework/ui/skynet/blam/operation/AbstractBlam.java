@@ -11,9 +11,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.io.IOException;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -25,15 +29,17 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayoutListener {
-   private BlamEditor blamEditor;
+
+   private Appendable output;
 
    public AbstractBlam() {
+      super();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetsXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return branchXWidgetXml;
    }
@@ -41,26 +47,47 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
+   @Override
    public String getDescriptionUsage() {
       return "Select parameters below and click the play button at the top right.";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getName()
+    */
+   @Override
    public abstract String getName();
 
-   public String getClassSimpleName() {
-      return getClass().getSimpleName();
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#setOutput(java.lang.Appendable)
+    */
+   @Override
+   public void setOutput(Appendable output) {
+      this.output = output;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#setOverpages(org.eclipse.osee.framework.ui.skynet.blam.OverviewPage)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#print(java.lang.String)
     */
    @Override
-   public void setBlamEditor(BlamEditor blamEditor) {
-      this.blamEditor = blamEditor;
+   public void print(String value) {
+      if (this.output != null && value != null) {
+         try {
+            this.output.append(value);
+         } catch (IOException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
    }
 
-   public void appendResultLine(String output) {
-      blamEditor.appendOuputLine(output);
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#println(java.lang.String)
+    */
+   @Override
+   public void println(String value) {
+      if (Strings.isValid(value)) {
+         print(value + "\n");
+      }
    }
 
    /* (non-Javadoc)

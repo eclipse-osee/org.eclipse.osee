@@ -28,7 +28,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 /**
  * @author Donald G. Dunne
  */
-public class BlamOperations {
+public class BlamContributionManager {
+
+   private BlamContributionManager() {
+   }
 
    public static Collection<BlamOperation> getBlamOperationsNameSort() {
       ArrayList<BlamOperation> blamsSortedByName = new ArrayList<BlamOperation>();
@@ -38,8 +41,9 @@ public class BlamOperations {
       }
       String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
       Arrays.sort(names);
-      for (String name : names)
+      for (String name : names) {
          blamsSortedByName.add(blamMap.get(name));
+      }
       return blamsSortedByName;
    }
 
@@ -53,17 +57,17 @@ public class BlamOperations {
    public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
+      for (BlamOperation blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
 
          // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
-            if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || (category.contains("Admin") && AccessControlManager.isOseeAdmin())) {
+            if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains("Admin") && AccessControlManager.isOseeAdmin()) {
                createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
             }
          }
       }
       // Add blams to categories
-      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
+      for (BlamOperation blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
          // If categories not specified, add to top level
          if (blamOperation.getCategories().size() == 0) {
             new XNavigateItemBlam(blamOperationItems, blamOperation);

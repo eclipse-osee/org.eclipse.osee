@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 public class OseeAts {
    public static enum OpenView {
@@ -93,11 +94,15 @@ public class OseeAts {
    }
 
    private static void addButtonToEditorToolBar(final IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, Composite comp, final String editorId, final String aspect) {
-      if (actionableObject == null) throw new IllegalArgumentException(
-            String.format("actionableObject can not be null"));
-      if (editorId == null || editorId.equals("")) throw new IllegalArgumentException(
-            String.format("editorId can not be null or empty"));
-      if (aspect == null) throw new IllegalArgumentException(String.format("aspect can not be null"));
+      if (actionableObject == null) {
+         throw new IllegalArgumentException(String.format("actionableObject can not be null"));
+      }
+      if (editorId == null || editorId.equals("")) {
+         throw new IllegalArgumentException(String.format("editorId can not be null or empty"));
+      }
+      if (aspect == null) {
+         throw new IllegalArgumentException(String.format("aspect can not be null"));
+      }
 
       if (toolBar != null) {
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
@@ -110,7 +115,9 @@ public class OseeAts {
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                if (actionableObject != null) {
                   String moreDesc = actionableObject.getActionDescription();
-                  if (moreDesc != null && !moreDesc.equals("")) desc += "\n" + moreDesc;
+                  if (moreDesc != null && !moreDesc.equals("")) {
+                     desc += "\n" + moreDesc;
+                  }
                }
                createActionViaBug(desc, aspect);
             }
@@ -129,14 +136,17 @@ public class OseeAts {
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                if (actionableObject != null) {
                   String moreDesc = actionableObject.getActionDescription();
-                  if (moreDesc != null && !moreDesc.equals("")) desc += "\n" + moreDesc;
+                  if (moreDesc != null && !moreDesc.equals("")) {
+                     desc += "\n" + moreDesc;
+                  }
                }
                createActionViaBug(desc, aspect);
             }
 
          });
-      } else
+      } else {
          throw new IllegalArgumentException("Can't determine bug target.");
+      }
    }
 
    /**
@@ -161,16 +171,21 @@ public class OseeAts {
     * @param actionableItem match the name of one of the configured Actionable Items in ATS
     */
    public static void addBugToViewToolbar(final ViewPart viewPart, final IActionable actionableObject, final OseeUiActivator oseePlugin, final String viewId, final String actionableItem) {
-      if (viewId == null || viewId.equals("")) throw new IllegalArgumentException(
-            String.format("viewId can not be null or empty"));
-      if (actionableItem == null) throw new IllegalArgumentException("Aspect can not be null.");
+      if (viewId == null || viewId.equals("")) {
+         throw new IllegalArgumentException(String.format("viewId can not be null or empty"));
+      }
+      if (actionableItem == null) {
+         throw new IllegalArgumentException("Aspect can not be null.");
+      }
       Action bugAction = new Action("Generate Action Against This View") {
          @Override
          public void run() {
             String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
             String desc = String.format("\n\nItem: %s\nVersion: %s", viewId, version);
             String moreDesc = actionableObject.getActionDescription();
-            if (!moreDesc.equals("")) desc += "\n" + moreDesc;
+            if (!moreDesc.equals("")) {
+               desc += "\n" + moreDesc;
+            }
             createActionViaBug(desc, actionableItem);
          }
       };
@@ -184,10 +199,11 @@ public class OseeAts {
    public static void openATSArtifact(String guid) {
       try {
          Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchManager.getCommonBranch());
-         if (art.getArtifactTypeName().equals("Action"))
+         if (art.getArtifactTypeName().equals("Action")) {
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-         else
+         } else {
             AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeName() + " with SMAEditor");
+         }
       } catch (Exception ex) {
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -209,7 +225,9 @@ public class OseeAts {
 
    public static IAtsLib getAtsLib() throws OseeWrappedException {
       try {
-         if (Platform.getExtensionRegistry() == null) return null;
+         if (Platform.getExtensionRegistry() == null) {
+            return null;
+         }
          if (atsLib == null) {
             IExtensionPoint point =
                   Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.AtsLib");
@@ -258,7 +276,9 @@ public class OseeAts {
 
       @Override
       public void run() {
-         String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
+         Version version =
+               new Version(
+                     (String) oseePlugin.getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
          String desc = String.format("Found in \"%s\" version %s.", itemId, version);
          IActionable actionable = (IActionable) target.getAdapter(IActionable.class);
          if (actionable != null) {

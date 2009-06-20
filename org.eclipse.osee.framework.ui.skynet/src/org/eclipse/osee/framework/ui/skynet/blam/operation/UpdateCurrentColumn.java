@@ -153,11 +153,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
       try {
          startAtTxNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
       } catch (NumberFormatException ex) {
-         appendResultLine(String.format("Failed to parse string [%s], specify an integer",
+         print(String.format("Failed to parse string [%s], specify an integer",
                variableMap.getString("From Transaction Number")));
          return;
       }
-      appendResultLine(String.format("Processing from transaction id [%d].\n", startAtTxNumber));
+      print(String.format("Processing from transaction id [%d].\n", startAtTxNumber));
       int totalWork = 0;
       for (Operations operationType : Operations.values()) {
          if (variableMap.getBoolean(operationType.asLabel())) {
@@ -234,21 +234,21 @@ public class UpdateCurrentColumn extends AbstractBlam {
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
 
          int txTypeNumber = updateBaselineTransactions(subMonitor);
-         appendResultLine(String.format("Updated [%d] transactions to baseline transactions.\n", txTypeNumber));
+         print(String.format("Updated [%d] transactions to baseline transactions.\n", txTypeNumber));
 
          updateBaselinedTransactionsToCurrent(subMonitor, startAtTxNumber);
          getUpdates(subMonitor, updates, startAtTxNumber);
-         appendResultLine(String.format("Total items identified as latest: [%d] \n", updates.size()));
+         print(String.format("Total items identified as latest: [%d] \n", updates.size()));
 
          long time = System.currentTimeMillis();
          int rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, updates);
-         appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
+         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
 
          time = System.currentTimeMillis();
-         appendResultLine(String.format("Going to update [%d] items to tx_current value of 1 or 2.\n", updates.size()));
+         print(String.format("Going to update [%d] items to tx_current value of 1 or 2.\n", updates.size()));
          rowsUpdated = updateTxCurrentForLatestItems(subMonitor, updates);
-         appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
+         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
 
          subMonitor.done();
@@ -309,7 +309,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                   updates.add(new UpdateHelper(type, chStmt));
                }
             }, 0, query, txNumber, txNumber);
-            appendResultLine(String.format("%d updates for [%s]\n", totalRows, type));
+            print(String.format("%d updates for [%s]\n", totalRows, type));
 
             if (monitor.isCanceled()) {
                break;
@@ -336,7 +336,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
          int updated = 0;
          if (monitor.isCanceled() != true) {
-            appendResultLine(String.format("%d updates for [updateTxCurrentToZero]\n", setToUpdate.size()));
+            print(String.format("%d updates for [updateTxCurrentToZero]\n", setToUpdate.size()));
             updated = ConnectionHandler.runBatchUpdate(UPDATE_TXS_CURRENT_TO_0, setToUpdate);
          }
          monitor.worked(1);
@@ -407,7 +407,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
                long time = System.currentTimeMillis();
                int count = ConnectionHandler.runPreparedUpdate(updateSql, startAtTxNumber);
-               appendResultLine(String.format("Updated [%s] rows for [%s] in [%d]ms\n", count, type.name(),
+               print(String.format("Updated [%s] rows for [%s] in [%d]ms\n", count, type.name(),
                      (System.currentTimeMillis() - time)));
                totalModified += count;
             }
@@ -416,7 +416,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                break;
             }
          }
-         appendResultLine(String.format("Updated [%d]txs mod types\n", totalModified));
+         print(String.format("Updated [%d]txs mod types\n", totalModified));
          subMonitor.done();
       }
    }
@@ -439,7 +439,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          } else {
             msg = "Failed";
          }
-         appendResultLine(String.format("Tx Current Verification [ %s ]\n", msg));
+         print(String.format("Tx Current Verification [ %s ]\n", msg));
          subMonitor.worked(1);
          subMonitor.done();
       }
@@ -493,9 +493,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
             msg = "Passed";
          } else {
             msg = "Failed";
-            appendResultLine(String.format("Tx Mod Type Verification Results [ %s ]\n", results));
+            print(String.format("Tx Mod Type Verification Results [ %s ]\n", results));
          }
-         appendResultLine(String.format("Tx Mod Type Verification [ %s ]\n", msg));
+         print(String.format("Tx Mod Type Verification [ %s ]\n", msg));
          subMonitor.done();
       }
 

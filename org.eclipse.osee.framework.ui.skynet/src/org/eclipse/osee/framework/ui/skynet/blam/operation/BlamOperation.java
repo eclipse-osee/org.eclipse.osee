@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -31,7 +30,11 @@ public interface BlamOperation {
 
    public abstract String getName();
 
-   public abstract void setBlamEditor(BlamEditor workflow);
+   public abstract void setOutput(Appendable output);
+
+   public abstract void print(String value);
+
+   public abstract void println(String value);
 
    /**
     * Return collection of categories that blam belongs to eg: ATS, ATS.Admin, ATS.Report. These will be used to create

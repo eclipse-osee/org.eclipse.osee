@@ -58,9 +58,12 @@ public abstract class XSelectFromDialog<T> extends XText {
    }
 
    public void setRequiredSelection(int minSelectionRequired, int maxSelectionRequired) throws OseeArgumentException {
-      if (minSelectionRequired < 0) throw new OseeArgumentException(
-            "Min Number of Selection must be greater than or equal to 0");
-      if (maxSelectionRequired < 1) throw new OseeArgumentException("Max Number of Selection must be at least 1");
+      if (minSelectionRequired < 0) {
+         throw new OseeArgumentException("Min Number of Selection must be greater than or equal to 0");
+      }
+      if (maxSelectionRequired < 1) {
+         throw new OseeArgumentException("Max Number of Selection must be at least 1");
+      }
 
       if (maxSelectionRequired < minSelectionRequired) {
          throw new OseeArgumentException(String.format("Invalid required number of selections [%s] < [%s]",
@@ -83,6 +86,14 @@ public abstract class XSelectFromDialog<T> extends XText {
       if (Strings.isValid(toolTip)) {
          super.setToolTip(toolTip);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#getData()
+    */
+   @Override
+   public Object getData() {
+      return getSelected();
    }
 
    /* (non-Javadoc)
@@ -127,7 +138,6 @@ public abstract class XSelectFromDialog<T> extends XText {
             }
          }
       });
-
       addToolTip(composite, getToolTip());
       getStyledText().setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
       refresh();

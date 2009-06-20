@@ -116,7 +116,7 @@ public class SortRelationsByBranch extends AbstractBlam {
          if (monitor.isCanceled() != true) {
             writeToDb(monitor, update, batchArgs);
          }
-         appendResultLine(String.format("Updated [%d] relation [%s] orders.\n", totalModCount, name));
+         print(String.format("Updated [%d] relation [%s] orders.\n", totalModCount, name));
          monitor.worked(1);
       }
 

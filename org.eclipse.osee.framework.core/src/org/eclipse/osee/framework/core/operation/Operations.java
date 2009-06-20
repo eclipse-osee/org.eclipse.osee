@@ -130,8 +130,8 @@ public class Operations {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 
-   public static Job scheduleJob(Job job, boolean user, int priority) {
-      return scheduleJob(job, user, priority, null);
+   public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener) {
+      return scheduleJob(new OperationJob(operation), user, priority, jobChangeListener);
    }
 
    public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener) {

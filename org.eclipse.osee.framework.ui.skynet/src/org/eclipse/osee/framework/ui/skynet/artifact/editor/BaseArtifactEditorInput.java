@@ -22,18 +22,18 @@ import org.eclipse.ui.IPersistableElement;
  * @author Roberto E. Escobar
  */
 public abstract class BaseArtifactEditorInput implements IEditorInput {
-   private static Image missingImage = null;
-   private Artifact artifact;
+   private final Artifact artifact;
 
    public BaseArtifactEditorInput(Artifact artifact) {
       this.artifact = artifact;
    }
 
+   @Override
    public boolean equals(Object obj) {
       boolean equals = false;
       if (obj instanceof BaseArtifactEditorInput) {
          BaseArtifactEditorInput otherEdInput = (BaseArtifactEditorInput) obj;
-         equals = (artifact == otherEdInput.artifact);
+         equals = artifact == otherEdInput.artifact;
       }
       return equals;
    }
@@ -105,10 +105,6 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
 
    public Artifact getArtifact() {
       return artifact;
-   }
-
-   public void setArtifact(Artifact artifact) {
-      this.artifact = artifact;
    }
 
    public boolean isReadOnly() {

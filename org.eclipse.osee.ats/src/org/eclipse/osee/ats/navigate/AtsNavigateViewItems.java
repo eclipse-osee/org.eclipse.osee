@@ -62,7 +62,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
@@ -206,7 +206,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new ImportActionsViaSpreadsheet(importItems);
          items.add(importItems);
 
-         BlamOperations.addBlamOperationsToNavigator(items);
+         BlamContributionManager.addBlamOperationsToNavigator(items);
 
          if (AtsPlugin.isAtsAdmin()) {
             XNavigateItem adminItems = new XNavigateItem(null, "Admin", FrameworkImage.ADMIN);

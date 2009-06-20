@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -116,7 +115,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       try {
          // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
          Artifact artifact = getEditorInput().getArtifact();
-         if (!artifact.isDeleted() && (artifact.isDirty(true))) {
+         if (!artifact.isDeleted() && artifact.isDirty(true)) {
             try {
                artifact.reloadAttributesAndRelations();
             } catch (OseeCoreException ex) {
@@ -193,9 +192,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    protected void addPages() {
       OseeContributionItem.addTo(this, true);
-      Artifact artifact = getEditorInput().getArtifact();
       setPartName(getEditorInput().getName());
-      setTitleImage(ImageManager.getImage(artifact));
+      setTitleImage(getEditorInput().getImage());
 
       formPage = new ArtifactFormPage(this, "ArtifactFormPage", null);
       try {
@@ -295,8 +293,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
                   if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
                            "The user " + UserManager.getUser() + " does not have read access to " + artifact);
-                  } else
+                  } else {
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

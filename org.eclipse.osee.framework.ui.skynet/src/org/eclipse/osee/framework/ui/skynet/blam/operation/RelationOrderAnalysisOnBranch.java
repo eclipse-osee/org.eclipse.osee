@@ -102,10 +102,10 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
     * org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      appendResultLine("\nCurrent Status:\n\n");
+      print("\nCurrent Status:\n\n");
       for (Branch branch : branchToArtifactsToSort.keySet()) {
          SkynetTransaction transaction = new SkynetTransaction(branch);
-         appendResultLine(String.format("We have %d artifacts that have unsorted relations on branch %s.",
+         print(String.format("We have %d artifacts that have unsorted relations on branch %s.",
                branchToArtifactsToSort.get(branch).size(), branch.getBranchName()));
 
          Map<Integer, ArtifactOrder> artifactOrder = branchToArtifactsToSort.get(branch);

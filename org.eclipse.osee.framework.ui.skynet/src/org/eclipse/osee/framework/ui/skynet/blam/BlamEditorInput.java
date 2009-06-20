@@ -13,82 +13,55 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPersistableElement;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class BlamEditorInput implements IEditorInput {
-
-   private Artifact artifact;
-
-   public BlamEditorInput(Artifact artifact) {
-      this.artifact = artifact;
-   }
+public class BlamEditorInput extends BaseArtifactEditorInput {
 
    public BlamEditorInput(BlamOperation blamOperation) throws OseeCoreException {
-      this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(blamOperation);
+      this(BlamWorkflow.getOrCreateBlamWorkflow(blamOperation));
+   }
+
+   public BlamEditorInput(Artifact artifact) {
+      super(artifact);
    }
 
    @Override
    public boolean equals(Object obj) {
-      boolean equals = false;
       if (obj instanceof BlamEditorInput) {
-         BlamEditorInput otherEdInput = (BlamEditorInput) obj;
-
-         equals = (artifact == otherEdInput.artifact);
+         return super.equals(obj);
       }
-      return equals;
+      return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
-   public boolean exists() {
-      return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
-   public ImageDescriptor getImageDescriptor() {
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
+   @Override
    public String getName() {
-      if (artifact == null) {
+      if (getArtifact() == null) {
          return "No Artifact Input Provided";
       }
-      return artifact.getVersionedName();
+      return getArtifact().getDescriptiveName() + " BLAM";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getImage()
     */
-   public IPersistableElement getPersistable() {
-      return null;
+   @Override
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.BLAM);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getImageDescriptor()
     */
-   public String getToolTipText() {
-      return getName();
+   @Override
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.BLAM);
    }
 
    /*
@@ -96,20 +69,21 @@ public class BlamEditorInput implements IEditorInput {
     * 
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
+      if (Artifact.class.equals(adapter) || BlamWorkflow.class.equals(adapter)) {
+         return getArtifact();
+      }
       return null;
    }
 
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
-   /**
-    * @param artifact the artifact to set
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getArtifact()
     */
-   public void setArtifact(Artifact artifact) {
-      this.artifact = artifact;
+   @Override
+   public BlamWorkflow getArtifact() {
+      return (BlamWorkflow) super.getArtifact();
    }
 
 }

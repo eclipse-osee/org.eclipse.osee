@@ -81,12 +81,16 @@ public class XText extends XWidget {
    public void setSize(int width, int height) {
       this.width = width;
       this.height = height;
-      if (sText != null && !sText.isDisposed()) sText.setSize(width, height);
+      if (sText != null && !sText.isDisposed()) {
+         sText.setSize(width, height);
+      }
    }
 
    public void setHeight(int height) {
       this.height = height;
-      if (sText != null && !sText.isDisposed()) sText.setSize(sText.getSize().x, height);
+      if (sText != null && !sText.isDisposed()) {
+         sText.setSize(sText.getSize().x, height);
+      }
    }
 
    @Override
@@ -116,7 +120,7 @@ public class XText extends XWidget {
    protected void createControls(Composite parent, int horizontalSpan, boolean fillText) {
       setNotificationsAllowed(false);
       try {
-         if (!verticalLabel && (horizontalSpan < 2)) {
+         if (!verticalLabel && horizontalSpan < 2) {
             horizontalSpan = 2;
          }
 
@@ -164,10 +168,11 @@ public class XText extends XWidget {
          sText = new StyledText(composite, getTextStyle());
 
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         if (verticalLabel)
+         if (verticalLabel) {
             gd.horizontalSpan = horizontalSpan;
-         else
+         } else {
             gd.horizontalSpan = horizontalSpan - 1;
+         }
          gd.grabExcessHorizontalSpace = true;
          gd.horizontalAlignment = GridData.FILL;
          if (fillVertically) {
@@ -175,27 +180,39 @@ public class XText extends XWidget {
             gd.verticalAlignment = GridData.FILL;
          }
          if (fillVertically) {
-            if (height > 0) gd.heightHint = height;
+            if (height > 0) {
+               gd.heightHint = height;
+            }
          }
          //      gd.widthHint = 200;
          sText.setLayoutData(gd);
          sText.setMenu(getDefaultMenu());
          sText.addModifyListener(textListener);
-         if (text != null) sText.setText(text);
+         if (text != null) {
+            sText.setText(text);
+         }
          if (spellCheck) {
             spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
             sText.addPaintListener(spellPaintListener);
-            if (modDict != null) spellPaintListener.addXTextSpellModifyDictionary(modDict);
+            if (modDict != null) {
+               spellPaintListener.addXTextSpellModifyDictionary(modDict);
+            }
          }
-         if (width != 0 && height != 0) sText.setSize(width, height);
+         if (width != 0 && height != 0) {
+            sText.setSize(width, height);
+         }
 
          if (maxTextChars > 0) {
             sText.setTextLimit(maxTextChars);
          }
-         if (fillText) updateTextWidget();
+         if (fillText) {
+            updateTextWidget();
+         }
          validate();
          sText.setEditable(isEditable());
-         if (font != null) sText.setFont(font);
+         if (font != null) {
+            sText.setFont(font);
+         }
          parent.layout();
       } finally {
          setNotificationsAllowed(true);
@@ -212,7 +229,9 @@ public class XText extends XWidget {
 
    public void addXTextSpellModifyDictionary(XTextSpellModifyDictionary modDict) {
       this.modDict = modDict;
-      if (spellPaintListener != null) spellPaintListener.addXTextSpellModifyDictionary(modDict);
+      if (spellPaintListener != null) {
+         spellPaintListener.addXTextSpellModifyDictionary(modDict);
+      }
    }
 
    /**
@@ -228,7 +247,9 @@ public class XText extends XWidget {
     */
    public void setText(String text) {
       this.text = text;
-      if (sText != null) sText.setText(text);
+      if (sText != null) {
+         sText.setText(text);
+      }
    }
 
    public Menu getDefaultMenu() {
@@ -267,7 +288,9 @@ public class XText extends XWidget {
 
    @Override
    public void dispose() {
-      if (labelWidget != null) labelWidget.dispose();
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
       if (sText != null) {
          if (spellPaintListener != null && !sText.isDisposed()) {
             sText.removePaintListener(spellPaintListener);
@@ -275,19 +298,25 @@ public class XText extends XWidget {
          sText.dispose();
          sText = null;
       }
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
    @Override
    public void setFocus() {
-      if (sText != null) sText.setFocus();
+      if (sText != null) {
+         sText.setFocus();
+      }
    }
 
    public void setSpellChecking(boolean spellCheck) {
       if (sText != null) {
-         if (spellCheck)
+         if (spellCheck) {
             sText.addPaintListener(spellPaintListener);
-         else if (spellPaintListener != null) sText.removePaintListener(spellPaintListener);
+         } else if (spellPaintListener != null) {
+            sText.removePaintListener(spellPaintListener);
+         }
       }
       this.spellCheck = spellCheck;
    }
@@ -372,24 +401,29 @@ public class XText extends XWidget {
    }
 
    public void addModifyListener(ModifyListener modifyListener) {
-      if (sText != null) sText.addModifyListener(modifyListener);
+      if (sText != null) {
+         sText.addModifyListener(modifyListener);
+      }
    }
 
    public String get() {
-      if (debug) System.err.println("text set *" + text + "*");
+      if (debug) {
+         System.err.println("text set *" + text + "*");
+      }
       return text;
    }
 
    @Override
    public String getXmlData() {
-      if (sText == null || sText.isDisposed())
+      if (sText == null || sText.isDisposed()) {
          return AXml.textToXml(text);
-      else
+      } else {
          try {
             return AXml.textToXml(sText.getText());
          } catch (SWTException e) {
             return AXml.textToXml(text);
          }
+      }
    }
 
    @Override
@@ -417,7 +451,9 @@ public class XText extends XWidget {
    @Override
    public void setXmlData(String str) {
       set(str);
-      if (debug) System.err.println("setFromXml *" + str + "*");
+      if (debug) {
+         System.err.println("setFromXml *" + str + "*");
+      }
    }
 
    @Override
@@ -429,9 +465,13 @@ public class XText extends XWidget {
 
       if (m.find()) {
          String xmlStr = m.group(1);
-         if (debug) System.err.println("xmlStr *" + xmlStr + "*");
+         if (debug) {
+            System.err.println("xmlStr *" + xmlStr + "*");
+         }
          String str = AXml.xmlToText(xmlStr);
-         if (debug) System.err.println("str *" + str + "*");
+         if (debug) {
+            System.err.println("str *" + str + "*");
+         }
          setXmlData(str);
       }
    }
@@ -446,20 +486,25 @@ public class XText extends XWidget {
    }
 
    protected void updateTextWidget() {
-      if (sText == null || sText.isDisposed()) return;
-      if (text.equals(sText.getText())) return;
-      // Disable Listeners so not to fill Undo List
-      sText.setText(text);
-      // Reenable Listeners
-      validate();
+      if (Widgets.isAccessible(sText)) {
+         if (!text.equals(sText.getText())) {
+            // Disable Listeners so not to fill Undo List
+            sText.setText(text);
+            // Reenable Listeners
+            validate();
+         }
+      }
    }
 
    public void set(String text) {
-      if (text == null)
+      if (text == null) {
          this.text = "";
-      else
+      } else {
          this.text = text;
-      if (debug) System.err.println("set *" + text + "*");
+      }
+      if (debug) {
+         System.err.println("set *" + text + "*");
+      }
       updateTextWidget();
    }
 
@@ -493,9 +538,13 @@ public class XText extends XWidget {
 
    public String toHTML(String labelFont, boolean newLineText) {
       String s = AHTML.getLabelStr(labelFont, getLabel() + ": ");
-      if (newLineText) s = "<dl><dt>" + s + "<dd>";
+      if (newLineText) {
+         s = "<dl><dt>" + s + "<dd>";
+      }
       s += text;
-      if (newLineText) s += "</dl>";
+      if (newLineText) {
+         s += "</dl>";
+      }
       return s;
    }
 
@@ -519,7 +568,9 @@ public class XText extends XWidget {
    }
 
    public void debug(String str) {
-      if (debug) System.err.println("AText :" + str);
+      if (debug) {
+         System.err.println("AText :" + str);
+      }
    }
 
    @Override
