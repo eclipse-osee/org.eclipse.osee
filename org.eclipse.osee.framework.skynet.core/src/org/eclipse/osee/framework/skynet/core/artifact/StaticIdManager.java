@@ -94,15 +94,16 @@ public class StaticIdManager {
    public static Artifact getSingletonArtifactOrException(String artifactType, String staticId, Branch branch) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifacts(artifactType, staticId, branch);
       // Exception on problems
-      if (artifacts.size() == 0)
+      if (artifacts.size() == 0) {
          throw new ArtifactDoesNotExist("Can't find requested artifact \"" + staticId + "\"");
-      else if (artifacts.size() > 1) throw new MultipleArtifactsExist(
-            "Expected 1 \"" + staticId + "\" artifact, retrieved " + artifacts.size());
+      } else if (artifacts.size() > 1) {
+         throw new MultipleArtifactsExist("Expected 1 \"" + staticId + "\" artifact, retrieved " + artifacts.size());
+      }
       return artifacts.iterator().next();
    }
 
    public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
-      return getSingletonArtifact(artifactTypeName, staticId, branch, false);
+      return getOrCreateSingletonArtifactHelper(artifactTypeName, staticId, branch, false);
    }
 
    /**
@@ -115,14 +116,20 @@ public class StaticIdManager {
     * @return artifact
     * @throws OseeCoreException
     */
-   public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, Branch branch, boolean create) throws OseeCoreException {
+   public static Artifact getOrCreateSingletonArtifact(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
+      return getOrCreateSingletonArtifactHelper(artifactTypeName, staticId, branch, true);
+   }
+
+   private static Artifact getOrCreateSingletonArtifactHelper(String artifactTypeName, String staticId, Branch branch, boolean create) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifacts(artifactTypeName, staticId, branch);
       if (artifacts.size() == 0 && create) {
          Artifact artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
          setSingletonAttributeValue(artifact, staticId);
          return artifact;
       }
-      if (artifacts.size() > 0) return artifacts.iterator().next();
+      if (artifacts.size() > 0) {
+         return artifacts.iterator().next();
+      }
       return null;
    }
 }
