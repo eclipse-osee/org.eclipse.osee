@@ -45,12 +45,8 @@ public class InterArtifactDropTest {
 
    @After
    public void tearDown() throws Exception {
-
       BranchManager.purgeBranch(sourceBranch);
-      sleep(5000);
-
       BranchManager.purgeBranch(destinationBranch);
-      sleep(5000);
    }
 
    @Before
@@ -76,7 +72,7 @@ public class InterArtifactDropTest {
    }
 
    @org.junit.Test
-public void testIntroduceCrossBranch() throws Exception {
+   public void testIntroduceCrossBranch() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
