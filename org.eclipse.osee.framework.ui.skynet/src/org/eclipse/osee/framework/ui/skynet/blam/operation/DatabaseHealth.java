@@ -66,7 +66,7 @@ public class DatabaseHealth extends AbstractBlam {
          }
       }
       Operations.executeWork(dbHealthOperation, monitor, -1);
-      print(dbHealthOperation.getStatus().getMessage());
+      Operations.checkForErrorStatus(dbHealthOperation.getStatus());
    }
 
    @Override

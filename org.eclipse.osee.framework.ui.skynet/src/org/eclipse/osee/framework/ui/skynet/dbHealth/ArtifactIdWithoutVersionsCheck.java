@@ -36,7 +36,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
          "select item.art_id as artId, item.attr_id as itemId from osee_attribute item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
 
    private static final String GET_INVALID_ART_IDS =
-         "select item.art_id from osee_artifact item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
+         "select item.art_id as artId from osee_artifact item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
 
    /**
     * @param operationName
