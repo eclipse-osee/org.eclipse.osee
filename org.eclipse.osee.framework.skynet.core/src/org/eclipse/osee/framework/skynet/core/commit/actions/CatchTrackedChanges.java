@@ -14,7 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -63,12 +65,20 @@ public class CatchTrackedChanges implements CommitAction {
          }
       }
 
+      int severityMask = IStatus.ERROR; // Only catch Errors not Warnings | IStatus.WARNING;
       OseeValidator validator = OseeValidator.getInstance();
       for (Artifact artifactChanged : changedArtifacts) {
          IStatus status = validator.validate(IOseeValidator.LONG, artifactChanged);
-         if (!status.isOK()) {
-            throw new OseeCoreException(status.getMessage(), status.getException());
+         try {
+            Operations.checkForStatusSeverityMask(status, severityMask);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(getArtifactErrorMessage(artifactChanged), ex);
          }
       }
+   }
+
+   private String getArtifactErrorMessage(Artifact artifact) {
+      return String.format("Error validating: [(%s)(%s) - %s] on branchId:[%s]", artifact.getArtId(),
+            artifact.getHumanReadableId(), artifact.getDescriptiveName(), artifact.getBranch().getBranchId());
    }
 }

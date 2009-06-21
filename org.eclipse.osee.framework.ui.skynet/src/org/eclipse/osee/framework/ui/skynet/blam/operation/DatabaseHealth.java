@@ -78,15 +78,17 @@ public class DatabaseHealth extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + SHOW_ALL_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
-      for (String taskName : DatabaseHealthOpsExtensionManager.getFixOperationNames()) {
-         builder.append(getOperationsCheckBoxes(taskName));
-      }
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Verification Operations to Run:\"/>");
       for (String taskName : DatabaseHealthOpsExtensionManager.getVerifyOperationNames()) {
          builder.append(getOperationsCheckBoxes(taskName));
       }
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
+      for (String taskName : DatabaseHealthOpsExtensionManager.getFixOperationNames()) {
+         builder.append(getOperationsCheckBoxes(taskName));
+      }
+
       builder.append("</xWidgets>");
       return builder.toString();
    }
