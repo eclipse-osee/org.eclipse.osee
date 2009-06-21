@@ -479,8 +479,4 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    public int getParentTransactionNumber() {
       return parentTransactionIdNumber;
    }
-
-   public void purge() throws OseeCoreException {
-      new PurgeBranchRunnable(this).run();
-   }
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,13 +45,14 @@ import org.junit.BeforeClass;
  */
 public class ArtifactPurgeTest {
 
-   private final Map<String, Integer> preCreateArtifactsCount = new HashMap<String, Integer>();
-   private final Map<String, Integer> postCreateArtifactsCount = new HashMap<String, Integer>();
-   private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
    private static SevereLoggingMonitor monitorLog;
-   List<String> tables =
+   private Map<String, Integer> preCreateArtifactsCount;
+   private Map<String, Integer> postCreateArtifactsCount;
+   private Map<String, Integer> postPurgeCount;
+
+   private static final List<String> tables =
          Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
-               "osee_artifact_version");
+               "osee_artifact_version", "osee_branch_delete_helper");
 
    @BeforeClass
    public static void testInitialize() throws Exception {
@@ -64,6 +66,33 @@ public class ArtifactPurgeTest {
    public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(TestUtil.isProductionDb());
+      preCreateArtifactsCount = new HashMap<String, Integer>();
+      postCreateArtifactsCount = new HashMap<String, Integer>();
+      postPurgeCount = new HashMap<String, Integer>();
+   }
+
+   /**
+    * @throws java.lang.Exception
+    */
+   @After
+   public void tearDown() throws Exception {
+      if (preCreateArtifactsCount != null) {
+         preCreateArtifactsCount.clear();
+         preCreateArtifactsCount = null;
+      }
+      if (postCreateArtifactsCount != null) {
+         postCreateArtifactsCount.clear();
+         postCreateArtifactsCount = null;
+      }
+      if (postPurgeCount != null) {
+         postPurgeCount.clear();
+         postPurgeCount = null;
+      }
+   }
+
+   @AfterClass
+   public static void testCleanup() throws Exception {
+      TestUtil.severeLoggingEnd(monitorLog);
    }
 
    @org.junit.Test
@@ -135,10 +164,4 @@ public class ArtifactPurgeTest {
       // TODO Looks like attributes created after initial artifact creation are not getting purged.  Needs Fix.
       TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
    }
-
-   @AfterClass
-   public static void testCleanup() throws Exception {
-      TestUtil.severeLoggingEnd(monitorLog);
-   }
-
 }

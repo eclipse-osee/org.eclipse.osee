@@ -38,7 +38,7 @@ public abstract class DbTransaction {
     * 
     * @return String transaction class Name
     */
-   private String getTxName() {
+   protected String getTxName() {
       return this.getClass().getCanonicalName();
    }
 

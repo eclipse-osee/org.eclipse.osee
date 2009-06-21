@@ -183,16 +183,17 @@ public class ConflictTestManager {
       protected int getNumberConflicts(ConflictDefinition[] conflictDefs) {
          if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
             return numConflicts;
-         } else if ((destinationDeleted(conflictDefs) && sourceModified) || (sourceDeleted(conflictDefs) && destModified)) {
+         } else if (destinationDeleted(conflictDefs) && sourceModified || sourceDeleted(conflictDefs) && destModified) {
             return 1;
-         } else
+         } else {
             return 0;
+         }
       }
 
       protected boolean artifactAdded(ConflictDefinition[] conflictDefs) {
          if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
             return numConflicts > 0;
-         } else if ((destinationDeleted(conflictDefs) && sourceModified) || (sourceDeleted(conflictDefs) && destModified)) {
+         } else if (destinationDeleted(conflictDefs) && sourceModified || sourceDeleted(conflictDefs) && destModified) {
             return true;
          }
          return false;
@@ -405,13 +406,13 @@ public class ConflictTestManager {
       }
 
       if (mBranch != null) {
-         mBranch.purge();
+         BranchManager.purgeBranch(mBranch);
       }
       if (sBranch != null) {
-         sBranch.purge();
+         BranchManager.purgeBranch(sBranch);
       }
       if (dBranch != null) {
-         dBranch.purge();
+         BranchManager.purgeBranch(dBranch);
       }
    }
 
@@ -433,7 +434,9 @@ public class ConflictTestManager {
     * @return the sourceBranchID
     */
    public static Artifact getSourceArtifact(int position) {
-      if (position >= 0 && position < NUMBER_OF_ARTIFACTS) return sourceArtifacts[position];
+      if (position >= 0 && position < NUMBER_OF_ARTIFACTS) {
+         return sourceArtifacts[position];
+      }
       return null;
    }
 
@@ -441,7 +444,9 @@ public class ConflictTestManager {
     * @return the destBranchID
     */
    public static Artifact getDestArtifact(int position) {
-      if (position >= 0 && position < NUMBER_OF_ARTIFACTS) return destArtifacts[position];
+      if (position >= 0 && position < NUMBER_OF_ARTIFACTS) {
+         return destArtifacts[position];
+      }
       return null;
    }
 
@@ -722,15 +727,21 @@ public class ConflictTestManager {
          return new Boolean(value.equals(BooleanAttribute.booleanChoices[0]));
       }
       if (clas.equals(IntegerAttribute.class)) {
-         if (value.equals("")) return new Integer(0);
+         if (value.equals("")) {
+            return new Integer(0);
+         }
          return new Integer(value);
       }
       if (clas.equals(DateAttribute.class)) {
-         if (value.equals("")) return new Date(1);
+         if (value.equals("")) {
+            return new Date(1);
+         }
          return new Date(Long.parseLong(value));
       }
       if (clas.equals(FloatingPointAttribute.class)) {
-         if (value.equals("")) return new Double(0);
+         if (value.equals("")) {
+            return new Double(0);
+         }
          return new Double(value);
       }
       return value;

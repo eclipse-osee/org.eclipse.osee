@@ -93,11 +93,24 @@ public abstract class AbstractOperation implements IOperation {
          checkForCancelledStatus(monitor);
       } catch (Throwable error) {
          setStatus(createErrorStatus(error));
+      } finally {
+         doFinally(monitor);
       }
       return this;
    }
 
    /**
+    * Convenience method to allow clients to hook into the operation's finally block
+    * 
+    * @param monitor
+    */
+   protected void doFinally(IProgressMonitor monitor) {
+
+   }
+
+   /**
+    * All work should be performed here
+    * 
     * @param monitor
     * @throws Exception
     */

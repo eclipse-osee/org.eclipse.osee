@@ -29,6 +29,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -48,6 +50,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -313,7 +316,7 @@ public class BranchManager {
     */
    public static void purgeArchivedBranches() throws OseeCoreException {
       for (Branch archivedBranch : getArchivedBranches()) {
-         archivedBranch.purge();
+         BranchManager.purgeBranch(archivedBranch);
       }
    }
 
@@ -424,14 +427,18 @@ public class BranchManager {
     * 
     * @param branch
     */
-   public static void purgeBranchInJob(final Branch branch) {
-      Jobs.runInJob("Purge Branch: " + branch.getBranchShortName(), new PurgeBranchRunnable(branch),
-            instance.getClass(), Activator.PLUGIN_ID);
+   public static Job purgeBranchInJob(final Branch branch) {
+      return Operations.executeAsJob(new PurgeBranchOperation(branch), true);
    }
 
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
-      PurgeBranchRunnable runnable = new PurgeBranchRunnable(branch);
-      runnable.run();
+      IOperation operation = new PurgeBranchOperation(branch);
+      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      try {
+         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    /**
