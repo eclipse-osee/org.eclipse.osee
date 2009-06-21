@@ -111,7 +111,6 @@ public class NativeArtifactTest {
       nativeArtifact.setNativeContent(Lib.stringToInputStream("hello world"));
       nativeArtifact.persistAttributes();
       String content = nativeArtifact.getSoleAttributeValueAsString(NativeArtifact.CONTENT_NAME, "");
-      // TODO Failure expected cause getSoleAttributeValueAsString not working; this needs to be fixed
       assertEquals("hello world", content);
    }
 

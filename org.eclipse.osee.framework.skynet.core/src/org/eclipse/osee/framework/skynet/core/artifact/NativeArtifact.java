@@ -13,8 +13,12 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Artifact type used to indicate that this artifact is to be rendered by a passing its binary data to a native program
@@ -54,4 +58,34 @@ public class NativeArtifact extends Artifact {
    public void setNativeContent(InputStream inputStream) throws OseeCoreException {
       setSoleAttributeValue(CONTENT_NAME, inputStream);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#getSoleAttributeValueAsString(java.lang.String, java.lang.String)
+    */
+   @Override
+   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+      String toReturn = null;
+      if (CONTENT_NAME.equals(attributeTypeName)) {
+         InputStream inputStream = getNativeContent();
+         if (inputStream == null) {
+            toReturn = defaultReturnValue;
+         } else {
+            try {
+               toReturn = Lib.inputStreamToString(inputStream);
+            } catch (IOException ex) {
+               throw new OseeWrappedException(ex);
+            } finally {
+               try {
+                  inputStream.close();
+               } catch (IOException ex) {
+                  throw new OseeWrappedException(ex);
+               }
+            }
+         }
+      } else {
+         toReturn = super.getSoleAttributeValueAsString(attributeTypeName, defaultReturnValue);
+      }
+      return toReturn;
+   }
+
 }
