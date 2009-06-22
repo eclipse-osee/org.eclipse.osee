@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -234,12 +235,13 @@ public class SystemManagerServlet extends OseeHttpServlet {
          String clientPort = String.valueOf(session.getPort());
          boolean isOk = false;
          try {
-            isOk = InternalSystemManagerServletActivator.getSessionManager().isAlive(session);
+              // TODO this check takes too long
+             //            isOk = HttpProcessor.isAlive(session.getClientAddress(), session.getPort());
          } catch (Exception ex) {
             // OseeLog.log(this.getClass(), Level.SEVERE, ex);
          }
          items.add(AHTML.addRowMultiColumnTable(new String[] {dateFormat.format(session.getCreation()),
-               String.valueOf(isOk), session.getUserId(), session.getVersion(), session.getClientMachineName(),
+               "unknown", session.getUserId(), session.getVersion(), session.getClientMachineName(),
                createAnchor(AnchorType.INFO_ANCHOR, sessionId, clientAddress, clientPort),
                createAnchor(AnchorType.LOG_ANCHOR, sessionId, clientAddress, clientPort),
                dateFormat.format(session.getLastInteractionDate()), clientAddress, clientPort,
