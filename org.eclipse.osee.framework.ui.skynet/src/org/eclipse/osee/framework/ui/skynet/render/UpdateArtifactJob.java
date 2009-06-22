@@ -328,7 +328,7 @@ public class UpdateArtifactJob extends UpdateJob {
                System.out.println(" " + node.getNodeName());
                System.out.println("    " + content);
             }
-            if (content != null && content.contains("LISTNUM \"listreset\"")) {
+            if (content != null && content.contains("LISTNUM\"listreset\"")) {
                delete = true;
             }
             if (delete) {
