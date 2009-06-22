@@ -122,8 +122,16 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    }
 
    public void cleanupRuntimeBundles() throws Exception {
-      getRuntimeManager().cleanup();
-      cleanupClassReferences();
+      if(isNoBundleCleanup()){
+         return;
+      } else {
+         getRuntimeManager().cleanup();
+         cleanupClassReferences();
+      }
+   }
+
+   private boolean isNoBundleCleanup() {
+      return Boolean.valueOf(System.getProperty("osee.ote.nobundlecleanup"));
    }
 
    public abstract void singleStepEnv();
