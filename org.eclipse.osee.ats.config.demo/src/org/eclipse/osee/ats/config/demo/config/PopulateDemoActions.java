@@ -37,6 +37,8 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -84,6 +86,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private final ChangeType[] CHANGE_TYPE =
          new ChangeType[] {ChangeType.Problem, ChangeType.Problem, ChangeType.Problem, ChangeType.Improvement,
                ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
+
+   private static final String UPDATE_BRANCH_TYPE = "update osee_branch set branch_type = ? where branch_id = ?";
 
    public PopulateDemoActions(XNavigateItem parent) {
       super(parent, "Populate Demo Actions", FrameworkImage.ADMIN);
@@ -177,8 +181,12 @@ public class PopulateDemoActions extends XNavigateItemAction {
       try {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         createChildMainWorkingBranch(DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name());
+         Branch branch = createChildMainWorkingBranch(DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name());
          DemoDbUtil.sleep(5000);
+         // need to update the branch type;  
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {BranchType.BASELINE.getValue(),
+               branch.getBranchId()});
+         BranchManager.refreshBranches();
          // Map team definitions versions to their related branches
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
@@ -215,8 +223,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Modifying artifact => ")).append(
-               art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "A");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Navigation.name());
@@ -229,8 +237,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Modifying artifact => ")).append(
-               art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
@@ -331,8 +339,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Functional,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Modifying artifact => ")).append(
-               art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
+               (new StringBuilder("Modifying artifact => ")).append(art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
