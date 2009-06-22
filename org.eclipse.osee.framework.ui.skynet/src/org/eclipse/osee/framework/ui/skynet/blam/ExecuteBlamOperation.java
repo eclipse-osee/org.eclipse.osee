@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
@@ -51,13 +52,19 @@ public class ExecuteBlamOperation extends AbstractOperation {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
-    */
+   * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
+   */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       IStatus status = super.createErrorStatus(error);
-      if (!status.matches(IStatus.CANCEL)) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, error);
+      try {
+         if (error != null) {
+            output.append(Lib.exceptionToString(error));
+         } else {
+            output.append(status.getMessage());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return status;
    }
