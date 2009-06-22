@@ -273,7 +273,7 @@ public class SessionManager implements ISessionManager {
 
       private void createUpdateHelper(List<OseeSession> sessionsList, boolean isCreate) {
          try {
-            if (!sessionsList.isEmpty() && SessionDataStore.isSessionTableAvailable()) {
+            if (!sessionsList.isEmpty()) {
                String serverId = CoreServerActivator.getApplicationServerManager().getId();
                OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
                SessionState stateToSet = isCreate ? SessionState.CREATED : SessionState.UPDATED;
@@ -290,21 +290,20 @@ public class SessionManager implements ISessionManager {
                }
             }
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(CoreServerActivator.class, Level.SEVERE, String.format("Error persisting %s sessions",
-                  isCreate ? "new" : "modified"), ex);
+            // Do Nothing
          }
       }
 
       private void deleteItems(List<String> sessionIds) {
          try {
-            if (!sessionIds.isEmpty() && SessionDataStore.isSessionTableAvailable()) {
+            if (!sessionIds.isEmpty()) {
                SessionDataStore.deleteSession(sessionIds.toArray(new String[sessionIds.size()]));
                for (String ids : sessionIds) {
                   sessionCache.remove(ids);
                }
             }
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(CoreServerActivator.class, Level.SEVERE, "Error deleting sessions", ex);
+            // Do Nothing
          }
       }
    }
