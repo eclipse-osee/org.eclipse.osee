@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -46,8 +47,8 @@ public class WordAttribute extends StringAttribute {
     */
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
-      // Do not allow save on tracked changes
-      if (WordAnnotationHandler.containsWordAnnotations(value)) {
+      // Do not allow save on tracked changes except on three way merges
+      if (WordAnnotationHandler.containsWordAnnotations(value) && getArtifact().getBranch().getBranchType() != BranchType.MERGE) {
          displayTrackedChangesErrorMessage = "Detected tracked changes on for this artifact.";
          throw new OseeArgumentException(displayTrackedChangesErrorMessage);
       } else {
