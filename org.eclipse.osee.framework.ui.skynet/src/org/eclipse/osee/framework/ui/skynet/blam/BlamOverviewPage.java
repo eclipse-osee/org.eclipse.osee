@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
@@ -74,7 +73,7 @@ public class BlamOverviewPage extends FormPage {
       managedForm.getMessageManager().setAutoUpdate(false);
       PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(), IHelpContextIds.MAIN_WORKFLOW_PAGE);
 
-      int sectionStyle = Section.TITLE_BAR | Section.EXPANDED;
+      int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
 
       managedForm.addPart(new BlamUsageSection(getEditor(), form.getBody(), managedForm.getToolkit(), sectionStyle));
       inputSection = new BlamInputSection(getEditor(), form.getBody(), managedForm.getToolkit(), sectionStyle);
@@ -132,20 +131,16 @@ public class BlamOverviewPage extends FormPage {
       getManagedForm().refresh();
    }
 
-   public void appendOuputLine(final String additionalOutput) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            outputSection.appendText(additionalOutput);
-         }
-      });
+   public void appendOutput(final String additionalOutput) {
+      outputSection.appendText(additionalOutput);
    }
 
    public void setOuputText(final String text) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            outputSection.setText(text);
-         }
-      });
+      outputSection.setText(text);
+   }
+
+   public Appendable getOutput() {
+      return outputSection.getOutput();
    }
 
    public VariableMap getInput() {

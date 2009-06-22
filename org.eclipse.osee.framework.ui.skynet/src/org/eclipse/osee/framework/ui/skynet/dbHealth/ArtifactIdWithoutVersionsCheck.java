@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -89,20 +89,17 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.50));
    }
 
-   private XResultData createReport(IProgressMonitor monitor, int totalBeforeCheck, int totalArtIds, List<ItemEntry> itemsToDelete) {
-      monitor.subTask(String.format("Create [%s] Report", getName()));
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"TABLE", "REFERENCED_BY", "TOTAL INVALIDS"}));
+   private void createReport(IProgressMonitor monitor, int totalBeforeCheck, int totalArtIds, List<ItemEntry> itemsToDelete) throws IOException {
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"TABLE", "REFERENCED_BY", "TOTAL INVALIDS"}));
       for (ItemEntry entry : itemsToDelete) {
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {entry.table, entry.invalidField,
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {entry.table, entry.invalidField,
                String.valueOf(entry.invalids.size())}));
       }
-      sbFull.append(AHTML.endMultiColumnTable());
-      XResultData rd = new XResultData();
-      rd.addRaw(sbFull.toString());
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
-      return rd;
+      checkForCancelledStatus(monitor);
    }
 
    private Set<Integer> getInvalidEntries(IProgressMonitor monitor, Set<Integer> allInvalidArtIds, String query, boolean hasItemId) throws OseeDataStoreException {

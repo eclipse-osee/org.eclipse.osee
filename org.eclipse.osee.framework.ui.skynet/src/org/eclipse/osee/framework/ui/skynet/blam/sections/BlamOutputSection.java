@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.sections;
 
+import java.io.IOException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -29,6 +31,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class BlamOutputSection extends BaseBlamSection {
 
    private Text formText;
+   private Appendable appendableOutput;
 
    /**
     * @param editor
@@ -71,18 +74,33 @@ public class BlamOutputSection extends BaseBlamSection {
       toolkit.paintBordersFor(composite);
    }
 
-   public void appendText(String text) {
-      if (Widgets.isAccessible(formText)) {
-         formText.append(text);
-         getManagedForm().reflow(true);
-      }
+   public void appendText(final String text) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (Widgets.isAccessible(formText)) {
+               formText.append(text);
+               getManagedForm().reflow(true);
+            }
+         }
+      });
    }
 
-   public void setText(String text) {
-      if (Widgets.isAccessible(formText)) {
-         formText.setText(text);
-         getManagedForm().reflow(true);
+   public void setText(final String text) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (Widgets.isAccessible(formText)) {
+               formText.setText(text);
+               getManagedForm().reflow(true);
+            }
+         }
+      });
+   }
+
+   public Appendable getOutput() {
+      if (appendableOutput == null) {
+         appendableOutput = new InternalAppendable();
       }
+      return appendableOutput;
    }
 
    /* (non-Javadoc)
@@ -102,5 +120,45 @@ public class BlamOutputSection extends BaseBlamSection {
    @Override
    public void refresh() {
       super.refresh();
+   }
+
+   private final class InternalAppendable implements Appendable {
+
+      private void write(final String text) {
+         appendText(text);
+      }
+
+      /* (non-Javadoc)
+       * @see java.lang.Appendable#append(java.lang.CharSequence)
+       */
+      @Override
+      public Appendable append(CharSequence csq) throws IOException {
+         if (csq == null) {
+            write("null");
+         } else {
+            write(csq.toString());
+         }
+         return this;
+      }
+
+      /* (non-Javadoc)
+       * @see java.lang.Appendable#append(char)
+       */
+      @Override
+      public Appendable append(char c) throws IOException {
+         write(new String(new char[] {c}));
+         return this;
+      }
+
+      /* (non-Javadoc)
+       * @see java.lang.Appendable#append(java.lang.CharSequence, int, int)
+       */
+      @Override
+      public Appendable append(CharSequence csq, int start, int end) throws IOException {
+         CharSequence cs = csq == null ? "null" : csq;
+         write(cs.subSequence(start, end).toString());
+         return this;
+      }
+
    }
 }

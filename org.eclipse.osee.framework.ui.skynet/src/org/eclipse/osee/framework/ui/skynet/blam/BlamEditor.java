@@ -107,15 +107,12 @@ public class BlamEditor extends AbstractArtifactEditor {
       return overviewPage.getInput();
    }
 
-   public void appendOuputLine(final String additionalOutput) {
-      overviewPage.appendOuputLine(additionalOutput);
-   }
-
    public void executeBlam() {
       try {
          final List<BlamOperation> operations = new ArrayList<BlamOperation>();
          operations.addAll(getEditorInput().getArtifact().getOperations());
-         IOperation blamOperation = new ExecuteBlamOperation(getPartName(), getBlamVariableMap(), operations);
+         IOperation blamOperation =
+               new ExecuteBlamOperation(getPartName(), overviewPage.getOutput(), getBlamVariableMap(), operations);
          Operations.executeAsJob(blamOperation, true, Job.LONG, new BlamEditorExecutionAdapter());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -171,7 +168,7 @@ public class BlamEditor extends AbstractArtifactEditor {
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         overviewPage.setOuputText(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
+         overviewPage.appendOutput(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
       }

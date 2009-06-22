@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -44,8 +43,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
  * @author Roberto E. Escobar
@@ -79,29 +76,19 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
       setItemsToFix(attributesWithErrors.size());
 
       if (isShowDetailsEnabled()) {
-         XResultData rd = createReport(monitor, attributesWithErrors);
-         rd.report(getName(), Manipulations.RAW_HTML);
+         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+         appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
+         for (AttrData attrData : attributesWithErrors) {
+            appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
+                  attrData.getUri()}));
+         }
+         appendToDetails(AHTML.endMultiColumnTable());
+         monitor.worked(calculateWork(0.10));
       }
-      getSummary().append(
-            String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
+      getSummary().append(String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
 
       monitor.worked(calculateWork(0.10));
-   }
-
-   private XResultData createReport(IProgressMonitor monitor, List<AttrData> attributesWithErrors) {
-      monitor.subTask(String.format("Create [%s] Report", getName()));
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
-      for (AttrData attrData : attributesWithErrors) {
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
-               attrData.getUri()}));
-      }
-      sbFull.append(AHTML.endMultiColumnTable());
-      XResultData rd = new XResultData();
-      rd.addRaw(sbFull.toString());
-      monitor.worked(Operations.calculateWork(IOperation.TOTAL_WORK, 0.10));
-      return rd;
    }
 
    private final static class FindAllTrackChangeWordAttributes extends AbstractOperation {

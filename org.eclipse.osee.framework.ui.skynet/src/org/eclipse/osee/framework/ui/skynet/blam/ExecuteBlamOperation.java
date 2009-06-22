@@ -26,11 +26,13 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 public class ExecuteBlamOperation extends AbstractOperation {
    private final List<BlamOperation> operations;
    private final VariableMap variableMap;
+   private final Appendable output;
 
-   public ExecuteBlamOperation(String name, VariableMap variableMap, List<BlamOperation> operations) {
+   public ExecuteBlamOperation(String name, Appendable output, VariableMap variableMap, List<BlamOperation> operations) {
       super(name, SkynetGuiPlugin.PLUGIN_ID);
       this.variableMap = variableMap;
       this.operations = operations;
+      this.output = output;
    }
 
    /* (non-Javadoc)
@@ -43,6 +45,7 @@ public class ExecuteBlamOperation extends AbstractOperation {
       }
       double workPercentage = 1 / operations.size();
       for (BlamOperation operation : operations) {
+         operation.setOutput(output);
          doSubWork(new InternalOperationAdapter(operation), monitor, workPercentage);
       }
    }
