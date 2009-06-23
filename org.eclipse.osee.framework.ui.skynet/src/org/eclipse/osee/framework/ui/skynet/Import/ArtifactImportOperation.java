@@ -58,27 +58,21 @@ public class ArtifactImportOperation extends AbstractOperation {
     */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      monitor.beginTask(getName(), getTotalWorkUnits());
-      try {
-         IOperation subOperation = new FindRoughArtifactsOperation("Convert File(s) to Rough Artifact");
-         doSubWork(subOperation, monitor, 0.10);
+      IOperation subOperation = new FindRoughArtifactsOperation("Convert File(s) to Rough Artifact");
+      doSubWork(subOperation, monitor, 0.10);
 
-         SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch);
 
-         subOperation = new ConvertToRealArtifacts("Rough to Real Artifact(s)", transaction);
-         doSubWork(subOperation, monitor, 0.50);
+      subOperation = new ConvertToRealArtifacts("Rough to Real Artifact(s)", transaction);
+      doSubWork(subOperation, monitor, 0.50);
 
-         subOperation = new ArtifactValidationCheckOperation(importRoot.getDescendants(), stopOnError);
-         doSubWork(subOperation, monitor, 0.20);
+      subOperation = new ArtifactValidationCheckOperation(importRoot.getDescendants(), stopOnError);
+      doSubWork(subOperation, monitor, 0.20);
 
-         importRoot.persistAttributesAndRelations(transaction);
-         monitor.subTask("Committing Transaction");
-         transaction.execute();
-         monitor.worked(calculateWork(0.20));
-
-      } finally {
-         monitor.done();
-      }
+      importRoot.persistAttributesAndRelations(transaction);
+      monitor.subTask("Committing Transaction");
+      transaction.execute();
+      monitor.worked(calculateWork(0.20));
    }
 
    private final class ConvertToRealArtifacts extends AbstractOperation {
