@@ -10,15 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Ryan D. Brooks
@@ -41,15 +50,32 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
     */
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String filename = variableMap.getString(SELECT_IMAGE);
-      if (filename == null) {
-         throw new OseeArgumentException("Must enter full path to image.");
+      final ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
+      if (Strings.isValid(filename)) {
+         File imageFile = new File(filename);
+         if (!imageFile.exists()) {
+            throw new OseeArgumentException("Invalid image filename.");
+         }
+         ImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, new ByteArrayInputStream(
+               Lib.inputStreamToBytes(new FileInputStream(imageFile))));
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               try {
+                  if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Clear Database Image?",
+                        "No Image File Selected.\n\nSelect \"Ok\" to clear image from database (default image will be used).")) {
+                     ImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, null);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
       }
-      File imageFile = new File(filename);
-      if (!imageFile.exists()) {
-         throw new OseeArgumentException("Invalid image filename.");
-      }
-      ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
-      ArtifactTypeManager.updateArtifactTypeImage(artifactSubtypeDescriptor, new FileInputStream(imageFile));
    }
 
    /* (non-Javadoc)
@@ -57,7 +83,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
     */
    @Override
    public String getDescriptionUsage() {
-      return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\n\nNOTE: Change default branch for other Artifact Types.";
+      return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\nLeaving image filename blank will clear the image from the database.  Programatic default will be used instead.\n\nNOTE: Change default branch for other Artifact Types.";
    }
 
    /* (non-Javadoc)

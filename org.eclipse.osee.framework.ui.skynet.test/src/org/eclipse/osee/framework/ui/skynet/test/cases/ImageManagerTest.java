@@ -11,13 +11,24 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -61,17 +72,51 @@ public abstract class ImageManagerTest {
       assertEquals("", sb.toString());
    }
 
-   /**
-    * Test that all artifact types that have declared images via extension points, have valid image files associated
-    * 
-    * @throws Exception
-    */
    @org.junit.Test
-   public void testArtifactTypeImageExtensionDeclarations() throws Exception {
-      StringBuffer sb = new StringBuffer();
-      ArtifactTypeManager.testArtifactTypeImageLoading(sb);
-      assertEquals("", sb.toString());
+   public void testGetImageByType() throws Exception {
+      assertTrue("Image returned not a folder image.",
+            ImageManager.getImage(ArtifactTypeManager.getType("Folder")).equals(
+                  ImageManager.getImage(FrameworkImage.FOLDER)));
+
    }
+
+   @org.junit.Test
+   public void testGetImageByArtifact() throws Exception {
+      Artifact folder =
+            ArtifactQuery.getArtifactFromTypeAndName("Folder", "User Groups", BranchManager.getCommonBranch());
+      assertTrue("Image returned not a folder image.", ImageManager.getImage(folder).equals(
+            ImageManager.getImage(FrameworkImage.FOLDER)));
+   }
+
+   @org.junit.Test
+   public void testSetArtifactTypeImageInDb() throws Exception {
+
+      Artifact folder =
+            ArtifactQuery.getArtifactFromTypeAndName("Folder", "User Groups", BranchManager.getCommonBranch());
+      assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
+            ImageManager.getImage(FrameworkImage.FOLDER)));
+
+      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"),
+            getByteArrayInputStream("heading.gif"));
+
+      TestUtil.sleep(2000);
+      assertFalse("Image returned should be \"Heading\" image.", ImageManager.getImage(folder).equals(
+            ImageManager.getImage(FrameworkImage.HEADING)));
+
+      ImageManager.loadCache();
+
+      assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
+            ImageManager.getImage(FrameworkImage.FOLDER)));
+   }
+
+   public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {
+      File imageFile = SkynetGuiPlugin.getInstance().getPluginFile("images/" + imageFilename);
+      if (!imageFile.exists()) {
+         throw new OseeArgumentException("Invalid image filename.");
+      }
+      return new ByteArrayInputStream(Lib.inputStreamToBytes(new FileInputStream(imageFile)));
+   }
+
    public enum MissingImage implements OseeImage {
       ACCEPT("nothere.gif");
 

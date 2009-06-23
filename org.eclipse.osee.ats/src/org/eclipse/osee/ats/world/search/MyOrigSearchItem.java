@@ -34,7 +34,7 @@ public class MyOrigSearchItem extends UserSearchItem {
    };
 
    public MyOrigSearchItem(String name, User user, OriginatedState originatedState) {
-      super(name, user, FrameworkImage.USER_PURPLE);
+      super(name, user, FrameworkImage.USER);
       this.originatedState = originatedState;
    }
 

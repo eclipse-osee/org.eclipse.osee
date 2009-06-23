@@ -11,21 +11,12 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -34,8 +25,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -51,8 +40,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactTypeManager {
    private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_artifact_type";
    private static final String INSERT_ARTIFACT_TYPE =
-         "INSERT INTO osee_artifact_type (art_type_id, namespace, name, image) VALUES (?,?,?,?)";
-   private HashMap<String, Pair<String, String>> imageMap;
+         "INSERT INTO osee_artifact_type (art_type_id, namespace, name) VALUES (?,?,?)";
 
    private static final ArtifactTypeManager instance = new ArtifactTypeManager();
 
@@ -82,8 +70,7 @@ public class ArtifactTypeManager {
 
          while (chStmt.next()) {
             try {
-               new ArtifactType(chStmt.getInt("art_type_id"), chStmt.getString("namespace"), chStmt.getString("name"),
-                     chStmt.getBinaryStream("image"));
+               new ArtifactType(chStmt.getInt("art_type_id"), chStmt.getString("namespace"), chStmt.getString("name"));
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -218,114 +205,18 @@ public class ArtifactTypeManager {
       return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
-   public static void updateArtifactTypeImage(ArtifactType artifactType, InputStream imageStream) throws OseeDataStoreException, IOException {
-      artifactType.setImageData(imageStream);
-      ByteArrayInputStream byteInput = new ByteArrayInputStream(artifactType.getImageData());
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?", byteInput,
-            artifactType.getArtTypeId());
-   }
-
    public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArtifactType artifactType;
       if (!typeExists(namespace, artifactTypeName)) {
          int artTypeId = SequenceManager.getNextArtifactTypeId();
-         InputStream imageStream = instance.getDefaultImageDescriptor(artifactTypeName);
-         artifactType = new ArtifactType(artTypeId, namespace, artifactTypeName, imageStream);
+         artifactType = new ArtifactType(artTypeId, namespace, artifactTypeName);
 
-         // the input stream is now closed to can not use it here
-         byte[] imageData = artifactType.getImageData();
-         if (imageData == null) {
-            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, namespace, artifactTypeName,
-                  SQL3DataType.BLOB);
-         } else {
-            ByteArrayInputStream byteInput = new ByteArrayInputStream(imageData);
-            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, namespace, artifactTypeName, byteInput);
-         }
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, namespace, artifactTypeName);
       } else {
          // Check if anything valuable is different
          artifactType = getType(namespace, artifactTypeName);
       }
       return artifactType;
-   }
-
-   private InputStream getDefaultImageDescriptor(String typeName) {
-      loadImageData();
-
-      InputStream imageStream = null;
-      try {
-         imageStream = getInputStreamForImage(typeName);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Icon for Artifact type " + typeName + " not found.", ex);
-      }
-
-      return imageStream;
-   }
-
-   /*
-    * For Testing purposes only.  If sb empty, no errors.
-    */
-   public static void testArtifactTypeImageLoading(StringBuffer sb) throws OseeCoreException {
-      instance.loadImageData();
-      for (String typeName : instance.imageMap.keySet()) {
-         Pair<String, String> imagelocation = instance.imageMap.get(typeName);
-         try {
-            InputStream inputStream = instance.getInputStreamForImage(typeName);
-            if (inputStream == null) {
-               sb.append(String.format("\nArtifactImageType image null for [%s] [%s] [%s] ", imagelocation.getKey(),
-                     typeName, imagelocation.getValue()));
-            }
-         } catch (Exception ex) {
-            sb.append(String.format("\nException loading ArtifactImageType image for [%s] [%s] [%s] ",
-                  imagelocation.getKey(), typeName, imagelocation.getValue()));
-         }
-      }
-   }
-
-   private InputStream getInputStreamForImage(String typeName) throws Exception {
-      Pair<String, String> imagelocation = imageMap.get(typeName);
-      if (imagelocation != null) {
-         URL url = getUrl(imagelocation);
-         if (url == null) {
-            OseeLog.log(Activator.class, Level.WARNING, String.format(
-                  "Unable to get url for type [%s] bundle [%s] file [%s] ", typeName, imagelocation.getKey(),
-                  imagelocation.getValue()));
-         } else {
-            return url.openStream();
-         }
-      }
-      return null;
-   }
-
-   private void loadImageData() {
-      if (imageMap == null) {
-         imageMap = new HashMap<String, Pair<String, String>>();
-         IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-         if (extensionRegistry != null) {
-            IExtensionPoint point =
-                  extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.skynet.core.ArtifactTypeImage");
-            if (point != null) {
-               IExtension[] extensions = point.getExtensions();
-               for (IExtension extension : extensions) {
-                  IConfigurationElement[] elements = extension.getConfigurationElements();
-                  String artifact = null;
-                  String path = null;
-                  String bundle = null;
-                  for (IConfigurationElement el : elements) {
-                     if (el.getName().equals("ArtifactImage")) {
-                        artifact = el.getAttribute("ArtifactTypeName");
-                        path = el.getAttribute("ImagePath");
-                        bundle = el.getContributor().getName();
-                        imageMap.put(artifact, new Pair<String, String>(bundle, path));
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   private URL getUrl(Pair<String, String> location) {
-      return Platform.getBundle(location.getKey()).getEntry(location.getValue());
    }
 
    private static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";

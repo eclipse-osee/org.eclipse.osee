@@ -23,26 +23,51 @@ import org.eclipse.swt.graphics.ImageData;
  * @author Ryan D. Brooks
  */
 public class BaseImage implements OseeImage {
-   private static OseeImage overrideImageEnum;
    private final ArtifactType artifactType;
+   private final byte[] imageData;
 
-   private BaseImage(ArtifactType artifactType) {
+   private BaseImage(ArtifactType artifactType, byte[] imageData) {
       this.artifactType = artifactType;
+      this.imageData = imageData;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#createImageDescriptor()
+    */
+   @Override
+   public ImageDescriptor createImageDescriptor() {
+      return ImageDescriptor.createFromImageData(new ImageData(new ByteArrayInputStream(imageData)));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
+    */
+   @Override
+   public String getImageKey() {
+      return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
+   }
+
+   public static OseeImage getBaseImageEnum(ArtifactType artifactType, byte[] imageData) {
+      if (ImageManager.getOverrideImageEnum() != null) {
+         return ImageManager.getOverrideImageEnum();
+      }
+      return new BaseImage(artifactType, imageData);
    }
 
    public static OseeImage getBaseImageEnum(ArtifactType artifactType) {
-      if (overrideImageEnum != null) {
-         return overrideImageEnum;
+      if (ImageManager.getOverrideImageEnum() != null) {
+         return ImageManager.getOverrideImageEnum();
       }
-      if (artifactType.getImageData() == null) {
-         return FrameworkImage.LASER;
-      }
-      return new BaseImage(artifactType);
+      // Check extensions
+      OseeImage oseeImage = ImageManager.getArtifactTypeImage(artifactType.getName());
+      if (oseeImage != null) return oseeImage;
+
+      return FrameworkImage.LASER;
    }
 
    public static OseeImage getBaseImageEnum(Artifact artifact) {
-      if (overrideImageEnum != null) {
-         return overrideImageEnum;
+      if (ImageManager.getOverrideImageEnum() != null) {
+         return ImageManager.getOverrideImageEnum();
       }
       if (artifact instanceof NativeArtifact) {
          try {
@@ -55,26 +80,4 @@ public class BaseImage implements OseeImage {
       return getBaseImageEnum(artifact.getArtifactType());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#createImageDescriptor()
-    */
-   @Override
-   public ImageDescriptor createImageDescriptor() {
-      return ImageDescriptor.createFromImageData(new ImageData(new ByteArrayInputStream(artifactType.getImageData())));
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-    */
-   @Override
-   public String getImageKey() {
-      return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
-   }
-
-   /**
-    * @param imageEnum representing the image that will be returned for all artifacts and artifact types
-    */
-   public static void setupOverrideImage(OseeImage imageEnum) {
-      overrideImageEnum = imageEnum;
-   }
 }

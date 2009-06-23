@@ -162,7 +162,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    public Image getImage() {
       Image image = super.getImage();
       if (image != null) return image;
-      return ImageManager.getImage(FrameworkImage.USER_PURPLE);
+      return ImageManager.getImage(FrameworkImage.USER);
    }
 
 }

@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +23,20 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -51,13 +58,28 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ImageManager {
    private static final String EXTENSION_ELEMENT = "ArtifactImageProvider";
    private static final String EXTENSION_ID = SkynetGuiPlugin.PLUGIN_ID + "." + EXTENSION_ELEMENT;
+   private static OseeImage overrideImageEnum;
 
+   private static final String SELECT_ARTIFACT_TYPES_IMAGE_QUERY =
+         "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
    private static final ImageManager instance = new ImageManager();
+   private final Map<ArtifactType, ArtifactImageProvider> providersOverrideImageMap =
+         Collections.synchronizedMap(new HashMap<ArtifactType, ArtifactImageProvider>());
+   private final Map<String, OseeImage> artifactTypeImageMap =
+         Collections.synchronizedMap(new HashMap<String, OseeImage>());
+   private final ImageRegistry imageRegistry = SkynetGuiPlugin.getInstance().getImageRegistry();
 
    static {
+      loadCache();
+   }
+
+   public static void loadCache() {
+      instance.providersOverrideImageMap.clear();
+      instance.artifactTypeImageMap.clear();
       List<ArtifactImageProvider> providers =
             new ExtensionDefinedObjects<ArtifactImageProvider>(EXTENSION_ID, EXTENSION_ELEMENT, "class").getObjects();
 
+      // Load all image providers first
       for (ArtifactImageProvider imageProvider : providers) {
          try {
             imageProvider.init();
@@ -65,11 +87,28 @@ public class ImageManager {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
-   }
 
-   private final Map<ArtifactType, ArtifactImageProvider> providersMap =
-         Collections.synchronizedMap(new HashMap<ArtifactType, ArtifactImageProvider>());
-   private final ImageRegistry imageRegistry = SkynetGuiPlugin.getInstance().getImageRegistry();
+      // Load base images from database (which can override the ImageManager.registerImage() calls provided
+      // through the ArtifactImageProviders
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES_IMAGE_QUERY);
+
+         while (chStmt.next()) {
+            try {
+               ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+               instance.artifactTypeImageMap.put(artifactType.getName(), BaseImage.getBaseImageEnum(artifactType,
+                     Lib.inputStreamToBytes(chStmt.getBinaryStream("image"))));
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      } finally {
+         chStmt.close();
+      }
+   }
 
    private ImageManager() {
    }
@@ -141,15 +180,21 @@ public class ImageManager {
 
    public static Image getImage(ArtifactType artifactType) {
       try {
-         ArtifactImageProvider imageProvider = instance.providersMap.get(artifactType);
-         if (imageProvider == null) {
-            return getImage(BaseImage.getBaseImageEnum(artifactType));
+         if (overrideImageEnum != null) {
+            return ImageManager.getImage(overrideImageEnum);
          }
 
-         String imageKey = imageProvider.setupImage(artifactType);
-         if (imageKey != null) {
-            return instance.imageRegistry.get(imageKey);
+         // Check if image provider provides override for this image
+         ArtifactImageProvider imageProvider = instance.providersOverrideImageMap.get(artifactType);
+         if (imageProvider != null) {
+            String imageKey = imageProvider.setupImage(artifactType);
+            if (imageKey != null) {
+               return instance.imageRegistry.get(imageKey);
+            }
          }
+
+         // Return image for the base image
+         return getImage(BaseImage.getBaseImageEnum(artifactType));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -164,8 +209,16 @@ public class ImageManager {
       return setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location);
    }
 
-   public static void registerProvider(ArtifactImageProvider imageProvider, ArtifactType artifactType) {
-      instance.providersMap.put(artifactType, imageProvider);
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactType artifactType) {
+      instance.providersOverrideImageMap.put(artifactType, imageProvider);
+   }
+
+   public static void registerBaseImage(String artifactTypeName, OseeImage oseeImage) {
+      if (instance.artifactTypeImageMap.containsKey(artifactTypeName)) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+               "Two ArtifactImageProviders specify image for same artifact type [" + artifactTypeName + "]");
+      }
+      instance.artifactTypeImageMap.put(artifactTypeName, oseeImage);
    }
 
    public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
@@ -207,7 +260,7 @@ public class ImageManager {
 
    private synchronized String setupImage(Artifact artifact) {
       try {
-         ArtifactImageProvider imageProvider = instance.providersMap.get(artifact.getArtifactType());
+         ArtifactImageProvider imageProvider = instance.providersOverrideImageMap.get(artifact.getArtifactType());
          if (imageProvider != null) {
             return imageProvider.setupImage(artifact);
          }
@@ -273,4 +326,41 @@ public class ImageManager {
       }
       return imageKey;
    }
+
+   public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException, IOException {
+      if (byteInput != null) {
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
+               byteInput, artifactType.getArtTypeId());
+      } else {
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
+               SQL3DataType.NULL, artifactType.getArtTypeId());
+      }
+      loadCache();
+      // TODO Need remote event kick to tell other clients of artifact type image changes
+   }
+
+   /**
+    * Loop through extensions to determine default artifact type image.
+    * 
+    * @param artifactTypeName
+    * @throws OseeCoreException
+    */
+   public static OseeImage getArtifactTypeImage(String artifactTypeName) {
+      return instance.artifactTypeImageMap.get(artifactTypeName);
+   }
+
+   /**
+    * @param overrideImageEnum the overrideImageEnum to set
+    */
+   public static void setOverrideImageEnum(OseeImage overrideImageEnum) {
+      ImageManager.overrideImageEnum = overrideImageEnum;
+   }
+
+   /**
+    * @return the overrideImageEnum
+    */
+   public static OseeImage getOverrideImageEnum() {
+      return overrideImageEnum;
+   }
+
 }

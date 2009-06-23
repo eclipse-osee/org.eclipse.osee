@@ -190,34 +190,6 @@
             file="support/OseeTypes_ATS.xml"/>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
-      <ArtifactImage
-            ArtifactTypeName="Decision Review"
-            ImagePath="images/R.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Action"
-            ImagePath="images/action.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Version"
-            ImagePath="images/version.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Task"
-            ImagePath="images/task.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Actionable Item"
-            ImagePath="images/AI.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Team Workflow"
-            ImagePath="images/workflow.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="Team Definition"
-            ImagePath="images/team.gif"/>
-      <ArtifactImage
-            ArtifactTypeName="PeerToPeer Review"
-            ImagePath="images/R.gif">
-      </ArtifactImage>
-   </extension>
-   <extension
          id="TaskMetrics"
          name="TaskMetrics"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">

@@ -76,6 +76,7 @@ public enum FrameworkImage implements OseeImage {
    GEAR("gear.gif"),
    GREEN_PLUS("greenPlus.gif"),
    GROUP("group.gif"),
+   HEADING("heading.gif"),
    HELP("help.gif"),
    IMPORT("import.gif"),
    INCOMING_ARTIFACT_DELETED("INCOMING_Deleted.gif"),
@@ -108,6 +109,7 @@ public enum FrameworkImage implements OseeImage {
    MERGE_NOT_RESOLVEABLE("red_light.gif"),
    MERGE_SUCCESS("icon_success.gif"),
    MERGE_CAUTION("icon_warning.gif"),
+   NARRITIVE("narrative.gif"),
    OUTGOING_ARTIFACT_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_INTRODUCED("OUTGOING_New.gif"),
@@ -125,7 +127,8 @@ public enum FrameworkImage implements OseeImage {
    REMOVE("remove.gif"),
    REJECT("reject.gif"),
    RUN_EXC("run_exc.gif"),
-   X_RED("redRemove.gif"),
+   PAGE("page.gif"),
+   RULE("rule.gif"),
    SAVE_NEEDED("save.gif"),
    SAVED("saved.gif"),
    SAVE("save.gif"),
@@ -136,16 +139,20 @@ public enum FrameworkImage implements OseeImage {
    TRASH("trash.gif"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
+   USER("userPurple.gif"),
    USER_PURPLE("userPurple.gif"),
    USER_RED("userRed.gif"),
    USER_GREY("userGrey.gif"),
    USER_YELLOW("userYellow.gif"),
    USER_ADD("userAdd.gif"),
-   USERS("user2.gif"),
+   USERS("users2.gif"),
    UN_ARCHIVE("unarchive.gif"),
    VERSION("version.gif"),
+   WORKFLOW("workflow.gif"),
+   WIDGET("widget.gif"),
    WARNING("warn.gif"),
-   WARNING_OVERLAY("alert_8_8.gif");
+   WARNING_OVERLAY("alert_8_8.gif"),
+   X_RED("redRemove.gif");
 
    private final String fileName;
 

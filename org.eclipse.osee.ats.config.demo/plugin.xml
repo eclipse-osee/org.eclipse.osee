@@ -17,21 +17,6 @@
       </DatabaseTask>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
-      <ArtifactImage
-            ArtifactTypeName="Demo Code Team Workflow"
-            ImagePath="images/workflow.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Demo Req Team Workflow"
-            ImagePath="images/workflow.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Demo Test Team Workflow"
-            ImagePath="images/workflow.gif">
-      </ArtifactImage>
-   </extension>
-   <extension
          point="org.eclipse.osee.ats.AtsAIandTeamConfig">
       <AtsAIandTeamConfig
             vueFilename="support/Osee ATS Config Demo.vue">
@@ -78,6 +63,12 @@
       <ExcelFile
             file="support/OseeTypes_DemoProgram.xml">
       </ExcelFile>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
+      <ArtifactImageProvider
+            class="org.eclipse.osee.ats.config.demo.DemoArtifactImageProvider">
+      </ArtifactImageProvider>
    </extension>
 
 </plugin>

@@ -11,29 +11,6 @@
       </ExcelFile>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
-      <ArtifactImage
-            ArtifactTypeName="Test Procedure"
-            ImagePath="images/procedure.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Test Configuration"
-            ImagePath="images/config.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Test Run"
-            ImagePath="images/testrun.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Test Case"
-            ImagePath="images/file.gif">
-      </ArtifactImage>
-      <ArtifactImage
-            ArtifactTypeName="Test Support"
-            ImagePath="images/function.gif">
-      </ArtifactImage>
-   </extension>
-   <extension
          id="MappedAttributeDataProvider"
          name="MappedAttributeDataProvider"
          point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">

@@ -11,18 +11,13 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Description of an Artifact subtype. The descriptor can be used to create new artifacts that are of the type of this
@@ -36,22 +31,13 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final long serialVersionUID = 1L;
    private final int artTypeId;
-   private byte[] imageData;
    private String name;
    private final String namespace;
 
-   ArtifactType(int artTypeId, String namespace, String name, InputStream imageStream) throws OseeDataStoreException {
+   ArtifactType(int artTypeId, String namespace, String name) throws OseeDataStoreException {
       this.artTypeId = artTypeId;
       this.name = name;
       this.namespace = namespace == null ? "" : namespace;
-
-      if (imageStream != null) {
-         try {
-            this.imageData = Lib.inputStreamToBytes(imageStream);
-         } catch (IOException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
       ArtifactTypeManager.cache(this);
    }
 
@@ -164,14 +150,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
-    * @param imageDescriptor the imageDescriptor to set
-    * @throws IOException
-    */
-   public void setImageData(InputStream imageStream) throws IOException {
-      this.imageData = Lib.inputStreamToBytes(imageStream);
-   }
-
-   /**
     * @return the namespace
     */
    public String getNamespace() {
@@ -218,10 +196,4 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return true;
    }
 
-   /**
-    * @return the imageData
-    */
-   public byte[] getImageData() {
-      return imageData;
-   }
 }

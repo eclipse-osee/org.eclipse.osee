@@ -56,5 +56,11 @@
             id="org.eclipse.osee.ote.ui.TestPerspective"
             name="OSEE Test"/>
    </extension>
+     <extension
+           point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
+        <ArtifactImageProvider
+              class="org.eclipse.osee.ote.ui.OteArtifactImageProvider">
+        </ArtifactImageProvider>
+     </extension>
      
 </plugin>
