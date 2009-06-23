@@ -110,7 +110,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         List<String> items = getSelectableItems();
+         List<String> items = getSelected();
          for (String item : items) {
             status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, item);
             if (!status.isOK()) {

@@ -66,4 +66,5 @@ public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<Branch> {
          return null;
       }
    }
+
 }
