@@ -129,7 +129,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
             branchData.setBranchState(BranchState.CREATED);
             branchData.setReason("System Root should always be set to created");
          }
-      } else if (state != BranchState.DELETED) {
+      } else if (state != BranchState.DELETED && state != BranchState.COMMIT_IN_PROGRESS && state != BranchState.REBASELINE_IN_PROGRESS) {
          if (BranchType.WORKING.equals(type)) {
             if (isRebaselined(branchData)) {
                branchData.setBranchState(BranchState.REBASELINED);
