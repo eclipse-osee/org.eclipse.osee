@@ -93,18 +93,27 @@ public abstract class ImageManagerTest {
 
       Artifact folder =
             ArtifactQuery.getArtifactFromTypeAndName("Folder", "User Groups", BranchManager.getCommonBranch());
+
+      // Check folder image
       assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
             ImageManager.getImage(FrameworkImage.FOLDER)));
 
+      // Set different image for folder
       ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"),
             getByteArrayInputStream("heading.gif"));
 
-      TestUtil.sleep(2000);
+      // Test that different image overrides folder image
       assertFalse("Image returned should be \"Heading\" image.", ImageManager.getImage(folder).equals(
-            ImageManager.getImage(FrameworkImage.HEADING)));
+            ImageManager.getImage(FrameworkImage.FOLDER)));
 
+      // Clear db image
+      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
+
+      // Reload cache
       ImageManager.loadCache();
+      TestUtil.sleep(2000);
 
+      // Test that folder image is back
       assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
             ImageManager.getImage(FrameworkImage.FOLDER)));
    }
