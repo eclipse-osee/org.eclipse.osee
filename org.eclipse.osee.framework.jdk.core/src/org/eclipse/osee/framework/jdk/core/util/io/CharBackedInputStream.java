@@ -25,9 +25,9 @@ import java.util.LinkedList;
  * @author Ryan D. Brooks
  */
 public class CharBackedInputStream extends InputStream implements Appendable {
-   private LinkedList<ByteBuffer> backers;
+   private final LinkedList<ByteBuffer> backers;
    private ByteBuffer currentBacker;
-   private CharsetEncoder encoder;
+   private final CharsetEncoder encoder;
    private Writer writer;
 
    /**
@@ -49,6 +49,7 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       /* (non-Javadoc)
        * @see java.io.Writer#write(char[], int, int)
        */
+      @Override
       public void write(char[] cbuf, int off, int len) throws IOException {
          addBackingSource(cbuf, off, len);
       }
@@ -56,12 +57,14 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       /* (non-Javadoc)
        * @see java.io.Flushable#flush()
        */
+      @Override
       public void flush() throws IOException {
       }
 
       /* (non-Javadoc)
        * @see java.io.Closeable#close()
        */
+      @Override
       public void close() throws IOException {
       }
 
@@ -69,6 +72,7 @@ public class CharBackedInputStream extends InputStream implements Appendable {
          addBackingSource(str);
       }
 
+      @Override
       public void write(String str, int off, int len) throws CharacterCodingException {
          addBackingSource(str, off, len);
       }
@@ -136,6 +140,7 @@ public class CharBackedInputStream extends InputStream implements Appendable {
     * 
     * @see java.io.InputStream#read()
     */
+   @Override
    public int read() throws IOException {
       if (currentBacker == null) {
          return -1;
@@ -181,4 +186,17 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       throw new UnsupportedOperationException(
             "doing this one character at a time would be so inefficient it would defeat the whole purpose of this class");
    }
+
+   /* (non-Javadoc)
+    * @see java.io.InputStream#available()
+    */
+   @Override
+   public int available() throws IOException {
+      int count = 0;
+      for (ByteBuffer backer : backers) {
+         count += backer.array().length;
+      }
+      return count;
+   }
+
 }
