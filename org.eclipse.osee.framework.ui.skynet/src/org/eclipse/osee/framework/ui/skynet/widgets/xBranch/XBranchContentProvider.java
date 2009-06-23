@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -81,7 +81,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
             Collection<Branch> childBrances =
-                  showArchivedBranches ? branch.getDescendents() : branch.getChildBranches();
+                  showArchivedBranches ? branch.getDescendants() : branch.getChildBranches();
 
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
@@ -163,7 +163,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             try {
                if (!showChildBranchesAtMainLevel) {
                   hasChildren =
-                        showArchivedBranches ? !((Branch) element).getDescendents().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                        showArchivedBranches ? !((Branch) element).getDescendants().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
                } else {
                   hasChildren = false;
                }
