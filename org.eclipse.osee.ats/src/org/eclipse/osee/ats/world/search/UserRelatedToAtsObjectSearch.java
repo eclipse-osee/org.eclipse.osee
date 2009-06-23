@@ -16,13 +16,11 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
@@ -66,23 +64,14 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
-      List<ISearchPrimitive> smaArtifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-      for (String artifactTypeName : StateMachineArtifact.getAllSMATypeNames()) {
-         smaArtifactTypeCriteria.add(new ArtifactTypeSearch(artifactTypeName, DepricatedOperator.EQUAL));
-      }
-      FromArtifactsSearch smaArtifactTypeSearch = new FromArtifactsSearch(smaArtifactTypeCriteria, false);
-
-      List<ISearchPrimitive> smaCriteria = new LinkedList<ISearchPrimitive>();
-      smaCriteria.add(smaArtifactTypeSearch);
-      smaCriteria.add(currentStateSearch);
-
       if (isCancelled()) return EMPTY_SET;
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(ArtifactPersistenceManager.getArtifacts(smaCriteria, true, AtsPlugin.getAtsBranch()));
+      arts.addAll(ArtifactPersistenceManager.getArtifacts(currentStateCriteria, false, AtsPlugin.getAtsBranch()));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.SubscribedUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(AtsRelation.PrivilegedMember_Team));
 
       if (isCancelled()) return EMPTY_SET;
       return arts;
