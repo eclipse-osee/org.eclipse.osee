@@ -49,7 +49,7 @@ public class WordAttribute extends StringAttribute {
    public boolean subClassSetValue(String value) throws OseeCoreException {
       // Do not allow save on tracked changes except on three way merges
       if (WordAnnotationHandler.containsWordAnnotations(value) && getArtifact().getBranch().getBranchType() != BranchType.MERGE) {
-         displayTrackedChangesErrorMessage = "Detected tracked changes on for this artifact.";
+         displayTrackedChangesErrorMessage = "Cannot save - Detected tracked changes on this artifact. ";
          throw new OseeArgumentException(displayTrackedChangesErrorMessage);
       } else {
          value = WordUtil.removeWordMarkupSmartTags(value);

@@ -84,8 +84,9 @@ public class WordTrackedChangesTest {
       renderer = WordEditTest.openArtifacts(artifacts);
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(5000);
-      assertTrue("Detected Tracked Changes Succcessfully", WordAttribute.getDisplayTrackedChangesErrorMessage().equals(
-            "Detected tracked changes on for this artifact.") == true);
+      assertTrue("Detected Tracked Changes Succcessfully",
+            WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
+                  "Detected tracked changes on for this artifact.") == true);
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
@@ -129,8 +130,9 @@ public class WordTrackedChangesTest {
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(5000);
-      assertTrue("Detected Tracked Changes Succcessfully", WordAttribute.getDisplayTrackedChangesErrorMessage().equals(
-            "Detected tracked changes on for this artifact.") == true);
+      assertTrue("Detected Tracked Changes Succcessfully",
+            WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
+                  "Detected tracked changes on for this artifact.") == true);
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
