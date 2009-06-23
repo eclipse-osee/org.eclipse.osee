@@ -142,15 +142,9 @@
       </Operation>
    </extension>
       <extension
-            id="CheckValidAttributeTypes"
-            name="CheckValidAttributeTypes"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidAttributeTypes"/>
-      </extension>
-      <extension
             id="ChangeArtifactTypeBlam"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam "/>
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam"/>
       </extension>
  <extension
        id="SubsystemToLowLevelReqTraceReport"
@@ -220,12 +214,6 @@
             className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
       </Operation>
    </extension>
-      <extension
-            id="CheckValidArtifactTypes"
-            name="CheckValidArtifactTypes"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidArtifactTypes"/>
-      </extension>
    <extension
          id="PublishRequirements"
          name="PublishRequirements"
