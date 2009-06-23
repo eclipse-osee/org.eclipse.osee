@@ -11,28 +11,20 @@
 
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
-import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.program.Program;
 
 /**
  * @author Robert A. Fisher
@@ -76,7 +68,7 @@ public class ArtifactImportOperation extends AbstractOperation {
          subOperation = new ConvertToRealArtifacts("Rough to Real Artifact(s)", transaction);
          doSubWork(subOperation, monitor, 0.50);
 
-         subOperation = new ValidateImportRoot("Validate Artifact(s) to Import");
+         subOperation = new ArtifactValidationCheckOperation(importRoot.getDescendants(), stopOnError);
          doSubWork(subOperation, monitor, 0.20);
 
          importRoot.persistAttributesAndRelations(transaction);
@@ -86,54 +78,6 @@ public class ArtifactImportOperation extends AbstractOperation {
 
       } finally {
          monitor.done();
-      }
-   }
-
-   private final class ValidateImportRoot extends AbstractOperation {
-      public ValidateImportRoot(String operationName) {
-         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         monitor.subTask("Validating Artifacts");
-         List<Artifact> artifacts = importRoot.getDescendants();
-         if (!artifacts.isEmpty()) {
-            Writer writer = null;
-            File file = null;
-            try {
-               int totalArts = artifacts.size();
-               int workAmount = getTotalWorkUnits() / totalArts;
-               for (int index = 0; index < totalArts; index++) {
-                  monitor.subTask(String.format("Validating Artifacts: [%s of %s]", index + 1, totalArts));
-                  Artifact artifactChanged = artifacts.get(index);
-                  IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifactChanged);
-                  if (!status.isOK()) {
-                     if (stopOnError) {
-                        setStatus(status);
-                     }
-                     if (writer == null) {
-                        file = OseeData.getFile(String.format("OseeValidationErrors%s.txt", Lib.getDateTimeString()));
-                        writer = new BufferedWriter(new FileWriter(file));
-                     }
-                     writer.write(String.format("%s:[%s] - %s\n", artifactChanged.getArtifactTypeName(),
-                           artifactChanged.getDescriptiveName(), status.getMessage()));
-                  }
-                  monitor.worked(workAmount);
-               }
-            } finally {
-               if (writer != null) {
-                  writer.flush();
-                  writer.close();
-               }
-            }
-            if (file != null) {
-               Program.launch(file.getAbsolutePath());
-            }
-         }
       }
    }
 
