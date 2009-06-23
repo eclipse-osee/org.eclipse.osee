@@ -45,7 +45,9 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -138,19 +140,19 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       this.xResultData = xResultData;
       if (monitor != null) monitor.beginTask(getName(), 20);
       loadAtsBranchArtifacts();
-      testArtifactIds();
+      //      testArtifactIds();
       testAtsAttributeValues();
-      testAtsActionsHaveTeamWorkflow();
-      testAtsWorkflowsHaveAction();
-      testAtsWorkflowsHaveZeroOrOneVersion();
-      testTasksHaveParentWorkflow();
-      testReviewsHaveParentWorkflowOrActionableItems();
-      testReviewsHaveValidDefectAndRoleXml();
-      testTeamWorkflows();
-      testTeamDefinitions();
-      testVersionArtifacts();
-      testStateMachineAssignees();
-      testAtsLogs();
+      //      testAtsActionsHaveTeamWorkflow();
+      //      testAtsWorkflowsHaveAction();
+      //      testAtsWorkflowsHaveZeroOrOneVersion();
+      //      testTasksHaveParentWorkflow();
+      //      testReviewsHaveParentWorkflowOrActionableItems();
+      //      testReviewsHaveValidDefectAndRoleXml();
+      //      testTeamWorkflows();
+      //      testTeamDefinitions();
+      //      testVersionArtifacts();
+      //      testStateMachineAssignees();
+      //      testAtsLogs();
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
@@ -282,6 +284,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (fixAttributeValues) {
                   attr.delete();
                }
+            }
+         }
+
+         if (artifact instanceof StateMachineArtifact) {
+            try {
+               artifact.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+            } catch (AttributeDoesNotExist ex) {
+               // do nothing
+            } catch (MultipleAttributesExist ex) {
+               xResultData.logError("Artifact: " + XResultData.getHyperlink(artifact) + " Multiple resolution attributes exist");
             }
          }
 
