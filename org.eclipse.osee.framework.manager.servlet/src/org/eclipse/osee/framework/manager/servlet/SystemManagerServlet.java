@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -235,22 +233,22 @@ public class SystemManagerServlet extends OseeHttpServlet {
          String clientPort = String.valueOf(session.getPort());
          boolean isOk = false;
          try {
-              // TODO this check takes too long
-             //            isOk = HttpProcessor.isAlive(session.getClientAddress(), session.getPort());
+            // TODO this check takes too long
+            //            isOk = HttpProcessor.isAlive(session.getClientAddress(), session.getPort());
          } catch (Exception ex) {
             // OseeLog.log(this.getClass(), Level.SEVERE, ex);
          }
-         items.add(AHTML.addRowMultiColumnTable(new String[] {dateFormat.format(session.getCreation()),
-               "unknown", session.getUserId(), session.getVersion(), session.getClientMachineName(),
+         items.add(AHTML.addRowMultiColumnTable(new String[] {dateFormat.format(session.getCreation()), "unknown",
+               session.getUserId(), session.getVersion(), session.getClientMachineName(),
                createAnchor(AnchorType.INFO_ANCHOR, sessionId, clientAddress, clientPort),
                createAnchor(AnchorType.LOG_ANCHOR, sessionId, clientAddress, clientPort),
                dateFormat.format(session.getLastInteractionDate()), clientAddress, clientPort,
                createAnchor(AnchorType.DELETE_ANCHOR, sessionId, requestAddress, requestPort)}));
       }
-      Arrays.sort(items.toArray(new String[items.size()]));
-      Collections.reverse(items);
-      for (String item : items) {
-         sb.append(item);
+      String[] sortedItems = items.toArray(new String[items.size()]);
+      Arrays.sort(sortedItems);
+      for (int x = sortedItems.length - 1; x > 0; x--) {
+         sb.append(sortedItems[x]);
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
