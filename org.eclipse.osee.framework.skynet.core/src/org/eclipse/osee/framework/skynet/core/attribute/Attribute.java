@@ -81,12 +81,10 @@ public abstract class Attribute<T> {
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
    public final void initializeToDefaultValue() throws OseeCoreException {
+      setDirty(); // always do this since this is only called when creating an attribute so it should be dirty anyway
       String defaultValue = getAttributeType().getDefaultValue();
       if (defaultValue != null) {
-         boolean response = subClassSetValue(convertStringToValue(defaultValue));
-         if (response) {
-            setDirty();
-         }
+         subClassSetValue(convertStringToValue(defaultValue));
       }
    }
 
