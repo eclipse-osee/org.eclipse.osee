@@ -195,6 +195,10 @@ public class OseeEnumTypeManager {
       }
    }
 
+   public static int getDefaultEnumTypeId() throws OseeCoreException {
+      return -1;
+   }
+
    public static OseeEnumType createEnumType(String enumTypeName, List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
       checkEnumTypeName(enumTypeName);
       checkEntryIntegrity(enumTypeName, entries);
@@ -216,35 +220,35 @@ public class OseeEnumTypeManager {
       List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
       String enumTypeName = "";
 
-      if (Strings.isValid(xmlDefinition)) {
-         Document document;
-         try {
-            document = Jaxp.readXmlDocument(xmlDefinition);
-         } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
-         }
-         enumTypeName = attributeTypeName;
-         Element choicesElement = document.getDocumentElement();
-         NodeList enumerations = choicesElement.getChildNodes();
-         Set<String> choices = new LinkedHashSet<String>();
-
-         for (int i = 0; i < enumerations.getLength(); i++) {
-            Node node = enumerations.item(i);
-            if (node.getNodeName().equalsIgnoreCase("Enum")) {
-               choices.add(node.getTextContent());
-            } else {
-               throw new OseeArgumentException("Validity Xml not of excepted enum format");
-            }
-         }
-
-         int ordinal = 0;
-         for (String choice : choices) {
-            entries.add(new ObjectPair<String, Integer>(choice, ordinal++));
-         }
-
-      } else {
-         enumTypeName = "Osee Default Enum";
+      if (!Strings.isValid(xmlDefinition)) {
+         throw new OseeArgumentException("The enum xml definition must not be null or empty");
       }
+
+      Document document;
+      try {
+         document = Jaxp.readXmlDocument(xmlDefinition);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      enumTypeName = attributeTypeName;
+      Element choicesElement = document.getDocumentElement();
+      NodeList enumerations = choicesElement.getChildNodes();
+      Set<String> choices = new LinkedHashSet<String>();
+
+      for (int i = 0; i < enumerations.getLength(); i++) {
+         Node node = enumerations.item(i);
+         if (node.getNodeName().equalsIgnoreCase("Enum")) {
+            choices.add(node.getTextContent());
+         } else {
+            throw new OseeArgumentException("Validity Xml not of excepted enum format");
+         }
+      }
+
+      int ordinal = 0;
+      for (String choice : choices) {
+         entries.add(new ObjectPair<String, Integer>(choice, ordinal++));
+      }
+
       return createEnumType(enumTypeName, entries);
    }
 

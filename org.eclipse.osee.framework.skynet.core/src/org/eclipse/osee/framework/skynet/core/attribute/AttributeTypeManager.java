@@ -184,8 +184,12 @@ public class AttributeTypeManager {
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
 
-      OseeEnumType enumType = OseeEnumTypeManager.createEnumTypeFromXml(namespace + name, validityXml);
-      int enumTypeId = enumType.getEnumTypeId();
+      int enumTypeId;
+      if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
+         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(namespace + name, validityXml).getEnumTypeId();
+      } else {
+         enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
+      }
 
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
             fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
