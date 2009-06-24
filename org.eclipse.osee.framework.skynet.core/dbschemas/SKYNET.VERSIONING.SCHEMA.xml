@@ -166,9 +166,6 @@
 		<Constraint schema="OSEE" id="ATTR_PROVIDER_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ATTRIBUTE_PROVIDER_TYPE" column="ATTR_PROVIDER_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK2" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" onDelete="CASCADE" />
-		</Constraint>
 		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
