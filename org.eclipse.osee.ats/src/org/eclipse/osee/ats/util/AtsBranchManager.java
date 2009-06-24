@@ -230,8 +230,8 @@ public class AtsBranchManager {
          }
 
          if (isExecutionAllowed) {
-         Job job = BranchManager.deleteBranch(branch);
-         job.join();
+            Job job = BranchManager.deleteBranch(branch);
+            job.join();
             IStatus status = job.getResult();
             if (promptUser) {
                AWorkbench.popup("Delete Complete",
@@ -243,7 +243,7 @@ public class AtsBranchManager {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.");
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
       }
    }
 
@@ -765,10 +765,10 @@ public class AtsBranchManager {
                // If subject doesn't have access, add it
                for (User user : smaMgr.getStateMgr().getAssignees()) {
                   AccessControlManager.getInstance().setPermission(user, branch, PermissionEnum.FULLACCESS);
+               }
             }
          }
       }
-   }
    }
 
    private final class AtsCommitJob extends Job {
