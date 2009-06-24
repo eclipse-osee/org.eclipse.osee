@@ -193,11 +193,13 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new XResultDataExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
-         XNavigateItem emailItems = new XNavigateItem(null, "Email", FrameworkImage.EMAIL);
+         XNavigateItem emailItems = new XNavigateItem(null, "Email & Notifications", FrameworkImage.EMAIL);
          new EmailTeamsItem(emailItems, null, MemberType.Both);
          new EmailTeamsItem(emailItems, null, MemberType.Leads);
          new EmailTeamsItem(emailItems, null, MemberType.Members);
          new EmailGroupsAndUserGroups(emailItems, GroupType.Both);
+         new SubscribeByActionableItem(emailItems);
+         new SubscribeByTeamDefinition(emailItems);
          items.add(emailItems);
 
          items.add(reportItems);

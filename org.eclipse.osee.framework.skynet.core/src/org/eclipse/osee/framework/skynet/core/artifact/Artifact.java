@@ -225,6 +225,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return Collections.castAll(getRelatedArtifacts(side));
    }
 
+   public <A extends Artifact> List<A> getRelatedArtifactsOfType(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
+      Set<Object> objs = new HashSet<Object>();
+      for (Artifact art : getRelatedArtifacts(side)) {
+         if (clazz.isInstance(art)) {
+            objs.add(art);
+         }
+      }
+      return Collections.castAll(getRelatedArtifacts(side));
+   }
+
    /**
     * Called upon completion of the initialization of an artifact when it is initially created. This allows sub-class
     * artifacts to set default attributes or do default processing.
@@ -1351,6 +1361,29 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       // Remove relations that have been removed
       for (Artifact artifact : currentlyRelated) {
          if (!artifacts.contains(artifact)) {
+            deleteRelation(relationSide, artifact);
+         }
+      }
+   }
+
+   /**
+    * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
+    * 
+    * @param relationSide
+    * @param artifacts
+    * @throws OseeCoreException
+    */
+   public void setRelationsOfType(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
+      Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
+      // Add new relations if don't exist
+      for (Artifact artifact : artifacts) {
+         if (clazz.isInstance(artifact) && !currentlyRelated.contains(artifact)) {
+            addRelation(relationSide, artifact);
+         }
+      }
+      // Remove relations that have been removed
+      for (Artifact artifact : currentlyRelated) {
+         if (clazz.isInstance(artifact) && !artifacts.contains(artifact)) {
             deleteRelation(relationSide, artifact);
          }
       }

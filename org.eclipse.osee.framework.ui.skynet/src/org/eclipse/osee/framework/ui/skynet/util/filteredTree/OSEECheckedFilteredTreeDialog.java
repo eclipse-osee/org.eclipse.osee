@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util.filteredTree;
 
-import java.util.Set;
+import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -37,7 +37,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    private Object input;
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
-   private Set<? extends Object> initialSelections;
+   private Collection<? extends Object> initialSelections;
 
    public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
@@ -66,7 +66,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
     * 
     * @param object the initial selection.
     */
-   public void setInitialSelections(Set<? extends Object> initialSelections) {
+   public void setInitialSelections(Collection<? extends Object> initialSelections) {
       this.initialSelections = initialSelections;
       if (treeViewer != null) {
          treeViewer.setInitalChecked(initialSelections);

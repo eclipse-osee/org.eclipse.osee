@@ -115,6 +115,13 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       AtsCache.cache(this);
    }
 
+   public static Set<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
+      TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
+      if (topTeamDef == null) return EMPTY_SET;
+      return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
+            active, TeamDefinitionArtifact.class);
+   }
+
    public Branch getParentBranch() throws OseeCoreException {
       try {
          Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);

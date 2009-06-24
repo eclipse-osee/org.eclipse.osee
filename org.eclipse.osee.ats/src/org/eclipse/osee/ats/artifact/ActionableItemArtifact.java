@@ -53,8 +53,8 @@ public class ActionableItemArtifact extends Artifact {
       return AtsCache.getArtifactsByActive(active, ActionableItemArtifact.class);
    }
 
-   public static String getNotActionableItemError(ActionableItemArtifact aia) {
-      return "Action can not be written against Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
+   public static String getNotActionableItemError(Artifact aia) {
+      return "Action can not be written against " + aia.getArtifactTypeName() + " \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
    public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
