@@ -235,6 +235,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+      if (branch == null) return;
       if (branchId != branch.getBranchId()) return;
       if (branchModType == BranchEventType.Deleted) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -265,6 +266,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    private void closeView() {
+      System.out.println("ID: " + getViewSite().getSecondaryId());
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }
 
