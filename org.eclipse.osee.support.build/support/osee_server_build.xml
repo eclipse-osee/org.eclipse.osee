@@ -6,6 +6,7 @@
 
 	<target name="build">
 		<property name="releaseVersion" value="0.8.1" />
+		<property name="forceContextQualifier" value="200906250923" />
 		<property name="master.feature" value="org.eclipse.osee.framework.server.feature" />
 		<property name="pdeTarget" value="main" />
 		<antcall target="PdeBuild" />
@@ -13,16 +14,8 @@
 </project>
 
 <!--
+
 eclipsec -application org.eclipse.ant.core.antRunner -buildfile c:\UserData\workspace\org.eclipse.osee.support.build\support\osee_server_build.xml
-C:\UserData\workspace\sandbox\repository>java -Xmx512m -jar plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -application  org.eclipse.osee.framework.server.admin.OseeBackup -console
+C:\UserData\workspace\sandbox\repository>java -Xmx512m -Dosee.db.connection.id= -Dosee.application.server.data= -jar plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -application  org.eclipse.osee.framework.server.admin.OseeBackup -console
 
-org.eclipse.equinox.common_3.4.0.v20080421-2006.jar
-org.eclipse.osgi_3.4.3.R34x_v20081215-1030.jar
-org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar
-org.eclipse.update.configurator_3.2.201.R34x_v20080819.jar
-
-configuration\
-	config.ini
-		osgi.bundles=org.eclipse.equinox.common@2:start, org.eclipse.update.configurator@3:start
-		osgi.noShutdown=true
 -->
