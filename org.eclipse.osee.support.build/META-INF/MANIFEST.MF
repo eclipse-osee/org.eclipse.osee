@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Build Plug-in
+Bundle-SymbolicName: org.eclipse.osee.support.build
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclpse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

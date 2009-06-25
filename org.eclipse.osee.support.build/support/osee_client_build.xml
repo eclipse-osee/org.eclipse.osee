@@ -1,0 +1,14 @@
+<project name="Osee Client Build" default="build" basedir=".">
+	<!-- since this ant file is assumed to be located at <workspace>\org.eclipse.osee.buildsupport, basedir will be the same -->
+
+	<import file="${basedir}/osee_common_build.xml" />
+
+	<target name="build">
+		<property name="releaseVersion" value="0.8.1RC" />
+		<property name="master.feature" value="org.eclipse.osee.master.feature" />
+		<property name="filteredDependencyCheck" value="false" />
+		<echo message="http.proxyHost=${http.proxyHost}: http.proxyPort=${http.proxyPort}" />
+		<antcall target="PdeBuild" />
+	</target>
+
+</project>
