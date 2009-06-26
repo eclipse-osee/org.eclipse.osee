@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.messaging.dds.entity;
 
 import java.util.Collection;
-
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
@@ -181,7 +180,7 @@ public class DataWriter extends DomainEntity {
          return ReturnCode.NOT_ENABLED;
       //TUNE find a way to reuse the DataSample and DataStoreItem objects instead new'ing them everytime
       DataSample dataSample = new DataSample(data, new SampleInfo ());
-      publisher.publishData(null, null, new DataStoreItem(dataSample, topic, this));
+      publisher.publishData(destination, source, new DataStoreItem(dataSample, topic, this));
       
       return ReturnCode.OK;
    }
