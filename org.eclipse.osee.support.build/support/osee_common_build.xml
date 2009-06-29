@@ -21,11 +21,16 @@
 		<!-- ${equinoxLauncherPluginVersion} -->
 		<ant antfile="${baseLocation}/plugins/org.eclipse.pde.build_3.4.1.R34x_v20081217/scripts/build.xml" target="${pdeTarget}" />
 
-		<ant antfile="${postBuildFile}" target="${postBuildTarget}" />
-
+		<antcall target="internalPostBuild" />
+		
 		<antcall target="copyToUpdatesite" />
 	</target>
 
+	
+	<target name="internalPostBuild" if="postBuildFile">
+		<ant antfile="${postBuildFile}" target="${postBuildTarget}" />
+	</target>
+	
 	<target name="copyToUpdatesite" if="update.site">
 		<delete failonerror="false">
 			<fileset dir="${update.site}" includes="**/*" defaultexcludes="false" />
