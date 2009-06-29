@@ -20,12 +20,6 @@
 		
 		<!-- ${equinoxLauncherPluginVersion} -->
 		<ant antfile="${baseLocation}/plugins/org.eclipse.pde.build_3.4.1.R34x_v20081217/scripts/build.xml" target="${pdeTarget}" />
-
-		<copy todir="${buildDirectory}/repository/configuration/">
-			<fileset file="${basedir}/config.ini" />
-		</copy>
-				
-		<antcall target="copyToUpdatesite" />
 	</target>
 	
 	<target name="copyToUpdatesite" if="update.site" >
