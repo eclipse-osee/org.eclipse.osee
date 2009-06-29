@@ -17,22 +17,26 @@
 			<fileset file="${basedir}/osee.map" />
 		</copy>
 		<antcall target="copySupplementalMapFile" />
-		
+
 		<!-- ${equinoxLauncherPluginVersion} -->
 		<ant antfile="${baseLocation}/plugins/org.eclipse.pde.build_3.4.1.R34x_v20081217/scripts/build.xml" target="${pdeTarget}" />
+
+		<ant antfile="${postBuildFile}" target="${postBuildTarget}" />
+
+		<antcall target="copyToUpdatesite" />
 	</target>
-	
-	<target name="copyToUpdatesite" if="update.site" >
-		<delete>
+
+	<target name="copyToUpdatesite" if="update.site">
+		<delete failonerror="false">
 			<fileset dir="${update.site}" includes="**/*" defaultexcludes="false" />
 		</delete>
-		
+
 		<copy todir="${update.site}">
-			<fileset dir="${buildDirectory}/repository"/>
+			<fileset dir="${buildDirectory}/repository" />
 		</copy>
 	</target>
-	
-	<target name="copySupplementalMapFile" if="mapFile" >
+
+	<target name="copySupplementalMapFile" if="mapFile">
 		<copy todir="${buildDirectory}/maps">
 			<fileset file="${mapFile}" />
 		</copy>

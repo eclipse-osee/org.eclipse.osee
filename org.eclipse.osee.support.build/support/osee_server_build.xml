@@ -9,26 +9,26 @@
 		<property name="forceContextQualifier" value="200906250923" />
 		<property name="master.feature" value="org.eclipse.osee.framework.server.feature" />
 		<property name="pdeTarget" value="main" />
-		<antcall target="PdeBuild" />
+		<property name="postBuildFile"  value="${ant.file}" />
+		<property name="postBuildTarget"  value="postBuild" />
 
+		<antcall target="PdeBuild" />
+	</target>
+
+	<target name="postBuild">
 		<copy todir="${buildDirectory}/repository/configuration/">
 			<fileset file="${basedir}/config.ini" />
 		</copy>
 
-		<move todir="{buildDirectory}/repository">
-			<fileset dir="{buildDirectory}/repository/plugins">
-				<include name="org.eclipse.equinox.common_*.jar" />
-				<include name="org.eclipse.osgi_*.jar" />
-				<include name="org.eclipse.update.configurator_*.jar" />
+		<move todir="${buildDirectory}/repository">
+			<fileset dir="${buildDirectory}/repository/plugins">
+				<include name="org.eclipse.equinox.launcher_*.jar" />
 			</fileset>
 		</move>
-
-		<antcall target="copyToUpdatesite" />
 	</target>
-	<echo message="buildDirectory=${buildDirectory}" />
 </project>
 
 <!--
 eclipsec -application org.eclipse.ant.core.antRunner -buildfile c:\UserData\workspace\org.eclipse.osee.support.build\support\osee_server_build.xml
-C:\UserData\workspace\sandbox\repository>java -Xmx512m -Dosee.db.connection.id= -jar plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -application  org.eclipse.osee.framework.server.admin.OseeBackup -console
+C:\UserData\workspace\sandbox\repository>java -Xmx512m -Dosee.db.connection.id=oracle8 -jar org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -console
 -->
