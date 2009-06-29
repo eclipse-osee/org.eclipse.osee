@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,6 +48,19 @@ public class HttpProcessor {
 
    private static HttpClient getHttpClient() {
       return instance.httpClient;
+   }
+
+   public static String acquireString(URL url) throws Exception {
+      ByteArrayOutputStream sourceOutputStream = new ByteArrayOutputStream();
+      try {
+         AcquireResult result = HttpProcessor.acquire(url, sourceOutputStream);
+         if (result.getCode() == HttpURLConnection.HTTP_OK) {
+            return sourceOutputStream.toString();
+         }
+      } finally {
+         sourceOutputStream.close();
+      }
+      return null;
    }
 
    public static boolean isAlive(String serverAddress, int port) {
