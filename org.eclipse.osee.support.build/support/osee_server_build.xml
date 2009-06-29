@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Osee Common Build Tasks" default="build" basedir=".">
+<project name="Osee Server Build Tasks" default="build" basedir=".">
 	<!-- this ant file is assumed to be located at <workspace>\org.eclipse.osee.support.build\support, basedir will be the same -->
 
 	<import file="${basedir}/osee_common_build.xml" />
@@ -10,12 +10,25 @@
 		<property name="master.feature" value="org.eclipse.osee.framework.server.feature" />
 		<property name="pdeTarget" value="main" />
 		<antcall target="PdeBuild" />
+
+		<copy todir="${buildDirectory}/repository/configuration/">
+			<fileset file="${basedir}/config.ini" />
+		</copy>
+
+		<move todir="{buildDirectory}/repository">
+			<fileset dir="{buildDirectory}/repository/plugins">
+				<include name="org.eclipse.equinox.common_*.jar" />
+				<include name="org.eclipse.osgi_*.jar" />
+				<include name="org.eclipse.update.configurator_*.jar" />
+			</fileset>
+		</move>
+
+		<antcall target="copyToUpdatesite" />
 	</target>
+	<echo message="buildDirectory=${buildDirectory}" />
 </project>
 
 <!--
-
 eclipsec -application org.eclipse.ant.core.antRunner -buildfile c:\UserData\workspace\org.eclipse.osee.support.build\support\osee_server_build.xml
-C:\UserData\workspace\sandbox\repository>java -Xmx512m -Dosee.db.connection.id= -Dosee.application.server.data= -jar plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -application  org.eclipse.osee.framework.server.admin.OseeBackup -console
-
+C:\UserData\workspace\sandbox\repository>java -Xmx512m -Dosee.db.connection.id= -jar plugins\org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -application  org.eclipse.osee.framework.server.admin.OseeBackup -console
 -->
