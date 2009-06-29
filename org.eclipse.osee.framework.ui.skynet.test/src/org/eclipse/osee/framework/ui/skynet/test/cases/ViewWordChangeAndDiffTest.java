@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -69,10 +70,14 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testViewWordChangeReport() throws Exception {
+      Branch theBranch;
       // get the changes on the specified branch
-      artifactChanges =
-            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-                  new EmptyMonitor());
+      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2.name())) {
+         theBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      } else {
+         theBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      }
+      artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new EmptyMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right

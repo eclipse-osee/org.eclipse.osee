@@ -135,6 +135,8 @@ public class FrameworkTestUtil {
       commands.add("TASKKILL");
       commands.add("/F");
       commands.add("/IM");
+      commands.add("wscript.exe");
+      commands.add("/IM");
       commands.add("WINWORD.EXE");
       return executeCommand(commands);
    }
