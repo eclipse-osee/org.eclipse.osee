@@ -421,4 +421,12 @@
             class="org.eclipse.osee.ats.AtsArtifactImageProvider">
       </ArtifactImageProvider>
    </extension>
+   <extension
+         id="DeleteDuplicateUsers"
+         name="DeleteDuplicateUsers"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.PurgeUser">
+      </Operation>
+   </extension>
 </plugin>
