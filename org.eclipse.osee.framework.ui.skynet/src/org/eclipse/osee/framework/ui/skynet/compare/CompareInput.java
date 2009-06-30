@@ -5,90 +5,54 @@
  */
 package org.eclipse.osee.framework.ui.skynet.compare;
 
-import java.lang.reflect.Field;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.CompareViewerSwitchingPane;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * @author b1565043
+ * @author Jeff C. Phillips
  */
 public class CompareInput extends CompareEditorInput {
    private static final String CONFIRM_SAVE_PROPERTY = "org.eclipse.compare.internal.CONFIRM_SAVE_PROPERTY";
+   private CompareItem leftCompareItem;
+   private CompareItem rightCompareItem;
+   private CompareItem parentCompareItem;
    private Object differences;
-   private CompareItem left;
-   private CompareItem right;
 
-   /*
-    * 
-    * 
-    * 
-    *             
-            CompareConfiguration compareConfiguration =  new CompareConfiguration();
-            compareConfiguration.setLeftEditable(true);
-            compareConfiguration.setRightEditable(false);
-                 CompareUI.openCompareEditor(new CompareInput(compareConfiguration));
-                 
-                 
-            
-    */
-   public CompareInput(CompareConfiguration compareConfiguration) {
+   public CompareInput(CompareConfiguration compareConfiguration, CompareItem leftCompareItem, CompareItem rightCompareItem, CompareItem parentCompareItem) {
       super(compareConfiguration);
 
-      getCompareConfiguration().setProperty(CONFIRM_SAVE_PROPERTY, Boolean.FALSE);
+      this.leftCompareItem = leftCompareItem;
+      this.rightCompareItem = rightCompareItem;
+      this.parentCompareItem = parentCompareItem;
+
+      getCompareConfiguration().setProperty(CONFIRM_SAVE_PROPERTY, Boolean.TRUE);
+      getCompareConfiguration().setProperty(CompareConfiguration.USE_OUTLINE_VIEW, Boolean.TRUE);
    }
 
    protected Object prepareInput(IProgressMonitor pm) {
       initTitle();
 
-      CompareItem ancestor = new CompareItem("Common", "contents", System.currentTimeMillis());
-      left = new CompareItem("Left", "new contents 23\nhi\nbye", System.currentTimeMillis());
-      right = new CompareItem("Right", "old contents 21\nhi\ntry", System.currentTimeMillis());
       Differencer differencer = new Differencer();
-      differences = differencer.findDifferences(true, pm, null, ancestor, left, right);
-      //      MergeNode mergeNode = new MergeNode(null, Differencer.CONFLICTING, 
-      //            ancestor, left, right);
+      differences =
+            differencer.findDifferences(parentCompareItem != null, pm, null, parentCompareItem, leftCompareItem,
+                  rightCompareItem);
       return differences;
    }
 
    private void initTitle() {
-      CompareConfiguration cc = getCompareConfiguration();
-      String nameLeft = "Left Object";
-      String nameRight = "Right Object";
-      if (nameLeft.equals(nameRight)) {
-         nameLeft = "Left object";
-         nameRight = "Right Object";
-      }
+      CompareConfiguration configuration = getCompareConfiguration();
+      String nameLeft = leftCompareItem.getName();
+      String nameRight = rightCompareItem.getName();
 
-      cc.setLeftLabel(nameLeft);
-//      cc.setLeftImage(Artifact.getOverrideImage());
+      configuration.setLeftLabel(nameLeft);
+      configuration.setLeftImage(leftCompareItem.getImage());
 
-      cc.setRightLabel(nameRight);
-//      cc.setRightImage(Artifact.getOverrideImage());
-
-//      cc.setLeftEditable(true);
-//      cc.setRightEditable(true);
+      configuration.setRightLabel(nameRight);
+      configuration.setRightImage(rightCompareItem.getImage());
       setTitle("Compare (" + nameLeft + " - " + nameRight + ")");
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.CompareEditorInput#isEditionSelectionDialog()
-    */
-   @Override
-   public boolean isEditionSelectionDialog() {
-      return super.isEditionSelectionDialog();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.CompareEditorInput#isSaveNeeded()
-    */
-   @Override
-   public boolean isSaveNeeded() {
-      return super.isSaveNeeded();
    }
 
    /* (non-Javadoc)
@@ -97,47 +61,14 @@ public class CompareInput extends CompareEditorInput {
    @Override
    public void saveChanges(IProgressMonitor monitor) throws CoreException {
       super.saveChanges(monitor);
-      if (differences instanceof DiffNode) {
-         try {
-            //              boolean result = commit(monitor, (DiffNode) differences);
-            // let the UI re-compare here on changed inputs
-            if (true) {
-            }
-         } finally {
-            setDirty(false);
-         }
-      }
+      leftCompareItem.persistContent();
    }
 
-
-
-   public CompareViewerSwitchingPane getInputPane() {
-      try {
-         Field field = CompareEditorInput.class.getDeclaredField("fContentInputPane");
-         field.setAccessible(true);
-         Object object = field.get(this);
-         if (object instanceof CompareViewerSwitchingPane) {
-            return (CompareViewerSwitchingPane) object;
-         }
-      } catch (Throwable e) {
-         // ignore
-      }
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.CompareEditorInput#isDirty()
-    */
    @Override
-   public boolean isDirty() {
-      return super.isDirty();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.CompareEditorInput#save(org.eclipse.core.runtime.IProgressMonitor)
-    */
-   @Override
-   public void save(IProgressMonitor pm) {
-      super.save(pm);
+   public boolean equals(Object obj) {
+      if (obj instanceof CompareInput) {
+         return super.equals(obj);
+      }
+      return false;
    }
 }

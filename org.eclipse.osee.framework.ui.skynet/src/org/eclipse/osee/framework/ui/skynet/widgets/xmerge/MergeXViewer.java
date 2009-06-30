@@ -23,11 +23,17 @@ import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifact
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
+import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -168,11 +174,32 @@ public class MergeXViewer extends XViewer {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showDeletedConflict(conflict, shell);
             } else if (!(conflict.getConflictType().equals(ConflictType.ARTIFACT))) {
-               conWizard = new ConflictResolutionWizard(conflict);
-               WizardDialog dialog = new WizardDialog(shell, conWizard);
-               dialog.create();
-               if (dialog.open() == 0) {
-                  conWizard.getResolved();
+               AttributeConflict attributeConflict = (AttributeConflict) conflict;
+               
+               // Not for word attribute or enumerations but other strings
+               if (!attributeConflict.isWordAttribute() && attributeConflict.getAttribute() instanceof StringAttribute && !(attributeConflict.getAttribute() instanceof EnumeratedAttribute)) {
+                  AttributeCompareItem leftContributionItem =
+                        new AttributeCompareItem(
+                              attributeConflict,
+                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getBranchName(),
+                              attributeConflict.getAttribute().getDisplayableString(), true,
+                              ImageManager.getImage(attributeConflict.getArtifact()));
+                  AttributeCompareItem rightContributionItem =
+                        new AttributeCompareItem(
+                              attributeConflict,
+                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getBranchName(),
+                              attributeConflict.getDestDisplayData(), false,
+                              ImageManager.getImage(attributeConflict.getArtifact()));
+
+                  CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
+                  compareHandler.compare();
+               } else{
+                  conWizard = new ConflictResolutionWizard(conflict);
+                  WizardDialog dialog = new WizardDialog(shell, conWizard);
+                  dialog.create();
+                  if (dialog.open() == 0) {
+                     conWizard.getResolved();
+                  }
                }
             }
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Conflict_Resolved.getName())) {
