@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.service.StateEstimatedHoursStat;
 import org.eclipse.osee.ats.editor.service.StateHoursSpentStat;
 import org.eclipse.osee.ats.editor.service.StatePercentCompleteStat;
-import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -53,11 +52,11 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
             percentComp = new StatePercentCompleteStat(smaMgr);
             percentComp.createSidebarService(this, page, toolkit, this);
          }
-         if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
+         if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
             estHoursStat = new StateEstimatedHoursStat(smaMgr);
             estHoursStat.createSidebarService(this, page, toolkit, this);
          }
-         if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
+         if (!page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.isCompleteCancelledState()) {
             hoursSpent = new StateHoursSpentStat(smaMgr);
             hoursSpent.createSidebarService(this, page, toolkit, this);
          }

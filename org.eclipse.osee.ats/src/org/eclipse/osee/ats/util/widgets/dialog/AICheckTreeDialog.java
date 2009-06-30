@@ -37,7 +37,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
    private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
-   private Set<ActionableItemArtifact> initialAias;
+   private Collection<ActionableItemArtifact> initialAias;
 
    public AICheckTreeDialog(String title, String message, Active active) {
       super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider());
@@ -99,14 +99,14 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    /**
     * @return the initialAias
     */
-   public Set<ActionableItemArtifact> getInitialAias() {
+   public Collection<ActionableItemArtifact> getInitialAias() {
       return initialAias;
    }
 
    /**
     * @param initialAias the initialAias to set
     */
-   public void setInitialAias(Set<ActionableItemArtifact> initialAias) {
+   public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
       this.initialAias = initialAias;
    }
 

@@ -11,7 +11,17 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -34,23 +44,22 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      AWorkbench.popup("Not implemented yet");
-      //      final TeamDefinitionCheckTreeDialog diag =
-      //            new TeamDefinitionCheckTreeDialog(getName(),
-      //                  "Select Team Definition\n\nEmail will be sent for every action written against these Teams.",
-      //                  Active.Active);
-      //      try {
-      //         List<Object> objs =
-      //               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
-      //                     TeamDefinitionArtifact.class));
-      //         diag.setInitialSelections(objs);
-      //         if (diag.open() != 0) return;
-      //         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
-      //               TeamDefinitionArtifact.class);
-      //         UserManager.getUser().persistAttributesAndRelations();
-      //         AWorkbench.popup(getName(), "Subscriptions updated.");
-      //      } catch (Exception ex) {
-      //         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //      }
+      final TeamDefinitionCheckTreeDialog diag =
+            new TeamDefinitionCheckTreeDialog(getName(),
+                  "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.",
+                  Active.Active);
+      try {
+         List<TeamDefinitionArtifact> objs =
+               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
+                     TeamDefinitionArtifact.class));
+         diag.setInitialTeamDefs(objs);
+         if (diag.open() != 0) return;
+         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+               TeamDefinitionArtifact.class);
+         UserManager.getUser().persistAttributesAndRelations();
+         AWorkbench.popup(getName(), "Subscriptions updated.");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 }

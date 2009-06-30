@@ -70,7 +70,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.panels.DetailsBrowserComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -101,7 +100,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
    private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, relationPageIndex,
-         attributesPageIndex, detailsPageIndex;
+         attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
@@ -168,7 +167,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          createHistoryTab();
          createRelationsTab();
          createAttributesTab();
-         createDetailsTab();
          createMetricsTab();
 
          setActivePage(workFlowPageIndex);
@@ -338,18 +336,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
          taskPageIndex = addPage(composite);
          setPageText(taskPageIndex, "Tasks");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void createDetailsTab() {
-      try {
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
-         createToolBar(composite);
-         new DetailsBrowserComposite(smaMgr.getSma(), composite, SWT.NONE, null);
-         detailsPageIndex = addPage(composite);
-         setPageText(detailsPageIndex, "Details");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

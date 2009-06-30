@@ -148,11 +148,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       }
 
+      managedForm.addPart(new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE));
+
       if (AtsPlugin.isAtsAdmin()) {
-         SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr);
-         managedForm.addPart(section);
-         control = section.getMainComp();
-         sections.add(section);
+         managedForm.addPart(new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr));
       }
 
       atsBody.setFocus();

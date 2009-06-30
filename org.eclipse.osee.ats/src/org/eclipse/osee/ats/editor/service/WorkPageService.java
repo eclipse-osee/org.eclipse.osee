@@ -26,7 +26,6 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 public abstract class WorkPageService {
 
    protected final SMAManager smaMgr;
-   protected final boolean showSidebarService = true;
 
    public WorkPageService(SMAManager smaMgr) {
       super();
@@ -75,7 +74,7 @@ public abstract class WorkPageService {
     * @throws OseeCoreException TODO
     */
    public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return showSidebarService;
+      return false;
    }
 
 }

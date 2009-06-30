@@ -88,6 +88,7 @@ public class ServicesArea {
          toolBarServices.add(new SubscribedOperation(smaMgr));
          toolBarServices.add(new CopyActionDetailsService(smaMgr));
          toolBarServices.add(new PrivilegedEditService(smaMgr));
+         toolBarServices.add(new HistoryOperation(smaMgr));
          for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             toolBarServices.addAll(item.getToolbarServices(smaMgr));
          }

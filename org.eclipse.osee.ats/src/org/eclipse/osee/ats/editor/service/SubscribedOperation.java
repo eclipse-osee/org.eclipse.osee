@@ -15,8 +15,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.Subscribe;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -41,14 +39,6 @@ public class SubscribedOperation extends WorkPageService {
       action.setToolTipText(getName());
       action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED));
       return action;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
-    */
-   @Override
-   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return false;
    }
 
    /*

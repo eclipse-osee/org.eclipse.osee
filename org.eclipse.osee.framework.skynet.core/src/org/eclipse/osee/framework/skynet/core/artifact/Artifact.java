@@ -225,14 +225,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return Collections.castAll(getRelatedArtifacts(side));
    }
 
+   @SuppressWarnings("unchecked")
    public <A extends Artifact> List<A> getRelatedArtifactsOfType(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
-      Set<Object> objs = new HashSet<Object>();
+      List<A> objs = new ArrayList<A>();
       for (Artifact art : getRelatedArtifacts(side)) {
          if (clazz.isInstance(art)) {
-            objs.add(art);
+            objs.add((A) art);
          }
       }
-      return Collections.castAll(getRelatedArtifacts(side));
+      return objs;
    }
 
    /**

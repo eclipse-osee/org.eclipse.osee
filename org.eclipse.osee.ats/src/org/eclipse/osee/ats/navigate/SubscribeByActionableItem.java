@@ -11,7 +11,17 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -34,23 +44,22 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      AWorkbench.popup("Not implemented yet");
-      //      final AICheckTreeDialog diag =
-      //            new AICheckTreeDialog(getName(),
-      //                  "Select Actionable Items\n\nEmail will be sent for every action written against these AIs.",
-      //                  Active.Active);
-      //      try {
-      //         List<Object> objs =
-      //               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
-      //                     ActionableItemArtifact.class));
-      //         diag.setInitialSelections(objs);
-      //         if (diag.open() != 0) return;
-      //         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
-      //               ActionableItemArtifact.class);
-      //         UserManager.getUser().persistAttributesAndRelations();
-      //         AWorkbench.popup(getName(), "Subscriptions updated.");
-      //      } catch (Exception ex) {
-      //         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      //      }
+      final AICheckTreeDialog diag =
+            new AICheckTreeDialog(getName(),
+                  "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.",
+                  Active.Active);
+      try {
+         List<ActionableItemArtifact> objs =
+               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
+                     ActionableItemArtifact.class));
+         diag.setInitialAias(objs);
+         if (diag.open() != 0) return;
+         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+               ActionableItemArtifact.class);
+         UserManager.getUser().persistAttributesAndRelations();
+         AWorkbench.popup(getName(), "Subscriptions updated.");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 }

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -27,6 +28,11 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -35,12 +41,27 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 /**
  * @author Donald G. Dunne
  */
-public class AtsNotifyUsers {
+public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
 
-   private static boolean testing = false; // Email goes to current user (set OseeNotifyUsersJob.testing also)
+   private static boolean testing = true; // Email goes to current user (set OseeNotifyUsersJob.testing also)
    public static enum NotifyType {
       Subscribed, Cancelled, Completed, Assigned, Originator, Reviewed
    };
+
+   private static AtsNotifyUsers instance = new AtsNotifyUsers();
+
+   public static AtsNotifyUsers getInstance() {
+      return instance;
+   }
+
+   private AtsNotifyUsers() {
+      OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Notification Handler");
+      OseeEventManager.addListener(this);
+   }
+
+   public void dispose() {
+      OseeEventManager.removeListener(this);
+   }
 
    public static void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
       notify(sma, null, notifyTypes);
@@ -156,5 +177,39 @@ public class AtsNotifyUsers {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return "HRID: " + sma.getHumanReadableId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (sender.isRemote()) return;
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      // Handle notifications for subscription by TeamDefinition and ActionableItem
+      for (Artifact art : transData.cacheAddedArtifacts) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
+
+            // Handle Team Definitions
+            Collection<User> subscribedUsers =
+                  Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(AtsRelation.SubscribedUser_User));
+            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                  subscribedUsers,
+                  getIdString(teamArt),
+                  "Workflow Creation",
+                  "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created titled \"" + teamArt.getDescriptiveName() + "\""));
+
+            // Handle Actionable Items
+            for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
+               subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelation.SubscribedUser_User));
+               OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                     subscribedUsers,
+                     getIdString(teamArt),
+                     "Workflow Creation",
+                     "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created titled \"" + teamArt.getDescriptiveName() + "\""));
+            }
+         }
+      }
    }
 }

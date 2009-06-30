@@ -11,35 +11,43 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.Favorites;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 
 /**
  * @author Donald G. Dunne
  */
-public class FavoriteOperation extends WorkPageService {
+public class HistoryOperation extends WorkPageService {
 
    private final SMAManager smaMgr;
    private Action action;
 
-   public FavoriteOperation(SMAManager smaMgr) {
+   public HistoryOperation(SMAManager smaMgr) {
       super(smaMgr);
       this.smaMgr = smaMgr;
    }
 
    @Override
    public Action createToolbarService() {
+      if (!AtsPlugin.isAtsAdmin()) return null;
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            (new Favorites(smaMgr.getSma())).toggleFavorite();
+            try {
+               HistoryView.open(smaMgr.getSma());
+            } catch (OseeArgumentException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.FAVORITE));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT_BLUE));
       return action;
    }
 
@@ -48,7 +56,7 @@ public class FavoriteOperation extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Add as Favorite";
+      return "History";
    }
 
    /*
@@ -58,7 +66,6 @@ public class FavoriteOperation extends WorkPageService {
     */
    @Override
    public void refresh() {
-      if (action != null) action.setToolTipText(((IFavoriteableArtifact) smaMgr.getSma()).amIFavorite() ? "Remove Favorite" : "Add Favorite");
    }
 
 }

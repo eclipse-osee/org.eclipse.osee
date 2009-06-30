@@ -13,6 +13,7 @@ package org.eclipse.osee.ats;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -45,6 +46,7 @@ public class AtsPlugin extends OseeUiActivator {
       pluginInstance = this;
       AtsBranchAccessHandler.getInstance();
       AtsPreSaveCacheRemoteEventHandler.getInstance();
+      AtsNotifyUsers.getInstance();
    }
 
    public static boolean isEmailEnabled() {

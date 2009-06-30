@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -38,7 +39,7 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
 
    private static PatternFilter patternFilter = new PatternFilter();
    private final Active active;
-   private Set<TeamDefinitionArtifact> initialTeamDefs;
+   private List<TeamDefinitionArtifact> initialTeamDefs;
 
    public TeamDefinitionCheckTreeDialog(String title, String message, Active active) {
       super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new ArtifactLabelProvider());
@@ -100,14 +101,14 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    /**
     * @return the initialTeamDefs
     */
-   public Set<TeamDefinitionArtifact> getInitialTeamDefs() {
+   public List<TeamDefinitionArtifact> getInitialTeamDefs() {
       return initialTeamDefs;
    }
 
    /**
     * @param initialTeamDefs the initialTeamDefs to set
     */
-   public void setInitialTeamDefs(Set<TeamDefinitionArtifact> initialTeamDefs) {
+   public void setInitialTeamDefs(List<TeamDefinitionArtifact> initialTeamDefs) {
       this.initialTeamDefs = initialTeamDefs;
    }
 

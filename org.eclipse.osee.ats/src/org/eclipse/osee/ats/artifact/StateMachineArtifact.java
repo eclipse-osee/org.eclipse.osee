@@ -1365,10 +1365,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getGroupExplorerName() throws OseeCoreException {
-      if (getSmaMgr().isCancelledOrCompleted()) {
-         return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
-      }
-      return getDescriptiveName();
+      return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
    }
 
    @Override

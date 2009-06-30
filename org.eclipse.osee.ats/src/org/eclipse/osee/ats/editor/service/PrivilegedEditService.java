@@ -17,7 +17,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,14 +84,6 @@ public class PrivilegedEditService extends WorkPageService {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
-    */
-   @Override
-   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return false;
    }
 
    /* (non-Javadoc)

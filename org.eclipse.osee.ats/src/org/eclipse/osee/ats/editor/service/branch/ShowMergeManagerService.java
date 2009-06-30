@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.editor.service.branch;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -132,14 +130,6 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       });
 
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
-    */
-   @Override
-   public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
-      return false;
    }
 
 }
