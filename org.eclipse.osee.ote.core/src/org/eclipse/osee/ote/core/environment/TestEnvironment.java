@@ -77,12 +77,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * @author Andrew M. Finkbeiner
  */
-public abstract class TestEnvironment implements TestEnvironmentInterface, ITestEnvironmentAccessor, Runnable, ITestContext {
+public abstract class TestEnvironment implements TestEnvironmentInterface, ITestEnvironmentAccessor, ITestContext {
 
    private final List<ITestEnvironmentListener> envListeners = new ArrayList<ITestEnvironmentListener>(32);
    private IExecutionUnitManagement executionUnitManagement;
-   private volatile boolean done;
-   private OseeTestThread myThread;
+
    private File outDir = null;
    private ITestStation testStation;
    private HashMap<Serializable, Object> users;
@@ -123,7 +122,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjectListeners = new HashMap<Class<?>, ArrayList<IAssociatedObjectListener>>();
       this.associatedObjects = new HashMap<Class<?>, Object>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
-      this.myThread = new BasicEnv("Test Environment Thread", this);
       this.users = new HashMap<Serializable, Object>(32);
       
       messagingServiceTracker = setupOteMessagingSenderAndReceiver();
@@ -372,14 +370,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
    }
 
-   public void run() {
-      while (!done) {
-         step();
-      }
-      OseeLog.log(TestEnvironment.class, Level.FINE,
-            "Test Environment has shutdown");
-   }
-
    public URL setBatchLibJar(byte[] batchJar) throws IOException {
       String path = System.getProperty("user.home") + File.separator + TestEnvironment.class.getName();
 
@@ -449,18 +439,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       } catch (IOException ex) {
          throw new Exception("Error in directory setup. " + outfileDir, ex);
       }
-
-      if (!this.myThread.isAlive()) {
-         myThread.start();
-      } else {
-         System.out.println("Why is start getting called twice??????????????????");
-      }
    }
 
-   protected abstract void step();
-
    protected void stop() {
-      done = true;
+
    }
 
    public IUserSession getActiveUser() {
