@@ -292,7 +292,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
       }
       String[] sortedItems = items.toArray(new String[items.size()]);
       Arrays.sort(sortedItems);
-      for (int x = sortedItems.length - 1; x > 0; x--) {
+      for (int x = sortedItems.length-1; x >= 0; x--) {
          sb.append(sortedItems[x]);
       }
       sb.append(AHTML.endMultiColumnTable());
