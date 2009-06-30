@@ -32,6 +32,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
     */
+   @Override
    public String getId() {
       return AtsStateItem.ALL_STATE_IDS;
    }
@@ -50,7 +51,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
             smaMgr.getStateMgr().setAssignees(teamLeads);
-            smaMgr.getSma().persistAttributes(transaction);
+            smaMgr.getSma().persistAttributesAndRelations(transaction);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
