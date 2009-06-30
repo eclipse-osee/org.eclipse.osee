@@ -10,18 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public class InPlaceRelationSort extends AbstractBlam {
+   private static final String UPDATE_ORDER_SQL = "UPDATE osee_relation_link SET b_order = ? WHERE gamma_id =?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
@@ -36,13 +42,27 @@ public class InPlaceRelationSort extends AbstractBlam {
     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generating Reports", 100);
-
+      List<Object[]> updateData = new ArrayList<Object[]>();
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
-      for (Artifact artifact : artifacts) {
-         List<Artifact> children = artifact.getChildren();
+      for (Artifact parent : artifacts) {
+         List<Artifact> children = parent.getChildren();
          Collections.sort(children);
-         print(Arrays.deepToString(children.toArray()));
+         int previousArtId = -1;
+         for (Artifact child : children) {
+            List<RelationLink> relations =
+                  parent.getRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child);
+            if (relations.size() != 1) {
+               throw new OseeStateException(
+                     relations.size() + " hierarchical relations found between " + parent + " and " + child);
+            }
+            RelationLink relation = relations.get(0);
+            updateData.add(new Object[] {previousArtId, relation.getGammaId()});
+            previousArtId = child.getArtId();
+         }
+         print(Arrays.deepToString(children.toArray()) + "\n");
       }
+
+      ConnectionHandler.runBatchUpdate(UPDATE_ORDER_SQL, updateData);
    }
 
    /*
