@@ -223,6 +223,17 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       }
    }
 
+   public List<Branch> getBranchHierarchy() throws OseeCoreException {
+      List<Branch> ancestors = new LinkedList<Branch>();
+      Branch branchCursor = this;
+      ancestors.add(branchCursor);
+      while (branchCursor.hasParentBranch()) {
+         branchCursor = branchCursor.getParentBranch();
+         ancestors.add(branchCursor);
+      }
+      return ancestors;
+   }
+
    /**
     * @return Returns the parentBranchId.
     */
@@ -459,17 +470,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          parentTransactionId = TransactionIdManager.getTransactionId(parentTransactionIdNumber);
       }
       return parentTransactionId;
-   }
-
-   public List<Branch> getBranchHierarchy() throws OseeCoreException {
-      List<Branch> ancestors = new LinkedList<Branch>();
-      Branch branchCursor = this;
-      ancestors.add(branchCursor);
-      while (branchCursor.hasParentBranch()) {
-         ancestors.add(branchCursor.getParentBranch());
-         branchCursor = branchCursor.getParentBranch();
-      }
-      return ancestors;
    }
 
    public Collection<Branch> getWorkingBranches() throws OseeCoreException {
