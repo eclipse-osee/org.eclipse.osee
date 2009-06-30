@@ -16,20 +16,12 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  * @author Roberto E. Escobar
  */
 public class AdminCommands {
-   private static AdminCommands instance = null;
 
-   private ServerShutdownWorker shutdownWorker;
-   private RemoveServerVersionWorker removeServerVersion;
-   private AddServerVersionWorker addServerVersion;
+   private final ServerShutdownWorker shutdownWorker;
+   private final RemoveServerVersionWorker removeServerVersion;
+   private final AddServerVersionWorker addServerVersion;
 
-   public static AdminCommands getInstance() {
-      if (instance == null) {
-         instance = new AdminCommands();
-      }
-      return instance;
-   }
-
-   private AdminCommands() {
+   public AdminCommands() {
       this.shutdownWorker = new ServerShutdownWorker();
       this.shutdownWorker.setExecutionAllowed(true);
 

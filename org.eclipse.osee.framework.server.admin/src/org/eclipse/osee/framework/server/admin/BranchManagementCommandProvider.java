@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
-import java.io.File;
 import org.eclipse.osee.framework.server.admin.branch.BranchCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -20,46 +19,34 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  */
 public class BranchManagementCommandProvider implements CommandProvider {
 
+   private final BranchCommands branchCmds;
+
+   public BranchManagementCommandProvider() {
+      this.branchCmds = new BranchCommands();
+   }
+
    public void _export_branch(CommandInterpreter ci) {
-      BranchCommands.getInstance().startBranchExport(ci);
+      branchCmds.startBranchExport(ci);
    }
 
    public void _export_branch_stop(CommandInterpreter ci) {
-      BranchCommands.getInstance().stopBranchExport(ci);
+      branchCmds.stopBranchExport(ci);
    }
 
    public void _import_branch(CommandInterpreter ci) {
-      BranchCommands.getInstance().startBranchImport(ci);
+      branchCmds.startBranchImport(ci);
    }
 
    public void _import_branch_stop(CommandInterpreter ci) {
-      BranchCommands.getInstance().stopBranchImport(ci);
+      branchCmds.stopBranchImport(ci);
    }
 
    public void _check_exchange(CommandInterpreter ci) {
-      BranchCommands.getInstance().startBranchIntegrityCheck(ci);
+      branchCmds.startBranchIntegrityCheck(ci);
    }
 
    public void _check_exchange_stop(CommandInterpreter ci) {
-      BranchCommands.getInstance().stopBranchIntegrityCheck(ci);
-   }
-
-   public void _configini(CommandInterpreter ci) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("eclipse.ignoreApp=true\n");
-      sb.append("osgi.bundles= \\\n");
-
-      String arg = ci.nextArgument();
-
-      File folder = new File(arg);
-      File[] files = folder.listFiles();
-      for (File f : files) {
-         if (!f.isDirectory()) {
-            sb.append(f.toURI());
-            sb.append("@start, \\\n");
-         }
-      }
-      System.out.println(sb.toString());
+      branchCmds.stopBranchIntegrityCheck(ci);
    }
 
    /* (non-Javadoc)

@@ -18,19 +18,11 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  */
 public class SearchTaggerCommands {
 
-   private static SearchTaggerCommands instance = null;
-   private TaggerAllWorker tagAllWorker;
-   private TaggerDropAllWorker dropAllWorker;
-   private TagItemWorker tagItemWorker;
+   private final TaggerAllWorker tagAllWorker;
+   private final TaggerDropAllWorker dropAllWorker;
+   private final TagItemWorker tagItemWorker;
 
-   public static SearchTaggerCommands getInstance() {
-      if (instance == null) {
-         instance = new SearchTaggerCommands();
-      }
-      return instance;
-   }
-
-   private SearchTaggerCommands() {
+   public SearchTaggerCommands() {
       this.tagAllWorker = new TaggerAllWorker();
       this.tagAllWorker.setExecutionAllowed(true);
 

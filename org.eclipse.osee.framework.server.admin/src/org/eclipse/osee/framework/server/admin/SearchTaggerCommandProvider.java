@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
-import java.io.File;
 import org.eclipse.osee.framework.server.admin.search.SearchTaggerCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -20,62 +19,50 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  */
 public class SearchTaggerCommandProvider implements CommandProvider {
 
+   private final SearchTaggerCommands searchTaggerCommands;
+
+   public SearchTaggerCommandProvider() {
+      this.searchTaggerCommands = new SearchTaggerCommands();
+   }
+
    public void _tag_all(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().startTagAll(ci);
+      searchTaggerCommands.startTagAll(ci);
    }
 
    public void _tag_all_stop(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().stopTagAll(ci);
+      searchTaggerCommands.stopTagAll(ci);
    }
 
    public void _drop_all_tags(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().startDropAll(ci);
+      searchTaggerCommands.startDropAll(ci);
    }
 
    public void _drop_all_tags_stop(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().stopDropAll(ci);
+      searchTaggerCommands.stopDropAll(ci);
    }
 
    public void _tagger_stats(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().getTaggerStatistics(ci);
+      searchTaggerCommands.getTaggerStatistics(ci);
    }
 
    public void _tagger_stats_clear(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().clearTaggerStats();
+      searchTaggerCommands.clearTaggerStats();
    }
 
    public void _search_stats(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().getSearchStatistics(ci);
+      searchTaggerCommands.getSearchStatistics(ci);
    }
 
    public void _search_stats_clear(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().clearSearchStats();
+      searchTaggerCommands.clearSearchStats();
    }
 
    public void _tag(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().startTagItem(ci);
+      searchTaggerCommands.startTagItem(ci);
    }
 
    public void _tag_stop(CommandInterpreter ci) {
-      SearchTaggerCommands.getInstance().stopTagItem(ci);
-   }
-
-   public void _configini(CommandInterpreter ci) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("eclipse.ignoreApp=true\n");
-      sb.append("osgi.bundles= \\\n");
-
-      String arg = ci.nextArgument();
-
-      File folder = new File(arg);
-      File[] files = folder.listFiles();
-      for (File f : files) {
-         if (!f.isDirectory()) {
-            sb.append(f.toURI());
-            sb.append("@start, \\\n");
-         }
-      }
-      System.out.println(sb.toString());
+      searchTaggerCommands.stopTagItem(ci);
    }
 
    /*

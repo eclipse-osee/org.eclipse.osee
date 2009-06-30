@@ -17,19 +17,11 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  */
 public class BranchCommands {
 
-   private static BranchCommands instance = null;
-   private BranchExportWorker branchExportWorker;
-   private BranchImportWorker branchImportWorker;
-   private ExchangeIntegrityWorker integrityWorker;
+   private final BranchExportWorker branchExportWorker;
+   private final BranchImportWorker branchImportWorker;
+   private final ExchangeIntegrityWorker integrityWorker;
 
-   public static BranchCommands getInstance() {
-      if (instance == null) {
-         instance = new BranchCommands();
-      }
-      return instance;
-   }
-
-   private BranchCommands() {
+   public BranchCommands() {
       this.branchExportWorker = new BranchExportWorker();
       this.branchExportWorker.setExecutionAllowed(true);
 

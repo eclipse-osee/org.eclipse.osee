@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
-import java.io.File;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -19,6 +18,12 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  * @author Roberto E. Escobar
  */
 public class ServerAdminCommandProvider implements CommandProvider {
+
+   private final AdminCommands adminCommands;
+
+   public ServerAdminCommandProvider() {
+      this.adminCommands = new AdminCommands();
+   }
 
    //   public void _native_content_fix(CommandInterpreter ci) {
    //      CompressedContentFix.getInstance().execute(ci);
@@ -37,42 +42,42 @@ public class ServerAdminCommandProvider implements CommandProvider {
    //   }
 
    public void _server_status(CommandInterpreter ci) {
-      AdminCommands.getInstance().getServerStatus(ci);
+      adminCommands.getServerStatus(ci);
    }
 
    public void _server_process_requests(CommandInterpreter ci) {
-      AdminCommands.getInstance().setServletRequestProcessing(ci);
+      adminCommands.setServletRequestProcessing(ci);
    }
 
    public void _add_osee_version(CommandInterpreter ci) {
-      AdminCommands.getInstance().addServerVersion(ci);
+      adminCommands.addServerVersion(ci);
    }
 
    public void _remove_osee_version(CommandInterpreter ci) {
-      AdminCommands.getInstance().removeServerVersion(ci);
+      adminCommands.removeServerVersion(ci);
    }
 
    public void _osee_version(CommandInterpreter ci) {
-      AdminCommands.getInstance().getServerVersion(ci);
+      adminCommands.getServerVersion(ci);
    }
 
-   public void _configini(CommandInterpreter ci) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("eclipse.ignoreApp=true\n");
-      sb.append("osgi.bundles= \\\n");
-
-      String arg = ci.nextArgument();
-
-      File folder = new File(arg);
-      File[] files = folder.listFiles();
-      for (File f : files) {
-         if (!f.isDirectory()) {
-            sb.append(f.toURI());
-            sb.append("@start, \\\n");
-         }
-      }
-      System.out.println(sb.toString());
-   }
+   //   public void _configini(CommandInterpreter ci) {
+   //      StringBuilder sb = new StringBuilder();
+   //      sb.append("eclipse.ignoreApp=true\n");
+   //      sb.append("osgi.bundles= \\\n");
+   //
+   //      String arg = ci.nextArgument();
+   //
+   //      File folder = new File(arg);
+   //      File[] files = folder.listFiles();
+   //      for (File f : files) {
+   //         if (!f.isDirectory()) {
+   //            sb.append(f.toURI());
+   //            sb.append("@start, \\\n");
+   //         }
+   //      }
+   //      System.out.println(sb.toString());
+   //   }
 
    /*
     * (non-Javadoc)
