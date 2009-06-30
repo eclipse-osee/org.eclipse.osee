@@ -22,6 +22,7 @@ public class Activator implements BundleActivator {
    private ServiceTracker testEnvTracker;
    private static Activator me;
    private MessageWatchActivator messageWatchActivator;
+   private MessageIoManagementStarter messageIoManagementStarter;
    private BundleContext context;
    
    
@@ -37,12 +38,16 @@ public class Activator implements BundleActivator {
       
       messageWatchActivator = new MessageWatchActivator(context);
       messageWatchActivator.open(true);
+      
+      messageIoManagementStarter = new MessageIoManagementStarter(context);
+      messageIoManagementStarter.open(true);
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
       testEnvTracker.close();
       messageWatchActivator.close();
+      messageIoManagementStarter.close();
       context = null;
    }
    

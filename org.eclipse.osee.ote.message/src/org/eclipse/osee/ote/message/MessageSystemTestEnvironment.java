@@ -79,7 +79,11 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
 
    public IModelManager getModelManager() {
       ServiceTracker tracker = getServiceTracker(IModelManager.class.getName());
-      return (IModelManager)tracker.getService();
+      try {
+         return (IModelManager)tracker.waitForService(5000);
+      } catch (InterruptedException ex) {
+         throw new IllegalStateException("interrupted while trying to acquire model manager service", ex);
+      }
    }
 
    @Deprecated
