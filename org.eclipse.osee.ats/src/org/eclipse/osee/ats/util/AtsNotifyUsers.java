@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
 
-   private static boolean testing = true; // Email goes to current user (set OseeNotifyUsersJob.testing also)
+   private static boolean testing = false; // Email goes to current user (set OseeNotifyUsersJob.testing also)
    public static enum NotifyType {
       Subscribed, Cancelled, Completed, Assigned, Originator, Reviewed
    };
@@ -198,7 +198,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   subscribedUsers,
                   getIdString(teamArt),
                   "Workflow Creation",
-                  "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created titled \"" + teamArt.getDescriptiveName() + "\""));
+                  "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getDescriptiveName() + "\""));
 
             // Handle Actionable Items
             for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
@@ -207,7 +207,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                      subscribedUsers,
                      getIdString(teamArt),
                      "Workflow Creation",
-                     "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created titled \"" + teamArt.getDescriptiveName() + "\""));
+                     "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getDescriptiveName() + "\""));
             }
          }
       }
