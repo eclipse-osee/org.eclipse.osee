@@ -34,6 +34,7 @@ import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.InputBufferThread;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import sun.nio.cs.US_ASCII;
 
 /**
  * Created on Aug 15, 2005
@@ -41,7 +42,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 public class TelnetShell implements TelnetNotificationHandler {
 
    private static final int MAX_RESPONSE_TIME = 10000;
-
+   private static final byte[] NEWLINE = "\n".getBytes(new US_ASCII());
    public final static class Piper extends Thread {
       private final InputStream inStream;
       private final OutputStream outStream;
@@ -152,13 +153,34 @@ public class TelnetShell implements TelnetNotificationHandler {
             }
 
          }
-         out.write("\n".getBytes("us-ascii"));
+         out.write(NEWLINE);
          out.flush();
       } catch (UnsupportedEncodingException e) {
          e.printStackTrace();
       } catch (IOException e) {
          e.printStackTrace();
       }
+
+   }
+   
+   public String writeAndGetPrompt(String string, int timeout) throws Exception{
+      inputBuffer.clear();
+      // currentOutput = inputBuffer.getLength() + string.length() + 1;
+         for (byte b : string.getBytes("us-ascii")) {
+            out.write(b);
+            out.flush();
+
+            try {
+               Thread.sleep(10);
+            } catch (InterruptedException ex) {
+               ex.printStackTrace();
+            }
+
+         }
+         out.write(NEWLINE);
+         out.flush();
+         Thread.sleep(timeout);
+         return inputBuffer.getBuffer();
 
    }
 
