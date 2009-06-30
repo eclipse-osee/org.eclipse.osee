@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -117,17 +118,18 @@ public class SessionManager implements ISessionManager {
     */
    @Override
    public List<SessionData> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException {
-      List<SessionData> toReturn = null;
+      Collection<SessionData> sessions = null;
       if (includeNonServerManagedSessions) {
-         toReturn = SessionDataStore.getAllSessions();
+         sessions = SessionDataStore.getAllSessions();
       } else {
-         toReturn = new ArrayList<SessionData>();
          synchronized (sessionCache) {
-            for (SessionData sessionData : sessionCache.values()) {
-               if (sessionData.getSession().getUserId().equals(userId)) {
-                  toReturn.add(sessionData);
-               }
-            }
+            sessions = sessionCache.values();
+         }
+      }
+      List<SessionData> toReturn = new ArrayList<SessionData>();
+      for (SessionData sessionData : sessions) {
+         if (sessionData.getSession().getUserId().equals(userId)) {
+            toReturn.add(sessionData);
          }
       }
       return toReturn;
