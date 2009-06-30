@@ -202,8 +202,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    }
 
    public void refreshActionEnablement() {
-      deleteUserRoleItem.setEnabled(isEditable() && getSelectedUserRoleItems().size() > 0);
-      newUserRoleItem.setEnabled(isEditable());
+      if (deleteUserRoleItem != null && !deleteUserRoleItem.isDisposed()) deleteUserRoleItem.setEnabled(isEditable() && getSelectedUserRoleItems().size() > 0);
+      if (newUserRoleItem != null && !newUserRoleItem.isDisposed()) newUserRoleItem.setEnabled(isEditable());
    }
 
    public void loadTable() {
