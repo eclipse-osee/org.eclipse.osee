@@ -24,14 +24,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DbConnectionInformation implements IDbConnectionInformation {
 
-   private Map<String, IDatabaseInfo> dbInfo;
+   private final Map<String, IDatabaseInfo> dbInfo = new HashMap<String, IDatabaseInfo>();
    private IDatabaseInfo selectedDbInfo;
-   private Object myWait;
-
-   public DbConnectionInformation() {
-      dbInfo = new HashMap<String, IDatabaseInfo>();
-      myWait = new Object();
-   }
+   private final Object myWait = new Object();
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getDatabaseInfo(java.lang.String)
