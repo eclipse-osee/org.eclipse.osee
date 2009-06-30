@@ -107,7 +107,15 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
    }
 
    public void onPostRuntimeLibraryUpdated(ClassLoader classloader) {
-      TestEnvironmentInterface env = (TestEnvironmentInterface)getServiceTracker(TestEnvironmentInterface.class.getName(), null).getService();
+      TestEnvironmentInterface env;
+      try {
+         env = (TestEnvironmentInterface)getServiceTracker(TestEnvironmentInterface.class.getName(), null).waitForService(2000);
+      } catch (InterruptedException ex1) {
+         throw new IllegalStateException("interrupted while waiting for service", ex1);
+      }
+      if (env == null) {
+         throw new IllegalStateException("Unable to acquire test environment service");
+      }
       String className = env.getEnvironmentFactory().getRuntimeLibraryConfiguration();
       try {
          Class<RuntimeConfigurationInitilizer> clazz = (Class<RuntimeConfigurationInitilizer>)classloader.loadClass(className).asSubclass(RuntimeConfigurationInitilizer.class);
