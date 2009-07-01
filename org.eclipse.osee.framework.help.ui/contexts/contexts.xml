@@ -1,0 +1,136 @@
+<contexts>
+	<context id="table_customization" title="Table Customization">
+		<description>Allows the table to be customized, saved and loaded.</description>
+		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
+	</context>
+	<context id="mass_artifact_editor" title="Mass Artifact Editor">
+		<description>Allows viewing and editing of attributes from multiple artifacts.</description>
+		<topic label="Mass Artifact Editor" href="userguide/OSEE Features.html#Mass_Artifact_Editor"/>
+		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
+		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
+	</context>
+	
+	<context id="artifact_editor" title="Artifact Editor">
+		<description>Artifact Editor</description>
+		<topic href="userguide/Views-and-Editors.html#Artifact Editor" label="Details"/>
+<!--	<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
+		<topic href="reference/reorder_links.html" label="Reordering links"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>-->
+	</context>
+	
+	<context id="artifact_explorer_tree" title="Artifact Explorer">
+		<description>Displays artifacts in a relational hierarchy for navigation.</description>
+		<topic href="userguide/Views-and-Editors.html#Artifact Explorer View" label="Details"/>
+<!--	<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>-->
+	</context>
+	
+	<context id="xResultView" title="Result View">
+		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
+		<topic href="userguide/Views-and-Editors.html#Result View" label="Result View"/>
+	</context>
+
+<!--
+	<context id="oseeBranchGraph" title="OSEE Branch Graph">
+		<description>Shows a graphical representation of branches in the system</description>
+		<topic href="help/oseeBranchGraph.html" label="OSEE Branch Graph"/>
+	</context>
+-->
+<!--
+	<context id="oseeDataModelEditor" title="OSEE Data Model Editor">
+		<description>Create and modify OSEE Data Types</description>
+		<topic href="help/oseeDataModelEditor.html" label="OSEE Data Model Editor"/>
+	</context>
+-->
+<!--	<context id="artifact_editor" title="Artifact Editor">
+		<description>Artifact Editor</description>
+		<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
+		<topic href="reference/reorder_links.html" label="Reordering links"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="artifact_explorer_tree" title="Artifact Explorer">
+		<description>Displays artifacts in a relational hierarchy for navigation.</description>
+		<topic href="reference/artifact_explorer_tree.html" label="Drag and Drop"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="xResultView" title="Result View">
+		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
+		<topic href="reference/result_view.html" label="Result View"/>
+	</context>-->
+
+	<context id="table_customization" title="Table Customization">
+		<description>Allows the table to be customized, saved and loaded.</description>
+		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
+	</context>
+	
+	<context id="mass_artifact_editor" title="Mass Artifact Editor">
+		<description>Allows viewing and editing of attributes from multiple artifacts.</description>
+		<topic label="Mass Artifact Editor" href="userguide/OSEE Features.html#Mass_Artifact_Editor"/>
+		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
+	</context>
+
+	<context id="quick_search_text" title="Quick Search">
+		<description>Provides quick access to search for artifacts</description>
+		<topic label="Quick Search" href="userguide/Views-and-Editors.html#Quick_Search_View"/>
+	</context>
+	
+	<context id="query_log_table" title="Query Log">
+		<description>Displays queries that have been run, along with their run time, bind variables, and the time when they were ran. If a SQLException occurred during execution then it will also be shown.</description>
+		<topic label="Query Log" href="userguide/Views-and-Editors.html#Query Log View"/>
+		<topic label="Refreshing the log" href="userguide/Views-and-Editors.html#Refresh_Query_Log"/>
+		<topic label="Deleting the log" href="userguide/Views-and-Editors.html#Delete_Query_Log"/>
+	</context>-
+
+	<context id="oteNavigator" title="OTE Navigator">
+		<description>Shortcut view to common OTE tasks.</description>
+		<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>
+	</context>
+<!--
+	<context id="testRunView" title="Test Run View">
+		<description>View current and saved test runs.</description>
+		<topic href="help/testRunView.html" label="Test Run View"/>
+	</context>
+-->
+<!--	
+	<context id="messageView" title="Message View">
+		<description>Message View</description>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/search.html" label="Search"/>
+	</context>
+	<context id="messageViewSearch" title="Search">
+		<description>Message View Search</description>
+		<topic href="reference/messageView/search.html" label="Search"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+	<context id="messageViewWatch" title="Watch">
+		<description>Message View Right-Click Menu</description>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+	
+	<context id="messageWatch" title="Message Watch">
+		<description>Message View Right-Click Menu</description>
+		<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
+		<topic href="reference/messageWatch/sort.html" label="Sorting the Table"/>
+		<topic href="reference/messageWatch/read_vs_write.html" label="Reader vs. Writer"/>
+		<topic href="reference/messageWatch/set.html" label="Set Value"/>
+		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
+		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>
+	</context>-->
+	
+	<!--
+	<context id="muxView" title="Mux View">
+		<description>Mux View</description>
+		<topic href="help/package.html" label="Mux View"/>
+	</context>
+	-->
+	<!--
+	<context id="artifact_explorer_tree_viewer" title="Artifact Explorer">
+		<description>Displays artifacts in a relational hierarchy for navigation.</description>
+		<topic href="reference/creating_new_artifact.html" label="Creating a new artifact"/>
+		<topic href="reference/deleting_artifacts.html" label="Deleting artifacts"/>
+		<topic href="reference/go_into.html" label="Rooting on an artifact"/>
+		<topic label="Report a bug" href="../org.eclipse.osee.ats/reference/report_a_bug.html"/>
+	</context>
+-->
+</contexts>

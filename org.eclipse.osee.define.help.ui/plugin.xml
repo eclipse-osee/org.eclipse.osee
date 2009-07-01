@@ -34,4 +34,10 @@
             primary="false">
       </toc>
    </extension>
+<extension
+      point="org.eclipse.help.contexts">
+   <contexts
+         file="contexts/contexts.xml">
+   </contexts>
+</extension>
 </plugin>

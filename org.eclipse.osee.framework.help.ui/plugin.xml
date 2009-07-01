@@ -49,4 +49,10 @@
             content="$nl$/intro/tutorialsExtensionContent.xml">
       </configExtension>
    </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts/contexts.xml">
+      </contexts>
+   </extension>
 </plugin>
