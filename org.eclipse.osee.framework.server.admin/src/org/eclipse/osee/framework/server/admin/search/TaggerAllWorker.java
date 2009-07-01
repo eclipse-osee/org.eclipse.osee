@@ -36,7 +36,7 @@ class TaggerAllWorker extends BaseServerCommand {
    private TagProcessListener processor;
 
    TaggerAllWorker() {
-      super("Tagger All Attributes");
+      super("Tag All Attributes");
       this.processor = null;
    }
 
