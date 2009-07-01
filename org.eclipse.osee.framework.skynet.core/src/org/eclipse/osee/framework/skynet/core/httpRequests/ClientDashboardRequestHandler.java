@@ -101,12 +101,14 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
 
    private List<File> getLogFiles() {
       List<File> files = new ArrayList<File>();
-      File file = Platform.getLogFileLocation().toFile();
+
+      File file = Platform.getLogFileLocation().removeFileExtension().toFile();
+      file = new File(file, ".bak_0.log");
       if (file != null && file.exists()) {
          files.add(file);
       }
-      file = Platform.getLogFileLocation().removeFileExtension().toFile();
-      file = new File(file, ".bak_0.log");
+
+      file = Platform.getLogFileLocation().toFile();
       if (file != null && file.exists()) {
          files.add(file);
       }
@@ -122,7 +124,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
          sendResults(sb.toString(), httpRequest, httpResponse);
       } else {
          try {
-            sb.append("\nLog File Contents:\n--------------------------------\n");
+            sb.append("\nLog File Contents (oldest at bottom):\n--------------------------------\n");
             int length = sb.length();
             for (File file : files) {
                length += file.length();
