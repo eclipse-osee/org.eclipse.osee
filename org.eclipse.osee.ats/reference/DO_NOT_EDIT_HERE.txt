@@ -1,3 +1,0 @@
-All documentation in this folder has been retired and should only be for reference.  
-
-Everything has been moved to http://wiki.eclipse.org/OSEE
