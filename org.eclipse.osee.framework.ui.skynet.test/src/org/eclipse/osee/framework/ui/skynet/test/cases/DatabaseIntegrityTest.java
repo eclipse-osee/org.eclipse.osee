@@ -43,7 +43,6 @@ public class DatabaseIntegrityTest {
 
       assertNotNull(operation);
 
-      operation.setShowDetailsEnabled(false);
       operation.setFixOperationEnabled(false);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 /**
  * @author Theron Virgin
  */
-public class DuplicateRelationCheck extends DatabaseHealthOperation {
+public class MultipleParentRelations extends DatabaseHealthOperation {
    private class LocalRelationLink {
       public int relLinkId1;
       public int relLinkId2;
@@ -94,8 +94,8 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
 
    private List<LocalRelationLink> relations = null;
 
-   public DuplicateRelationCheck() {
-      super("Multiple Parent Errors");
+   public MultipleParentRelations() {
+      super("Multiple Parent Relations");
    }
 
    @Override
