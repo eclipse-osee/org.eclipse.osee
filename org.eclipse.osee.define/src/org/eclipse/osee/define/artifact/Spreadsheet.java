@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -25,8 +26,9 @@ public class Spreadsheet extends Artifact {
     * @param guid
     * @param humanReadableId
     * @param branch
+ * @throws OseeDataStoreException 
     */
-   public Spreadsheet(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public Spreadsheet(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
