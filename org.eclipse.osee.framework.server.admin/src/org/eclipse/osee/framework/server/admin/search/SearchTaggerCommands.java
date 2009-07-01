@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -37,9 +38,6 @@ public class SearchTaggerCommands {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
          this.tagItemWorker.setCommandInterpreter(ci);
          this.tagItemWorker.setExecutionAllowed(true);
-         Thread th = new Thread(tagItemWorker);
-         th.setName("Tag Individual Items");
-         th.start();
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -62,9 +60,7 @@ public class SearchTaggerCommands {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.dropAllWorker.setCommandInterpreter(ci);
          this.dropAllWorker.setExecutionAllowed(true);
-         Thread th = new Thread(dropAllWorker);
-         th.setName("Drop All Tags");
-         th.start();
+         Operations.executeAsJob(dropAllWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -98,9 +94,7 @@ public class SearchTaggerCommands {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.tagAllWorker.setCommandInterpreter(ci);
          this.tagAllWorker.setExecutionAllowed(true);
-         Thread th = new Thread(tagAllWorker);
-         th.setName("Tagger All Attributes");
-         th.start();
+         Operations.executeAsJob(tagAllWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -118,9 +112,7 @@ public class SearchTaggerCommands {
       TaggerStats stats = new TaggerStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
-      Thread th = new Thread(stats);
-      th.setName("Tagger Statistics");
-      th.start();
+      Operations.executeAsJob(stats, false);
    }
 
    public void clearTaggerStats() {
@@ -131,9 +123,7 @@ public class SearchTaggerCommands {
       SearchStats stats = new SearchStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
-      Thread th = new Thread(stats);
-      th.setName("Search Statistics");
-      th.start();
+      Operations.executeAsJob(stats, false);
    }
 
    public void clearSearchStats() {

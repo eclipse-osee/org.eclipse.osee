@@ -11,19 +11,24 @@
 package org.eclipse.osee.framework.server.admin.management;
 
 import java.util.Arrays;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-public class GetServerVersionWorker extends BaseCmdWorker {
+public class GetServerVersionWorker extends BaseServerCommand {
+
+   protected GetServerVersionWorker() {
+      super("Get Version");
+   }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       StringBuffer buffer = new StringBuffer();
       buffer.append("Osee Application Server: ");
       buffer.append(Arrays.deepToString(CoreServerActivator.getApplicationServerManager().getSupportedVersions()));

@@ -14,27 +14,29 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-class TaggerAllWorker extends BaseCmdWorker {
+class TaggerAllWorker extends BaseServerCommand {
    private static final int BATCH_SIZE = 1000;
 
    private TagProcessListener processor;
 
    TaggerAllWorker() {
-      super();
+      super("Tagger All Attributes");
       this.processor = null;
    }
 
@@ -58,7 +60,12 @@ class TaggerAllWorker extends BaseCmdWorker {
       }
    }
 
-   protected void doWork(final long startTime) throws OseeDataStoreException, InterruptedException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+      long startTime = System.currentTimeMillis();
       OseeConnection connection = OseeDbConnection.getConnection();
       try {
          String arg = getCommandInterpreter().nextArgument();
@@ -107,8 +114,8 @@ class TaggerAllWorker extends BaseCmdWorker {
       private final Map<Integer, TagQueueJoinQuery> queryIdMap;
       private int attributesProcessed;
       private int queriesProcessed;
-      private long startTime;
-      private int totalAttributes;
+      private final long startTime;
+      private final int totalAttributes;
 
       public TagProcessListener(long startTime, int totalAttributes) {
          this.queryIdMap = Collections.synchronizedMap(new HashMap<Integer, TagQueueJoinQuery>());
@@ -152,7 +159,8 @@ class TaggerAllWorker extends BaseCmdWorker {
       public void printStats() {
          if (isVerbose()) {
             println(String.format("QueryIds: [ %d of %d] Attributes: [%d of %d] - Elapsed Time = %s.",
-                  queriesProcessed, totalQueries(), attributesProcessed, totalAttributes, getElapsedTime(startTime)));
+                  queriesProcessed, totalQueries(), attributesProcessed, totalAttributes,
+                  Lib.getElapseString(startTime)));
          }
       }
 

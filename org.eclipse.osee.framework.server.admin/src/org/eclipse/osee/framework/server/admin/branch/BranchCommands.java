@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -36,9 +37,7 @@ public class BranchCommands {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchExportWorker.setCommandInterpreter(ci);
          this.branchExportWorker.setExecutionAllowed(true);
-         Thread th = new Thread(branchExportWorker);
-         th.setName("Branch Export");
-         th.start();
+         Operations.executeAsJob(branchExportWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
@@ -64,9 +63,7 @@ public class BranchCommands {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchImportWorker.setCommandInterpreter(ci);
          this.branchImportWorker.setExecutionAllowed(true);
-         Thread th = new Thread(branchImportWorker);
-         th.setName("Branch Import");
-         th.start();
+         Operations.executeAsJob(branchImportWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
@@ -92,9 +89,7 @@ public class BranchCommands {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.integrityWorker.setCommandInterpreter(ci);
          this.integrityWorker.setExecutionAllowed(true);
-         Thread th = new Thread(integrityWorker);
-         th.setName("Branch Integrity Check");
-         th.start();
+         Operations.executeAsJob(integrityWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");

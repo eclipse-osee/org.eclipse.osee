@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class BaseCmdWorker implements Runnable {
+public abstract class BaseServerCommand extends AbstractOperation {
 
    private CommandInterpreter ci;
 
@@ -23,7 +26,8 @@ public abstract class BaseCmdWorker implements Runnable {
    private volatile boolean isVerbose;
    private volatile boolean isExecutionAllowed;
 
-   protected BaseCmdWorker() {
+   protected BaseServerCommand(String name) {
+      super(name, Activator.class.getSimpleName());
       this.isRunning = false;
       this.isVerbose = true;
       this.isExecutionAllowed = true;
@@ -65,37 +69,18 @@ public abstract class BaseCmdWorker implements Runnable {
       ci.printStackTrace(ex);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Runnable#run()
-    */
    @Override
-   public void run() {
+   protected final void doWork(IProgressMonitor monitor) throws Exception {
       this.isRunning = true;
       long startTime = System.currentTimeMillis();
       try {
-         doWork(startTime);
+         doCommandWork(monitor);
       } catch (Exception ex) {
          ci.printStackTrace(ex);
       }
-      ci.println(String.format("Done.  Elapsed Time = %s.", getElapsedTime(startTime)));
+      ci.println(String.format("Done.  Elapsed Time = %s.", Lib.getElapseString(startTime)));
       this.isRunning = false;
    }
 
-   protected String getElapsedTime(long startTime) {
-      return timeToString(System.currentTimeMillis() - startTime);
-   }
-
-   protected String timeToString(long value) {
-      long leftOverMs = value % 1000;
-      long seconds = value / 1000;
-      long leftOverSeconds = seconds % 60;
-      long minutes = seconds / 60;
-      long leftOverMinutes = minutes % 60;
-      long hours = minutes / 60;
-      return String.format("%d:%02d:%02d.%03d", hours, leftOverMinutes, leftOverSeconds, leftOverMs);
-   }
-
-   protected abstract void doWork(long startTime) throws Exception;
+   protected abstract void doCommandWork(IProgressMonitor monitor) throws Exception;
 }

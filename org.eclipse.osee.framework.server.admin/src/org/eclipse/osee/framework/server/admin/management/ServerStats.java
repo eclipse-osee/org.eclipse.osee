@@ -12,20 +12,25 @@ package org.eclipse.osee.framework.server.admin.management;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-class ServerStats extends BaseCmdWorker {
+class ServerStats extends BaseServerCommand {
+
+   protected ServerStats() {
+      super("Server Stats");
+   }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
 
       StringBuffer buffer = new StringBuffer();

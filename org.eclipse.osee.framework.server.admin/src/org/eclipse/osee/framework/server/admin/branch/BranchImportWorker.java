@@ -14,27 +14,32 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchImportWorker extends BaseCmdWorker {
+public class BranchImportWorker extends BaseServerCommand {
+
+   protected BranchImportWorker() {
+      super("Branch Import");
+   }
 
    private boolean isValidArg(String arg) {
       return arg != null && arg.length() > 0;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       Options options = new Options();
       String arg = null;
       int count = 0;

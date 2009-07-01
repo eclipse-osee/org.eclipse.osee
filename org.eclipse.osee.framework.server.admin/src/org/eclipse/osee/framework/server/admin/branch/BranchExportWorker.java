@@ -12,25 +12,24 @@ package org.eclipse.osee.framework.server.admin.branch;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchExportWorker extends BaseCmdWorker {
+public class BranchExportWorker extends BaseServerCommand {
 
    private static final String ALL_BRANCHES_QUERY =
-         "SELECT x1.branch_id FROM (" +
-         "SELECT br1.branch_id FROM osee_branch br1%s br1.branch_type <> 3 " +
-         "UNION " +
-         "SELECT om1.merge_branch_id FROM osee_merge om1, osee_branch ob1 WHERE om1.dest_branch_id = ob1.branch_id%s " +
-         "UNION " +
-         "SELECT om2.source_branch_id from osee_merge om2, osee_branch ob2 WHERE om2.dest_branch_id = ob2.branch_id%s " +
-         ") x1 ORDER BY x1.branch_id";
+         "SELECT x1.branch_id FROM (" + "SELECT br1.branch_id FROM osee_branch br1%s br1.branch_type <> 3 " + "UNION " + "SELECT om1.merge_branch_id FROM osee_merge om1, osee_branch ob1 WHERE om1.dest_branch_id = ob1.branch_id%s " + "UNION " + "SELECT om2.source_branch_id from osee_merge om2, osee_branch ob2 WHERE om2.dest_branch_id = ob2.branch_id%s " + ") x1 ORDER BY x1.branch_id";
+
+   protected BranchExportWorker() {
+      super("");
+   }
 
    private boolean isValidArg(String arg) {
       return arg != null && arg.length() > 0;
@@ -42,13 +41,11 @@ public class BranchExportWorker extends BaseCmdWorker {
             includeArchivedBranches ? "" : " and ob2.archived <> 1");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdWorker#doWork(long)
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       Options options = new Options();
       String arg = null;
       int count = 0;

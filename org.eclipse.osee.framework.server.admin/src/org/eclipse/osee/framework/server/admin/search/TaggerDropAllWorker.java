@@ -10,22 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-class TaggerDropAllWorker extends BaseCmdWorker {
+class TaggerDropAllWorker extends BaseServerCommand {
    private static final String TRUNCATE_SQL = "TRUNCATE osee_search_tags";
    private static final String DELETE_TABLE_SQL = "DELETE FROM osee_search_tags";
 
+   protected TaggerDropAllWorker() {
+      super("Drop All Search Tags");
+   }
+
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(java.sql.Connection, long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String deleteSql = null;
       if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
          deleteSql = TRUNCATE_SQL;
@@ -33,6 +38,5 @@ class TaggerDropAllWorker extends BaseCmdWorker {
          deleteSql = DELETE_TABLE_SQL;
       }
       ConnectionHandler.runPreparedUpdate(deleteSql);
-      println(String.format("Dropped all tags in %s.", getElapsedTime(startTime)));
    }
 }

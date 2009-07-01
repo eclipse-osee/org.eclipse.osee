@@ -10,22 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-class TaggerStats extends BaseCmdWorker {
+class TaggerStats extends BaseServerCommand {
+
+   protected TaggerStats() {
+      super("Tag Engine Stats");
+   }
+
+   private String toString(ITagItemStatistics task) {
+      return String.format("id: [%d] - processed [%d] tags in [%d] ms", task.getGammaId(), task.getTotalTags(),
+            task.getProcessingTime());
+   }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       ISearchEngineTagger tagger = Activator.getInstance().getSearchTagger();
 
       ITaggerStatistics stats = tagger.getStatistics();
@@ -50,10 +60,5 @@ class TaggerStats extends BaseCmdWorker {
       buffer.append(String.format("Total Tags in System - [%d]\n\n", stats.getTagsInSystem()));
 
       println(buffer.toString());
-   }
-
-   private String toString(ITagItemStatistics task) {
-      return String.format("id: [%d] - processed [%d] tags in [%d] ms", task.getGammaId(), task.getTotalTags(),
-            task.getProcessingTime());
    }
 }

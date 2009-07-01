@@ -13,20 +13,24 @@ package org.eclipse.osee.framework.server.admin.search;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TagItemWorker extends BaseCmdWorker {
+public class TagItemWorker extends BaseServerCommand {
 
    private TagListener tagListener = null;
+
+   protected TagItemWorker() {
+      super("Tag Individual Items");
+   }
 
    private Set<Long> getGammas() {
       Set<Long> toReturn = new HashSet<Long>();
@@ -51,10 +55,10 @@ public class TagItemWorker extends BaseCmdWorker {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws OseeCoreException {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       tagListener = null;
       final Set<Long> toTag = getGammas();
       if (toTag.isEmpty() != true) {

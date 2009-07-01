@@ -10,20 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
 import org.eclipse.osee.framework.server.admin.Activator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-class SearchStats extends BaseCmdWorker {
+class SearchStats extends BaseServerCommand {
+
+   protected SearchStats() {
+      super("Search Engine Stats");
+   }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       ISearchStatistics stats = Activator.getInstance().getSearchEngine().getStatistics();
       StringBuffer buffer = new StringBuffer();
       buffer.append("\n----------------------------------------------\n");

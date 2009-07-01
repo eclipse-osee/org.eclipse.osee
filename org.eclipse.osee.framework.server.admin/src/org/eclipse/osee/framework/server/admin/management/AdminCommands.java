@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -36,26 +37,23 @@ public class AdminCommands {
       ServerStats stats = new ServerStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
-      Thread th = new Thread(stats);
-      th.setName("Server Statistics");
-      th.start();
+      Operations.executeAsJob(stats, false);
+      //      Thread th = new Thread(stats);
+      //      th.setName("Server Statistics");
+      //      th.start();
    }
 
    public void getServerVersion(CommandInterpreter ci) {
       GetServerVersionWorker serverVersion = new GetServerVersionWorker();
       serverVersion.setCommandInterpreter(ci);
       serverVersion.setExecutionAllowed(true);
-      Thread th = new Thread(serverVersion);
-      th.setName("Server Version");
-      th.start();
+      Operations.executeAsJob(serverVersion, false);
    }
 
    public void addServerVersion(CommandInterpreter ci) {
       if (!this.removeServerVersion.isRunning()) {
          this.addServerVersion.setCommandInterpreter(ci);
-         Thread th = new Thread(addServerVersion);
-         th.setName("Add Server Version");
-         th.start();
+         Operations.executeAsJob(addServerVersion, false);
       } else {
          ci.println("Waiting for remove server version");
       }
@@ -64,9 +62,7 @@ public class AdminCommands {
    public void removeServerVersion(CommandInterpreter ci) {
       if (!this.addServerVersion.isRunning()) {
          this.removeServerVersion.setCommandInterpreter(ci);
-         Thread th = new Thread(removeServerVersion);
-         th.setName("Remove Server Version");
-         th.start();
+         Operations.executeAsJob(removeServerVersion, false);
       } else {
          ci.println("Waiting for add server version");
       }
@@ -76,9 +72,7 @@ public class AdminCommands {
       if (!this.shutdownWorker.isRunning()) {
          this.shutdownWorker.setCommandInterpreter(ci);
          this.shutdownWorker.setExecutionAllowed(true);
-         Thread th = new Thread(shutdownWorker);
-         th.setName("Server Shutdown requested.... please wait");
-         th.start();
+         Operations.executeAsJob(shutdownWorker, false);
       } else {
          if (this.shutdownWorker.isRunning()) {
             ci.println("Waiting for shutdown");
@@ -98,8 +92,6 @@ public class AdminCommands {
       ServerRequestsWorker worker = new ServerRequestsWorker();
       worker.setCommandInterpreter(ci);
       worker.setExecutionAllowed(true);
-      Thread th = new Thread(worker);
-      th.setName("Server Requests");
-      th.start();
+      Operations.executeAsJob(worker, false);
    }
 }

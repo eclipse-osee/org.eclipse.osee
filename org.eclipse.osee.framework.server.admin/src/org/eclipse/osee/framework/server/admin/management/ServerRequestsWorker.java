@@ -10,19 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
-import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
+import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ServerRequestsWorker extends BaseCmdWorker {
+public class ServerRequestsWorker extends BaseServerCommand {
+
+   protected ServerRequestsWorker() {
+      super("Set Servlet Requests Allowed");
+   }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdWorker#doWork(long)
+    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   protected void doWork(long startTime) throws Exception {
+   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String value = getCommandInterpreter().nextArgument();
       CoreServerActivator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
    }
