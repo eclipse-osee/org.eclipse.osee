@@ -38,12 +38,16 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn branchType =
          new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, false, SortDataType.String, false, null);
+   public static XViewerColumn parentBranch =
+         new XViewerColumn("framework.branch.parentBranch", "Parent Branch", 100, SWT.LEFT, false, SortDataType.String,
+               false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(branch_name, time_stamp, author, comment, associatedArtifact, branchState, branchType);
+      registerColumn(branch_name, time_stamp, author, comment, associatedArtifact, branchState, branchType,
+            parentBranch);
    }
 
    @Override

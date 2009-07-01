@@ -123,6 +123,12 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getBranchState().name();
       } else if (cCol.equals(BranchXViewerFactory.branchType)) {
          return branch.getBranchType().name();
+      } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
+         try {
+            return branch.getParentBranch().getBranchName();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
       return "";
    }
