@@ -124,7 +124,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
          sendResults(sb.toString(), httpRequest, httpResponse);
       } else {
          try {
-            sb.append("\nLog File Contents (oldest at bottom):\n--------------------------------\n");
+            sb.append("\n------------------------------------------\n-- Log File Contents (oldest at bottom) --\n------------------------------------------\n");
             int length = sb.length();
             for (File file : files) {
                length += file.length();
