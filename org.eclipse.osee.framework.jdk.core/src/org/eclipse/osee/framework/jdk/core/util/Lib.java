@@ -1406,7 +1406,17 @@ public final class Lib {
    }
 
    public static String getElapseString(long startTime) {
-      return String.valueOf((System.currentTimeMillis() - startTime) / 1000.0) + " secs";
+      return asTimeString(System.currentTimeMillis() - startTime);
+   }
+
+   private static String asTimeString(long value) {
+      long leftOverMs = value % 1000;
+      long seconds = value / 1000;
+      long leftOverSeconds = seconds % 60;
+      long minutes = seconds / 60;
+      long leftOverMinutes = minutes % 60;
+      long hours = minutes / 60;
+      return String.format("%d:%02d:%02d.%03d", hours, leftOverMinutes, leftOverSeconds, leftOverMs);
    }
 
    /**
