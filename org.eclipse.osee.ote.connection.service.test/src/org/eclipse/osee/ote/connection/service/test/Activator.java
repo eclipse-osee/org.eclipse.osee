@@ -38,7 +38,6 @@ public class Activator implements BundleActivator {
       connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
       connectionServiceTracker.open();
       final IConnectionService service = getConnectionService();
-//      Entry[] entries = new Entry[] {new ServiceInfo("Dummy Test Service", "boeing", "ken", "1.0.0", "test model", "")};
       EnhancedProperties properties = new EnhancedProperties();
       properties.setProperty("name", "Dummy Test Service");
       testConnector = new JiniServiceSideConnector(new TestJiniService(), properties);
