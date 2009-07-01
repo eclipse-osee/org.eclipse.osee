@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
  * @author Roberto E. Escobar
@@ -74,13 +73,6 @@ public abstract class AbstractOperation implements IOperation {
     */
    public boolean wasExecuted() {
       return wasExecuted;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#getSchedulingRule()
-    */
-   public ISchedulingRule getSchedulingRule() {
-      return null;
    }
 
    /* (non-Javadoc)

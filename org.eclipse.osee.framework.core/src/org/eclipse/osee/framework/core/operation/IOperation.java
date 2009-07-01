@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
  * @author Roberto E. Escobar
@@ -26,8 +25,6 @@ public interface IOperation {
    public IStatus getStatus();
 
    public boolean wasExecuted();
-
-   public ISchedulingRule getSchedulingRule();
 
    public IOperation run(IProgressMonitor monitor);
 
