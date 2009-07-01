@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -49,7 +50,8 @@ public interface IWordOutlineContentHandler extends IExecutableExtension {
     * @param paragraphStyle
     * @param content
     * @param isParagraph
-    * @param branch TODO
+    * @param branch
+    * @throws OseeCoreException
     */
-   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch);
+   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) throws OseeCoreException;
 }

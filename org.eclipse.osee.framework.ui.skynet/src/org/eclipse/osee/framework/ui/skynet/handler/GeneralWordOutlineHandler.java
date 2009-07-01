@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -61,7 +63,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       roughArtifact = null;
    }
 
-   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) {
+   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) throws OseeCoreException {
       if (!headerNumber.equals("")) {
          lastHeaderNumber = headerNumber;
       }
@@ -99,7 +101,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       roughArtifact.addAttribute("Name", headingText.trim());
    }
 
-   private RoughArtifact setUpNewArtifact(String parNumber, Branch branch) {
+   private RoughArtifact setUpNewArtifact(String parNumber, Branch branch) throws OseeCoreException {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
@@ -112,7 +114,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
 
          return roughArtifact;
       } else {
-         throw new IllegalStateException(String.format(
+         throw new OseeStateException(String.format(
                "Paragraph %s found more than once following \"%s\" which is a duplicate of %s", parNumber,
                previousNamedArtifact.getName(), duplicateArtifact.getName()));
       }

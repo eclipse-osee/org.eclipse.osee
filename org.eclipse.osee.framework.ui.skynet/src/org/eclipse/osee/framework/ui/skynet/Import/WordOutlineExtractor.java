@@ -20,7 +20,9 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -51,9 +53,9 @@ public class WordOutlineExtractor extends WordExtractor {
    private static final int ATTRIBUTE_BLOCK_GROUP = 4;
    private static final int CONTENT_GROUP = 8;
 
-   private Matcher reqNumberMatcher;
-   private Matcher reqListMatcher;
-   private Stack<String> currentListStack;
+   private final Matcher reqNumberMatcher;
+   private final Matcher reqListMatcher;
+   private final Stack<String> currentListStack;
    private Stack<String> clonedCurrentListStack;
    private int lastDepthNumber;
    private String headerNumber;
@@ -70,7 +72,9 @@ public class WordOutlineExtractor extends WordExtractor {
    }
 
    public WordOutlineExtractor(int maxExtractionDepth, IWordOutlineContentHandler handler) throws OseeCoreException {
-      if (handler == null) throw new IllegalArgumentException("handler can not be null");
+      if (handler == null) {
+         throw new IllegalArgumentException("handler can not be null");
+      }
 
       this.handler = handler;
       this.headerNumber = "";
@@ -120,10 +124,10 @@ public class WordOutlineExtractor extends WordExtractor {
                   emptyTagWithAttrs = content.toString().endsWith("/>");
                }
 
-               if (element == PARAGRAPH_TAG || (!emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS)) {
-                  Readers.xmlForward(reader, (Appendable) content, "w:p");
-               } else if (element == TABLE_TAG || (!emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS)) {
-                  Readers.xmlForward(reader, (Appendable) content, "w:tbl");
+               if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
+                  Readers.xmlForward(reader, content, "w:p");
+               } else if (element == TABLE_TAG || !emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS) {
+                  Readers.xmlForward(reader, content, "w:tbl");
                } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != TABLE_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY && element != TABLE_TAG_EMPTY) {
                   throw new IllegalStateException("Unexpected element returned");
                }
@@ -140,8 +144,13 @@ public class WordOutlineExtractor extends WordExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
-                     content.toString(), element == PARAGRAPH_TAG, branch);
+               try {
+                  handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
+                        content.toString(), element == PARAGRAPH_TAG, branch);
+               } catch (OseeCoreException ex) {
+                  throw new OseeWrappedException(String.format("Error processing: [%s]", importFile.getAbsolutePath()),
+                        ex);
+               }
             }
          }
       } finally {
@@ -213,8 +222,8 @@ public class WordOutlineExtractor extends WordExtractor {
       }
    }
 
-   private static final void throwFileFormatError(File file, String msg) {
-      throw new IllegalArgumentException("File " + file.getName() + " not of expected format: " + msg);
+   private static final void throwFileFormatError(File file, String msg) throws OseeArgumentException {
+      throw new OseeArgumentException("File " + file.getName() + " not of expected format: " + msg);
    }
 
    private boolean isListStyle(Stack<String> parentElementNames) {
@@ -259,7 +268,7 @@ public class WordOutlineExtractor extends WordExtractor {
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
-            return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
       };
    }
