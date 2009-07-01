@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.templates.ITemplateProvider;
@@ -45,9 +45,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       return "Publish With Specified Template";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
@@ -76,17 +74,13 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       transaction.execute();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
+   
    @Override
    public String getDescriptionUsage() {
       return "Select a Master or Master/Slave template and click the play button at the top right.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
+   
    @Override
    public String getXWidgetsXml() {
       populateTemplateList();

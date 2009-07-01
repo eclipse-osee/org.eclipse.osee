@@ -12,21 +12,21 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
  */
 public class XNavigateItemBlam extends XNavigateItem {
-   private final BlamOperation blamOperation;
+   private final AbstractBlam blamOperation;
 
    /**
     * @param parent
     * @param name
     */
-   public XNavigateItemBlam(XNavigateItem parent, BlamOperation blamOperation) {
+   public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation) {
       super(parent, blamOperation.getName(), FrameworkImage.BLAM);
       this.blamOperation = blamOperation;
    }

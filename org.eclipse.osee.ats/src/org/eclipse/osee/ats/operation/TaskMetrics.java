@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -65,9 +65,7 @@ public class TaskMetrics extends AbstractBlam {
       return "Task Metrics";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       try {
          monitor.beginTask("TaskMetrics", 5);
@@ -131,10 +129,7 @@ public class TaskMetrics extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
+   
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"common\" defaultValue=\"Lba Test Team Workflow\" /></xWidgets>";

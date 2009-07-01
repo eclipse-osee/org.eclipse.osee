@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
@@ -78,19 +79,11 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Drag in Artifacts and press Play button on top right.  Artifacts will be validated for deletion by framework. NOTE: Artifacts will NOT be deleted, only validated for deletion.";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";

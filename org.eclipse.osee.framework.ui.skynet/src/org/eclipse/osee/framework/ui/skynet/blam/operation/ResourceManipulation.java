@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -430,14 +431,9 @@ public class ResourceManipulation extends AbstractBlam {
       return zipEntryName;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
-      return emptyXWidgetsXml;
+      return AbstractBlam.emptyXWidgetsXml;
    }
 
    class AttrData {

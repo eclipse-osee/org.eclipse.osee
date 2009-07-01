@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
@@ -27,17 +28,11 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  */
 public class ReportAttributeTypesUsageBlam extends AbstractBlam {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Report Attribute Types Usage";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Report Usage of AttributeTypes on Branch", IProgressMonitor.UNKNOWN);
 
@@ -54,17 +49,11 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       xResultData.report(getName() + " " + branch.getBranchName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Performs ArtifactQuery search on all attribyte types for a selected branch and reports usage by \"current\" artifacts.";

@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -70,9 +70,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       lowLevelReqs.clear();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generate Report", 100);
 

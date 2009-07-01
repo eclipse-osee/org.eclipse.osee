@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
 /**
  * @author Ryan D. Brooks
@@ -32,17 +32,12 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
          "SELECT * FROM osee_tx_details where osee_comment like ? and commit_art_id is null";
    private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})[ _]");
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Connect Workflow To Transaction";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Aquiring Team Workflows");
 
@@ -71,15 +66,12 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
-      return emptyXWidgetsXml;
+      return AbstractBlam.emptyXWidgetsXml;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Admin");
    }

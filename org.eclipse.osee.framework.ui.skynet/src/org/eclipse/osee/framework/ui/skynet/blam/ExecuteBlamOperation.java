@@ -19,17 +19,16 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ExecuteBlamOperation extends AbstractOperation {
-   private final List<BlamOperation> operations;
+   private final List<AbstractBlam> operations;
    private final VariableMap variableMap;
    private final Appendable output;
 
-   public ExecuteBlamOperation(String name, Appendable output, VariableMap variableMap, List<BlamOperation> operations) {
+   public ExecuteBlamOperation(String name, Appendable output, VariableMap variableMap, List<AbstractBlam> operations) {
       super(name, SkynetGuiPlugin.PLUGIN_ID);
       this.variableMap = variableMap;
       this.operations = operations;
@@ -45,7 +44,7 @@ public class ExecuteBlamOperation extends AbstractOperation {
          throw new OseeStateException("No operations were found for this workflow");
       }
       double workPercentage = 1 / operations.size();
-      for (BlamOperation operation : operations) {
+      for (AbstractBlam operation : operations) {
          operation.setOutput(output);
          doSubWork(new InternalOperationAdapter(operation), monitor, workPercentage);
       }
@@ -70,9 +69,9 @@ public class ExecuteBlamOperation extends AbstractOperation {
    }
 
    private final class InternalOperationAdapter extends AbstractOperation {
-      private final BlamOperation operation;
+      private final AbstractBlam operation;
 
-      public InternalOperationAdapter(BlamOperation operation) {
+      public InternalOperationAdapter(AbstractBlam operation) {
          super(operation.getName(), SkynetGuiPlugin.PLUGIN_ID);
          this.operation = operation;
       }

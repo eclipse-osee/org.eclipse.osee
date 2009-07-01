@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
 
@@ -39,9 +40,6 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       return "Purge Deleted Attributes";
    }
 
-   /* (non-Javadoc)
-     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       Collection<AttributeType> purgeAttributeTypes =
@@ -72,19 +70,11 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\"  defaultValue=\"Common\" displayName=\"Branch\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Purge all deleted attributes of specified type(s).";

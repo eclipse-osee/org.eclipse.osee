@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -64,9 +64,7 @@ public class PublishRequirements extends AbstractBlam {
       return "Publish Requirements";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
@@ -143,17 +141,13 @@ public class PublishRequirements extends AbstractBlam {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
+   
    @Override
    public String getDescriptionUsage() {
       return "Drag in parent artifacts below and click the play button at the top right.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
+   
    @Override
    public String getXWidgetsXml() {
       List<Artifact> templates = new ArrayList<Artifact>();

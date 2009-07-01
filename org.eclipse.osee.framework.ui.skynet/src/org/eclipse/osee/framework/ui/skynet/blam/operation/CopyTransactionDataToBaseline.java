@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -34,9 +35,6 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       return "Copy TransactionData To Baseline";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       int txNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
@@ -47,18 +45,11 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"From Transaction Number\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Copy tx data from the From Transaction to the baseline transaction of the branch";

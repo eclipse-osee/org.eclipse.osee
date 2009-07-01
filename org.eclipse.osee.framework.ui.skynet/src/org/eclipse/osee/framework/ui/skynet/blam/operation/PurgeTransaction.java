@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -25,17 +26,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class PurgeTransaction extends AbstractBlam {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Delete Transaction";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Integer> txs = Lib.stringToIntegerList(variableMap.getString("Transaction List"));
       boolean force = variableMap.getBoolean("Force Delete");
@@ -48,10 +43,6 @@ public class PurgeTransaction extends AbstractBlam {
       job.join();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();

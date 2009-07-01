@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -68,10 +68,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
+   
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
@@ -104,9 +101,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
+   
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ImageDialog;
 import org.eclipse.swt.SWT;
@@ -79,19 +80,11 @@ public class ImageCaptureBlam extends AbstractBlam {
       }
    };
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Mouse Down on top left location, Mouse Up on bottom right.  Only works within bounds of workbench window.";

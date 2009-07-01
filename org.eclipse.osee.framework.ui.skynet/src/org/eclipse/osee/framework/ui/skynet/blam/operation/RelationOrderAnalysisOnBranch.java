@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -85,22 +86,11 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
 
    };
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Relation Order Analysis On Branch";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @seeorg.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#
-    * runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap,
-    * org.eclipse.osee.framework.skynet.core.artifact.Branch,
-    * org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       print("\nCurrent Status:\n\n");
       for (Branch branch : branchToArtifactsToSort.keySet()) {
@@ -139,28 +129,11 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @seeorg.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#
-    * getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "This will analyze the selected branch for unsorted artifacts and save that report to .osee.data/relationOrder_<branch_name>.txt.  It also allows you to save all of the relations that are unsorted based on their current order in memory.";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @seeorg.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#
-    * widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget,
-    * org.eclipse.ui.forms.widgets.FormToolkit,
-    * org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    * org.eclipse.osee
-    * .framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
-    * org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);

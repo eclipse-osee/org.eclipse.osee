@@ -39,10 +39,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -62,9 +61,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    public DuplicateWorkflowBlam() throws IOException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -160,9 +157,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
@@ -172,10 +166,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
@@ -187,9 +177,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       "</xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Duplicates a team workflow in the exact state as it currently is with tasks in their exact state.  " +
@@ -201,9 +188,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       "\"Create New Workflow\" is not compatible with \"Duplicate Tasks\".";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#run(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
       if (worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts().size() == 0) {
@@ -211,8 +195,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          return;
       }
       try {
-         BlamOperation blamOperation = new DuplicateWorkflowBlam();
-         ((DuplicateWorkflowBlam) blamOperation).setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
+         DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
+         blamOperation.setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
          BlamEditor.edit(blamOperation);
       } catch (IOException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -233,17 +217,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       this.defaultTeamWorkflows = defaultTeamWorkflows;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getMenuItemName() {
       return "Duplicate Team Workflow";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Duplicate Workflow";

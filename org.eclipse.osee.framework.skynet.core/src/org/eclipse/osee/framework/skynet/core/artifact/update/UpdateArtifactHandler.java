@@ -73,9 +73,6 @@ public class UpdateArtifactHandler {
       this.loadRelations = loadRelations;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void update(OseeConnection connection) throws OseeCoreException {
       if (updatingSourceBranch == null) {
          if (!artifactVersions.isEmpty()) {

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -24,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class BlamEditorInput extends BaseArtifactEditorInput {
 
-   public BlamEditorInput(BlamOperation blamOperation) throws OseeCoreException {
+   public BlamEditorInput(AbstractBlam blamOperation) throws OseeCoreException {
       this(BlamWorkflow.getOrCreateBlamWorkflow(blamOperation));
    }
 

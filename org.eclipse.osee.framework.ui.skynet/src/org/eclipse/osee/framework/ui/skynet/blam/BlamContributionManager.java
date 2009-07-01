@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
@@ -33,10 +32,10 @@ public class BlamContributionManager {
    private BlamContributionManager() {
    }
 
-   public static Collection<BlamOperation> getBlamOperationsNameSort() {
-      ArrayList<BlamOperation> blamsSortedByName = new ArrayList<BlamOperation>();
-      Map<String, BlamOperation> blamMap = new HashMap<String, BlamOperation>();
-      for (BlamOperation blam : getBlamOperations()) {
+   public static Collection<AbstractBlam> getBlamOperationsNameSort() {
+      ArrayList<AbstractBlam> blamsSortedByName = new ArrayList<AbstractBlam>();
+      Map<String, AbstractBlam> blamMap = new HashMap<String, AbstractBlam>();
+      for (AbstractBlam blam : getBlamOperations()) {
          blamMap.put(blam.getName(), blam);
       }
       String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
@@ -47,9 +46,9 @@ public class BlamContributionManager {
       return blamsSortedByName;
    }
 
-   public static Collection<BlamOperation> getBlamOperations() {
-      ExtensionDefinedObjects<BlamOperation> definedObjects =
-            new ExtensionDefinedObjects<BlamOperation>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
+   public static Collection<AbstractBlam> getBlamOperations() {
+      ExtensionDefinedObjects<AbstractBlam> definedObjects =
+            new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
                   "Operation", "className");
       return definedObjects.getObjects();
    }
@@ -57,7 +56,7 @@ public class BlamContributionManager {
    public static void addBlamOperationsToNavigator(List<XNavigateItem> items) throws OseeCoreException {
       Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
-      for (BlamOperation blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
+      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
 
          // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
@@ -67,7 +66,7 @@ public class BlamContributionManager {
          }
       }
       // Add blams to categories
-      for (BlamOperation blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
+      for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
          // If categories not specified, add to top level
          if (blamOperation.getCategories().size() == 0) {
             new XNavigateItemBlam(blamOperationItems, blamOperation);

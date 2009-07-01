@@ -9,10 +9,12 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.blam.operation;
+package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,48 +30,37 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayoutListener {
-
+public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private Appendable output;
+   public static final String branchXWidgetXml =
+         "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
+   public static final String emptyXWidgetsXml = "<xWidgets/>";
 
-   public AbstractBlam() {
-      super();
-   }
+   public abstract void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetsXml()
+   /**
+    * Return collection of categories that blam belongs to eg: ATS, ATS.Admin, ATS.Report. These will be used to create
+    * categories that blams are put into in UI navigators. BLAM can belong in multiple categories.
+    * 
+    * @return categories
     */
-   @Override
+   public abstract Collection<String> getCategories();
+
+   
    public String getXWidgetsXml() {
-      return branchXWidgetXml;
+      return AbstractBlam.branchXWidgetXml;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   @Override
    public String getDescriptionUsage() {
       return "Select parameters below and click the play button at the top right.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getName()
-    */
-   @Override
    public abstract String getName();
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#setOutput(java.lang.Appendable)
-    */
-   @Override
    public void setOutput(Appendable output) {
       this.output = output;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#print(java.lang.String)
-    */
-   @Override
    public void print(String value) {
       if (this.output != null && value != null) {
          try {
@@ -80,10 +71,6 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#println(java.lang.String)
-    */
-   @Override
    public void println(String value) {
       if (Strings.isValid(value)) {
          print(value + "\n");

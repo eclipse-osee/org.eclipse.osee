@@ -15,23 +15,18 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public class PurgeAttributeType extends AbstractBlam {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Purge Attribute Type";
    }
 
-   /* (non-Javadoc)
-     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-     */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Collection<AttributeType> purgeAttributeTypes =
             variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
@@ -41,19 +36,11 @@ public class PurgeAttributeType extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Purge an attribute type.";

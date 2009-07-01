@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -34,10 +35,6 @@ public class PruneWorkspace extends AbstractBlam {
       return "Prune Workspace";
    }
 
-   /**
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap,
-    *      org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       File keeperFile = new File(variableMap.getString("Preserve List File"));
       File workspacePath = new File(variableMap.getString("Workspace Path"));
@@ -57,10 +54,6 @@ public class PruneWorkspace extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Preserve List File\" /><XWidget xwidgetType=\"XText\" displayName=\"Workspace Path\" /><XWidget xwidgetType=\"XText\" displayName=\"File Path Pattern\" /></xWidgets>";

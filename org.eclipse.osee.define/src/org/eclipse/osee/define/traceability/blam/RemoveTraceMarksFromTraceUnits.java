@@ -41,8 +41,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -67,9 +67,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return "Remove Trace Marks from Resource";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getCategories()
-    */
+   
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
@@ -146,9 +144,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return new File(pathToUse).toURI();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {

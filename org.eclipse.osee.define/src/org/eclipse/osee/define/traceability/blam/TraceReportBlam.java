@@ -50,8 +50,8 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -80,9 +80,7 @@ public class TraceReportBlam extends AbstractBlam {
       return "Trace Report";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getCategories()
-    */
+   
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
@@ -161,9 +159,7 @@ public class TraceReportBlam extends AbstractBlam {
       return traceTypes.contains(TraceTypeEnum.Code_Unit_Trace);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 

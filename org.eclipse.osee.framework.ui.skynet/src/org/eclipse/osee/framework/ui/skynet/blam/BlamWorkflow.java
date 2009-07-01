@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.w3c.dom.Document;
@@ -47,10 +46,10 @@ import org.xml.sax.SAXException;
  */
 public class BlamWorkflow extends Artifact {
    public static final String ARTIFACT_NAME = "Blam Workflow";
-   private final List<BlamOperation> operations;
+   private final List<AbstractBlam> operations;
    private List<DynamicXWidgetLayoutData> layoutDatas;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
-   private BlamOperation soleOperation;
+   private AbstractBlam soleOperation;
 
    /**
     * @param parentFactory
@@ -61,12 +60,12 @@ public class BlamWorkflow extends Artifact {
    public BlamWorkflow(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
 
-      this.operations = new ArrayList<BlamOperation>();
+      this.operations = new ArrayList<AbstractBlam>();
       this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
       this.layoutDatas = new LinkedList<DynamicXWidgetLayoutData>();
    }
 
-   public static BlamWorkflow getOrCreateBlamWorkflow(BlamOperation soleOperation) throws OseeCoreException {
+   public static BlamWorkflow getOrCreateBlamWorkflow(AbstractBlam soleOperation) throws OseeCoreException {
       BlamWorkflow blamWorkflow =
             (BlamWorkflow) ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchManager.getCommonBranch());
       blamWorkflow.setDescriptiveName(soleOperation.getName());
@@ -81,7 +80,7 @@ public class BlamWorkflow extends Artifact {
       return layoutDatas;
    }
 
-   public List<BlamOperation> getOperations() throws IllegalArgumentException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<AbstractBlam> getOperations() throws IllegalArgumentException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
       operations.clear();
 
       if (soleOperation == null) {
@@ -101,7 +100,7 @@ public class BlamWorkflow extends Artifact {
 
       NodeList operations = rootElement.getElementsByTagName("Operation");
       for (int i = 0; i < operations.getLength(); i++) {
-         loadBlamOperationFromXml((Element) operations.item(i));
+         loadAbstractBlamFromXml((Element) operations.item(i));
       }
 
       NodeList xwidgets = rootElement.getElementsByTagName("Widgets");
@@ -114,32 +113,32 @@ public class BlamWorkflow extends Artifact {
       layoutDatas = XWidgetParser.extractlayoutDatas(dynamicXWidgetLayout, element);
    }
 
-   private void loadBlamOperationFromXml(Element operation) throws CoreException, IllegalArgumentException {
+   private void loadAbstractBlamFromXml(Element operation) throws CoreException, IllegalArgumentException {
       String operationName = operation.getAttribute("name");
       if (operationName.equals("")) {
          throw new IllegalArgumentException("The operation name must be specified");
       }
 
       IExtensionRegistry registry = Platform.getExtensionRegistry();
-      IExtension extension = registry.getExtension("org.eclipse.osee.framework.ui.skynet.BlamOperation", operationName);
+      IExtension extension = registry.getExtension("org.eclipse.osee.framework.ui.skynet.AbstractBlam", operationName);
 
       if (extension == null) {
          throw new IllegalArgumentException(
-               "No extension for org.eclipse.osee.framework.ui.skynet.BlamOperation with the name " + operationName + " was found.\n\n" + getOperationsListing(registry));
+               "No extension for org.eclipse.osee.framework.ui.skynet.AbstractBlam with the name " + operationName + " was found.\n\n" + getOperationsListing(registry));
       }
 
       IConfigurationElement[] configElements = null;
       configElements = extension.getConfigurationElements();
       for (int j = 0; j < configElements.length; j++) {
-         BlamOperation blamOperation = (BlamOperation) configElements[j].createExecutableExtension("className");
-         operations.add(blamOperation);
+         AbstractBlam AbstractBlam = (AbstractBlam) configElements[j].createExecutableExtension("className");
+         operations.add(AbstractBlam);
       }
    }
 
    private String getOperationsListing(IExtensionRegistry registry) {
       StringBuilder strB = new StringBuilder(1000);
       IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.AbstractBlam");
       IExtension[] extensions = point.getExtensions();
 
       for (IExtension extension : extensions) {
@@ -193,7 +192,14 @@ public class BlamWorkflow extends Artifact {
    /**
     * @param soleOperation the soleOperation to set
     */
-   public void setSoleOperation(BlamOperation soleOperation) {
+   public void setSoleOperation(AbstractBlam soleOperation) {
       this.soleOperation = soleOperation;
+   }
+
+   /**
+    * @return the soleOperation
+    */
+   public AbstractBlam getSoleOperation() {
+      return soleOperation;
    }
 }

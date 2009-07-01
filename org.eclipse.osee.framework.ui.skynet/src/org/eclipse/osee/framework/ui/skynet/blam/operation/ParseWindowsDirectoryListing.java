@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -26,17 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class ParseWindowsDirectoryListing extends AbstractBlam {
    private static final String DIRECTORY_PREFIX = " Directory of Y:\\";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Parse Windows Directory Listing";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String listingFile = variableMap.getString("Directory Listing File");
@@ -61,11 +56,6 @@ public class ParseWindowsDirectoryListing extends AbstractBlam {
       writer.close();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Directory Listing File\" defaultValue=\"c:\\UserData\\cte.txt\" /></xWidgets>";

@@ -14,13 +14,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -37,17 +41,16 @@ public class InPlaceRelationSort extends AbstractBlam {
       return "In-place Relation Sort";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Generating Reports", 100);
       List<Object[]> updateData = new ArrayList<Object[]>();
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
+      ArtifactNameComparator nameComparator = new ArtifactNameComparator();
       for (Artifact parent : artifacts) {
          List<Artifact> children = parent.getChildren();
-         Collections.sort(children);
+         Collections.sort(children, nameComparator);
+
          int previousArtId = -1;
+
          for (Artifact child : children) {
             List<RelationLink> relations =
                   parent.getRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child);
@@ -59,28 +62,42 @@ public class InPlaceRelationSort extends AbstractBlam {
             updateData.add(new Object[] {previousArtId, relation.getGammaId()});
             previousArtId = child.getArtId();
          }
-         print(Arrays.deepToString(children.toArray()) + "\n");
       }
 
       ConnectionHandler.runBatchUpdate(UPDATE_ORDER_SQL, updateData);
+
+      /*  OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
+              relation.getABranch(), relationType.getTypeName());*/
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
+   private static class ArtifactNameComparator implements Comparator<Artifact> {
+      private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
+      private final Matcher numberMatcher = numberPattern.matcher("");
+
+      @Override
+      public int compare(Artifact artifact1, Artifact artifact2) {
+         String name1 = artifact1.getDescriptiveName();
+         String name2 = artifact2.getDescriptiveName();
+
+         numberMatcher.reset(name1);
+         if (numberMatcher.matches()) {
+            numberMatcher.reset(name2);
+            if (numberMatcher.matches()) {
+               return Integer.valueOf(name1).compareTo(Integer.valueOf(name2));
+            }
+         }
+         return name1.compareTo(name2);
+      }
+   }
+
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" /></xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
-      return "Sorts relations without the use of a transaction - staight sql";
+      return "Alphebetically sorts children of the given artifacts without the use of a transaction - staight sql";
    }
 
    public Collection<String> getCategories() {

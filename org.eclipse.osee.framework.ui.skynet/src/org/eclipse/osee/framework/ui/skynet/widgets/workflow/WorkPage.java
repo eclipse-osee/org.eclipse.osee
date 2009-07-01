@@ -43,14 +43,21 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    protected final WorkPageDefinition workPageDefinition;
    protected final WorkFlowDefinition workFlowDefinition;
 
+   private WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this.workFlowDefinition = workFlowDefinition;
+      this.workPageDefinition = workPageDefinition;
+      if (dynamicWidgetLayoutListener == null) {
+         dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+      } else {
+         dynamicXWidgetLayout = new DynamicXWidgetLayout(dynamicWidgetLayoutListener, optionResolver);
+      }
+   }
+
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      super();
-      this.workFlowDefinition = workFlowDefinition;
-      this.workPageDefinition = workPageDefinition;
-      dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this(workFlowDefinition, workPageDefinition, optionResolver, dynamicWidgetLayoutListener);
       try {
          if (xWidgetsXml != null) processXmlLayoutDatas(xWidgetsXml);
       } catch (Exception ex) {
@@ -58,28 +65,25 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
-      super();
-      this.workFlowDefinition = workFlowDefinition;
-      this.workPageDefinition = workPageDefinition;
-      dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this(workFlowDefinition, workPageDefinition, optionResolver, dynamicWidgetLayoutListener);
       dynamicXWidgetLayout.setLayoutDatas(datas);
+   }
+
+   public WorkPage(List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+      this(null, null, datas, optionResolver, dynamicWidgetLayoutListener);
    }
 
    public WorkPage(List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
-      super();
-      this.workFlowDefinition = null;
-      this.workPageDefinition = null;
-      dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
-      dynamicXWidgetLayout.setLayoutDatas(datas);
+      this(null, null, datas, optionResolver, null);
    }
 
    public WorkPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      this(null, null, xWidgetsXml, optionResolver);
+      this(null, null, xWidgetsXml, optionResolver, null);
    }
 
    public WorkPage(IXWidgetOptionResolver optionResolver) {
-      this(null, null, (String) null, optionResolver);
+      this(null, null, (String) null, optionResolver, null);
    }
 
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {

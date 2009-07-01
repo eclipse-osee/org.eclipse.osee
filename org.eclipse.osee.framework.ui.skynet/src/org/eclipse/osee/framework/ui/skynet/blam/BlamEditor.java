@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -27,7 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.ui.PartInitException;
 
 /**
@@ -109,10 +106,9 @@ public class BlamEditor extends AbstractArtifactEditor {
 
    public void executeBlam() {
       try {
-         final List<BlamOperation> operations = new ArrayList<BlamOperation>();
-         operations.addAll(getEditorInput().getArtifact().getOperations());
          IOperation blamOperation =
-               new ExecuteBlamOperation(getPartName(), overviewPage.getOutput(), getBlamVariableMap(), operations);
+               new ExecuteBlamOperation(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
+                     getEditorInput().getArtifact().getOperations());
          Operations.executeAsJob(blamOperation, true, Job.LONG, new BlamEditorExecutionAdapter());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -135,7 +131,7 @@ public class BlamEditor extends AbstractArtifactEditor {
       });
    }
 
-   public static void edit(BlamOperation blamOperation) throws OseeCoreException {
+   public static void edit(AbstractBlam blamOperation) throws OseeCoreException {
       BlamEditor.edit(new BlamEditorInput(blamOperation));
    }
 

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -35,17 +36,11 @@ public class SortRelationsByBranch extends AbstractBlam {
          "select rel1.rel_link_type_id,  rel1.b_art_id as art_id1, txd1.branch_id, rel1.a_order as order1, txs1.gamma_id, rel1.a_art_id as art_id2, rel1.b_order_value as order2 from osee_tx_details txd1, osee_relation_link rel1, osee_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
    private static final String UPDATE_A_ORDER = "update osee_relation_link set a_order = ? where gamma_id = ?";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Sort Relations By Branch";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       int totalWork = 0;
       monitor.beginTask(getName(), totalWork);

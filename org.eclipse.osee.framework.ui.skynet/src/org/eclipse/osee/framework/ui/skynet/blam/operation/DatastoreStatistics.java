@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -23,17 +24,11 @@ public class DatastoreStatistics extends AbstractBlam {
    private static final String SELECT_ARTIFACT_COUNTS =
          "select count(1) as total, name FROM osee_artifact_type ary, osee_artifact art where ary.art_type_id = art.art_type_id group by name order by total desc";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Datastore Statistics";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
@@ -50,18 +45,11 @@ public class DatastoreStatistics extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
-      return emptyXWidgetsXml;
+      return AbstractBlam.emptyXWidgetsXml;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Reports statistics about the datastore including artifact counts by type.";

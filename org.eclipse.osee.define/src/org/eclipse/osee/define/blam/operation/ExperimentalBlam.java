@@ -13,8 +13,8 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
 /**
  * @author Ryan D. Brooks
@@ -29,9 +29,7 @@ public class ExperimentalBlam extends AbstractBlam {
       return "Experimental Blam";
    }
 
-   /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-       */
+   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
    }
 

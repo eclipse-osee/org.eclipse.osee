@@ -101,7 +101,9 @@ public class BlamInputSection extends BaseBlamSection {
    private void createWidgets(Composite parent) {
       try {
          List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
-         WorkPage workPage = new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver());
+         WorkPage workPage =
+               new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(),
+                     getEditorInput().getArtifact().getSoleOperation());
          workPage.createBody(getManagedForm(), parent, null, new XModifiedListener() {
 
             @Override

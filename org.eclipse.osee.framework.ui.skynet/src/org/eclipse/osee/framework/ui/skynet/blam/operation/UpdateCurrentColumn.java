@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -113,17 +114,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Update Current Column";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
@@ -145,9 +140,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       int startAtTxNumber = 0;
       try {
@@ -242,14 +235,12 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
          long time = System.currentTimeMillis();
          int rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, updates);
-         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
-               rowsUpdated));
+         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time), rowsUpdated));
 
          time = System.currentTimeMillis();
          print(String.format("Going to update [%d] items to tx_current value of 1 or 2.\n", updates.size()));
          rowsUpdated = updateTxCurrentForLatestItems(subMonitor, updates);
-         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
-               rowsUpdated));
+         print(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time), rowsUpdated));
 
          subMonitor.done();
       }

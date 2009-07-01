@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedExcept
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
@@ -130,18 +131,15 @@ public class DatabaseHealth extends AbstractBlam {
             doSubWork(operation, monitor, workPercentage);
             setStatus(operation.getStatus());
 
-            String detailedReport = operation.getDetailedReport().toString();
-            if (Strings.isValid(detailedReport)) {
-               XResultData result = new XResultData();
-               result.addRaw(detailedReport.toString());
-               result.report(operation.getName(), Manipulations.RAW_HTML);
+               String detailedReport = operation.getDetailedReport().toString();
+               if (Strings.isValid(detailedReport)) {
+                  XResultData result = new XResultData();
+                  result.addRaw(detailedReport.toString());
+                  result.report(operation.getName(), Manipulations.RAW_HTML);
+               }
             }
          }
-      }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          int totalTasks = fixOperations.size() + verifyOperations.size();

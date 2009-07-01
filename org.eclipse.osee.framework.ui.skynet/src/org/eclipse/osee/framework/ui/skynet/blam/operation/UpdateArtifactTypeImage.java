@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.widgets.Display;
 
@@ -45,9 +46,6 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
       return "Update ArtifactType Image";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String filename = variableMap.getString(SELECT_IMAGE);
       final ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
@@ -78,17 +76,11 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\nLeaving image filename blank will clear the image from the database.  Programatic default will be used instead.\n\nNOTE: Change default branch for other Artifact Types.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");

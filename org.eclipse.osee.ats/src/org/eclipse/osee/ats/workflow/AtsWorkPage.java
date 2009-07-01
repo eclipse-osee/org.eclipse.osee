@@ -42,7 +42,7 @@ public class AtsWorkPage extends WorkPage {
    private SMAManager smaMgr;
 
    public AtsWorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      super(workFlowDefinition, workPageDefinition, xWidgetsXml, optionResolver);
+      super(workFlowDefinition, workPageDefinition, xWidgetsXml, optionResolver, null);
    }
 
    public AtsWorkPage(IXWidgetOptionResolver optionResolver) {

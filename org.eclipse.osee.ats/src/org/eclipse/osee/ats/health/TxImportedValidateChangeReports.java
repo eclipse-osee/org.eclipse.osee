@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
 /**
  * @author Roberto E. Escobar
@@ -136,9 +136,6 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       return toReturn != null ? toReturn : EMPTY_STRING;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
@@ -180,11 +177,6 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
    @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();

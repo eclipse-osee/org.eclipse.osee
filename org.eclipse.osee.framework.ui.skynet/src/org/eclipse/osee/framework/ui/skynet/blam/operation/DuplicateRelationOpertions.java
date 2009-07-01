@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
@@ -66,9 +67,6 @@ public class DuplicateRelationOpertions extends AbstractBlam {
       return "Duplicate Relation Opertions";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.VariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -241,6 +239,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          relLinksToGammas.add(new Pair<Long, Integer>(gammaId, transactionId));
       }
    }
+
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }
