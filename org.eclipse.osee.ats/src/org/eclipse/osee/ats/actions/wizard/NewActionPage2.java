@@ -98,7 +98,7 @@ public class NewActionPage2 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_2");
+      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_2", "org.eclipse.osee.ats.help.ui");
    }
 
    private void handlePopulateWithDebugInfo() {

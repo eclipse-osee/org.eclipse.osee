@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -155,7 +156,7 @@ public class NewActionPage1 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_1");
+      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_1", "org.eclipse.osee.ats.help.ui");
    }
 
    public Set<ActionableItemArtifact> getSelectedActionableItemArtifacts() {
