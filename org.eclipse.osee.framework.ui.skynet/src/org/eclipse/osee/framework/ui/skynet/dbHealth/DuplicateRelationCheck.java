@@ -117,9 +117,7 @@ public class DuplicateRelationCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.20));
 
       Map<Integer, List<Integer>> branches = new HashMap<Integer, List<Integer>>();
-      if (isShowDetailsEnabled()) {
-         createAndDisplayReport(monitor, !isFixOperationEnabled(), branches);
-      }
+      createAndDisplayReport(monitor, !isFixOperationEnabled(), branches);
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.20));
 

@@ -88,12 +88,10 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
          monitor.worked(calculateWork(0.20));
       }
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.endMultiColumnTable());
-      }
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.05));
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */

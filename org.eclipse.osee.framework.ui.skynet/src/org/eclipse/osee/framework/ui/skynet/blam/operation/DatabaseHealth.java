@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * @author Jeff C. Phillips
  */
 public class DatabaseHealth extends AbstractBlam {
-   private static final String SHOW_DETAILS_PROMPT = "Show Details of Operations";
    private static final String CLEAN_ALL_PROMPT = "Run all the Cleanup Operations";
    private static final String SHOW_ALL_PROMPT = "Run all the Verification Operations";;
 
@@ -48,12 +47,10 @@ public class DatabaseHealth extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      boolean isShowDetailsEnabled = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
       boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
       boolean verifyAll = variableMap.getBoolean(SHOW_ALL_PROMPT);
 
       MasterDbHealthOperation dbHealthOperation = new MasterDbHealthOperation(getName());
-      dbHealthOperation.setShowDetails(isShowDetailsEnabled);
 
       for (String taskName : DatabaseHealthOpsExtensionManager.getFixOperationNames()) {
          if (fixAll || variableMap.getBoolean(taskName)) {
@@ -74,31 +71,31 @@ public class DatabaseHealth extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + SHOW_DETAILS_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CLEAN_ALL_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + SHOW_ALL_PROMPT + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Verification Operations to Run:\"/>");
-      for (String taskName : DatabaseHealthOpsExtensionManager.getVerifyOperationNames()) {
-         builder.append(getOperationsCheckBoxes(taskName));
+      for (DatabaseHealthOperation healthOp : DatabaseHealthOpsExtensionManager.getVerifyOperations()) {
+         builder.append(getOperationsCheckBoxe(healthOp, false));
       }
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
-      for (String taskName : DatabaseHealthOpsExtensionManager.getFixOperationNames()) {
-         builder.append(getOperationsCheckBoxes(taskName));
+      for (DatabaseHealthOperation fixOp : DatabaseHealthOpsExtensionManager.getFixOperations()) {
+         builder.append(getOperationsCheckBoxe(fixOp, true));
       }
 
       builder.append("</xWidgets>");
       return builder.toString();
    }
 
-   private String getOperationsCheckBoxes(String checkboxName) {
+   private String getOperationsCheckBoxe(DatabaseHealthOperation fixOp, boolean fix) {
       StringBuilder builder = new StringBuilder();
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
-      builder.append(checkboxName);
+      builder.append(fix ? fixOp.getFixTaskName() : fixOp.getVerifyTaskName());
       builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append("<XWidget xwidgetType=\"XText\" displayName= \"   \" defaultValue=\"" + (fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()) + "\"/>");
       return builder.toString();
    }
 
@@ -108,17 +105,11 @@ public class DatabaseHealth extends AbstractBlam {
 
    private final class MasterDbHealthOperation extends AbstractOperation {
 
-      private boolean isShowDetailsEnabled;
       private final Set<DatabaseHealthOperation> fixOperations = new HashSet<DatabaseHealthOperation>();
       private final Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
 
       public MasterDbHealthOperation(String operationName) {
          super(operationName, SkynetGuiPlugin.PLUGIN_ID);
-         this.isShowDetailsEnabled = false;
-      }
-
-      public void setShowDetails(boolean isShowDetailsEnabled) {
-         this.isShowDetailsEnabled = isShowDetailsEnabled;
       }
 
       public void addOperation(DatabaseHealthOperation operation, boolean isFixOperation) {
@@ -135,18 +126,15 @@ public class DatabaseHealth extends AbstractBlam {
          checkForCancelledStatus(monitor);
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);
-            operation.setShowDetailsEnabled(isShowDetailsEnabled);
             operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
             setStatus(operation.getStatus());
 
-            if (operation.isShowDetailsEnabled()) {
-               String detailedReport = operation.getDetailedReport().toString();
-               if (Strings.isValid(detailedReport)) {
-                  XResultData result = new XResultData();
-                  result.addRaw(detailedReport.toString());
-                  result.report(operation.getName(), Manipulations.RAW_HTML);
-               }
+            String detailedReport = operation.getDetailedReport().toString();
+            if (Strings.isValid(detailedReport)) {
+               XResultData result = new XResultData();
+               result.addRaw(detailedReport.toString());
+               result.report(operation.getName(), Manipulations.RAW_HTML);
             }
          }
       }

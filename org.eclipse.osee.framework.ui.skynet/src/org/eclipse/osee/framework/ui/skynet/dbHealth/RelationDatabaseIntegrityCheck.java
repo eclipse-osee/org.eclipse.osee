@@ -192,12 +192,10 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          monitor.worked(calculateWork(0.40));
       }
 
-      if (isShowDetailsEnabled()) {
-         sbFull.append(AHTML.endMultiColumnTable());
-         XResultData rd = new XResultData();
-         rd.addRaw(sbFull.toString());
-         rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
-      }
+      sbFull.append(AHTML.endMultiColumnTable());
+      XResultData rd = new XResultData();
+      rd.addRaw(sbFull.toString());
+      rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       monitor.worked(calculateWork(0.10));
    }
 

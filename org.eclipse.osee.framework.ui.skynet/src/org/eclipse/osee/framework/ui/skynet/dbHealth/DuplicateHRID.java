@@ -82,11 +82,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.20));
 
-      if (isShowDetailsEnabled()) {
-         displayReport(monitor, diffValues, 0.20);
-      } else {
-         monitor.worked(calculateWork(0.20));
-      }
+      displayReport(monitor, diffValues, 0.20);
 
       checkForCancelledStatus(monitor);
       if (isFixOperationEnabled()) {

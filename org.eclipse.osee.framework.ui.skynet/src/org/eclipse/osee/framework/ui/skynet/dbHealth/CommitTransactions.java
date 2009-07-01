@@ -72,7 +72,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
       }
       monitor.worked(calculateWork(0.50));
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */

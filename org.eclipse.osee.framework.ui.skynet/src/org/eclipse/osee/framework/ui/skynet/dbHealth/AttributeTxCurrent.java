@@ -33,11 +33,9 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Attr id", "Branch id"};
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with no tx_current set", columnHeaders.length));
-      }
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with no tx_current set", columnHeaders.length));
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -49,13 +47,10 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
-         columnHeaders = new String[] {"Count", "Attr id", "Branch id", "Num TX_Currents"};
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with multiple tx_currents set",
-               columnHeaders.length));
-      }
+      HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
+      columnHeaders = new String[] {"Count", "Attr id", "Branch id", "Num TX_Currents"};
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      appendToDetails(AHTML.addRowSpanMultiColumnTable("Attributes with multiple tx_currents set", columnHeaders.length));
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -68,9 +63,7 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
-      }
+      HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
@@ -93,12 +86,10 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       }
       monitor.worked(calculateWork(0.20));
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.endMultiColumnTable());
-      }
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.05));
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */

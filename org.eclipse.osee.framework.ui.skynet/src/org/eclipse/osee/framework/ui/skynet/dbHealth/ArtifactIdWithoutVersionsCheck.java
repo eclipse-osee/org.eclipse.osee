@@ -39,7 +39,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
          "select item.art_id as artId from osee_artifact item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
 
    private static final String GET_INVALID_ACL_ART_IDS =
-      "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
+         "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
 
    /**
     * @param operationName
@@ -64,7 +64,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
       itemsToDelete.add(new ItemEntry("osee_attribute", "attr_id", "art_id", //
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ATTR_IDS_ART_IDS, true)));
-      
+
       itemsToDelete.add(new ItemEntry("osee_artifact_acl", "art_id", "art_id", //
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ACL_ART_IDS, false)));
 
@@ -73,11 +73,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ART_IDS, false)));
 
       setItemsToFix(allInvalidArtIds.size());
-      if (isShowDetailsEnabled()) {
-         createReport(monitor, beforeArtifactCheck, getItemsToFixCount(), itemsToDelete);
-      } else {
-         monitor.worked(calculateWork(0.10));
-      }
+      createReport(monitor, beforeArtifactCheck, getItemsToFixCount(), itemsToDelete);
 
       if (false && isFixOperationEnabled() && getItemsToFixCount() > 0) {
          for (ItemEntry entry : itemsToDelete) {
@@ -148,7 +144,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
     */
    @Override
    public String getCheckDescription() {
-      return "The health check verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact_version table.";
+      return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact_version table.";
    }
 
    /* (non-Javadoc)
@@ -156,6 +152,6 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
     */
    @Override
    public String getFixDescription() {
-      return "The fix operation for this health check removes invalid data from the corresponding tables, however does not clean up any addressing that might be left behind.";
+      return "Removes invalid data from the corresponding tables, however does not clean up any addressing that might be left behind.";
    }
 }

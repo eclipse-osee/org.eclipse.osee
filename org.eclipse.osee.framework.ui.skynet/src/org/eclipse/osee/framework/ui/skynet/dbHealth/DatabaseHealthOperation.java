@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    private boolean isFixOperationEnabled;
-   private boolean isShowDetailsEnabled;
    private int itemToFixCount;
 
    private Appendable appendableBuffer;
@@ -31,7 +30,6 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
    public DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
       this.isFixOperationEnabled = false;
-      this.isShowDetailsEnabled = false;
       this.appendableBuffer = new StringBuilder();
       this.detailedReport = new StringBuilder();
       this.itemToFixCount = 0;
@@ -56,14 +54,6 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    public boolean isFixOperationEnabled() {
       return isFixOperationEnabled;
-   }
-
-   public void setShowDetailsEnabled(boolean isShowDetailsEnabled) {
-      this.isShowDetailsEnabled = isShowDetailsEnabled;
-   }
-
-   public boolean isShowDetailsEnabled() {
-      return isShowDetailsEnabled;
    }
 
    public void setSummary(Appendable appendableBuffer) {

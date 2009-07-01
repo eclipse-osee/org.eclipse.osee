@@ -94,9 +94,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
          monitor.worked(calculateWork(0.40));
       }
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.endMultiColumnTable());
-      }
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.20));
    }
    

@@ -63,12 +63,10 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthOperation {
             displayData(sbFull, getSummary(), verify);
          }
       } finally {
-         if (isShowDetailsEnabled()) {
-            sbFull.append(AHTML.endMultiColumnTable());
-            XResultData rd = new XResultData();
-            rd.addRaw(sbFull.toString());
-            rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
-         }
+         sbFull.append(AHTML.endMultiColumnTable());
+         XResultData rd = new XResultData();
+         rd.addRaw(sbFull.toString());
+         rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }
    }
 

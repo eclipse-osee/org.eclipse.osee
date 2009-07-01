@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -42,6 +43,19 @@ public class DatabaseHealthOpsExtensionManager {
    private static Set<String> getOperationNames(boolean isFix) {
       checkExtensionsLoaded();
       return isFix ? fixOps.keySet() : verifyOps.keySet();
+   }
+
+   public static Collection<DatabaseHealthOperation> getFixOperations() {
+      return getOperations(true);
+   }
+
+   public static Collection<DatabaseHealthOperation> getVerifyOperations() {
+      return getOperations(false);
+   }
+
+   private static Collection<DatabaseHealthOperation> getOperations(boolean isFix) {
+      checkExtensionsLoaded();
+      return isFix ? fixOps.values() : verifyOps.values();
    }
 
    public static DatabaseHealthOperation getFixOperationByName(String name) {

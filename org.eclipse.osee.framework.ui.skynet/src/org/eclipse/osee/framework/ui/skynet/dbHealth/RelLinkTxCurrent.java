@@ -34,11 +34,9 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Rel Link Id", "Branch id"};
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with no tx_current set", columnHeaders.length));
-      }
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with no tx_current set", columnHeaders.length));
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
@@ -49,13 +47,11 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
-         columnHeaders = new String[] {"Count", "Relation Link id", "Branch id", "Num TX_Currents"};
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with multiple tx_currents set",
-               columnHeaders.length));
-      }
+      HealthHelper.dumpDataNone(getDetailedReport(), noneSet);
+      columnHeaders = new String[] {"Count", "Relation Link id", "Branch id", "Num TX_Currents"};
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      appendToDetails(AHTML.addRowSpanMultiColumnTable("Relation Links with multiple tx_currents set",
+            columnHeaders.length));
 
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
@@ -70,9 +66,7 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
-      if (isShowDetailsEnabled()) {
-         HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
-      }
+      HealthHelper.dumpDataMultiple(getDetailedReport(), multipleSet);
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
@@ -95,9 +89,7 @@ public class RelLinkTxCurrent extends DatabaseHealthOperation {
       }
       monitor.worked(calculateWork(0.20));
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.endMultiColumnTable());
-      }
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.05));
    }
    

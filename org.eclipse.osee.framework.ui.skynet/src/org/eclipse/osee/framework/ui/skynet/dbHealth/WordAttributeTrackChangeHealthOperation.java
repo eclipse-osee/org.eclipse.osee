@@ -75,17 +75,15 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
 
       setItemsToFix(attributesWithErrors.size());
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
-         for (AttrData attrData : attributesWithErrors) {
-            appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
-                  attrData.getUri()}));
-         }
-         appendToDetails(AHTML.endMultiColumnTable());
-         monitor.worked(calculateWork(0.10));
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
+      for (AttrData attrData : attributesWithErrors) {
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
+               attrData.getUri()}));
       }
+      appendToDetails(AHTML.endMultiColumnTable());
+      monitor.worked(calculateWork(0.10));
       getSummary().append(String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
 
       monitor.worked(calculateWork(0.10));

@@ -126,17 +126,15 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
             sbFull.append(AHTML.beginMultiColumnTable(100, 1));
             sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
-            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull, isShowDetailsEnabled());
+            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull);
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with different values", columnHeaders.length));
-            count += showAttributeCleanUpDecisions(diffValues, false, sbFull, isShowDetailsEnabled());
+            count += showAttributeCleanUpDecisions(diffValues, false, sbFull);
             getSummary().append(String.format("Found %d duplicate attributes\n", count));
          } finally {
-            if (isShowDetailsEnabled()) {
-               sbFull.append(AHTML.endMultiColumnTable());
-               XResultData rd = new XResultData();
-               rd.addRaw(sbFull.toString());
-               rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
-            }
+            sbFull.append(AHTML.endMultiColumnTable());
+            XResultData rd = new XResultData();
+            rd.addRaw(sbFull.toString());
+            rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
 
          }
       }
@@ -153,11 +151,8 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       builder.append(str);
    }
 
-   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder, boolean showDetails) throws OseeDataStoreException {
+   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder) throws OseeDataStoreException {
       int x = 0;
-      if (showDetails) {
-
-      }
 
       for (DuplicateAttribute loopDuplicate : values) {
          findProminentAttribute(loopDuplicate.attrId1, loopDuplicate.attrId2, loopDuplicate.branches1);
@@ -172,9 +167,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          if (loopDuplicate.attrIDToDelete != 0 && removeAttribute) {
             ConnectionHandler.runPreparedUpdate(DELETE_ATTR, loopDuplicate.attrIDToDelete);
          }
-         if (showDetails) {
-            showText(loopDuplicate, x++, removeAttribute, builder);
-         }
+         showText(loopDuplicate, x++, removeAttribute, builder);
       }
       return x;
    }

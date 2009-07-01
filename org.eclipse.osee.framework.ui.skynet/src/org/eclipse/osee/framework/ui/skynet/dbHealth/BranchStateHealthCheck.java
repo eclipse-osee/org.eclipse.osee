@@ -57,37 +57,35 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.25));
       checkForCancelledStatus(monitor);
 
-      if (isShowDetailsEnabled()) {
-         appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-         appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Was State", "Fixed State",
-               "BranchType", "Archived", "Txs", "Commit Tx", "BranchId", "Branch Name"}));
-         Collections.sort(itemsToFix, new Comparator<BranchData>() {
+      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Was State", "Fixed State",
+            "BranchType", "Archived", "Txs", "Commit Tx", "BranchId", "Branch Name"}));
+      Collections.sort(itemsToFix, new Comparator<BranchData>() {
 
-            @Override
-            public int compare(BranchData o1, BranchData o2) {
-               int result = 0;
-               if (o1 != null && o2 != null) {
-                  result = o1.getBranchType().compareTo(o2.getBranchType());
-                  if (result == 0) {
-                     result = ((Boolean) o1.isArchived()).compareTo(o2.isArchived());
-                  }
-                  if (result == 0) {
-                     result = o1.getNumberOfTxs() - o2.getNumberOfTxs();
-                  }
+         @Override
+         public int compare(BranchData o1, BranchData o2) {
+            int result = 0;
+            if (o1 != null && o2 != null) {
+               result = o1.getBranchType().compareTo(o2.getBranchType());
+               if (result == 0) {
+                  result = ((Boolean) o1.isArchived()).compareTo(o2.isArchived());
                }
-               return result;
+               if (result == 0) {
+                  result = o1.getNumberOfTxs() - o2.getNumberOfTxs();
+               }
             }
-
-         });
-         for (BranchData data : itemsToFix) {
-            appendToDetails(AHTML.addRowMultiColumnTable(new String[] {data.getReason(),
-                  String.valueOf(data.getOriginalBranchState()), String.valueOf(data.getBranchState()),
-                  String.valueOf(data.getBranchType()), String.valueOf(data.isArchived()),
-                  String.valueOf(data.getNumberOfTxs()), String.valueOf(data.hasCommitTransactionId()),
-                  String.valueOf(data.getBranchId()), data.getBranchName()}));
+            return result;
          }
-         appendToDetails(AHTML.endMultiColumnTable());
+
+      });
+      for (BranchData data : itemsToFix) {
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {data.getReason(),
+               String.valueOf(data.getOriginalBranchState()), String.valueOf(data.getBranchState()),
+               String.valueOf(data.getBranchType()), String.valueOf(data.isArchived()),
+               String.valueOf(data.getNumberOfTxs()), String.valueOf(data.hasCommitTransactionId()),
+               String.valueOf(data.getBranchId()), data.getBranchName()}));
       }
+      appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.25));
       checkForCancelledStatus(monitor);
 
