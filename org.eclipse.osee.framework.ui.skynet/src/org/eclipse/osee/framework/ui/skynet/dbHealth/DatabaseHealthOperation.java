@@ -108,5 +108,15 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       //      }
    }
 
+   /**
+    * @return Returns description of check and any other useful information i.e. time of execution
+    */
+   public abstract String getCheckDescription();
+   
+   /**
+    * @return Returns description of what will happen and any consequences to clients
+    */
+   public abstract String getFixDescription();
+   
    protected abstract void doHealthCheck(IProgressMonitor monitor) throws Exception;
 }

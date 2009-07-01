@@ -38,11 +38,14 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
    private static final String GET_INVALID_ART_IDS =
          "select item.art_id as artId from osee_artifact item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
 
+   private static final String GET_INVALID_ACL_ART_IDS =
+      "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
+
    /**
     * @param operationName
     */
    public ArtifactIdWithoutVersionsCheck() {
-      super("Artifact Id Without Version Errors");
+      super("Artifact Id Without osee_artifact_version Table Entry");
    }
 
    /* (non-Javadoc)
@@ -61,6 +64,9 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
       itemsToDelete.add(new ItemEntry("osee_attribute", "attr_id", "art_id", //
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ATTR_IDS_ART_IDS, true)));
+      
+      itemsToDelete.add(new ItemEntry("osee_artifact_acl", "art_id", "art_id", //
+            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ACL_ART_IDS, false)));
 
       int beforeArtifactCheck = allInvalidArtIds.size();
       itemsToDelete.add(new ItemEntry("osee_artifact", "art_id", "art_id", //
@@ -135,5 +141,21 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
          this.invalids = invalids;
       }
 
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
+    */
+   @Override
+   public String getCheckDescription() {
+      return "The health check verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact_version table.";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
+    */
+   @Override
+   public String getFixDescription() {
+      return "The fix operation for this health check removes invalid data from the corresponding tables, however does not clean up any addressing that might be left behind.";
    }
 }

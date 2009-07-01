@@ -52,5 +52,21 @@ public class CleanUpAttrFromDeletedArt extends DatabaseHealthOperation {
       }
       monitor.worked(calculateWork(0.10));
    }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
+    */
+   @Override
+   public String getCheckDescription() {
+      return "Enter Check Description Here";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
+    */
+   @Override
+   public String getFixDescription() {
+      return "Enter Fix Description Here";
+   }
 
 }

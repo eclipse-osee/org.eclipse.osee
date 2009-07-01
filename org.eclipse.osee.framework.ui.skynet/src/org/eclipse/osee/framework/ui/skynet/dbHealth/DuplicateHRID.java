@@ -151,4 +151,21 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    private String getAdditionalCounts(String query, String hrid) throws OseeDataStoreException {
       return String.valueOf(ConnectionHandler.runPreparedQueryFetchInt(-1, query, new Object[] {"%" + hrid + "%"}));
    }
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
+    */
+   @Override
+   public String getCheckDescription() {
+      return "Enter Check Description Here";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
+    */
+   @Override
+   public String getFixDescription() {
+      return "Enter Fix Description Here";
+   }
+
 }
