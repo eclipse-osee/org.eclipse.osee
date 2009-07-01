@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -195,7 +196,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          refreshToolbar();
 
          if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
-               smaMgr.getSma().getHelpContext());
+               smaMgr.getSma().getHelpContext(), "org.eclipse.osee.ats.help.ui");
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

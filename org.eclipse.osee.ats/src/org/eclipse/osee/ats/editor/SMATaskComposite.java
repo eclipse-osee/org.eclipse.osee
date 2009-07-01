@@ -34,7 +34,7 @@ public class SMATaskComposite extends Composite {
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
       taskComposite = new TaskComposite(iXTaskViewer, this, style, toolBar);
-      AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       taskComposite.loadTable();
    }
 
