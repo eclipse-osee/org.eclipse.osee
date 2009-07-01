@@ -55,7 +55,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
       xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());
 
-      DefinePlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID);
+      DefinePlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.define.help.ui");
       createActions();
       xNavComp.refresh();
    }

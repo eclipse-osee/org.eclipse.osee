@@ -82,12 +82,6 @@
             <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
          </perspectiveExtension>
       </extension>
-      <extension
-            point="org.eclipse.help.toc">
-         <toc
-               file="reference/toc.xml"
-               primary="true"/>
-      </extension>
    <extension
          id="AddEveryoneGroupToBranches"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -107,10 +101,6 @@
             id="org.eclipse.osee.define.DefineNavigateView"
             name="Define Navigator"/>
        </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts file="reference/contexts.xml"/>
-   </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
       <attribute
@@ -144,7 +134,7 @@
       <extension
             id="ChangeArtifactTypeBlam"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam"/>
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam "/>
       </extension>
  <extension
        id="SubsystemToLowLevelReqTraceReport"
@@ -214,7 +204,7 @@
             className="org.eclipse.osee.define.blam.operation.PublishWithSpecifiedTemplate">
       </Operation>
    </extension>
-   <extension
+      <extension
          id="PublishRequirements"
          name="PublishRequirements"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
