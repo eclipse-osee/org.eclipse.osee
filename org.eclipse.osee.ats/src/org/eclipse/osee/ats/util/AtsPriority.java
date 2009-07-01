@@ -66,7 +66,7 @@ public class AtsPriority {
    };
 
    public static void openHelp() {
-      AtsPlugin.getInstance().displayHelp(PRIORITY_HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().displayHelp(PRIORITY_HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
    }
 
 }

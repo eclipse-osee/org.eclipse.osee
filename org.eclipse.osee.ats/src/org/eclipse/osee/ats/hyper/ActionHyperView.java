@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
@@ -75,8 +76,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       AtsBulkLoadCache.run(false);
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
-      AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);
-      AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       OseeEventManager.addListener(this);
    }
 

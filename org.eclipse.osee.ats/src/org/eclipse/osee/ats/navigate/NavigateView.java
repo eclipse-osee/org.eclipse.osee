@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -108,7 +109,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       xNavComp = new AtsNavigateComposite(new AtsNavigateViewItems(), parent, SWT.NONE);
 
-      AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       createActions();
 
       // add search text box      

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -78,7 +79,7 @@ public class AtsPriorityDialog extends ListDialog {
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();
       }
-      AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       return c;
    }
 

@@ -14,6 +14,7 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.ContextMenuProvider;
@@ -128,7 +129,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       ContextMenuProvider cmProvider = new AtsWorkflowConfigEditorContextMenuProvider(viewer, getActionRegistry());
       viewer.setContextMenu(cmProvider);
       getSite().registerContextMenu(cmProvider, viewer);
-      AtsPlugin.getInstance().setHelp(viewer.getControl(), "atsConfigureWorkflow");
+      AtsPlugin.getInstance().setHelp(viewer.getControl(), "atsConfigureWorkflow", "org.eclipse.osee.ats.help.ui");
 
    }
 

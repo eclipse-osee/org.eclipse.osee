@@ -48,7 +48,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       taskComposite = new TaskComposite(taskEditor, resultsContainer, SWT.BORDER, toolBar);
-      AtsPlugin.getInstance().setHelp(taskComposite, HELP_CONTEXT_ID);
+      AtsPlugin.getInstance().setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       return resultsSection;
    }
 

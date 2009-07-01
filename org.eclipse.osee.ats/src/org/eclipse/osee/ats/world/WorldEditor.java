@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -176,7 +177,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID);
+         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
