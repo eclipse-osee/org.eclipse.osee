@@ -78,7 +78,7 @@ public abstract class BaseServerCommand extends AbstractOperation {
       } catch (Exception ex) {
          ci.printStackTrace(ex);
       }
-      ci.println(String.format("Done.  Elapsed Time = %s.", Lib.getElapseString(startTime)));
+      ci.println(String.format("[%s] Completed in [%s]", getName(), Lib.getElapseString(startTime)));
       this.isRunning = false;
    }
 
