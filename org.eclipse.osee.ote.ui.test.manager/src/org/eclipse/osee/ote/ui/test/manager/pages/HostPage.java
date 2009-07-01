@@ -28,7 +28,7 @@ public class HostPage extends TestManagerPage {
 			TestManagerEditor parentTestManager) {
 		super(parent, style, parentTestManager);
 		createPage();
-		TestManagerPlugin.getInstance().setHelp(this, "tm_hosts_page");
+		TestManagerPlugin.getInstance().setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
 	}
 
 	@Override

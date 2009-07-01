@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.queryLog;
 
 import java.util.Iterator;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -109,7 +110,7 @@ public class QueryLogView extends ViewPart implements IActionable {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(viewer.getControl(), "query_log_table");
+      SkynetGuiPlugin.getInstance().setHelp(viewer.getControl(), "query_log_table", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

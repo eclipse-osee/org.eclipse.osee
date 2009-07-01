@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -22,8 +24,9 @@ public class WordArtifact extends Artifact {
     * @param parentFactory
     * @param guid
     * @param branch
+ * @throws OseeDataStoreException 
     */
-   public WordArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public WordArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 }

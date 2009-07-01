@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -30,6 +31,7 @@ public class AttributeURL {
    private AttributeURL() {
    }
 
+   // TODO change parameter name "artifactHrid"
    public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("sessionId", ClientSessionManager.getSessionId());

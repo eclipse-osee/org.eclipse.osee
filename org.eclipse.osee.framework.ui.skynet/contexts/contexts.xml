@@ -1,5 +1,5 @@
 <contexts>
-	<context id="artifact_editor" title="Artifact Editor">
+<!--	<context id="artifact_editor" title="Artifact Editor">
 		<description>Artifact Editor</description>
 		<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
 		<topic href="reference/reorder_links.html" label="Reordering links"/>
@@ -13,5 +13,5 @@
 	<context id="xResultView" title="Result View">
 		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
 		<topic href="reference/result_view.html" label="Result View"/>
-	</context>
+	</context>-->
 </contexts>

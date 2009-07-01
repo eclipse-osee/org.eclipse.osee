@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import java.util.Collection;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -40,8 +42,9 @@ public class XViewerCustomizationArtifact extends Artifact {
     * @param guid
     * @param humanReadableId
     * @param branch
+ * @throws OseeDataStoreException 
     */
-   public XViewerCustomizationArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public XViewerCustomizationArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

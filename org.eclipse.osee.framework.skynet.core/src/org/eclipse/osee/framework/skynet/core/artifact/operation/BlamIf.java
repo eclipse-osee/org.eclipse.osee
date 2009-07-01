@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import java.util.List;
+
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -26,8 +28,9 @@ public abstract class BlamIf extends Artifact {
     * @param parentFactory
     * @param guid
     * @param branch
+ * @throws OseeDataStoreException 
     */
-   public BlamIf(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public BlamIf(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

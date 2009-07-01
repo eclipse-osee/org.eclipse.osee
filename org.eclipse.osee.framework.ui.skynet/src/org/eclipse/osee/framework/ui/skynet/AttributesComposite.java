@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -324,7 +325,7 @@ public class AttributesComposite extends Composite {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(tableViewer.getControl(), "artifact_editor");
+      SkynetGuiPlugin.getInstance().setHelp(tableViewer.getControl(), "artifact_editor", "org.eclipse.osee.framework.help.ui");
    }
 
    /**

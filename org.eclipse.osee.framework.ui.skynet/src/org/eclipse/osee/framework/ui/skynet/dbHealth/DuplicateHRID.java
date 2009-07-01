@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -49,7 +50,10 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    }
 
    private static final String GET_DUPLICATE_HRIDS =
-         "SELECT t1.guid,  t1.human_readable_id,  t3.name FROM osee_artifact t1, osee_artifact_type t3 WHERE t1.human_readable_id IN  (SELECT t2.human_readable_id    FROM osee_artifact t2   GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
+         "SELECT t1.guid,  t1.human_readable_id,  t3.name FROM osee_artifact t1, osee_artifact_type t3 " + 
+         "WHERE t1.human_readable_id IN " +
+         " (SELECT t2.human_readable_id    FROM osee_artifact t2   GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1)" +
+         " AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
 
    private static final String COUNT_ATTRIBUTE_VALUES_CONTAINING =
          "SELECT count(1) from osee_attribute where value like ?";

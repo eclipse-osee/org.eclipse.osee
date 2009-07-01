@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -23,12 +24,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -102,23 +105,23 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Arrays.sort(WholeArtifactMatches);
    }
 
-   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
+   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
 
-      if (guid == null) {
-         this.guid = GUID.generateGuidStr();
-      } else {
-         this.guid = guid;
-      }
+	   if (guid == null) {
+		   this.guid = GUID.generateGuidStr();
+	   } else {
+		   this.guid = guid;
+	   }
 
-      if (humanReadableId == null) {
-         rollHumanReadableId();
-      } else {
-         this.humanReadableId = humanReadableId;
-      }
+	   if (humanReadableId == null) {
+		   this.humanReadableId = generateHumanReadableId();
+	   } else {
+		   this.humanReadableId = humanReadableId;
+	   }
 
-      this.parentFactory = parentFactory;
-      this.branch = branch;
-      this.artifactType = artifactType;
+	   this.parentFactory = parentFactory;
+	   this.branch = branch;
+	   this.artifactType = artifactType;
    }
 
    public boolean isInDb() {
@@ -1401,16 +1404,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return humanReadableId;
    }
 
-   public void rollHumanReadableId() {
+   public void generateHumanReadableID() throws OseeDataStoreException {
       humanReadableId = generateHumanReadableId();
    }
 
    private static final char[][] chars =
          new char[][] {
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-                     'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-                     'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',      'B', 'C', 'D',      'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T',      'V', 'W', 'X', 'Y', 'Z'}};
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
 
    /**
@@ -1418,16 +1419,34 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 'O' and the middle three characters have the same range as above with the additional restrictions of 'A', 'E', 'U'
     * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
     */
-   private static String generateHumanReadableId() {
-      int seed = (int) (Math.random() * 34438396);
-      char id[] = new char[charsIndexLookup.length];
+   private static String generateHumanReadableId() throws OseeDataStoreException {
+	   int seed = (int) (Math.random() * 34438396);
+	   char id[] = new char[charsIndexLookup.length];
 
-      for (int i = 0; i < id.length; i++) {
-         int radix = chars[charsIndexLookup[i]].length;
-         id[i] = chars[charsIndexLookup[i]][seed % radix];
-         seed = seed / radix;
-      }
-      return new String(id);
+	   for (int i = 0; i < id.length; i++) {
+		   int radix = chars[charsIndexLookup[i]].length;
+		   id[i] = chars[charsIndexLookup[i]][seed % radix];
+		   seed = seed / radix;
+	   }
+	   
+	   String id_string = new String(id);
+	   
+	   if (isUniqueHRID(id_string)) 
+		   return id_string;
+	   else
+		   return generateHumanReadableId();
+   }
+   
+   /**
+    * Searches the database to verify that the given HRID is not already taken
+    * @param id
+    * @return true iff id is not found in the database
+    * TODO make private, implement testing some other way 
+    */
+   public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
+	   String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
+
+	   return ConnectionHandler.runPreparedQueryFetchInt(-1, DUPLICATE_HRID_SEARCH, id) == 0; 
    }
 
    /**

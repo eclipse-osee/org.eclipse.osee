@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -72,7 +73,7 @@ public class OverviewPage extends TestManagerPage implements IActionable {
       createPage();
       updateLabelText();
       computeScrollSize();
-      TestManagerPlugin.getInstance().setHelp(this, "tm_overview_page");
+      TestManagerPlugin.getInstance().setHelp(this, "tm_overview_page", "org.eclipse.osee.framework.help.ui");
    }
 
    /**

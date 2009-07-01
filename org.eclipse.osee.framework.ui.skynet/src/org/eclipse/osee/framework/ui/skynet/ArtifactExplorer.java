@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -592,11 +593,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   // If nothing was selected, then the child belongs at the root
                   if (!itemsIter.hasNext()) {
                      exploreRoot.addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
-                     ;
                   } else {
                      while (itemsIter.hasNext()) {
                         ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
-                        ;
                      }
                   }
                   treeViewer.refresh();
@@ -1230,7 +1229,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer");
+      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer", "org.eclipse.osee.framework.help.ui");
    }
    public class MenuEnablingListener implements MenuListener {
 

@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -153,7 +154,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       getSite().registerContextMenu(VIEW_ID, menuManager, xChangeWidget.getXViewer());
 
       getSite().setSelectionProvider(xChangeWidget.getXViewer());
-      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
       OseeContributionItem.addTo(this, true);
    }
 

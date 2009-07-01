@@ -12,12 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -106,7 +108,7 @@ public class WordTrackedChangesTest {
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_GEN_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(5000);
+      Thread.sleep(10000);
       assertTrue("Did not Detect Tracked Changes",
             WordAttribute.getDisplayTrackedChangesErrorMessage().equals("") == true);
       TestUtil.severeLoggingEnd(monitorLog);
@@ -129,7 +131,7 @@ public class WordTrackedChangesTest {
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(5000);
+      Thread.sleep(10000);
       assertTrue("Detected Tracked Changes Succcessfully",
             WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
                   "Cannot save - Detected tracked changes on this artifact. ") == true);

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
@@ -336,7 +337,7 @@ public class QuickSearchOptionComposite extends Composite {
    private void setHelpContextForOption(String optionId, String helpContext) {
       Control control = getOrCreateOptionsButton(optionId);
       if (Widgets.isAccessible(control)) {
-         SkynetGuiPlugin.getInstance().setHelp(control, helpContext);
+         SkynetGuiPlugin.getInstance().setHelp(control, helpContext, "org.eclipse.osee.framework.help.ui");
       }
    }
 

@@ -80,7 +80,7 @@ public class DataStore {
 
    public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       if (this.rawContent != null && this.rawContent.length > 0) {
-         resourceProcessor.saveResource(storageId, resourceProcessor.getStorageName(), this);
+         resourceProcessor.saveResource(storageId, resourceProcessor.createStorageName(), this);
       }
    }
 

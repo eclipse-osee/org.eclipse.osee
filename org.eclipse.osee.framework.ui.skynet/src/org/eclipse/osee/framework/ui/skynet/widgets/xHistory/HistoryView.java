@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -157,7 +158,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
-      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
       OseeContributionItem.addTo(this, true);
 
       setupMenus();

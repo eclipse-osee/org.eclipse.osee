@@ -118,6 +118,9 @@
 		<contexts file="reference/contexts.xml"/>
   		<contexts file="contexts/mergeMangerContexts.xml">
   </contexts>
+    <contexts
+          file="../org.eclipse.osee.framework.help.ui/contexts/contexts.xml">
+    </contexts>
 	</extension>
 	<extension point="org.eclipse.help.toc">
 		<toc file="reference/toc.xml" primary="true"/>

@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.CharBuffer;
 import java.util.List;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -219,28 +220,28 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return null;
    }
 
-   public void setHelp(Control control, String name) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(control, getPluginName() + "." + name);
+   public void setHelp(Control control, String name, String library) {
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(control, library + "." + name);
    }
 
-   public void setHelp(IAction action, String name) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(action, getPluginName() + "." + name);
+   public void setHelp(IAction action, String name, String library) {
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(action, library + "." + name);
    }
 
-   public void setHelp(Menu menu, String name) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(menu, getPluginName() + "." + name);
+   public void setHelp(Menu menu, String name, String library) {
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(menu, library + "." + name);
    }
 
-   public void setHelp(MenuItem menuItem, String name) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(menuItem, getPluginName() + "." + name);
+   public void setHelp(MenuItem menuItem, String name, String library) {
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(menuItem, library + "." + name);
    }
-
-   public void displayHelp(String name) {
-      PlatformUI.getWorkbench().getHelpSystem().displayHelp(getPluginName() + "." + name);
+   
+   public void displayHelp(String name, String library) {
+      PlatformUI.getWorkbench().getHelpSystem().displayHelp(library + "." + name);
    }
 
    protected String getPluginName() {
-      throw new UnsupportedOperationException();
+	   throw new UnsupportedOperationException();
    }
 
    public static File getBasePluginInstallDirectory() {

@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -99,7 +100,7 @@ public abstract class ScriptPage extends TestManagerPage {
       sashForm.setWeights(new int[] {8, 2});
       computeScrollSize();
 
-      TestManagerPlugin.getInstance().setHelp(this, "tm_scripts_page");
+      TestManagerPlugin.getInstance().setHelp(this, "tm_scripts_page", "org.eclipse.osee.framework.help.ui");
    }
 
    public void loadStorageString() {

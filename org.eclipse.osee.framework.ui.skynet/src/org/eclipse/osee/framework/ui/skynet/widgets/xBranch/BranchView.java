@@ -102,7 +102,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       getSite().registerContextMenu(VIEW_ID, menuManager, xBranchWidget.getXViewer());
 
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
-      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
       OseeContributionItem.addTo(this, true);
    }
 

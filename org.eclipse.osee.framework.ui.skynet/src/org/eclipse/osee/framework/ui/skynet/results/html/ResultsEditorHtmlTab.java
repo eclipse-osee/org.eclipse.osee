@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -85,8 +86,8 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       xResultsComposite.setLayoutData(gd);
       xResultsComposite.setHtmlText(xResultPage.getManipulatedHtml(Arrays.asList(Manipulations.NONE)));
 
-      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite, HELP_CONTEXT_ID);
-      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID);
+      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       return comp;
    }
 

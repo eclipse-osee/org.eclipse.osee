@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -288,9 +289,9 @@ public class SearchComposite extends Composite implements Listener {
 
    public void setHelpContext(String helpContext) {
       if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
-         SkynetGuiPlugin.getInstance().setHelp(searchArea, helpContext);
-         SkynetGuiPlugin.getInstance().setHelp(executeSearch, helpContext);
-         SkynetGuiPlugin.getInstance().setHelp(clear, helpContext);
+         SkynetGuiPlugin.getInstance().setHelp(searchArea, helpContext, "org.eclipse.osee.framework.help.ui");
+         SkynetGuiPlugin.getInstance().setHelp(executeSearch, helpContext, "org.eclipse.osee.framework.help.ui");
+         SkynetGuiPlugin.getInstance().setHelp(clear, helpContext, "org.eclipse.osee.framework.help.ui");
       }
    }
 

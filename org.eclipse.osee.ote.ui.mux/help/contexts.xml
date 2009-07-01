@@ -1,6 +1,8 @@
 <contexts>
+<!--
 	<context id="muxView" title="Mux View">
 		<description>Mux View</description>
 		<topic href="help/package.html" label="Mux View"/>
 	</context>
+	-->
 </contexts>

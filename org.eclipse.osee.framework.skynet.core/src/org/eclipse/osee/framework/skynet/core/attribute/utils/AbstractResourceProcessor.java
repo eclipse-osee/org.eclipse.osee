@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -32,7 +33,7 @@ public abstract class AbstractResourceProcessor {
 
    protected abstract URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException;
 
-   public abstract String getStorageName();
+   public abstract String createStorageName();
 
    public void saveResource(int seed, String name, DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       URL url = getStorageURL(seed, name, dataStore.getExtension());
