@@ -34,7 +34,7 @@ public class AttributeXWidgetManager {
    }
 
    private List<IAttributeXWidgetProvider> getProviders() {
-      return extensionObjects.getObjects();
+      return extensionObjects.getObjectsAllowZeroExtensions();
    }
 
    public static IAttributeXWidgetProvider getAttributeXWidgetProvider(AttributeType attributeType) {

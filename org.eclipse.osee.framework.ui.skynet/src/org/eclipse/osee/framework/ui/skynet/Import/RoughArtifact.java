@@ -153,14 +153,14 @@ public class RoughArtifact {
          monitor.worked(1);
       }
 
-      for (RoughArtifact roughArtifact : children) {
-         Artifact tempArtifact = roughArtifact.getReal(transaction, monitor, artifactResolver);
-         if (realArtifact != null && tempArtifact != null) {
-            if (!tempArtifact.hasParent()) {
-               realArtifact.addChild(tempArtifact);
-            } else if (tempArtifact.getParent() != realArtifact) {
+      for (RoughArtifact childRoughArtifact : children) {
+         Artifact childArtifact = childRoughArtifact.getReal(transaction, monitor, artifactResolver);
+         if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
+            if (childArtifact.hasParent()) {
                throw new IllegalStateException(
                      "Artifact already has a parent that is not inline with the import parent");
+            } else if (childArtifact.getParent() != realArtifact) {
+               realArtifact.addChild(childArtifact);
             }
          }
       }
