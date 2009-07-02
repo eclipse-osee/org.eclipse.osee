@@ -118,7 +118,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
     */
    @Override
    public String getCheckDescription() {
-      return "Enter Check Description Here";
+      return "Verifies that all author art ids match an un-deleted artifact on Common branch (usually a User artifact)";
    }
 
    /* (non-Javadoc)
@@ -126,7 +126,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
     */
    @Override
    public String getFixDescription() {
-      return "Enter Fix Description Here";
+      return "Sets all invalid authors to the \"OSEE System\" user artifact's art_id.";
    }
 
 }
