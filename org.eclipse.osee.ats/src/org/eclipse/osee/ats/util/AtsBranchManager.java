@@ -53,10 +53,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -748,27 +744,6 @@ public class AtsBranchManager {
       };
 
       Jobs.runInJob("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
-   }
-
-   public void updateBranchAccessControl() throws OseeCoreException {
-      // Only set/update branch access control if state item is configured to accept
-      for (IAtsStateItem stateItem : smaMgr.getStateItems().getCurrentPageStateItems(smaMgr)) {
-         if (stateItem.isAccessControlViaAssigneesEnabledForBranching()) {
-            Branch branch = getWorkingBranch();
-            if (branch != null) {
-               for (AccessControlData acd : AccessControlManager.getInstance().getAccessControlList(branch)) {
-                  // If subject is NOT an assignee, remove access control
-                  if (!smaMgr.getStateMgr().getAssignees().contains(acd.getSubject())) {
-                     AccessControlManager.getInstance().removeAccessControlData(acd, true);
-                  }
-               }
-               // If subject doesn't have access, add it
-               for (User user : smaMgr.getStateMgr().getAssignees()) {
-                  AccessControlManager.getInstance().setPermission(user, branch, PermissionEnum.FULLACCESS);
-               }
-            }
-         }
-      }
    }
 
    private final class AtsCommitJob extends Job {
