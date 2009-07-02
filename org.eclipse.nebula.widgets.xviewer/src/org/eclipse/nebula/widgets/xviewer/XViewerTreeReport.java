@@ -45,14 +45,25 @@ public class XViewerTreeReport {
    }
 
    public void open() {
-      open(xViewer.getTree().getItems());
+      open(xViewer.getTree().getItems(), null);
    }
 
-   public void open(TreeItem items[]) {
+   public void open(String defaultFilename) {
+      open(xViewer.getTree().getItems(), defaultFilename);
+   }
+
+   public String getHtml() throws XViewerException {
+      return getHtml(xViewer.getTree().getItems());
+   }
+
+   public void open(TreeItem items[], String defaultFilename) {
       try {
          String html = getHtml(items);
          final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
          dialog.setFilterExtensions(new String[] {"*.html"});
+         if (defaultFilename != null && !defaultFilename.equals("")) {
+            dialog.setFileName(defaultFilename);
+         }
          String filename = dialog.open();
          if (filename == null || filename.equals("")) {
             return;

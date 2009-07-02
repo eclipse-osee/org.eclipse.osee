@@ -31,7 +31,7 @@ public class OseeXViewerTreeReport extends XViewerTreeReport {
    }
 
    @Override
-   public void open(TreeItem items[]) {
+   public void open(TreeItem items[], String defaultString) {
       try {
          String html = getHtml(items);
          XResultData xResultData = new XResultData();
