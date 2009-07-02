@@ -34,19 +34,19 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public class SessionContributionItem extends OseeContributionItem implements IAccessControlEventListener {
+public final class SessionContributionItem extends OseeContributionItem implements IAccessControlEventListener {
 
-   private static final String ID = "session.contribution.item";
+   private static final String CONTRIBUTION_ITEM_ID = "session.contribution.item";
 
    private static final Image DISABLED_IMAGE =
          new OverlayImage(ImageManager.getImage(FrameworkImage.USER),
                ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
 
-   private static String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
-   private static String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
+   private static final String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
+   private static final String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
 
    private SessionContributionItem() {
-      super(ID);
+      super(CONTRIBUTION_ITEM_ID);
       init();
       updateStatus(true);
       OseeEventManager.addListener(this);

@@ -238,10 +238,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
-      if (baseVersion == null && newerVersion == null) throw new OseeArgumentException(
-            "baseVersion and newerVersion can't both be null.");
+      if (baseVersion == null && newerVersion == null) {
+         throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
+      }
 
-      Branch branch = (baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch());
+      Branch branch = baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch();
       IFile baseFile;
       IFile newerFile;
       Pair<String, Boolean> originalValue = null;
@@ -362,8 +363,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       XMLSerializer serializer = new XMLSerializer(data, format);
 
       try {
-         for (Element e : Jaxp.getChildDirects(formattedItemElement))
+         for (Element e : Jaxp.getChildDirects(formattedItemElement)) {
             serializer.serialize(e);
+         }
       } catch (IOException ex) {
          throw new RuntimeException(ex);
       }
@@ -497,9 +499,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute;
          if (artifact != null) {
-            attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
             if (attribute != null) {
                String value = attribute.getValue().toString();
                // check for track changes

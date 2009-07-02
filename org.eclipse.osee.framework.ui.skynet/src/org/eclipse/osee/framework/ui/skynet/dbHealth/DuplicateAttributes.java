@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * @author Theron Virgin
  */
 public class DuplicateAttributes extends DatabaseHealthOperation {
-   private class DuplicateAttribute {
+   private final class AttributeData {
       protected int artId;
       protected int attrId1;
       protected int attrId2;
@@ -36,8 +37,8 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       protected int gamma1;
       protected int gamma2;
       protected int attrIDToDelete = 0;
-      protected LinkedList<Integer> branches1 = new LinkedList<Integer>();
-      protected LinkedList<Integer> branches2 = new LinkedList<Integer>();
+      protected List<Integer> branches1 = new LinkedList<Integer>();
+      protected List<Integer> branches2 = new LinkedList<Integer>();
    }
 
    private static final String GET_DUPLICATE_ATTRIBUTES =
@@ -63,8 +64,8 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
     */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
-      LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
+      List<AttributeData> sameValues = new LinkedList<AttributeData>();
+      List<AttributeData> diffValues = new LinkedList<AttributeData>();
 
       ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
       fixErrors = isFixOperationEnabled();
@@ -84,8 +85,8 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
                if (ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, chStmt1.getInt("attr_id_1")) != -1) {
                   chStmt2.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
                   if (chStmt2.next()) {
-                     DuplicateAttribute duplicateAttribute;
-                     duplicateAttribute = new DuplicateAttribute();
+                     AttributeData duplicateAttribute;
+                     duplicateAttribute = new AttributeData();
                      duplicateAttribute.artId = chStmt1.getInt("art_id");
                      duplicateAttribute.attrId1 = chStmt1.getInt("attr_id_1");
                      duplicateAttribute.attrId2 = chStmt1.getInt("attr_id_2");
@@ -141,7 +142,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
    }
 
-   protected void showText(DuplicateAttribute duplicate, int x, boolean removeAttribute, StringBuffer builder) {
+   protected void showText(AttributeData duplicate, int x, boolean removeAttribute, StringBuffer builder) {
       String str =
             AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.artId),
                   String.valueOf(duplicate.attrId1), String.valueOf(duplicate.attrId2), duplicate.name,
@@ -151,10 +152,10 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       builder.append(str);
    }
 
-   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder) throws OseeDataStoreException {
+   private int showAttributeCleanUpDecisions(List<AttributeData> values, boolean removeAttribute, StringBuffer builder) throws OseeDataStoreException {
       int x = 0;
 
-      for (DuplicateAttribute loopDuplicate : values) {
+      for (AttributeData loopDuplicate : values) {
          findProminentAttribute(loopDuplicate.attrId1, loopDuplicate.attrId2, loopDuplicate.branches1);
          findProminentAttribute(loopDuplicate.attrId2, loopDuplicate.attrId1, loopDuplicate.branches2);
 
@@ -173,7 +174,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
    }
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
-   private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws OseeDataStoreException {
+   private void findProminentAttribute(int attrId1, int attrId2, List<Integer> branches) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, SupportedDatabase.getComplementSql()), attrId1,
@@ -185,7 +186,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          chStmt.close();
       }
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */

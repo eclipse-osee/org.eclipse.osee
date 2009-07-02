@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 
 /**
@@ -54,14 +55,6 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixTaskName()
-    */
-   @Override
-   public String getFixTaskName() {
-      return Strings.emptyString();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
@@ -71,7 +64,7 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
       IOperation operation =
             new FindAllTrackChangeWordAttributes("Find all Word Attributes with track changes enabled",
                   getStatus().getPlugin(), attributesWithErrors);
-      doSubWork(operation, monitor, 0.90);
+      doSubWork(operation, monitor, 0.40);
 
       setItemsToFix(attributesWithErrors.size());
 
@@ -84,14 +77,30 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
-      getSummary().append(String.format("[%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
+      checkForCancelledStatus(monitor);
 
+      if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
+         File backupFolder = OseeData.getFile("TrackChangesFix_" + Lib.getDateTimeString() + File.separator);
+         backupFolder.mkdirs();
+
+         int workAmount = calculateWork(0.40) / getItemsToFixCount();
+         for (AttrData attrData : attributesWithErrors) {
+            Resource resource = attrData.getResource();
+            ResourceUtil.backupResourceLocally(backupFolder, resource);
+            resource.data = WordAnnotationHandler.removeAnnotations(resource.data);
+            ResourceUtil.uploadResource(attrData.getGammaId(), resource);
+            monitor.worked(workAmount);
+         }
+      }
+
+      getSummary().append(
+            String.format("Found [%s] Word Attributes with Track Changes Enabled", attributesWithErrors.size()));
       monitor.worked(calculateWork(0.10));
    }
 
    private final static class FindAllTrackChangeWordAttributes extends AbstractOperation {
       private static final String GET_ATTRS =
-            "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
+            "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null"; // and t1.attr_id = 1155574";
       private final List<AttrData> attributesWithErrors;
 
       public FindAllTrackChangeWordAttributes(String operationName, String pluginId, List<AttrData> attributesWithErrors) {
@@ -124,7 +133,7 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
                monitor.subTask(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
                Resource resource = ResourceUtil.getResource(attrData.getUri());
                if (WordAnnotationHandler.containsWordAnnotations(resource.data)) {
-                  // Collect Info or Try to fix not sure what to do yet
+                  attrData.setResource(resource);
                   attributesWithErrors.add(attrData);
                }
                monitor.worked(work);
@@ -271,12 +280,21 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
       private final String gammaId;
       private final String hrid;
       private final String uri;
+      private Resource resource;
 
       public AttrData(String gammaId, String hrid, String uri) {
          super();
          this.gammaId = gammaId;
          this.hrid = hrid;
          this.uri = uri;
+      }
+
+      public void setResource(Resource resource) {
+         this.resource = resource;
+      }
+
+      public Resource getResource() {
+         return resource;
       }
 
       public String getGammaId() {
@@ -291,7 +309,7 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
          return uri;
       }
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */
