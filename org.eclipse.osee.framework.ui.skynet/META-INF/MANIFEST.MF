@@ -31,7 +31,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.zest.core,
  org.eclipse.ui.views,
- org.eclipse.osee.framework.help.ui
+ org.eclipse.osee.framework.help.ui;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,
