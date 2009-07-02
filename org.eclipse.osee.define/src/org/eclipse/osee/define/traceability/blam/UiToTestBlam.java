@@ -57,7 +57,6 @@ public class UiToTestBlam extends AbstractBlam {
       return "UI To Test Report";
    }
 
-   
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
@@ -71,6 +70,7 @@ public class UiToTestBlam extends AbstractBlam {
       return "Usage Info here";
    }
 
+   @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
@@ -80,7 +80,6 @@ public class UiToTestBlam extends AbstractBlam {
       return builder.toString();
    }
 
-   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String fileName = variableMap.getString("Select UI List File");
@@ -131,6 +130,7 @@ public class UiToTestBlam extends AbstractBlam {
             for (Artifact requirement : toTrace) {
                processTrace(appendable, requirement, "Verified By", CoreRelationEnumeration.Verification__Verifier);
                processTrace(appendable, requirement, "Used By", CoreRelationEnumeration.Uses__TestUnit);
+               processTrace(appendable, requirement, "Validated By", CoreRelationEnumeration.Validation__Validator);
             }
          }
 
@@ -209,11 +209,13 @@ public class UiToTestBlam extends AbstractBlam {
             String testUnitType = testUnit.getArtifactTypeName();
             List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
+            List<String> validates = getTrace(testUnit, CoreRelationEnumeration.Validation__Requirement);
             String verifyStr = StringFormat.listToValueSeparatedString(verified, ",\r\n");
             String usesStr = StringFormat.listToValueSeparatedString(used, ",\r\n");
+            String validatesStr = StringFormat.listToValueSeparatedString(validates, ",\r\n");
 
-            addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, usesStr,
-                  EMPTY_STRING));
+            addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr,
+                  usesStr));
          }
       }
    }
@@ -235,9 +237,9 @@ public class UiToTestBlam extends AbstractBlam {
       Relates_To_Test_Unit,
       Test_Unit_Name,
       Test_Unit_Type,
-      Relates_To_Requirements,
-      UI_Name,
-      UI_Type;
+      Verified_By,
+      Validated_By,
+      Used_By;
 
       public String asLabel() {
          return this.name().replaceAll("_", " ");

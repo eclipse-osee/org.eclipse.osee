@@ -66,7 +66,7 @@ import org.eclipse.swt.program.Program;
  * @author Roberto E. Escobar
  */
 public class TraceReportBlam extends AbstractBlam {
-   private List<IResultsEditorTab> resultsTabs;
+   private final List<IResultsEditorTab> resultsTabs;
 
    public TraceReportBlam() {
       this.resultsTabs = new ArrayList<IResultsEditorTab>();
@@ -80,7 +80,6 @@ public class TraceReportBlam extends AbstractBlam {
       return "Trace Report";
    }
 
-   
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
@@ -102,6 +101,7 @@ public class TraceReportBlam extends AbstractBlam {
       return builder.toString();
    }
 
+   @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
@@ -159,7 +159,6 @@ public class TraceReportBlam extends AbstractBlam {
       return traceTypes.contains(TraceTypeEnum.Code_Unit_Trace);
    }
 
-   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
@@ -251,7 +250,9 @@ public class TraceReportBlam extends AbstractBlam {
          monitor.beginTask("Create Reports", reports.size());
          for (String key : reports.keySet()) {
             monitor.subTask(String.format("Creating [%s]", key));
-            if (monitor.isCanceled()) break;
+            if (monitor.isCanceled()) {
+               break;
+            }
             AbstractArtifactRelationReport report = reports.get(key);
             report.process(monitor);
             report.clear();
@@ -396,7 +397,8 @@ public class TraceReportBlam extends AbstractBlam {
    private enum TraceTypeEnum {
       Code_Unit_Trace(CoreRelationEnumeration.CodeRequirement_Requirement, CoreRelationEnumeration.CodeRequirement_CodeUnit),
       Verified_By_Test_Unit_Trace(CoreRelationEnumeration.Verification__Requirement, CoreRelationEnumeration.Verification__Verifier),
-      Used_By_Test_Unit_Trace(CoreRelationEnumeration.Uses__Requirement, CoreRelationEnumeration.Uses__TestUnit);
+      Used_By_Test_Unit_Trace(CoreRelationEnumeration.Uses__Requirement, CoreRelationEnumeration.Uses__TestUnit),
+      Validation_By_TestProcedure(CoreRelationEnumeration.Validation__Requirement, CoreRelationEnumeration.Validation__Validator);
 
       private IRelationEnumeration toReq;
       private IRelationEnumeration toTraceUnit;
