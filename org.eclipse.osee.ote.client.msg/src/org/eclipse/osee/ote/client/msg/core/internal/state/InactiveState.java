@@ -87,7 +87,7 @@ public class InactiveState extends AbstractSubscriptionState {
 
 	@Override
 	public ISubscriptionState onDeactivated() {
-		throw new Error("Unexpected input for this state");
+		return this;
 	}
 
 
