@@ -36,6 +36,7 @@ public class ExtensionDefinedObjects<T> {
    private String extensionPointId;
    private String elementName;
    private String classNameAttribute;
+   private boolean allowZeroExtensions = false;
 
    public ExtensionDefinedObjects(String extensionPointId, String elementName, String classNameAttribute) {
       this.extensionPointId = extensionPointId;
@@ -46,6 +47,11 @@ public class ExtensionDefinedObjects<T> {
    public List<T> getObjects() {
       checkInitialized();
       return loadedObjects;
+   }
+
+   public List<T> getObjectsAllowZeroExtensions() {
+      allowZeroExtensions = true;
+      return getObjects();
    }
 
    public T getObjectById(String id) {
@@ -111,7 +117,7 @@ public class ExtensionDefinedObjects<T> {
             }
          }
       }
-      if (loadedObjects.size() == 0) {
+      if (!allowZeroExtensions && loadedObjects.size() == 0) {
          OseeLog.log(OseeActivator.class, Level.WARNING, String.format(
                "No Objects loaded for [%s] with element name [%s] and attribute [%s]", extensionPointId, elementName,
                classNameAttribute));

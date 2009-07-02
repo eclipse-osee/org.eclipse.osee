@@ -64,7 +64,7 @@ public class RelationManager {
 
    private static final int LINKED_LIST_KEY = -1;
 
-   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted){
+   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
       List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -78,7 +78,7 @@ public class RelationManager {
 
    /**
     * @return Returns all cached relations including deleted relations
-    * @throws OseeArgumentException 
+    * @throws OseeArgumentException
     */
    private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
       RelationLink relationLink = getLoadedRelation(artifact, aArtifactId, bArtifactId, relationType, false);
@@ -181,17 +181,13 @@ public class RelationManager {
             try {
                if (relationSide == null) {
                   Artifact art = relation.getArtifactOnOtherSide(artifact);
-                  //                if(!art.isDeleted()){
                   relatedArtifacts.add(art);
-                  //                }
                } else {
                   // only select relations where the related artifact is on relationSide
                   // (and thus on the side opposite of "artifact")
                   if (relation.getSide(artifact) != relationSide) {
                      Artifact art = relation.getArtifact(relationSide);
-                     //                  if(!art.isDeleted()){
                      relatedArtifacts.add(art);
-                     //                  }                     
                   }
                }
             } catch (ArtifactDoesNotExist ex) {
@@ -497,7 +493,8 @@ public class RelationManager {
     * @throws OseeCoreException
     */
    public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
+      RelationLink relation =
+            getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
@@ -639,7 +636,8 @@ public class RelationManager {
     */
    public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
+      RelationLink relation =
+            getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
          relation = new RelationLink(artifactA, artifactB, relationType, rationale);
@@ -686,7 +684,7 @@ public class RelationManager {
 
          RelationLink targetRelation =
                getLoadedRelation(sourceArtifact, artA.getArtId(), artB.getArtId(), relation.getRelationType());
-    
+
          List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relation.getRelationType());
          if (selectedRelations.remove(relation)) {
             int targetIndex = selectedRelations.indexOf(targetRelation);
@@ -802,7 +800,7 @@ public class RelationManager {
             } else {
                OseeLog.log(
                      RelationManager.class,
-                     Level.FINE,
+                     Level.INFO,
                      String.format(
                            "Artifact - artId[%d] - %s - is unsorted for relations type  - relTypeId[%d] - %s - # of relations in mem - %d - . (duplicate relation)",
                            artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString(),
