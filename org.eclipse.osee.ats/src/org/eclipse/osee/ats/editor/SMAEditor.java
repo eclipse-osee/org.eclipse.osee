@@ -363,7 +363,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          ToolBar toolBar = createToolBar(composite);
 
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(FrameworkImage.SAVED));
+         item.setImage(ImageManager.getImage(FrameworkImage.SAVE));
          item.setToolTipText("Save attributes changes only");
          item.addSelectionListener(new SelectionAdapter() {
             @Override
