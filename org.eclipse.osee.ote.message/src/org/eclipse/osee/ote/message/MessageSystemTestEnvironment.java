@@ -168,20 +168,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       clientClasses = urls;
    }
 
-   @Override
-   protected void cleanupClassReferences() {
-      IMessageManager msgMngr = getMsgManager();
-      if(msgMngr != null){
-         msgMngr.destroy();
-      }
-      IModelManager modelMngr = getModelManager();
-      if(modelMngr != null) {
-         modelMngr.destroy();
-      }
-
-      super.cleanupClassReferences();
-   }
-
    public void resetScriptLoader(String[] strings) throws Exception {
       getRuntimeManager().resetScriptLoader(strings);
    }

@@ -496,13 +496,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (associatedObjects != null) {
          associatedObjects.clear();
       }
-      if (executionUnitManagement != null) {
-         try{
-            executionUnitManagement.dispose();
-         } catch (Throwable th){
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, th);
-         }
-      }
       OseeLog.log(TestEnvironment.class, Level.FINE,
             "got the other PM REF");
       if (associatedObjectListeners != null) {

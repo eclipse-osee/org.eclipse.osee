@@ -35,5 +35,4 @@ public interface IModelManager {
     * @param key
     */
    void releaseReference(ModelKey key);
-   void destroy();
 }
