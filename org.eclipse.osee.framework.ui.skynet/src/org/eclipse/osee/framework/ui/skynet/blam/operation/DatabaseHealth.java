@@ -46,6 +46,14 @@ public class DatabaseHealth extends AbstractBlam {
       return "Database Health";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
+    */
+   @Override
+   public String getDescriptionUsage() {
+      return "Runs Database Health Checks/Fixes.  Cursor over label to see descriptions.";
+   }
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       boolean fixAll = variableMap.getBoolean(CLEAN_ALL_PROMPT);
@@ -95,8 +103,7 @@ public class DatabaseHealth extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
       builder.append(fix ? fixOp.getFixTaskName() : fixOp.getVerifyTaskName());
-      builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName= \"   \" defaultValue=\"" + (fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()) + "\"/>");
+      builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"  toolTip=\"" + (fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()) + "\"/>");
       return builder.toString();
    }
 
@@ -131,14 +138,14 @@ public class DatabaseHealth extends AbstractBlam {
             doSubWork(operation, monitor, workPercentage);
             setStatus(operation.getStatus());
 
-               String detailedReport = operation.getDetailedReport().toString();
-               if (Strings.isValid(detailedReport)) {
-                  XResultData result = new XResultData();
-                  result.addRaw(detailedReport.toString());
-                  result.report(operation.getName(), Manipulations.RAW_HTML);
-               }
+            String detailedReport = operation.getDetailedReport().toString();
+            if (Strings.isValid(detailedReport)) {
+               XResultData result = new XResultData();
+               result.addRaw(detailedReport.toString());
+               result.report(operation.getName(), Manipulations.RAW_HTML);
             }
          }
+      }
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
