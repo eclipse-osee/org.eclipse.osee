@@ -37,7 +37,11 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
    }
 
    public InputStream getContents() throws CoreException {
-      return new ByteArrayInputStream(contents.getBytes());
+      try {
+         return new ByteArrayInputStream(contents.getBytes("UTF-8"));
+      } catch (UnsupportedEncodingException ex) {
+         throw new RuntimeException(ex);
+      }
    }
 
    public Image getImage() {
