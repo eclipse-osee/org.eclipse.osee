@@ -228,6 +228,8 @@ public class StaticIdManagerTest {
             SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
             for (Artifact artifact : toDelete) {
                artifact.delete();
+            }
+            for (Artifact artifact : toDelete) {
                artifact.persistAttributesAndRelations(transaction);
             }
             transaction.execute();
