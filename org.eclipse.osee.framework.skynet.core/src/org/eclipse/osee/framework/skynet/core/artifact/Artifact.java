@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
-
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -107,21 +105,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
 
-	   if (guid == null) {
-		   this.guid = GUID.generateGuidStr();
-	   } else {
-		   this.guid = guid;
-	   }
+      if (guid == null) {
+         this.guid = GUID.generateGuidStr();
+      } else {
+         this.guid = guid;
+      }
 
-	   if (humanReadableId == null) {
-		   this.humanReadableId = generateHumanReadableId();
-	   } else {
-		   this.humanReadableId = humanReadableId;
-	   }
+      if (humanReadableId == null) {
+         this.humanReadableId = generateHumanReadableId();
+      } else {
+         this.humanReadableId = humanReadableId;
+      }
 
-	   this.parentFactory = parentFactory;
-	   this.branch = branch;
-	   this.artifactType = artifactType;
+      this.parentFactory = parentFactory;
+      this.branch = branch;
+      this.artifactType = artifactType;
    }
 
    public boolean isInDb() {
@@ -888,8 +886,29 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param value
     * @throws OseeCoreException
     */
-   public <T> void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
+   public void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
       createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setFromString(value);
+   }
+
+   /**
+    * we do not what duplicated enumerated values so this method silently returns if the specified attribute type is
+    * enumerated and value is already present
+    * 
+    * @param <T>
+    * @param attributeTypeName
+    * @param value
+    * @throws OseeCoreException
+    */
+   public <T> void setOrAddAttribute(String attributeTypeName, T value) throws OseeCoreException {
+      if (AttributeTypeManager.getType(attributeTypeName).isEnumerated()) {
+         List<Attribute<String>> attributes = getAttributes(attributeTypeName);
+         for (Attribute<String> canidateAttribute : attributes) {
+            if (canidateAttribute.getValue().equals(value)) {
+               return;
+            }
+         }
+      }
+      addAttribute(attributeTypeName, value);
    }
 
    /**
@@ -1410,8 +1429,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    private static final char[][] chars =
          new char[][] {
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',      'B', 'C', 'D',      'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T',      'V', 'W', 'X', 'Y', 'Z'}};
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
+                     'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+                     'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
 
    /**
@@ -1420,33 +1441,33 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
     */
    private static String generateHumanReadableId() throws OseeDataStoreException {
-	   int seed = (int) (Math.random() * 34438396);
-	   char id[] = new char[charsIndexLookup.length];
+      int seed = (int) (Math.random() * 34438396);
+      char id[] = new char[charsIndexLookup.length];
 
-	   for (int i = 0; i < id.length; i++) {
-		   int radix = chars[charsIndexLookup[i]].length;
-		   id[i] = chars[charsIndexLookup[i]][seed % radix];
-		   seed = seed / radix;
-	   }
-	   
-	   String id_string = new String(id);
-	   
-	   if (isUniqueHRID(id_string)) 
-		   return id_string;
-	   else
-		   return generateHumanReadableId();
+      for (int i = 0; i < id.length; i++) {
+         int radix = chars[charsIndexLookup[i]].length;
+         id[i] = chars[charsIndexLookup[i]][seed % radix];
+         seed = seed / radix;
+      }
+
+      String id_string = new String(id);
+
+      if (isUniqueHRID(id_string))
+         return id_string;
+      else
+         return generateHumanReadableId();
    }
-   
+
    /**
     * Searches the database to verify that the given HRID is not already taken
+    * 
     * @param id
-    * @return true iff id is not found in the database
-    * TODO make private, implement testing some other way 
+    * @return true iff id is not found in the database TODO make private, implement testing some other way
     */
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
-	   String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
+      String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
 
-	   return ConnectionHandler.runPreparedQueryFetchInt(-1, DUPLICATE_HRID_SEARCH, id) == 0; 
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, DUPLICATE_HRID_SEARCH, id) == 0;
    }
 
    /**

@@ -209,4 +209,8 @@ public class AttributeType implements Comparable<AttributeType> {
       }
       return toReturn;
    }
+
+   public boolean isEnumerated() {
+      return EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass);
+   }
 }

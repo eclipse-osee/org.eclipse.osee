@@ -156,11 +156,11 @@ public class RoughArtifact {
       for (RoughArtifact childRoughArtifact : children) {
          Artifact childArtifact = childRoughArtifact.getReal(transaction, monitor, artifactResolver);
          if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
-            if (childArtifact.hasParent()) {
-               throw new IllegalStateException(
-                     "Artifact already has a parent that is not inline with the import parent");
-            } else if (childArtifact.getParent() != realArtifact) {
+            if (!childArtifact.hasParent()) {
                realArtifact.addChild(childArtifact);
+            } else if (childArtifact.getParent() != realArtifact) {
+               throw new IllegalStateException(
+                     childArtifact.getDescriptiveName() + " already has a parent that differs from the imported parent");
             }
          }
       }

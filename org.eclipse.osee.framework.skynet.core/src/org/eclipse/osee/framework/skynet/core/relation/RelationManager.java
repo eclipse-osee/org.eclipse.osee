@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -810,18 +811,21 @@ public class RelationManager {
       }
    }
 
-   /**
-    * @param relationLink
-    * @param b
-    * @throws ArtifactDoesNotExist
-    */
-   static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, Artifact aArt, Artifact bArt, boolean markAsNotDirty) throws ArtifactDoesNotExist {
-      if (aArt != null) {
-         setOrderValues(aArt, relationLink.getRelationType(), RelationSide.SIDE_B, markAsNotDirty);
+   public static synchronized void sortRelatedArtifacts(Artifact sourceArtifact, IRelationEnumeration relationEnum, Comparator<Artifact> artifactComparator) throws OseeCoreException {
+      List<Artifact> otherArtifacts = RelationManager.getRelatedArtifacts(sourceArtifact, relationEnum);
+      Collections.sort(otherArtifacts, artifactComparator);
+      List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relationEnum.getRelationType());
+      int index = 0;
+
+      for (Artifact artifact : otherArtifacts) {
+         for (RelationLink relation : selectedRelations) {
+            if (relation.getArtifact(relationEnum.getSide()).equals(artifact)) {
+               selectedRelations.add(index, relation);
+               break;
+            }
+         }
       }
-      if (bArt != null) {
-         setOrderValues(bArt, relationLink.getRelationType(), RelationSide.SIDE_A, markAsNotDirty);
-      }
+      setOrderValues(sourceArtifact, relationEnum.getRelationType(), relationEnum.getSide(), false);
    }
 
    static synchronized void setOrderValues(Artifact sourceArtifact, RelationType relationType, RelationSide side, boolean markAsNotDirty) {

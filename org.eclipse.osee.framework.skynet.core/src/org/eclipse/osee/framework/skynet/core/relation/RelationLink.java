@@ -118,6 +118,14 @@ public class RelationLink {
    }
 
    public void delete(boolean reorderRelations) throws ArtifactDoesNotExist {
+      internalDelete(true, false);
+   }
+
+   public void deleteWithoutDirtyAndEvent() throws ArtifactDoesNotExist {
+      internalDelete(true, true);
+   }
+
+   private void internalDelete(boolean reorderRelations, boolean markAsNotDirty) {
       if (!deleted) {
          Artifact aArt = null;
          Artifact bArt = null;
@@ -126,26 +134,25 @@ public class RelationLink {
             bArt = preloadArtifactForDelete(RelationSide.SIDE_B);
          }
          markAsDeleted();
-         setDirty();
-         if (reorderRelations) {
-            RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, aArt, bArt, false);
+         if (!markAsNotDirty) {
+            setDirty();
          }
 
-         try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
-                  getABranch(), relationType.getTypeName());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         if (aArt != null) {
+            RelationManager.setOrderValues(aArt, getRelationType(), RelationSide.SIDE_B, markAsNotDirty);
          }
-      }
-   }
+         if (bArt != null) {
+            RelationManager.setOrderValues(bArt, getRelationType(), RelationSide.SIDE_A, markAsNotDirty);
+         }
 
-   public void deleteWithoutDirtyAndEvent() throws ArtifactDoesNotExist {
-      if (!deleted) {
-         Artifact aArt = preloadArtifactForDelete(RelationSide.SIDE_A);
-         Artifact bArt = preloadArtifactForDelete(RelationSide.SIDE_B);
-         markAsDeleted();
-         RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, aArt, bArt, true);
+         if (!markAsNotDirty) {
+            try {
+               OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
+                     getABranch(), relationType.getTypeName());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
       }
    }
 
