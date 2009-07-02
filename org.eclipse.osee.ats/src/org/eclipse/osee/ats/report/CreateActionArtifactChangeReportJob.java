@@ -74,7 +74,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
              * @see java.lang.Runnable#run()
              */
             public void run() {
-               Result result = (new HtmlExportTable(title, html, true, false)).export();
+               Result result = (new HtmlExportTable(title, html, true, false)).exportCsv();
                if (result.isFalse()) {
                   result.popup();
                   return;

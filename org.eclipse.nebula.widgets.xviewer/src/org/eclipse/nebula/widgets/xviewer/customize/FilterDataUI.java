@@ -90,6 +90,12 @@ public class FilterDataUI {
       });
    }
 
+   public void setFocus() {
+      if (filterText != null && !filterText.isDisposed()) {
+         filterText.setFocus();
+      }
+   }
+
    public void dispose() {
    }
 

@@ -78,6 +78,6 @@ public class Dialogs {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to export.");
          return Result.FalseResult;
       }
-      return (new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem)).export();
+      return (new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem)).exportCsv();
    }
 }

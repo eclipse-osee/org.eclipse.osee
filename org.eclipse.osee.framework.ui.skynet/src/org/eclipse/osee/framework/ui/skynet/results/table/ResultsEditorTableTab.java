@@ -115,7 +115,21 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          @Override
          public void widgetSelected(SelectionEvent event) {
             try {
-               (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).export();
+               (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).exportCsv();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getProgramImage("csv"));
+      item.setToolTipText("Export as TSV (tab seperated value)");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            try {
+               (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).exportTsv();
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }

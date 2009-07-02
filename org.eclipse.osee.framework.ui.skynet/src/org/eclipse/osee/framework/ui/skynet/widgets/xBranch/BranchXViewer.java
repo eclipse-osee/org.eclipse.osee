@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Composite;
 public class BranchXViewer extends XViewer {
    private final XBranchWidget xBranchViewer;
 
-   public BranchXViewer(Composite parent, int style, XBranchWidget xRoleViewer, boolean filterRealTime, boolean searchRealTime) {
+   public BranchXViewer(Composite parent, int style, XBranchWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
       super(parent, style, new BranchXViewerFactory(), filterRealTime, searchRealTime);
-      this.xBranchViewer = xRoleViewer;
+      this.xBranchViewer = xBranchViewer;
    }
 
    @Override
@@ -49,6 +49,7 @@ public class BranchXViewer extends XViewer {
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
       createMenuActions();
+      getFilterDataUI().setFocus();
    }
 
    public void createMenuActions() {
@@ -71,9 +72,9 @@ public class BranchXViewer extends XViewer {
     */
    @Override
    public void dispose() {
-      if(getLabelProvider() != null){
-      getLabelProvider().dispose();
-   }
+      if (getLabelProvider() != null) {
+         getLabelProvider().dispose();
+      }
    }
 
    /**

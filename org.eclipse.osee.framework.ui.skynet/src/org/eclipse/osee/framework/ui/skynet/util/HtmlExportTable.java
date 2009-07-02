@@ -59,7 +59,15 @@ public class HtmlExportTable {
       this.popupConfirm = popupConfirm;
    }
 
-   public Result export() {
+   public Result exportCsv() {
+      return export(",", "csv");
+   }
+
+   public Result exportTsv() {
+      return export("\t", "tsv");
+   }
+
+   public Result export(String speratorChar, String fileExtension) {
       if (!popupConfirm || (popupConfirm && MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
             "Export Table", "Export Table to CSV?"))) {
          StringBuilder sb = new StringBuilder();
@@ -83,10 +91,10 @@ public class HtmlExportTable {
                               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                   String csvRow = "";
                   while (thM.find()) {
-                     csvRow += "\"" + removeLeadTrailSpaces(thM.group(1)) + "\",";
+                     csvRow += "\"" + removeLeadTrailSpaces(thM.group(1)) + "\"" + speratorChar;
                   }
                   if (!csvRow.equals("")) {
-                     csvRow = csvRow.replaceFirst(",$", "\n");
+                     csvRow = csvRow.replaceFirst(speratorChar + "$", "\n");
                      sb.append(csvRow);
                   }
                }
@@ -94,12 +102,12 @@ public class HtmlExportTable {
             String path = "";
             if (popupConfirm) {
                FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE | SWT.SINGLE);
-               dialog.setFilterExtensions(new String[] {"*.csv"});
+               dialog.setFilterExtensions(new String[] {"*." + fileExtension});
                dialog.setFilterPath(System.getProperty("user.home"));
                dialog.setFileName("table.csv");
                path = dialog.open();
             } else
-               path = System.getProperty("user.home") + File.separator + "table.csv";
+               path = System.getProperty("user.home") + File.separator + "table." + fileExtension;
 
             if (path != null) {
                try {
