@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
@@ -46,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -54,8 +52,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
@@ -84,7 +81,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public StateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -381,17 +378,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public Image getAssigneeImage() throws OseeCoreException {
       if (isDeleted()) return null;
-      if (smaMgr.getStateMgr().getAssignees().size() > 0) {
-         if (smaMgr.isUserSystem()) {
-            return ImageManager.getImage(FrameworkImage.USER_GREY);
-         } else if (smaMgr.isUserInactive()) {
-            return ImageManager.getImage(FrameworkImage.USER_YELLOW);
-         } else if (smaMgr.isAssigneeMe()) {
-            return ImageManager.getImage(FrameworkImage.USER_RED);
-         } else
-            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
-      }
-      return null;
+      return FrameworkArtifactImageProvider.getUserImage(smaMgr.getStateMgr().getAssignees());
    }
 
    /**
@@ -1368,8 +1355,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getGroupExplorerName() throws OseeCoreException {
-         return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
-      }
+      return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
+   }
 
    @Override
    public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException {

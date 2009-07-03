@@ -33,6 +33,7 @@ public enum AtsImage implements OseeImage {
    FAVORITE_OVERLAY("favorite.gif"),
    GLOBE("globe.gif"),
    GLOBE_SELECT("globeSelect.gif"),
+   GOAL("goal.gif"),
    HOME("home.gif"),
    MY_WORLD("MyWorld.gif"),
    NEW_ACTION("newAction.gif"),

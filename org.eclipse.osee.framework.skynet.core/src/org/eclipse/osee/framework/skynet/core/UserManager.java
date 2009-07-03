@@ -321,4 +321,28 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          }
       }
    }
+
+   public static boolean isUserInactive(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
+         if (!user.isActive()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public static boolean isUserSystem(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
+         if (user.isSystemUser()) return true;
+      }
+      return false;
+   }
+
+   public static boolean isUserCurrentUser(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
+         if (user.equals(UserManager.getUser())) return true;
+      }
+      return false;
+   }
+
 }

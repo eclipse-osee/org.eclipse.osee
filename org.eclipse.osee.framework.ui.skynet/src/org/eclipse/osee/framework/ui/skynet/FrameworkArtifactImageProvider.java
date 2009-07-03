@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -53,6 +54,20 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       }
 
       return super.setupImage(artifact);
+   }
+
+   public static org.eclipse.swt.graphics.Image getUserImage(Collection<User> users) throws OseeCoreException {
+      if (users.size() > 0) {
+         if (UserManager.isUserSystem(users)) {
+            return ImageManager.getImage(FrameworkImage.USER_GREY);
+         } else if (UserManager.isUserInactive(users)) {
+            return ImageManager.getImage(FrameworkImage.USER_YELLOW);
+         } else if (UserManager.isUserCurrentUser(users)) {
+            return ImageManager.getImage(FrameworkImage.USER_RED);
+         } else
+            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
+      }
+      return null;
    }
 
 }
