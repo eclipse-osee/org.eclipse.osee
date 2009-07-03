@@ -815,17 +815,20 @@ public class RelationManager {
       List<Artifact> otherArtifacts = RelationManager.getRelatedArtifacts(sourceArtifact, relationEnum);
       Collections.sort(otherArtifacts, artifactComparator);
       List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relationEnum.getRelationType());
-      int index = 0;
+      if (selectedRelations == null) {
+         return;
+      }
 
+      int lastArtId = LINKED_LIST_KEY;
       for (Artifact artifact : otherArtifacts) {
          for (RelationLink relation : selectedRelations) {
             if (relation.getArtifact(relationEnum.getSide()).equals(artifact)) {
-               selectedRelations.add(index, relation);
+               relation.setOrder(relationEnum.getSide(), lastArtId);
                break;
             }
          }
+         lastArtId = artifact.getArtId();
       }
-      setOrderValues(sourceArtifact, relationEnum.getRelationType(), relationEnum.getSide(), false);
    }
 
    static synchronized void setOrderValues(Artifact sourceArtifact, RelationType relationType, RelationSide side, boolean markAsNotDirty) {
@@ -837,11 +840,9 @@ public class RelationManager {
          int lastArtId = LINKED_LIST_KEY;
          for (RelationLink link : selectedRelations) {
             if (!link.isDeleted() && link.getSide(sourceArtifact) == side.oppositeSide()) {
-               if (link.getOrder(side) != lastArtId) {
-                  link.setOrder(side, lastArtId);
-                  if (markAsNotDirty) {
-                     link.setNotDirty();
-                  }
+               link.setOrder(side, lastArtId);
+               if (markAsNotDirty) {
+                  link.setNotDirty();
                }
                lastArtId = link.getArtifactId(side);
             }

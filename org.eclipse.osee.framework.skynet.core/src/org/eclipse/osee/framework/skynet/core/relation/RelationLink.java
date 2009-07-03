@@ -214,8 +214,10 @@ public class RelationLink {
     * @param order The order to set.
     */
    public void setAOrder(int order) {
-      this.aOrder = order;
-      setDirty();
+      if (aOrder != order) {
+         aOrder = order;
+         setDirty();
+      }
    }
 
    /**
@@ -233,8 +235,10 @@ public class RelationLink {
     * @param order The order to set.
     */
    public void setBOrder(int order) {
-      this.bOrder = order;
-      setDirty();
+      if (bOrder != order) {
+         bOrder = order;
+         setDirty();
+      }
    }
 
    /**
