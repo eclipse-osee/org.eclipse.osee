@@ -322,7 +322,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    @Override
    public String toString() {
-      return getInternalDescriptiveName();
+      return getDescriptiveName();
    }
 
    //TODO should not return null but currently application code expects it to
@@ -911,19 +911,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return items;
    }
 
-   public String getInternalDescriptiveName() {
-      String name = getInternalAttributeValue("Name");
-      if (!Strings.isValid(name)) return UNNAMED;
-      return name;
-   }
-
    /**
     * Return the String value of the first found attributeTypeName attribute whether deleted or not.
     * 
     * @param attributeTypeName
     * @return attribute value
     */
-   public String getInternalAttributeValue(String attributeTypeName) {
+   private String getInternalAttributeValue(String attributeTypeName) {
       try {
          if (!isAttributeTypeValid(attributeTypeName)) {
             throw new IllegalStateException(String.format(
@@ -943,18 +937,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public String getDescriptiveName() {
-      try {
-         String name = null;
-         List<Attribute<String>> nameAttributes = getAttributesIncludeDeleted("Name");
-         if (nameAttributes.size() == 1) {
-            name = nameAttributes.get(0).getValue();
-         } else if (nameAttributes.size() == 0) {
-            name = UNNAMED;
-         }
-         return name == null ? UNNAMED : name;
-      } catch (Exception ex) {
-         return ex.getLocalizedMessage();
+      String name = getInternalAttributeValue("Name");
+      if (!Strings.isValid(name)) {
+         return UNNAMED;
       }
+      return name;
    }
 
    public void setDescriptiveName(String name) throws OseeCoreException {

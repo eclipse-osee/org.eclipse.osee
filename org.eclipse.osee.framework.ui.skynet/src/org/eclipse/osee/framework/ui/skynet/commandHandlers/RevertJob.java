@@ -40,7 +40,7 @@ public class RevertJob extends Job {
             @Override
             protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                for (Artifact artifact : artifacts) {
-                  monitor.setTaskName(artifact.getInternalDescriptiveName());
+                  monitor.setTaskName(artifact.getDescriptiveName());
                   ArtifactPersistenceManager.revertArtifact(connection, artifact);
                   monitor.worked(1);
                }

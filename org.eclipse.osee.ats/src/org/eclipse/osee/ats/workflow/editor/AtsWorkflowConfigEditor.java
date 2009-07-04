@@ -14,7 +14,6 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.ContextMenuProvider;
@@ -447,7 +446,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
          if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            if (delArt.getInternalAttributeValue("Name").equals(getPartName())) {
+            if (delArt.getDescriptiveName().equals(getPartName())) {
                closeEditor();
             }
          }
