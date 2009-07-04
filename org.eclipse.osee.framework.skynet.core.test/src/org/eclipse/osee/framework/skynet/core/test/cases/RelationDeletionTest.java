@@ -59,13 +59,13 @@ public class RelationDeletionTest {
 
       child1.deleteRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parent);
 
-      assertTrue("We removed a relation so it should still be dirty.", child1.isDirty(true));
-      assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty(true));
+      assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
+      assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
 
       child1.persistRelations();
 
-      assertFalse("Parent artifact should be clean now.", parent.isDirty(true));
-      assertFalse("Child artifact should also be clean.", child1.isDirty(true));
+      assertFalse("Parent artifact should be clean now.", parent.isDirty());
+      assertFalse("Child artifact should also be clean.", child1.isDirty());
 
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
 
