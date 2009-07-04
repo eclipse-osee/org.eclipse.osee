@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -53,9 +52,9 @@ public class WordChangesToParentHandler extends AbstractHandler {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          try {
             Artifact firstArtifact =
-                  selectedArtifactChange.getModificationType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                  selectedArtifactChange.getModificationType() == NEW ? null : ArtifactQuery.getHistoricalArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(),
-                        selectedArtifactChange.getBaselineTransactionId());
+                        selectedArtifactChange.getBaselineTransactionId(), true);
 
             Artifact secondArtifact = null;
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();

@@ -73,13 +73,13 @@ public class ArtifactQuery {
    /**
     * Checks for existence of an artifact by id
     * 
-    * @param artId the id of the desired artifact
+    * @param artifactId the id of the desired artifact
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.CHECK);
+   public static Artifact checkArtifactFromId(int artifactId, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
@@ -204,6 +204,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getHistoricalArtifactsFromIds(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
+   }
+
+   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
    public static Artifact getHistoricalArtifactFromId(String guidOrHrid, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {

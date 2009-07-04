@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
@@ -50,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -298,9 +300,21 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          if (result.isTrue()) return result;
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
-         String rString = smaMgr.getSma().reportIsDirty(true);
+
+         String rString = null;
+         for (Attribute<?> attribute : smaMgr.getSma().internalGetAttributes()) {
+            if (attribute.isDirty()) {
+               rString = "Attribute: " + attribute.getNameValueDescription();
+               break;
+            }
+         }
+
+         if (rString == null) {
+            rString = RelationManager.reportHasDirtyLinks(smaMgr.getSma());
+         }
+
          return new Result((rString != null), rString);
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result(true, ex.getLocalizedMessage());
       }

@@ -11,13 +11,15 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class BinaryAttribute<T> extends BinaryBackedAttribute<T> {
-   public BinaryAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   public BinaryAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
    }
 }

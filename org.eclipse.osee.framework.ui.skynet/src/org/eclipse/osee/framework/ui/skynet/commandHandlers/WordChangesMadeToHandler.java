@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -60,11 +60,11 @@ public class WordChangesMadeToHandler extends AbstractHandler {
 
    public void execute(ArtifactChange artifactChange) throws Exception {
       Artifact firstArtifact =
-            artifactChange.getModificationType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
+            artifactChange.getModificationType() == NEW ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
       Artifact secondArtifact =
-            artifactChange.getModificationType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
+            artifactChange.getModificationType() == DELETED ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true);
 
       RendererManager.diffInJob(firstArtifact, secondArtifact);
    }

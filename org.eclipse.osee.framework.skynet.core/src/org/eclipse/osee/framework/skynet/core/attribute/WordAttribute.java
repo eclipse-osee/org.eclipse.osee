@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -35,10 +36,12 @@ public class WordAttribute extends StringAttribute {
     * wraps the value in a simple word paragraph
     * 
     * @param attributeType
+    * @param modificationType TODO
     * @param value
+    * @throws OseeCoreException TODO
     */
-   public WordAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   public WordAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
       displayTrackedChangesErrorMessage = "";
    }
 

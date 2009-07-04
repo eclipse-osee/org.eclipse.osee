@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -195,7 +194,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
       for (Artifact taskArt : artifacts)
          try {
-            if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadAttributesAndRelations();
+            if (taskArt != null && !taskArt.isDeleted() && taskArt.hasDirtyAttributes()) taskArt.reloadAttributesAndRelations();
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -213,7 +212,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    @Override
    public boolean isDirty() {
       for (Artifact taskArt : artifacts) {
-         if (!taskArt.isDeleted() && taskArt.isDirty()) {
+         if (!taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
             return true;
          }
       }
@@ -245,7 +244,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       else
          setPartName(((MassArtifactEditorInput) editorInput).getName());
 
-      SkynetGuiPlugin.getInstance().setHelp(getContainer(), "mass_artifact_editor", "org.eclipse.osee.framework.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(getContainer(), "mass_artifact_editor",
+            "org.eclipse.osee.framework.help.ui");
 
       Composite comp = new Composite(getContainer(), SWT.NONE);
       comp.setLayout(new GridLayout(1, true));

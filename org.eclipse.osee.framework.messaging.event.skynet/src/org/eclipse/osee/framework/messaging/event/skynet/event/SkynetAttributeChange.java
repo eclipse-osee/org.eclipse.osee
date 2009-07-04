@@ -10,33 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+
 /**
  * @author Jeff C. Phillips
  */
 public class SkynetAttributeChange implements SkynetChange {
    private static final long serialVersionUID = 7269483275150734396L;
    private final int typeId;
-   private final boolean deleted;
+   private final ModificationType modificationType;
    private final int attributeId;
    private final int gammaId;
    private final Object[] value;
 
    /**
-    * @return the deleted
-    */
-   public boolean isDeleted() {
-      return deleted;
-   }
-
-   /**
     * @param typeId
     * @param value
     */
-   public SkynetAttributeChange(int typeId, Object[] value, boolean deleted, int attributeId, int gammaId) {
+   public SkynetAttributeChange(int typeId, Object[] value, ModificationType modificationType, int attributeId, int gammaId) {
       super();
       this.typeId = typeId;
       this.value = value;
-      this.deleted = deleted;
+      this.modificationType = modificationType;
       this.attributeId = attributeId;
       this.gammaId = gammaId;
    }
@@ -69,5 +64,12 @@ public class SkynetAttributeChange implements SkynetChange {
     */
    public int getGammaId() {
       return gammaId;
+   }
+
+   /**
+    * @return the modificationType
+    */
+   public ModificationType getModificationType() {
+      return modificationType;
    }
 }

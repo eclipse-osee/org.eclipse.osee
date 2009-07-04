@@ -361,7 +361,7 @@ public class AttributeConflict extends Conflict {
       }
       setStatus(ConflictStatus.UNTOUCHED);
       if (isWordAttribute) {
-         ((WordAttribute) getAttribute()).initializeToDefaultValue();
+         getAttribute().resetToDefaultValue();
          getArtifact().persistAttributes();
       } else {
          getArtifact().setSoleAttributeFromString(getAttributeType().getName(), NO_VALUE);

@@ -51,6 +51,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
 /**
  * @author Robert A. Fisher
+ * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
+ * @author Jeff C. Phillips
  */
 public class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
@@ -226,86 +229,41 @@ public class SkynetTransaction extends DbTransaction {
 
    public void addArtifact(Artifact artifact) throws OseeCoreException {
       checkBranch(artifact);
-      ModificationType modificationType = artifact.getModType();
 
-      if (artifact.isDeleted()) {
-         if (!artifact.isInDb()) {
-            return;
-         }
-      } else {
-         if (modificationType != ModificationType.INTRODUCED) {
-            if (artifact.isInDb()) {
-               modificationType = ModificationType.MODIFIED;
-            } else {
-               modificationType = ModificationType.NEW;
-            }
-         }
+      if (artifact.isDeleted() && !artifact.isInDb()) {
+         return;
       }
 
       madeChanges = true;
-      addArtifactHelper(artifact, modificationType);
-
-      if (artifact.anAttributeIsDirty()) {
-         // Add Attributes to Transaction
-         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
-            if (attribute != null) { // TODO: is it really possible to get a null in the attribute list and if so WHY!!!
-               if (attribute.isDirty()) {
-                  addAttribute(artifact, attribute);
-               }
-            }
-         }
-      }
-   }
-
-   private void addArtifactHelper(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
       if (txItem == null) {
-         txItem = new ArtifactTransactionData(artifact, modificationType);
+         txItem = new ArtifactTransactionData(artifact);
          transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
       } else {
-         updateTxItem(txItem, modificationType);
+         updateTxItem(txItem, artifact.getModType());
       }
 
+      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+         if (attribute.isDirty()) {
+            addAttribute(artifact, attribute);
+         }
+      }
    }
 
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      ModificationType modificationType = attribute.getModificationType();
-
-      if (attribute.isDeleted()) {
-         if (!attribute.isInDb()) {
-            return;
-         }
-      } else {
-         if (artifact.getModType() == ModificationType.INTRODUCED) {
-            modificationType = ModificationType.INTRODUCED;
-         } else {
-            if (attribute.isInDb()) {
-               modificationType = ModificationType.MODIFIED;
-            } else {
-               modificationType = ModificationType.NEW;
-            }
-         }
+      if (attribute.isDeleted() && !attribute.isInDb()) {
+         return;
       }
-      addAttributeHelper(artifact, attribute, modificationType);
-   }
-
-   /**
-    * @param artifact
-    * @param attribute
-    * @param modificationType
-    * @throws OseeDataStoreException
-    */
-   private void addAttributeHelper(Artifact artifact, Attribute<?> attribute, ModificationType modificationType) throws OseeDataStoreException {
       if (attribute.getAttrId() == 0) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
 
       BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
       if (txItem == null) {
-         txItem = new AttributeTransactionData(attribute, modificationType);
+         txItem = new AttributeTransactionData(attribute);
          transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
       } else {
-         updateTxItem(txItem, modificationType);
+         updateTxItem(txItem, attribute.getModificationType());
       }
    }
 

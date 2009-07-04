@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
@@ -18,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
 
-   protected CharacterBackedAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   protected CharacterBackedAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
    }
 
    @Override

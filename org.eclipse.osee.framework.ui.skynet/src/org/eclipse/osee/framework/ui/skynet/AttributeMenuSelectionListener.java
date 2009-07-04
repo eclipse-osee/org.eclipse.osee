@@ -11,6 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -31,14 +35,14 @@ public class AttributeMenuSelectionListener extends SelectionAdapter {
       this.editor = editor;
    }
 
-   /*
-    * (non-Javadoc) @@see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclips
-    * e.swt.events.SelectionEvent)
-    */
    @Override
    public void widgetSelected(SelectionEvent ev) {
       AttributeType attributeType = (AttributeType) ((MenuItem) ev.getSource()).getData();
-      attrsComp.getArtifact().createAttribute(attributeType, true);
+      try {
+         attrsComp.getArtifact().createAttribute(attributeType, ModificationType.NEW);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
 
       tableViewer.refresh();
       attrsComp.layout();

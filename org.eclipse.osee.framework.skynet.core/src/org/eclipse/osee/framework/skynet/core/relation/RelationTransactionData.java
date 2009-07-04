@@ -34,7 +34,7 @@ public class RelationTransactionData extends BaseTransactionData {
    private final RelationLink relation;
 
    public RelationTransactionData(RelationLink relation, ModificationType modificationType) throws OseeDataStoreException {
-      super(relation.getRelationId(), modificationType, modificationType == ModificationType.ARTIFACT_DELETED);
+      super(relation.getRelationId(), modificationType);
       this.relation = relation;
    }
 
@@ -73,6 +73,7 @@ public class RelationTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalClearDirtyState() {
+      relation.setNotDirty();
    }
 
    /* (non-Javadoc)

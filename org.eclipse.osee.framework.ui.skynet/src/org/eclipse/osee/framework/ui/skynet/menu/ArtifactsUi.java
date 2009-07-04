@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -51,8 +51,8 @@ public class ArtifactsUi {
                else if (firstElement instanceof TransactionData) {
                   TransactionData firstTransactionData = (TransactionData) firstElement;
 
-                  selectedItems.add(ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId()));
+                  selectedItems.add(ArtifactQuery.getHistoricalArtifactFromId(
+                        firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId(), true));
                } else {
                   TreeViewerUtility.getPreorderSelection((TreeViewer) viewer, selectedItems);
                }

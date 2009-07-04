@@ -28,13 +28,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -89,9 +90,11 @@ public class MergeUtility {
    private static final Pattern amlTerminatingDefault =
          Pattern.compile("aml:id[^\\>]*?/", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern annotationTag =
-      Pattern.compile("(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   
-   private static final Pattern rsidPattern = Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+         Pattern.compile("(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   private static final Pattern rsidPattern =
+         Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
@@ -159,11 +162,12 @@ public class MergeUtility {
 
    public static Artifact getStartArtifact(Conflict conflict) {
       try {
-         if (conflict.getSourceBranch() == null) return null;
+         if (conflict.getSourceBranch() == null) {
+            return null;
+         }
          TransactionId id = TransactionIdManager.getStartEndPoint(conflict.getSourceBranch()).getKey();
-         return ArtifactPersistenceManager.getInstance().getArtifact(conflict.getArtifact().getGuid(), id);
-
-      } catch (Exception ex) {
+         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), id, true);
+      } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
       }
       return null;
@@ -354,38 +358,38 @@ public class MergeUtility {
 
       resetRsidIds(fileValue, rsidNumber, baselineRsid, fileName);
    }
-   
-   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, String fileName) throws IOException{
+
+   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, String fileName) throws IOException {
       ChangeSet changeSet = new ChangeSet(fileValue);
       Matcher matcher = annotationTag.matcher(fileValue);
-      
+
       while (matcher.find()) {
          int startIndex = matcher.start();
          int level = 1;
-         
+
          do {
             matcher.find();
-            
+
             if (matcher.group().startsWith("<aml:annotation")) {
                level++;
             } else {
                level--;
             }
          } while (level != 0);
-         
+
          Matcher rsidMatcher = rsidPattern.matcher(fileValue);
-         
+
          while (rsidMatcher.find(startIndex) && rsidMatcher.end() <= matcher.end()) {
-            changeSet.replace(rsidMatcher.start(2), rsidMatcher.end(2) -1, rsidNumber);
+            changeSet.replace(rsidMatcher.start(2), rsidMatcher.end(2) - 1, rsidNumber);
             startIndex = rsidMatcher.end();
          }
       }
-      
+
       Matcher m = rsidRootPattern.matcher(fileValue);
       while (m.find()) {
          changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
       }
-      
+
       changeSet.applyChanges(new File(fileName));
    }
 }

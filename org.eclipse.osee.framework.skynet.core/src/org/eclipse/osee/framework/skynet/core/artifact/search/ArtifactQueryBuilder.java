@@ -94,6 +94,10 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
+   public ArtifactQueryBuilder(int artifactId, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+      this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
+   }
+
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel, true);
    }

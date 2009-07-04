@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -86,8 +85,8 @@ public abstract class Conflict implements IAdaptable {
             sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
          } else {
             sourceArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
+                  ArtifactQuery.getHistoricalArtifactFromId(artId,
+                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey(), true);
          }
       }
       return sourceArtifact;
@@ -99,8 +98,8 @@ public abstract class Conflict implements IAdaptable {
             destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
          } else {
             destArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getPriorTransaction(commitTransactionId));
+                  ArtifactQuery.getHistoricalArtifactFromId(artId,
+                        TransactionIdManager.getPriorTransaction(commitTransactionId), true);
 
          }
       }

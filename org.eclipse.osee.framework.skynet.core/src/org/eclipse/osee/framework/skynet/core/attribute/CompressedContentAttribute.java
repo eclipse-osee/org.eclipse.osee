@@ -13,16 +13,17 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
-   public CompressedContentAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   public CompressedContentAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
+      getAttributeDataProvider().setDisplayableString(getAttributeType().getName());
    }
 
    /* (non-Javadoc)
@@ -58,18 +59,9 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
          throw new OseeWrappedException(ex);
       }
       if (response) {
-         setDirty();
+         markAsChanged(ModificationType.MODIFIED);
       }
       return response;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setAttributeDataProvider(org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider)
-    */
-   @Override
-   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) throws OseeCoreException {
-      super.setAttributeDataProvider(attributeDataProvider);
-      attributeDataProvider.setDisplayableString(getAttributeType().getName());
    }
 
    /* (non-Javadoc)

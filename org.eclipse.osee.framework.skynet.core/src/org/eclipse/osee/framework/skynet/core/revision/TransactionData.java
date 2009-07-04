@@ -17,12 +17,11 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -68,17 +67,12 @@ public class TransactionData implements IAdaptable {
 
    /**
     * @return the artifact
+    * @throws OseeCoreException
     */
-   public Artifact getArtifact() {
+   public Artifact getArtifact() throws OseeCoreException {
       if (artifact == null) {
          if (getAssociatedArtId() > 0) {
-            try {
-               artifact =
-                     ArtifactPersistenceManager.getInstance().getArtifactFromId(getAssociatedArtId(),
-                           getTransactionId());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
-            }
+            artifact = ArtifactQuery.getHistoricalArtifactFromId(getAssociatedArtId(), getTransactionId(), true);
          }
       }
       return artifact;

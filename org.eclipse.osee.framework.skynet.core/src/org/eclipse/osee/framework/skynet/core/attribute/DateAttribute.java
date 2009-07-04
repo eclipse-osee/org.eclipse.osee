@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,9 +36,10 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * Create a date attribute with a given type, initialized to the current date and time.
     * 
     * @param attributeType The type of the attribute
+    * @throws OseeCoreException
     */
-   public DateAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   public DateAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
    }
 
    /**

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -499,8 +500,9 @@ public class RemoteEventManager {
                                        "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
                                        attribute.getAttrId(), attribute.toString()));
                               }
-                              if (skynetAttributeChange.isDeleted()) {
-                                 attribute.internalSetDeleted();
+                              ModificationType modificationType = skynetAttributeChange.getModificationType();
+                              if (modificationType.isDeleted()) {
+                                 attribute.setModificationType(modificationType);
                               } else {
                                  attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
                               }
@@ -514,7 +516,7 @@ public class RemoteEventManager {
                            Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
                                  skynetAttributeChange.getTypeId()).getAttrTypeId(),
                                  skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
-                                 skynetAttributeChange.getData());
+                                 skynetAttributeChange.getModificationType(), false, skynetAttributeChange.getData());
                         }
                      }
                   }
@@ -533,7 +535,6 @@ public class RemoteEventManager {
                } else if (!artifact.isHistorical()) {
                   if (!InternalEventManager.enableRemoteEventLoopback) {
                      artifact.setDeleted();
-                     artifact.setNotDirty();
                   }
 
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,

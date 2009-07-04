@@ -257,7 +257,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
                // System.out.println("Adding " + wid.getId() + " as class " + clazz);
                Artifact art = wid.toArtifact(writeType);
                addUpdateWorkItemToDefaultHeirarchy(art, transaction);
-               if (art.isDirty(true) && resultData != null) {
+               if (art.isDirty() && resultData != null) {
                   resultData.log("Updated [" + art.getArtifactTypeName() + "][" + art + "]");
                }
                art.persistAttributesAndRelations(transaction);

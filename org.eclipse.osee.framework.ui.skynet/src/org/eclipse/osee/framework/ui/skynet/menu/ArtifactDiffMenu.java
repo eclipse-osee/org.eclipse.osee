@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -80,9 +80,11 @@ public class ArtifactDiffMenu {
       Object[] selections = selection.toArray();
 
       if (selections[1] instanceof HistoryTransactionItem && selections[0] instanceof HistoryTransactionItem) {
-            try {
-               valid = (RendererManager.getBestFileRenderer(PresentationType.DIFF, ((HistoryTransactionItem)selections[0]).getTransactionData().getArtifact()).supportsCompare());
-            } catch (OseeCoreException ex) {
+         try {
+            valid =
+                  (RendererManager.getBestFileRenderer(PresentationType.DIFF,
+                        ((HistoryTransactionItem) selections[0]).getTransactionData().getArtifact()).supportsCompare());
+         } catch (OseeCoreException ex) {
          }
       }
       return valid;
@@ -102,17 +104,17 @@ public class ArtifactDiffMenu {
 
             TransactionData firstTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
             TransactionData secondTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
-            
+
             if (firstTransactionData.getTransactionId().getTransactionNumber() < secondTransactionData.getTransactionId().getTransactionNumber()) {
                firstTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
                secondTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
             }
             newerArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(firstTransactionData.getAssociatedArtId(),
-                        firstTransactionData.getTransactionId());
+                  ArtifactQuery.getHistoricalArtifactFromId(firstTransactionData.getAssociatedArtId(),
+                        firstTransactionData.getTransactionId(), true);
             baselineArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        secondTransactionData.getAssociatedArtId(), secondTransactionData.getTransactionId());
+                  ArtifactQuery.getHistoricalArtifactFromId(secondTransactionData.getAssociatedArtId(),
+                        secondTransactionData.getTransactionId(), true);
          }
       }
       RendererManager.diffInJob(baselineArtifact, newerArtifact);

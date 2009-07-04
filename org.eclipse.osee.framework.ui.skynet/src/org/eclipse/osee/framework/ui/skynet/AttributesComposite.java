@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -22,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -255,10 +255,14 @@ public class AttributesComposite extends Composite {
       deleteItem.addSelectionListener(new SelectionListener() {
          public void widgetSelected(SelectionEvent e) {
             Attribute<?> attribute = getSelectedAttribute();
-            attribute.delete();
-            editor.onDirtied();
-            notifyModifyAttribuesListeners();
-            tableViewer.refresh();
+            try {
+               attribute.delete();
+               editor.onDirtied();
+               notifyModifyAttribuesListeners();
+               tableViewer.refresh();
+            } catch (OseeStateException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
 
          public void widgetDefaultSelected(SelectionEvent e) {
@@ -325,7 +329,8 @@ public class AttributesComposite extends Composite {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(tableViewer.getControl(), "artifact_editor", "org.eclipse.osee.framework.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(tableViewer.getControl(), "artifact_editor",
+            "org.eclipse.osee.framework.help.ui");
    }
 
    /**

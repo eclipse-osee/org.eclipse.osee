@@ -35,8 +35,8 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    private final Artifact artifact;
 
-   public ArtifactTransactionData(Artifact artifact, ModificationType modificationType) throws OseeDataStoreException {
-      super(artifact.getArtId(), modificationType, artifact.isReflected());
+   public ArtifactTransactionData(Artifact artifact) throws OseeDataStoreException {
+      super(artifact.getArtId(), artifact.getModType());
       this.artifact = artifact;
    }
 
@@ -77,7 +77,6 @@ public class ArtifactTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalClearDirtyState() {
-      artifact.setNotDirty();
    }
 
    /* (non-Javadoc)

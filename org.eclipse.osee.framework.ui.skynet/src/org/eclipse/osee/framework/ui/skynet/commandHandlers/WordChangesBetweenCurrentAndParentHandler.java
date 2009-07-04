@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -24,8 +23,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -49,11 +48,11 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
          Artifact secondArtifact =
-               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifactChange.getArtifact().getArtId(),
-                     artifactChange.getToTransactionId());
+               ArtifactQuery.getHistoricalArtifactFromId(artifactChange.getArtifact().getArtId(),
+                     artifactChange.getToTransactionId(), true);
          RendererManager.diffInJob(artifactChange.getConflictingModArtifact(), secondArtifact);
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
    }

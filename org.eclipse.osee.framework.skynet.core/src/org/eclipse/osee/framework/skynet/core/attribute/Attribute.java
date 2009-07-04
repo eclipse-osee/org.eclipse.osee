@@ -12,13 +12,18 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -26,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -39,9 +45,24 @@ public abstract class Attribute<T> {
    private boolean dirty;
    private ModificationType modificationType;
 
-   protected Attribute(AttributeType attributeType, Artifact artifact) {
+   protected Attribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       this.attributeType = attributeType;
       this.artifact = artifact;
+      this.modificationType = modificationType;
+
+      try {
+         Constructor<? extends IAttributeDataProvider> providerConstructor =
+               attributeType.getProviderAttributeClass().getConstructor(new Class[] {Attribute.class});
+         attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      if (modificationType == ModificationType.NEW) {
+         dirty = true;
+         setToDefaultValue();
+         artifact.onAttributeModify();
+      }
+
    }
 
    public void setValue(T value) throws OseeCoreException {
@@ -56,7 +77,7 @@ public abstract class Attribute<T> {
       }
 
       if (subClassSetValue(value)) {
-         setDirty();
+         markAsChanged(ModificationType.MODIFIED);
       }
    }
 
@@ -73,15 +94,19 @@ public abstract class Attribute<T> {
 
       boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
-         setDirty();
+         markAsChanged(ModificationType.MODIFIED);
       }
       return response;
    }
 
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
-   public final void initializeToDefaultValue() throws OseeCoreException {
-      setDirty(); // always do this since this is only called when creating an attribute so it should be dirty anyway
+   public final void resetToDefaultValue() throws OseeCoreException {
+      modificationType = ModificationType.MODIFIED;
+      setToDefaultValue();
+   }
+
+   private final void setToDefaultValue() throws OseeCoreException {
       String defaultValue = getAttributeType().getDefaultValue();
       if (defaultValue != null) {
          subClassSetValue(convertStringToValue(defaultValue));
@@ -92,7 +117,7 @@ public abstract class Attribute<T> {
       try {
          boolean response = setFromString(Lib.inputStreamToString(value));
          if (response) {
-            setDirty();
+            markAsChanged(ModificationType.MODIFIED);
          }
          return response;
       } catch (IOException ex) {
@@ -131,14 +156,6 @@ public abstract class Attribute<T> {
       return builder.toString();
    }
 
-   /**
-    * @param attributeDataProvider the attributeDataProvider to set
-    * @throws OseeCoreException
-    */
-   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) throws OseeCoreException {
-      this.attributeDataProvider = attributeDataProvider;
-   }
-
    public IAttributeDataProvider getAttributeDataProvider() {
       return attributeDataProvider;
    }
@@ -150,14 +167,19 @@ public abstract class Attribute<T> {
       return dirty;
    }
 
-   protected void setDirty() {
+   protected void markAsChanged(ModificationType modificationType) throws OseeStateException {
       dirty = true;
+      this.modificationType = modificationType;
+
+      if (modificationType != ModificationType.ARTIFACT_DELETED) {
+         artifact.onAttributeModify();
+      }
 
       // Kick Local Event
       try {
          OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -190,8 +212,7 @@ public abstract class Attribute<T> {
     * @return whether this attribute's type or any of its super-types are the specified type
     */
    public boolean isOfType(String otherAttributeTypeName) {
-      String attributeTypeName = attributeType.getName();
-      return attributeTypeName.equals(otherAttributeTypeName);
+      return attributeType.getName().equals(otherAttributeTypeName);
    }
 
    /**
@@ -205,26 +226,25 @@ public abstract class Attribute<T> {
    }
 
    public void resetModType() {
-      this.modificationType = null;
+      this.modificationType = ModificationType.MODIFIED;
    }
 
    /**
     * Deletes the attribute
+    * 
+    * @throws OseeStateException
     */
-   public final void setArtifactDeleted() {
-      setDeleteOrArtifactDeleted(ModificationType.ARTIFACT_DELETED);
+   public final void setArtifactDeleted() throws OseeStateException {
+      markAsChanged(ModificationType.ARTIFACT_DELETED);
    }
 
    /**
     * Deletes the attribute
+    * 
+    * @throws OseeStateException
     */
-   public final void delete() {
-      setDeleteOrArtifactDeleted(ModificationType.DELETED);
-   }
-
-   private final void setDeleteOrArtifactDeleted(ModificationType modificationType) {
-      this.modificationType = modificationType;
-      setDirty();
+   public final void delete() throws OseeStateException {
+      markAsChanged(ModificationType.DELETED);
    }
 
    /**
@@ -284,15 +304,7 @@ public abstract class Attribute<T> {
     * @return the deleted
     */
    public boolean isDeleted() {
-      return this.modificationType == ModificationType.DELETED || this.modificationType == ModificationType.ARTIFACT_DELETED;
-   }
-
-   /**
-    * Called from remote events to mark this attribute as deleted
-    */
-   public void internalSetDeleted() {
-      this.modificationType = ModificationType.DELETED;
-      this.dirty = false;
+      return modificationType.isDeleted();
    }
 
    public void revert() throws OseeCoreException {
@@ -305,22 +317,20 @@ public abstract class Attribute<T> {
       dbTransaction.execute();
    }
 
-   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, Object... data) throws OseeCoreException {
-      return initializeAttribute(artifact, atttributeTypeId, attributeId, gammaId, null, false, data);
-   }
-
    public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
-      Attribute<?> attribute = artifact.createAttribute(attributeType, false);
+      Attribute<?> attribute = artifact.createAttribute(attributeType, modificationType);
       attribute.getAttributeDataProvider().loadData(data);
       attribute.internalSetAttributeId(attributeId);
       attribute.internalSetGammaId(gammaId);
-
-      if (modificationType == ModificationType.DELETED) {
-         attribute.internalSetDeleted();
-      }
-
       attribute.dirty = markDirty;
       return attribute;
+   }
+
+   /**
+    * @param modificationType the modificationType to set
+    */
+   public void setModificationType(ModificationType modificationType) {
+      this.modificationType = modificationType;
    }
 }

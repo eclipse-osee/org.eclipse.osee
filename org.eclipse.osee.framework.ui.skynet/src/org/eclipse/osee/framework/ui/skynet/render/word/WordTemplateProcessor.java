@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
@@ -438,7 +439,7 @@ public class WordTemplateProcessor {
       if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
          Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
          if (attribute == null) {
-            artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
+            artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW);
          }
       }
 

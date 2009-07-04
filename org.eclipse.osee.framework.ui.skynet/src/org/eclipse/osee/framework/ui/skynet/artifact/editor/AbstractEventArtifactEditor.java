@@ -65,7 +65,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       Artifact artifact = getArtifactFromEditorInput();
       if (artifact != null) {
          if (!artifact.isDeleted() && !artifact.isReadOnly()) {
-            wasDirty = super.isDirty() || artifact.isDirty(true);
+            wasDirty = super.isDirty() || artifact.isDirty();
          }
       }
       return wasDirty;

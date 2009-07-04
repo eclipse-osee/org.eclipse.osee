@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeSql;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -38,8 +37,8 @@ public class AttributeTransactionData extends BaseTransactionData {
    private final Attribute<?> attribute;
    private final DAOToSQL daoToSql;
 
-   public AttributeTransactionData(Attribute<?> attribute, ModificationType modificationType) throws OseeDataStoreException {
-      super(attribute.getAttrId(), modificationType, attribute.getArtifact().isReflected() || modificationType == ModificationType.ARTIFACT_DELETED);
+   public AttributeTransactionData(Attribute<?> attribute) throws OseeDataStoreException {
+      super(attribute.getAttrId(), attribute.getModificationType());
       this.attribute = attribute;
       this.daoToSql = new DAOToSQL();
    }
@@ -59,10 +58,8 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
-         if (getModificationType() == ModificationType.MODIFIED || getModificationType() == ModificationType.NEW) {
-            attribute.getAttributeDataProvider().persist(getGammaId());
-            daoToSql.setData(attribute.getAttributeDataProvider().getData());
-         }
+         attribute.getAttributeDataProvider().persist(getGammaId());
+         daoToSql.setData(attribute.getAttributeDataProvider().getData());
          internalAddInsertToBatch(transaction, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
                attribute.getAttributeType().getAttrTypeId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri(),
                getModificationType().getValue());
@@ -86,6 +83,7 @@ public class AttributeTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalClearDirtyState() {
+      attribute.setNotDirty();
    }
 
    /* (non-Javadoc)

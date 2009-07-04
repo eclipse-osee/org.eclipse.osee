@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -22,8 +23,8 @@ public class EnumeratedAttribute extends StringAttribute {
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
 
-   public EnumeratedAttribute(AttributeType attributeType, Artifact artifact) {
-      super(attributeType, artifact);
+   public EnumeratedAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+      super(attributeType, artifact, modificationType);
    }
 
    /* (non-Javadoc)

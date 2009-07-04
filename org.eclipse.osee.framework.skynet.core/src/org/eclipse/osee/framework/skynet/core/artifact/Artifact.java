@@ -40,7 +40,9 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExis
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -60,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -80,7 +81,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    private final HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
-   private boolean dirty = false;
    private final Branch branch;
    private final String guid;
    private String humanReadableId;
@@ -90,7 +90,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private TransactionId transactionId;
    private int artId;
    private int gammaId;
-   private boolean reflected;
    private boolean linksLoaded;
    private boolean historical;
    private ModificationType modType;
@@ -104,7 +103,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
-
+      modType = ModificationType.NEW;
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
       } else {
@@ -465,33 +464,33 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param attributeType
     * @param existingAttribute specifies whether this attribute is new or is being loaded from the database
     * @return new Attribute
+    * @throws OseeCoreException
     */
    @SuppressWarnings("unchecked")
-   public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
+   public <T> Attribute<T> createAttribute(AttributeType attributeType, ModificationType modificationType) throws OseeCoreException {
+      Object[] params = new Object[] {attributeType, this, modificationType};
+      Class<? extends Attribute<T>> attributeClass =
+            (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
+
       try {
-         Object[] params = new Object[] {attributeType, this};
-         Class<? extends Attribute<T>> attributeClass =
-               (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
-
          Constructor<? extends Attribute<T>> attributeConstructor =
-               attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class});
+               attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class, ModificationType.class});
          Attribute<T> attribute = attributeConstructor.newInstance(params);
-
-         Constructor<? extends IAttributeDataProvider> providerConstructor =
-               attributeType.getProviderAttributeClass().getConstructor(new Class[] {Attribute.class});
-         IAttributeDataProvider provider = providerConstructor.newInstance(new Object[] {attribute});
-         attribute.setAttributeDataProvider(provider);
-
          attributes.put(attributeType.getName(), attribute);
-         if (newAttribute) {
-            attribute.initializeToDefaultValue();
-         }
          return attribute;
       } catch (Exception ex) {
-         // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         throw new OseeWrappedException(ex);
       }
-      return null;
+   }
+
+   public void onAttributeModify() throws OseeStateException {
+      if (modType == ModificationType.DELETED) {
+         throw new OseeStateException(
+               "Attempted to change an attribute on the artifact " + this + " after the artifact had been deleted.");
+      }
+      if (isInDb()) {
+         modType = ModificationType.MODIFIED;
+      }
    }
 
    /**
@@ -595,20 +594,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   private void resetArtifactDeletedModTypes() {
-      for (Attribute<?> attribute : attributes.getValues()) {
-         if (attribute.getModificationType() == ModificationType.ARTIFACT_DELETED) {
-            attribute.resetModType();
-         }
-      }
-   }
-
-   private void setAttributesModArtifactDeleted() throws OseeCoreException {
-      for (Attribute<?> attribute : getAttributes(false)) {
-         attribute.setArtifactDeleted();
-      }
-   }
-
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
          ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
@@ -639,7 +624,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws OseeCoreException {
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
-         attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
+         attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW);
       }
       return attribute;
    }
@@ -876,7 +861,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> void addAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setValue(value);
+      createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW).setValue(value);
    }
 
    /**
@@ -887,7 +872,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
-      createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setFromString(value);
+      createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW).setFromString(value);
    }
 
    /**
@@ -981,25 +966,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * This is used to mark that the artifact has been persisted. This should only be called by the
-    * ArtifactPersistenceManager.
-    */
-   public void setNotDirty() {
-      dirty = false;
-
-      for (Attribute<?> attribute : internalGetAttributes()) {
-         attribute.setNotDirty();
-      }
-   }
-
-   /**
     * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
     * 
     * @throws OseeCoreException
     */
    public void setDeleted() throws OseeCoreException {
       this.modType = ModificationType.DELETED;
-      setAttributesModArtifactDeleted();
+
+      for (Attribute<?> attribute : getAttributes(false)) {
+         attribute.setArtifactDeleted();
+      }
    }
 
    /**
@@ -1007,35 +983,38 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void resetToPreviousModType() {
       this.modType = lastValidModType;
-      resetArtifactDeletedModTypes();
+
+      for (Attribute<?> attribute : attributes.getValues()) {
+         if (attribute.getModificationType() == ModificationType.ARTIFACT_DELETED) {
+            attribute.resetModType();
+         }
+      }
    }
 
    /**
-    * @return Returns the dirty.
+    * @return whether this artifact has unsaved attribute changes
+    */
+   public boolean hasDirtyAttributes() {
+      for (Attribute<?> attribute : internalGetAttributes()) {
+         if (attribute.isDirty()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * @return whether this artifact has unsaved relation changes
+    */
+   public boolean hasDirtyRelations() {
+      return RelationManager.hasDirtyLinks(this);
+   }
+
+   /**
+    * @return whether this artifact has unsaved relation changes
     */
    public boolean isDirty() {
-      return isDirty(false);
-   }
-
-   /**
-    * @return Returns the dirty.
-    */
-   public String reportIsDirty(boolean includeLinks) {
-      if (dirty) {
-         return "dirty flag == true";
-      }
-      String result = reportAnAttributeIsDirty();
-      if (result != null) {
-         return result;
-      }
-      if (includeLinks) {
-         result = RelationManager.reportHasDirtyLinks(this);
-      }
-      return result;
-   }
-
-   public boolean isDirty(boolean includeLinks) {
-      return reportIsDirty(includeLinks) != null;
+      return hasDirtyAttributes() || hasDirtyRelations();
    }
 
    public boolean isReadOnly() {
@@ -1044,21 +1023,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                this, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return false;
+         return true;
       }
-   }
-
-   public boolean anAttributeIsDirty() {
-      return reportAnAttributeIsDirty() != null;
-   }
-
-   private String reportAnAttributeIsDirty() {
-      for (Attribute<?> attribute : internalGetAttributes()) {
-         if (attribute.isDirty()) {
-            return "Attribute: " + attribute.getNameValueDescription();
-         }
-      }
-      return null;
    }
 
    public void revert() throws OseeCoreException {
@@ -1087,14 +1053,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    void prepareForReload() throws OseeCoreException {
       attributes.clear();
-      dirty = false;
       linksLoaded = false;
 
       RelationManager.prepareRelationsForReload(this);
    }
 
    public final void persistAttributes() throws OseeCoreException {
-      if (isDirty()) {
+      if (hasDirtyAttributes()) {
          SkynetTransaction transaction = new SkynetTransaction(branch);
          persistAttributes(transaction);
          transaction.execute();
@@ -1112,7 +1077,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
       }
 
-      if (isDirty()) {
+      if (hasDirtyAttributes()) {
          transaction.addArtifact(this);
          onAttributePersist();
       }
@@ -1495,7 +1460,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public String isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
       try {
-         if (isDirty()) {
+         if (hasDirtyAttributes()) {
 
             for (Attribute<?> attribute : internalGetAttributes()) {
                if (attribute.isDirty()) {
@@ -1508,7 +1473,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          for (IRelationEnumeration side : links) {
             for (Artifact art : getRelatedArtifacts(side)) {
                // Check artifact dirty
-               if (art.isDirty()) {
+               if (art.hasDirtyAttributes()) {
                   return art.getArtifactTypeName() + " \"" + art + "\" => dirty\n";
                }
                // Check the links to this artifact
@@ -1549,24 +1514,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
       Artifact reflectedArtifact = reflectHelper(destinationBranch);
       reflectedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(destinationBranch);
-      reflectedArtifact.reflected = true;
       return reflectedArtifact;
    }
 
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
-      ModificationType modificationType = ModificationType.INTRODUCED;
-
       Artifact reflectedArtifact =
             artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
-                  branch, modificationType);
-
-      reflectedArtifact.dirty = true;
+                  branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          if (sourceAttribute.isInDb()) {
             Attribute.initializeAttribute(reflectedArtifact, sourceAttribute.getAttributeType().getAttrTypeId(),
-                  sourceAttribute.getAttrId(), sourceAttribute.getGammaId(),
-                  sourceAttribute.isDeleted() ? ModificationType.DELETED : null, true,
+                  sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());
          }
       }
@@ -1601,8 +1560,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getAttrTypeId(),
-                  attribute.getAttributeDataProvider().getData(), attribute.isDeleted(), attribute.getAttrId(),
-                  attribute.getGammaId()));
+                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(),
+                  attribute.getAttrId(), attribute.getGammaId()));
          }
       }
       return dirtyAttributes;
@@ -1818,10 +1777,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    void meetMinimumAttributeCounts(boolean isNewArtifact) throws OseeCoreException {
+      if (modType == ModificationType.DELETED) {
+         return;
+      }
       for (AttributeType attributeType : getAttributeTypes()) {
          int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType.getName());
          for (int i = 0; i < missingCount; i++) {
-            Attribute<?> attribute = createAttribute(attributeType, true);
+            Attribute<?> attribute = createAttribute(attributeType, ModificationType.NEW);
             if (!isNewArtifact) {
                attribute.setNotDirty();
                OseeLog.log(Activator.class, Level.FINER, String.format(
@@ -1829,13 +1791,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             }
          }
       }
-   }
-
-   /**
-    * @return the reflected
-    */
-   public boolean isReflected() {
-      return reflected;
    }
 
    /**

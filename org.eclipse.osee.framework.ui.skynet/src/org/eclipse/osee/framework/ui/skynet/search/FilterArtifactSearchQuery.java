@@ -63,8 +63,7 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
 
       MaxMatchCountConfirmer confirmer = new MaxMatchCountConfirmer();
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(criteria, filterList.isAllSelected(), branch,
-                  confirmer);
+            ArtifactPersistenceManager.getArtifacts(criteria, filterList.isAllSelected(), branch, confirmer);
       if (confirmer.isConfirmed()) {
          return artifacts;
       }

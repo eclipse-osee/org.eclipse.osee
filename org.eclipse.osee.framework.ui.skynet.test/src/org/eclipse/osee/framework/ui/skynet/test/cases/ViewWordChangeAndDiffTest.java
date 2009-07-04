@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
@@ -119,11 +119,11 @@ public class ViewWordChangeAndDiffTest {
          // get the artifacts from the changed list
          artifacts = getArtifacts();
          newerArtifact =
-               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifacts.get(0).getArtId(),
-                     artifacts.get(0).getTransactionId());
+               ArtifactQuery.getHistoricalArtifactFromId(artifacts.get(0).getArtId(),
+                     artifacts.get(0).getTransactionId(), true);
          baseArtifact =
-               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifacts.get(1).getArtId(),
-                     artifacts.get(1).getTransactionId());
+               ArtifactQuery.getHistoricalArtifactFromId(artifacts.get(1).getArtId(),
+                     artifacts.get(1).getTransactionId(), true);
          RendererManager.diffInJob(baseArtifact, newerArtifact);
          // if we get here there were no exceptions on the diff considered successful
          assertTrue("Compare Two Artifacts test passed", true);
@@ -166,12 +166,12 @@ public class ViewWordChangeAndDiffTest {
 
    private void initializeBaseAndNewArtifact(Change artifactChange) throws ArtifactDoesNotExist, OseeCoreException {
       baseArtifact =
-            (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId());
+            (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
       newerArtifact =
-            artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId()) : artifactChange.getArtifact());
+            artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
 
       baseArtifacts.add(baseArtifact);
       newerArtifacts.add(newerArtifact);

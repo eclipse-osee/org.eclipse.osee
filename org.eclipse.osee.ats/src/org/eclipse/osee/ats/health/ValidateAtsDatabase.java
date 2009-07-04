@@ -333,7 +333,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          }
-         if (artifact.isDirty()) {
+         if (artifact.hasDirtyAttributes()) {
             artifact.persistAttributes(transaction);
          }
       }

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -62,12 +62,12 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
       for (ArtifactChange artifactChange : artifactChanges) {
          try {
             Artifact baseArtifact =
-                  (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
-            
+                  (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
+
             Artifact newerArtifact =
-                  artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId()) : artifactChange.getArtifact());
+                  artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
@@ -125,7 +125,9 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-            artifactChanges = new LinkedHashSet<ArtifactChange>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+            artifactChanges =
+                  new LinkedHashSet<ArtifactChange>(
+                        Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
 
             for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());

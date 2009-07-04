@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -89,12 +89,12 @@ public class SingleNativeDiffHandler extends CommandHandler {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       try {
          Artifact baseArtifact =
-               (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                     artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
+               (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                     artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
          artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
          Artifact newerArtifact =
-               artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                     artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId()) : artifactChange.getArtifact());
+               artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                     artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
          artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
          if (artifacts.isEmpty()) {
             VariableMap variableMap = new VariableMap();
