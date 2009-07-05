@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -138,7 +138,7 @@ public class ChangeManager {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
-                  ClientSessionManager.getSQL(OseeSql.Changes.SELECT_MODIFYING_TRANSACTION), queryId);
+                  ClientSessionManager.getSQL(OseeSql.CHANGE_TX_MODIFYING), queryId);
             while (chStmt.next()) {
                Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
@@ -183,7 +183,7 @@ public class ChangeManager {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
-                  ClientSessionManager.getSQL(OseeSql.Changes.SELECT_MODIFYING_BRANCHES), queryId);
+                  ClientSessionManager.getSQL(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));

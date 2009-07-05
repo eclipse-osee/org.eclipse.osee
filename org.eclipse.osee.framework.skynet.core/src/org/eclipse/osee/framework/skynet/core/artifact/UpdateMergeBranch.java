@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -146,7 +146,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ARTIFACTS_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
@@ -157,7 +157,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_ATTRIBUTES_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
@@ -169,7 +169,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Merge.SELECT_REL_LINKS_ON_A_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("a_art_id"));

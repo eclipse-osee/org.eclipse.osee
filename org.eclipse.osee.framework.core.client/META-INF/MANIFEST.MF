@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.equinox.ds,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.exception,

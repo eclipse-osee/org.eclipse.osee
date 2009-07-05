@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -47,8 +47,8 @@ public class AttributeTransactionData extends BaseTransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getSelectTxNotCurrentSql()
     */
    @Override
-   public String getSelectTxNotCurrentSql() {
-      return OseeSql.Transaction.SELECT_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES;
+   public OseeSql getSelectTxNotCurrentSql() {
+      return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES;
    }
 
    /* (non-Javadoc)

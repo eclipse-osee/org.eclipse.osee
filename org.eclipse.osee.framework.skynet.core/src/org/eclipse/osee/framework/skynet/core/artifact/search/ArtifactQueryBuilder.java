@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -317,12 +317,11 @@ public class ArtifactQueryBuilder {
       addBranchTxSql(txsAlias, txdAlias);
 
       List<String> paramList = new ArrayList<String>();
-      paramList.add(OseeSql.isHintsAllowed() ? ClientSessionManager.getSQL(OseeSql.QUERY_BUILDER_HINT) : "");
+      paramList.add(ClientSessionManager.getSQL(OseeSql.QUERY_BUILDER));
       if (count) {
          paramList.add(artAlias);
       } else {
          paramList.add(artAlias);
-         //         paramList.add(txdAlias);
          paramList.add(txdAlias);
       }
       return String.format(sql.toString(), paramList.toArray());

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -44,8 +44,8 @@ public class ArtifactTransactionData extends BaseTransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getSelectTxNotCurrentSql()
     */
    @Override
-   public String getSelectTxNotCurrentSql() {
-      return OseeSql.Transaction.SELECT_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS;
+   public OseeSql getSelectTxNotCurrentSql() {
+      return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS;
    }
 
    /* (non-Javadoc)

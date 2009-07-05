@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;

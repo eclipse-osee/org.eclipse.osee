@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeSql;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -108,7 +108,7 @@ public final class TransactionIdManager {
    public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
-                  ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_MAX_AS_LARGEST_TX), branch.getBranchId());
+                  ClientSessionManager.getSQL(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch.getBranchId());
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
       }
@@ -137,8 +137,7 @@ public final class TransactionIdManager {
    public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_MAX_AND_MIN_TX),
-               branch.getBranchId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.TX_GET_MAX_AND_MIN_TX), branch.getBranchId());
 
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
          chStmt.next();
@@ -200,8 +199,7 @@ public final class TransactionIdManager {
          try {
             if (useLocalConnection) {
                chStmt = new ConnectionHandlerStatement();
-               chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Transaction.SELECT_ALL_TRANSACTIONS),
-                     transactionNumber);
+               chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.TX_GET_ALL_TRANSACTIONS), transactionNumber);
                if (!chStmt.next()) {
                   throw new TransactionDoesNotExist(
                         "The transaction id " + transactionNumber + " does not exist in the databse.");

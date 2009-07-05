@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -85,6 +86,14 @@ public class ClientSessionManager {
          return sql;
       }
       throw new OseeArgumentException(String.format("Invalid sql key [%s]", key));
+   }
+
+   public static String getSQL(OseeSql sqlEnum) throws OseeCoreException {
+      String sql = getSessionGrant().getSqlProperties().getProperty(sqlEnum.toString());
+      if (sql != null) {
+         return sql;
+      }
+      throw new OseeArgumentException(String.format("Invalid sql key [%s]", sqlEnum.toString()));
    }
 
    public static List<String> getAuthenticationProtocols() {

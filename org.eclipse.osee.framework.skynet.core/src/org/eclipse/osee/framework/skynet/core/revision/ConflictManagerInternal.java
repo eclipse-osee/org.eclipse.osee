@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeSql;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
@@ -91,7 +91,7 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Conflicts.SELECT_HISTORIC_ATTRIBUTE_CONFLICTS),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
                commitTransaction.getTransactionNumber());
          if (DEBUG) {
             System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
@@ -253,7 +253,7 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Conflicts.SELECT_ARTIFACT_CONFLICTS),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_ARTIFACTS),
                sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
 
          if (!chStmt.next()) {
@@ -317,7 +317,7 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.Conflicts.SELECT_ATTRIBUTE_CONFLICTS),
+         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_ATTRIBUTES),
                sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
 
          int attrId = 0;
