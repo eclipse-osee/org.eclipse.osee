@@ -149,13 +149,13 @@ public class InternalChangeManager {
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
 
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_BRANCH_ARTIFACT),
+            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT),
                   sourceBranch.getBranchId());
          } else { //Changes per a transaction
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_TX_ARTIFACT),
+            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT),
                   toTransactionId.getTransactionNumber());
          }
          int count = 0;
@@ -210,7 +210,7 @@ public class InternalChangeManager {
          }
          //Changes per a branch
          if (hasBranch) {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_BRANCH_RELATION),
+            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
                   sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
@@ -220,7 +220,7 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
-            chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_TX_RELATION),
+            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
                   transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
@@ -284,7 +284,7 @@ public class InternalChangeManager {
       try {
          //Changes per a branch
          if (hasBranch) {
-            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
+            chStmt1.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
                   sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
@@ -294,7 +294,7 @@ public class InternalChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
-            chStmt1.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
+            chStmt1.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
                   transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
@@ -380,11 +380,11 @@ public class InternalChangeManager {
 
          if (hasBranch) {
             wasValueBranch = sourceBranch;
-            sql = ClientSessionManager.getSQL(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
+            sql = ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
             sqlParamter = wasValueBranch.getBranchId();
          } else {
             wasValueBranch = transactionId.getBranch();
-            sql = ClientSessionManager.getSQL(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
+            sql = ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
             sqlParamter = transactionId.getTransactionNumber();
          }
 

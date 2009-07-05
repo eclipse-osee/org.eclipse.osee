@@ -317,7 +317,7 @@ public class ArtifactQueryBuilder {
       addBranchTxSql(txsAlias, txdAlias);
 
       List<String> paramList = new ArrayList<String>();
-      paramList.add(ClientSessionManager.getSQL(OseeSql.QUERY_BUILDER));
+      paramList.add(ClientSessionManager.getSql(OseeSql.QUERY_BUILDER));
       if (count) {
          paramList.add(artAlias);
       } else {

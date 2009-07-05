@@ -146,7 +146,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
@@ -157,7 +157,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
@@ -169,7 +169,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH),
                branch.getBranchId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("a_art_id"));

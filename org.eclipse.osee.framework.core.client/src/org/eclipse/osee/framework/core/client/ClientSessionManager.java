@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -80,15 +79,7 @@ public class ClientSessionManager {
       return getSessionGrant().getDatabaseInfo().isProduction();
    }
 
-   public static String getSQL(String key) throws OseeCoreException {
-      String sql = getSessionGrant().getSqlProperties().getProperty(key);
-      if (Strings.isValid(sql)) {
-         return sql;
-      }
-      throw new OseeArgumentException(String.format("Invalid sql key [%s]", key));
-   }
-
-   public static String getSQL(OseeSql sqlEnum) throws OseeCoreException {
+   public static String getSql(OseeSql sqlEnum) throws OseeCoreException {
       String sql = getSessionGrant().getSqlProperties().getProperty(sqlEnum.toString());
       if (sql != null) {
          return sql;

@@ -91,7 +91,7 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
                commitTransaction.getTransactionNumber());
          if (DEBUG) {
             System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
@@ -253,7 +253,7 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_ARTIFACTS),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS),
                sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
 
          if (!chStmt.next()) {
@@ -317,7 +317,7 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.CONFLICT_GET_ATTRIBUTES),
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES),
                sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
 
          int attrId = 0;

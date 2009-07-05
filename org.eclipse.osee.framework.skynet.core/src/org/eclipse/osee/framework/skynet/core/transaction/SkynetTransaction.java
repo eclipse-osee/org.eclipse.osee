@@ -157,7 +157,7 @@ public class SkynetTransaction extends DbTransaction {
    private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
-         String query = ClientSessionManager.getSQL(transactionData.getSelectTxNotCurrentSql());
+         String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
          chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getBranchId());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});

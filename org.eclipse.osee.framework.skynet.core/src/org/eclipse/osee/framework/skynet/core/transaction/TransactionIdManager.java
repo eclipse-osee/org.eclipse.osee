@@ -108,7 +108,7 @@ public final class TransactionIdManager {
    public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
-                  ClientSessionManager.getSQL(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch.getBranchId());
+                  ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch.getBranchId());
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
       }
@@ -137,7 +137,7 @@ public final class TransactionIdManager {
    public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.TX_GET_MAX_AND_MIN_TX), branch.getBranchId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AND_MIN_TX), branch.getBranchId());
 
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
          chStmt.next();
@@ -199,7 +199,7 @@ public final class TransactionIdManager {
          try {
             if (useLocalConnection) {
                chStmt = new ConnectionHandlerStatement();
-               chStmt.runPreparedQuery(ClientSessionManager.getSQL(OseeSql.TX_GET_ALL_TRANSACTIONS), transactionNumber);
+               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.TX_GET_ALL_TRANSACTIONS), transactionNumber);
                if (!chStmt.next()) {
                   throw new TransactionDoesNotExist(
                         "The transaction id " + transactionNumber + " does not exist in the databse.");
