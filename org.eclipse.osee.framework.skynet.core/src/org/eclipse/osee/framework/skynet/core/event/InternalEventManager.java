@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -448,12 +448,12 @@ public class InternalEventManager {
     * @param loadedArtifacts
     * @throws OseeCoreException
     */
-   static void kickRelationModifiedEvent(final Sender sender, final RelationModType relationModType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
+   static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
          if (DEBUG) {
             OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickRelationModifiedEvent - " + relationModType + " - " + link + " - " + sender);
+                  "OEM: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.INFO, ex);
@@ -465,7 +465,7 @@ public class InternalEventManager {
                if (listener instanceof IRelationModifiedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
-                     ((IRelationModifiedEventListener) listener).handleRelationModifiedEvent(sender, relationModType,
+                     ((IRelationModifiedEventListener) listener).handleRelationModifiedEvent(sender, relationEventType,
                            link, branch, relationType);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -774,7 +774,7 @@ public class InternalEventManager {
             }
          } else if (xModifiedEvent instanceof RelationModifiedEvent) {
             RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
-            if (xRelationModifiedEvent.relationModType == RelationModType.ReOrdered) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.ReOrdered) {
                RelationLink link = xRelationModifiedEvent.link;
                Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
@@ -786,7 +786,7 @@ public class InternalEventManager {
                            link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getRelationTypeId());
                events.add(networkRelationLinkModifiedEvent);
             }
-            if (xRelationModifiedEvent.relationModType == RelationModType.RationaleMod) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
                RelationLink link = xRelationModifiedEvent.link;
                Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
@@ -797,7 +797,7 @@ public class InternalEventManager {
                            (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
                            link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getRelationTypeId());
                events.add(networkRelationLinkRationalModifiedEvent);
-            } else if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
+            } else if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
                RelationLink link = xRelationModifiedEvent.link;
                Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
@@ -809,7 +809,7 @@ public class InternalEventManager {
                            link.getArtifactId(RelationSide.SIDE_B),
                            (bArtifact != null ? bArtifact.getArtTypeId() : -1), sender.getNetworkSender());
                events.add(networkRelationLinkModifiedEvent);
-            } else if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
+            } else if (xRelationModifiedEvent.relationEventType == RelationEventType.Added) {
                RelationLink link = xRelationModifiedEvent.link;
                Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
@@ -907,7 +907,7 @@ public class InternalEventManager {
                   }
                }
             }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Added) {
                if (loadedRelation != null) {
                   transData.cacheAddedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
@@ -925,7 +925,7 @@ public class InternalEventManager {
                   transData.unloadedAddedRelations.add(unloadedRelation);
                }
             }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
                if (loadedRelation != null) {
                   transData.cacheDeletedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
@@ -944,7 +944,7 @@ public class InternalEventManager {
                   if (transData.branchId == -1) transData.branchId = unloadedRelation.getBranchId();
                }
             }
-            if (xRelationModifiedEvent.relationModType == RelationModType.ReOrdered || xRelationModifiedEvent.relationModType == RelationModType.RationaleMod) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.ReOrdered || xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
                if (loadedRelation != null) {
                   transData.cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {

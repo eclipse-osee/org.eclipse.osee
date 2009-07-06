@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
@@ -137,9 +137,9 @@ public class OseeEventManager {
     * @param loadedArtifacts
     * @throws OseeCoreException
     */
-   public static void kickRelationModifiedEvent(Object source, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeCoreException {
+   public static void kickRelationModifiedEvent(Object source, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) throws OseeCoreException {
       if (isDisableEvents()) return;
-      InternalEventManager.kickRelationModifiedEvent(getSender(source), relationModType, link, branch, relationType);
+      InternalEventManager.kickRelationModifiedEvent(getSender(source), relationEventType, link, branch, relationType);
    }
 
    /**

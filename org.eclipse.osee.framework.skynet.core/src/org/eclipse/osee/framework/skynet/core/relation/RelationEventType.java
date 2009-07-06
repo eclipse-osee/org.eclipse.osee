@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 /**
  * @author Donald G. Dunne
  */
-public enum RelationModType {
+public enum RelationEventType {
    Deleted, Added, RationaleMod, ReOrdered
 }

@@ -71,7 +71,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -567,22 +567,22 @@ public class RemoteEventManager {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, unloadedRelation));
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, unloadedRelation));
                } else if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.ReOrdered, unloadedRelation));
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.ReOrdered, unloadedRelation));
                } else if (event instanceof NetworkRelationLinkRationalModifiedEvent) {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.RationaleMod, unloadedRelation));
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod, unloadedRelation));
                } else if (event instanceof NetworkNewRelationLinkEvent) {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, unloadedRelation));
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Added, unloadedRelation));
                }
             }
             if (aArtifactLoaded || bArtifactLoaded) {
@@ -603,7 +603,7 @@ public class RemoteEventManager {
                               event.getArtAId(), event.getArtBId(), branch, branch);
 
                   if (relation != null) {
-                     RelationModType relationModType = null;
+                     RelationEventType relationEventType = null;
                      boolean aOrderChanged =
                            ((NetworkRelationLinkOrderModifiedEvent) event).getAOrder() != relation.getAOrder();
                      boolean bOrderChanged =
@@ -614,7 +614,7 @@ public class RemoteEventManager {
                            RelationManager.sortRelations(bArtifact, relation.getRelationType(),
                                  new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
                         }
-                        relationModType = RelationModType.ReOrdered;
+                        relationEventType = RelationEventType.ReOrdered;
                      }
                      if (bOrderChanged) {
                         relation.setBOrder(((NetworkRelationLinkOrderModifiedEvent) event).getBOrder());
@@ -622,19 +622,19 @@ public class RemoteEventManager {
                            RelationManager.sortRelations(aArtifact, relation.getRelationType(),
                                  new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
                         }
-                        relationModType = RelationModType.ReOrdered;
+                        relationEventType = RelationEventType.ReOrdered;
                      }
                      if (relation.getRationale().equals(((NetworkRelationLinkOrderModifiedEvent) event).getRationale())) {
                         relation.setRationale(((NetworkRelationLinkOrderModifiedEvent) event).getRationale(), false);
-                        relationModType = RelationModType.RationaleMod;
+                        relationEventType = RelationEventType.RationaleMod;
                      }
-                     if (relationModType == null) {
+                     if (relationEventType == null) {
                         OseeLog.log(Activator.class, Level.SEVERE,
                               "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
                      } else {
                         relation.setNotDirty();
 
-                        xModifiedEvents.add(new RelationModifiedEvent(sender, relationModType, relation,
+                        xModifiedEvents.add(new RelationModifiedEvent(sender, relationEventType, relation,
                               relation.getBranch(), relation.getRelationType().getTypeName()));
                      }
                   }
@@ -645,7 +645,7 @@ public class RemoteEventManager {
                   if (relation != null) {
                      relation.deleteWithoutDirtyAndEvent();
 
-                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, relation,
+                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, relation,
                            relation.getBranch(), relation.getRelationType().getTypeName()));
                   }
                } else if (event instanceof NetworkNewRelationLinkEvent) {
@@ -671,7 +671,7 @@ public class RemoteEventManager {
                               new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
                      }
 
-                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, relation,
+                     xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Added, relation,
                            relation.getBranch(), relation.getRelationType().getTypeName()));
                   }
                }

@@ -102,9 +102,9 @@ public class RelationTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
-      RelationModType relationModType =
-            getModificationType().isDeleted() ? RelationModType.Deleted : RelationModType.Added;
-      events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationModType, relation,
+      RelationEventType relationEventType =
+            getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
+      events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
             relation.getBranch(), relation.getRelationType().getTypeName()));
    }
 }

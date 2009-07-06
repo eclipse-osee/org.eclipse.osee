@@ -508,7 +508,7 @@ public class RelationManager {
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
 
          try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
                   relation.getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -655,7 +655,7 @@ public class RelationManager {
                artifactATarget, artifactB);
       }
 
-      OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
+      OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
             relation.getBranch(), relation.getRelationType().getTypeName());
 
    }
@@ -726,7 +726,7 @@ public class RelationManager {
             artifactATarget, artifactB);
 
       try {
-         OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
+         OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ReOrdered, relation,
                relation.getABranch(), relationType.getTypeName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

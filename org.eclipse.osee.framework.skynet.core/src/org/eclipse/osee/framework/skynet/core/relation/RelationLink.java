@@ -147,7 +147,7 @@ public class RelationLink {
 
          if (!markAsNotDirty) {
             try {
-               OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
+               OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Deleted, this,
                      getABranch(), relationType.getTypeName());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -263,7 +263,7 @@ public class RelationLink {
 
       if (notify) {
          try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.RationaleMod, this,
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.RationaleMod, this,
                   getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
