@@ -147,18 +147,6 @@ public class TraceReportBlam extends AbstractBlam {
       return toReturn;
    }
 
-   public boolean isTestSupportNeeded(List<TraceTypeEnum> traceTypes) {
-      return traceTypes.contains(TraceTypeEnum.Used_By_Test_Unit_Trace);
-   }
-
-   public boolean isTestCaseNeeded(List<TraceTypeEnum> traceTypes) {
-      return traceTypes.contains(TraceTypeEnum.Verified_By_Test_Unit_Trace);
-   }
-
-   public boolean isCodeUnitNeeded(List<TraceTypeEnum> traceTypes) {
-      return traceTypes.contains(TraceTypeEnum.Code_Unit_Trace);
-   }
-
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
@@ -194,7 +182,7 @@ public class TraceReportBlam extends AbstractBlam {
          traceCache.add(reqData);
 
          subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
-         if (isCodeUnitNeeded(traceTypes)) {
+         if (TraceTypeEnum.Code_Unit_Trace.isIn(traceTypes)) {
             codeUnit = new CodeUnitData(branch);
             codeUnit.initialize(subMonitor);
             traceCache.add(codeUnit);
@@ -203,7 +191,7 @@ public class TraceReportBlam extends AbstractBlam {
          }
 
          subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
-         if (isTestCaseNeeded(traceTypes) || isTestSupportNeeded(traceTypes)) {
+         if (TraceTypeEnum.containsTestEnum(traceTypes)) {
             testUnit = new TestUnitData(branch);
             testUnit.initialize(subMonitor);
             traceCache.add(testUnit);
@@ -347,14 +335,17 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    private void addArtifacts(CodeUnitData codeUnit, TestUnitData testUnit, List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report) {
-      if (isCodeUnitNeeded(traceTypes)) {
+      if (TraceTypeEnum.Code_Unit_Trace.isIn(traceTypes)) {
          report.setArtifacts(codeUnit.getAllCodeUnits());
       }
-      if (isTestCaseNeeded(traceTypes)) {
+      if (TraceTypeEnum.Verified_By_Test_Unit_Trace.isIn(traceTypes)) {
          report.setArtifacts(testUnit.getTestCases());
       }
-      if (isTestSupportNeeded(traceTypes)) {
+      if (TraceTypeEnum.Used_By_Test_Unit_Trace.isIn(traceTypes)) {
          report.setArtifacts(testUnit.getTestSupportItems());
+      }
+      if (TraceTypeEnum.Validation_By_TestProcedure.isIn(traceTypes)) {
+         report.setArtifacts(testUnit.getTestProcedures());
       }
    }
 
@@ -395,17 +386,19 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    private enum TraceTypeEnum {
-      Code_Unit_Trace(CoreRelationEnumeration.CodeRequirement_Requirement, CoreRelationEnumeration.CodeRequirement_CodeUnit),
-      Verified_By_Test_Unit_Trace(CoreRelationEnumeration.Verification__Requirement, CoreRelationEnumeration.Verification__Verifier),
-      Used_By_Test_Unit_Trace(CoreRelationEnumeration.Uses__Requirement, CoreRelationEnumeration.Uses__TestUnit),
-      Validation_By_TestProcedure(CoreRelationEnumeration.Validation__Requirement, CoreRelationEnumeration.Validation__Validator);
+      Code_Unit_Trace(CoreRelationEnumeration.CodeRequirement_Requirement, CoreRelationEnumeration.CodeRequirement_CodeUnit, false),
+      Verified_By_Test_Unit_Trace(CoreRelationEnumeration.Verification__Requirement, CoreRelationEnumeration.Verification__Verifier, true),
+      Used_By_Test_Unit_Trace(CoreRelationEnumeration.Uses__Requirement, CoreRelationEnumeration.Uses__TestUnit, true),
+      Validation_By_TestProcedure(CoreRelationEnumeration.Validation__Requirement, CoreRelationEnumeration.Validation__Validator, true);
 
       private IRelationEnumeration toReq;
       private IRelationEnumeration toTraceUnit;
+      private boolean isTestType;
 
-      TraceTypeEnum(IRelationEnumeration toReq, IRelationEnumeration toTraceUnit) {
+      TraceTypeEnum(IRelationEnumeration toReq, IRelationEnumeration toTraceUnit, boolean isTestType) {
          this.toReq = toReq;
          this.toTraceUnit = toTraceUnit;
+         this.isTestType = isTestType;
       }
 
       public IRelationEnumeration getRelatedToRequirement() {
@@ -414,6 +407,10 @@ public class TraceReportBlam extends AbstractBlam {
 
       public IRelationEnumeration getRelatedToTraceUnit() {
          return toTraceUnit;
+      }
+
+      public boolean isTestType() {
+         return isTestType;
       }
 
       public String asLabel() {
@@ -428,6 +425,19 @@ public class TraceReportBlam extends AbstractBlam {
             }
          }
          return null;
+      }
+
+      public boolean isIn(Collection<TraceTypeEnum> traceTypes) {
+         return traceTypes.contains(this);
+      }
+
+      public static boolean containsTestEnum(List<TraceTypeEnum> traceTypes) {
+         for (TraceTypeEnum type : TraceTypeEnum.values()) {
+            if (type.isTestType() && type.isIn(traceTypes)) {
+               return true;
+            }
+         }
+         return false;
       }
    }
 

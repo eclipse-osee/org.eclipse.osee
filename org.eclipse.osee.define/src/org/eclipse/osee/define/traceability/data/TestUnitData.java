@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -27,48 +28,69 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
  */
 public class TestUnitData extends BaseTraceDataCache {
 
-   private List<Artifact> testCases;
-   private List<Artifact> testSupportItems;
-   private Set<Artifact> allTestUnits;
+   private final List<Artifact> testCases;
+   private final List<Artifact> testProcedures;
+   private final List<Artifact> testSupportItems;
+   private final Set<Artifact> allTestUnits;
 
    private final HashMap<String, Artifact> testCaseMap;
+   private final HashMap<String, Artifact> testProcedureMap;
    private final HashMap<String, Artifact> testSupportMap;
 
    public TestUnitData(Branch branch) {
       super("Test Unit Data", branch);
       this.testCaseMap = new HashMap<String, Artifact>();
+      this.testProcedureMap = new HashMap<String, Artifact>();
       this.testSupportMap = new HashMap<String, Artifact>();
+
       this.testCases = new ArrayList<Artifact>();
+      this.testProcedures = new ArrayList<Artifact>();
       this.testSupportItems = new ArrayList<Artifact>();
+
       this.allTestUnits = new TreeSet<Artifact>();
    }
 
+   @Override
    public void reset() {
       super.reset();
       this.testCaseMap.clear();
+      this.testProcedureMap.clear();
       this.testSupportMap.clear();
+
       this.testCases.clear();
+      this.testProcedures.clear();
       this.testSupportItems.clear();
+
       this.allTestUnits.clear();
    }
 
+   @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
+      IProgressMonitor subMonitor = SubMonitor.convert(monitor);
       testCases.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_CASE, getBranch()));
       populateTraceMap(monitor, testCases, testCaseMap);
-      monitor.worked(30);
+      subMonitor.worked(20);
 
-      if (monitor.isCanceled() != true) {
+      if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Support from: [%s]", getBranch().getBranchShortName()));
 
          testSupportItems.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_SUPPORT, getBranch()));
          populateTraceMap(monitor, testSupportItems, testSupportMap);
-         monitor.worked(7);
+         subMonitor.worked(20);
+      }
 
-         if (monitor.isCanceled() != true) {
-            allTestUnits.addAll(testCases);
-            allTestUnits.addAll(testSupportItems);
-            monitor.worked(1);
-         }
+      if (!monitor.isCanceled()) {
+         monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch().getBranchShortName()));
+         testProcedures.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_PROCEDURE, getBranch()));
+         populateTraceMap(monitor, testProcedures, testProcedureMap);
+         subMonitor.worked(20);
+      }
+
+      if (!monitor.isCanceled()) {
+         allTestUnits.addAll(testCases);
+         allTestUnits.addAll(testProcedures);
+         allTestUnits.addAll(testSupportItems);
+         subMonitor.worked(1);
       }
    }
 
@@ -87,6 +109,13 @@ public class TestUnitData extends BaseTraceDataCache {
    }
 
    /**
+    * @return the test procedures
+    */
+   public Collection<Artifact> getTestProcedures() {
+      return testProcedures;
+   }
+
+   /**
     * @return the allTestUnits
     */
    public Set<Artifact> getAllTestUnits() {
@@ -100,6 +129,9 @@ public class TestUnitData extends BaseTraceDataCache {
       Artifact testUnit = testCaseMap.get(testUnitName);
       if (testUnit == null) {
          testUnit = testSupportMap.get(testUnitName);
+      }
+      if (testUnit == null) {
+         testUnit = testProcedureMap.get(testUnitName);
       }
       return testUnit;
    }
