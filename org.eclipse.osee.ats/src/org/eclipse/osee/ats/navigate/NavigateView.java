@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -19,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
@@ -300,6 +300,7 @@ public class NavigateView extends ViewPart implements IActionable {
       toolbarManager.add(expandAction);
       toolbarManager.add(openChangeReportById);
       toolbarManager.add(openByIdAction);
+      if (AtsPlugin.isGoalEnabled()) toolbarManager.add(new NewGoal());
       toolbarManager.add(new NewAction());
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");

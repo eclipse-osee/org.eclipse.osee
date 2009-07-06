@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
@@ -189,7 +189,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          });
 
-         scrolledForm.setText(getEditorInput().getName());
+         scrolledForm.setText(smaMgr.getEditor().getTitleStr());
+         scrolledForm.setImage(ImageManager.getImage(smaMgr.getSma()));
          fillBody(managedForm);
          addMessageDecoration(scrolledForm);
 
@@ -517,7 +518,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          atsBody.dispose();
          createBody(body);
-         scrolledForm.setText(getEditorInput().getName());
+         scrolledForm.setText(smaMgr.getEditor().getTitleStr());
+         scrolledForm.setImage(ImageManager.getImage(smaMgr.getSma()));
          refreshToolbar();
       }
    }

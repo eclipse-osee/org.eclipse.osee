@@ -27,7 +27,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       super(Arrays.asList(ActionArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME,
             DecisionReviewArtifact.ARTIFACT_NAME, ActionableItemArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
             TeamWorkFlowArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME, VersionArtifact.ARTIFACT_NAME,
-            ActionableItemArtifact.ARTIFACT_NAME));
+            ActionableItemArtifact.ARTIFACT_NAME, GoalArtifact.ARTIFACT_NAME));
    }
 
    @Override
@@ -48,6 +48,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
             guid, humandReadableId, branch, artifactType);
       if (artifactType.getName().equals(PeerToPeerReviewArtifact.ARTIFACT_NAME)) return new PeerToPeerReviewArtifact(
             this, guid, humandReadableId, branch, artifactType);
+      if (artifactType.getName().equals(GoalArtifact.ARTIFACT_NAME)) return new GoalArtifact(this, guid,
+            humandReadableId, branch, artifactType);
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
    }
 }

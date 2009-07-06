@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.config;
 
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
@@ -41,6 +42,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       new TeamWorkflowDefinition().config(writeType, xResultData);
       new TaskWorkflowDefinition().config(writeType, xResultData);
+      new GoalWorkflowDefinition().config(writeType, xResultData);
       new SimpleWorkflowDefinition().config(writeType, xResultData);
       new DecisionWorkflowDefinition().config(writeType, xResultData);
       new PeerToPeerWorkflowDefinition().config(writeType, xResultData);

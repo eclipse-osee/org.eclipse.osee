@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
+import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyOrigSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
@@ -53,6 +54,7 @@ import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem.GoalSearchState;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -100,6 +102,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
+         if (AtsPlugin.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
+               GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));

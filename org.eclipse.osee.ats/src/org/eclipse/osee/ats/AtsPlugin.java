@@ -36,6 +36,7 @@ public class AtsPlugin extends OseeUiActivator {
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
    private static OseeGroup atsAdminGroup = null;
+   private static boolean goalEnabled = false;
 
    /**
     * The constructor.
@@ -95,6 +96,13 @@ public class AtsPlugin extends OseeUiActivator {
 
    public static Branch getAtsBranch() throws OseeCoreException {
       return BranchManager.getCommonBranch();
+   }
+
+   /**
+    * @return the enableGoal
+    */
+   public static boolean isGoalEnabled() {
+      return goalEnabled;
    }
 
 }

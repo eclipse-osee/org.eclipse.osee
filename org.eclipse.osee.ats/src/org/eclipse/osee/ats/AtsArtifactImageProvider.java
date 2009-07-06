@@ -45,6 +45,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM);
       ImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW);
       ImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION);
+      ImageManager.registerBaseImage("Goal", AtsImage.GOAL);
       ImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW);
 
       ImageManager.registerOverrideImageProvider(this, ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME));

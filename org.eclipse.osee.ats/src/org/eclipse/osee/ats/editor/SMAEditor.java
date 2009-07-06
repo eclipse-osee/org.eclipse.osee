@@ -148,10 +148,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          smaMgr.setEditor(this);
 
          OseeEventManager.addListener(this);
+         updatePartName();
 
-         setPartName(smaMgr.getSma().getEditorTitle());
          setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
-         setTitleImage(ImageManager.getImage(smaMgr.getSma()));
 
          // Create WorkFlow tab
          try {
@@ -177,6 +176,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
 
       enableGlobalPrint();
+   }
+
+   private void updatePartName() throws OseeCoreException {
+      setPartName(getTitleStr());
+      setTitleImage(ImageManager.getImage(smaMgr.getSma()));
+   }
+
+   public String getTitleStr() throws OseeCoreException {
+      return smaMgr.getSma().getWorldViewType() + ": " + smaMgr.getSma().getEditorTitle();
    }
 
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
@@ -530,8 +538,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (relationsComposite != null) relationsComposite.refreshArtifact(smaMgr.getSma());
       if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
       smaMgr.getEditor().onDirtied();
-      setPartName(smaMgr.getSma().getEditorTitle());
-      setTitleImage(ImageManager.getImage(smaMgr.getSma()));
+      updatePartName();
    }
 
    public static void editArtifact(Artifact artifact) {

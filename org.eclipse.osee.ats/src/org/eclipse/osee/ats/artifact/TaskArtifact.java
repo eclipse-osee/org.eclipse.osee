@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
@@ -52,11 +51,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    };
 
    /**
- * @throws OseeDataStoreException 
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
+    * @throws OseeDataStoreException
     * @throws
     */
    public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
