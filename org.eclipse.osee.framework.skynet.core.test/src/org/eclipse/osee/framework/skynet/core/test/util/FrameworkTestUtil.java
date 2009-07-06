@@ -51,7 +51,7 @@ public class FrameworkTestUtil {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
       softArt.setDescriptiveName(name);
       softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
-      Artifact rootArtifact = ArtifactQuery.getDefaultHierarchyRootArtifact(branch, true);
+      Artifact rootArtifact = ArtifactQuery.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, softArt);
       return softArt;
    }
