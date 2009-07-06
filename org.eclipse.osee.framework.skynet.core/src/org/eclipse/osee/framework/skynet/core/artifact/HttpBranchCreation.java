@@ -13,84 +13,69 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class HttpBranchCreation {
 
-   public static Branch createChildBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("sessionId", ClientSessionManager.getSessionId());
-      parameters.put("branchName", childBranchName);
-      parameters.put("function", "createChildBranch");
-      parameters.put("authorId", getAuthorId());
-      parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranchId()));
-      parameters.put("parentTransactionId", Integer.toString(parentTransactionId.getTransactionNumber()));
-      parameters.put("associatedArtifactId", getAssociatedArtifactId(associatedArtifact));
-
-      if (compressArtTypeIds != null && !compressArtTypeIds.isEmpty()) {
-         parameters.put("compressArtTypes", Collections.toString(",", compressArtTypeIds));
-      }
-
-      if (preserveArtTypeIds != null && !preserveArtTypeIds.isEmpty()) {
-         parameters.put("preserveArtTypes", Collections.toString(",", preserveArtTypeIds));
-      }
-
-      parameters.put(
-            "creationComment",
-            BranchManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");
-
-      return commonServletBranchingCode(parameters);
-   }
-
    /**
     * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is necessary, setting
     * the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
-    * @param shortBranchName
+    * @param branchType
+    * @param parentTransactionNumber
+    * @param parentBranchId
     * @param branchName
-    * @param staticBranchName null if no static key is desired
-    * @param parentTransactionId TODO
-    * @return branch object
+    * @param staticBranchName
+    * @param associatedArtifact
+    * @return the newly created branch
     * @throws OseeCoreException
     * @see BranchManager#createRootBranch(String, String, int)
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String branchName, String staticBranchName, int parentBranchId, int parentTransactionId, boolean systemRootBranch) throws OseeCoreException {
+   public static Branch createFullBranch(BranchType branchType, int parentTransactionNumber, int parentBranchId, String branchName, String staticBranchName, Artifact associatedArtifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("branchName", branchName);
-      parameters.put("function", "createRootBranch");
+      parameters.put("function", "createFullBranch");
       parameters.put("authorId", getAuthorId());
       parameters.put("parentBranchId", Integer.toString(parentBranchId));
-      parameters.put("parentTransactionId", Integer.toString(parentTransactionId));
-      parameters.put("associatedArtifactId", getAssociatedArtifactId(null));
-      parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
+      parameters.put("parentTransactionId", Integer.toString(parentTransactionNumber));
+      parameters.put("associatedArtifactId", getAssociatedArtifactId(associatedArtifact));
 
-      if (staticBranchName != null && staticBranchName.length() > 0) {
+      if (Strings.isValid(staticBranchName)) {
          parameters.put("staticBranchName", staticBranchName);
       }
 
-      if (systemRootBranch) {
-         parameters.put("systemRootBranch", "true");
+      parameters.put("branchType", branchType.name());
+
+      String creationComment;
+      if (branchType == BranchType.SYSTEM_ROOT) {
+         creationComment = "System Root Branch Creation";
+      } else if (branchType == BranchType.TOP_LEVEL) {
+         creationComment = String.format("Root Branch [%s] Creation", branchName);
+      } else {
+         Branch parentBranch = BranchManager.getBranch(parentBranchId);
+         creationComment = "New Branch from " + parentBranch.getBranchName() + "(" + parentTransactionNumber + ")";
       }
+      parameters.put("creationComment", creationComment);
+
       return commonServletBranchingCode(parameters);
    }
 

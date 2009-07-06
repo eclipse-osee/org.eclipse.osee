@@ -11,18 +11,13 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 
 /**
  * @author Andrew M Finkbeiner
  */
 class HttpBranchCreationInfo {
-
-   enum BranchCreationFunction {
-      createRootBranch, createChildBranch
-   };
-
-   private BranchCreationFunction function;
    private int parentBranchId;
    private int parentTransactionId;
    private String branchName;
@@ -30,13 +25,9 @@ class HttpBranchCreationInfo {
    private int associatedArtifactId;
    private int authorId;
    private String staticBranchName;
-   private String[] compressArtTypeIds;
-   private String[] preserveArtTypeIds;
-   private boolean systemRootBranch;
+   private BranchType branchType;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws OseeArgumentException {
-      ensureFunctionValid(req.getParameter("function"));
-
       String parentBranchIdStr = req.getParameter("parentBranchId");
       if (parentBranchIdStr == null) {
          throw new OseeArgumentException("A 'parentBranchId' parameter must be specified");
@@ -44,13 +35,17 @@ class HttpBranchCreationInfo {
          parentBranchId = Integer.parseInt(parentBranchIdStr);
       }
 
-      if (function == BranchCreationFunction.createChildBranch) {
-         String parentTransactionIdStr = req.getParameter("parentTransactionId");
-         if (parentTransactionIdStr == null) {
-            throw new OseeArgumentException("A 'parentTransactionId' parameter must be specified");
-         } else {
-            parentTransactionId = Integer.parseInt(parentTransactionIdStr);
-         }
+      String branchTypeStr = req.getParameter("branchType");
+      if (branchTypeStr == null) {
+         throw new OseeArgumentException("A 'branchTypeStr' parameter must be specified");
+      }
+      branchType = BranchType.valueOf(branchTypeStr);
+
+      String parentTransactionIdStr = req.getParameter("parentTransactionId");
+      if (parentTransactionIdStr == null) {
+         throw new OseeArgumentException("A 'parentTransactionId' parameter must be specified");
+      } else {
+         parentTransactionId = Integer.parseInt(parentTransactionIdStr);
       }
 
       branchName = req.getParameter("branchName");//required
@@ -72,28 +67,6 @@ class HttpBranchCreationInfo {
       }
       authorId = Integer.parseInt(authorIdStr);
       staticBranchName = req.getParameter("staticBranchName");
-
-      String compressArtTypeIdsString = req.getParameter("compressArtTypes");
-      if (compressArtTypeIdsString != null) {
-         compressArtTypeIds = compressArtTypeIdsString.split(",");
-      }
-      String preserveArtTypeIdsString = req.getParameter("preserveArtTypes");
-      if (preserveArtTypeIdsString != null) {
-         preserveArtTypeIds = preserveArtTypeIdsString.split(",");
-      }
-
-      systemRootBranch = Boolean.parseBoolean(req.getParameter("systemRootBranch"));
-   }
-
-   private void ensureFunctionValid(String function) throws OseeArgumentException {
-      if (function == null) {
-         throw new OseeArgumentException("A 'function' parameter must be defined.");
-      }
-      try {
-         this.function = BranchCreationFunction.valueOf(function);
-      } catch (IllegalArgumentException ex) {
-         throw new OseeArgumentException(String.format("[%s] is not a valid function.", function));
-      }
    }
 
    /**
@@ -139,35 +112,10 @@ class HttpBranchCreationInfo {
    }
 
    /**
-    * @return the function
-    */
-   public BranchCreationFunction getFunction() {
-      return function;
-   }
-
-   /**
-    * @return the preserveArtTypes
-    */
-   public String[] getPreserveArtTypeIds() {
-      return preserveArtTypeIds;
-   }
-
-   /**
-    * @return the compressArtTypes
-    */
-   public String[] getCompressArtTypeIds() {
-      return compressArtTypeIds;
-   }
-
-   public boolean branchWithFiltering() {
-      return (getCompressArtTypeIds() != null && getCompressArtTypeIds().length > 0) || (getPreserveArtTypeIds() != null && getPreserveArtTypeIds().length > 0);
-   }
-
-   /**
     * @return the systemRootBranch
     */
-   public boolean isSystemRootBranch() {
-      return systemRootBranch;
+   public BranchType getBranchType() {
+      return branchType;
    }
 
    /**

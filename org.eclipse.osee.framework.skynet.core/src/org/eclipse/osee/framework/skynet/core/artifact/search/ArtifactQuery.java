@@ -14,12 +14,10 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -27,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -452,35 +449,15 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
    }
 
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws OseeCoreException {
+   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
       Artifact root = ArtifactCache.getByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
       if (root == null) {
          root =
-               checkArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME,
+               getArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME,
                      ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
-
-         if (root == null) {
-            if (createIfNecessary) {
-               OseeLog.log(Activator.class, Level.INFO,
-                     "Created " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
-               root =
-                     ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch,
-                           ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME);
-               root.persistAttributes();
-
-            } else {
-               throw new ArtifactDoesNotExist(
-                     "An artifact of type " + ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME + " named " + ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME + " was not found");
-            }
-         }
-
          ArtifactCache.putByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
       }
       return root;
-   }
-
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
-      return getDefaultHierarchyRootArtifact(branch, false);
    }
 
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";

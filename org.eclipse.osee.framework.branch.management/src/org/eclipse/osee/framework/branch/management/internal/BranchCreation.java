@@ -40,34 +40,15 @@ public class BranchCreation implements IBranchCreation {
    private static final String INSERT_TX_DETAILS =
          "INSERT INTO osee_TX_DETAILS ( branch_id, transaction_id, OSEE_COMMENT, time, author, tx_type ) VALUES ( ?, ?, ?, ?, ?, ?)";
 
-   public int createTopLevelBranch(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName, boolean systemRootBranch) throws Exception {
-      CreateTopLevelBranchTx createRootBranchTx =
-            new CreateTopLevelBranchTx(parentTransactionId, parentBranchId, childBranchName, creationComment,
-                  associatedArtifactId, authorId, staticBranchName, systemRootBranch);
-      createRootBranchTx.execute();
-      return createRootBranchTx.getNewBranchId();
+   public int createBranch(BranchType branchType, int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception {
+      CreateBranchTx createBranchTx =
+            new CreateBranchTx(branchType, parentTransactionId, parentBranchId, childBranchName, creationComment,
+                  associatedArtifactId, authorId, staticBranchName);
+      createBranchTx.execute();
+      return createBranchTx.getNewBranchId();
    }
 
-   public int createChildBranch(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, boolean branchWithFiltering, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws Exception {
-      int branchId;
-
-      if (branchWithFiltering) {
-         CreateBranchWithFiltering createBranchWithFiltering =
-               new CreateBranchWithFiltering(parentTransactionId, parentBranchId, childBranchName, creationComment,
-                     associatedArtifactId, authorId, compressArtTypeIds, preserveArtTypeIds);
-         createBranchWithFiltering.execute();
-         branchId = createBranchWithFiltering.getNewBranchId();
-      } else {
-         CreateChildBranchTx createChildBranchTx =
-               new CreateChildBranchTx(parentTransactionId, parentBranchId, childBranchName, creationComment,
-                     associatedArtifactId, authorId);
-         createChildBranchTx.execute();
-         branchId = createChildBranchTx.getNewBranchId();
-      }
-      return branchId;
-   }
-
-   public static abstract class CreateBranchTx extends DbTransaction {
+   public static class CreateBranchTx extends DbTransaction {
       protected String childBranchName;
       protected int parentBranchId;
       protected int associatedArtifactId;
@@ -75,19 +56,19 @@ public class BranchCreation implements IBranchCreation {
       protected int branchId;
       protected int authorId;
       protected String creationComment;
-      private final BranchType branchType;
+      protected final BranchType branchType;
       private final int parentTransactionId;
-      private final BranchState branchState;
+      private final String staticBranchName;
 
-      public CreateBranchTx(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, BranchType branchType, BranchState branchState) throws OseeCoreException {
+      public CreateBranchTx(BranchType branchType, int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws OseeCoreException {
          this.parentBranchId = parentBranchId;
          this.childBranchName = childBranchName;
          this.associatedArtifactId = associatedArtifactId;
          this.authorId = authorId;
          this.creationComment = creationComment;
          this.branchType = branchType;
-         this.branchState = branchState;
          this.parentTransactionId = parentTransactionId;
+         this.staticBranchName = staticBranchName;
       }
 
       public int getNewBranchId() {
@@ -99,7 +80,7 @@ public class BranchCreation implements IBranchCreation {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
                initializeBranch(connection, childBranchName, parentBranchId, parentTransactionId, authorId, timestamp,
-                     creationComment, associatedArtifactId, branchType, branchState);
+                     creationComment, associatedArtifactId, branchType, BranchState.CREATED);
          int newTransactionNumber = SequenceManager.getNextTransactionId();
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchId, newTransactionNumber,
                creationComment, timestamp, authorId, 1);
@@ -118,7 +99,19 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
-      public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException;
+      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
+
+         if (branchType != BranchType.SYSTEM_ROOT) {
+            int updates =
+                  ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
+                        parentBranchId);
+            System.out.println(String.format("Create child branch - updated [%d] records", updates));
+         }
+         if (staticBranchName != null) {
+            insertKeyedBranchIntoDatabase(connection, staticBranchName, newBranchId);
+         }
+
+      }
 
       /**
        * @return the parentBranchId
@@ -129,48 +122,7 @@ public class BranchCreation implements IBranchCreation {
 
    }
 
-   private final class CreateTopLevelBranchTx extends CreateBranchTx {
-
-      private final String staticBranchName;
-
-      public CreateTopLevelBranchTx(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName, boolean systemRootBranch) throws OseeCoreException {
-         super(parentTransactionId, parentBranchId, childBranchName, creationComment, associatedArtifactId, authorId,
-               systemRootBranch ? BranchType.SYSTEM_ROOT : BranchType.TOP_LEVEL, BranchState.CREATED);
-         this.staticBranchName = staticBranchName;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
-       */
-      @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
-         if (staticBranchName != null) {
-            insertKeyedBranchIntoDatabase(connection, staticBranchName, newBranchId);
-         }
-      }
-   }
-
    public static void insertKeyedBranchIntoDatabase(OseeConnection connection, String staticBranchName, int branchId) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, staticBranchName, branchId);
    }
-
-   private final class CreateChildBranchTx extends CreateBranchTx {
-
-      public CreateChildBranchTx(int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId) throws OseeCoreException {
-         super(parentTransactionId, parentBranchId, childBranchName, creationComment, associatedArtifactId, authorId,
-               BranchType.WORKING, BranchState.CREATED);
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
-       */
-      @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
-         int updates =
-               ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
-                     parentBranchId);
-         System.out.println(String.format("Create child branch - updated [%d] records", updates));
-      }
-   }
-
 }

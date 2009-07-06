@@ -77,9 +77,8 @@ public class InterArtifactDropTest {
       OseeLog.registerLoggerListener(monitorLog);
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(
-            ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch, true), new Artifact[] {sourceArtifact},
-            false);
+      dropHandler.dropArtifactIntoDifferentBranch(ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch),
+            new Artifact[] {sourceArtifact}, false);
 
       sleep(5000);
       //Acquire the introduced artifact

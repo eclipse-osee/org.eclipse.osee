@@ -36,26 +36,15 @@ public class BranchManagerServlet extends OseeHttpServlet {
          resp.setContentType("text/plain");
          HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
          int branchId = -1;
-         switch (info.getFunction()) {
-            case createChildBranch:
-               branchId =
-                     InternalBranchServletActivator.getInstance().getBranchCreation().createChildBranch(
-                           info.getParentTransactionId(), info.getParentBranchId(), info.getBranchName(),
-                           info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
-                           info.branchWithFiltering(), info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
-               break;
-            case createRootBranch:
-               branchId =
-                     InternalBranchServletActivator.getInstance().getBranchCreation().createTopLevelBranch(
-                           info.getParentTransactionId(), info.getParentBranchId(), info.getBranchName(),
-                           info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
-                           info.getStaticBranchName(), info.isSystemRootBranch());
-               break;
-         }
-         if (branchId != -1) {
-            resp.getWriter().write(Integer.toString(branchId));
-         } else {
+         branchId =
+               InternalBranchServletActivator.getInstance().getBranchCreation().createBranch(info.getBranchType(),
+                     info.getParentTransactionId(), info.getParentBranchId(), info.getBranchName(),
+                     info.getCreationComment(), info.getAssociatedArtifactId(), info.getAuthorId(),
+                     info.getStaticBranchName());
+         if (branchId == -1) {
             resp.getWriter().write("Unknown Error during branch creation.");
+         } else {
+            resp.getWriter().write(Integer.toString(branchId));
          }
       } catch (Exception ex) {
          OseeLog.log(InternalBranchServletActivator.class, Level.SEVERE, String.format(

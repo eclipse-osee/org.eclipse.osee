@@ -68,6 +68,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
+/**
+ * Provides access to all branches as well as support for creating branches of all types
+ * 
+ * @author Ryan D. Brooks
+ */
 public class BranchManager {
    private static final BranchManager instance = new BranchManager();
 
@@ -85,8 +90,6 @@ public class BranchManager {
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
-
-   public static final String NEW_BRANCH_COMMENT = "New Branch from ";
 
    private static final String UPDATE_BRANCH_STATE = "UPDATE osee_branch set branch_state = ? WHERE branch_id = ?";
 
@@ -607,8 +610,8 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
-            false, null, null);
+      return HttpBranchCreation.createFullBranch(BranchType.WORKING, parentTransactionId.getTransactionNumber(),
+            parentTransactionId.getBranchId(), childBranchName, null, associatedArtifact);
    }
 
    /**
@@ -620,8 +623,7 @@ public class BranchManager {
     */
    public static Branch createWorkingBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
-      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
-            false, null, null);
+      return createWorkingBranch(parentTransactionId, childBranchName, associatedArtifact);
    }
 
    /**
@@ -631,37 +633,28 @@ public class BranchManager {
     * 
     * @param branchName
     * @param staticBranchName will allow programatic access to branch from getKeyedBranch
-    * @param skynetTypesImportExtensionsIds skynetDbTypes extensionIds to import onto new branch
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
     * @see BranchManager#intializeBranch
     * @see MasterSkynetTypesImport#importSkynetDbTypes
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createTopLevelBranch(String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
-      if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
-         MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds);
-      }
-      return createTopLevelBranch(branchName, staticBranchName, initializeArtifacts);
-   }
-
-   public static Branch createTopLevelBranch(String branchName, String staticBranchName, boolean initializeArtifacts) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String branchName, String staticBranchName) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
+      TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(systemRootBranch);
+
       Branch branch =
-            HttpBranchCreation.createRootBranch(branchName, staticBranchName, systemRootBranch.getBranchId(),
-                  systemRootBranch.getParentTransactionNumber(), false);
+            HttpBranchCreation.createFullBranch(BranchType.TOP_LEVEL, parentTransactionId.getTransactionNumber(),
+                  systemRootBranch.getBranchId(), branchName, staticBranchName, null);
+
       if (staticBranchName != null) {
          setKeyedBranchInCache(staticBranchName, branch);
-      }
-      if (initializeArtifacts) {
-         RootBranchInitializer rootInitializer = new RootBranchInitializer();
-         rootInitializer.initialize(branch);
       }
       return branch;
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
-      return HttpBranchCreation.createRootBranch("System Root Branch", null, 1, 1, true);
+      return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, 1, "System Root Branch", null, null);
    }
 
    public static List<Branch> getTopLevelBranches() throws OseeCoreException {

@@ -47,8 +47,6 @@ public class BranchCreator {
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?)";
 
-   private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
-
    private static final String MERGE_BRANCH_INSERT =
          "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
 
@@ -125,17 +123,6 @@ public class BranchCreator {
       }
 
       return branch;
-   }
-
-   /**
-    * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
-      return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchName, associatedArtifact,
-            preserveMetaData, compressArtTypeIds, preserveArtTypeIds);
    }
 
    /**

@@ -15,8 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -25,14 +29,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Donald G. Dunne
  */
 public class AddCommonBranch implements IDbInitializationTask {
-   private final boolean initializeArtifacts;
+   private final boolean initializeRootArtifacts;
 
    public AddCommonBranch() {
       this(true);
    }
 
-   public AddCommonBranch(boolean initializeArtifacts) {
-      this.initializeArtifacts = initializeArtifacts;
+   public AddCommonBranch(boolean initializeRootArtifacts) {
+      this.initializeRootArtifacts = initializeRootArtifacts;
    }
 
    /*
@@ -41,11 +45,17 @@ public class AddCommonBranch implements IDbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    public void run() throws OseeCoreException {
-      BranchManager.createSystemRootBranch();
+      Branch systemBranch = BranchManager.createSystemRootBranch();
+      MasterSkynetTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
 
-      // Create branch, import OSEE types and initialize
-      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,
-            getSkynetDbTypeExtensionIds(), initializeArtifacts);
+      if (initializeRootArtifacts) {
+         ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
+               ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
+         ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
+               ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
+      }
+
+      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID);
    }
 
    public List<String> getSkynetDbTypeExtensionIds() {

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -59,9 +60,9 @@ public class MasterSkynetTypesImport {
          runSkynetDbTypesImport(ExtensionPoints.getExtensionsByUniqueId(skynetDbTypesExtensionPointId,
                skynetTypesImportExtensionsUniqueIds));
       } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+         throw new OseeWrappedException(ex);
       } catch (SAXException ex) {
-         throw new OseeCoreException(ex);
+         throw new OseeWrappedException(ex);
       }
    }
 
