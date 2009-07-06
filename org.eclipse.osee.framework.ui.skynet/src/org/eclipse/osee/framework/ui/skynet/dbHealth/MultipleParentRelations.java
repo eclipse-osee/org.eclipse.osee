@@ -20,11 +20,12 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
+ * Check only, no fix.
+ * 
  * @author Theron Virgin
  */
 public class MultipleParentRelations extends DatabaseHealthOperation {
@@ -74,9 +75,6 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
    private static final String GET_DUPLICATE_DEFAULT_HIER_LINKS =
          "SELECT rel1.rel_link_id as Link_ID_1, rel2.rel_link_id as Link_ID_2, rel1.a_art_id As Parent_Id_1, rel2.a_art_id As Parent_Id_2, rel2.b_art_id As Child_ID, det1.branch_id, det1.time as Time_1 , det2.time as Time_2, bra.archived, txs1.gamma_id as Gamma1, txs2.gamma_id as Gamma2, txs1.transaction_id as transaction_1, txs2.transaction_id as transaction_2 FROM osee_branch bra, osee_relation_link rel1, osee_relation_link rel2, osee_txs txs1, osee_txs txs2, osee_tx_details det1, osee_tx_details det2, osee_relation_link_type typ where typ.type_name = 'Default Hierarchical' AND rel1.rel_link_type_id = typ.rel_link_type_id AND rel2.rel_link_type_id = typ.rel_link_type_id AND rel1.a_art_id < rel2.a_art_id AND rel1.b_art_id = rel2.b_art_id AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs2.tx_current = 1 AND txs1.transaction_id = det1.transaction_id AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND bra.branch_id = det1.branch_id order by rel1.b_art_id, txs1.transaction_id";
 
-   //   private static final String DELETE_LINKS =
-   //         "UPDATE osee_txs set tx_current = 2, mod_type = 3 WHERE transaction_id = ? AND gamma_id = ?";
-
    private static final String GET_AUTHOR =
          "Select attr.Value FROM osee_attribute attr, osee_tx_details det, osee_attribute_type typ, osee_txs txs WHERE det.transaction_id = ? AND det.author = attr.art_id AND attr.attr_type_id = typ.attr_type_id AND typ.name = 'Name' AND attr.gamma_id = txs.gamma_id and txs.tx_current = 1";
 
@@ -96,11 +94,6 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
 
    public MultipleParentRelations() {
       super("Multiple Parent Relations");
-   }
-
-   @Override
-   public String getFixTaskName() {
-      return Strings.emptyString();
    }
 
    /* (non-Javadoc)
@@ -123,50 +116,11 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
 
       setItemsToFix(relations != null ? relations.size() : 0);
 
-      int numberDeleted = 0;
-      if (isFixOperationEnabled()) {
-         //         List<Integer> linksToDelete = new LinkedList<Integer>();
-         //         for (LocalRelationLink link : relations) {
-         //            if (!link.time1.equals(link.time2)) {
-         //               boolean deleteFirst = link.time1.before(link.time2);
-         //               numberDeleted +=
-         //                     ConnectionHandler.runPreparedUpdate(DELETE_LINKS,
-         //                           deleteFirst ? link.transactionId1 : link.transactionId2,
-         //                           deleteFirst ? link.gammaId1 : link.gammaId2);
-         //               linksToDelete.add(deleteFirst ? link.relLinkId1 : link.relLinkId2);
-         //            }
-         //         }
-         //         monitor.worked(calculateWork(0.25));
-         //         for (LocalRelationLink link : relations) {
-         //            if (link.time1.equals(link.time2)) {
-         //               int toDelete = 0;
-         //               for (Integer integer : linksToDelete) {
-         //                  if (integer.intValue() == link.relLinkId1) {
-         //                     toDelete = 1;
-         //                  } else if (integer.intValue() == link.relLinkId2) {
-         //                     toDelete = 2;
-         //                  }
-         //               }
-         //               if (toDelete == 0) {
-         //                  link.deleteByTimeStamp = false;
-         //                  toDelete = link.gammaId1 < link.gammaId2 ? 1 : 2;
-         //               }
-         //               boolean deleteFirst = toDelete == 1;
-         //               numberDeleted +=
-         //                     ConnectionHandler.runPreparedUpdate(DELETE_LINKS,
-         //                           deleteFirst ? link.transactionId1 : link.transactionId2,
-         //                           deleteFirst ? link.gammaId1 : link.gammaId2);
-         //            }
-         //         }
-         //         relations = null;
-         //         monitor.worked(calculateWork(0.25));
-      } else {
-         monitor.worked(calculateWork(0.50));
-      }
+      monitor.worked(calculateWork(0.50));
 
       getSummary().append(
-            String.format("%s %d Artifacts with multiple Parents on %d total branches : Updated %d txs Entries\n",
-                  isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size(), numberDeleted));
+            String.format("%s %d Artifacts with multiple Parents on %d total branches.\n",
+                  isFixOperationEnabled() ? "Fixed" : "Found", branches.size(), relations.size()));
       monitor.worked(calculateWork(0.10));
    }
 
@@ -311,13 +265,13 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
          chStmt.close();
       }
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */
    @Override
    public String getCheckDescription() {
-      return "Enter Check Description Here";
+      return "Verfies that artifact has only a single default hierarchical related parent.";
    }
 
    /* (non-Javadoc)
@@ -325,7 +279,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
     */
    @Override
    public String getFixDescription() {
-      return "Enter Fix Description Here";
+      return "";
    }
 
 }
