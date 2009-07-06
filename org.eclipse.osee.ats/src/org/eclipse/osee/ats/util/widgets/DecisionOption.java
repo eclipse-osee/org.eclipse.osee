@@ -47,6 +47,7 @@ public class DecisionOption {
       this("", (User) null, false);
    }
 
+   @Override
    public String toString() {
       return name;
    }
@@ -122,7 +123,7 @@ public class DecisionOption {
    }
 
    public Result setFromXml(String xml) {
-      Matcher m = Pattern.compile("^(.*?);(.*?);(.*?)$").matcher(xml);
+      Matcher m = Pattern.compile("^(.*?);(.*?);(.*)$").matcher(xml);
       if (m.find()) {
          name = m.group(1);
          if (name.equals("")) return new Result("Invalid name");
@@ -132,10 +133,10 @@ public class DecisionOption {
             followupRequired = false;
          else
             return new Result("Invalid followup string \"" + m.group(2) + "\"\nShould be followup or completed");
-         m = Pattern.compile("<(.*?)>").matcher(m.group(2));
+         m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
-               assignees.add(UserManager.getUserByUserId(m.group(3)));
+               assignees.add(UserManager.getUserByUserId(m.group(1)));
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
@@ -145,7 +146,7 @@ public class DecisionOption {
          else if (!followupRequired && assignees.size() > 0) return new Result(
                "If completed is specified, don't specify assigness.  Leave blank.\n");
       } else
-         new Result(
+         return new Result(
                "Can't unpack decision option data => " + xml + "\n\n" + "must be in format: \"Name;(followup|completed);<userid1><userid2>\"" + "where true if followup is required; false if not.  If followup required, assignees will be userid1, userid2.");
       return Result.TrueResult;
    }

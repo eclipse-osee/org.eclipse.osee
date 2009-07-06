@@ -12,9 +12,12 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -28,18 +31,6 @@ public class XDecisionOptions {
       this.sma = sma;
    }
 
-   public DecisionOption getDecisionOption(String stateName, boolean create) throws OseeCoreException {
-      String decisionOptions =
-            sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
-      for (String decsionOpt : decisionOptions.split("\n")) {
-         DecisionOption state = new DecisionOption();
-         state.setFromXml(decsionOpt);
-         return state;
-      }
-      if (create) return new DecisionOption(stateName);
-      return null;
-   }
-
    public Set<DecisionOption> getDecisionOptions() throws OseeCoreException {
       String decString = sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       return getDecisionOptions(decString);
@@ -47,10 +38,14 @@ public class XDecisionOptions {
 
    public Set<DecisionOption> getDecisionOptions(String decisionOptions) {
       Set<DecisionOption> decOptions = new HashSet<DecisionOption>();
-      for (String decsionOpt : decisionOptions.split("\n")) {
+      for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
-         state.setFromXml(decsionOpt);
-         decOptions.add(state);
+         Result result = state.setFromXml(decsionOpt);
+         if (result.isFalse()) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, result.getText());
+         } else {
+            decOptions.add(state);
+         }
       }
       return decOptions;
    }
@@ -68,7 +63,7 @@ public class XDecisionOptions {
    }
 
    public static Result validateDecisionOptions(String decisionOptions) {
-      for (String decsionOpt : decisionOptions.split("\n")) {
+      for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) return new Result("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText());
