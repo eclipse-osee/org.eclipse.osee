@@ -50,9 +50,9 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -184,7 +184,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public String getTitleStr() throws OseeCoreException {
-      return smaMgr.getSma().getWorldViewType() + ": " + smaMgr.getSma().getEditorTitle();
+      return smaMgr.getSma().getWorldViewType() + ": " + smaMgr.getSma().getDescriptiveName();
    }
 
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
