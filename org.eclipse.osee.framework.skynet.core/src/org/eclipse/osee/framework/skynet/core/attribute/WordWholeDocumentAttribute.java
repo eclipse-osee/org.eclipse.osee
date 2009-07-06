@@ -39,17 +39,4 @@ public class WordWholeDocumentAttribute extends WordAttribute {
    public static String getEmptyDocumentContent() {
       return emptyDocumentContent;
    }
-
-   //   /* (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
-   //    */
-   //   @Override
-   //   public void initializeToDefaultValue() {
-   //      String value = getAttributeType().getDefaultValue();
-   //      if (value == null || value.matches("")) {
-   //         value = emptyDocumentContent;
-   //      }
-   //      subClassSetValue(value);
-   //   }
-
 }
