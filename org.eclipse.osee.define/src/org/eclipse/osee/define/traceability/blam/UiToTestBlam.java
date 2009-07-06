@@ -210,9 +210,9 @@ public class UiToTestBlam extends AbstractBlam {
             List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
             List<String> validates = getTrace(testUnit, CoreRelationEnumeration.Validation__Requirement);
-            String verifyStr = StringFormat.listToValueSeparatedString(verified, ",\r\n");
-            String usesStr = StringFormat.listToValueSeparatedString(used, ",\r\n");
-            String validatesStr = StringFormat.listToValueSeparatedString(validates, ",\r\n");
+            String verifyStr = StringFormat.listToValueSeparatedString(verified, ",");
+            String usesStr = StringFormat.listToValueSeparatedString(used, ",");
+            String validatesStr = StringFormat.listToValueSeparatedString(validates, ",");
 
             addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr,
                   usesStr));
