@@ -29,11 +29,10 @@ public class ExperimentalBlam extends AbstractBlam {
       return "Experimental Blam";
    }
 
-   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Util");
+      return Arrays.asList("Admin");
    }
 }
