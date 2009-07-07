@@ -613,7 +613,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public double getRemainHoursFromArtifact() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
-      if (est == 0) return getWorldViewEstimatedHours();
+      if (est == 0) return getEstimatedHoursFromArtifact();
       double remain = est - (est * (getPercentCompleteSMATotal() / 100.0));
       return remain;
    }
