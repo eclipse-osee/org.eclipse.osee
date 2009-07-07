@@ -588,6 +588,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return attributes.getValues();
    }
 
+   /**
+    * Deletes all attributes of the given type, if any
+    * 
+    * @param attributeTypeName
+    * @throws OseeCoreException
+    */
    public void deleteAttributes(String attributeTypeName) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
          attribute.delete();
@@ -916,28 +922,30 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param attributeTypeName
     * @return attribute value
+    * @throws OseeCoreException
     */
-   private String getInternalAttributeValue(String attributeTypeName) {
-      try {
-         if (!isAttributeTypeValid(attributeTypeName)) {
-            throw new IllegalStateException(String.format(
-                  "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
-                  getArtifactTypeName(), getGuid()));
+   private String getInternalAttributeValue(String attributeTypeName) throws OseeCoreException {
+      ensureAttributesLoaded();
+      if (!isAttributeTypeValid(attributeTypeName)) {
+         throw new OseeStateException(String.format(
+               "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
+               getArtifactTypeName(), getGuid()));
+      }
+      for (Attribute<?> attribute : internalGetAttributes()) {
+         if (attribute.isOfType(attributeTypeName)) {
+            return (String) attribute.getValue();
          }
-         for (Attribute<?> attribute : internalGetAttributes()) {
-            if (attribute.isOfType(attributeTypeName)) {
-               return (String) attribute.getValue();
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return ex.getLocalizedMessage();
       }
       return "";
    }
 
    public String getDescriptiveName() {
-      String name = getInternalAttributeValue("Name");
+      String name = null;
+      try {
+         name = getInternalAttributeValue("Name");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
       if (!Strings.isValid(name)) {
          return UNNAMED;
       }

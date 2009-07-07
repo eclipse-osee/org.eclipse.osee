@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.branch.management.internal;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -100,17 +103,13 @@ public class BranchCreation implements IBranchCreation {
       }
 
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
-
          if (branchType != BranchType.SYSTEM_ROOT) {
-            int updates =
-                  ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
-                        parentBranchId);
-            System.out.println(String.format("Create child branch - updated [%d] records", updates));
+            int updates = insertAddressing(parentBranchId, newTransactionNumber, connection, false);
+            System.out.println(String.format("Create child branch - inserted [%d] records", updates));
          }
          if (staticBranchName != null) {
             insertKeyedBranchIntoDatabase(connection, staticBranchName, newBranchId);
          }
-
       }
 
       /**
@@ -120,6 +119,30 @@ public class BranchCreation implements IBranchCreation {
          return parentBranchId;
       }
 
+   }
+
+   private static final String SELECT_ADDRESSING =
+         "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current = 1 AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
+   private static final String INSERT_ADDRESSING =
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
+
+   private static int insertAddressing(int parentBranchId, int newTransactionNumber, OseeConnection connection, boolean slow) throws OseeDataStoreException {
+      if (slow) {
+         return ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
+               parentBranchId);
+      }
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      List<Object[]> data = new ArrayList<Object[]>();
+      try {
+         chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, parentBranchId);
+         while (chStmt.next()) {
+            data.add(new Object[] {newTransactionNumber, chStmt.getInt("gamma_id"), chStmt.getInt("mod_type"), 1});
+         }
+      } finally {
+         chStmt.close();
+      }
+      ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
+      return data.size();
    }
 
    public static void insertKeyedBranchIntoDatabase(OseeConnection connection, String staticBranchName, int branchId) throws OseeDataStoreException {
