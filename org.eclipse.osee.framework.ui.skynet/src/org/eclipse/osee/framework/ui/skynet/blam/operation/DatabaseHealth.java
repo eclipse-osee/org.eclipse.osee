@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -103,10 +104,12 @@ public class DatabaseHealth extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
       builder.append(fix ? fixOp.getFixTaskName() : fixOp.getVerifyTaskName());
-      builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"  toolTip=\"" + (fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()) + "\"/>");
+      String toolTip = AXml.textToXml((fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()));
+      builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"  toolTip=\"" + toolTip + "\"/>");
       return builder.toString();
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }
