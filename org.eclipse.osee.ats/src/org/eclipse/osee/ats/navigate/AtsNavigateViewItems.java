@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
-import org.eclipse.osee.ats.util.DoesNotWorkItem;
+import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
@@ -232,7 +232,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                   TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
-            new DoesNotWorkItem(adminItems);
+            new DoesNotWorkItemAts(adminItems);
 
             XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
             new ValidateAtsDatabase(healthItems);

@@ -43,13 +43,13 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class DoesNotWorkItem extends XNavigateItemAction {
+public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    /**
     * @param parent
     */
-   public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - ??", FrameworkImage.ADMIN);
+   public DoesNotWorkItemAts(XNavigateItem parent) {
+      super(parent, "Does Not Work - ATS - ??", FrameworkImage.ADMIN);
    }
 
    /*
