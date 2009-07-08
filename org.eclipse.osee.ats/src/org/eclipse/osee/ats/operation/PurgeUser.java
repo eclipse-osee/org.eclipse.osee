@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -59,7 +61,6 @@ public class PurgeUser extends AbstractBlam {
       return "Purge User";
    }
 
-   
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       final IProgressMonitor mon = monitor;
       Displays.ensureInDisplayThread(new Runnable() {
@@ -77,7 +78,6 @@ public class PurgeUser extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Please select To User");
                   return;
                }
-
                //handle roll-backs and exception handling 
                new DbTransaction() {
                   @Override
@@ -98,7 +98,7 @@ public class PurgeUser extends AbstractBlam {
       });
    }
 
-   private void confirmDeletionOfArtifact(final OseeConnection connection, final User fromUser) throws OseeDataStoreException {
+   private void confirmDeletionOfArtifact(final OseeConnection connection, final User fromUser) throws OseeCoreException {
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Persist Confirnmation",
             "Do you wish to delete the duplicate User?")) {
          deleteArtifact(connection, fromUser);
@@ -140,7 +140,10 @@ public class PurgeUser extends AbstractBlam {
       }
    }
 
-   private void deleteArtifact(OseeConnection connection, final User fromUser) throws OseeDataStoreException {
+   private void deleteArtifact(OseeConnection connection, final User fromUser) throws OseeCoreException {
+      Artifact art = ArtifactQuery.getArtifactFromId(fromUser.getArtId(), fromUser.getBranch());
+      art.purgeFromBranch(connection);
+      //  need to remove the artifact here.  Currently, purgeFromBranch does not handle this. 
       ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT, new Object[] {fromUser.getArtId()});
    }
 
@@ -162,7 +165,6 @@ public class PurgeUser extends AbstractBlam {
       }
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
