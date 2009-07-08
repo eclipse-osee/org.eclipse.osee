@@ -128,9 +128,10 @@ IOSEEMessageWriterListener, ITimeout {
 	}
 
    public synchronized MsgWaitResult waitForCondition(ITestEnvironmentAccessor accessor, ICondition condition, boolean maintain, int milliseconds) throws InterruptedException {
-      long time = accessor.getEnvTime();
+      long time = 0l;
       boolean pass = condition.check();
       if (milliseconds > 0) {
+         time = accessor.getEnvTime();
          boolean done = pass ^ maintain;
          final ICancelTimer cancelTimer = accessor.setTimerFor(this, milliseconds);
          while (!done) {
@@ -143,9 +144,8 @@ IOSEEMessageWriterListener, ITimeout {
             }
          }
          cancelTimer.cancelTimer();
+         time = accessor.getEnvTime() - time;
       }
-      time = accessor.getEnvTime() - time;
-
       return new MsgWaitResult(time, condition.getCheckCount(), pass);
    }
    
