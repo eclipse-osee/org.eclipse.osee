@@ -803,9 +803,8 @@ public class RelationManager {
                      RelationManager.class,
                      Level.INFO,
                      String.format(
-                           "Artifact - artId[%d] - %s - is unsorted for relations type  - relTypeId[%d] - %s - # of relations in mem - %d - . (duplicate relation)",
-                           artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString(),
-                           relations.size()));
+                           "Artifact \"%s\" - guid[%s] is unsorted for relations type %s - # of relations in mem - %d - . (duplicate relation)",
+                           artifact.toString(), artifact.getGuid(), type.getTypeName(), relations.size()));
             }
          }
       }
