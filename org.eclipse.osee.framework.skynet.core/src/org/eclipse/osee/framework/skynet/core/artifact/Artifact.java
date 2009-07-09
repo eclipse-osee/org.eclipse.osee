@@ -1747,7 +1747,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.lastValidModType = modType;
    }
 
-   public Date getLastModified() throws OseeCoreException {
+   public Date getLastModified() {
       return transactionId.getTime();
    }
 
