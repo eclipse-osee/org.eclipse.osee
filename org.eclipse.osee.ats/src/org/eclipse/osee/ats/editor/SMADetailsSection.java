@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.Date;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -118,21 +119,16 @@ public class SMADetailsSection extends SectionPart {
          sb.append(String.format(template, "Revision",
                (artifact.isInDb() ? artifact.getTransactionNumber() : "Not In Db")));
          sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
-         Date lastModified = null;
-         try {
-            lastModified = artifact.getLastModified();
-         } catch (Exception ex) {
-
-         }
          sb.append(String.format(template, "Last Modified",
-               lastModified != null ? String.valueOf(lastModified) : "Error - unknown"));
-         User lastAuthor = null;
+               (artifact.isInDb() ? artifact.getLastModified() : "Not In Db")));
+         String lastAuthor = null;
          try {
-            lastAuthor = artifact.getLastModifiedBy();
+            lastAuthor = artifact.getLastModifiedBy().toString();
          } catch (Exception ex) {
-
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            lastAuthor = "Exception : " + ex.getLocalizedMessage();
          }
-         sb.append(String.format(template, "Last Modified By", lastAuthor != null ? lastAuthor : "Error - unknown"));
+         sb.append(String.format(template, "Last Modified By", (artifact.isInDb() ? lastAuthor : "Not In Db")));
       } else {
          sb.append(String.format(template, "Artifact", "null"));
       }
