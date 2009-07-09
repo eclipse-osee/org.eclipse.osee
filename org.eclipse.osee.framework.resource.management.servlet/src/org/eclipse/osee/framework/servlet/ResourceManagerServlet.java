@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -54,31 +55,41 @@ public class ResourceManagerServlet extends OseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
       try {
-         String path = HttpRequestDecoder.fromGetRequest(request);
+         ObjectPair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
+         String path = parameters.object1;
+         boolean isCheckExistance = parameters.object2;
          Options options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
-         if (resource != null) {
-            inputStream = resource.getContent();
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentLength(inputStream.available());
-            response.setCharacterEncoding("ISO-8859-1");
-            String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
-            if (mimeType == null) {
-               mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
-               if (mimeType == null) {
-                  mimeType = "application/*";
-               }
-            }
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
-
-            Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
+         if (isCheckExistance) {
+            boolean exists = Activator.getInstance().getResourceManager().exists(locator);
+            response.setStatus(exists ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
+            response.setContentType("text/plain");
+            response.getWriter().println(String.format("[%s] was %sfound.", path, exists ? "" : "not "));
          } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.flushBuffer();
+            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+            if (resource != null) {
+               inputStream = resource.getContent();
+
+               response.setStatus(HttpServletResponse.SC_OK);
+               response.setContentLength(inputStream.available());
+               response.setCharacterEncoding("ISO-8859-1");
+               String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
+               if (mimeType == null) {
+                  mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+                  if (mimeType == null) {
+                     mimeType = "application/*";
+                  }
+               }
+               response.setContentType(mimeType);
+               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+
+               Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
+            } else {
+               response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+               response.flushBuffer();
+            }
          }
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
