@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
@@ -48,9 +49,11 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor#getStorageName()
     */
-   // TODO switch over to Guid-based storage names
    @Override
-   public String createStorageName() {
-      return attribute.getArtifact().getHumanReadableId();
+   public String createStorageName() throws OseeDataStoreException {
+      if (OseeInfo.getCachedValue(OseeInfo.USE_GUID_STORAGE).equals("TRUE"))
+         return attribute.getArtifact().getGuid();
+      else
+         return attribute.getArtifact().getHumanReadableId();
    }
 }

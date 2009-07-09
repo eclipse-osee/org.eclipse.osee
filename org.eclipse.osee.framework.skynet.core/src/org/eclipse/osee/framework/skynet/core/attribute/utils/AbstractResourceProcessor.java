@@ -32,7 +32,7 @@ public abstract class AbstractResourceProcessor {
 
    protected abstract URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException;
 
-   public abstract String createStorageName();
+   public abstract String createStorageName() throws OseeDataStoreException;
 
    public void saveResource(int seed, String name, DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       URL url = getStorageURL(seed, name, dataStore.getExtension());

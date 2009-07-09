@@ -30,13 +30,12 @@ public class AttributeURL {
    private AttributeURL() {
    }
 
-   // TODO change parameter name "artifactHrid"
-   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
+   public static URL getStorageURL(int gammaId, String artifactGuid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("sessionId", ClientSessionManager.getSessionId());
       parameterMap.put("protocol", "attr");
       parameterMap.put("seed", Integer.toString(gammaId));
-      parameterMap.put("name", artifactHrid);
+      parameterMap.put("name", artifactGuid);
       if (Strings.isValid(extension) != false) {
          parameterMap.put("extension", extension);
       }
