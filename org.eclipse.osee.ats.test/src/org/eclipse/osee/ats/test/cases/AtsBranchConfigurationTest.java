@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
-import org.eclipse.osee.ats.config.AtsConfig;
+import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -92,7 +92,7 @@ public class AtsBranchConfigurationTest {
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
-      AtsConfig.configureAtsForDefaultTeam(namespace, TestType.BranchViaVersions.name(), Arrays.asList(
+      AtsConfigManager.configureAtsForDefaultTeam(namespace, TestType.BranchViaVersions.name(), Arrays.asList(
             TestType.BranchViaVersions.name() + "- Ver1", TestType.BranchViaVersions.name() + "- Ver2"), Arrays.asList(
             TestType.BranchViaVersions.name() + "- A1", TestType.BranchViaVersions.name() + "- A2"), namespace);
 
@@ -206,7 +206,7 @@ public class AtsBranchConfigurationTest {
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
-      AtsConfig.configureAtsForDefaultTeam(namespace, TestType.BranchViaTeamDef.name(), null, Arrays.asList(
+      AtsConfigManager.configureAtsForDefaultTeam(namespace, TestType.BranchViaTeamDef.name(), null, Arrays.asList(
             TestType.BranchViaTeamDef.name() + "- A1", TestType.BranchViaTeamDef.name() + "- A2"), namespace);
 
       TestUtil.sleep(2000);

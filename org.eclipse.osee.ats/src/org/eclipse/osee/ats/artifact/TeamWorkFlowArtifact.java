@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -222,7 +222,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
-      return AtsCache.getTeamDefinitionArtifact(guid);
+      return AtsCacheManager.getTeamDefinitionArtifact(guid);
    }
 
    public String getTeamTitle() throws OseeCoreException {

@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -176,6 +176,6 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
     * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
-      return AtsCache.getArtifactsByName(name, VersionArtifact.class).iterator().next();
+      return AtsCacheManager.getArtifactsByName(name, VersionArtifact.class).iterator().next();
    }
 }

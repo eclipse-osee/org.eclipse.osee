@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -119,7 +119,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       if (teamDefNames != null && teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
-            TeamDefinitionArtifact aia = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            TeamDefinitionArtifact aia = AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
             if (aia != null) {
                teamDefs.add(aia);
             }

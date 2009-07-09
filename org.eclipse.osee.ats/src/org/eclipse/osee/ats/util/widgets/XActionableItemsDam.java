@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +42,7 @@ public class XActionableItemsDam extends XTextDam {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (String guid : getActionableItemGuids()) {
          try {
-            ActionableItemArtifact aia = AtsCache.getActionableItemByGuid(guid);
+            ActionableItemArtifact aia = AtsCacheManager.getActionableItemByGuid(guid);
             if (aia == null)
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Can't find Actionable Item for guid " + guid);
             else

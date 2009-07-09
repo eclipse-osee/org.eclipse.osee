@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -73,7 +73,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          try {
-            useTeamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            useTeamDef = AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }

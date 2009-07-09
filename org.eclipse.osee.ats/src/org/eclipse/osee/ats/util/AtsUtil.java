@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -280,7 +280,7 @@ public class AtsUtil implements IAtsLib {
    public void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         AtsCache.getSoleArtifactByName(actionableItemName, VersionArtifact.class);
+         AtsCacheManager.getSoleArtifactByName(actionableItemName, VersionArtifact.class);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
                "Configuration Error",

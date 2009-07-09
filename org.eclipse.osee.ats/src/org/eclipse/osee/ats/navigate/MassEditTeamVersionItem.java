@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -62,7 +62,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
-            TeamDefinitionArtifact teamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            TeamDefinitionArtifact teamDef = AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
             if (teamDef != null) return teamDef;
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below

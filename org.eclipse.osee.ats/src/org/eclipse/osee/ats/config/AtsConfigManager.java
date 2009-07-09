@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfig {
+public class AtsConfigManager {
 
    /**
     * This method creates a simple configuration of ATS given teamdef name, version names (if desired), actionable items

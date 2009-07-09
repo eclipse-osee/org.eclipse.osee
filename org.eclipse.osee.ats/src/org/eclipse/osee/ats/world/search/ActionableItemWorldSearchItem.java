@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -87,7 +87,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    public void getActionableItems() throws OseeCoreException {
       if (actionItemNames != null && actionItems == null) {
          for (String actionItemName : actionItemNames) {
-            ActionableItemArtifact aia = AtsCache.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
+            ActionableItemArtifact aia = AtsCacheManager.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
             if (aia != null) {
                actionItems.add(aia);
             }

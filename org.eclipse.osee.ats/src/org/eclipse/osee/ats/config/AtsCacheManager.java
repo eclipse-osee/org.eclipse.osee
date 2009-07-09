@@ -57,19 +57,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * 
  * @author Donald G. Dunne
  */
-public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
+public class AtsCacheManager implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
    private final Set<Artifact> cache = new HashSet<Artifact>();
    private final Map<String, ActionableItemArtifact> guidToActionableItem =
          new HashMap<String, ActionableItemArtifact>();
    private final Map<String, TeamDefinitionArtifact> guidToTeamDefinition =
          new HashMap<String, TeamDefinitionArtifact>();
-   private static final AtsCache instance = new AtsCache();
+   private static final AtsCacheManager instance = new AtsCacheManager();
    private static List<String> cacheTypes =
          Arrays.asList(ActionableItemArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME,
                VersionArtifact.ARTIFACT_NAME);
 
-   public AtsCache() {
+   public AtsCacheManager() {
       OseeEventManager.addListener(this);
    }
 

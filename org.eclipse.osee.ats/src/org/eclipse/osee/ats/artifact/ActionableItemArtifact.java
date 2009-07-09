@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -51,7 +51,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static List<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
-      return AtsCache.getArtifactsByActive(active, ActionableItemArtifact.class);
+      return AtsCacheManager.getArtifactsByActive(active, ActionableItemArtifact.class);
    }
 
    public static String getNotActionableItemError(Artifact aia) {
@@ -74,7 +74,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
-      return AtsCache.getArtifactsByActive(Active.Both, ActionableItemArtifact.class);
+      return AtsCacheManager.getArtifactsByActive(Active.Both, ActionableItemArtifact.class);
    }
 
    public boolean isActionable() throws OseeCoreException {
@@ -84,7 +84,7 @@ public class ActionableItemArtifact extends Artifact {
    public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
-         aias.addAll(AtsCache.getArtifactsByName(actionableItemName, ActionableItemArtifact.class));
+         aias.addAll(AtsCacheManager.getArtifactsByName(actionableItemName, ActionableItemArtifact.class));
       }
       return aias;
    }

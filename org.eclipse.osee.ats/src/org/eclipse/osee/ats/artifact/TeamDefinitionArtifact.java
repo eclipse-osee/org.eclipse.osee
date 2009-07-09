@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
-import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -114,7 +114,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       for (ActionableItemArtifact aia : actionableItems) {
          addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
       }
-      AtsCache.cache(this);
+      AtsCacheManager.cache(this);
    }
 
    public static Set<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
@@ -189,7 +189,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
-      return AtsCache.getArtifactsByActive(active, TeamDefinitionArtifact.class);
+      return AtsCacheManager.getArtifactsByActive(active, TeamDefinitionArtifact.class);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -400,7 +400,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
                   name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
-      AtsCache.cache(versionArt);
+      AtsCacheManager.cache(versionArt);
       return versionArt;
    }
 
@@ -473,7 +473,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
-         teamDefs.addAll(AtsCache.getArtifactsByName(teamDefName, TeamDefinitionArtifact.class));
+         teamDefs.addAll(AtsCacheManager.getArtifactsByName(teamDefName, TeamDefinitionArtifact.class));
       }
       return teamDefs;
    }

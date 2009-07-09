@@ -72,7 +72,7 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
                RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
                      CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version);
          for (Artifact artifact : artifacts) {
-            AtsCache.cache(artifact);
+            AtsCacheManager.cache(artifact);
          }
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {
