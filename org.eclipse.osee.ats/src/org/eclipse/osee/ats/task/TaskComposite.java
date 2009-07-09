@@ -480,12 +480,19 @@ public class TaskComposite extends Composite implements IActionable {
       }
       StringBuilder builder = new StringBuilder();
       if (items.size() > 15) {
-         builder.append("Are You Sure You Wish to Delete " + items.size() + " Tasks (NOTE: workflow will be saved)");
+         builder.append("Are you sure you wish to delete " + items.size() + " Tasks?\n\n");
       } else {
-         builder.append("Are You Sure You Wish to Delete the Task(s) (NOTE: workflow will be saved):\n\n");
+         builder.append("Are you sure you wish to delete ");
+         if (items.size() == 1)
+            builder.append("this Task?\n\n");
+         else
+            builder.append("these Tasks?\n\n");
          for (TaskArtifact taskItem : items) {
             builder.append("\"" + taskItem.getDescriptiveName() + "\"\n");
          }
+
+         builder.append("\n\nNote: Workflow will be saved.");
+
       }
       boolean delete =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
@@ -504,6 +511,8 @@ public class TaskComposite extends Composite implements IActionable {
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+
+         //         iXTaskViewer.handleRefreshAction();
       }
    }
 

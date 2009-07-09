@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -54,19 +55,23 @@ public class ArchiveBranchHandler extends CommandHandler {
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      Branch branch = branches.iterator().next();
+      Iterator<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection).iterator();
 
-      try {
-         if (branch.isArchived()) {
-            BranchManager.unArchive(branch);
-         } else {
-            BranchManager.archive(branch);
+      Branch branch;
+
+      while ((branch = branches.next()) != null) {
+
+         try {
+            if (branch.isArchived()) {
+               BranchManager.unArchive(branch);
+            } else {
+               BranchManager.archive(branch);
+            }
+
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getBranchId());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
          }
-
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getBranchId());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
       }
       return null;
    }
