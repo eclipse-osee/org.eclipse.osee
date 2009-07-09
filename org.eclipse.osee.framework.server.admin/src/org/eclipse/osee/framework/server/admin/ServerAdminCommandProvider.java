@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -61,23 +62,13 @@ public class ServerAdminCommandProvider implements CommandProvider {
       adminCommands.getServerVersion(ci);
    }
 
-   //   public void _configini(CommandInterpreter ci) {
-   //      StringBuilder sb = new StringBuilder();
-   //      sb.append("eclipse.ignoreApp=true\n");
-   //      sb.append("osgi.bundles= \\\n");
-   //
-   //      String arg = ci.nextArgument();
-   //
-   //      File folder = new File(arg);
-   //      File[] files = folder.listFiles();
-   //      for (File f : files) {
-   //         if (!f.isDirectory()) {
-   //            sb.append(f.toURI());
-   //            sb.append("@start, \\\n");
-   //         }
-   //      }
-   //      System.out.println(sb.toString());
-   //   }
+   public void _change_attribute_uri_to_guid(CommandInterpreter ci) throws OseeDataStoreException {
+      adminCommands.startAttributeURItoGuidChange(ci);
+   }
+
+   public void _stop_change_attribute_uri_to_guid(CommandInterpreter ci) throws OseeDataStoreException {
+      adminCommands.stopAttributeURItoGuidChange(ci);
+   }
 
    /*
     * (non-Javadoc)
@@ -93,6 +84,8 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        osee_version - displays the supported osee versions\n");
       sb.append("        add_osee_version [version string]- add the version string to the list of supported osee versions\n");
       sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
+      sb.append("        change_attribute_uri_to_guid - renames attribute data stored on disk from HRID to Guid and updates database\n");
+      sb.append("        stop_change_attribute_uri_to_guid - stops attribute data stored on disk from HRID to Guid and updates database\n");
       //      sb.append("        native_content_fix - converts some data\n");
       //      sb.append("        native_content_fix_stop - stop the conversion\n");
       //      sb.append("        convert - converts some data\n");

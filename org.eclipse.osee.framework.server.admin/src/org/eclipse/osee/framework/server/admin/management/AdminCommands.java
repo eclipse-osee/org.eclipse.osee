@@ -21,6 +21,7 @@ public class AdminCommands {
    private final ServerShutdownWorker shutdownWorker;
    private final RemoveServerVersionWorker removeServerVersion;
    private final AddServerVersionWorker addServerVersion;
+   private final AttributeFileNameToGuidOperation changeFileNamesToGuid;
 
    public AdminCommands() {
       this.shutdownWorker = new ServerShutdownWorker();
@@ -31,6 +32,10 @@ public class AdminCommands {
 
       this.removeServerVersion = new RemoveServerVersionWorker();
       this.removeServerVersion.setExecutionAllowed(true);
+
+      this.changeFileNamesToGuid = new AttributeFileNameToGuidOperation();
+      this.changeFileNamesToGuid.setExecutionAllowed(true);
+
    }
 
    public void getServerStatus(CommandInterpreter ci) {
@@ -38,9 +43,9 @@ public class AdminCommands {
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
       Operations.executeAsJob(stats, false);
-      //      Thread th = new Thread(stats);
-      //      th.setName("Server Statistics");
-      //      th.start();
+      // Thread th = new Thread(stats);
+      // th.setName("Server Statistics");
+      // th.start();
    }
 
    public void getServerVersion(CommandInterpreter ci) {
@@ -88,10 +93,31 @@ public class AdminCommands {
       }
    }
 
+   public void startAttributeURItoGuidChange(CommandInterpreter ci) {
+      if (!this.changeFileNamesToGuid.isRunning()) {
+         this.changeFileNamesToGuid.setCommandInterpreter(ci);
+         this.changeFileNamesToGuid.setExecutionAllowed(true);
+         Operations.executeAsJob(changeFileNamesToGuid, false);
+      } else {
+         if (this.changeFileNamesToGuid.isRunning()) {
+            ci.println("Waiting for Attribute URI To Guid");
+         }
+      }
+   }
+
+   public void stopAttributeURItoGuidChange(CommandInterpreter ci) {
+      if (this.changeFileNamesToGuid.isRunning()) {
+         this.changeFileNamesToGuid.setExecutionAllowed(false);
+      } else {
+         ci.println("Attribute URI To Guid is not running.");
+      }
+   }
+
    public void setServletRequestProcessing(CommandInterpreter ci) {
       ServerRequestsWorker worker = new ServerRequestsWorker();
       worker.setCommandInterpreter(ci);
       worker.setExecutionAllowed(true);
       Operations.executeAsJob(worker, false);
    }
+
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
@@ -21,13 +23,29 @@ public class OseeInfo {
    private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
+   public static final String USE_GUID_STORAGE = "osee.framework.skynet.core.guid.storage";
+
+   private static Map<String, String> cache = new HashMap<String, String>();
 
    public static String getValue(String key) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchString("", GET_VALUE_SQL, key);
+      String toReturn = ConnectionHandler.runPreparedQueryFetchString("", GET_VALUE_SQL, key);
+      cache.put(key, toReturn);
+      return toReturn;
+   }
+
+   public static String getCachedValue(String key) throws OseeDataStoreException {
+      String cacheValue = cache.get(key);
+      if (cacheValue == null) {
+         cacheValue = getValue(key);
+         cache.put(key, cacheValue);
+      }
+
+      return cacheValue;
    }
 
    public static void putValue(String key, String value) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
+      cache.put(key, value);
    }
 }

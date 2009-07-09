@@ -102,8 +102,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
                URI sourceUri = new URI(localUri);
                inputStream = sourceUri.toURL().openStream();
                byte[] compressed = Lib.compressStream(inputStream, getOutfileName());
-               URL url =
-                     AttributeURL.getStorageURL(storageId, getAttribute().getArtifact().getHumanReadableId(), "zip");
+               URL url = AttributeURL.getStorageURL(storageId, getAttribute().getArtifact().getGuid(), "zip");
                URI uri = HttpProcessor.save(url, new ByteArrayInputStream(compressed), "applization/zip", "ISO-8859-1");
                if (uri != null) {
                   this.remoteUri = uri.toASCIIString();

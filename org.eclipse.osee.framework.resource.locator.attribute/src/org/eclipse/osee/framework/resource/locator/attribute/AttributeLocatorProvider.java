@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.ResourceLocator;
@@ -24,8 +26,7 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
  * @author Roberto E. Escobar
  */
 public class AttributeLocatorProvider implements IResourceLocatorProvider {
-
-   private final HRIDCompatibility compatibilityCode;
+   private HRIDCompatibility compatibilityCode;
 
    public AttributeLocatorProvider() {
       compatibilityCode = new HRIDCompatibility();
@@ -106,10 +107,6 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
             throw new MalformedLocatorException(ex);
          }
 
-         // TODO Remove after clients using HRID have been removed
-         //			if (compatibilityCode.isHRID(name)) {
-         //				name = compatibilityCode.convertToGUID(seed);
-         //			}
          builder.append(name);
       } else {
          throw new MalformedLocatorException("Invalid arguments during locator generation.");
