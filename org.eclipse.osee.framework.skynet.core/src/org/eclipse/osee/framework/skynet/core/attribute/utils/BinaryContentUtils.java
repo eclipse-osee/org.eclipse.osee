@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -48,7 +49,10 @@ public class BinaryContentUtils {
       } catch (Exception ex) {
          // Do Nothing - this is not important
       }
-      builder.append(attribute.getArtifact().getHumanReadableId());
+      if (OseeInfo.getCachedValue(OseeInfo.USE_GUID_STORAGE).equals("TRUE"))
+         builder.append(attribute.getArtifact().getGuid());
+      else
+         builder.append(attribute.getArtifact().getHumanReadableId());
 
       String fileTypeExtension = getExtension(attribute);
       if (Strings.isValid(fileTypeExtension)) {
