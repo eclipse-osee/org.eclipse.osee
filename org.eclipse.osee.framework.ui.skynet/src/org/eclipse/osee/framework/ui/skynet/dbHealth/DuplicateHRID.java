@@ -7,9 +7,10 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -50,13 +51,10 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    }
 
    private static final String GET_DUPLICATE_HRIDS =
-         "SELECT t1.guid,  t1.human_readable_id,  t3.name FROM osee_artifact t1, osee_artifact_type t3 " + 
-         "WHERE t1.human_readable_id IN " +
-         " (SELECT t2.human_readable_id    FROM osee_artifact t2   GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1)" +
-         " AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
+         "SELECT t1.guid,  t1.human_readable_id,  t3.name FROM osee_artifact t1, osee_artifact_type t3 WHERE t1.human_readable_id IN (SELECT t2.human_readable_id FROM osee_artifact t2 GROUP BY t2.human_readable_id HAVING COUNT(t2.human_readable_id) > 1) AND t3.art_type_id = t1.art_type_id ORDER BY t1.human_readable_id";
 
    private static final String COUNT_ATTRIBUTE_VALUES_CONTAINING =
-         "SELECT count(1) from osee_attribute where value like ?";
+         "SELECT count(1) from osee_attribute where value like ?"; // TODO value not necessarily in database
    private static final String COUNT_COMMENTS_CONTAINING =
          "SELECT count(1) from osee_tx_details where osee_comment like ?";
    private static final String COUNT_BRANCH_NAMES_CONTAINING =
@@ -101,6 +99,8 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
    private void displayReport(IProgressMonitor monitor, List<ArtifactData> duplicateHrids, double percentage) throws OseeCoreException {
       XResultData rd = new XResultData();
+      Map<String, String[]> knownValues = new HashMap<String, String[]>();
+
       try {
          String[] columnHeaders =
                new String[] {"GUID", "HRID", "Artifact Type", "Attribute Hits", "Branch Hits", "Comment Hits"};
@@ -112,10 +112,18 @@ public class DuplicateHRID extends DatabaseHealthOperation {
             int stepAmount = totalAmount / duplicateHrids.size();
             for (ArtifactData dup : duplicateHrids) {
                checkForCancelledStatus(monitor);
-               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {dup.guid, dup.hrid, dup.artTypeName,
-                     String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
-                     String.valueOf(getAdditionalCounts(COUNT_COMMENTS_CONTAINING, dup.hrid)),
-                     String.valueOf(getAdditionalCounts(COUNT_BRANCH_NAMES_CONTAINING, dup.hrid))}));
+
+               String[] results = knownValues.get(dup.hrid);
+
+               if (results == null) {
+                  results =
+                        new String[] {String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
+                              String.valueOf(getAdditionalCounts(COUNT_COMMENTS_CONTAINING, dup.hrid)),
+                              String.valueOf(getAdditionalCounts(COUNT_BRANCH_NAMES_CONTAINING, dup.hrid))};
+                  knownValues.put(dup.hrid, results);
+               }
+               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {dup.guid, dup.hrid, dup.artTypeName, results[0],
+                     results[1], results[2]}));
                monitor.worked(stepAmount);
             }
          } else {
@@ -151,7 +159,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    private String getAdditionalCounts(String query, String hrid) throws OseeDataStoreException {
       return String.valueOf(ConnectionHandler.runPreparedQueryFetchInt(-1, query, new Object[] {"%" + hrid + "%"}));
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */
