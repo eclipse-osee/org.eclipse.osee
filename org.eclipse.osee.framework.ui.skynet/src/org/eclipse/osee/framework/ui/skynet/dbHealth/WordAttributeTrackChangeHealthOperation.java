@@ -69,7 +69,6 @@ public class WordAttributeTrackChangeHealthOperation extends DatabaseHealthOpera
       setItemsToFix(attributesWithErrors.size());
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-      appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
       for (AttrData attrData : attributesWithErrors) {
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
