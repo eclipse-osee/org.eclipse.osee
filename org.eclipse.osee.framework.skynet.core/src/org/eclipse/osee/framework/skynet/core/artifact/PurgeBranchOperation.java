@@ -30,8 +30,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public class PurgeBranchOperation extends AbstractDbTxOperation {
-   private static final String COUNT_CHILD_BRANCHES =
-         "select count(branch_id) as child_branches from osee_branch WHERE parent_branch_id = ?";
+   private static final String COUNT_CHILD_BRANCHES = "select count(1) from osee_branch WHERE parent_branch_id = ?";
 
    private static final String SEARCH_FOR_DELETABLE_GAMMAS =
          "select ?, gamma_id from osee_tx_details det1, osee_txs txs1 where det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 'not_matter' FROM OSEE_TX_DETAILS det2, OSEE_TXS txs2 WHERE txs1.gamma_id = txs2.gamma_id AND det2.transaction_id = txs2.transaction_id AND det1.branch_id <> det2.branch_id)";
