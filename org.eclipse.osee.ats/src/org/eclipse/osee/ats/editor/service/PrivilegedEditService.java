@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,7 +62,7 @@ public class PrivilegedEditService extends WorkPageService {
             }
          } else {
             Set<User> users = smaMgr.getPrivilegedUsers();
-            if (AtsPlugin.isAtsAdmin()) users.add(UserManager.getUser());
+            if (AtsUtil.isAtsAdmin()) users.add(UserManager.getUser());
             StringBuffer sb = new StringBuffer();
             for (User user : users)
                sb.append(user.getName() + "\n");

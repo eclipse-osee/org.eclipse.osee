@@ -127,7 +127,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (smaMgr.isCurrentState(atsWorkPage.getName())) {
             section.setTitleBarForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
          }
-         section.setBackground(AtsPlugin.ACTIVE_COLOR);
+         section.setBackground(AtsUtil.ACTIVE_COLOR);
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
@@ -434,8 +434,8 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {
-      if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))
-    		  && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser())) {
+      if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && !smaMgr.getStateMgr().getAssignees().contains(
+            UserManager.getUser())) {
          AWorkbench.popup(
                "ERROR",
                "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
@@ -648,7 +648,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             Result result =
                   smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
             transaction.execute();
@@ -740,7 +740,7 @@ public class SMAWorkFlowSection extends SectionPart {
          smaMgr.getSma().persistAttributesAndRelations();
 
          // Perform transition separate from persist of previous changes to state machine artifact
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          Result result =
                smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();
@@ -873,6 +873,6 @@ public class SMAWorkFlowSection extends SectionPart {
       // current user is assigned
       smaMgr.isAssigneeMe() ||
       // current user is ats admin
-      AtsPlugin.isAtsAdmin());
+      AtsUtil.isAtsAdmin());
    }
 }

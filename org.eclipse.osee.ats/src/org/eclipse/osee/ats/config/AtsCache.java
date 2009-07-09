@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -93,7 +94,7 @@ public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransa
       AtsBulkLoadCache.run(true);
       ActionableItemArtifact aia = instance.guidToActionableItem.get(guid);
       if (aia != null) return aia;
-      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
+      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranch(), false);
       if (art != null) {
          cache(art);
          return (ActionableItemArtifact) art;
@@ -105,7 +106,7 @@ public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransa
       AtsBulkLoadCache.run(true);
       TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
       if (teamDef != null) return teamDef;
-      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
+      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranch(), false);
       if (art != null) {
          cache(art);
          return (TeamDefinitionArtifact) art;
@@ -176,7 +177,7 @@ public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransa
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
          deCache(artifact);
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(

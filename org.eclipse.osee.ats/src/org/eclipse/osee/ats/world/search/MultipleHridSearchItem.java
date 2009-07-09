@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -99,7 +100,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
       // This does hrid/guid search
-      for (Artifact art : ArtifactQuery.getArtifactsFromIds(ids, AtsPlugin.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactsFromIds(ids, AtsUtil.getAtsBranch())) {
          artifacts.add(art);
       }
 
@@ -135,7 +136,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       EntryDialog ed = null;
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          ed = new EntryCheckDialog(getName(), "Enter Legacy ID, Guid or HRID (comma separated)", "Include ArtIds");
       } else {
          ed =

@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -108,7 +108,7 @@ public class SMAPromptChangeStatus {
       }
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       }
       for (StateMachineArtifact sma : smas) {
          if (sma.getSmaMgr().getStateMgr().isUnAssigned()) {

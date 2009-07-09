@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -205,7 +206,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (sender.isRemote()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       if (getOptions().getArtifact() == null) return;
       if (transData.isDeleted(getOptions().getArtifact())) {
          Displays.ensureInDisplayThread(new Runnable() {

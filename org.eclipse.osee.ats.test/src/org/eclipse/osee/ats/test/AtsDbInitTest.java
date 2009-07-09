@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertFalse;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
 import org.junit.Before;
 
@@ -26,7 +26,7 @@ public class AtsDbInitTest {
    @Before
    protected void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse(AtsPlugin.isProductionDb());
+      assertFalse(AtsUtil.isProductionDb());
    }
 
    @org.junit.Test

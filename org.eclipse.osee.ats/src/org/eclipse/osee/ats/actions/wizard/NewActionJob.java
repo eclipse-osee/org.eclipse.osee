@@ -64,7 +64,7 @@ public class NewActionJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          if (title.equals("tt")) title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          actionArt =
                ActionManager.createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,

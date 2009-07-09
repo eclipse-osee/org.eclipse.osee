@@ -14,6 +14,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.service.ReadOnlyHyperlinkListener;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -67,7 +68,7 @@ public class SMATargetVersionInfoComposite extends Composite {
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      if (smaMgr.promptChangeVersion(
-                           AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
+                           AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
                         refresh();
                      }
                   } catch (Exception ex) {

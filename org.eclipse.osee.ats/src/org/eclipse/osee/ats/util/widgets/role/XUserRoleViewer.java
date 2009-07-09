@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -435,7 +436,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

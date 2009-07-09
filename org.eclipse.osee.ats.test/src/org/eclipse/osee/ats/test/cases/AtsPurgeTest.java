@@ -17,11 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -54,7 +54,7 @@ public class AtsPurgeTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse(AtsPlugin.isProductionDb());
+      assertFalse(AtsUtil.isProductionDb());
    }
 
    @org.junit.Test
@@ -65,13 +65,13 @@ public class AtsPurgeTest {
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create Action, Workflow and Tasks
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       ActionArtifact actionArt =
             ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
                         ArtifactQuery.getArtifactsFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
-                              AtsPlugin.getAtsBranch())), transaction);
+                              AtsUtil.getAtsBranch())), transaction);
       actionArt.persistAttributesAndRelations(transaction);
       transaction.execute();
 

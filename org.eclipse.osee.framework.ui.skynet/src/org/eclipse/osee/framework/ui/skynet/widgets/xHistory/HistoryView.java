@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

@@ -36,6 +36,7 @@ import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
@@ -181,7 +182,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          Result result = diagram.doSave(transaction);
          if (result.isFalse()) {
             AWorkbench.popup("Save Error", result.getText());
@@ -443,7 +444,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
          if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (delArt.getDescriptiveName().equals(getPartName())) {

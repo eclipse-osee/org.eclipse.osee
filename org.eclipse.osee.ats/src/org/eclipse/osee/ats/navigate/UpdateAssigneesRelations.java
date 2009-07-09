@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.navigate;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -57,11 +57,11 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
                   DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME);
       teamWorkflowNames.addAll(TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames());
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
       for (String artTypeName : teamWorkflowNames) {
          System.out.println("Processing artifact type - " + artTypeName);
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsUtil.getAtsBranch())) {
             if (art instanceof StateMachineArtifact) {
                ((StateMachineArtifact) art).updateAssigneeRelations();
                if (art.hasDirtyAttributes()) {

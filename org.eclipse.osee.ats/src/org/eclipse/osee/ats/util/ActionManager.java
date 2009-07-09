@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.util;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -34,7 +33,7 @@ public class ActionManager {
 
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch());
+            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -336,7 +337,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                      "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
@@ -367,7 +368,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                   "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -395,7 +396,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
                   "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false, transaction);
             transaction.execute();
             notifyXModifiedListeners();
@@ -583,7 +584,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

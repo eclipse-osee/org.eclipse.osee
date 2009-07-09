@@ -17,11 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,7 +64,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelation.SmaToTask_Sma));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "%<" + user.getUserId() + ">%", AtsPlugin.getAtsBranch()));
+               "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
       }
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());

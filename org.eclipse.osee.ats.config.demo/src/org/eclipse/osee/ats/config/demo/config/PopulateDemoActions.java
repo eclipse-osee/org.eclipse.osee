@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -99,8 +99,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    public void run(boolean prompt) throws Exception {
-      AtsPlugin.setEmailEnabled(false);
-      if (AtsPlugin.isProductionDb()) throw new IllegalStateException(
+      AtsUtil.setEmailEnabled(false);
+      if (AtsUtil.isProductionDb()) throw new IllegalStateException(
             "PopulateDemoActions should not be run on production DB");
       if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && (!prompt || (prompt && MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(), getName(), getName()))))) {
@@ -125,7 +125,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          createMainWorkingBranchTx();
 
          // Create SAW_Bld_2 Actions 
-         SkynetTransaction sawActionsTransaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction sawActionsTransaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          Set<ActionArtifact> actionArts =
                createActions(DemoDbActionData.getReqSawActionsData(), DemoSawBuilds.SAW_Bld_2.toString(), null,
                      sawActionsTransaction);
@@ -152,14 +152,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Favorites");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
-               "%Diagram View%", AtsPlugin.getAtsBranch())) {
+               "%Diagram View%", AtsUtil.getAtsBranch())) {
             new FavoritesManager((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Subscribed");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
-               "%Even%", AtsPlugin.getAtsBranch())) {
+               "%Even%", AtsUtil.getAtsBranch())) {
             new SubscribeManager((StateMachineArtifact) art).toggleSubscribe(false);
          }
 
@@ -188,7 +188,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                branch.getBranchId()});
          BranchManager.refreshBranches();
          // Map team definitions versions to their related branches
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
                DemoSawBuilds.SAW_Bld_2.name(), DemoSawBuilds.SAW_Bld_2.name(), transaction);
          transaction.execute();
@@ -378,7 +378,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_3.toString(), null, transaction);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
@@ -418,7 +418,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
-                              versionStr, AtsPlugin.getAtsBranch());
+                              versionStr, AtsUtil.getAtsBranch());
                   teamWf.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persistAttributesAndRelations(transaction);
                }

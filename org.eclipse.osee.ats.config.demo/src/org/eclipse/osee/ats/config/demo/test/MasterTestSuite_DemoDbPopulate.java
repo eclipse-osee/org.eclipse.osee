@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +48,7 @@ public class MasterTestSuite_DemoDbPopulate {
          fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
       // This test should only be run on test db
-      assertFalse(AtsPlugin.isProductionDb());
+      assertFalse(AtsUtil.isProductionDb());
       System.out.println("Validating OSEE Application Server...");
       if (!OseeLog.isStatusOk()) {
          System.err.println(OseeLog.getStatusReport() + ". \nExiting.");

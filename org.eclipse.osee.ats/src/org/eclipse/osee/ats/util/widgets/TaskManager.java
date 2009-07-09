@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,7 +97,7 @@ public class TaskManager {
    public TaskArtifact createNewTask(Collection<User> assignees, String title) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
-            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(), title);
+            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(), title);
       taskArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine

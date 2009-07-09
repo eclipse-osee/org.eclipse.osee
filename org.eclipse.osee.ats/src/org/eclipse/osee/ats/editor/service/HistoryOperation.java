@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,7 @@ public class HistoryOperation extends WorkPageService {
 
    @Override
    public Action createToolbarService() {
-      if (!AtsPlugin.isAtsAdmin()) return null;
+      if (!AtsUtil.isAtsAdmin()) return null;
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {

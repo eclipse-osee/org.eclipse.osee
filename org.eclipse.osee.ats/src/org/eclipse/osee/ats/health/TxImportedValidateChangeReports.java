@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -139,7 +139,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
-         Branch branch = AtsPlugin.getAtsBranch();
+         Branch branch = AtsUtil.getAtsBranch();
          String databaseTargetId = variableMap.getString("Import Db Id");
          boolean shouldIncludeItemsWithoutDbId = variableMap.getBoolean("Include items without database id");
          if (!Strings.isValid(databaseTargetId)) {

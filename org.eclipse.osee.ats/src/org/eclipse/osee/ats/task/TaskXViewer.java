@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -449,7 +450,7 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -470,7 +471,7 @@ public class TaskXViewer extends WorldXViewer {
                   Collection<Artifact> artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
+                              AtsUtil.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
                   }
@@ -479,7 +480,7 @@ public class TaskXViewer extends WorldXViewer {
                   artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
                               AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
+                              AtsUtil.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);
                   }

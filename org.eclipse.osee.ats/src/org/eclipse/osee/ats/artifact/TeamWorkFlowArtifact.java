@@ -18,12 +18,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -410,7 +410,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);
-               toReturn = actionableItemsTx(AtsPlugin.getAtsBranch(), toProcess, newTeamDef);
+               toReturn = actionableItemsTx(AtsUtil.getAtsBranch(), toProcess, newTeamDef);
             }
          }
       }

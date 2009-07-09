@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
@@ -87,7 +88,7 @@ public class LoadAIsAndTeamsAction {
    }
 
    public static void executeForAtsRuntimeConfig(boolean prompt, String bundleId) throws OseeCoreException {
-      new LoadAIsAndTeamsAction(false, bundleId, !AtsPlugin.isProductionDb()).run();
+      new LoadAIsAndTeamsAction(false, bundleId, !AtsUtil.isProductionDb()).run();
    }
 
    private void run() {
@@ -138,7 +139,7 @@ public class LoadAIsAndTeamsAction {
       if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
 
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          // Get or create ATS root artifact
          Artifact atsHeading = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
 
@@ -227,12 +228,12 @@ public class LoadAIsAndTeamsAction {
 
          if (getOrCreate) {
             teamDefArt =
-                  (TeamDefinitionArtifact) Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(),
+                  (TeamDefinitionArtifact) Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(),
                         TeamDefinitionArtifact.ARTIFACT_NAME, page.getName());
          } else {
             teamDefArt =
                   (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                        AtsPlugin.getAtsBranch(), page.getName());
+                        AtsUtil.getAtsBranch(), page.getName());
          }
          if (!teamDefArt.isInDb()) {
             teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
@@ -255,7 +256,7 @@ public class LoadAIsAndTeamsAction {
             try {
                Artifact workflowArt =
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                           AtsPlugin.getAtsBranch());
+                           AtsUtil.getAtsBranch());
                if (workflowArt != null)
                   teamDefArt.addRelation(AtsRelation.WorkItem__Child, workflowArt);
                else
@@ -302,12 +303,12 @@ public class LoadAIsAndTeamsAction {
          if (getOrCreate) {
             aia =
                   (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(
-                        ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsPlugin.getAtsBranch());
+                        ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
          }
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                        AtsPlugin.getAtsBranch());
+                        AtsUtil.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);

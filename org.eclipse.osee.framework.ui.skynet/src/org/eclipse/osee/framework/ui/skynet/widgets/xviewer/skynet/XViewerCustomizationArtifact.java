@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

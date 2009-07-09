@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -328,7 +329,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (sender.isRemote()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       if (currentArtifact == null) return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {

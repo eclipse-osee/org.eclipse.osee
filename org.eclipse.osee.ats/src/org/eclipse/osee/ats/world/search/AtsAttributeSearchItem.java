@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -83,7 +83,7 @@ public class AtsAttributeSearchItem extends WorldUISearchItem {
 
       if (cancelled) return EMPTY_SET;
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getArtifacts(bothCriteria, true, AtsPlugin.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(bothCriteria, true, AtsUtil.getAtsBranch());
       if (cancelled) return EMPTY_SET;
       return artifacts;
    }

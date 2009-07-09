@@ -13,6 +13,7 @@ package org.eclipse.osee.ats;
 import org.eclipse.osee.ats.hyper.ActionHyperView;
 import org.eclipse.osee.ats.hyper.ArtifactHyperView;
 import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
@@ -62,7 +63,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(BranchView.VIEW_ID);
 
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);
          right.addView("org.eclipse.pde.runtime.LogView");
       }

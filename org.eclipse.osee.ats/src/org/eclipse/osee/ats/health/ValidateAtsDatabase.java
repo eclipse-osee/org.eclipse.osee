@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -262,7 +263,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void loadAtsBranchArtifacts() throws OseeCoreException {
       xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
-      artifacts = ArtifactQuery.getArtifactsFromBranch(AtsPlugin.getAtsBranch(), false);
+      artifacts = ArtifactQuery.getArtifactsFromBranch(AtsUtil.getAtsBranch(), false);
       if (xResultData == null) {
          xResultData = new XResultData();
       }
@@ -274,7 +275,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testAtsAttributeValues() throws OseeCoreException {
       xResultData.log(monitor, "testAtsAttributeValues");
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (Artifact artifact : artifacts) {
 
          // Test for null attribute values 

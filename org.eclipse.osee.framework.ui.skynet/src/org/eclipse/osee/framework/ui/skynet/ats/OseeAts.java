@@ -56,7 +56,7 @@ public class OseeAts {
    public static boolean isAtsAdmin() {
       try {
          if (getAtsLib() != null) {
-            return getAtsLib().isAtsAdmin();
+            return getAtsLib().isAdmin();
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

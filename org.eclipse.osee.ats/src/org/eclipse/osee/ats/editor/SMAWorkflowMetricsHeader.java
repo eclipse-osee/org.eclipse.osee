@@ -109,7 +109,7 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

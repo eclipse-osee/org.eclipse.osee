@@ -582,7 +582,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    private void createConnectionMenuBar(final HyperViewItem hvi) {
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          if (connectPopupMenu == null || !connectPopupMenu.isVisible()) {
             // final PolylineConnection c = connection;
             connectPopupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
@@ -747,7 +747,7 @@ public class HyperView extends ViewPart implements IPartListener {
          final HyperViewItem fHvi = hvi;
          popupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
 
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             MenuItem editItem = new MenuItem(popupMenu, SWT.CASCADE);
             editItem.setText("Open in Artifact Editor");
             editItem.addSelectionListener(new SelectionAdapter() {

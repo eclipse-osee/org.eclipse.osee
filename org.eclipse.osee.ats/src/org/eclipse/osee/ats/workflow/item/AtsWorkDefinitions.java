@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
@@ -24,6 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
@@ -252,7 +252,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static void importWorkItemDefinitionsIntoDb(final WriteType writeType, final XResultData resultData, final Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException {
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
             WorkPageDefinition.class, WorkFlowDefinition.class}) {

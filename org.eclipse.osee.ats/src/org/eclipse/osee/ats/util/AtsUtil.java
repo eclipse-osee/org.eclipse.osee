@@ -36,18 +36,21 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -60,6 +63,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -72,9 +76,57 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class AtsUtil implements IAtsLib {
 
    private static int atsDevNum;
+   private static boolean emailEnabled = true;
+   public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
+   private static OseeGroup atsAdminGroup = null;
+   private static boolean goalEnabled = false;
 
    public AtsUtil() {
       super();
+   }
+
+   public static boolean isProductionDb() throws OseeCoreException {
+      return ClientSessionManager.isProductionDataStore();
+   }
+
+   public boolean isAdmin() {
+      return AtsUtil.isAtsAdmin();
+   }
+
+   public static boolean isAtsAdmin() {
+      try {
+         return getAtsAdminGroup().isCurrentUserMember();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return false;
+      }
+   }
+
+   /**
+    * @return the enableGoal
+    */
+   public static boolean isGoalEnabled() {
+      return goalEnabled;
+   }
+
+   public static OseeGroup getAtsAdminGroup() {
+      if (atsAdminGroup == null) {
+         atsAdminGroup = new OseeGroup("AtsAdmin");
+      }
+      return atsAdminGroup;
+   }
+
+   public static Branch getAtsBranch() throws OseeCoreException {
+      return BranchManager.getCommonBranch();
+   }
+
+   public static boolean isEmailEnabled() {
+      return emailEnabled;
+   }
+
+   public static void setEmailEnabled(boolean enabled) {
+      if (!SkynetDbInit.isDbInit()) System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+      emailEnabled = enabled;
    }
 
    public static Composite createCommonPageComposite(Composite parent) {
@@ -157,10 +209,6 @@ public class AtsUtil implements IAtsLib {
       return results;
    }
 
-   public boolean isAtsAdmin() {
-      return AtsPlugin.isAtsAdmin();
-   }
-
    public static String doubleToStrString(double d) {
       return doubleToStrString(d, false);
    }
@@ -207,7 +255,7 @@ public class AtsUtil implements IAtsLib {
       AtsBulkLoadCache.run(false);
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch());
+         artifact = ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return;

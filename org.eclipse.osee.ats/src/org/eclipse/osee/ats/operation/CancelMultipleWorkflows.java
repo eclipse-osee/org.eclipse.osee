@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.operation;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -59,7 +59,7 @@ public class CancelMultipleWorkflows implements IAtsWorldEditorMenuItem {
       }
       EntryDialog ed = new EntryDialog("Cancel Workflows", "Enter Cancellation Reason");
       if (ed.open() == 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          for (StateMachineArtifact sma : smas) {
             Result result = sma.getSmaMgr().transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
             if (result.isFalse()) {

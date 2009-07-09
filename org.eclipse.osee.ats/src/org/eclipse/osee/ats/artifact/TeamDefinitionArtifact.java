@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -397,7 +397,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch(),
+            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
                   name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
       AtsCache.cache(versionArt);

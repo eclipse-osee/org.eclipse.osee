@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -42,7 +42,7 @@ public class DemoDbUtil {
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
                "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsUtil.getAtsBranch(), false)) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {
                   codeArt = (DemoCodeTeamWorkflowArtifact) art;
                   codeArts.add(codeArt);

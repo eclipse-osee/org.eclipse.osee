@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -99,7 +100,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
             return;
          }
-         AtsPlugin.setEmailEnabled(false);
+         AtsUtil.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
@@ -206,7 +207,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
          }
-         AtsPlugin.setEmailEnabled(true);
+         AtsUtil.setEmailEnabled(true);
          if (taskArt.isCompleted()) {
             taskArt.transitionToCompleted(0, transaction, TransitionOption.None);
          }

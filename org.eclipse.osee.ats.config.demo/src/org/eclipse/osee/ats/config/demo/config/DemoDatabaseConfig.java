@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -24,6 +23,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.database.IDbInitializationTask;
@@ -71,7 +71,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1.name());
 
       // Map team definitions versions to their related branches
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.name(),
             DemoSawBuilds.SAW_Bld_1.name(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.name(),
@@ -80,7 +80,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       // Set Joe Smith as Priviledged Member of SAW Test
       Artifact teamDef =
             ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
-                  AtsPlugin.getAtsBranch());
+                  AtsUtil.getAtsBranch());
       teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
       teamDef.persistAttributesAndRelations(transaction);
 
@@ -138,7 +138,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             DemoSawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     AtsPlugin.getAtsBranch(), verName);
+                     AtsUtil.getAtsBranch(), verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }
@@ -156,7 +156,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             DemoCISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     AtsPlugin.getAtsBranch(), verName);
+                     AtsUtil.getAtsBranch(), verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }

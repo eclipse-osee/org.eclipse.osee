@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
 import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
@@ -499,7 +500,7 @@ public class TaskComposite extends Composite implements IActionable {
                   builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             delItems.addAll(items);
@@ -632,7 +633,7 @@ public class TaskComposite extends Composite implements IActionable {
             if (iXTaskViewer.getParentSmaMgr() == null) return;
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;

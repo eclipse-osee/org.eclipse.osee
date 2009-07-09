@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;

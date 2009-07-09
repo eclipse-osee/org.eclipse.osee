@@ -9,8 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.fail;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;

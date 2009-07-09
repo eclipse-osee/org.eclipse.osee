@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -22,6 +21,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.artifact.DemoTestTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
@@ -42,7 +42,7 @@ import org.eclipse.osee.support.test.util.DemoUsers;
 public class DemoDbReviews {
 
    public static void createReviews() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       createPeerToPeerReviews(transaction);
       createDecisionReviews(transaction);
       transaction.execute();
@@ -94,7 +94,7 @@ public class DemoDbReviews {
          reviewTestArts = new ArrayList<DemoTestTeamWorkflowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
             DemoTestTeamWorkflowArtifact testArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsUtil.getAtsBranch(), false)) {
                if (art instanceof DemoTestTeamWorkflowArtifact) {
                   testArt = (DemoTestTeamWorkflowArtifact) art;
                   reviewTestArts.add(testArt);

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

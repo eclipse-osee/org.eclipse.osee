@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
@@ -294,7 +293,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (currentArtifact == null) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)

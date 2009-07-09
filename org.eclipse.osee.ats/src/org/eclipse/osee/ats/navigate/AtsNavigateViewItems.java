@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
@@ -102,7 +103,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
-         if (AtsPlugin.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
+         if (AtsUtil.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
                GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
@@ -131,7 +132,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - InWork", null,
                ReviewState.InWork));
          new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
                   "User's All Related Objects - Admin Only", null, false, LoadView.WorldEditor));
             new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
@@ -214,7 +215,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          BlamContributionManager.addBlamOperationsToNavigator(items);
 
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             XNavigateItem adminItems = new XNavigateItem(null, "Admin", FrameworkImage.ADMIN);
 
             new AtsNotificationNavigateItem(adminItems);

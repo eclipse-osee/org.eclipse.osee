@@ -9,14 +9,12 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -25,6 +23,7 @@ import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -109,7 +108,7 @@ public void testTaskSearch() throws Exception {
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       Artifact groupArt =
             ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
-                  AtsPlugin.getAtsBranch());
+                  AtsUtil.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<Artifact>();
       TaskEditor editor = getSingleEditorOrFail();
       ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCancelledCheckbox(selected);

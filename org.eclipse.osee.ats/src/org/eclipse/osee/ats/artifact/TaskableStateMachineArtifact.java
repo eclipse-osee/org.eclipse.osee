@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;

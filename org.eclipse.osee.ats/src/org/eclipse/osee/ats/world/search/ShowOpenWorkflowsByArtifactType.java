@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
@@ -59,9 +59,9 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
                Operator.NOT_EQUAL));
-         artifacts = ArtifactQuery.getArtifactsFromTypeAnd(artifactTypeName, AtsPlugin.getAtsBranch(), 500, criteria);
+         artifacts = ArtifactQuery.getArtifactsFromTypeAnd(artifactTypeName, AtsUtil.getAtsBranch(), 500, criteria);
       } else {
-         artifacts = ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsPlugin.getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsUtil.getAtsBranch());
       }
 
       if (showWorkflow) {

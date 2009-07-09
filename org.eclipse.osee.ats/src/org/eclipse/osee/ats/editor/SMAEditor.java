@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -219,7 +219,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                   "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
          } else {
             try {
-               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                if (getActivePage() == attributesPageIndex) {
                   smaMgr.getSma().persistAttributes(transaction);
                }
@@ -378,7 +378,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createAttributesTab() {
       try {
-         if (!AtsPlugin.isAtsAdmin()) return;
+         if (!AtsUtil.isAtsAdmin()) return;
 
          // Create Attributes tab
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
@@ -416,7 +416,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          ToolBar toolBar = createToolBar(composite);
 
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
 
             showAllRelationsItem.setImage(ImageManager.getImage(FrameworkImage.RELATION));
@@ -714,7 +714,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public void setPriviledgedEditMode(boolean enabled) throws OseeCoreException {
       this.priviledgedEditModeEnabled = enabled;
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       smaMgr.getSma().saveSMA(transaction);
       transaction.execute();
       workFlowTab.refresh();
@@ -763,7 +763,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(smaMgr.getSma())) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -842,7 +842,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       try {
-         if (branch.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
+         if (branch.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
          if (link.getArtifactA().equals(smaMgr.getSma()) || link.getArtifactB().equals(smaMgr.getSma())) {
             onDirtied();
          }

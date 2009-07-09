@@ -9,13 +9,11 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
-import static org.junit.Assert.*;
-
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -28,7 +26,7 @@ public class AtsActionableItemToTeamDefinitionTest {
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
-            AtsPlugin.getAtsBranch())) {
+            AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
             if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {

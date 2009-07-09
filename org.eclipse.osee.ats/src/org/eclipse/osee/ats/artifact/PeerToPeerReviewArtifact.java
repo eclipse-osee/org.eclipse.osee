@@ -15,12 +15,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -105,7 +105,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       if (getParentTeamWorkflow() != null)
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             users.add(UserManager.getUser());
          }
       }

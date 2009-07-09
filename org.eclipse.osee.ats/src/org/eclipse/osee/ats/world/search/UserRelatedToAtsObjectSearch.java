@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +66,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(ArtifactPersistenceManager.getArtifacts(currentStateCriteria, false, AtsPlugin.getAtsBranch()));
+      arts.addAll(ArtifactPersistenceManager.getArtifacts(currentStateCriteria, false, AtsUtil.getAtsBranch()));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));

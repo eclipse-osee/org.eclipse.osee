@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -84,7 +85,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          } catch (OseeCoreException ex) {
             // do nothing
          }
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          WorkFlowDefinition workflow = null;
          if (startingWorkflow.contains("Simple")) {
             workflow = generateSimpleWorkflow(namespace, transaction, null).getWorkDefinition();
@@ -128,7 +129,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    public static WorkflowData generateDefaultWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       // Duplicate default workflow artifact w/ namespace changes
       Artifact defaultWorkflow = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow");
-      Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsPlugin.getAtsBranch());
+      Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsUtil.getAtsBranch());
       for (Attribute<?> attr : newWorkflowArt.getAttributes(false)) {
          if (attr instanceof StringAttribute) {
             attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
@@ -142,7 +143,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       for (DefaultTeamState state : DefaultTeamState.values()) {
          Artifact defaultStateArt =
                WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.name());
-         Artifact newStateArt = defaultStateArt.duplicate(AtsPlugin.getAtsBranch());
+         Artifact newStateArt = defaultStateArt.duplicate(AtsUtil.getAtsBranch());
          for (Attribute<?> attr : newStateArt.getAttributes(false)) {
             if (attr instanceof StringAttribute) {
                attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));

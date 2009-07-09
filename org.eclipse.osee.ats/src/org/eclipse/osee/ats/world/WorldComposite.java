@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -775,7 +776,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId == AtsPlugin.getAtsBranch().getBranchId()) {
+      if (transData.branchId == AtsUtil.getAtsBranch().getBranchId()) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

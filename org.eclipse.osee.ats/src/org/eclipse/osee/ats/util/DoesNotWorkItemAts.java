@@ -61,7 +61,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsPlugin.getAtsBranch())) {
+      //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsUtil.getAtsBranch())) {
       //         int branchId = art.getSoleAttributeValue("ats.Branch Id");
       //         Branch branch = null;
       //         try {
@@ -76,7 +76,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       //         }
       //      }
 
-      //      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       //      transaction.execute();
 
       //      convertAtsLogUserIds(transaction);
@@ -106,7 +106,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             Artifact art = null;
             // Handle case where duplicate hrids
             try {
-               art = ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
+               art = ArtifactQuery.getArtifactFromId(hrid, AtsUtil.getAtsBranch());
             } catch (MultipleArtifactsExist ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                continue;
@@ -142,7 +142,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                   "EXMT0", "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD",
                   "LDJMH", "6PWYH", "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ",
                   "5X2WL", "C8HWW");
-      for (Artifact art : ArtifactQuery.getArtifactsFromIds(hrids, AtsPlugin.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactsFromIds(hrids, AtsUtil.getAtsBranch())) {
          String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
          str = str.replaceAll("rj236c", "1779483");
          art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
@@ -153,7 +153,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
       for (Artifact artifact : ArtifactQuery.getArtifactsFromAttributeType(
-            ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), AtsPlugin.getAtsBranch())) {
+            ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), AtsUtil.getAtsBranch())) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
             String resolution =
@@ -189,7 +189,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    }
 
    //   private void deleteUnAssignedUserRelations() throws OseeCoreException {
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsUtil.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {
@@ -270,13 +270,13 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //      }
    //   }
    //   private void relateDonDunne()throws OseeCoreException{
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsUtil.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork()throws OseeCoreException{
    //            for (Artifact art : ArtifactQuery.getArtifactsFromAttribute(
    //                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-   //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", AtsPlugin.getAtsBranch())) {
+   //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", AtsUtil.getAtsBranch())) {
    //               if ((art instanceof StateMachineArtifact) && ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees().contains(
    //                     SkynetAuthentication.getUser())) {
    //                  art.addRelation(CoreRelationEnumeration.Users_User, SkynetAuthentication.getUser());
@@ -291,7 +291,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    //   private void testDeleteAttribute() throws OseeCoreException {
    //      Artifact art =
-   //            ArtifactQuery.getArtifactsFromIds(Arrays.asList("76589"), AtsPlugin.getAtsBranch()).iterator().next();
+   //            ArtifactQuery.getArtifactsFromIds(Arrays.asList("76589"), AtsUtil.getAtsBranch()).iterator().next();
    //      for (Attribute<?> attr : art.getAttributes()) {
    //         if (attr.getValue() == null) {
    //            System.out.println(art.getHumanReadableId() + " - " + attr.getNameValueDescription());
@@ -303,7 +303,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    //   private void deleteNullAttributes() throws OseeCoreException {
    //
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsUtil.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {
@@ -315,7 +315,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //                  "Lba V11 REU Code Team Workflow", "Lba V11 REU Test Team Workflow", "Lba V11 REU Req Team Workflow",
    //                  "Lba B3 Code Team Workflow", "Lba B3 Test Team Workflow", "Lba B3 Req Team Workflow",
    //                  "Lba B3 SW Design Team Workflow", "Lba B3 Tech Approach Team Workflow")) {
-   //               for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
+   //               for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsUtil.getAtsBranch())) {
    //                  for (Attribute<?> attr : team.getAttributes(false)) {
    //                     if (attr.getValue() == null) {
    //                        System.out.println(team.getHumanReadableId() + " - " + attr.getNameValueDescription());
@@ -335,13 +335,13 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //
    //   private void deleteNullUserAttributes() throws OseeCoreException {
    //
-   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
+   //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(AtsUtil.getAtsBranch()) {
    //
    //         @Override
    //         protected void handleTxWork() throws OseeCoreException {
    //            int x = 0;
    //            for (String artTypeName : Arrays.asList(User.ARTIFACT_NAME)) {
-   //               for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
+   //               for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsUtil.getAtsBranch())) {
    //                  for (Attribute<?> attr : team.getAttributes(false)) {
    //                     if (attr.getValue() == null) {
    //                        System.out.println(team.getHumanReadableId() + " - " + attr.getNameValueDescription());

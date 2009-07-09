@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -151,7 +152,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       managedForm.addPart(new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE));
 
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          managedForm.addPart(new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr));
       }
 

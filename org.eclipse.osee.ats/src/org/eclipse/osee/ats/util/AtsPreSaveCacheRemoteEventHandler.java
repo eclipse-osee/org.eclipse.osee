@@ -51,7 +51,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheChangedArtifacts) {
          if (artifact instanceof StateMachineArtifact) {
             ((StateMachineArtifact) artifact).initalizePreSaveCache();

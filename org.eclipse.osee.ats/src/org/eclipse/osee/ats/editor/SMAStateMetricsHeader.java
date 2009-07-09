@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.editor.service.StateEstimatedHoursStat;
 import org.eclipse.osee.ats.editor.service.StateHoursSpentStat;
 import org.eclipse.osee.ats.editor.service.StatePercentCompleteStat;
 import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -85,7 +86,7 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

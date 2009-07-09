@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -193,7 +194,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
    }
 
    public void createArtifactsAndNotify(SkynetTransaction transaction) {
-      AtsPlugin.setEmailEnabled(false);
+      AtsUtil.setEmailEnabled(false);
       System.out.println("Creating...");
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       try {
@@ -219,7 +220,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             }
             teamWfs.addAll(actionArt.getTeamWorkFlowArtifacts());
          }
-         AtsPlugin.setEmailEnabled(true);
+         AtsUtil.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact team : teamWfs) {
                AtsNotifyUsers.notify(team, AtsNotifyUsers.NotifyType.Assigned);
@@ -228,7 +229,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       } finally {
-         AtsPlugin.setEmailEnabled(true);
+         AtsUtil.setEmailEnabled(true);
       }
    }
 

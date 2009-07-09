@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -35,7 +35,7 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
     */
    @Override
    public Action createToolbarService() {
-      if (!AtsPlugin.isAtsAdmin()) return null;
+      if (!AtsUtil.isAtsAdmin()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {

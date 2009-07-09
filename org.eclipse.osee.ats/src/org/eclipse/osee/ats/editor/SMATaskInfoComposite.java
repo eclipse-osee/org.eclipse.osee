@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +61,7 @@ public class SMATaskInfoComposite extends Composite {
       SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       label.setToolTipText("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       // If ATS Admin, allow right-click to auto-complete tasks
-      if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
+      if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
             /* (non-Javadoc)
                          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -73,7 +74,7 @@ public class SMATaskInfoComposite extends Composite {
                      return;
                   }
                   try {
-                     SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+                     SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                      for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
                         if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
                            if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {

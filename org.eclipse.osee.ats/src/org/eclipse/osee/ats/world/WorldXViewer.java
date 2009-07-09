@@ -145,7 +145,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -289,7 +289,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             try {
                if (SMAManager.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
-                     (AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
+                     (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
@@ -459,7 +459,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   actionArt.resetAttributesOffChildren(transaction);
                }
@@ -626,7 +626,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       openInAtsWorldEditorAction.setEnabled(getSelectedArtifacts() != null);
       mm.insertBefore(MENU_GROUP_PRE, openInAtsTaskEditorAction);
       openInAtsTaskEditorAction.setEnabled(getSelectedTaskArtifacts() != null);
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          mm.insertBefore(MENU_GROUP_PRE, openInArtifactEditorAction);
          openInArtifactEditorAction.setEnabled(getSelectedArtifacts() != null);
          mm.insertBefore(MENU_GROUP_PRE, deletePurgeAtsObjectAction);
@@ -924,7 +924,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col))
             modified =
                   smaMgr.promptChangeVersion(
-                        AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
+                        AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
          else if (xCol.equals(WorldXViewerFactory.Notes_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist, true);
          else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col))

@@ -9,8 +9,8 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;

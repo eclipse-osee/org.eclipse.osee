@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -134,7 +135,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          try {
             int x = 1;
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsPlugin.getAtsBranch());
+                  ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsUtil.getAtsBranch());
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -184,7 +185,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
-            ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsPlugin.getAtsBranch());
+            ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsUtil.getAtsBranch());
       String storedChangeReport = null;
       Artifact artifactForStore = null;
       if (arts.size() > 1) {
@@ -201,7 +202,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          // Reuse same artifact if already exists
          if (artifactForStore == null) {
             artifactForStore =
-                  ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsPlugin.getAtsBranch(), name);
+                  ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsUtil.getAtsBranch(), name);
          }
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
                currentDbGuid, currentChangeData));

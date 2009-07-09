@@ -74,7 +74,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
                "AtsNotifyUsers: testing is enabled....turn off for production.");
       }
-      if (!testing && (!AtsPlugin.isEmailEnabled() || !AtsPlugin.isProductionDb() || sma.getDescriptiveName().startsWith(
+      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getDescriptiveName().startsWith(
             "tt "))) {
          return;
       }
@@ -188,7 +188,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       // Only process notifications if this client is sender
       if (sender.isRemote()) return;
-      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       boolean notificationAdded = false;
       // Handle notifications for subscription by TeamDefinition and ActionableItem
       for (Artifact art : transData.cacheAddedArtifacts) {

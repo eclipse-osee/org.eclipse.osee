@@ -736,7 +736,7 @@ public class AtsBranchManager {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             BranchManager.createWorkingBranch(parentBranch, branchName, stateMachineArtifact);
             // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
             transaction.execute();
             return Status.OK_STATUS;
@@ -795,7 +795,7 @@ public class AtsBranchManager {
                   final Result tempResult = item.committing(smaMgr);
                   if (tempResult.isFalse()) {
                      // Allow Admin to override state validation
-                     if (AtsPlugin.isAtsAdmin()) {
+                     if (AtsUtil.isAtsAdmin()) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            /* (non-Javadoc)
                             * @see java.lang.Runnable#run()
@@ -840,7 +840,7 @@ public class AtsBranchManager {
       }
       if (branchCommitted) {
          // Create reviews as necessary
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
          transaction.execute();
       }

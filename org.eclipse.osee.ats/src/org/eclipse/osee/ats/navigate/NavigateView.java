@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
@@ -123,9 +124,9 @@ public class NavigateView extends ViewPart implements IActionable {
 
       Label label = new Label(xNavComp, SWT.None);
       String str = getWhoAmI();
-      if (AtsPlugin.isAtsAdmin()) str += " - Admin";
+      if (AtsUtil.isAtsAdmin()) str += " - Admin";
       if (!str.equals("")) {
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
@@ -300,7 +301,7 @@ public class NavigateView extends ViewPart implements IActionable {
       toolbarManager.add(expandAction);
       toolbarManager.add(openChangeReportById);
       toolbarManager.add(openByIdAction);
-      if (AtsPlugin.isGoalEnabled()) toolbarManager.add(new NewGoal());
+      if (AtsUtil.isGoalEnabled()) toolbarManager.add(new NewGoal());
       toolbarManager.add(new NewAction());
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");

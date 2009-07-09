@@ -14,9 +14,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -76,7 +75,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       if (getParentTeamWorkflow() != null)
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
-         if (AtsPlugin.isAtsAdmin()) {
+         if (AtsUtil.isAtsAdmin()) {
             users.add(UserManager.getUser());
          }
       }

@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,7 +48,7 @@ public class MyOrigSearchItem extends UserSearchItem {
 
       Collection<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-                  "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsPlugin.getAtsBranch());
+                  "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch());
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {

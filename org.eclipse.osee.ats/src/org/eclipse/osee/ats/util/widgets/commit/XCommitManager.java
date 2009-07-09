@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -113,7 +114,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             createTaskActionBar(mainComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
-            if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
+            if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   /* (non-Javadoc)
                                * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)

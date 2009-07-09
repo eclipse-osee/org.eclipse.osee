@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -88,7 +89,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
                // Make the changes and persist
-               SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof StateMachineArtifact) {
                      ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);

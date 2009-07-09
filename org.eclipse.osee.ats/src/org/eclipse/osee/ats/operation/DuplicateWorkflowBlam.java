@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -84,7 +85,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                   return;
                }
                try {
-                  AtsPlugin.setEmailEnabled(false);
+                  AtsUtil.setEmailEnabled(false);
                   Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
                   if (createNewWorkflow) {
                      handleCreateNewWorkflow(teamArts);
@@ -95,7 +96,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   return;
                } finally {
-                  AtsPlugin.setEmailEnabled(true);
+                  AtsUtil.setEmailEnabled(true);
                }
 
             } catch (Exception ex) {
@@ -107,7 +108,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          Collection<User> assignees = teamArt.getSmaMgr().getStateMgr().getAssignees();
          if (!assignees.contains(UserManager.getUser())) {
@@ -128,15 +129,15 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsPlugin.getAtsBranch());
+         TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
          dupArt.addRelation(AtsRelation.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                "Workflow duplicated from " + teamArt.getHumanReadableId());
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getSmaMgr().getTaskMgr().getTaskArtifacts()) {
-               TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsPlugin.getAtsBranch());
+               TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
                dupTaskArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                      "Task duplicated from " + taskArt.getHumanReadableId());
                dupArt.addRelation(AtsRelation.SmaToTask_Task, dupTaskArt);

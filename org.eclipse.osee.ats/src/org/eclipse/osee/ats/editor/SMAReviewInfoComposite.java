@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
@@ -75,7 +76,7 @@ public class SMAReviewInfoComposite extends Composite {
       SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
       label.setToolTipText("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
       // If ATS Admin, allow right-click to auto-complete reviews
-      if (AtsPlugin.isAtsAdmin() && !AtsPlugin.isProductionDb()) {
+      if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
             /* (non-Javadoc)
                          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -88,7 +89,7 @@ public class SMAReviewInfoComposite extends Composite {
                      return;
                   }
                   try {
-                     SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+                     SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                      for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
                         if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
                            if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {

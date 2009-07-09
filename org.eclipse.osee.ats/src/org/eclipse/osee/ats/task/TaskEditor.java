@@ -66,7 +66,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          for (TaskArtifact taskArt : tasks) {
             taskArt.saveSMA(transaction);
          }

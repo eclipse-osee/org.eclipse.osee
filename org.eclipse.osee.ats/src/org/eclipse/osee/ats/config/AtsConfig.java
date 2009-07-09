@@ -14,14 +14,13 @@ package org.eclipse.osee.ats.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
@@ -64,12 +63,12 @@ public class AtsConfig {
          // do nothing
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
       // Create team def
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), teamDefName);
+                  AtsUtil.getAtsBranch(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
          teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
@@ -83,7 +82,7 @@ public class AtsConfig {
       // Create top actionable item
       ActionableItemArtifact topAia =
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), teamDefName);
+                  AtsUtil.getAtsBranch(), teamDefName);
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
       topAia.persistAttributesAndRelations(transaction);
 
@@ -96,7 +95,7 @@ public class AtsConfig {
       for (String name : actionableItems) {
          ActionableItemArtifact aia =
                (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                     AtsPlugin.getAtsBranch(), name);
+                     AtsUtil.getAtsBranch(), name);
          aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
          topAia.addChild(aia);
          aia.persistAttributesAndRelations(transaction);
@@ -109,7 +108,7 @@ public class AtsConfig {
          for (String name : versionNames) {
             VersionArtifact version =
                   (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                        AtsPlugin.getAtsBranch(), name);
+                        AtsUtil.getAtsBranch(), name);
             teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, version);
             versions.add(version);
             version.persistAttributesAndRelations(transaction);
@@ -121,7 +120,7 @@ public class AtsConfig {
       try {
          workflowArt =
                ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                     AtsPlugin.getAtsBranch());
+                     AtsUtil.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

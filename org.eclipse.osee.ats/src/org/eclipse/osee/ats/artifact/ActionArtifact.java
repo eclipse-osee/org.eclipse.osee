@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
@@ -29,6 +28,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -646,7 +646,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
 
       final StringBuffer sb = new StringBuffer();
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
@@ -743,10 +743,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null)
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsPlugin.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch());
       else
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsPlugin.getAtsBranch(), guid,
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch(), guid,
                      hrid);
       setArtifactIdentifyData(this, teamArt);
 

@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -63,7 +62,7 @@ public class AtsFolderUtil {
       if (!folderMap.containsKey(atsFolder)) {
          Artifact artifact =
                StaticIdManager.getSingletonArtifact(atsFolder.artifactTypeName, atsFolder.staticId,
-                     AtsPlugin.getAtsBranch());
+                     AtsUtil.getAtsBranch());
          if (artifact == null) {
             throw new OseeStateException(String.format("Can't retrieve Ats folder [%s]", atsFolder.displayName));
          }
@@ -73,13 +72,13 @@ public class AtsFolderUtil {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
       Artifact headingArt =
-            Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), AtsFolderUtil.FOLDER_ARTIFACT,
+            Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(), AtsFolderUtil.FOLDER_ARTIFACT,
                   AtsFolder.Ats_Heading.displayName);
       if (!headingArt.hasParent()) {
-         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
+         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
          rootArt.addChild(headingArt);
          StaticIdManager.setSingletonAttributeValue(headingArt, AtsFolder.Ats_Heading.staticId);
          headingArt.persistAttributesAndRelations(transaction);
@@ -88,7 +87,7 @@ public class AtsFolderUtil {
       for (AtsFolder atsFolder : AtsFolder.values()) {
          if (atsFolder == AtsFolder.Ats_Heading) continue;
          Artifact art =
-               Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), atsFolder.artifactTypeName,
+               Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(), atsFolder.artifactTypeName,
                      atsFolder.displayName);
          StaticIdManager.setSingletonAttributeValue(art, atsFolder.staticId);
          headingArt.addChild(art);

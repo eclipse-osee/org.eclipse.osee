@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItemProvider;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
@@ -95,7 +96,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    @Override
    public void refresh() {
       super.refresh();
-      if (AtsPlugin.isAtsAdmin()) {
+      if (AtsUtil.isAtsAdmin()) {
          for (XNavigateItem item : getItems()) {
             if (item.getName().equals("Admin")) {
                filteredTree.getViewer().expandToLevel(item, 1);

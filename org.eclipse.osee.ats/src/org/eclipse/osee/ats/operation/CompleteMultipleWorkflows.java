@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.operation;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -62,8 +62,8 @@ public class CompleteMultipleWorkflows implements IAtsWorldEditorMenuItem {
       EntryDialog ed = new EntryDialog("Complete Workflows", "Enter Completion Reson");
       if (ed.open() == 0) {
          try {
-            AtsPlugin.setEmailEnabled(enableEmail);
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            AtsUtil.setEmailEnabled(enableEmail);
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             for (StateMachineArtifact sma : smas) {
                Result result =
                      sma.getSmaMgr().transitionToCompleted(ed.getEntry(), transaction, TransitionOption.Persist);
@@ -75,7 +75,7 @@ public class CompleteMultipleWorkflows implements IAtsWorldEditorMenuItem {
             transaction.execute();
             AWorkbench.popup("Complete", "Workflows Completed");
          } finally {
-            AtsPlugin.setEmailEnabled(true);
+            AtsUtil.setEmailEnabled(true);
          }
       }
    }

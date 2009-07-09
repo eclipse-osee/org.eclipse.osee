@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -75,13 +76,13 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(TypeValidityManager.getValidArtifactTypes(AtsPlugin.getAtsBranch()));
+         artTypeList.setInput(TypeValidityManager.getValidArtifactTypes(AtsUtil.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactType desc = (ArtifactType) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc, AtsPlugin.getAtsBranch()));
+                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc, AtsUtil.getAtsBranch()));
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }

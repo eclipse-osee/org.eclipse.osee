@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
@@ -970,7 +970,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : getAllSMATypeNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsPlugin.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsUtil.getAtsBranch()));
       }
       return result;
    }
@@ -978,7 +978,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public static List<Artifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsPlugin.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsUtil.getAtsBranch()));
       }
       return result;
    }

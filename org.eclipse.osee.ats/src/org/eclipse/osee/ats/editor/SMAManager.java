@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -321,10 +322,10 @@ public class SMAManager {
          }
          if (smaMgr.isReleased()) {
             String error = "Team Workflow\n \"" + teamArt.getDescriptiveName() + "\"\n is already released.";
-            if (AtsPlugin.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                   "Change Version", error + "\n\nOverride?")) {
                return false;
-            } else if (!AtsPlugin.isAtsAdmin()) AWorkbench.popup("ERROR", error);
+            } else if (!AtsUtil.isAtsAdmin()) AWorkbench.popup("ERROR", error);
          }
          if (teamDefHoldingVersions != null) {
             if (teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
@@ -357,7 +358,7 @@ public class SMAManager {
          teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
       }
       if (persist) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : smas) {
             teamArt.persistRelations(transaction);
          }
@@ -388,7 +389,7 @@ public class SMAManager {
          }
          if (dialog.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getChangeType() != dialog.getSelection()) {
@@ -427,7 +428,7 @@ public class SMAManager {
          }
          if (ald.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getPriority() != ald.getSelection()) {
                   team.setPriority(ald.getSelection());

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.queryLog;
 
 import java.util.Iterator;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;

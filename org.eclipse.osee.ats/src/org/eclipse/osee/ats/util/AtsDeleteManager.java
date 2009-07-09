@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -113,7 +112,7 @@ public class AtsDeleteManager {
       if (purge) {
          ArtifactPersistenceManager.purgeArtifacts(allDeleteArts);
       } else {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          ArtifactPersistenceManager.deleteArtifact(transaction, false,
                allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
          transaction.execute();

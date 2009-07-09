@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -125,7 +126,7 @@ public class DemoTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", AtsPlugin.getAtsBranch(), false));
+         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", AtsUtil.getAtsBranch(), false));
       }
       ArtifactPersistenceManager.purgeArtifacts(artifacts);
       TestUtil.sleep(4000);
@@ -144,7 +145,7 @@ public class DemoTestUtil {
    public static void setUpTest() throws Exception {
       try {
          // This test should only be run on test db
-         TestCase.assertFalse(AtsPlugin.isProductionDb());
+         TestCase.assertFalse(AtsUtil.isProductionDb());
          // Confirm test setup with demo data
          TestCase.assertTrue(isDbPopulatedWithDemoData().isTrue());
          // Confirm user is Joe Smith

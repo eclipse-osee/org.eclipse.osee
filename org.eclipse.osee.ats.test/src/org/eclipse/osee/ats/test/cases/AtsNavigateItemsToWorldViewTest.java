@@ -9,8 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +40,7 @@ import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -203,7 +203,7 @@ public void testGroupsSearch() throws Exception {
       WorldEditor.closeAll();
       Artifact groupArt =
             ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
-                  AtsPlugin.getAtsBranch());
+                  AtsUtil.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
@@ -475,7 +475,7 @@ public void testSearchForAuthorizeActions() throws Exception {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       getXViewer().expandAll();
       handleTableCustomization();
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
          attributeValues.put(art, art.getSoleAttributeValue(attributeToDelete));
@@ -486,7 +486,7 @@ public void testSearchForAuthorizeActions() throws Exception {
       try {
          runGeneralXColTest(20, true, attributeToDelete, false);
       } finally {
-         transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+         transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          // restore the attribute to leave the demo db back in its original state      
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));

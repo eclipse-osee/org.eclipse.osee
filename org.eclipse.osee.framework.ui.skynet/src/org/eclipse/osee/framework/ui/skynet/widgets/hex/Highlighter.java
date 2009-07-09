@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.hex;
 
 import java.util.Arrays;
-
 import org.eclipse.swt.graphics.Color;
 
 class Highlighter implements IHexTblHighlighter {

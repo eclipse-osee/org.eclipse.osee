@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
@@ -70,7 +71,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsPlugin.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(UserManager.getUser())) {
+            if (!AtsUtil.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(UserManager.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
@@ -84,7 +85,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                }
             }
             if (errorStr != null) AWorkbench.popup("ERROR", errorStr);
-            if (errorStr != null && !AtsPlugin.isAtsAdmin())
+            if (errorStr != null && !AtsUtil.isAtsAdmin())
                return;
             else if (errorStr != null && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Override",
                   "ATS Admin Enabled - Override completed condition and release anyway?")) {

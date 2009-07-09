@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -130,7 +131,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+                  SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                   Job job =
                         Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
                               (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));

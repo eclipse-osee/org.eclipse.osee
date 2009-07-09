@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,7 +46,7 @@ public class MyCompletedSearchItem extends UserSearchItem {
       String valueToMatch =
             "%state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"%";
       return ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch,
-            AtsPlugin.getAtsBranch());
+            AtsUtil.getAtsBranch());
    }
 
    /* (non-Javadoc)

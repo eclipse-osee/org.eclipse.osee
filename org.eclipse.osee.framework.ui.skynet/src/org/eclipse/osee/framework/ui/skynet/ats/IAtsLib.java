@@ -31,5 +31,5 @@ public interface IAtsLib {
 
    public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException;
 
-   public boolean isAtsAdmin();
+   public boolean isAdmin();
 }

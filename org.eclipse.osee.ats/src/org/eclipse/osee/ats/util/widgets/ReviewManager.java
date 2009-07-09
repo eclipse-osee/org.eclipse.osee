@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -130,7 +131,7 @@ public class ReviewManager {
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate, SkynetTransaction transaction) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+                  AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamParent != null) {
          teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, peerToPeerRev);
@@ -299,7 +300,7 @@ public class ReviewManager {
    public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {
       DecisionReviewArtifact decRev =
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), title);
+                  AtsUtil.getAtsBranch(), title);
 
       if (teamParent != null) {
          teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, decRev);

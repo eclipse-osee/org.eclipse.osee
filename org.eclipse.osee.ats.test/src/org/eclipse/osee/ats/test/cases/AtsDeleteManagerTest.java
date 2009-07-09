@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -27,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -68,10 +68,10 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
-      if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
+      if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtDeleteOneWorkflow,
@@ -96,10 +96,10 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
-      if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
+      if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
@@ -119,10 +119,10 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testTeamArtPurge() throws Exception {
-      if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
+      if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtPurge,
@@ -142,10 +142,10 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionDelete() throws Exception {
-      if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
+      if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.ActionDelete,
@@ -165,10 +165,10 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionPurge() throws Exception {
-      if (AtsPlugin.isProductionDb()) fail("Test not intended for production Db");
+      if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.ActionPurge,
@@ -187,7 +187,7 @@ public class AtsDeleteManagerTest {
    }
 
    private void verifyExists(TestNames testName, int numActions, int numCodeWorkflows, int numReqWorkflows, int numTasks, int numReviews) throws OseeCoreException {
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromName(testName + "%", AtsPlugin.getAtsBranch(), false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromName(testName + "%", AtsUtil.getAtsBranch(), false);
 
       CountingMap<String> numArts = new CountingMap<String>();
       for (Artifact artifact : artifacts) {

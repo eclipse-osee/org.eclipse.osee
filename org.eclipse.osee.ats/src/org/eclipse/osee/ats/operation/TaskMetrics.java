@@ -18,11 +18,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -73,7 +73,7 @@ public class TaskMetrics extends AbstractBlam {
 
          ArtifactType descriptor = variableMap.getArtifactType("Artifact Type");
 
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsPlugin.getAtsBranch());
+         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsUtil.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.SmaToTask_Task);
          for (Artifact artifact : tasks) {
             if (artifact instanceof TaskArtifact) {
