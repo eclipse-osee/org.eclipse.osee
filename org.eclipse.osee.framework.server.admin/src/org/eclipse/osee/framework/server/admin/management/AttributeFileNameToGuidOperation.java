@@ -36,10 +36,6 @@ import org.eclipse.osee.framework.server.admin.BaseServerCommand;
  */
 public final class AttributeFileNameToGuidOperation extends BaseServerCommand {
 
-   /**
-    * @param operationName
-    * @param pluginId
-    */
    public AttributeFileNameToGuidOperation() {
       super("Change Attribute URI to Guid");
    }
