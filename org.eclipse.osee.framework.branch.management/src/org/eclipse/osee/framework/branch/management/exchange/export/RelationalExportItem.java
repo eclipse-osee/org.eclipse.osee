@@ -73,6 +73,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
          sourceStream = resource.getContent();
          outputStream = new FileOutputStream(target);
          Lib.inputStreamToOutputStream(sourceStream, outputStream);
+      } catch (Exception ex) {
+         throw new Exception(String.format("Error processing: [%s]", locator.getRawPath()), ex);
       } finally {
          if (sourceStream != null) {
             try {
