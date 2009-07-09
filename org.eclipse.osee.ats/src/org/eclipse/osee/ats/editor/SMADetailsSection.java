@@ -115,7 +115,8 @@ public class SMADetailsSection extends SectionPart {
          sb.append(String.format(template, "Gamma Id", artifact.getGammaId()));
          sb.append(String.format(template, "Historical", artifact.isHistorical()));
          sb.append(String.format(template, "Deleted", artifact.isDeleted()));
-         sb.append(String.format(template, "Revision", artifact.getTransactionNumber()));
+         sb.append(String.format(template, "Revision",
+               (artifact.isInDb() ? artifact.getTransactionNumber() : "Not In Db")));
          sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
          Date lastModified = null;
          try {
