@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -158,8 +159,8 @@ public class RoughArtifact {
          if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
             if (!childArtifact.hasParent()) {
                realArtifact.addChild(childArtifact);
-            } else if (childArtifact.getParent() != realArtifact) {
-               throw new IllegalStateException(
+            } else if (!childArtifact.getParent().equals(realArtifact)) {
+               throw new OseeStateException(
                      childArtifact.getDescriptiveName() + " already has a parent that differs from the imported parent");
             }
          }
