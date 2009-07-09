@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.styledText.ASpellWord;
 import org.eclipse.osee.framework.ui.swt.styledText.IDictionary;
 import org.eclipse.swt.SWT;
@@ -177,8 +178,9 @@ public class XTextSpellCheckPaintListener implements PaintListener {
          if (!string.matches("^\\s*$")) {
             // System.out.println("isWord: orig *" + string + "* => *" + word + "*");
             if (!dict.isWord(string)) {
-               ASpellWord sw = new ASpellWord(string, loc);
                // System.out.println("word " + word + " is error");
+               String cleanError = OseeDictionary.getInstance().getCleanWord(string);
+               ASpellWord sw = new ASpellWord(cleanError, loc);
                errors.add(sw);
             }
          }

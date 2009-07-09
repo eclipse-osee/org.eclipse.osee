@@ -64,7 +64,7 @@ public class OseeDictionary implements IDictionary {
    // NEon = ""
    private static Pattern pattern = Pattern.compile("^[a-zA-Z]{1}[a-z]+$");
 
-   private String getCleanWord(String w) {
+   public String getCleanWord(String w) {
       // Single character is a valid word
       if (w.length() == 1) return w;
 
