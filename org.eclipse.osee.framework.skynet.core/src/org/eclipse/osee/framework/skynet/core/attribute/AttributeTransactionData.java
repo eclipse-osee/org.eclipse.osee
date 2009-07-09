@@ -91,7 +91,7 @@ public class AttributeTransactionData extends BaseTransactionData {
     */
    @Override
    protected void internalOnRollBack() throws OseeCoreException {
-      if (Strings.isValid(daoToSql.getUri())) {
+      if (!useExistingBackingData() && Strings.isValid(daoToSql.getUri())) {
          try {
             HttpProcessor.delete(AttributeURL.getDeleteURL(daoToSql.getUri()));
          } catch (Exception ex) {
