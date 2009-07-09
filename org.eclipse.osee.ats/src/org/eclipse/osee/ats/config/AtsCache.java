@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -83,8 +84,9 @@ public class AtsCache implements IArtifactsPurgedEventListener, IFrameworkTransa
       }
    }
 
-   public static void deCache(Artifact artifact) {
+   public static void deCache(Artifact artifact) throws OseeCoreException {
       instance.cache.remove(artifact);
+      ArtifactCache.deCacheStaticIds(artifact);
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {

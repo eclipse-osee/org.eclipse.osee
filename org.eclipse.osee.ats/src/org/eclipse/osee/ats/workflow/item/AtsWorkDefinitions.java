@@ -21,9 +21,10 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
@@ -274,20 +275,16 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Relate if not already related
       if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
          if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(transaction), art,
-                  transaction);
+            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkPages), art, transaction);
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(transaction), art,
-                  transaction);
+            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkRules), art, transaction);
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(transaction), art,
-                  transaction);
+            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkWidgets), art, transaction);
          }
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(transaction), art,
-                  transaction);
+            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkFlow), art, transaction);
          }
       }
    }

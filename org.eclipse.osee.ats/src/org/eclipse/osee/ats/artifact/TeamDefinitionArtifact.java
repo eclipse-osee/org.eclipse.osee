@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public static String ARTIFACT_NAME = "Team Definition";
-   public static String TOP_TEAM_STATIC_ID = "osee.ats.TopTeamDefinition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
       TeamUsesVersions, RequireTargetedVersion
@@ -64,7 +63,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -201,8 +200,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
-      return (TeamDefinitionArtifact) StaticIdManager.getSingletonArtifactOrException(
-            TeamDefinitionArtifact.ARTIFACT_NAME, TOP_TEAM_STATIC_ID, AtsPlugin.getAtsBranch());
+      return (TeamDefinitionArtifact) AtsFolderUtil.getFolder(AtsFolder.Teams);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {

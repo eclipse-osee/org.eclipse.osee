@@ -16,11 +16,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
@@ -38,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class ActionableItemArtifact extends Artifact {
 
    public static String ARTIFACT_NAME = "Actionable Item";
-   public static String TOP_AI_STATIC_ID = "osee.ats.TopActionableItem";
    public static Set<ActionableItemArtifact> EMPTY_SET = new HashSet<ActionableItemArtifact>();
 
    /**
@@ -46,7 +44,7 @@ public class ActionableItemArtifact extends Artifact {
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -72,8 +70,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
-      return (ActionableItemArtifact) StaticIdManager.getSingletonArtifactOrException(
-            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, AtsPlugin.getAtsBranch());
+      return (ActionableItemArtifact) AtsFolderUtil.getFolder(AtsFolder.ActionableItem);
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {

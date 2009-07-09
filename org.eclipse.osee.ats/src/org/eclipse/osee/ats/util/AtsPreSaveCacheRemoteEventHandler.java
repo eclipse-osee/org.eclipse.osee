@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -36,7 +37,8 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
    }
 
    private AtsPreSaveCacheRemoteEventHandler() {
-      OseeLog.log(AtsPlugin.class, Level.INFO,  "Starting ATS Pre-Save Remote Event Handler");
+      if (SkynetDbInit.isDbInit()) return;
+      OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Pre-Save Remote Event Handler");
       OseeEventManager.addListener(this);
    }
 

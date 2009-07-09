@@ -10,19 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
@@ -65,13 +67,13 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
    protected IStatus run(IProgressMonitor monitor) {
       OseeLog.log(AtsPlugin.class, Level.INFO, getName());
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
-         for (Artifact artifact : RelationManager.getRelatedArtifacts(
-               Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction)), 8,
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version)) {
+         Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
+         Collection<Artifact> artifacts =
+               RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
+                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version);
+         for (Artifact artifact : artifacts) {
             AtsCache.cache(artifact);
          }
-         transaction.execute();
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);

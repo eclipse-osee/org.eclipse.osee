@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -55,6 +56,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
    }
 
    private AtsNotifyUsers() {
+      if (SkynetDbInit.isDbInit()) return;
       OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Notification Handler");
       OseeEventManager.addListener(this);
    }

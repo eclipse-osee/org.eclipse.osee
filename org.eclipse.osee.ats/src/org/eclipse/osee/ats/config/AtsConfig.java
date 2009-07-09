@@ -19,22 +19,20 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -44,105 +42,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
  * @author Donald G. Dunne
  */
 public class AtsConfig {
-
-   private static AtsConfig instance = new AtsConfig();
-   public static String FOLDER_ARTIFACT = "Folder";
-   public static String ATS_HEADING = "Action Tracking System";
-   public static String WORK_FLOWS_FOLDER = "Work Flows";
-   public static String WORK_RULES_FOLDER = "Work Rules";
-   public static String WORK_WIDGETS_FOLDER = "Work Widgets";
-   public static String WORK_PAGES_FOLDER = "Work Pages";
-   public static String TEAMS_HEADING = "Teams";
-   public static String ACTIONABLE_ITEMS_HEADING = "Actionable Items";
-
-   private AtsConfig() {
-      super();
-   }
-
-   public static AtsConfig getInstance() {
-      return instance;
-   }
-
-   public Artifact getOrCreateWorkRulesFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
-         StaticIdManager.setSingletonAttributeValue(art, WORK_RULES_FOLDER);
-      }
-      validateATSHeadingParent(art, transaction);
-      return art;
-   }
-
-   public Artifact getOrCreateWorkPagesFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
-         StaticIdManager.setSingletonAttributeValue(art, WORK_PAGES_FOLDER);
-      }
-      validateATSHeadingParent(art, transaction);
-      return art;
-   }
-
-   public Artifact getOrCreateWorkWidgetsFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
-         StaticIdManager.setSingletonAttributeValue(art, WORK_WIDGETS_FOLDER);
-      }
-      validateATSHeadingParent(art, transaction);
-      return art;
-   }
-
-   public Artifact getOrCreateWorkFlowsFolderArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
-         StaticIdManager.setSingletonAttributeValue(art, WORK_FLOWS_FOLDER);
-      }
-      validateATSHeadingParent(art, transaction);
-      return art;
-   }
-
-   public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art =
-            Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), ActionableItemArtifact.ARTIFACT_NAME,
-                  ACTIONABLE_ITEMS_HEADING);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(
-            ActionableItemArtifact.TOP_AI_STATIC_ID)) {
-         StaticIdManager.setSingletonAttributeValue(art, ActionableItemArtifact.TOP_AI_STATIC_ID);
-      }
-      validateATSHeadingParent(art, transaction);
-      return (ActionableItemArtifact) art;
-   }
-
-   public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art =
-            Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
-      if (!art.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).contains(
-            TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
-         StaticIdManager.setSingletonAttributeValue(art, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
-      }
-      validateATSHeadingParent(art, transaction);
-      return (TeamDefinitionArtifact) art;
-   }
-
-   private void validateATSHeadingParent(Artifact art, SkynetTransaction transaction) {
-      try {
-         if (!art.hasParent()) {
-            Artifact atsHeadingArtifact = getOrCreateAtsHeadingArtifact(transaction);
-            atsHeadingArtifact.addChild(art);
-            art.persistAttributesAndRelations(transaction);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   public Artifact getOrCreateAtsHeadingArtifact(SkynetTransaction transaction) throws OseeCoreException {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, ATS_HEADING);
-      if (!art.hasParent()) {
-         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(AtsPlugin.getAtsBranch());
-         rootArt.addChild(art);
-         art.persistAttributesAndRelations(transaction);
-      }
-      return art;
-   }
 
    /**
     * This method creates a simple configuration of ATS given teamdef name, version names (if desired), actionable items
@@ -176,7 +75,7 @@ public class AtsConfig {
       }
       teamDef.addRelation(AtsRelation.TeamLead_Lead, UserManager.getUser());
       teamDef.addRelation(AtsRelation.TeamMember_Member, UserManager.getUser());
-      AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction).addChild(teamDef);
+      AtsFolderUtil.getFolder(AtsFolder.Teams).addChild(teamDef);
       teamDef.persistAttributesAndRelations(transaction);
 
       // Create actionable items
@@ -188,7 +87,7 @@ public class AtsConfig {
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
       topAia.persistAttributesAndRelations(transaction);
 
-      AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction).addChild(topAia);
+      AtsFolderUtil.getFolder(AtsFolder.ActionableItem).addChild(topAia);
       teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, topAia);
       teamDef.persistAttributesAndRelations(transaction);
 

@@ -30,8 +30,9 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
-import org.eclipse.osee.ats.config.AtsConfig;
+import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -139,7 +140,7 @@ public class LoadAIsAndTeamsAction {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
          // Get or create ATS root artifact
-         Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact(transaction);
+         Artifact atsHeading = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
 
          // Create Actionable Items
          DiagramNode workPage = workFlow.getPage("Actionable Items");
@@ -166,8 +167,8 @@ public class LoadAIsAndTeamsAction {
    private TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
-      if (page.getName().equals(AtsConfig.TEAMS_HEADING)) {
-         teamDefArt = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
+      if (page.getName().equals(AtsFolder.Teams.getDisplayName())) {
+         teamDefArt = (TeamDefinitionArtifact) AtsFolderUtil.getFolder(AtsFolder.Teams);
       } else {
 
          ArrayList<User> leads = new ArrayList<User>();
@@ -238,7 +239,7 @@ public class LoadAIsAndTeamsAction {
                   teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
             if (parent == null) {
                // Relate to team heading
-               parent = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact(transaction);
+               parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
             }
             parent.addChild(teamDefArt);
 
@@ -295,15 +296,13 @@ public class LoadAIsAndTeamsAction {
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }
       }
-      if (page.getName().equals(AtsConfig.ACTIONABLE_ITEMS_HEADING)) {
-         aia = AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact(transaction);
+      if (page.getName().equals(AtsFolder.Ats_Heading.getDisplayName())) {
+         aia = (ActionableItemArtifact) AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
       } else {
          if (getOrCreate) {
-
             aia =
                   (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(
                         ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsPlugin.getAtsBranch());
-
          }
          if (aia == null) {
             aia =

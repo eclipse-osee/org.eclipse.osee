@@ -49,7 +49,7 @@ public class StaticIdManager {
             attr.delete();
          }
       }
-      ArtifactCache.cachePostAttributeLoad(artifact);
+      ArtifactCache.cacheByStaticId(staticId, artifact);
    }
 
    public static boolean hasValue(Artifact artifact, String staticId) throws OseeCoreException {

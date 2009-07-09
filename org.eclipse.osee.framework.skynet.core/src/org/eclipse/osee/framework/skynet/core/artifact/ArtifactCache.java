@@ -61,7 +61,7 @@ public class ArtifactCache {
 
    synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
-         instance.staticIdArtifactCache.put(staticId, artifact);
+         cacheByStaticId(staticId, artifact);
       }
    }
 
@@ -69,14 +69,30 @@ public class ArtifactCache {
       instance.staticIdArtifactCache.put(staticId, artifact);
    }
 
+   public synchronized static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
+      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+         ArtifactCache.cacheByStaticId(staticId, artifact);
+      }
+   }
+
+   public synchronized static void deCacheStaticIds(Artifact artifact) throws OseeCoreException {
+      Set<String> staticIds = new HashSet<String>();
+      for (String staticId : instance.staticIdArtifactCache.keySet()) {
+         if (instance.staticIdArtifactCache.getValues(staticId).equals(artifact)) {
+            staticIds.add(staticId);
+         }
+      }
+      for (String staticId : staticIds) {
+         instance.staticIdArtifactCache.removeValue(staticId, artifact);
+      }
+   }
+
    synchronized static void deCache(Artifact artifact) throws OseeCoreException {
       instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
       instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
-      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
-         instance.staticIdArtifactCache.removeValue(staticId, artifact);
-      }
+      deCacheStaticIds(artifact);
    }
 
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId) {
