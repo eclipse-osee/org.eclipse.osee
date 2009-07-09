@@ -31,7 +31,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
          "INSERT INTO osee_artifact (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
 
    private static final String INSERT_ARTIFACT_VERSION =
-         "INSERT INTO osee_artifact_version (art_id, gamma_id, modification_id) VALUES (?,?,?)";
+         "INSERT INTO osee_artifact_version (art_id, gamma_id) VALUES (?,?)";
 
    private final Artifact artifact;
 
@@ -59,8 +59,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
             internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
                   artifact.getGuid(), artifact.getHumanReadableId());
          }
-         internalAddInsertToBatch(transaction, 2, INSERT_ARTIFACT_VERSION, getItemId(), getGammaId(),
-               getModificationType().getValue());
+         internalAddInsertToBatch(transaction, 2, INSERT_ARTIFACT_VERSION, getItemId(), getGammaId());
       }
    }
 

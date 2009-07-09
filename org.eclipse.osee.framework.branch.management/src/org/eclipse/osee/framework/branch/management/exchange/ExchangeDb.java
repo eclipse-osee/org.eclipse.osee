@@ -107,13 +107,13 @@ public class ExchangeDb {
          "SELECT DISTINCT (art1.art_id), art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_artifact art1, osee_artifact_version artv1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.art_id = artv1.art_id AND artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ARTIFACT_VERSION_QUERY =
-         "SELECT DISTINCT (artv1.GAMMA_ID), artv1.ART_ID, artv1.MODIFICATION_ID FROM osee_artifact_version artv1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (artv1.GAMMA_ID), artv1.ART_ID FROM osee_artifact_version artv1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ATTRIBUTE_TABLE_QUERY =
-         "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.MODIFICATION_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String RELATION_LINK_TABLE_QUERY =
-         "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.MODIFICATION_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID, rel1.A_ORDER, rel1.B_ORDER FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID, rel1.A_ORDER, rel1.B_ORDER FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ARTIFACT_TYPE_QUERY =
          "SELECT type1.name, type1.art_type_id FROM osee_artifact_type type1, osee_join_export_import jex1 WHERE type1.art_type_id = jex1.id1 AND jex1.query_id = ?";

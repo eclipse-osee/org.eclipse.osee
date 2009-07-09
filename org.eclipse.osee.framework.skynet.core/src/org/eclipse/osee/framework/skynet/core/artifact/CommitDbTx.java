@@ -88,7 +88,7 @@ public class CommitDbTx extends DbTransaction {
    private static final String ARTIFACT_CHANGES =
          "SELECT av1.art_id, ? as branch_id FROM osee_txs tx1, osee_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, ? as branch_id FROM osee_txs tx1, osee_relation_link rl1, osee_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
 
-   private static final String UPDATE_MODIFICATION_ID =
+   private static final String UPDATE_MODIFICATION_TYPE =
          "UPDATE osee_txs SET mod_type = " + ModificationType.NEW.getValue() + " WHERE mod_type = " + ModificationType.MODIFIED.getValue() + " AND (transaction_id, gamma_id) in ((SELECT transaction_id, txs0.gamma_id FROM osee_txs txs0, osee_artifact_version ver0 where txs0.transaction_id = ? and txs0.gamma_id = ver0.gamma_id and ver0.art_id in (SELECT art_id FROM osee_tx_details det1, osee_txs txs1, osee_artifact_version ver1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txs1.mod_type = " + ModificationType.NEW.getValue() + " AND txs1.gamma_id = ver1.gamma_id)) UNION (SELECT transaction_id, txs0.gamma_id FROM osee_txs txs0, osee_attribute ver0 where txs0.transaction_id = ? and txs0.gamma_id = ver0.gamma_id and ver0.attr_id in (SELECT attr_id FROM osee_tx_details det1, osee_txs txs1, osee_attribute ver1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txs1.mod_type = " + ModificationType.NEW.getValue() + " AND txs1.gamma_id = ver1.gamma_id)) UNION (SELECT transaction_id, txs0.gamma_id FROM osee_txs txs0, osee_relation_link ver0 where txs0.transaction_id = ? and txs0.gamma_id = ver0.gamma_id and (ver0.a_art_id , ver0.b_art_id) in (SELECT a_art_id, b_art_id FROM osee_tx_details det1, osee_txs txs1, osee_relation_link ver1 WHERE det1.branch_id = ? AND det1.transaction_id = txs1.transaction_id AND det1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txs1.mod_type = " + ModificationType.NEW.getValue() + " AND txs1.gamma_id = ver1.gamma_id)))";
 
    private static final String REVERT_DELETED_NEW =
@@ -292,7 +292,7 @@ public class CommitDbTx extends DbTransaction {
       //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
       //and modified on the same branch.
       time = System.currentTimeMillis();
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MODIFICATION_ID, newTransactionNumber, fromBranchId,
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MODIFICATION_TYPE, newTransactionNumber, fromBranchId,
             newTransactionNumber, fromBranchId, newTransactionNumber, fromBranchId);
       if (DEBUG) {
          System.out.println(String.format("   Updated modification types for new and modified to modified in %s",

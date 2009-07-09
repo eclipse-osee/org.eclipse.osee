@@ -182,9 +182,6 @@
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>
 	</extension>
-		<extension id="DuplicateRelationOpertions" name="DuplicateRelationOpertions" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DuplicateRelationOpertions"/>
-	</extension>
 	<extension id="UniqueNumberOfCurrentOseeUsers" name="Unique Number Of Current Osee Users" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers"/>
 	</extension>
@@ -1246,12 +1243,6 @@
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetPopulateExample">
-    </Operation>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn">
     </Operation>
  </extension>
  <extension

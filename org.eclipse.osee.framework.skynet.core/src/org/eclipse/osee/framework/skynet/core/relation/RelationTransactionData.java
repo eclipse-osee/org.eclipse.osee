@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  */
 public class RelationTransactionData extends BaseTransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
-         "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order, b_order, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order, b_order, gamma_id) VALUES (?,?,?,?,?,?,?,?)";
 
    private final RelationLink relation;
 
@@ -55,8 +55,7 @@ public class RelationTransactionData extends BaseTransactionData {
       if (!useExistingBackingData()) {
          internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
                relation.getRelationType().getRelationTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
-               relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId(),
-               getModificationType().getValue());
+               relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId());
       }
    }
 
