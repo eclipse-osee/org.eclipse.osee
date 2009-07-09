@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -25,7 +27,21 @@ public class ArtifactChangeHandler implements IStatusHandler {
     */
    @Override
    public Object handleStatus(IStatus status, Object source) throws CoreException {
-      return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Confirm Artifact Type Change ", (String) source);
+      final MutableInteger result = new MutableInteger(0);
+      final String message = (String) source;
+
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Confirm Artifact Type Change ", message)) {
+               result.setValue(1);
+            }
+         }
+
+      };
+
+      Displays.ensureInDisplayThread(runnable, true);
+      return result.getValue() == 1;
    }
 }
