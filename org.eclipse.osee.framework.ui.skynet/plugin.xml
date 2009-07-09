@@ -1783,4 +1783,13 @@
              className="org.eclipse.osee.framework.ui.skynet.dbHealth.AuthorIdCheck">
        </DatabaseHealthOperation>
     </extension>
+    <extension
+          point="org.eclipse.debug.core.statusHandlers">
+       <statusHandler
+             class="org.eclipse.osee.framework.ui.skynet.handler.ArtifactChangeHandler"
+             code="256"
+             id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
+             plugin="org.eclipse.osee.framework.skynet.core">
+       </statusHandler>
+    </extension>
 </plugin>
