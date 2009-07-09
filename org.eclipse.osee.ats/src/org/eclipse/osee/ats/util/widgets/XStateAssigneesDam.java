@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -61,7 +61,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
+               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
                new Date());
       }
    }
@@ -73,7 +73,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
+               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
                new Date());
       }
    }

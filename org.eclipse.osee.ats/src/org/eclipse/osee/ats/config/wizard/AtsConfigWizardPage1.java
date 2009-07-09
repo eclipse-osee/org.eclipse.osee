@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -127,7 +127,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               String namespace = "org.trex.saw.labs" + AtsLib.getAtsDeveloperIncrementingNum();
+               String namespace = "org.trex.saw.labs" + AtsUtil.getAtsDeveloperIncrementingNum();
                ((XText) getXWidget(CONFIG_NAMESPACE)).set(namespace);
                ((XText) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
                ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");

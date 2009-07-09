@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -31,7 +30,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    protected List<Artifact> rootSet = new ArrayList<Artifact>();
    private final WorldXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private final ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
 
    public WorldContentProvider(WorldXViewer WorldXViewer) {
       super();
@@ -113,7 +111,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getChildren(Object parentElement) {
-      debug.report("getChildren");
       if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
       }
@@ -151,7 +148,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public Object getParent(Object element) {
-      debug.report("getParent");
       if (element instanceof Artifact) {
          try {
             Artifact artifact = (Artifact) element;
@@ -176,7 +172,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      debug.report("hasChildren");
       if (element instanceof Collection) return true;
       if (element instanceof String) return false;
       if (((Artifact) element).isDeleted()) return false;
@@ -192,7 +187,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      debug.report("getElements");
       if (inputElement instanceof String) return new Object[] {inputElement};
       return getChildren(inputElement);
    }

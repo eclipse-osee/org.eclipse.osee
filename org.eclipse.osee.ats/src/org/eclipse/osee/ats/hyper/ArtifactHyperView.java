@@ -19,7 +19,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
@@ -56,7 +55,6 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public static ArtifactHyperItem topAHI;
    public static Artifact currentArtifact;
-   public ActionDebug debug = new ActionDebug(false, "ArtifactHyperView");
    private Action pinAction;
 
    public ArtifactHyperView() {
@@ -116,7 +114,6 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
          for (RelationLink link : currentArtifact.getRelationsAll(false)) {
-            debug.report("relation " + link.getRelationType().getTypeName());
 
             // Don't process link if onlyShowRel is populated and doesn't contain link name
             if (onlyShowRelations.size() > 0) {

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
@@ -145,9 +145,9 @@ public class AtsConfig {
       transaction.execute();
 
       // open everything in editors
-      AtsLib.openAtsAction(teamDef, AtsOpenOption.OpenAll);
+      AtsUtil.openAtsAction(teamDef, AtsOpenOption.OpenAll);
       for (ActionableItemArtifact aia : aias) {
-         AtsLib.openAtsAction(aia, AtsOpenOption.OpenAll);
+         AtsUtil.openAtsAction(aia, AtsOpenOption.OpenAll);
       }
       AtsWorkflowConfigEditor.editWorkflow(workFlowDefinition);
 

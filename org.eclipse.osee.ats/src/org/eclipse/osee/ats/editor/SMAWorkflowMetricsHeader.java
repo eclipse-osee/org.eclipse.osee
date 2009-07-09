@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -86,14 +86,14 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
       }
       try {
          if (percentLabel != null && !percentLabel.isDisposed()) percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
-         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal())));
-         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal())));
+         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal())));
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
             if (result.isFalse())
                remainHoursLabel.setText("Error" + result.getText());
             else
-               remainHoursLabel.setText(String.valueOf(AtsLib.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours())));
+               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours())));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

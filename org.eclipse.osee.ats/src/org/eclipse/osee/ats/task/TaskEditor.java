@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
@@ -192,8 +192,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    private void createMetricsTab() throws OseeCoreException {
-      Composite comp = AtsLib.createCommonPageComposite(getContainer());
-      AtsLib.createCommonToolBar(comp);
+      Composite comp = AtsUtil.createCommonPageComposite(getContainer());
+      AtsUtil.createCommonToolBar(comp);
       metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
       metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");

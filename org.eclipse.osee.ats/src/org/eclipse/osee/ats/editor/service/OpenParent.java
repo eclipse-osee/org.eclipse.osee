@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -37,7 +37,7 @@ public class OpenParent extends WorkPageService {
          @Override
          public void run() {
             try {
-               AtsLib.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+               AtsUtil.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }

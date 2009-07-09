@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -33,7 +33,7 @@ public class OpenTeamDefinition extends WorkPageService {
 
    private void performOpen() {
       try {
-         AtsLib.openAtsAction(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition(),
+         AtsUtil.openAtsAction(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition(),
                AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

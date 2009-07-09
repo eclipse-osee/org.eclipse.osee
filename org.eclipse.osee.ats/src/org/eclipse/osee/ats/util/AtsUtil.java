@@ -69,11 +69,11 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsLib implements IAtsLib {
+public class AtsUtil implements IAtsLib {
 
    private static int atsDevNum;
 
-   public AtsLib() {
+   public AtsUtil() {
       super();
    }
 
@@ -185,7 +185,7 @@ public class AtsLib implements IAtsLib {
    }
 
    public static void open(String guid, OseeAts.OpenView view) {
-      (new AtsLib()).openArtifact(guid, view);
+      (new AtsUtil()).openArtifact(guid, view);
    }
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
@@ -226,7 +226,7 @@ public class AtsLib implements IAtsLib {
    }
 
    public static void createAtsAction(String initialDescription, String actionableItem) {
-      (new AtsLib()).createATSAction(initialDescription, actionableItem);
+      (new AtsUtil()).createATSAction(initialDescription, actionableItem);
    }
 
    public void createATSAction(String initialDescription, String actionableItemName) {
@@ -249,7 +249,7 @@ public class AtsLib implements IAtsLib {
    }
 
    public static void openAtsAction(final Artifact art, final AtsOpenOption option) {
-      (new AtsLib()).openATSAction(art, option);
+      (new AtsUtil()).openATSAction(art, option);
    }
 
    public void openATSAction(final Artifact art, final AtsOpenOption option) {

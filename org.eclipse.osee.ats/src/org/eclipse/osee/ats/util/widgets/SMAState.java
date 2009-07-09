@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -178,7 +178,7 @@ public class SMAState {
    }
 
    public String getHoursSpentStr() {
-      return AtsLib.doubleToStrString(hoursSpent);
+      return AtsUtil.doubleToStrString(hoursSpent);
    }
 
    /**

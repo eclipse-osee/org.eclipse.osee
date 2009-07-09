@@ -15,7 +15,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -61,7 +61,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                            new Date(), transaction);
                peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                peerArt.persistAttributesAndRelations(transaction);
-               AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
+               AtsUtil.openAtsAction(peerArt, AtsOpenOption.OpenAll);
                transaction.execute();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

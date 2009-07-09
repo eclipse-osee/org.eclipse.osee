@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class WorldXViewerSorter extends XViewerSorter {
 
-   ActionDebug debug = new ActionDebug(true, "WorldXViewerSorter");
    protected final XViewer xViewer;
 
    /**

@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.Subscribe;
+import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -33,7 +33,7 @@ public class SubscribedOperation extends WorkPageService {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            (new Subscribe(smaMgr.getSma())).toggleSubscribe();
+            (new SubscribeManager(smaMgr.getSma())).toggleSubscribe();
          }
       };
       action.setToolTipText(getName());

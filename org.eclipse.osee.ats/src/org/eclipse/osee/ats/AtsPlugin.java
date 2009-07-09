@@ -31,7 +31,6 @@ import org.eclipse.swt.graphics.Color;
  */
 public class AtsPlugin extends OseeUiActivator {
    private static AtsPlugin pluginInstance;
-   public static ActionDebug debug = new ActionDebug(false, "AtsPlugin");
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);

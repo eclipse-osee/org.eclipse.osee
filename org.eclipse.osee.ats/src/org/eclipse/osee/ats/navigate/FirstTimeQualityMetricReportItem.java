@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.VersionMetrics;
 import org.eclipse.osee.ats.util.VersionTeamMetrics;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -190,7 +190,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
                numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
                numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == 0 || numNonSupportReleased == null ? "N/A" : AtsLib.doubleToStrString(new Double(
+               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == 0 || numNonSupportReleased == null ? "N/A" : AtsUtil.doubleToStrString(new Double(
                      numOrigDurningNextReleaseCycle) / numNonSupportReleased)}));
          monitor.worked(1);
       }

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
@@ -120,7 +120,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static Set<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
       if (topTeamDef == null) return EMPTY_SET;
-      return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
+      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
             active, TeamDefinitionArtifact.class);
    }
 
@@ -195,7 +195,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
       if (topTeamDef == null) return EMPTY_SET;
-      return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
+      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
             active, TeamDefinitionArtifact.class);
    }
 

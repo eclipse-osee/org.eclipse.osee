@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -49,7 +49,7 @@ public class NewPeerToPeerReviewJob extends Job {
          peerToPeerReviewArtifact.persistAttributesAndRelations(transaction);
          transaction.execute();
 
-         AtsLib.openAtsAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openAtsAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);

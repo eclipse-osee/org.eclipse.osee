@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -60,7 +60,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       if (aCol.equals(UserRoleXViewerFactory.User_Col))
          return defectItem.getUser().getName();
       else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col))
-         return defectItem.getHoursSpent() == null ? "" : AtsLib.doubleToStrString(defectItem.getHoursSpent(), false);
+         return defectItem.getHoursSpent() == null ? "" : AtsUtil.doubleToStrString(defectItem.getHoursSpent(), false);
       else if (aCol.equals(UserRoleXViewerFactory.Role_Col))
          return defectItem.getRole().name();
       else if (aCol.equals(UserRoleXViewerFactory.Completed_Col))

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -61,7 +61,7 @@ public class ActionableItemArtifact extends Artifact {
    public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
       ActionableItemArtifact topAi = getTopActionableItem();
       if (topAi == null) return EMPTY_SET;
-      return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
+      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
             ActionableItemArtifact.class);
    }
 

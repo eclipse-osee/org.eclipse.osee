@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.Favorites;
+import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -35,7 +35,7 @@ public class FavoriteOperation extends WorkPageService {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            (new Favorites(smaMgr.getSma())).toggleFavorite();
+            (new FavoritesManager(smaMgr.getSma())).toggleFavorite();
          }
       };
       action.setToolTipText(getName());

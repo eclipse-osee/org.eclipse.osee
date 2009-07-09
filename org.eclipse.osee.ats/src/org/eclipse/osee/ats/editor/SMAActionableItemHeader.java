@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,7 +67,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
 
             public void linkActivated(HyperlinkEvent e) {
                try {
-                  AtsLib.editActionableItems(teamWf.getParentActionArtifact());
+                  AtsUtil.editActionableItems(teamWf.getParentActionArtifact());
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

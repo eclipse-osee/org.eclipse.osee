@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,7 +39,7 @@ public class AITreeContentProvider implements ITreeContentProvider {
       else if (parentElement instanceof ActionableItemArtifact) {
          try {
             ActionableItemArtifact ai = ((ActionableItemArtifact) parentElement);
-            return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
+            return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
                   ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
          }

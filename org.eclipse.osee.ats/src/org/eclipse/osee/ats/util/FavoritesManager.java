@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
+import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,36 +26,34 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class Subscribe {
+public class FavoritesManager {
 
    private final Collection<StateMachineArtifact> smas;
 
-   public Subscribe(StateMachineArtifact sma) {
+   public FavoritesManager(StateMachineArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public Subscribe(Collection<StateMachineArtifact> smas) {
+   public FavoritesManager(Collection<StateMachineArtifact> smas) {
       super();
       this.smas = smas;
    }
 
-   public void toggleSubscribe() {
-      toggleSubscribe(true);
+   public void toggleFavorite() {
+      toggleFavorite(true);
    }
 
-   public void toggleSubscribe(boolean prompt) {
+   public void toggleFavorite(boolean prompt) {
       try {
-         if (((ISubscribableArtifact) smas.iterator().next()).amISubscribed()) {
+         if (((IFavoriteableArtifact) smas.iterator().next()).amIFavorite()) {
             boolean result = true;
             if (prompt) result =
-                  MessageDialog.openQuestion(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Un-Subscribe",
-                        "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                for (StateMachineArtifact sma : smas) {
-                  ((ISubscribableArtifact) sma).removeSubscribed(UserManager.getUser(), transaction);
+                  ((IFavoriteableArtifact) sma).removeFavorite(UserManager.getUser(), transaction);
                }
                transaction.execute();
             }
@@ -63,16 +61,14 @@ public class Subscribe {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Subscribe",
-                        "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
+                        "Favorite", "Are you sure you wish add this as a Favorite?");
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsPlugin.getAtsBranch());
                for (StateMachineArtifact sma : smas) {
-                  ((ISubscribableArtifact) sma).addSubscribed(UserManager.getUser(), transaction);
+                  ((IFavoriteableArtifact) sma).addFavorite(UserManager.getUser(), transaction);
                }
                transaction.execute();
             }
-
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

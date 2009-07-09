@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -150,7 +150,7 @@ public class UserRole {
    }
 
    public String getHoursSpentStr() {
-      return hoursSpent == null ? "" : AtsLib.doubleToStrString(hoursSpent, true);
+      return hoursSpent == null ? "" : AtsUtil.doubleToStrString(hoursSpent, true);
    }
 
    /**

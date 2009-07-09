@@ -33,8 +33,8 @@ import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.Favorites;
-import org.eclipse.osee.ats.util.Subscribe;
+import org.eclipse.osee.ats.util.FavoritesManager;
+import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -153,14 +153,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Favorites");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Diagram View%", AtsPlugin.getAtsBranch())) {
-            new Favorites((StateMachineArtifact) art).toggleFavorite(false);
+            new FavoritesManager((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Subscribed");
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Even%", AtsPlugin.getAtsBranch())) {
-            new Subscribe((StateMachineArtifact) art).toggleSubscribe(false);
+            new SubscribeManager((StateMachineArtifact) art).toggleSubscribe(false);
          }
 
          // Create some tasks off sample workflows

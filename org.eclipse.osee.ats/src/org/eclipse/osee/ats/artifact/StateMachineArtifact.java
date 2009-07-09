@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
@@ -1340,7 +1340,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public String getWorldViewDaysInCurrentState() throws OseeCoreException {
       long timeInCurrState = smaMgr.getStateMgr().getTimeInState();
       if (timeInCurrState == 0) return "0.0";
-      return AtsLib.doubleToStrString(timeInCurrState / XDate.MILLISECONDS_IN_A_DAY);
+      return AtsUtil.doubleToStrString(timeInCurrState / XDate.MILLISECONDS_IN_A_DAY);
    }
 
    /* (non-Javadoc)

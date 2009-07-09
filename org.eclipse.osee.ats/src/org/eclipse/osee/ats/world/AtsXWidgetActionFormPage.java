@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -72,7 +72,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       body.setLayout(ALayout.getZeroMarginLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
-      toolBar = AtsLib.createCommonToolBar(body, toolkit);
+      toolBar = AtsUtil.createCommonToolBar(body, toolkit);
 
       Composite headerComp = new Composite(body, SWT.NONE);
       headerComp.setLayout(new GridLayout(2, false));

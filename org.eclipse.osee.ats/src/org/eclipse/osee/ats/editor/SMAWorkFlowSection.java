@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.task.TaskComposite;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -787,7 +787,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Otherwise, open dialog to ask for hours complete
       String msg =
-            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsLib.doubleToStrString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToStrString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
       SMAStatusDialog tsd =
             new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
                   msg, false, Arrays.asList(smaMgr.getSma()));

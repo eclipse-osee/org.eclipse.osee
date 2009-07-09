@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -341,7 +341,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createHistoryTab() {
       try {
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          createToolBar(composite);
          historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
          historyPageIndex = addPage(composite);
@@ -353,7 +353,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createTaskTab() {
       try {
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          ToolBar toolBar = createToolBar(composite);
          taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
          taskPageIndex = addPage(composite);
@@ -365,7 +365,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createMetricsTab() {
       try {
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          createToolBar(composite);
          metricsComposite = new AtsMetricsComposite(this, composite, SWT.NONE);
          metricsPageIndex = addPage(composite);
@@ -381,7 +381,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          if (!AtsPlugin.isAtsAdmin()) return;
 
          // Create Attributes tab
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          ToolBar toolBar = createToolBar(composite);
 
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
@@ -413,7 +413,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private void createRelationsTab() {
       try {
          // Create Relations tab
-         Composite composite = AtsLib.createCommonPageComposite(getContainer());
+         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          ToolBar toolBar = createToolBar(composite);
 
          if (AtsPlugin.isAtsAdmin()) {
@@ -478,7 +478,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    };
 
    private ToolBar createToolBar(Composite parent) {
-      ToolBar toolBar = AtsLib.createCommonToolBar(parent);
+      ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
       ToolItem item;
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");

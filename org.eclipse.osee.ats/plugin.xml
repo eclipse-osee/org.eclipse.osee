@@ -215,7 +215,7 @@
    <extension
          point="org.eclipse.osee.framework.skynet.core.AtsLib">
       <AtsLib
-            classname="org.eclipse.osee.ats.util.AtsLib">
+            classname="org.eclipse.osee.ats.util.AtsUtil">
       </AtsLib>
    </extension>
    <extension

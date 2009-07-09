@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,7 +44,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       else if (parentElement instanceof TeamDefinitionArtifact && active != null) {
          try {
             TeamDefinitionArtifact teamDef = ((TeamDefinitionArtifact) parentElement);
-            return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
+            return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
                   active, TeamDefinitionArtifact.class).toArray();
          } catch (Exception ex) {
             // do nothing

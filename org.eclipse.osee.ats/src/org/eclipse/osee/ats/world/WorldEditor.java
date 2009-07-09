@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -222,8 +222,8 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    }
 
    private void createMetricsTab() throws OseeCoreException {
-      Composite comp = AtsLib.createCommonPageComposite(getContainer());
-      AtsLib.createCommonToolBar(comp);
+      Composite comp = AtsUtil.createCommonPageComposite(getContainer());
+      AtsUtil.createCommonToolBar(comp);
       metricsComposite = new AtsMetricsComposite(this, comp, SWT.NONE);
       metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");

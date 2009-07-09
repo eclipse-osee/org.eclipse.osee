@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.workflow.editor.model;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -49,7 +49,7 @@ public class WorkPageShape extends RectangleShape {
    };
 
    public WorkPageShape() {
-      this(new WorkPageDefinition("New" + AtsLib.getAtsDeveloperIncrementingNum(), "NEW", null));
+      this(new WorkPageDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum(), "NEW", null));
    }
 
    public WorkPageShape(WorkPageDefinition workPageDefinition) {

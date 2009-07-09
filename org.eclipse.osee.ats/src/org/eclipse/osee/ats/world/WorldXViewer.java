@@ -46,9 +46,9 @@ import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
-import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.util.Favorites;
-import org.eclipse.osee.ats.util.Subscribe;
+import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.FavoritesManager;
+import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -319,11 +319,11 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                if (getSelectedActionArtifacts().size() == 1) {
                   ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
-                  AtsLib.editActionableItems(actionArt);
+                  AtsUtil.editActionableItems(actionArt);
                   refresh(getSelectedArtifactItems().iterator().next());
                } else {
                   TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
-                  AtsLib.editActionableItems(teamArt);
+                  AtsUtil.editActionableItems(teamArt);
                   refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {
@@ -360,7 +360,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       openInAtsWorkflowEditorAction = new Action("Open in ATS Workflow Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
+            AtsUtil.openAtsAction(getSelectedArtifactItems().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
          }
       };
 
@@ -410,14 +410,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       favoritesAction = new Action("Add as Favorite", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedSMA() != null) (new Favorites(getSelectedSMAArtifacts())).toggleFavorite();
+            if (getSelectedSMA() != null) (new FavoritesManager(getSelectedSMAArtifacts())).toggleFavorite();
          }
       };
 
       subscribedAction = new Action("Subscribe for Notifications", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedSMA() != null) (new Subscribe(getSelectedSMAArtifacts())).toggleSubscribe();
+            if (getSelectedSMA() != null) (new SubscribeManager(getSelectedSMAArtifacts())).toggleSubscribe();
          }
       };
 
@@ -555,7 +555,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       Artifact art = getSelectedArtifacts().iterator().next();
       if (art instanceof ActionArtifact) {
          if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() > 1) {
-            art = AtsLib.promptSelectTeamWorkflow((ActionArtifact) art);
+            art = AtsUtil.promptSelectTeamWorkflow((ActionArtifact) art);
             if (art == null) return;
          } else
             art = ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
@@ -682,7 +682,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    public void handleDoubleClick() {
       if (getSelectedArtifactItems().size() == 0) return;
       Artifact art = getSelectedArtifactItems().iterator().next();
-      AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+      AtsUtil.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {

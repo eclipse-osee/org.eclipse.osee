@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -125,22 +125,22 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Originator_Col)) return wva.getWorldViewOriginator();
          if (xCol.equals(WorldXViewerFactory.Branch_Status_Col)) return wva.getWorldViewBranchStatus();
          if (xCol.equals(WorldXViewerFactory.Decision_Col)) return wva.getWorldViewDecision();
-         if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) return AtsLib.doubleToStrString(wva.getWorldViewEstimatedHours());
+         if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewEstimatedHours());
          if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             Result result = wva.isWorldViewRemainHoursValid();
             if (result.isFalse()) return result.getText();
-            return AtsLib.doubleToStrString(wva.getWorldViewRemainHours());
+            return AtsUtil.doubleToStrString(wva.getWorldViewRemainHours());
          }
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col)) return String.valueOf(wva.getWorldViewPercentCompleteState());
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Task_Col)) return String.valueOf(wva.getWorldViewPercentCompleteStateTask());
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Review_Col)) return String.valueOf(wva.getWorldViewPercentCompleteStateReview());
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) return String.valueOf(wva.getWorldViewPercentCompleteTotal());
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentState());
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Task_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTask());
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Review_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateReview());
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTotal());
+         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewHoursSpentState());
+         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Task_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewHoursSpentStateTask());
+         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Review_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewHoursSpentStateReview());
+         if (xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewHoursSpentStateTotal());
 
-         if (xCol.equals(WorldXViewerFactory.Total_Hours_Spent_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentTotal());
+         if (xCol.equals(WorldXViewerFactory.Total_Hours_Spent_Col)) return AtsUtil.doubleToStrString(wva.getWorldViewHoursSpentTotal());
 
          if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) return wva.getWorldViewPercentReworkStr();
          if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) return wva.getWorldViewEstimatedReleaseDateStr();
@@ -168,17 +168,17 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Parent_ID_Col)) return wva.getWorldViewParentID();
          if (xCol.equals(WorldXViewerFactory.Parent_State_Col)) return wva.getWorldViewParentState();
          if (xCol.equals(WorldXViewerFactory.Days_In_Current_State)) return wva.getWorldViewDaysInCurrentState();
-         if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
+         if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsUtil.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);
          if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
             Result result = wva.isWorldViewAnnualCostAvoidanceValid();
             if (result.isFalse()) return result.getText();
-            return AtsLib.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
+            return AtsUtil.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
          }
          if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
             Result result = wva.isWorldViewManDaysNeededValid();
             if (result.isFalse()) return result.getText();
-            return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
+            return AtsUtil.doubleToStrString(wva.getWorldViewManDaysNeeded());
          }
          if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) return ((Artifact) wva).getArtifactTypeName();
          if (xCol.equals(WorldXViewerFactory.Originating_Workflow)) {
