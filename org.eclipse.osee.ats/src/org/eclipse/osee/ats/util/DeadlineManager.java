@@ -45,7 +45,7 @@ public class DeadlineManager {
 
    public Result isDeadlineDateOverdue() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
-      if ((new Date()).after(getDeadlineDate())) return new Result(true, "Deadline Date has past.");
+      if ((new Date()).after(getDeadlineDate())) return new Result(true, "Deadline Date has passed.");
       return Result.FalseResult;
    }
 
