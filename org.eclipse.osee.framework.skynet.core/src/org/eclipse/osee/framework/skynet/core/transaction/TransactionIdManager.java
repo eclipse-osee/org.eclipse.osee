@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -44,9 +42,12 @@ public final class TransactionIdManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
          "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+
    private static final String SELECT_TRANSACTIONS =
-         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author",
-               "branch_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
+         "SELECT * from osee_tx_details where branch_id = ? order by transaction_id DESC";
+
+   private static final String GET_PRIOR_TRANSACTION =
+         "SELECT max(transaction_id) as prior_id FROM osee_tx_details WHERE branch_id = ? AND transaction_id < ?";
 
    private static final String SELECT_COMMIT_TRANSACTIONS =
          "SELECT transaction_id from osee_tx_details where commit_art_id = ?";
@@ -167,9 +168,8 @@ public final class TransactionIdManager {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(
-               "SELECT max(transaction_id) as prior_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
-               transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
+         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getBranchId(),
+               transactionId.getTransactionNumber());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
