@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -791,70 +790,47 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Uses the Dynamic Attribute Manager to set a group of attribute data strings into a set of attributes. Checks to
-    * see if data value exists before adding and also removes those attribute values that are not in the input dataStrs.
-    * Duplicates will be removed.
+    * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
+    * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
+    * excess attributes will be deleted.
     * 
     * @param attributeTypeName
-    * @param dataStrs
+    * @param newValues
     * @throws OseeCoreException
     */
-   public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws OseeCoreException {
+   public void setAttributeValues(String attributeTypeName, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
 
-      ArrayList<String> storedNames = new ArrayList<String>();
+      List<Attribute<String>> remainingAttributes = getAttributes(attributeTypeName);
+      List<String> remainingNewValues = new ArrayList<String>(newValues.size());
 
-      AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
-      int minOccur = attributeType.getMinOccurrences();
-      int maxOccur = attributeType.getMaxOccurrences();
-      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-         storedNames.add(attribute.toString());
-      }
-
-      if (dataStrs.size() > maxOccur) throw new IllegalStateException(
-            "Attempting to set " + dataStrs.size() + " when max =" + maxOccur);
-      if (dataStrs.size() < minOccur) throw new IllegalStateException(
-            "Attempting to set " + dataStrs.size() + " when min =" + minOccur);
-      // If size to replace is same as size filled, need to reset existing attributes cause can't
-      // add and then remove
-      if (dataStrs.size() == maxOccur && storedNames.size() == dataStrs.size()) {
-         String[] dataStrsArr = dataStrs.toArray(new String[dataStrs.size()]);
-         int x = 0;
-         for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-            if (attribute instanceof CharacterBackedAttribute) {
-               ((CharacterBackedAttribute<?>) attribute).setFromString(dataStrsArr[x++]);
+      // all existing attributes matching a new value will be left untouched
+      for (String newValue : newValues) {
+         boolean found = false;
+         for (Attribute<String> attribute : remainingAttributes) {
+            if (attribute.getValue().equals(newValue)) {
+               remainingAttributes.remove(attribute);
+               found = true;
+               break;
             }
          }
-         return;
-      }
-
-      // Add items that are newly selected
-      for (String value : dataStrs) {
-         if (!storedNames.contains(value)) {
-            addAttribute(attributeTypeName, value);
+         if (!found) {
+            remainingNewValues.add(newValue);
          }
       }
 
-      // Remove items that aren't selected anymore
-      for (String stored : storedNames) {
-         if (!dataStrs.contains(stored)) {
-            for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-               if (attribute.toString().equals(stored)) {
-                  attribute.delete();
-               }
-            }
-         }
-      }
-
-      // Remove duplicates
-      ArrayList<String> foundAttribute = new ArrayList<String>();
-      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-         // Delete duplicate if already found
-         if (foundAttribute.contains(attribute.toString())) {
-            attribute.delete();
+      for (String newValue : remainingNewValues) {
+         if (remainingAttributes.isEmpty()) {
+            setOrAddAttribute(attributeTypeName, newValue);
          } else {
-            foundAttribute.add(attribute.toString());
+            int index = remainingAttributes.size() - 1;
+            remainingAttributes.get(index).setValue(newValue);
+            remainingAttributes.remove(index);
          }
+      }
+
+      for (Attribute<String> attribute : remainingAttributes) {
+         attribute.delete();
       }
    }
 
@@ -1503,6 +1479,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
+   /**
+    * An artifact reflected about its own branch returns itself. Otherwise a new artifact is introduced on the
+    * destinationBranch
+    * 
+    * @param destinationBranch
+    * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
+    * @throws OseeCoreException
+    */
    public Artifact reflect(Branch destinationBranch) throws OseeCoreException {
       if (branch.equals(destinationBranch)) {
          return this;
