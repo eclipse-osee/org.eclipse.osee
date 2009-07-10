@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -290,9 +289,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
          if (artifact instanceof StateMachineArtifact) {
             try {
-               artifact.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
-            } catch (AttributeDoesNotExist ex) {
-               // do nothing
+               artifact.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
             } catch (MultipleAttributesExist ex) {
                xResultData.logError("Artifact: " + XResultData.getHyperlink(artifact) + " Multiple resolution attributes exist");
             }

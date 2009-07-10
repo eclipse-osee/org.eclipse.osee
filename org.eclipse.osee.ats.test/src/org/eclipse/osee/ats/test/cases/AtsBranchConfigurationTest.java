@@ -336,7 +336,7 @@ public class AtsBranchConfigurationTest {
       // Delete Team Definitions
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       Artifact art =
-            ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
+            ArtifactQuery.checkArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
          art.deleteAndPersist(transaction);
@@ -346,7 +346,7 @@ public class AtsBranchConfigurationTest {
       // Delete AIs
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       art =
-            ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
+            ArtifactQuery.checkArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
          for (Artifact childArt : art.getChildren()) {

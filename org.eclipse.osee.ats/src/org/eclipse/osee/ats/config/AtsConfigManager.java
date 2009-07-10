@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -116,14 +115,9 @@ public class AtsConfigManager {
       }
 
       // create workflow
-      Artifact workflowArt = null;
-      try {
-         workflowArt =
-               ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                     AtsUtil.getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
+      Artifact workflowArt =
+            ArtifactQuery.checkArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
+                  AtsUtil.getAtsBranch());
       WorkFlowDefinition workFlowDefinition;
       // If can't be found, create a new one
       if (workflowArt == null) {
