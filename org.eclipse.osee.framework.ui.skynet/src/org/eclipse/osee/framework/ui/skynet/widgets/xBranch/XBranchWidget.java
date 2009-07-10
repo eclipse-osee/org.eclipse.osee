@@ -188,7 +188,8 @@ public class XBranchWidget extends XWidget implements IActionable {
          }
       });
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, BranchView.VIEW_ID, "Branch");
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, BranchView.VIEW_ID,
+            "Branch Manager");
    }
 
    public void loadTable() {
