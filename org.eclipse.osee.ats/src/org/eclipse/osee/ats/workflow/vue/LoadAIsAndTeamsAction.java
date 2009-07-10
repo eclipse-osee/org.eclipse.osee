@@ -297,8 +297,8 @@ public class LoadAIsAndTeamsAction {
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }
       }
-      if (page.getName().equals(AtsFolder.Ats_Heading.getDisplayName())) {
-         aia = (ActionableItemArtifact) AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
+      if (page.getName().equals(AtsFolder.ActionableItem.getDisplayName())) {
+         aia = (ActionableItemArtifact) AtsFolderUtil.getFolder(AtsFolder.ActionableItem);
       } else {
          if (getOrCreate) {
             aia =
