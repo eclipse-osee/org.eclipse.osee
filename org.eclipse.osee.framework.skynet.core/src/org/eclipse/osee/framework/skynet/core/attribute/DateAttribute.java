@@ -14,10 +14,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Robert A. Fisher
@@ -31,16 +29,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public static final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
    private static final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
-
-   /**
-    * Create a date attribute with a given type, initialized to the current date and time.
-    * 
-    * @param attributeType The type of the attribute
-    * @throws OseeCoreException
-    */
-   public DateAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
 
    /**
     * Return current date or null if not set

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -100,7 +101,7 @@ public class AttributeActionContribution implements IActionContributor {
                for (Object object : objects) {
                   String attributeTypeName = ((AttributeType) object).getName();
                   if (isAdd) {
-                     artifact.addAttributeFromString(attributeTypeName, "");
+                     artifact.addAttribute(AttributeTypeManager.getType(attributeTypeName));
                   } else {
                      artifact.deleteAttributes(attributeTypeName);
                   }

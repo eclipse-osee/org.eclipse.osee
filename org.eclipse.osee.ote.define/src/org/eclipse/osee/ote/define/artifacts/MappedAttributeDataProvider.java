@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;

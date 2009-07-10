@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -313,17 +312,15 @@ public class AtsBranchConfigurationTest {
       String namespace = "org.branchTest." + testType.name().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      try {
-         ActionArtifact aArt =
-               (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
-                     testType.name() + " Req Changes", AtsUtil.getAtsBranch());
+      ActionArtifact aArt =
+            (ActionArtifact) ArtifactQuery.checkArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
+                  testType.name() + " Req Changes", AtsUtil.getAtsBranch());
+      if (aArt != null) {
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
             SMAEditor.close(teamArt, false);
             teamArt.deleteAndPersist(transaction);
          }
          aArt.deleteAndPersist(transaction);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
       }
       transaction.execute();
 
@@ -338,28 +335,24 @@ public class AtsBranchConfigurationTest {
 
       // Delete Team Definitions
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      try {
-         Artifact art =
-               ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
-                     AtsUtil.getAtsBranch());
+      Artifact art =
+            ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
+                  AtsUtil.getAtsBranch());
+      if (art != null) {
          art.deleteAndPersist(transaction);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
       }
       transaction.execute();
 
       // Delete AIs
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      try {
-         Artifact art =
-               ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
-                     AtsUtil.getAtsBranch());
+      art =
+            ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
+                  AtsUtil.getAtsBranch());
+      if (art != null) {
          for (Artifact childArt : art.getChildren()) {
             childArt.deleteAndPersist(transaction);
          }
          art.deleteAndPersist(transaction);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
       }
       transaction.execute();
 

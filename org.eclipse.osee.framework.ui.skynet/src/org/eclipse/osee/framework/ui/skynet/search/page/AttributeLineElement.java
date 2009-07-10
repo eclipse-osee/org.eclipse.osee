@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search.page;
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.search.ui.text.Match;
 

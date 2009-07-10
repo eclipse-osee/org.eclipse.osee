@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,7 +56,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnota
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
@@ -461,25 +459,36 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param <T>
     * @param attributeType
-    * @param existingAttribute specifies whether this attribute is new or is being loaded from the database
     * @return new Attribute
     * @throws OseeCoreException
     */
    @SuppressWarnings("unchecked")
-   public <T> Attribute<T> createAttribute(AttributeType attributeType, ModificationType modificationType) throws OseeCoreException {
-      Object[] params = new Object[] {attributeType, this, modificationType};
+   private <T> Attribute<T> createAttribute(AttributeType attributeType) throws OseeCoreException {
       Class<? extends Attribute<T>> attributeClass =
             (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
 
       try {
-         Constructor<? extends Attribute<T>> attributeConstructor =
-               attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class, ModificationType.class});
-         Attribute<T> attribute = attributeConstructor.newInstance(params);
+         Attribute<T> attribute = attributeClass.newInstance();
          attributes.put(attributeType.getName(), attribute);
          return attribute;
-      } catch (Exception ex) {
+      } catch (InstantiationException ex) {
+         throw new OseeWrappedException(ex);
+      } catch (IllegalAccessException ex) {
          throw new OseeWrappedException(ex);
       }
+   }
+
+   private <T> Attribute<T> initializeAttribute(AttributeType attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+      Attribute<T> attribute = createAttribute(attributeType);
+      attribute.internalInitialize(attributeType, this, modificationType, markDirty, setDefaultValue);
+      return attribute;
+   }
+
+   public <T> Attribute<T> internalInitializeAttribute(AttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
+      Attribute<T> attribute = createAttribute(attributeType);
+      attribute.internalInitialize(attributeType, this, modificationType, attributeId, gammaId, markDirty);
+      attribute.getAttributeDataProvider().loadData(data);
+      return attribute;
    }
 
    public void onAttributeModify() throws OseeStateException {
@@ -629,9 +638,22 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws OseeCoreException {
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
-         attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW);
+         attribute =
+               initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, true);
       }
       return attribute;
+   }
+
+   /**
+    * @param <T>
+    * @param attributeTypeName
+    * @return the existing attribute value or the default value from a newly initialized attribute if none previously
+    *         existed
+    * @throws OseeCoreException
+    */
+   public <T> T getOrInitializeSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
+      Attribute<T> attribute = getOrCreateSoleAttribute(attributeTypeName);
+      return attribute.getValue();
    }
 
    /**
@@ -843,7 +865,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> void addAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW).setValue(value);
+      initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, false).setValue(
+            value);
+   }
+
+   /**
+    * adds a new attribute of the type named attributeTypeName. The attribute is set to the default value for its type,
+    * if any.
+    * 
+    * @param attributeType
+    * @throws OseeCoreException
+    */
+   public void addAttribute(AttributeType attributeType) throws OseeCoreException {
+      initializeAttribute(attributeType, ModificationType.NEW, true, true);
    }
 
    /**
@@ -854,7 +888,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
-      createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW).setFromString(value);
+      initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, false).setFromString(
+            value);
    }
 
    /**
@@ -867,12 +902,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public <T> void setOrAddAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      if (AttributeTypeManager.getType(attributeTypeName).isEnumerated()) {
-         List<Attribute<String>> attributes = getAttributes(attributeTypeName);
-         for (Attribute<String> canidateAttribute : attributes) {
-            if (canidateAttribute.getValue().equals(value)) {
-               return;
-            }
+      List<Attribute<String>> attributes = getAttributes(attributeTypeName);
+      for (Attribute<String> canidateAttribute : attributes) {
+         if (canidateAttribute.getValue().equals(value)) {
+            return;
          }
       }
       addAttribute(attributeTypeName, value);
@@ -1503,7 +1536,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          if (sourceAttribute.isInDb()) {
-            Attribute.initializeAttribute(reflectedArtifact, sourceAttribute.getAttributeType().getAttrTypeId(),
+            reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
                   sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());
          }
@@ -1762,12 +1795,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (AttributeType attributeType : getAttributeTypes()) {
          int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType.getName());
          for (int i = 0; i < missingCount; i++) {
-            Attribute<?> attribute = createAttribute(attributeType, ModificationType.NEW);
-            if (!isNewArtifact) {
-               attribute.setNotDirty();
-               OseeLog.log(Activator.class, Level.FINER, String.format(
-                     "artId [%d] - an attribute of type %s was created", getArtId(), attributeType.toString()));
-            }
+            initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);
          }
       }
    }

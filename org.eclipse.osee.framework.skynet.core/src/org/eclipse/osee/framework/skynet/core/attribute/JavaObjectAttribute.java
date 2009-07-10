@@ -17,19 +17,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
-
-   public JavaObjectAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */

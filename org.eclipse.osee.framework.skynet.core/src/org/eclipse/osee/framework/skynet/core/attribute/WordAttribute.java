@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -31,19 +29,6 @@ public class WordAttribute extends StringAttribute {
    public static final String OLE_DATA_NAME = "Word Ole Data";
    public static boolean noPopUps = false;
    public static String displayTrackedChangesErrorMessage = "";
-
-   /**
-    * wraps the value in a simple word paragraph
-    * 
-    * @param attributeType
-    * @param modificationType TODO
-    * @param value
-    * @throws OseeCoreException TODO
-    */
-   public WordAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-      displayTrackedChangesErrorMessage = "";
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)

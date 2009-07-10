@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.attribute;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +24,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -37,15 +33,15 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> {
-   private final AttributeType attributeType;
-   private final Artifact artifact;
+   private AttributeType attributeType;
+   private Artifact artifact;
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;
    private int gammaId;
    private boolean dirty;
    private ModificationType modificationType;
 
-   protected Attribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+   void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeType = attributeType;
       this.artifact = artifact;
       this.modificationType = modificationType;
@@ -57,12 +53,27 @@ public abstract class Attribute<T> {
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
-      if (modificationType == ModificationType.NEW) {
-         dirty = true;
+
+      if (setDefaultValue) {
          setToDefaultValue();
-         artifact.onAttributeModify();
       }
 
+      dirty = markDirty;
+      uponInitialize();
+   }
+
+   /**
+    * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
+    * 
+    * @throws OseeCoreException
+    */
+   protected void uponInitialize() throws OseeCoreException {
+   }
+
+   public void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty) throws OseeCoreException {
+      internalInitialize(attributeType, artifact, modificationType, markDirty, false);
+      this.attrId = attributeId;
+      this.gammaId = gammaId;
    }
 
    public void setValue(T value) throws OseeCoreException {
@@ -315,16 +326,6 @@ public abstract class Attribute<T> {
          }
       };
       dbTransaction.execute();
-   }
-
-   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
-      AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
-      Attribute<?> attribute = artifact.createAttribute(attributeType, modificationType);
-      attribute.getAttributeDataProvider().loadData(data);
-      attribute.internalSetAttributeId(attributeId);
-      attribute.internalSetGammaId(gammaId);
-      attribute.dirty = markDirty;
-      return attribute;
    }
 
    /**

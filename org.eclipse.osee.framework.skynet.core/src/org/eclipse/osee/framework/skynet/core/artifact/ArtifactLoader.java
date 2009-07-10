@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -479,7 +479,7 @@ public final class ArtifactLoader {
 
             // if a different attribute than the previous iteration and its attribute had not already been loaded
             if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null) {
-               Attribute.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
+               artifact.internalInitializeAttribute(AttributeTypeManager.getType(chStmt.getInt("attr_type_id")), attrId,
                      chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")), false,
                      chStmt.getString("value"), chStmt.getString("uri"));
             }

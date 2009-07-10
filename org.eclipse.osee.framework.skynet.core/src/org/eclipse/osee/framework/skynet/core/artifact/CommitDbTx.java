@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +55,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Theron Virgin
  */
 public class CommitDbTx extends DbTransaction {
-
+   private static final String COMMIT_TRANSACTION =
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
+               TXD_COMMENT, "time", "author", "commit_art_id");
    //destination branch id, source branch id
    private static final String INSERTION =
          "INSERT INTO osee_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN tx1.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END ";
@@ -416,9 +420,9 @@ public class CommitDbTx extends DbTransaction {
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = BranchManager.COMMIT_COMMENT + childBranch.getBranchName();
       int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
-      ConnectionHandler.runPreparedUpdate(connection, BranchManager.COMMIT_TRANSACTION,
-            TransactionDetailsType.NonBaselined.getId(), parentBranch.getBranchId(), newTransactionNumber, comment,
-            timestamp, authorId, childBranch.getAssociatedArtifactId());
+      ConnectionHandler.runPreparedUpdate(connection, COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
+            parentBranch.getBranchId(), newTransactionNumber, comment, timestamp, authorId,
+            childBranch.getAssociatedArtifactId());
 
       return newTransactionNumber;
    }

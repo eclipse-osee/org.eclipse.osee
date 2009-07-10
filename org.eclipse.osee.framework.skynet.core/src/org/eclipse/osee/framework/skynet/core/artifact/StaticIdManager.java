@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**

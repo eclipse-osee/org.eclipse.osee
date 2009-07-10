@@ -128,8 +128,7 @@ public class Collections {
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
       if (listA.size() != listB.size()) return false;
-      if (listA.size() != setIntersection(listA, listB).size()) return false;
-      return true;
+      return listA.size() == setIntersection(listA, listB).size();
    }
 
    @SuppressWarnings("unchecked")

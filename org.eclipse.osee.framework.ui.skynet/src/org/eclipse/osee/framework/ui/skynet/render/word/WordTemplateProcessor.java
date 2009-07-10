@@ -30,17 +30,16 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -437,10 +436,7 @@ public class WordTemplateProcessor {
 
       //create wordTemplateContent for new guys
       if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
-         Attribute<?> attribute = artifact.getSoleAttribute(attributeTypeName);
-         if (attribute == null) {
-            artifact.createAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW);
-         }
+         artifact.getOrInitializeSoleAttributeValue(attributeTypeName);
       }
 
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeTypeName);

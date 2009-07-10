@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
@@ -22,10 +20,6 @@ public class EnumeratedAttribute extends StringAttribute {
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
-
-   public EnumeratedAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()

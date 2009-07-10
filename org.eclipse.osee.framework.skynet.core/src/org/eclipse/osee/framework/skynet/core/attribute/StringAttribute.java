@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class StringAttribute extends CharacterBackedAttribute<String> {
-
-   public StringAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */

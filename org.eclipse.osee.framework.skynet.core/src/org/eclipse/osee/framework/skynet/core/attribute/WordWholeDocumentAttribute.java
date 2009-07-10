@@ -11,9 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
@@ -26,15 +23,6 @@ public class WordWholeDocumentAttribute extends WordAttribute {
    private static final String wordBody = "<w:body></w:body>";
    private static final String wordTrailer = "</w:wordDocument> ";
    private static final String emptyDocumentContent = wordLeader1 + wordLeader2 + wordBody + wordTrailer;
-
-   /**
-    * @param attributeType
-    * @param value
-    * @throws OseeCoreException
-    */
-   public WordWholeDocumentAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
 
    public static String getEmptyDocumentContent() {
       return emptyDocumentContent;

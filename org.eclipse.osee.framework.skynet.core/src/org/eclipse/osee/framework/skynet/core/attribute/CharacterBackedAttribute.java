@@ -10,20 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
-
-   protected CharacterBackedAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
-
    @Override
    public ICharacterAttributeDataProvider getAttributeDataProvider() {
       // this cast is always safe since the the data provider passed in the constructor to 

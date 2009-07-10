@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,7 +38,7 @@ public class AttributeMenuSelectionListener extends SelectionAdapter {
    public void widgetSelected(SelectionEvent ev) {
       AttributeType attributeType = (AttributeType) ((MenuItem) ev.getSource()).getData();
       try {
-         attrsComp.getArtifact().createAttribute(attributeType, ModificationType.NEW);
+         attrsComp.getArtifact().addAttribute(attributeType);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

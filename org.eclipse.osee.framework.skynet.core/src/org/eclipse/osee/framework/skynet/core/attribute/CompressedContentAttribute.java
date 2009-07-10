@@ -17,14 +17,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
-
-   public CompressedContentAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-      getAttributeDataProvider().setDisplayableString(getAttributeType().getName());
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
@@ -74,5 +68,13 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.artifact.Attribute#uponInitialize()
+    */
+   @Override
+   protected void uponInitialize() throws OseeCoreException {
+      getAttributeDataProvider().setDisplayableString(getAttributeType().getName());
    }
 }

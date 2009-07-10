@@ -10,20 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class BinaryBackedAttribute<T> extends Attribute<T> {
-
-   protected BinaryBackedAttribute(AttributeType attributeType, Artifact artifact, ModificationType modificationType) throws OseeCoreException {
-      super(attributeType, artifact, modificationType);
-   }
-
    public IBinaryAttributeDataProvider getAttributeDataProvider() {
       // this cast is always safe since the the data provider passed in the constructor to 
       // the super class is of type  IBinaryAttributeDataProvider

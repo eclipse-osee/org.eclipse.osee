@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Text;
  * Dialog for performing find/replace of attribute values on a set of <code>Artifact</code>'s.
  * 
  * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact
- * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute
+ * @see org.eclipse.osee.framework.skynet.core.artifact.Attribute
  * @author Robert A. Fisher
  */
 public class AttributeFindReplaceDialog extends Dialog {

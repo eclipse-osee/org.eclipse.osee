@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
@@ -52,11 +51,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
@@ -80,9 +77,6 @@ public class BranchManager {
          "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
          "SELECT m1.* FROM osee_merge m1, osee_tx_details txd1 WHERE m1.merge_branch_id = txd1.branch_id and txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
-   public static final String COMMIT_TRANSACTION =
-         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
-               TXD_COMMENT, "time", "author", "commit_art_id");
    private static final String SELECT_BRANCH_TRANSACTION =
          "SELECT transaction_id FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
@@ -489,19 +483,6 @@ public class BranchManager {
 
    public static boolean isBranchInCommit(Branch branch) {
       return CommitDbTx.isBranchInCommit(branch);
-   }
-
-   /**
-    * @throws OseeDataStoreException
-    */
-   int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws OseeDataStoreException {
-      int newTransactionNumber = SequenceManager.getNextTransactionId();
-
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
-            toBranch.getBranchId(), newTransactionNumber, "Commit Branch " + fromTransactionID.getTransactionNumber(),
-            GlobalTime.GreenwichMeanTimestamp(), userToBlame == null ? -1 : userToBlame.getArtId(), -1);
-
-      return newTransactionNumber;
    }
 
    /**

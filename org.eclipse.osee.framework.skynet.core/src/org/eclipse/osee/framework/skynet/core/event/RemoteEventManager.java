@@ -63,15 +63,15 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -513,8 +513,8 @@ public class RemoteEventManager {
                            }
                         }
                         if (attributeNeedsCreation) {
-                           Attribute.initializeAttribute(artifact, AttributeTypeManager.getType(
-                                 skynetAttributeChange.getTypeId()).getAttrTypeId(),
+                           artifact.internalInitializeAttribute(
+                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
                                  skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
                                  skynetAttributeChange.getModificationType(), false, skynetAttributeChange.getData());
                         }
@@ -577,7 +577,8 @@ public class RemoteEventManager {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod, unloadedRelation));
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod,
+                        unloadedRelation));
                } else if (event instanceof NetworkNewRelationLinkEvent) {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),

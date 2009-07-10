@@ -16,18 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -93,25 +92,18 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      if (artifact != null) {
-         Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
-         if (attribute == null) {
-            attribute =
-                  artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WHOLE_WORD_CONTENT),
-                        ModificationType.NEW);
-         }
-         if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).containsWordAnnotations()) {
-            throw new OseeCoreException(
-                  "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
-         }
-      }
-
       try {
-         InputStream stream =
-               Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
+         InputStream stream;
 
-         if (artifact != null) {
-            String content = artifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
+         if (artifact == null) {
+            stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
+         } else {
+            String content = artifact.getOrInitializeSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
+            if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
+               throw new OseeStateException(
+                     "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
+            }
+
             String myGuid = artifact.getGuid();
             content = WordUtil.addGUIDToDocument(myGuid, content);
 

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
