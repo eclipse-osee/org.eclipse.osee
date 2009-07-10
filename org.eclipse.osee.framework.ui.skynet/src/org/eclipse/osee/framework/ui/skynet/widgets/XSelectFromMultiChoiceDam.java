@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 
 /**
  * @author Roberto E. Escobar
@@ -56,13 +56,11 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog#createDialog()
     */
    @Override
-   public CheckedTreeSelectionDialog createDialog() {
-      CheckedTreeSelectionDialog dialog =
-            new CheckedTreeSelectionDialog(Display.getCurrent().getActiveShell(), new LabelProvider(),
-                  new ArrayTreeContentProvider());
-      dialog.setTitle(getLabel());
-      dialog.setImage(ImageManager.getImage(artifact));
-      dialog.setMessage("Select from the items below");
+   public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
+      SimpleCheckFilteredTreeDialog dialog =
+            new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the items below",
+                  new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter(),
+                  getMinSelectionRequired(), getMaxSelectionRequired());
       return dialog;
    }
 

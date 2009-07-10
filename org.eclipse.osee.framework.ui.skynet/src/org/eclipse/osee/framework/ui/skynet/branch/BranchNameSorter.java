@@ -8,21 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.skynet.branch;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
- * Default sorter for artifacts. Sorts on descriptive name
+ * Default sorter for branch. Sorts on descriptive name
  */
-public class ArtifactNameSorter extends ViewerSorter {
+public class BranchNameSorter extends ViewerSorter {
 
    /**
-    * Default sorter for artifacts. Sorts on descriptive name
+    * Default sorter for artifacts. Sorts on name
     */
-   public ArtifactNameSorter() {
+   public BranchNameSorter() {
       super();
    }
 
@@ -32,10 +32,8 @@ public class ArtifactNameSorter extends ViewerSorter {
    @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
-      if (o1 instanceof Artifact && o2 instanceof Artifact)
-         return getComparator().compare(((Artifact) o1).getDescriptiveName(), ((Artifact) o2).getDescriptiveName());
-      else if (o1 instanceof String && o2 instanceof String) return getComparator().compare(o1, o2);
-      return super.compare(viewer, o1, o2);
+
+      return getComparator().compare(((Branch) o1).getBranchName(), ((Branch) o2).getBranchName());
    }
 
 }

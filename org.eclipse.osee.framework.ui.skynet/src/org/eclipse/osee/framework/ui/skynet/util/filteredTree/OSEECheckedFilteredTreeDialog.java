@@ -16,8 +16,8 @@ import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -38,13 +38,15 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
+   private final ViewerSorter viewerSorter;
 
-   public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
+   public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
       super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
             "OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.patternFilter = patternFilter;
+      this.viewerSorter = viewerSorter;
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -73,6 +75,11 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       }
    }
 
+   public Object[] getResult() {
+      if (treeViewer == null) return new Object[] {};
+      return treeViewer.getResult();
+   }
+
    @Override
    protected Control createCustomArea(Composite parent) {
 
@@ -92,7 +99,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);
-      treeViewer.getViewer().setSorter(new ArtifactNameSorter());
+      treeViewer.getViewer().setSorter(viewerSorter);
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             updateStatusLabel();

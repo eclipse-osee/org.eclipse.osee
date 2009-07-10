@@ -96,6 +96,10 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
       }
    }
 
+   public Object[] getResult() {
+      return getChecked().toArray(new Object[getChecked().size()]);
+   }
+
    private void storeResults(TreeItem treeItems[]) {
       for (TreeItem treeItem : treeItems) {
          if (treeItem.getChecked() && !checked.contains(treeItem.getData())) {

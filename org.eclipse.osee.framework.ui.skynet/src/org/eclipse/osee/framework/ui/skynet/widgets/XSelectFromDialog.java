@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -22,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -33,8 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
-import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
 /**
  * @author Roberto E. Escobar
@@ -173,7 +170,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       return new ArrayList<T>(selected);
    }
 
-   public abstract CheckedTreeSelectionDialog createDialog();
+   public abstract MinMaxOSEECheckedFilteredTreeDialog createDialog();
 
    @SuppressWarnings("unchecked")
    protected boolean openSelectionDialog() {
@@ -183,32 +180,9 @@ public abstract class XSelectFromDialog<T> extends XText {
                "Could not find items available to select from.");
       } else {
          try {
-            CheckedTreeSelectionDialog dialog = createDialog();
-            dialog.setInitialElementSelections(getSelected());
+            MinMaxOSEECheckedFilteredTreeDialog dialog = createDialog();
+            dialog.setInitialSelections(getSelected());
             dialog.setInput(getSelectableItems());
-            dialog.setValidator(new ISelectionStatusValidator() {
-
-               @Override
-               public IStatus validate(Object[] selection) {
-                  IStatus status = null;
-                  int numberSelected = selection.length;
-                  if (minSelectionRequired <= numberSelected && maxSelectionRequired >= numberSelected) {
-                     status = Status.OK_STATUS;
-                  } else {
-                     List<String> message = new ArrayList<String>();
-                     if (numberSelected < minSelectionRequired) {
-                        message.add(String.format("Must select at least [%s]", minSelectionRequired));
-                     }
-                     if (numberSelected > maxSelectionRequired) {
-                        message.add(String.format("Can't select more than [%s]", maxSelectionRequired));
-                     }
-                     status =
-                           new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, Collections.toString(" &&", message));
-                  }
-                  return status;
-               }
-
-            });
             int result = dialog.open();
             if (result == 0) {
                List<T> dialogSelections = new ArrayList<T>();
@@ -229,4 +203,19 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
       return selectedChanged;
    }
+
+   /**
+    * @return the minSelectionRequired
+    */
+   public int getMinSelectionRequired() {
+      return minSelectionRequired;
+   }
+
+   /**
+    * @return the maxSelectionRequired
+    */
+   public int getMaxSelectionRequired() {
+      return maxSelectionRequired;
+   }
+
 }

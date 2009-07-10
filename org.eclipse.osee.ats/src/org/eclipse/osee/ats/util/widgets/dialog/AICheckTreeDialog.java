@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -40,7 +41,8 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    private Collection<ActionableItemArtifact> initialAias;
 
    public AICheckTreeDialog(String title, String message, Active active) {
-      super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider());
+      super(title, message, patternFilter, new AITreeContentProvider(active), new ArtifactLabelProvider(),
+            new ArtifactNameSorter());
       this.active = active;
    }
 

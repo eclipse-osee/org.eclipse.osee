@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -42,7 +43,8 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    private List<TeamDefinitionArtifact> initialTeamDefs;
 
    public TeamDefinitionCheckTreeDialog(String title, String message, Active active) {
-      super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new ArtifactLabelProvider());
+      super(title, message, patternFilter, new TeamDefinitionTreeContentProvider(active), new ArtifactLabelProvider(),
+            new ArtifactNameSorter());
       this.active = active;
    }
 
