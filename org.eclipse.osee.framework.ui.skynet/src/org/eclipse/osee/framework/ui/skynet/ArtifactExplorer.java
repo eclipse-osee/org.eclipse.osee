@@ -87,8 +87,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
@@ -577,24 +576,23 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      descriptors.add(descriptor);
                   }
                }
-               ArtifactTypeFilteredTreeDialog dialog =
-                     new ArtifactTypeFilteredTreeDialog("New Child", "Select Artifact to Create", descriptors);
+               ArtifactTypeFilteredTreeEntryDialog dialog =
+                     new ArtifactTypeFilteredTreeEntryDialog("New Child",
+                           "Enter name and select Artifact type to create", "Artifact Name", descriptors);
 
                if (dialog.open() == 0) {
 
                   ArtifactType descriptor = dialog.getSelection();
-                  EntryDialog ed =
-                        new EntryDialog("New \"" + descriptor.getName() + "\" Artifact",
-                              "Enter name for \"" + descriptor.getName() + "\" Artifact");
-                  if (ed.open() != 0) return;
+                  String name = dialog.getEntryValue();
+
                   IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
                   Iterator<?> itemsIter = selection.iterator();
                   // If nothing was selected, then the child belongs at the root
                   if (!itemsIter.hasNext()) {
-                     exploreRoot.addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
+                     exploreRoot.addNewChild(descriptor, name).persistAttributesAndRelations();
                   } else {
                      while (itemsIter.hasNext()) {
-                        ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry()).persistAttributesAndRelations();
+                        ((Artifact) itemsIter.next()).addNewChild(descriptor, name).persistAttributesAndRelations();
                      }
                   }
                   treeViewer.refresh();
@@ -1228,7 +1226,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer", "org.eclipse.osee.framework.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer",
+            "org.eclipse.osee.framework.help.ui");
    }
    public class MenuEnablingListener implements MenuListener {
 

@@ -75,13 +75,13 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog {
    @Override
    protected Result isComplete() {
       try {
-         if (selection != null) {
-            return Result.TrueResult;
+         if (selection == null) {
+            return new Result("Must select Artifact type.");
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return super.isComplete();
+      return Result.TrueResult;
    }
 
    /**
