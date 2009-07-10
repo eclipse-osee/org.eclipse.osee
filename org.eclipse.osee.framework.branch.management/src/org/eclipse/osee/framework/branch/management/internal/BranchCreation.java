@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.internal;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -121,8 +122,9 @@ public class BranchCreation implements IBranchCreation {
 
    }
 
+   // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    private static final String SELECT_ADDRESSING =
-         "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current = 1 AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
+         "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current = 1 AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ? order by txd.transaction_id desc";
    private static final String INSERT_ADDRESSING =
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
@@ -133,14 +135,20 @@ public class BranchCreation implements IBranchCreation {
       }
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       List<Object[]> data = new ArrayList<Object[]>();
+      HashSet<Integer> gammas = new HashSet<Integer>(100000);
       try {
          chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, parentBranchId);
          while (chStmt.next()) {
-            data.add(new Object[] {newTransactionNumber, chStmt.getInt("gamma_id"), chStmt.getInt("mod_type"), 1});
+            Integer gamma = chStmt.getInt("gamma_id");
+            if (!gammas.contains(gamma)) {
+               data.add(new Object[] {newTransactionNumber, gamma, chStmt.getInt("mod_type"), 1});
+               gammas.add(gamma);
+            }
          }
       } finally {
          chStmt.close();
       }
+
       ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
       return data.size();
    }
