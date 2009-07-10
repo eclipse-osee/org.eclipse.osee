@@ -17,7 +17,14 @@ import java.util.regex.Pattern;
  * @author Donald G. Dunne
  */
 public enum XResultBrowserHyperCmd {
-   openAction, openArtifctBranch, openArtifactEditor, openBranch, openChangeReport, openPriorityHelp;
+   openAction,
+   openArtifctBranch,
+   openArtifactEditor,
+   openBranch,
+   openChangeReport,
+   openPriorityHelp,
+   browserInternal,
+   browserExternal;
 
    public static String getHyperCmdStr(XResultBrowserHyperCmd xResultBrowserHyperCmd, String value) {
       return String.format("%s=%s", xResultBrowserHyperCmd.name(), value);

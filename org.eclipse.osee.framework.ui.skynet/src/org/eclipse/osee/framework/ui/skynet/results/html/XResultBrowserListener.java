@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
+import java.net.URL;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,6 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.program.Program;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 /**
  * @author Donald G. Dunne
@@ -72,6 +77,18 @@ public class XResultBrowserListener implements LocationListener {
             int branchId = new Integer(value);
             Branch branch = BranchManager.getBranch(branchId);
             BranchView.revealBranch(branch);
+         } else if (xResultBrowserHyperCmd == XResultBrowserHyperCmd.browserInternal) {
+            event.doit = false;
+            IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
+            try {
+               IWebBrowser browser = browserSupport.createBrowser("osee.ats.navigator.browser");
+               browser.openURL(new URL(value));
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         } else if (xResultBrowserHyperCmd == XResultBrowserHyperCmd.browserExternal) {
+            event.doit = false;
+            Program.launch(value);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Can't process hyperlink.", ex);

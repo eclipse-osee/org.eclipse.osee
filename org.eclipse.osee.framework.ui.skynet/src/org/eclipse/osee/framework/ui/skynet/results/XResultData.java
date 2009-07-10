@@ -64,6 +64,11 @@ public class XResultData {
          rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
                UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
                BranchManager.getCommonBranch().getBranchId()));
+         rd.addRaw(AHTML.newline());
+         rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
+               "http://www.google.com") + AHTML.newline());
+         rd.addRaw("Example of hyperlink that opens internal browser " + getHyperlinkUrlInternal("Google",
+               "http://www.google.com") + AHTML.newline());
 
          rd.log("\n\nHere is a nice table");
          rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
@@ -183,6 +188,16 @@ public class XResultData {
    public static String getHyperlink(String name, String hrid, int branchId) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifctBranch,
             hrid + "(" + branchId + ")"), name);
+   }
+
+   public static String getHyperlinkUrlExternal(String name, String url) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserExternal, url),
+            name);
+   }
+
+   public static String getHyperlinkUrlInternal(String name, String url) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.browserInternal, url),
+            name);
    }
 
    public static String getHyperlinkForArtifactEditor(String name, String hrid) {
