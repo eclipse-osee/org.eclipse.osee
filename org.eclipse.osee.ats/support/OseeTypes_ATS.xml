@@ -1640,7 +1640,7 @@
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">Artifact</Data><NamedCell
+    <Cell><Data ss:Type="String">Team Definition</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamLead</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1661,7 +1661,7 @@
     <Cell><Data ss:Type="String">User</Data><NamedCell ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">Artifact</Data><NamedCell
+    <Cell><Data ss:Type="String">Team Definition</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell><Data ss:Type="String">TeamMember</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -1679,7 +1679,7 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell><Data ss:Type="String">Team Definition</Data></Cell>
     <Cell><Data ss:Type="String">PrivilegedMember</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
@@ -1722,12 +1722,11 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>108</TopRowVisible>
+   <TopRowVisible>226</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>145</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>262</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
