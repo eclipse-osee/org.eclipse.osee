@@ -823,6 +823,10 @@ public class SMAManager {
       return editor;
    }
 
+   public String getEditorTitle() throws OseeCoreException {
+      return getSma().getEditorTitle();
+   }
+
    /**
     * @param editor The editor to set.
     */

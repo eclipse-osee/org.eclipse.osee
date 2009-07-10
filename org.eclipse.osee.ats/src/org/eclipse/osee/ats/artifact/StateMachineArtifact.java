@@ -351,7 +351,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getEditorTitle() throws OseeCoreException {
-      return getDescriptiveName();
+      return getWorldViewType() + ": " + getDescriptiveName();
    }
 
    public String getWorldViewActionableItems() throws OseeCoreException {

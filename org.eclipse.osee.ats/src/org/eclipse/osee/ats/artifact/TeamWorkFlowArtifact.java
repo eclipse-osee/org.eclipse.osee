@@ -67,7 +67,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -173,7 +173,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public String getEditorTitle() throws OseeCoreException {
-      return getTeamTitle();
+      if (getWorldViewTargetedVersion() != null) {
+         return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getDescriptiveName();
+      }
+      return super.getEditorTitle();
    }
 
    @Override
@@ -223,14 +226,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
       return AtsCacheManager.getTeamDefinitionArtifact(guid);
-   }
-
-   public String getTeamTitle() throws OseeCoreException {
-      if (getWorldViewTargetedVersion() != null) {
-         return "[" + getTeamName() + "][" + getWorldViewTargetedVersionStr() + "] - " + getDescriptiveName();
-      } else {
-         return "[" + getTeamName() + "] - " + getDescriptiveName();
-      }
    }
 
    public String getTeamName() {

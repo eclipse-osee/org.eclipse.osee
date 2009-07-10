@@ -184,7 +184,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public String getTitleStr() throws OseeCoreException {
-      return smaMgr.getSma().getWorldViewType() + ": " + smaMgr.getSma().getDescriptiveName();
+      return smaMgr.getEditorTitle();
    }
 
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
