@@ -14,17 +14,14 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 public class ResultsXViewerLabelProvider extends XViewerLabelProvider {
    Font font = null;
-   private final ResultsXViewer resultsXViewer;
 
    public ResultsXViewerLabelProvider(ResultsXViewer resultsXViewer) {
       super(resultsXViewer);
-      this.resultsXViewer = resultsXViewer;
    }
 
    @Override
@@ -56,18 +53,10 @@ public class ResultsXViewerLabelProvider extends XViewerLabelProvider {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
+    * @see org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.nebula.widgets.xviewer.XViewerColumn, int)
     */
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
-    */
-   @Override
-   public Color getBackground(Object element, int columnIndex) {
+   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
       return null;
    }
 
