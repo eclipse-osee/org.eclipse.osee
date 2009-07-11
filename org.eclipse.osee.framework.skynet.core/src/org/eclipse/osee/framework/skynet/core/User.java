@@ -164,6 +164,10 @@ public class User extends Artifact implements Serializable {
       return userSettings.get(key);
    }
 
+   public boolean getBooleanSetting(String key) throws OseeCoreException {
+      return Boolean.parseBoolean(getSetting(key));
+   }
+
    public void setSetting(String key, String value) throws OseeCoreException {
       ensureUserSettingsAreLoaded();
       userSettings.put(key, value);

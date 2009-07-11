@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
@@ -33,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 
 /**
  * @author Jeff C. Phillips
@@ -128,7 +127,7 @@ public class WholeDocumentRenderer extends WordRenderer {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
       Pair<String, Boolean> oldAnnotationValue = null;
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
 
          if (baseVersion != null) {
             Attribute<?> baseAttribute = baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
@@ -152,7 +151,8 @@ public class WholeDocumentRenderer extends WordRenderer {
             }
          }
       }
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+
+      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue =
                WordImageChecker.checkForImageDiffs(
                      baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,

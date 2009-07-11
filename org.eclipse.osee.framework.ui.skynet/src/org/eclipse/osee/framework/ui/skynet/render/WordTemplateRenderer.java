@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -51,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -176,7 +175,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                         continue;
                      }
 
-                     if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+                     if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                         originalValue =
                               WordImageChecker.checkForImageDiffs(
                                     baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
@@ -255,7 +254,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       artifacts.addAll(checkForTrackedChangesOn(newerVersion));
 
       if (artifacts.isEmpty()) {
-         if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue =
                   WordImageChecker.checkForImageDiffs(
                         baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
@@ -498,7 +497,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
+
+      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
             Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
             if (attribute != null) {

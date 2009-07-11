@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -47,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
@@ -210,11 +212,13 @@ public class UpdateArtifactJob extends UpdateJob {
                   content = stringBuffer.toString();
                }
                // Only update if editing a single artifact or if in
-               // multi-edit mode only update if
-               // the artifact has at least on textual change.
-               if (singleArtifact || !WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
-                     WordUtil.textOnly(content))) {
+               // multi-edit mode only update if the artifact has at least one textual change (if the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
+               boolean multiSave =
+                     UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
+                           artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
+                           WordUtil.textOnly(content));
+
+               if (singleArtifact || multiSave) {
                   //TODO    
                   if (DEBUG) {
                      System.err.println("Initial: " + content);

@@ -1580,9 +1580,9 @@
        point="org.eclipse.ui.preferencePages">
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-          class="org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage"
           id="org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage"
-          name="Word Diffing">
+          name="MS Word">
     </page>
  </extension>
   <extension

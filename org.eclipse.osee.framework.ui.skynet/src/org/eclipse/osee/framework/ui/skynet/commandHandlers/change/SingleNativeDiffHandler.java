@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -38,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.preferences.DiffPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.ui.PlatformUI;
@@ -116,21 +114,16 @@ public class SingleNativeDiffHandler extends CommandHandler {
 
    private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (!StaticIdManager.hasValue(UserManager.getUser(), DiffPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         Attribute attribute;
+      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
-            attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
-            if (attribute != null) {
-               String value = attribute.getValue().toString();
-               // check for track changes
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                  // capture those artifacts that have tracked changes on 
-                  artifacts.add(artifact);
-               }
+            String value = artifact.getSoleAttributeValueAsString(WordAttribute.WORD_TEMPLATE_CONTENT, "");
+            // check for track changes
+            if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               // capture those artifacts that have tracked changes on 
+               artifacts.add(artifact);
             }
          }
       }
       return artifacts;
    }
-
 }
