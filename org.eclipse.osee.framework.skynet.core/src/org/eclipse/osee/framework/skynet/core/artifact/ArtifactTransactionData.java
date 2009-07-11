@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -55,7 +54,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
-         if (getModificationType() == ModificationType.NEW) {
+         if (!artifact.isInDb()) {
             internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
                   artifact.getGuid(), artifact.getHumanReadableId());
          }
