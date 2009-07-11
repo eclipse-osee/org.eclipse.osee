@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -20,11 +19,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
@@ -49,6 +44,10 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
+
+      if (isCancelled()) return EMPTY_SET;
+
+      /*
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
@@ -61,12 +60,12 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "userId>" + user.getUserId() + "</userId", DepricatedOperator.CONTAINS));
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));
-      FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
+            "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));*/
 
-      if (isCancelled()) return EMPTY_SET;
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(ArtifactPersistenceManager.getArtifacts(currentStateCriteria, false, AtsUtil.getAtsBranch()));
+      arts.addAll(ArtifactQuery.getArtifactsFromAttributeWithKeywords(AtsUtil.getAtsBranch(), user.getUserId(), false,
+            false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+            ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));

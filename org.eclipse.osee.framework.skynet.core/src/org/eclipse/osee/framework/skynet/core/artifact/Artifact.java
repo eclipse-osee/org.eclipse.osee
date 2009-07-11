@@ -1586,7 +1586,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeDataStoreException
     */
    public void changeArtifactType(ArtifactType artifactType) throws OseeDataStoreException {
-      ArtifactPersistenceManager.changeArtifactSubStype(this, artifactType);
+      ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?",
+            artifactType.getArtTypeId(), artId);
       this.artifactType = artifactType;
    }
 

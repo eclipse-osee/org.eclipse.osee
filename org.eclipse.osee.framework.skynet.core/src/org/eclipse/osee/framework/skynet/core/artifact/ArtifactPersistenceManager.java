@@ -62,8 +62,6 @@ public class ArtifactPersistenceManager {
    private static final String GET_GAMMAS_ATTRIBUTE_REVERT =
          "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_attribute atr2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = atr2.gamma_id and txd2.branch_id = ? and atr2.attr_id = ?";
 
-   private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id =?";
-
    private static final String ARTIFACT_SELECT =
          "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
@@ -149,11 +147,6 @@ public class ArtifactPersistenceManager {
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
             queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null, false);
-   }
-
-   @Deprecated
-   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws OseeCoreException {
-      return getArtifacts(searchCriteria, all, branch, null);
    }
 
    /**
@@ -300,17 +293,6 @@ public class ArtifactPersistenceManager {
       } finally {
          chStmt.close();
       }
-   }
-
-   /**
-    * Changes the artifact type
-    * 
-    * @param artifact
-    * @param artifactType
-    * @throws OseeDataStoreException
-    */
-   public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, artifactType.getArtTypeId(), artifact.getArtId());
    }
 
    public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
