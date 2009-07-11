@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -73,7 +74,7 @@ public class SMAReviewInfoComposite extends Composite {
 
       Label label = new Label(this, SWT.NONE);
       label.setText("\"" + forStateName + "\" State Reviews: ");
-      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+      SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
       label.setToolTipText("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
       // If ATS Admin, allow right-click to auto-complete reviews
       if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {

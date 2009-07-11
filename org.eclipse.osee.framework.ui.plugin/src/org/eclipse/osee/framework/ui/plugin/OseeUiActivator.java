@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.CharBuffer;
 import java.util.List;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -110,40 +109,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return getImageRegistry().get(imageKey);
    }
 
-   /**
-    * Returns the ImageDiscriptor from images/ directory in this bundle with the given name
-    * 
-    * @return the Image object
-    */
-   public ImageDescriptor getImageDescriptorUsingRegistry(String imageFileName) {
-      ImageDescriptor imageDescriptor = getImageRegistry().getDescriptor(imageFileName);
-      if (imageDescriptor == null) {
-         imageDescriptor =
-               AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + imageFileName);
-         getImageRegistry().put(imageFileName, imageDescriptor);
-      }
-      return imageDescriptor;
-   }
-
-   public Image getImageUsingRegistry(String imageName, String imageFileName) {
-      Image image = getImageRegistry().get(imageName);
-      if (image == null) {
-         // cause the image descriptor to be added to the registry
-         getImageDescriptorUsingRegistry(imageFileName);
-         image = getImageRegistry().get(imageName);
-      }
-      return image;
-   }
-
-   public void addImageToRegistry(String imageKey, ImageDescriptor descriptor) throws IllegalArgumentException {
-      Image previousImage = getImageFromRegistry(imageKey);
-      if (previousImage == null) {
-         getImageRegistry().put(imageKey, descriptor);
-      } else {
-         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
-      }
-   }
-
    public void addImageToRegistry(String imageKey, Image image) throws IllegalArgumentException {
       Image previousImage = getImageFromRegistry(imageKey);
       if (previousImage == null) {
@@ -195,10 +160,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
    }
 
-   public InputStream getInputStreamForImage(String imageName) throws IOException {
-      return getInputStream(imagePath + imageName);
-   }
-
    public Object getBundleHeaderValue(String name) {
       return getBundle().getHeaders().get(name);
    }
@@ -235,13 +196,13 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    public void setHelp(MenuItem menuItem, String name, String library) {
       PlatformUI.getWorkbench().getHelpSystem().setHelp(menuItem, library + "." + name);
    }
-   
+
    public void displayHelp(String name, String library) {
       PlatformUI.getWorkbench().getHelpSystem().displayHelp(library + "." + name);
    }
 
    protected String getPluginName() {
-	   throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException();
    }
 
    public static File getBasePluginInstallDirectory() {

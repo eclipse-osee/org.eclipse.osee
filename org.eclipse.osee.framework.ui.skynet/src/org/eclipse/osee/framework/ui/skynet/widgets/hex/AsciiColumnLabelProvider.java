@@ -11,24 +11,21 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.hex;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.SWT;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Display;
 
 public class AsciiColumnLabelProvider extends ColumnLabelProvider {
 
    private final int associatedColumn;
-
-   private final static Font font = new Font(Display.getDefault(), new FontData("Courier New", 8, SWT.NONE));
 
    public AsciiColumnLabelProvider(int column) {
       super();
       this.associatedColumn = column;
    }
 
+   @Override
    public String getToolTipText(Object element) {
       HexTableRow row = (HexTableRow) element;
       if (associatedColumn < row.length) {
@@ -37,14 +34,17 @@ public class AsciiColumnLabelProvider extends ColumnLabelProvider {
       return null;
    }
 
+   @Override
    public Point getToolTipShift(Object object) {
       return new Point(12, 12);
    }
 
+   @Override
    public int getToolTipDisplayDelayTime(Object object) {
       return 125;
    }
 
+   @Override
    public int getToolTipTimeDisplayed(Object object) {
       return 5000;
    }
@@ -72,7 +72,7 @@ public class AsciiColumnLabelProvider extends ColumnLabelProvider {
     */
    @Override
    public Font getFont(Object element) {
-      return font;
+      return FontManager.getCourierNew8();
    }
 
 }

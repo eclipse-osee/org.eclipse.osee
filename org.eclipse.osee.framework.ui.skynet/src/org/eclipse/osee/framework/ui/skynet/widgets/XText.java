@@ -296,7 +296,6 @@ public class XText extends XWidget {
             sText.removePaintListener(spellPaintListener);
          }
          sText.dispose();
-         sText = null;
       }
       if (parent != null && !parent.isDisposed()) {
          parent.layout();

@@ -112,7 +112,7 @@ public class XMultiXWidget extends XWidget {
       // Add delete label / icon
       Label deleteLabel = new Label(controlComp, SWT.NONE);
       if (toolkit != null) toolkit.adapt(deleteLabel, true, true);
-      Image image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("delete.gif") : null;
+      Image image = SkynetGuiPlugin.getInstance() != null ? ImageManager.getImage(FrameworkImage.DELETE) : null;
       if (image != null)
          deleteLabel.setImage(image);
       else

@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -60,6 +59,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -79,7 +79,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -109,7 +108,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
-   private static Font defaultLabelFont;
    private boolean priviledgedEditModeEnabled = false;
    private Action printAction;
 
@@ -194,7 +192,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
       Label label = toolkit.createLabel(comp, labelStr + ": ");
       if (tooltip != null && !tooltip.equals("")) label.setToolTipText(tooltip);
-      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+      SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
       Text text = new Text(comp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
       text.setText(valueStr);
@@ -251,16 +249,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
          container.layout();
       }
-   }
-
-   public static Font getBoldLabelFont() {
-      if (defaultLabelFont == null) {
-         Font baseFont = JFaceResources.getDefaultFont();
-         FontData[] fontDatas = baseFont.getFontData();
-         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
-         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
-      }
-      return defaultLabelFont;
    }
 
    void enableGlobalPrint() {

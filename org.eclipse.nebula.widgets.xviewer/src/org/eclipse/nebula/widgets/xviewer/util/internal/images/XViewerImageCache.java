@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 public class XViewerImageCache {
 
    static Map<String, Image> imageCache = new HashMap<String, Image>();
+   static Map<String, ImageDescriptor> imageDescriptorCache = new HashMap<String, ImageDescriptor>();
 
    /**
     * Return image
@@ -37,8 +38,11 @@ public class XViewerImageCache {
    }
 
    public static ImageDescriptor getImageDescriptor(String imageName) {
-      URL url = XViewerImageCache.class.getResource(imageName);
-      return ImageDescriptor.createFromURL(url);
+      if (!imageDescriptorCache.containsKey(imageName)) {
+         URL url = XViewerImageCache.class.getResource(imageName);
+         imageDescriptorCache.put(imageName, ImageDescriptor.createFromURL(url));
+      }
+      return imageDescriptorCache.get(imageName);
    }
 
 }

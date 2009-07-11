@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -62,7 +63,7 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
             hoursSpent.createSidebarService(this, page, toolkit, this);
          }
 
-         SMAEditor.setLabelFonts(this, SMAEditor.getBoldLabelFont());
+         SMAEditor.setLabelFonts(this, FontManager.getDefaultLabelFont());
          refresh();
 
          OseeEventManager.addListener(this);

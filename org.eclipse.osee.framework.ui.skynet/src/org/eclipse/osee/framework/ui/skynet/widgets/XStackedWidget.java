@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
@@ -56,6 +58,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       maxPage = 0;
    }
 
+   @Override
    public void dispose() {
       stackedControl.dispose();
       super.dispose();
@@ -276,10 +279,11 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class Back extends Action {
       public Back() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("nav_backward.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.NAV_BACKWARD));
          setToolTipText("Back to previous page");
       }
 
+      @Override
       public void run() {
          stackedControl.previous();
       }
@@ -288,10 +292,11 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class Forward extends Action {
       public Forward() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("nav_forward.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.NAV_FORWARD));
          setToolTipText("Forward to next page");
       }
 
+      @Override
       public void run() {
          stackedControl.next();
       }
@@ -300,10 +305,11 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class AddPage extends Action {
       public AddPage() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("add.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ADD_GREEN));
          setToolTipText("Adds a page");
       }
 
+      @Override
       public void run() {
          stackedControl.addPage((T) null);
       }
@@ -312,10 +318,11 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class RemovePage extends Action {
       public RemovePage() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("remove.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REMOVE));
          setToolTipText("Removes a page");
       }
 
+      @Override
       public void run() {
          stackedControl.removePage();
       }

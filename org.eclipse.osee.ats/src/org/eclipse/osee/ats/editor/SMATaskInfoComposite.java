@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -58,7 +59,7 @@ public class SMATaskInfoComposite extends Composite {
       label = new Label(this, SWT.NONE);
       labelWidgets.add(label);
       label.setText("\"" + forStateName + "\" State Tasks: ");
-      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+      SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
       label.setToolTipText("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       // If ATS Admin, allow right-click to auto-complete tasks
       if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {

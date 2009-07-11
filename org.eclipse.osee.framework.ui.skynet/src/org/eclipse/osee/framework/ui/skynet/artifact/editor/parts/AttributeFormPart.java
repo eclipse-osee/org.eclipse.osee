@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -57,7 +56,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class AttributeFormPart extends AbstractFormPart {
 
    private final ArtifactEditor editor;
-   private Font defaultLabelFont;
    private Composite composite;
 
    public AttributeFormPart(ArtifactEditor editor) {
@@ -87,7 +85,7 @@ public class AttributeFormPart extends AbstractFormPart {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
-      setLabelFonts(composite, getBoldLabelFont());
+      setLabelFonts(composite, FontManager.getDefaultLabelFont());
       layoutControls(composite);
 
       for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
@@ -112,16 +110,6 @@ public class AttributeFormPart extends AbstractFormPart {
    public void dispose() {
       Widgets.disposeWidget(composite);
       super.dispose();
-   }
-
-   private Font getBoldLabelFont() {
-      if (defaultLabelFont == null) {
-         Font baseFont = JFaceResources.getDefaultFont();
-         FontData[] fontDatas = baseFont.getFontData();
-         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
-         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
-      }
-      return defaultLabelFont;
    }
 
    private void setLabelFonts(Control parent, Font font) {

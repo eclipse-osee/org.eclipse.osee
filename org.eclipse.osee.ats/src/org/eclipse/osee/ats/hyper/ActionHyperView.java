@@ -55,6 +55,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    private static String HELP_CONTEXT_ID = "atsActionView";
    private static ActionHyperItem topAHI;
    private static ATSArtifact currentArtifact;
+   private Cursor cursor;
 
    public ActionHyperView() {
       super();
@@ -123,7 +124,10 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void display() {
       try {
-         getContainer().setCursor(new Cursor(null, SWT.NONE));
+         if (cursor == null) {
+            cursor = new Cursor(null, SWT.NONE);
+         }
+         getContainer().setCursor(cursor);
          if (currentArtifact == null || currentArtifact.isDeleted()) {
             return;
          }

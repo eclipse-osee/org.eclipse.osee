@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,10 +36,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -169,22 +168,12 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
       artifact.setAttributeValues(attributeTypeName, getInput());
    }
 
-   private Font getBoldLabelFont() {
-      if (defaultLabelFont == null) {
-         Font baseFont = JFaceResources.getDefaultFont();
-         FontData[] fontDatas = baseFont.getFontData();
-         FontData fontData = fontDatas.length > 0 ? fontDatas[0] : new FontData("arial", 12, SWT.BOLD);
-         defaultLabelFont = new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD);
-      }
-      return defaultLabelFont;
-   }
-
    @Override
    protected void createPage(String id, Composite parent, String initialInput) {
       if (!xWidgets.containsKey(id)) {
          Label label = new Label(parent, SWT.NONE);
          label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         label.setFont(getBoldLabelFont());
+         label.setFont(FontManager.getDefaultLabelFont());
          label.setText(String.format("Page: %s", id));
 
          XWidget xWidget = getWidget(attributeTypeName, parent, initialInput);
@@ -304,6 +293,7 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
          super(label);
       }
 
+      @Override
       protected int getTextStyle() {
          int styleBase = SWT.NONE;
          if (isEditable()) {

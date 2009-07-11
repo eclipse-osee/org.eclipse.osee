@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -201,7 +202,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
          if (xWidget.getLabelWidget() != null) {
-            SMAEditor.setLabelFonts(xWidget.getLabelWidget(), SMAEditor.getBoldLabelFont());
+            SMAEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
          }
       }
 
@@ -394,7 +395,7 @@ public class SMAWorkFlowSection extends SectionPart {
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
          // Assignee(s) label
          Label label = toolkit.createLabel(comp, ASSIGNEES);
-         SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
 
          // Assignees "edit" hyperlink
          Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);

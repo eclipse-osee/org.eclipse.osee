@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
-import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
@@ -186,8 +185,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          // Search Items
          items.add(new OpenChangeReportByIdItem(null));
          items.add(new SearchNavigateItem(null, new MultipleHridSearchItem()));
-         items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem()));
-         items.add(new SearchNavigateItem(null, new AtsAttributeSearchItem("Search ATS Titles", "Name", null)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
          XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);

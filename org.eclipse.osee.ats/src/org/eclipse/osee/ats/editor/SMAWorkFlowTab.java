@@ -91,6 +91,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private Composite atsBody;
    private SMAActionableItemHeader actionableItemHeader;
    private SMAWorkflowMetricsHeader workflowMetricsHeader;
+   private SMADetailsSection smaDetailsSection;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -150,7 +151,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       }
 
-      managedForm.addPart(new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE));
+      smaDetailsSection = new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+      managedForm.addPart(smaDetailsSection);
 
       if (AtsUtil.isAtsAdmin()) {
          managedForm.addPart(new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr));
@@ -269,6 +271,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       if (workflowMetricsHeader != null) {
          workflowMetricsHeader.dispose();
+      }
+      if (smaDetailsSection != null) {
+         smaDetailsSection.dispose();
       }
       for (SMAWorkFlowSection section : sections)
          section.dispose();

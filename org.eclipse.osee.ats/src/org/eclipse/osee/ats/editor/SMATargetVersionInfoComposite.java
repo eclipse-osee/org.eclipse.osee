@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -50,7 +51,7 @@ public class SMATargetVersionInfoComposite extends Composite {
       setLayoutData(new GridData());
 
       label = toolkit.createLabel(this, "Target Version: ", SWT.NONE);
-      SMAEditor.setLabelFonts(label, SMAEditor.getBoldLabelFont());
+      SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
 
       if (!smaMgr.isReleased()) {
          link = toolkit.createHyperlink(this, "", SWT.NONE);

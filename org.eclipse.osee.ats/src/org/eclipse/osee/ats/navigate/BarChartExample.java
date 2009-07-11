@@ -91,6 +91,7 @@ public class BarChartExample extends XNavigateItemAction {
       return new ResultsEditorHtmlTab("Example Bar Chart Data", "Report", AHTML.simplePage(sb.toString()));
    }
 
+   @SuppressWarnings( {"deprecation", "unchecked"})
    public static Chart createMyChart() {
       // bart charts are based on charts that contain axes
       ChartWithAxes cwaBar = ChartWithAxesImpl.create();
@@ -125,7 +126,7 @@ public class BarChartExample extends XNavigateItemAction {
       yAxisPrimary.getLabel().getCaption().getFont().setRotation(90);
 
       // initialize a collection with the X-series data
-      java.util.Vector vs = new java.util.Vector();
+      java.util.Vector<String> vs = new java.util.Vector<String>();
       vs.add("zero");
       vs.add("one");
       vs.add("two");
@@ -133,7 +134,7 @@ public class BarChartExample extends XNavigateItemAction {
       TextDataSet categoryValues = TextDataSetImpl.create(vs);
 
       // initialize a collection with the Y-series data
-      ArrayList vn1 = new ArrayList();
+      ArrayList<Double> vn1 = new ArrayList<Double>();
       vn1.add(new Double(25));
       vn1.add(new Double(35));
       vn1.add(new Double(-45));
