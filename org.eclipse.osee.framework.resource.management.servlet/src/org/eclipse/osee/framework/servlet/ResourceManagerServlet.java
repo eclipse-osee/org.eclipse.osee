@@ -66,6 +66,7 @@ public class ResourceManagerServlet extends OseeHttpServlet {
             boolean exists = Activator.getInstance().getResourceManager().exists(locator);
             response.setStatus(exists ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
             response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().println(String.format("[%s] was %sfound.", path, exists ? "" : "not "));
          } else {
             IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
@@ -94,10 +95,12 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
          handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
          handleError(response, String.format("Unable to acquire resource: [%s]", request.getRequestURI()), ex);
       } finally {
          if (inputStream != null) {
@@ -152,7 +155,8 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       try {
          String path = HttpRequestDecoder.fromDeleteRequest(request);
          IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
-         int status = Activator.getInstance().getResourceManager().delete(locator);
+         int status =  IResourceManager.OK;
+         //Activator.getInstance().getResourceManager().delete(locator);
          if (status == IResourceManager.OK) {
             result = HttpServletResponse.SC_ACCEPTED;
          } else {
