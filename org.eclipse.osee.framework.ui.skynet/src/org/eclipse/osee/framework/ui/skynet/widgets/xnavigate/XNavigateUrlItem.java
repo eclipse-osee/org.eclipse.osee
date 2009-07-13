@@ -41,7 +41,7 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @throws OseeArgumentException
     */
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external) throws OseeArgumentException {
-      this(parent, name, url, external, FrameworkImage.GEAR);
+      this(parent, name, url, external, FrameworkImage.URL);
    }
 
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external, OseeImage oseeImage) throws OseeArgumentException {

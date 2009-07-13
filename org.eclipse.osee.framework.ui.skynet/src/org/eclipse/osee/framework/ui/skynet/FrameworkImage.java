@@ -141,6 +141,7 @@ public enum FrameworkImage implements OseeImage {
    TRASH("trash.gif"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
+   URL("www.gif"),
    USER("userPurple.gif"),
    USER_PURPLE("userPurple.gif"),
    USER_RED("userRed.gif"),
@@ -154,6 +155,7 @@ public enum FrameworkImage implements OseeImage {
    WIDGET("widget.gif"),
    WARNING("warn.gif"),
    WARNING_OVERLAY("alert_8_8.gif"),
+   WWW("www.gif"),
    X_RED("redRemove.gif");
 
    private final String fileName;
