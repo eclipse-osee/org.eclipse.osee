@@ -67,21 +67,21 @@ public class TestUnitData extends BaseTraceDataCache {
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       IProgressMonitor subMonitor = SubMonitor.convert(monitor);
-      testCases.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_CASE, getBranch()));
+      testCases.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_CASE, getBranch()));
       populateTraceMap(monitor, testCases, testCaseMap);
       subMonitor.worked(20);
 
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Support from: [%s]", getBranch().getBranchShortName()));
 
-         testSupportItems.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_SUPPORT, getBranch()));
+         testSupportItems.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_SUPPORT, getBranch()));
          populateTraceMap(monitor, testSupportItems, testSupportMap);
          subMonitor.worked(20);
       }
 
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch().getBranchShortName()));
-         testProcedures.addAll(ArtifactQuery.getArtifactsFromType(Requirements.TEST_PROCEDURE, getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_PROCEDURE, getBranch()));
          populateTraceMap(monitor, testProcedures, testProcedureMap);
          subMonitor.worked(20);
       }

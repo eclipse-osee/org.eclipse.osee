@@ -33,7 +33,7 @@ public class CopyActionDetailsService extends WorkPageService {
    private void performCopy() {
       if (clipboard == null) this.clipboard = new Clipboard(null);
       clipboard.setContents(
-            new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getDescriptiveName() + "\""},
+            new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getName() + "\""},
             new Transfer[] {TextTransfer.getInstance()});
    }
 

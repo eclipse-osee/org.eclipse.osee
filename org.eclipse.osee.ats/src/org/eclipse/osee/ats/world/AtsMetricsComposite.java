@@ -233,7 +233,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          lines.add(new XBarGraphLine(
                "Targeted Version",
                0,
-               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getDescriptiveName()));
+               iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getName()));
          lines.add(new XBarGraphLine(
                "Version Estimated Release Date",
                0,

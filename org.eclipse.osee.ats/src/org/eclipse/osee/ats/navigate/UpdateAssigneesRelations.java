@@ -61,7 +61,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
 
       for (String artTypeName : teamWorkflowNames) {
          System.out.println("Processing artifact type - " + artTypeName);
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsUtil.getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromType(artTypeName, AtsUtil.getAtsBranch())) {
             if (art instanceof StateMachineArtifact) {
                ((StateMachineArtifact) art).updateAssigneeRelations();
                if (art.hasDirtyAttributes()) {

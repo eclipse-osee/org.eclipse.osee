@@ -130,12 +130,12 @@ public class Overview {
    public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) throws OseeCoreException {
       SMAManager smaMgr = new SMAManager(sma);
       startBorderTable(100, false, "");
-      addTable(getLabelValue("Title", sma.getDescriptiveName()));
+      addTable(getLabelValue("Title", sma.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
             AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getStateMgr().getCurrentStateName(),
             AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
             AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-      addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue("Creation Date",
+      addTable(getLabelValue("Originator", smaMgr.getOriginator().getName()), getLabelValue("Creation Date",
             XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
@@ -151,7 +151,7 @@ public class Overview {
       if (sma instanceof TaskArtifact) {
          StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
          if (parentArt != null) {
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getDescriptiveName()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
          }
          SMAManager taskSmaMgr = new SMAManager(sma);
@@ -251,7 +251,7 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(Artifact art) {
-      return getOpenHyperlinkHtml(art.getDescriptiveName(), art);
+      return getOpenHyperlinkHtml(art.getName(), art);
    }
 
    public static String getOpenHyperlinkHtml(String name, String hrid) {

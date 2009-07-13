@@ -319,7 +319,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    @Override
    public String toString() {
-      return getDescriptiveName();
+      return getName();
    }
 
    //TODO should not return null but currently application code expects it to
@@ -363,17 +363,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public Artifact getChild(String descriptiveName) throws OseeCoreException {
       for (Artifact artifact : getChildren()) {
-         if (artifact.getDescriptiveName().equals(descriptiveName)) {
+         if (artifact.getName().equals(descriptiveName)) {
             return artifact;
          }
       }
       throw new ArtifactDoesNotExist(
-            "\"" + getDescriptiveName() + "\" has no child with the name \"" + descriptiveName + "\"");
+            "\"" + getName() + "\" has no child with the name \"" + descriptiveName + "\"");
    }
 
    public boolean hasChild(String descriptiveName) throws OseeCoreException {
       for (Artifact artifact : getChildren()) {
-         if (artifact.getDescriptiveName().equals(descriptiveName)) {
+         if (artifact.getName().equals(descriptiveName)) {
             return true;
          }
       }
@@ -724,7 +724,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             OseeLog.log(
                   Activator.class,
                   Level.SEVERE,
-                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getDescriptiveName() + "\"");
+                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
          return value;
@@ -948,7 +948,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return "";
    }
 
-   public String getDescriptiveName() {
+   public String getName() {
       String name = null;
       try {
          name = getInternalAttributeValue("Name");
@@ -1133,7 +1133,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
       for (Artifact child : getChildren()) {
-         if ((caseSensitive && child.getDescriptiveName().equals(humanReadableId)) || (!caseSensitive && child.getDescriptiveName().equalsIgnoreCase(
+         if ((caseSensitive && child.getName().equals(humanReadableId)) || (!caseSensitive && child.getName().equalsIgnoreCase(
                humanReadableId))) {
             descendants.add(child);
          }
@@ -1447,7 +1447,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public String getVersionedName() {
-      String name = getDescriptiveName();
+      String name = getName();
 
       if (isHistorical()) {
          name += " [Rev:" + transactionId.getTransactionNumber() + "]";
@@ -1602,7 +1602,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return artifact name in a form that is valid as an XML element
     */
    public String getSafeName() {
-      String elementName = safeNamePattern.matcher(getDescriptiveName()).replaceAll("_");
+      String elementName = safeNamePattern.matcher(getName()).replaceAll("_");
 
       // Ensure the name did not end up empty
       if (elementName.equals("")) {
@@ -1698,7 +1698,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          diff = 0;
       } else {
          try {
-            diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+            diff = getName().compareTo(otherArtifact.getName());
          } catch (Exception ex) {
             diff = 0;
          }

@@ -80,7 +80,7 @@ public class ArtifactExportJob extends Job {
 
    private void writeArtifactPreview(File exportPath, IProgressMonitor monitor, Artifact artifact, PresentationType presentationType) throws Exception {
       if (artifact.getArtifactTypeName().equals("Folder")) {
-         File folder = new File(exportPath, artifact.getDescriptiveName());
+         File folder = new File(exportPath, artifact.getName());
          folder.mkdir();
          for (Artifact child : artifact.getChildren()) {
             writeArtifactPreview(folder, monitor, child, presentationType);

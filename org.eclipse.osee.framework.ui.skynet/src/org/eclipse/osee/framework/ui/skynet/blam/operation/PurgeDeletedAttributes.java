@@ -45,7 +45,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       Collection<AttributeType> purgeAttributeTypes =
             variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, ArtifactLoad.ALL_CURRENT, true);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(branch, ArtifactLoad.ALL_CURRENT, true);
 
       StringBuilder strB = new StringBuilder();
 

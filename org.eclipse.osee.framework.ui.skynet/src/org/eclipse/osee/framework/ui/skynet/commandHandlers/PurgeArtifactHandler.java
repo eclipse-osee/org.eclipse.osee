@@ -62,7 +62,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                      @Override
                      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                         for (Artifact artifactToPurge : artifacts) {
-                           monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                           monitor.setTaskName("Purge: " + artifactToPurge.getName());
                            artifactToPurge.purgeFromBranch(connection);
                            monitor.worked(1);
                         }

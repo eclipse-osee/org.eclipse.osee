@@ -61,7 +61,7 @@ public class DemoDbActionData {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
          for (ActionableItemArtifact aia : ActionableItemArtifact.getActionableItems()) {
-            if (str.equals(aia.getDescriptiveName())) aias.add(aia);
+            if (str.equals(aia.getName())) aias.add(aia);
          }
       }
       return aias;

@@ -447,7 +447,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
          if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            if (delArt.getDescriptiveName().equals(getPartName())) {
+            if (delArt.getName().equals(getPartName())) {
                closeEditor();
             }
          }

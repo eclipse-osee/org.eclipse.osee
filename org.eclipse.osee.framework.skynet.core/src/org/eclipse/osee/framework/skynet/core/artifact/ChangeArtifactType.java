@@ -79,7 +79,7 @@ public class ChangeArtifactType {
    }
 
    private static void getConflictString(StringBuffer results, Artifact artifact, ArtifactType artifactType) {
-      results.append("There has been a conflict in changing artifact " + artifact.getHumanReadableId() + " - \"" + artifact.getDescriptiveName() + "\"" +
+      results.append("There has been a conflict in changing artifact " + artifact.getHumanReadableId() + " - \"" + artifact.getName() + "\"" +
       //
       " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
       for (RelationLink relationLink : relationsToDelete) {

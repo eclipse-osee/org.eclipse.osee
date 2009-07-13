@@ -59,7 +59,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
          RelationTypeSide side = (RelationTypeSide) element;
-         return side.getSideName() + " \"" + (side.isSideA() ? side.getRelationType().getAToBPhrasing() : side.getRelationType().getBToAPhrasing()) + "\" " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getDescriptiveName() + "\"";
+         return side.getSideName() + " \"" + (side.isSideA() ? side.getRelationType().getAToBPhrasing() : side.getRelationType().getBToAPhrasing()) + "\" " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) {
             return ((RelationType) element).getTypeName();
@@ -68,7 +68,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          RelationLink link = (RelationLink) element;
          if (columnIndex == 0) {
             try {
-               return link.getArtifactOnOtherSide(artifact).getDescriptiveName();
+               return link.getArtifactOnOtherSide(artifact).getName();
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

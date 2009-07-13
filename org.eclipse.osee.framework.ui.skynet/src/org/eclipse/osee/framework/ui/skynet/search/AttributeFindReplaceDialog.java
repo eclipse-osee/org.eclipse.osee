@@ -170,7 +170,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
                SkynetTransaction transaction = new SkynetTransaction(branch);
                for (Artifact artifact : artifacts) {
-                  monitor.subTask("Modifying " + artifact.getDescriptiveName());
+                  monitor.subTask("Modifying " + artifact.getName());
                   for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {
                      Matcher matcher = pattern.matcher(attribute.toString());
                      attribute.setFromString(matcher.replaceAll(replaceText));

@@ -74,7 +74,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
                "AtsNotifyUsers: testing is enabled....turn off for production.");
       }
-      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getDescriptiveName().startsWith(
+      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith(
             "tt "))) {
          return;
       }
@@ -90,7 +90,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                Arrays.asList(originator),
                getIdString(sma),
                NotifyType.Originator.name(),
-               "You have been set as the originator of \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
+               "You have been set as the originator of \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\""));
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : smaMgr.getStateMgr().getAssignees();
@@ -104,7 +104,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   assignees,
                   getIdString(sma),
                   NotifyType.Assigned.name(),
-                  "You have been set as an assignee for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
+                  "You have been set as an assignee for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\""));
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
@@ -118,7 +118,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   subscribed,
                   getIdString(sma),
                   NotifyType.Subscribed.name(),
-                  sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\" and you subscribed for notification."));
+                  sma.getArtifactTypeName() + " titled \"" + sma.getName() + "\" transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\" and you subscribed for notification."));
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
@@ -133,7 +133,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                         Arrays.asList(originator),
                         getIdString(sma),
                         NotifyType.Completed.name(),
-                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\" is Completed"));
+                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" is Completed"));
                }
                if (smaMgr.isCancelled()) {
                   LogItem cancelledItem = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
@@ -142,7 +142,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                         getIdString(sma),
                         NotifyType.Cancelled.name(),
                         String.format(
-                              sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"",
+                              sma.getArtifactTypeName() + " titled \"" + sma.getName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"",
                               cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
                }
             }
@@ -162,7 +162,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                         authorModerator,
                         getIdString(sma),
                         NotifyType.Reviewed.name(),
-                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\" has been Reviewed by " + role.getUser().getName()));
+                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" has been Reviewed by " + role.getUser().getName()));
                }
             }
          }
@@ -204,7 +204,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                      subscribedUsers,
                      getIdString(teamArt),
                      "Workflow Creation",
-                     "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getDescriptiveName() + "\""));
+                     "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
             }
 
             // Handle Actionable Items
@@ -216,7 +216,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                         subscribedUsers,
                         getIdString(teamArt),
                         "Workflow Creation",
-                        "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getDescriptiveName() + "\""));
+                        "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
                }
             }
          }

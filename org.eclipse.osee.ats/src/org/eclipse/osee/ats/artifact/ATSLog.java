@@ -81,7 +81,7 @@ public class ATSLog {
       StringBuffer sb = new StringBuffer();
       if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
             AHTML.LABEL_FONT,
-            "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getDescriptiveName() + "\""));
+            "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getName() + "\""));
       sb.append(getTable());
       return sb.toString();
    }

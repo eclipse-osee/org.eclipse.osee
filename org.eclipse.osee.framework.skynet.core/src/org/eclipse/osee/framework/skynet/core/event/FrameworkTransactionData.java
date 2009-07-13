@@ -173,7 +173,7 @@ public class FrameworkTransactionData {
             }
          }
          if (artifactIds.size() > 0) {
-            artifacts.addAll(ArtifactQuery.getArtifactsFromIds(artifactIds, BranchManager.getBranch(branchId), false));
+            artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artifactIds, BranchManager.getBranch(branchId), false));
          }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);

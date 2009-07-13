@@ -74,7 +74,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             return;
          }
          for (VersionArtifact verArt : teamDefHoldingVersions.getVersionsArtifacts()) {
-            if (verArt.getDescriptiveName().equals(newVer)) {
+            if (verArt.getName().equals(newVer)) {
                AWorkbench.popup("ERROR", "Version already exists");
                return;
             }

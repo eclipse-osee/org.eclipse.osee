@@ -272,7 +272,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
                OseeLog.log(
                      AtsPlugin.class,
                      Level.SEVERE,
-                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getDescriptiveName());
+                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getName());
             }
             workFlowArt = artifact;
          }
@@ -280,7 +280,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (workFlowArt == null) {
          return null;
       }
-      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getDescriptiveName());
+      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
    }
 
    /**
@@ -387,7 +387,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public VersionArtifact getVersionArtifact(String name, boolean create) throws OseeCoreException {
       for (VersionArtifact verArt : getVersionsArtifacts()) {
-         if (verArt.getDescriptiveName().equals(name)) return verArt;
+         if (verArt.getName().equals(name)) return verArt;
       }
       if (create) {
          return createVersion(name);
@@ -441,7 +441,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public boolean hasWorkRule(String ruleId) throws OseeCoreException {
       for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
-         if (art.getDescriptiveName().equals(ruleId)) {
+         if (art.getName().equals(ruleId)) {
             return true;
          }
       }
@@ -483,7 +483,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     */
    @Override
    public String getFullDisplayName() throws OseeCoreException {
-      return getDescriptiveName();
+      return getName();
    }
 
 }

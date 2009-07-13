@@ -40,10 +40,10 @@ public class ActiveArtifactTypeSearch {
          Collection<Artifact> arts = null;
          if (active == Active.Both) {
             // Since both, just do a type search
-            arts = ArtifactQuery.getArtifactsFromType(artifactTypeName, branch);
+            arts = ArtifactQuery.getArtifactListFromType(artifactTypeName, branch);
          } else {
             arts =
-                  ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, "ats.Active",
+                  ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, "ats.Active",
                         active == Active.Active ? "yes" : "no", branch);
          }
          for (Artifact art : arts) {

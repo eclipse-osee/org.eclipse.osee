@@ -73,7 +73,7 @@ public class TaskMetrics extends AbstractBlam {
 
          ArtifactType descriptor = variableMap.getArtifactType("Artifact Type");
 
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(descriptor.getName(), AtsUtil.getAtsBranch());
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(descriptor.getName(), AtsUtil.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.SmaToTask_Task);
          for (Artifact artifact : tasks) {
             if (artifact instanceof TaskArtifact) {

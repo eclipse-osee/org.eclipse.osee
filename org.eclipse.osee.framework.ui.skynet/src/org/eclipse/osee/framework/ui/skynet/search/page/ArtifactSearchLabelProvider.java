@@ -76,7 +76,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
             element));
 
       Artifact artifact = (Artifact) element;
-      String name = artifact.getDescriptiveName();
+      String name = artifact.getName();
       int matchCount = getMatchCount(artifact);
       if (matchCount > 0) {
          StyledString artifactString = getColoredLabelWithCounts(artifact, matchCount, new StyledString(name));

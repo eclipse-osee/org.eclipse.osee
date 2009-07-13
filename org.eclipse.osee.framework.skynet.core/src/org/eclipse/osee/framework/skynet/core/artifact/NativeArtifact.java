@@ -42,7 +42,7 @@ public class NativeArtifact extends Artifact {
    }
 
    public String getFileName() throws OseeCoreException {
-      return getDescriptiveName() + "." + getFileExtension();
+      return getName() + "." + getFileExtension();
    }
 
    public String getFileExtension() throws OseeCoreException {

@@ -41,13 +41,13 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     *      java.util.Collection, java.util.Collection)
     */
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
-      if (teamDef.getDescriptiveName().contains("Code"))
+      if (teamDef.getName().contains("Code"))
          return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
-      else if (teamDef.getDescriptiveName().contains("Test"))
+      else if (teamDef.getName().contains("Test"))
          return DemoTestTeamWorkflowArtifact.ARTIFACT_NAME;
-      else if (teamDef.getDescriptiveName().contains("Requirements"))
+      else if (teamDef.getName().contains("Requirements"))
          return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
-      else if (teamDef.getDescriptiveName().contains("SAW HW")) return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
+      else if (teamDef.getName().contains("SAW HW")) return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
       return TeamWorkFlowArtifact.ARTIFACT_NAME;
    }
 
@@ -58,7 +58,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     *      java.util.Collection, java.util.Collection)
     */
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
-      return (teamDef.getDescriptiveName().contains("SAW") || teamDef.getDescriptiveName().contains("CIS"));
+      return (teamDef.getName().contains("SAW") || teamDef.getName().contains("CIS"));
    }
 
    /*

@@ -96,7 +96,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         String name = artifact.getDescriptiveName();
+         String name = artifact.getName();
          if (artifact.isDeleted()) {
             name += " <Deleted>";
          }

@@ -41,12 +41,12 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       for (IRelationEnumeration relationEnum : relations) {
          List<String> entries = new ArrayList<String>();
          for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
-            entries.add(relArtifact.getDescriptiveName());
+            entries.add(relArtifact.getName());
          }
          items.add(entries);
          maxSize = Math.max(maxSize, entries.size());
       }
-      String unitName = artifact.getDescriptiveName();
+      String unitName = artifact.getName();
       int width = relations.length;
       for (int rowNumber = 0; rowNumber < maxSize; rowNumber++) {
          String[] row = new String[width + 1];
@@ -68,11 +68,11 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       notifyOnTableHeader(getHeader());
       IRelationEnumeration[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {
-         String name = artifact.getDescriptiveName();
+         String name = artifact.getName();
          for (IRelationEnumeration relationEnum : relations) {
             String typeName = relationEnum.getTypeName();
             for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
-               notifyOnRowData(name, typeName, relArtifact.getDescriptiveName());
+               notifyOnRowData(name, typeName, relArtifact.getName());
             }
          }
       }

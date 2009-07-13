@@ -30,7 +30,7 @@ public class UniversalGroup {
    public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
-         artifacts = ArtifactQuery.getArtifactsFromType(ARTIFACT_TYPE_NAME, branch);
+         artifacts = ArtifactQuery.getArtifactListFromType(ARTIFACT_TYPE_NAME, branch);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          artifacts = new LinkedList<Artifact>();
@@ -40,7 +40,7 @@ public class UniversalGroup {
 
    public static Collection<Artifact> getGroups(String groupName, Branch branch) {
       try {
-         return ArtifactQuery.getArtifactsFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
+         return ArtifactQuery.getArtifactListFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

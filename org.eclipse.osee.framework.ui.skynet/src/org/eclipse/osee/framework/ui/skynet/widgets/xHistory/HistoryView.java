@@ -87,7 +87,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    }
 
    private static void openViewUpon(final Artifact artifact, final Boolean loadHistory) {
-      Job job = new Job("Open History: " + artifact.getDescriptiveName()) {
+      Job job = new Job("Open History: " + artifact.getName()) {
 
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
@@ -242,7 +242,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       if (xHistoryWidget != null) {
          this.artifact = artifact;
 
-         setPartName("History: " + artifact.getDescriptiveName());
+         setPartName("History: " + artifact.getName());
          xHistoryWidget.setInputData(artifact, loadHistory);
       }
    }

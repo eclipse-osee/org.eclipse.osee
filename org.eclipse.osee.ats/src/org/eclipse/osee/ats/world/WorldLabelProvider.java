@@ -100,7 +100,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             if (xCol.equals(WorldXViewerFactory.ID_Col))
                return art.getHumanReadableId();
             else if (xCol.equals(WorldXViewerFactory.Title_Col))
-               return art.getDescriptiveName();
+               return art.getName();
             else
                return "<deleted>";
          }

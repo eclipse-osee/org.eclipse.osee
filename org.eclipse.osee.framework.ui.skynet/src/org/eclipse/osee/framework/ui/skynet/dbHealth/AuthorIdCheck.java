@@ -88,7 +88,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
                   }
                } else {
                   infoSb.append(String.format("Successfully found author [%s] as [%s]\n", String.valueOf(author),
-                        artifact.getDescriptiveName()));
+                        artifact.getName()));
                }
             } catch (Exception ex) {
                rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),

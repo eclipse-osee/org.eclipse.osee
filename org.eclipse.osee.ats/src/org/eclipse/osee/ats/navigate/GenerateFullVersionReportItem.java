@@ -101,7 +101,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       private final TeamDefinitionArtifact teamDef;
 
       public PublishReportJob(TeamDefinitionArtifact teamDef) {
-         super(teamDef.getDescriptiveName() + " as of " + XDate.getDateNow());
+         super(teamDef.getName() + " as of " + XDate.getDateNow());
          this.teamDef = teamDef;
       }
 

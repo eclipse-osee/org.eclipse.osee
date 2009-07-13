@@ -40,7 +40,7 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      return ArtifactQuery.getArtifactsFromIds(idsToSearch, branchToSearch, allowDeleted);
+      return ArtifactQuery.getArtifactListFromIds(idsToSearch, branchToSearch, allowDeleted);
    }
 
    /* (non-Javadoc)

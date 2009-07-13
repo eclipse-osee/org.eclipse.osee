@@ -69,16 +69,16 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
                                     ArtifactEditor.EDITOR_ID, true);
                         if (part != null) {
                            String html =
-                                 AHTML.simplePage(artifact.getDescriptiveName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+                                 AHTML.simplePage(artifact.getName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                            httpResponse.getPrintStream().println(html);
                         } else {
                            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                                 "Unable to open: [%s]", artifact.getDescriptiveName()));
+                                 "Unable to open: [%s]", artifact.getName()));
                         }
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                         httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                              "Unable to open: [%s]", artifact.getDescriptiveName()), ex);
+                              "Unable to open: [%s]", artifact.getName()), ex);
                      } finally {
                         isDone.setValue(true);
                      }
@@ -97,7 +97,7 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                  "Unable to open: [%s]", artifact.getDescriptiveName()), ex);
+                  "Unable to open: [%s]", artifact.getName()), ex);
          }
       } else {
          httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");

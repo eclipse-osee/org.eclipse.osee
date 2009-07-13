@@ -52,8 +52,8 @@ public class SetRequirementCategory extends AbstractBlam {
       reqPriorities = extractor.getReqPriorities();
 
       if (bulkLoad) {
-         for (Artifact req : ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, branch)) {
-            reqs.put(req.getDescriptiveName().trim(), req);
+         for (Artifact req : ArtifactQuery.getArtifactListFromType(Requirements.SOFTWARE_REQUIREMENT, branch)) {
+            reqs.put(req.getName().trim(), req);
          }
       }
 
@@ -78,14 +78,14 @@ public class SetRequirementCategory extends AbstractBlam {
          }
 
          if (requirement.isOrphan()) {
-            throw new MultipleArtifactsExist(requirement.getDescriptiveName());
+            throw new MultipleArtifactsExist(requirement.getName());
          } else {
             requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
             requirement.persistAttributes(transaction);
          }
       } catch (MultipleArtifactsExist ex) {
          List<Artifact> artiafcts =
-               ArtifactQuery.getArtifactsFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
+               ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
          for (Artifact requirement : artiafcts) {
             if (requirement.isOrphan()) {
                OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");

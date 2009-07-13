@@ -104,10 +104,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       String title = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (title.equals(""))
-            title = team.getDescriptiveName();
-         else if (!title.equals(team.getDescriptiveName())) return;
+            title = team.getName();
+         else if (!title.equals(team.getName())) return;
       }
-      if (!title.equals(getDescriptiveName())) {
+      if (!title.equals(getName())) {
          setDescriptiveName(title);
       }
    }
@@ -212,7 +212,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewTitle() throws OseeCoreException {
-      return getDescriptiveName();
+      return getName();
    }
 
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
@@ -542,7 +542,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
     */
    public String getHyperName() {
-      return getDescriptiveName();
+      return getName();
    }
 
    /*
@@ -680,17 +680,17 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                if (!teamArt.getActionableItemsDam().getActionableItems().contains(aia)) {
                   teamArt.getActionableItemsDam().addActionableItem(aia);
                   teamArt.saveSMA(transaction);
-                  sb.append(aia.getDescriptiveName() + " => added to existing team workflow \"" + tda.getDescriptiveName() + "\"\n");
+                  sb.append(aia.getName() + " => added to existing team workflow \"" + tda.getName() + "\"\n");
                   teamExists = true;
                } else {
-                  sb.append(aia.getDescriptiveName() + " => already exists in team workflow \"" + tda.getDescriptiveName() + "\"\n");
+                  sb.append(aia.getName() + " => already exists in team workflow \"" + tda.getName() + "\"\n");
                   teamExists = true;
                }
             }
          }
          if (!teamExists) {
             createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
-            sb.append(aia.getDescriptiveName() + " => added team workflow \"" + tda.getDescriptiveName() + "\"\n");
+            sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }
       }
       return new Result(true, sb.toString());
@@ -789,7 +789,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          priType = PriorityType.getPriority(priorityStr);
       else
          throw new OseeArgumentException("Invalid priority => " + priorityStr);
-      setArtifactIdentifyData(toTeam, fromAction.getDescriptiveName(), fromAction.getSoleAttributeValue(
+      setArtifactIdentifyData(toTeam, fromAction.getName(), fromAction.getSoleAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
             ChangeType.getChangeType(fromAction.getSoleAttributeValue(
                   ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), "")), priType,

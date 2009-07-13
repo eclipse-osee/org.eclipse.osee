@@ -111,7 +111,7 @@ public class AtsBranchConfigurationTest {
                   TestType.BranchViaVersions.name(), AtsUtil.getAtsBranch());
       VersionArtifact verArtToTarget = null;
       for (VersionArtifact vArt : teamDef.getVersionsArtifacts()) {
-         if (vArt.getDescriptiveName().contains("Ver1")) {
+         if (vArt.getName().contains("Ver1")) {
             verArtToTarget = vArt;
          }
       }
@@ -326,8 +326,8 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      for (Artifact verArt : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
-         if (verArt.getDescriptiveName().contains(testType.name())) {
+      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
+         if (verArt.getName().contains(testType.name())) {
             verArt.deleteAndPersist(transaction);
          }
       }
@@ -357,15 +357,15 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
+      for (Artifact workArt : ArtifactQuery.getArtifactListFromType(WorkPageDefinition.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
-         if (workArt.getDescriptiveName().startsWith(namespace)) {
+         if (workArt.getName().startsWith(namespace)) {
             workArt.deleteAndPersist(transaction);
          }
       }
-      for (Artifact workArt : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
+      for (Artifact workArt : ArtifactQuery.getArtifactListFromType(WorkFlowDefinition.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
-         if (workArt.getDescriptiveName().startsWith(namespace)) {
+         if (workArt.getName().startsWith(namespace)) {
             workArt.deleteAndPersist(transaction);
          }
       }

@@ -90,7 +90,7 @@ public class ArtifactClipboard {
 
             InputDialog dialog =
                   new InputDialog(Display.getCurrent().getActiveShell(), "Name Artifact", "Enter artifact name",
-                        clipboardArtifacts[0].getDescriptiveName(), inputValidator);
+                        clipboardArtifacts[0].getName(), inputValidator);
 
             if (dialog.open() == Window.CANCEL) {
                return;

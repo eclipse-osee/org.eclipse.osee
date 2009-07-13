@@ -47,7 +47,7 @@ public class XViewerArtifactNameColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getDescriptiveName();
+         return ((Artifact) element).getName();
       }
       return super.getColumnText(element, column, columnIndex);
    }

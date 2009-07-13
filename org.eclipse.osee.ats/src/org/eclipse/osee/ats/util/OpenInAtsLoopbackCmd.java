@@ -62,12 +62,12 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                      try {
                         AtsUtil.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
                         String html =
-                              AHTML.simplePage("Action [" + artifact.getDescriptiveName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+                              AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                         httpResponse.getPrintStream().println(html);
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                         httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                              "Unable to open: [%s]", artifact.getDescriptiveName()), ex);
+                              "Unable to open: [%s]", artifact.getName()), ex);
                      } finally {
                         isDone.setValue(true);
                      }
@@ -85,7 +85,7 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR, String.format(
-                  "Unable to open: [%s]", artifact.getDescriptiveName()), ex);
+                  "Unable to open: [%s]", artifact.getName()), ex);
          }
       } else {
          httpResponse.outputStandardError(HttpURLConnection.HTTP_BAD_REQUEST, "Unable to open null artifact");

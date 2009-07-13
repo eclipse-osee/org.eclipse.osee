@@ -28,7 +28,7 @@ public class ArtifactTypeAndDescriptiveLabelProvider implements ILabelProvider {
    }
 
    public String getText(Object arg0) {
-      return "[" + ((Artifact) arg0).getArtifactTypeName() + "][" + ((Artifact) arg0).getDescriptiveName() + "]";
+      return "[" + ((Artifact) arg0).getArtifactTypeName() + "][" + ((Artifact) arg0).getName() + "]";
    }
 
    public void addListener(ILabelProviderListener arg0) {

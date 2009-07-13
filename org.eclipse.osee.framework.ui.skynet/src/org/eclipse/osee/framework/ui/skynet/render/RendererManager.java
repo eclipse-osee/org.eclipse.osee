@@ -268,7 +268,7 @@ public class RendererManager {
       };
 
       String jobName =
-            "Compare " + (baseVersion == null ? " new " : baseVersion.getDescriptiveName()) + " to " + (newerVersion == null ? " delete " : newerVersion.getDescriptiveName());
+            "Compare " + (baseVersion == null ? " new " : baseVersion.getName()) + " to " + (newerVersion == null ? " delete " : newerVersion.getName());
       Jobs.runInJob(jobName, runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
 
    }

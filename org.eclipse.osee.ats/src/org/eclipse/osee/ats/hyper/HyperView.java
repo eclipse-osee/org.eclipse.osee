@@ -776,7 +776,7 @@ public class HyperView extends ViewPart implements IPartListener {
                   if (MessageDialog.openQuestion(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Confirm Artifact Deletion?",
-                        "\"" + art.getDescriptiveName() + "\"\nguid: " + art.getGuid() + "\n\n Are you sure you want to delete this artifact and it's default-hierarchy children?")) {
+                        "\"" + art.getName() + "\"\nguid: " + art.getGuid() + "\n\n Are you sure you want to delete this artifact and it's default-hierarchy children?")) {
                      if (art != null) {
                         if (art instanceof StateMachineArtifact) SMAEditor.close((StateMachineArtifact) art, false);
                         try {

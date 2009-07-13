@@ -249,7 +249,7 @@ public class ArtifactTypeManager {
    public static void purgeArtifactTypesWithCheck(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
       for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, true);
          if (artifacts.size() > 0) {
             HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
             for (Artifact artifact : artifacts) {
@@ -282,7 +282,7 @@ public class ArtifactTypeManager {
       try {
          for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
             // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-            List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(purgeArtifactType, true);
+            List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, true);
             if (artifacts.size() > 0) {
                HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
                for (Artifact artifact : artifacts) {

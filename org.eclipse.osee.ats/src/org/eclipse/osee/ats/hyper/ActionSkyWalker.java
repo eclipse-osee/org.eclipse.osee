@@ -192,7 +192,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    public String getActionDescription() {
       if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted()) return String.format(
             "Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
-            getOptions().getArtifact().getDescriptiveName());
+            getOptions().getArtifact().getName());
       return "";
    }
 

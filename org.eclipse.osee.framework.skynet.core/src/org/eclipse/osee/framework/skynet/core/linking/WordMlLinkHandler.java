@@ -182,9 +182,9 @@ public class WordMlLinkHandler {
    private static List<Artifact> findArtifacts(TransactionId transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
-         artifactsFromSearch = ArtifactQuery.getHistoricalArtifactsFromIds(guidsFromLinks, transactionId, true);
+         artifactsFromSearch = ArtifactQuery.getHistoricalArtifactListFromIds(guidsFromLinks, transactionId, true);
       } else {
-         artifactsFromSearch = ArtifactQuery.getArtifactsFromIds(guidsFromLinks, branch, true);
+         artifactsFromSearch = ArtifactQuery.getArtifactListFromIds(guidsFromLinks, branch, true);
       }
       return artifactsFromSearch;
    }
@@ -262,7 +262,7 @@ public class WordMlLinkHandler {
 
    private static String getWordMlLink(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
       String toReturn = "";
-      String linkText = artifact.getDescriptiveName() + (artifact.isDeleted() ? " (DELETED)" : "");
+      String linkText = artifact.getName() + (artifact.isDeleted() ? " (DELETED)" : "");
       linkText = Xml.escape(linkText).toString();
       switch (destLinkType) {
          case OSEE_SERVER_LINK:

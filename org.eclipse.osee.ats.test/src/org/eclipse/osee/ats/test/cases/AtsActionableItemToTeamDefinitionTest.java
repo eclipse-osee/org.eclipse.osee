@@ -25,7 +25,7 @@ public class AtsActionableItemToTeamDefinitionTest {
    @org.junit.Test
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
-      for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(ActionableItemArtifact.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {

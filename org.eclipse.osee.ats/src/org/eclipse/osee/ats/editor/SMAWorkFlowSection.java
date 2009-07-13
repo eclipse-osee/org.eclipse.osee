@@ -694,7 +694,7 @@ public class SMAWorkFlowSection extends SectionPart {
                   if (taskArt.isInWork()) {
                      AWorkbench.popup(
                            "Transition Blocked",
-                           "Task Not Complete\n\nTitle: " + taskArt.getDescriptiveName() + "\n\nHRID: " + taskArt.getHumanReadableId());
+                           "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
                      return;
                   }
                }

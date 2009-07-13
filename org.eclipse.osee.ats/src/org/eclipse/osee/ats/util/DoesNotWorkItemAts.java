@@ -142,7 +142,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                   "EXMT0", "W1TS8", "JM3RD", "7Q0W3", "P9DKR", "BR2RN", "Z6B0Z", "6KT6U", "HPQJX", "QN2K3", "W0VTD",
                   "LDJMH", "6PWYH", "T8B4K", "YTNLC", "9557A", "SQQ6T", "D82X9", "2P5GC", "YK58N", "LWVT1", "KCGSQ",
                   "5X2WL", "C8HWW");
-      for (Artifact art : ArtifactQuery.getArtifactsFromIds(hrids, AtsUtil.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(hrids, AtsUtil.getAtsBranch())) {
          String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
          str = str.replaceAll("rj236c", "1779483");
          art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
@@ -152,7 +152,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
-      for (Artifact artifact : ArtifactQuery.getArtifactsFromAttributeType(
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(
             ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), AtsUtil.getAtsBranch())) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;

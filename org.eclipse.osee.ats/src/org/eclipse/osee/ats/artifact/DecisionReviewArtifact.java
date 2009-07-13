@@ -84,7 +84,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    @Override
    public String getHyperName() {
-      return getDescriptiveName();
+      return getName();
    }
 
    /*

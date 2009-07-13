@@ -33,7 +33,7 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
-      super(artifact, artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+      super(artifact, artifact.getName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));

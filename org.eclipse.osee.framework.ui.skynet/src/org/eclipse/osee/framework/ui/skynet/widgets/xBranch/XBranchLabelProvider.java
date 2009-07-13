@@ -114,7 +114,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
             if (branch.getAssociatedArtifact() != null) {
-               return branch.getAssociatedArtifact().getDescriptiveName();
+               return branch.getAssociatedArtifact().getName();
             }
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
@@ -151,7 +151,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             Artifact art =
                   ArtifactQuery.getArtifactFromId(transaction.getCommitArtId(), BranchManager.getCommonBranch());
             if (art != null) {
-               columnText = art.getDescriptiveName();
+               columnText = art.getName();
             }
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);

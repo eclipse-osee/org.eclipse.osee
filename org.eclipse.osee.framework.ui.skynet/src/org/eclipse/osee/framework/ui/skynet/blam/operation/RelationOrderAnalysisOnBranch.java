@@ -162,7 +162,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
                      try {
 
                         OseeLog.registerLoggerListener(listener);
-                        ArtifactQuery.reloadArtifactsFromBranch(branch, false);
+                        ArtifactQuery.reloadArtifactListFromBranch(branch, false);
                         OseeLog.unregisterLoggerListener(listener);
 
                         File branchReport =

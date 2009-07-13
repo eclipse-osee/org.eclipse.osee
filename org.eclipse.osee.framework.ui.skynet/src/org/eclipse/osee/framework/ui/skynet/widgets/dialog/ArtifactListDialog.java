@@ -66,7 +66,7 @@ public class ArtifactListDialog extends ListDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((Artifact) e1).getDescriptiveName(), ((Artifact) e2).getDescriptiveName());
+            return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
          }
       });
       return c;

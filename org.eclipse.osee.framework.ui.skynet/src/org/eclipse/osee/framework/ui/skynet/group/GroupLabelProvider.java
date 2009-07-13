@@ -57,7 +57,7 @@ public class GroupLabelProvider extends LabelProvider {
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
          }
-         String name = artifact.getDescriptiveName();
+         String name = artifact.getName();
          if (name == null) {
             return "";
          }

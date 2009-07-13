@@ -103,7 +103,7 @@ public class CreateNewUser extends AbstractBlam {
       // Add user to selected User Group and Universal Group
       for (XListItem groupNameListItem : variableMap.getCollection(XListItem.class, "Groups")) {
          for (Artifact groupArt : groupArts) {
-            if (groupNameListItem.getName().equals(groupArt.getDescriptiveName())) {
+            if (groupNameListItem.getName().equals(groupArt.getName())) {
                if (groupArt.getArtifactTypeName().equals("Universal Group")) {
                   groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, user);
                } else if (groupArt.getArtifactTypeName().equals("User Group")) {
@@ -139,7 +139,7 @@ public class CreateNewUser extends AbstractBlam {
          groupArts = EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser(), GroupType.Both);
          String groupStr = "";
          for (Artifact art : groupArts) {
-            groupStr += art.getDescriptiveName() + ",";
+            groupStr += art.getName() + ",";
          }
          groupStr = groupStr.replaceFirst(",$", "");
          widgetXml +=

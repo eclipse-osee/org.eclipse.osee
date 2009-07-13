@@ -41,7 +41,7 @@ public class GroupExplorerItem implements IAdaptable {
 
    @Override
    public String toString() {
-      return "\"" + artifact.getDescriptiveName() + "\" - " + groupItems.size();
+      return "\"" + artifact.getName() + "\" - " + groupItems.size();
    }
 
    public boolean contains(Artifact artifact) {
@@ -79,7 +79,7 @@ public class GroupExplorerItem implements IAdaptable {
    }
 
    public String getTableArtifactName() {
-      return artifact.getDescriptiveName();
+      return artifact.getName();
    }
 
    public String getTableArtifactDescription() {

@@ -69,7 +69,7 @@ public abstract class BaseTraceDataCache {
    }
 
    protected String asTraceMapKey(Artifact artifact) {
-      return artifact.getDescriptiveName();
+      return artifact.getName();
    }
 
    public void reset() {

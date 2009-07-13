@@ -49,7 +49,7 @@ public class SMAPrint extends Action {
    public void run() {
       try {
          XResultData xResultData = getResultData();
-         xResultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
+         xResultData.report(smaMgr.getSma().getName(), Manipulations.RAW_HTML);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -60,7 +60,7 @@ public class SMAPrint extends Action {
       XResultData resultData = new XResultData();
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
-            smaMgr.getSma().getDescriptiveName())}));
+            smaMgr.getSma().getName())}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {

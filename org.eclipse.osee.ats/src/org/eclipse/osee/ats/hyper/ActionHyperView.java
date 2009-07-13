@@ -251,7 +251,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
 
    public String getActionDescription() {
       if (currentArtifact != null && currentArtifact.isDeleted()) return String.format("Current Artifact - %s - %s",
-            currentArtifact.getGuid(), currentArtifact.getDescriptiveName());
+            currentArtifact.getGuid(), currentArtifact.getName());
       return "";
    }
 

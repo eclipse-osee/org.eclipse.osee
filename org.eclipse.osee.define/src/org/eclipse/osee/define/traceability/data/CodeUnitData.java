@@ -33,7 +33,7 @@ public class CodeUnitData extends BaseTraceDataCache {
    }
 
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      List<Artifact> codeUnits = ArtifactQuery.getArtifactsFromType(Requirements.CODE_UNIT, getBranch());
+      List<Artifact> codeUnits = ArtifactQuery.getArtifactListFromType(Requirements.CODE_UNIT, getBranch());
       populateTraceMap(monitor, codeUnits, codeUnitMap);
       monitor.worked(30);
    }

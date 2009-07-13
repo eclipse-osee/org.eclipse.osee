@@ -161,7 +161,7 @@ public class RoughArtifact {
                realArtifact.addChild(childArtifact);
             } else if (!childArtifact.getParent().equals(realArtifact)) {
                throw new OseeStateException(
-                     childArtifact.getDescriptiveName() + " already has a parent that differs from the imported parent");
+                     childArtifact.getName() + " already has a parent that differs from the imported parent");
             }
          }
       }
@@ -221,7 +221,7 @@ public class RoughArtifact {
 
    public String getName() {
       if (realArtifact != null) {
-         return realArtifact.getDescriptiveName();
+         return realArtifact.getName();
       }
       for (ObjectPair<String, String> roughtAttribute : attributes) {
          if (roughtAttribute.object1.equals("Name")) {

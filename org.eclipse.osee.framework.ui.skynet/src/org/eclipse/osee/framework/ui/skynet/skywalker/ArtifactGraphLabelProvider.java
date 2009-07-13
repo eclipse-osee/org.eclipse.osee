@@ -59,7 +59,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
    public String getText(Object element) {
       try {
          if (element instanceof Artifact) {
-            return ((Artifact) element).getDescriptiveName() + options.getExtendedName((Artifact) element);
+            return ((Artifact) element).getName() + options.getExtendedName((Artifact) element);
          } else if (element instanceof EntityConnectionData) {
             Object obj1 = ((EntityConnectionData) element).dest;
             Object obj2 = ((EntityConnectionData) element).source;

@@ -19,20 +19,20 @@ public class ArtifactHyperItem extends HyperViewItem {
    private final Artifact artifact;
 
    public ArtifactHyperItem(Artifact artifact) {
-      super(artifact.getDescriptiveName(), ImageManager.getImage(artifact));
+      super(artifact.getName(), ImageManager.getImage(artifact));
       this.artifact = artifact;
       setGuid(artifact.getGuid());
    }
 
    @Override
    public String getToolTip() {
-      String tt = "Type: " + artifact.getArtifactTypeName() + "\n\n" + "Title: " + artifact.getDescriptiveName();
+      String tt = "Type: " + artifact.getArtifactTypeName() + "\n\n" + "Title: " + artifact.getName();
       return tt;
    }
 
    @Override
    public String getTitle() {
-      return artifact.getArtifactTypeName() + "\n" + artifact.getDescriptiveName();
+      return artifact.getArtifactTypeName() + "\n" + artifact.getName();
    }
 
    @Override

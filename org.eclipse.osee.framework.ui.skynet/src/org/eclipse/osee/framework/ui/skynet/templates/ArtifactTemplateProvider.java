@@ -44,7 +44,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
-         templates = ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
+         templates = ArtifactQuery.getArtifactListFromType("Renderer Template", BranchManager.getCommonBranch());
          for (Artifact art : templates) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {
@@ -53,7 +53,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                if (cachedArt == null) {
                   templateMap.put(matchCriteria, art);
                } else { //use the artifact with the higher name value and warn the user that there are duplicate match criteria
-                  int value = cachedArt.getDescriptiveName().compareTo(art.getDescriptiveName());
+                  int value = cachedArt.getName().compareTo(art.getName());
                   if (value < 0) {
                      templateMap.put(matchCriteria, art);
                   }
@@ -62,7 +62,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                         Level.SEVERE,
                         String.format(
                               "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
-                              matchCriteria, templateMap.get(matchCriteria).getDescriptiveName()));
+                              matchCriteria, templateMap.get(matchCriteria).getName()));
 
                }
             }
@@ -120,7 +120,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    public List<Artifact> getAllTemplates() throws OseeCoreException {
       if (templates == null) {
-         templates = ArtifactQuery.getArtifactsFromType("Renderer Template", BranchManager.getCommonBranch());
+         templates = ArtifactQuery.getArtifactListFromType("Renderer Template", BranchManager.getCommonBranch());
       }
       return templates;
    }

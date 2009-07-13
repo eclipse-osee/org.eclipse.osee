@@ -130,7 +130,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       String value = getDecisionParameterValue(workRuleDefinition, decisionParameter);
       if (value == null || value.equals("")) {
          if (decisionParameter == DecisionParameter.title) {
-            return "Decide on \"" + smaMgr.getSma().getDescriptiveName() + "\"";
+            return "Decide on \"" + smaMgr.getSma().getName() + "\"";
          } else if (decisionParameter == DecisionParameter.options) {
             return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
          } else if (decisionParameter == DecisionParameter.description) {

@@ -101,7 +101,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      if (artifacts.length == 1) {
                         Artifact art = artifacts[0];
                         if (art instanceof IWorldViewArtifact) {
-                           name = art.getDescriptiveName();
+                           name = art.getName();
                         } else if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
                            groupWorldSearchItem.setSelectedGroup(art);

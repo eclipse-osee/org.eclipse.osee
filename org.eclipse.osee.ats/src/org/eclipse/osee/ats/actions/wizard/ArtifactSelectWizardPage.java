@@ -82,7 +82,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactType desc = (ArtifactType) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc, AtsUtil.getAtsBranch()));
+                  artList.setInput(ArtifactQuery.getArtifactListFromType(desc, AtsUtil.getAtsBranch()));
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
@@ -120,8 +120,8 @@ public class ArtifactSelectWizardPage extends WizardPage {
             @SuppressWarnings("unchecked")
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-               return getComparator().compare(((Artifact) e1).getDescriptiveName(),
-                     ((Artifact) e2).getDescriptiveName());
+               return getComparator().compare(((Artifact) e1).getName(),
+                     ((Artifact) e2).getName());
             }
          });
          gd = new GridData(GridData.FILL, GridData.FILL, true, true);
@@ -154,10 +154,10 @@ public class ArtifactSelectWizardPage extends WizardPage {
       public String getText(Object arg0) {
          Artifact art = (Artifact) arg0;
          if (showArtData)
-            return String.format("%s - (%s  %s  %s)", art.getDescriptiveName(), art.getArtId(),
+            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(),
                   art.getHumanReadableId(), art.getGuid());
          else
-            return art.getDescriptiveName();
+            return art.getName();
       }
 
       public void addListener(ILabelProviderListener arg0) {

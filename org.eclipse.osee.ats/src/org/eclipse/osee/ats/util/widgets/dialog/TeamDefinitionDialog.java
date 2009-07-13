@@ -48,7 +48,7 @@ public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
          @Override
          public String getText(Object element) {
             if (element instanceof TeamDefinitionArtifact) {
-               return ((TeamDefinitionArtifact) element).getDescriptiveName();
+               return ((TeamDefinitionArtifact) element).getName();
             }
             return "Unknown element type";
          }

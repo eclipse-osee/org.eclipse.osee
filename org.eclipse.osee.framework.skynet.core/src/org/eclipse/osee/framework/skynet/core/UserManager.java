@@ -111,7 +111,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       String[] userNames = new String[instance.userIdToUserCache.size()];
       int index = 0;
       for (User user : instance.userIdToUserCache.values()) {
-         userNames[index++] = user.getDescriptiveName();
+         userNames[index++] = user.getName();
       }
       return userNames;
    }
@@ -126,7 +126,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          } else {
             user = UserManager.getUserByArtId(userArtifactId);
          }
-         name = user.getDescriptiveName();
+         name = user.getName();
       } catch (Exception ex) {
          name = "Could not resolve artId: " + userArtifactId;
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -146,7 +146,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    public static boolean userExistsWithName(String name) throws OseeCoreException {
       instance.ensurePopulated();
       for (User tempUser : instance.userIdToUserCache.values()) {
-         if (tempUser.getDescriptiveName().equals(name)) {
+         if (tempUser.getName().equals(name)) {
             return true;
          }
       }
@@ -164,7 +164,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       instance.ensurePopulated();
       User user = null;
       for (User tempUser : instance.userIdToUserCache.values()) {
-         if (tempUser.getDescriptiveName().equals(name)) {
+         if (tempUser.getName().equals(name)) {
             user = tempUser;
             return user;
          }
@@ -196,7 +196,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    private synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
          Collection<User> dbUsers =
-               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactsFromType(
+               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(
                      User.ARTIFACT_NAME, BranchManager.getCommonBranch()));
          for (User user : dbUsers) {
             User previousUser = userIdToUserCache.put(user.getUserId(), user);
@@ -282,7 +282,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
 
       Collection<Integer> newUserArtifactIds = transData.getArtifactIdsOfArtifactType(userType, ArtifactModType.Added);
       Collection<User> newUsers =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactsFromIds(
+            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromIds(
                   newUserArtifactIds, BranchManager.getCommonBranch(), false));
       for (User newUser : newUsers) {
          userIdToUserCache.put(newUser.getUserId(), newUser);
@@ -291,7 +291,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       Collection<Integer> modUserArtifacts = transData.getArtifactIdsOfArtifactType(userType, ArtifactModType.Changed);
 
       Collection<User> modUsers =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactsFromIds(
+            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromIds(
                   modUserArtifacts, BranchManager.getCommonBranch(), false));
       for (User modUser : modUsers) {
          User previousUser = (User) ArtifactCache.getActive(modUser.getArtId(), BranchManager.getCommonBranch());

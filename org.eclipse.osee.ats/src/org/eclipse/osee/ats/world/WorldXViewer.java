@@ -496,7 +496,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             if (art.isAttributeTypeValid(attrName)) {
                useArts.add(art);
             } else {
-               rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getDescriptiveName());
+               rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getName());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

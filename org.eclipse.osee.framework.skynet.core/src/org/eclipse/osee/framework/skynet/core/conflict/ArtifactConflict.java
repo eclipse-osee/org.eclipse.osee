@@ -47,9 +47,9 @@ public class ArtifactConflict extends Conflict {
 
    public String getArtifactName() throws OseeCoreException {
       if (sourceDeleted) {
-         return getDestArtifact().getDescriptiveName();
+         return getDestArtifact().getName();
       } else {
-         return getSourceArtifact().getDescriptiveName();
+         return getSourceArtifact().getName();
       }
    }
 

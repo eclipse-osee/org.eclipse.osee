@@ -67,7 +67,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       for (Artifact art : getArtifactsToCheck()) {
          String[] rowData = new String[header.length];
          int index = 0;
-         rowData[index++] = art.getDescriptiveName();
+         rowData[index++] = art.getName();
          rowData[index++] = art.getArtifactTypeName();
          for (IRelationEnumeration relationType : relations) {
             rowData[index++] = String.valueOf(art.getRelatedArtifactsCount(relationType));

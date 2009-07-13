@@ -56,7 +56,7 @@ public class RequirementData extends BaseTraceDataCache {
    }
 
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      directSwRequirements.addAll(ArtifactQuery.getArtifactsFromTypes(Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES,
+      directSwRequirements.addAll(ArtifactQuery.getArtifactListFromTypes(Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES,
             getBranch(), false));
       populateTraceMap(monitor, directSwRequirements, directMap);
       monitor.worked(30);
@@ -64,7 +64,7 @@ public class RequirementData extends BaseTraceDataCache {
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
                getBranch().getBranchShortName()));
-         inDirectSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(Requirements.INDIRECT_SOFTWARE_REQUIREMENT,
+         inDirectSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(Requirements.INDIRECT_SOFTWARE_REQUIREMENT,
                getBranch()));
          populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
          monitor.worked(7);
@@ -82,7 +82,7 @@ public class RequirementData extends BaseTraceDataCache {
     */
    @Override
    protected String asTraceMapKey(Artifact artifact) {
-      return traceExtractor.getCanonicalRequirementName(artifact.getDescriptiveName());
+      return traceExtractor.getCanonicalRequirementName(artifact.getName());
    }
 
    /**

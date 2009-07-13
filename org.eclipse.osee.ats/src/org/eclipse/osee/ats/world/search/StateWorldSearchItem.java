@@ -66,7 +66,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+            ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                   getSearchStateClass() + ";%", AtsUtil.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;

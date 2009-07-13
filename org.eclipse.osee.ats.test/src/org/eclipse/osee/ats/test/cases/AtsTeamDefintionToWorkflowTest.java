@@ -29,7 +29,7 @@ public class AtsTeamDefintionToWorkflowTest {
    @org.junit.Test
    public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
-      for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {

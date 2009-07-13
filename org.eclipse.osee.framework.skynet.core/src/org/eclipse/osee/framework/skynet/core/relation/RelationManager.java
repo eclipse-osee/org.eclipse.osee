@@ -543,13 +543,13 @@ public class RelationManager {
       if (maxCount == 0) {
          throw new OseeArgumentException(String.format(
                "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
-               artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
+               artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
                relationType.getTypeName()));
       } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
          throw new OseeArgumentException(
                String.format(
                      "Artifact \"%s\" of type \"%s\" can not be added to \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
-                     artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationSide.toString(),
+                     artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(),
                      relationType.getTypeName(), maxCount));
       }
    }

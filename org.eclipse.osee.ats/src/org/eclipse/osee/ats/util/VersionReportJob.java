@@ -68,7 +68,7 @@ public class VersionReportJob extends Job {
          return null;
       }
       StringBuilder sb = new StringBuilder();
-      sb.append(AHTML.heading(3, title + getReleasedString(verArt), verArt.getDescriptiveName()));
+      sb.append(AHTML.heading(3, title + getReleasedString(verArt), verArt.getName()));
       sb.append(getTeamWorkflowReport(verArt.getTargetedForTeamArtifacts(), null, monitor));
       return sb.toString();
    }
@@ -78,11 +78,11 @@ public class VersionReportJob extends Job {
       Map<String, VersionArtifact> dateToVerArt = new HashMap<String, VersionArtifact>();
       for (VersionArtifact verArt : teamDef.getVersionsArtifacts()) {
          if (verArt.getReleaseDate() != null)
-            dateToVerArt.put(verArt.getReleaseDate().getTime() + verArt.getDescriptiveName(), verArt);
+            dateToVerArt.put(verArt.getReleaseDate().getTime() + verArt.getName(), verArt);
          else if (verArt.getEstimatedReleaseDate() != null)
-            dateToVerArt.put(verArt.getEstimatedReleaseDate().getTime() + verArt.getDescriptiveName(), verArt);
+            dateToVerArt.put(verArt.getEstimatedReleaseDate().getTime() + verArt.getName(), verArt);
          else
-            dateToVerArt.put("Un-Released - No Estimated Release " + verArt.getDescriptiveName(), verArt);
+            dateToVerArt.put("Un-Released - No Estimated Release " + verArt.getName(), verArt);
       }
       String[] dateSort = dateToVerArt.keySet().toArray(new String[dateToVerArt.size()]);
       Arrays.sort(dateSort);
@@ -93,12 +93,12 @@ public class VersionReportJob extends Job {
       for (int x = dateSort.length - 1; x >= 0; x--) {
          VersionArtifact verArt = dateToVerArt.get(dateSort[x]);
          if (verArt.isNextVersion() || verArt.isReleased())
-            sb.append(AHTML.getHyperlink("#" + verArt.getDescriptiveName(),
-                  verArt.getDescriptiveName() + VersionReportJob.getReleasedString(verArt)) + AHTML.newline());
+            sb.append(AHTML.getHyperlink("#" + verArt.getName(),
+                  verArt.getName() + VersionReportJob.getReleasedString(verArt)) + AHTML.newline());
          else if (verArt.getEstimatedReleaseDate() != null)
-            sb.append(verArt.getDescriptiveName() + " - Un-Released - Estimated Release Date: " + getDateString(verArt.getEstimatedReleaseDate()) + AHTML.newline());
+            sb.append(verArt.getName() + " - Un-Released - Estimated Release Date: " + getDateString(verArt.getEstimatedReleaseDate()) + AHTML.newline());
          else
-            sb.append(verArt.getDescriptiveName() + " - Un-Released - No Estimated Release Date" + AHTML.newline());
+            sb.append(verArt.getName() + " - Un-Released - No Estimated Release Date" + AHTML.newline());
       }
       sb.append(AHTML.addSpace(5));
       int x = 1;
@@ -108,7 +108,7 @@ public class VersionReportJob extends Job {
             monitor.subTask(str);
          }
          if (verArt.isReleased() || verArt.isNextVersion()) {
-            String html = VersionReportJob.getReleaseReportHtml(verArt.getDescriptiveName(), verArt, null);
+            String html = VersionReportJob.getReleaseReportHtml(verArt.getName(), verArt, null);
             sb.append(html);
          }
       }
@@ -151,13 +151,13 @@ public class VersionReportJob extends Job {
                if (monitor != null) monitor.subTask(str);
                System.out.println(str);
                sb.append(AHTML.addRowMultiColumnTable(new String[] {"Action", team.getTeamName(),
-                     team.getWorldViewPriority(), team.getWorldViewChangeTypeStr(), team.getDescriptiveName(),
+                     team.getWorldViewPriority(), team.getWorldViewChangeTypeStr(), team.getName(),
                      team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 
                SMAManager smaMgr = new SMAManager(team);
                for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts()) {
                   sb.append(AHTML.addRowMultiColumnTable(new String[] {"Task", "", "", "",
-                        taskArt.getDescriptiveName(), taskArt.getHumanReadableId()}, null,
+                        taskArt.getName(), taskArt.getHumanReadableId()}, null,
                         (x % 2 == 0 ? null : "#cccccc")));
                }
             }

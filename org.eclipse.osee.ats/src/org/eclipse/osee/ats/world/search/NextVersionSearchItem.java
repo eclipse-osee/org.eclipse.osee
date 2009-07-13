@@ -62,9 +62,9 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
       try {
          if (teamDef != null) {
-            name += (teamDef != null ? " - " + teamDef.getDescriptiveName() : "");
+            name += (teamDef != null ? " - " + teamDef.getName() : "");
             selectedVersionArt = teamDef.getNextReleaseVersion();
-            name += (selectedVersionArt != null ? " - " + selectedVersionArt.getDescriptiveName() : "");
+            name += (selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "");
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

@@ -159,7 +159,7 @@ class CommitJobDialog extends UIJob {
                         }
                         break;
                      case Name:
-                        toReturn = artifact.getDescriptiveName();
+                        toReturn = artifact.getName();
                         break;
                      case Outfile:
                         try {

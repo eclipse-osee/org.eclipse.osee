@@ -184,7 +184,7 @@ public abstract class WorkItemDefinition {
       Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates
-         if (ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
+         if (ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
                BranchManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
                   "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");

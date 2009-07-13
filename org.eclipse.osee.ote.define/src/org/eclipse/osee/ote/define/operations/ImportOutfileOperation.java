@@ -102,7 +102,7 @@ public class ImportOutfileOperation {
    private String toString(Artifact[] artifacts) {
       List<String> toReturn = new ArrayList<String>();
       for (Artifact artifact : artifacts) {
-         toReturn.add(artifact.getDescriptiveName());
+         toReturn.add(artifact.getName());
       }
       return StringFormat.listToValueSeparatedString(toReturn, ",\n");
    }
@@ -134,7 +134,7 @@ public class ImportOutfileOperation {
    public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, Branch branch, Artifact... artifacts) throws OseeCoreException {
       monitor.setTaskName("Persist Test Runs");
       for (Artifact artifact : artifacts) {
-         monitor.subTask(String.format("Persisting: [%s] ", artifact.getDescriptiveName()));
+         monitor.subTask(String.format("Persisting: [%s] ", artifact.getName()));
 
          TestRunOperator operator = new TestRunOperator(artifact);
          operator.setLastDateUploaded(new Date());

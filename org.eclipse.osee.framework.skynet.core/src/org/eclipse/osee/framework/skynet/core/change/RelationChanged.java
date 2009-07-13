@@ -173,7 +173,7 @@ public class RelationChanged extends Change {
     */
    @Override
    public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getArtifactName() + " <-> " + getBArtifact().getDescriptiveName();
+      return getArtifactName() + " <-> " + getBArtifact().getName();
    }
 
    /* (non-Javadoc)

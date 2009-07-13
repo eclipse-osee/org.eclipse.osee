@@ -74,7 +74,7 @@ public class WorkItemDefinitionFactory {
          artifactTypeNames.add(WorkPageDefinition.ARTIFACT_NAME);
          artifactTypeNames.add(WorkFlowDefinition.ARTIFACT_NAME);
          artifactTypeNames.add(WorkWidgetDefinition.ARTIFACT_NAME);
-         for (Artifact art : ArtifactQuery.getArtifactsFromTypes(artifactTypeNames, BranchManager.getCommonBranch(),
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypes(artifactTypeNames, BranchManager.getCommonBranch(),
                false)) {
             if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
@@ -102,14 +102,14 @@ public class WorkItemDefinitionFactory {
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       List<Artifact> parentArts =
-            ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                   parentWorkflowId, BranchManager.getCommonBranch());
       if (parentArts == null || parentArts.size() == 0) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
-            ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
+            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
                   BranchManager.getCommonBranch());
       if (childArts == null || childArts.size() == 0) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
@@ -160,7 +160,7 @@ public class WorkItemDefinitionFactory {
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
                BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
@@ -172,7 +172,7 @@ public class WorkItemDefinitionFactory {
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
                BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);

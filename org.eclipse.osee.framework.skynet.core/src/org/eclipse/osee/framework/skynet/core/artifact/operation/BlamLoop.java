@@ -42,6 +42,6 @@ public abstract class BlamLoop extends Artifact {
     */
    @Override
    public String toString() {
-      return ARTIFACT_NAME + " - " + getDescriptiveName();
+      return ARTIFACT_NAME + " - " + getName();
    }
 }

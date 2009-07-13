@@ -191,7 +191,7 @@ public class GlobalMenu {
                         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                            for (Artifact artifactToPurge : artifactsToBePurged) {
                               if (!artifactToPurge.isDeleted()) {
-                                 monitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                                 monitor.setTaskName("Purge: " + artifactToPurge.getName());
                                  artifactToPurge.purgeFromBranch(connection);
                               }
                               monitor.worked(1);

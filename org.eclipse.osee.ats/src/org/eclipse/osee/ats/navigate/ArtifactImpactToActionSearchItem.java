@@ -99,7 +99,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", branch, true);
+               ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {
@@ -127,9 +127,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
-            String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getDescriptiveName());
+            String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
             System.out.println(str);
-            rd.log("\n" + AHTML.bold(srchArt.getDescriptiveName()));
+            rd.log("\n" + AHTML.bold(srchArt.getName()));
             monitor.subTask(str);
             int y = 1;
             rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
@@ -144,7 +144,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   Artifact assocArt = branch.getAssociatedArtifact();
                   if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
-                           XResultData.getHyperlink(assocArt), assocArt.getDescriptiveName()}));
+                           XResultData.getHyperlink(assocArt), assocArt.getName()}));
                   } else {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
                   }
@@ -168,7 +168,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                                  BranchManager.getCommonBranch());
                      if (assocArt instanceof TeamWorkFlowArtifact) {
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
-                              "Committed", assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
+                              "Committed", assocArt.getHumanReadableId(), assocArt.getName()}));
                         committedChanges = true;
                      }
                   }

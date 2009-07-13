@@ -84,7 +84,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
-      ArtifactQuery.getArtifactsFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
+      ArtifactQuery.getArtifactListFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
       monitor.worked(30);
 
       Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(branch);
@@ -111,14 +111,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       for (Artifact lowLevelReq : lowLevelReqs) {
          row[0] = correct(lowLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
-         row[1] = lowLevelReq.getDescriptiveName();
+         row[1] = lowLevelReq.getName();
          if (lowLevelReq.isOfType(reqtypeName)) {
             row[2] = lowLevelReq.getAttributesToString("Qualification Method");
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationEnumeration.REQUIREMENT_TRACE__HIGHER_LEVEL)) {
                row[3] = getAssociatedSubSystem(subSysReq);
                row[4] = correct(subSysReq.getSoleAttributeValue("Imported Paragraph Number", ""));
-               row[5] = subSysReq.getDescriptiveName();
+               row[5] = subSysReq.getName();
                row[6] = subSysReq.getSoleAttributeValue(Requirements.SUBSYSTEM, "");
                excelWriter.writeRow(row);
                row[0] = row[1] = row[2] = null;
@@ -158,12 +158,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          for (Artifact higherLevelReq : subsysReqs) {
             if (isAllocated(higherLevelReq)) {
                row[0] = correct(higherLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
-               row[1] = higherLevelReq.getDescriptiveName();
+               row[1] = higherLevelReq.getName();
 
                for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
-                     row[3] = lowerLevelReq.getDescriptiveName();
+                     row[3] = lowerLevelReq.getName();
                      excelWriter.writeRow(row);
                      row[0] = row[1] = null;
                   }
@@ -224,7 +224,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    private void orderSubsystemReqs(Artifact subsysTopFolder) throws OseeCoreException {
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
-         String subSysName = subsysFolder.getDescriptiveName();
+         String subSysName = subsysFolder.getName();
          List<Artifact> subsysReqs = subsysFolder.getDescendants();
          subsysToSubsysReqsMap.put(subSysName, subsysReqs);
       }

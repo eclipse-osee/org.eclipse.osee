@@ -174,7 +174,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getEditorTitle() throws OseeCoreException {
       if (getWorldViewTargetedVersion() != null) {
-         return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getDescriptiveName();
+         return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
       }
       return super.getEditorTitle();
    }
@@ -230,7 +230,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public String getTeamName() {
       try {
-         return getTeamDefinition().getDescriptiveName();
+         return getTeamDefinition().getName();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return XViewerCells.getCellExceptionString(ex);
@@ -304,7 +304,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
-      return verArt.getDescriptiveName();
+      return verArt.getName();
    }
 
    @Override
@@ -374,7 +374,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                   //
                   "never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" +
                   //
-                  "Current Team: " + getTeamDefinition().getDescriptiveName() + "\n" +
+                  "Current Team: " + getTeamDefinition().getName() + "\n" +
                   //
                   "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
                   //
@@ -388,7 +388,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Collection<TeamDefinitionArtifact> teamDefs =
             ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
       if (teamDefs.size() != 1) {
-         toReturn = new Result("Single team can not retrieved for " + selectedAia.getDescriptiveName());
+         toReturn = new Result("Single team can not retrieved for " + selectedAia.getName());
       } else {
          TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
          if (newTeamDef.equals(getTeamDefinition())) {
@@ -399,9 +399,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             StringBuffer sb = new StringBuffer();
             sb.append("Converting...");
             sb.append("\nActionable Item(s): " + getWorldViewActionableItems());
-            sb.append("\nTeam: " + getTeamDefinition().getDescriptiveName());
+            sb.append("\nTeam: " + getTeamDefinition().getName());
             sb.append("\nto\nActionable Item(s): " + selectedAia);
-            sb.append("\nTeam: " + newTeamDef.getDescriptiveName());
+            sb.append("\nTeam: " + newTeamDef.getName());
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                toProcess.add(selectedAia);

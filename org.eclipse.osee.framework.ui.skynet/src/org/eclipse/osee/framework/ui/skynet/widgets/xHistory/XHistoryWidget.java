@@ -237,7 +237,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       this.artifact = artifact;
       extraInfoLabel.setText(LOADING);
 
-      Job job = new Job("History: " + artifact.getDescriptiveName()) {
+      Job job = new Job("History: " + artifact.getName()) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -260,7 +260,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
                            xHistoryViewer.setInput(historyItems);
                         } else {
                            String infoLabel =
-                                 String.format("History: %s on branch: %s", artifact.getDescriptiveName(),
+                                 String.format("History: %s on branch: %s", artifact.getName(),
                                        artifact.getBranch().getBranchShortName());
                            extraInfoLabel.setText(infoLabel);
                            xHistoryViewer.setInput(historyItems);
@@ -339,7 +339,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
-      if (artifact != null) sb.append("\nHistory : " + artifact.getDescriptiveName());
+      if (artifact != null) sb.append("\nHistory : " + artifact.getName());
       return sb.toString();
    }
 

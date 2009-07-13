@@ -60,11 +60,11 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       init();
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactsFromType("Subsystem Design", branch);
+      ArtifactQuery.getArtifactListFromType("Subsystem Design", branch);
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactsFromType("Subsystem Requirement", branch);
+      ArtifactQuery.getArtifactListFromType("Subsystem Requirement", branch);
       monitor.worked(60);
 
       int workIncrement = 30 / subsystems.size();
@@ -83,15 +83,15 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    }
 
    private void writeSubsystemDesignTraceability(Artifact subsystem) throws IOException, OseeCoreException {
-      excelWriter.startSheet(subsystem.getDescriptiveName(), 200);
-      excelWriter.writeRow(subsystem.getDescriptiveName() + " Subsystem To Design Traceability");
+      excelWriter.startSheet(subsystem.getName(), 200);
+      excelWriter.writeRow(subsystem.getName() + " Subsystem To Design Traceability");
 
       excelWriter.writeRow("Subsystem Requirement", null, "Subsystem Design");
       excelWriter.writeRow("Paragraph Number", "Paragraph Title", "Paragraph Number", "Paragraph Title");
 
       for (Artifact subsystemRequirement : subsystem.getDescendants()) {
          excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue("Imported Paragraph Number", ""));
-         excelWriter.writeCell(subsystemRequirement.getDescriptiveName());
+         excelWriter.writeCell(subsystemRequirement.getName());
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
             boolean loopNeverRan = true;
@@ -99,7 +99,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue("Imported Paragraph Number", ""), 2);
-                  excelWriter.writeCell(subsystemDesign.getDescriptiveName(), 3);
+                  excelWriter.writeCell(subsystemDesign.getName(), 3);
                   excelWriter.endRow();
                }
             }

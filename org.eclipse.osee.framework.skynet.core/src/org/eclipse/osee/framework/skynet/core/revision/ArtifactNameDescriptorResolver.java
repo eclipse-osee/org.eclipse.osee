@@ -38,6 +38,6 @@ public class ArtifactNameDescriptorResolver implements IArtifactNameDescriptorRe
       } catch (OseeCoreException ex) {
          return new Pair<String, ArtifactType>("", null);
       }
-      return new Pair<String, ArtifactType>(artifact.getDescriptiveName(), artifact.getArtifactType());
+      return new Pair<String, ArtifactType>(artifact.getName(), artifact.getArtifactType());
    }
 }

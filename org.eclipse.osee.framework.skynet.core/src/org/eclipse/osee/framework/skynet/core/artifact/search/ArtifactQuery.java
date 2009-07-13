@@ -180,7 +180,7 @@ public class ArtifactQuery {
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted, FULL).getArtifacts(50, null);
    }
 
@@ -191,15 +191,15 @@ public class ArtifactQuery {
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromIds(List<String> guidOrHrids, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactsFromIds(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
    }
 
@@ -211,13 +211,13 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromName(String artifactName, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted, new AttributeCriteria("Name", artifactName)).getArtifacts(
             30, null);
    }
 
-   public static List<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
-      return getArtifactsFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch);
+   public static List<Artifact> getArtifactListFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
+      return getArtifactListFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch);
    }
 
    /**
@@ -252,36 +252,36 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, boolean allowDeleted) throws OseeCoreException {
-      return getArtifactsFromType(artifactType, null, allowDeleted);
+   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, boolean allowDeleted) throws OseeCoreException {
+      return getArtifactListFromType(artifactType, null, allowDeleted);
    }
 
-   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactType, branch, FULL, allowDeleted).getArtifacts(1000, null);
    }
 
-   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return getArtifactsFromType(artifactType, branch, false);
+   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+      return getArtifactListFromType(artifactType, branch, false);
    }
 
-   public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
    }
 
-   public static List<Artifact> getArtifactsFromBranch(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromBranch(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, loadLevel, allowDeleted).getArtifacts(10000, null);
    }
 
-   public static List<Artifact> reloadArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> reloadArtifactListFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).reloadArtifacts(10000);
    }
 
-   public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromType(String artifactTypeName, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, false).getArtifacts(
             1000, null);
    }
 
-   public static List<Artifact> getArtifactsFromTypes(Collection<String> artifactTypeNames, Branch branch, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromTypes(Collection<String> artifactTypeNames, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artifactTypeNames), branch, FULL, allowDeleted).getArtifacts(
             1000, null);
    }
@@ -294,7 +294,7 @@ public class ArtifactQuery {
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromTypeAnd(String artifactTypeName, Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, criteria).getArtifacts(
             artifactCountEstimate, null);
    }
@@ -306,7 +306,7 @@ public class ArtifactQuery {
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
@@ -317,7 +317,7 @@ public class ArtifactQuery {
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
@@ -329,7 +329,7 @@ public class ArtifactQuery {
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifactList(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifact.getBranch(), FULL, false, new RelationCriteria(artifact.getArtId(),
             relationType, relationSide)).getArtifacts(1000, null);
    }
@@ -343,17 +343,17 @@ public class ArtifactQuery {
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifacts(100,
             null);
    }
 
-   public static List<Artifact> getArtifactsFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifacts(
             300, null);
    }
 
-   public static List<Artifact> getArtifactsFromAttribute(AttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttribute(AttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeType, attributeValue)).getArtifacts(
             300, null);
    }
@@ -365,7 +365,7 @@ public class ArtifactQuery {
     * @param branch
     * @return artifacts
     */
-   public static List<Artifact> getArtifactsFromAttributeType(String attributeTypeName, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttributeType(String attributeTypeName, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName)).getArtifacts(300,
             null);
    }
@@ -375,12 +375,12 @@ public class ArtifactQuery {
             new AttributeCriteria(attributeTypeName, attributeValue));
    }
 
-   public static List<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue, Branch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromHistoricalAttributeValue(String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, true, new AttributeCriteria(null, attributeValue, true)).getArtifacts(
             30, null);
    }
 
-   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, Branch branch, int artifactCountEstimate) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, Branch branch, int artifactCountEstimate) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
             new AttributeCriteria(attributeTypeName, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
@@ -412,7 +412,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttributeKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifacts(
             FULL, null, false, false, allowDeleted);
    }
@@ -433,7 +433,7 @@ public class ArtifactQuery {
     * @return artifact matches
     * @throws OseeCoreException
     */
-   public static List<ArtifactMatch> getArtifactMatchesFromAttributeWithKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(Branch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifactsWithMatches(
             FULL, null, false, false, allowDeleted, findAllMatchLocations);
    }

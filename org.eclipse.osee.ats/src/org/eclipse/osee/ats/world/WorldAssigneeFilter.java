@@ -25,7 +25,7 @@ public class WorldAssigneeFilter extends ViewerFilter {
    Pattern p;
 
    public WorldAssigneeFilter() throws OseeCoreException {
-      p = Pattern.compile(UserManager.getUser().getDescriptiveName());
+      p = Pattern.compile(UserManager.getUser().getName());
    }
 
    @Override

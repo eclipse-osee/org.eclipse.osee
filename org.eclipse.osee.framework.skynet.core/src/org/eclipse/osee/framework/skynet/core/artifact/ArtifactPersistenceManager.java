@@ -176,7 +176,7 @@ public class ArtifactPersistenceManager {
          }
       }
       Branch branch = artifacts[0].getBranch();
-      ArtifactQuery.getArtifactsFromIds(artIds, branch, true);
+      ArtifactQuery.getArtifactListFromIds(artIds, branch, true);
 
       for (Artifact artifact : artifacts) {
          deleteTrace(artifact, transaction, true);

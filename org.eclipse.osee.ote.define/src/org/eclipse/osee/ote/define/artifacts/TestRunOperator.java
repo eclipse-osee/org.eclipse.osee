@@ -76,7 +76,7 @@ public class TestRunOperator {
    }
 
    public String getDescriptiveName() {
-      return artifact.getDescriptiveName();
+      return artifact.getName();
    }
 
    public String getScriptRevision() throws OseeCoreException {
@@ -175,7 +175,7 @@ public class TestRunOperator {
 
    public void createTestScriptSoftLink() throws OseeCoreException {
       Artifact testScript =
-            getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getDescriptiveName(),
+            getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(),
                   artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
@@ -183,7 +183,7 @@ public class TestRunOperator {
    }
 
    public String getPartition() {
-      String name = artifact.getDescriptiveName();
+      String name = artifact.getName();
       String[] data = name.split("\\.");
       if (data.length - 3 > 0) {
          name = data[data.length - 3];
@@ -192,7 +192,7 @@ public class TestRunOperator {
    }
 
    public String getSubsystem() {
-      String name = artifact.getDescriptiveName();
+      String name = artifact.getName();
       String[] data = name.split("\\.");
       if (data.length - 2 > 0) {
          name = data[data.length - 2];

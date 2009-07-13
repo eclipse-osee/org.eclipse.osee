@@ -80,7 +80,7 @@ public class OteArtifactFetcher<T extends Artifact> {
       checkForNull(branch);
       Set<T> toReturn = new HashSet<T>();
       try {
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(oteArtifactType.getName(), branch);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(oteArtifactType.getName(), branch);
          for (Artifact artifact : artifacts) {
             toReturn.add((T) artifact);
          }
@@ -103,7 +103,7 @@ public class OteArtifactFetcher<T extends Artifact> {
       Map<String, T> toReturn = new HashMap<String, T>();
       Set<T> testScripts = getAllArtifacts(branch);
       for (T artifact : testScripts) {
-         toReturn.put(artifact.getDescriptiveName(), artifact);
+         toReturn.put(artifact.getName(), artifact);
       }
       return toReturn;
    }

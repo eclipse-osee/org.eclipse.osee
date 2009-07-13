@@ -104,7 +104,7 @@ public class RelationExplorerWindow {
       } else {
          this.branch = artifact.getBranch();
          this.validArtifacts.add(artifact);
-         this.names.add(artifact.getDescriptiveName());
+         this.names.add(artifact.getName());
       }
    }
 
@@ -349,6 +349,6 @@ public class RelationExplorerWindow {
     */
    public void addInvalidArtifact(Artifact invalidArtifact, String errorMessage) {
       invalidArtifacts.add(invalidArtifact);
-      addInvalid(invalidArtifact.getDescriptiveName(), errorMessage);
+      addInvalid(invalidArtifact.getName(), errorMessage);
    }
 }

@@ -134,13 +134,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
          DemoDbUtil.sleep(3000);
 
          for (ActionArtifact actionArt : actionArts) {
-            if (actionArt.getDescriptiveName().contains("(committed)")) {
+            if (actionArt.getName().contains("(committed)")) {
                // Working Branch off SAW_Bld_2, Make Changes, Commit
                makeAction1ReqChanges(actionArt);
-            } else if (actionArt.getDescriptiveName().contains("(uncommitted)")) {
+            } else if (actionArt.getName().contains("(uncommitted)")) {
                // Working Branch off SAW_Bld_2, Make Changes, DON'T Commit
                makeAction2ReqChanges(actionArt);
-            } else if (actionArt.getDescriptiveName().contains("(uncommitted-conflicted)")) {
+            } else if (actionArt.getName().contains("(uncommitted-conflicted)")) {
                // Working Branch off SAW_Bld_2, Make Conflicted Changes, DON'T Commit
                makeAction3ReqChanges(actionArt);
             }
@@ -151,14 +151,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Favorites");
-         for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Diagram View%", AtsUtil.getAtsBranch())) {
             new FavoritesManager((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Subscribed");
-         for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
                "%Even%", AtsUtil.getAtsBranch())) {
             new SubscribeManager((StateMachineArtifact) art).toggleSubscribe(false);
          }
@@ -210,7 +210,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getDescriptiveName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
@@ -285,7 +285,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void makeAction3ReqChanges(ActionArtifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getDescriptiveName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
@@ -326,7 +326,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void makeAction2ReqChanges(ActionArtifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getDescriptiveName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
       }
 
       if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");

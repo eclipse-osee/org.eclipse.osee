@@ -69,7 +69,7 @@ public class ReviewManager {
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState().size() > 0) {
          for (ReviewSMArtifact rev : getReviewsFromCurrentState()) {
-            if (rev.getDescriptiveName().equals(VALIDATE_REVIEW_TITLE)) return null;
+            if (rev.getName().equals(VALIDATE_REVIEW_TITLE)) return null;
          }
       }
       // Create validate review

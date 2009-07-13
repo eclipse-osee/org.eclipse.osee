@@ -40,7 +40,7 @@ public class BinaryContentUtils {
    public static String generateFileName(Attribute<?> attribute) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       try {
-         String name = attribute.getArtifact().getDescriptiveName();
+         String name = attribute.getArtifact().getName();
          if (name.length() > MAX_NAME_SIZE) {
             name = name.substring(0, MAX_NAME_SIZE);
          }

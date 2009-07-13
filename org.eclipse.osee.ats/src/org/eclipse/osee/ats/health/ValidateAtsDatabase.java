@@ -262,7 +262,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void loadAtsBranchArtifacts() throws OseeCoreException {
       xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
-      artifacts = ArtifactQuery.getArtifactsFromBranch(AtsUtil.getAtsBranch(), false);
+      artifacts = ArtifactQuery.getArtifactListFromBranch(AtsUtil.getAtsBranch(), false);
       if (xResultData == null) {
          xResultData = new XResultData();
       }

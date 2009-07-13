@@ -318,7 +318,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public String toString() {
-      return "SMAEditor - " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " named \"" + smaMgr.getSma().getDescriptiveName() + "\"";
+      return "SMAEditor - " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " named \"" + smaMgr.getSma().getName() + "\"";
    }
 
    @Override

@@ -58,7 +58,7 @@ public class RoughRelation {
          }
       } else {
          try {
-            monitor.subTask(aArt.getDescriptiveName() + " <--> " + bArt.getDescriptiveName());
+            monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
             monitor.worked(1);
             RelationManager.addRelation(relationType, aArt, bArt, rationale);
             aArt.persistRelations(transaction);

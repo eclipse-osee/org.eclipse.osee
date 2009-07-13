@@ -67,7 +67,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
 
-      return ArtifactQuery.getArtifactsFromTypeAndAttribute(TeamWorkFlowArtifact.ARTIFACT_NAME,
+      return ArtifactQuery.getArtifactListFromTypeAndAttribute(TeamWorkFlowArtifact.ARTIFACT_NAME,
             ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(), AtsUtil.getAtsBranch());
    }
 

@@ -58,7 +58,7 @@ public class TransactionData implements IAdaptable {
          } else {
             user = UserManager.getUserByArtId(authorId);
          }
-         name = user.getDescriptiveName();
+         name = user.getName();
       } catch (UserNotInDatabase ex) {
          name = "Could not resolve artId: " + authorId;
          OseeLog.log(Activator.class, Level.SEVERE, ex);

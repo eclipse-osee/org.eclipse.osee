@@ -100,7 +100,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the name.
     */
    public String getName() {
-      return artifact != null ? artifact.getDescriptiveName() : "Null";
+      return artifact != null ? artifact.getName() : "Null";
    }
 
    /**

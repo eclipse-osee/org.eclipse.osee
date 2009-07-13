@@ -56,9 +56,9 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public String getGroupSearchName() {
       if (group != null)
-         return group.getDescriptiveName();
+         return group.getName();
       else if (selectedGroup != null)
-         return selectedGroup.getDescriptiveName();
+         return selectedGroup.getName();
       else if (groupName != null) return groupName;
       return "";
    }

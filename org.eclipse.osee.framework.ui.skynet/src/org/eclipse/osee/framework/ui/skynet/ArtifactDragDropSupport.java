@@ -136,7 +136,7 @@ public class ArtifactDragDropSupport {
                ensureLinkValidity(group, artifact);
                window.addValid(artifact);
             } catch (OseeArgumentException ex) {
-               window.addInvalid(artifact.getDescriptiveName(), ex.getMessage());
+               window.addInvalid(artifact.getName(), ex.getMessage());
             }
 
          }
@@ -169,7 +169,7 @@ public class ArtifactDragDropSupport {
          ensureLinkValidity(group, artifact);
          window.addValid(artifact);
       } catch (OseeArgumentException ex) {
-         window.addInvalid(artifact.getDescriptiveName(), ex.getMessage());
+         window.addInvalid(artifact.getName(), ex.getMessage());
       }
    }
 

@@ -46,7 +46,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
       if (!status.isOK()) {
          String link =
                XResultData.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(),
-                     itemChecked.getDescriptiveName()), itemChecked.getHumanReadableId(),
+                     itemChecked.getName()), itemChecked.getHumanReadableId(),
                      itemChecked.getBranch().getBranchId());
          String message = String.format("%s: %s", link, status.getMessage());
          status =

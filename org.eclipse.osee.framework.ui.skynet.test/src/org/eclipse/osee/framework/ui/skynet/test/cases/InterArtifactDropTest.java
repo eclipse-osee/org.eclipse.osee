@@ -84,7 +84,7 @@ public class InterArtifactDropTest {
       //Acquire the introduced artifact
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), destinationBranch);
 
-      assertTrue(sourceArtifact.getDescriptiveName().equals(destArtifact.getDescriptiveName()));
+      assertTrue(sourceArtifact.getName().equals(destArtifact.getName()));
    }
 
    public static void sleep(long milliseconds) throws Exception {

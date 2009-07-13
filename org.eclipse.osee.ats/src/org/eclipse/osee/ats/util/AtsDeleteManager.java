@@ -75,12 +75,12 @@ public class AtsDeleteManager {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<Artifact>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
-               deleteArt.getHumanReadableId(), deleteArt.getDescriptiveName()) + "\n");
+               deleteArt.getHumanReadableId(), deleteArt.getName()) + "\n");
          ((ATSArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
          for (Artifact loopArt : relatedArts) {
             if (!loopArt.equals(deleteArt)) {
                delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     loopArt.getArtifactTypeName(), loopArt.getHumanReadableId(), loopArt.getDescriptiveName()) + "\n");
+                     loopArt.getArtifactTypeName(), loopArt.getHumanReadableId(), loopArt.getName()) + "\n");
             }
          }
          // check that if all team workflows are deleted, delete action
@@ -90,7 +90,7 @@ public class AtsDeleteManager {
                if (!allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(actionArt.getTeamWorkFlowArtifacts())) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                        actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getDescriptiveName()) + "\n");
+                        actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getName()) + "\n");
                }
             }
          }

@@ -77,7 +77,7 @@ public class XViewerDataManager {
       int total = artifacts.size();
       for (int index = 0; index < artifacts.size(); index++) {
          Artifact artifact = artifacts.get(index);
-         monitor.subTask(String.format("Adding to Table: [%s] [%s of %s]", artifact.getDescriptiveName(), index + 1,
+         monitor.subTask(String.format("Adding to Table: [%s] [%s of %s]", artifact.getName(), index + 1,
                total));
 
          DataItem branchItem = getBranchItem(artifact);

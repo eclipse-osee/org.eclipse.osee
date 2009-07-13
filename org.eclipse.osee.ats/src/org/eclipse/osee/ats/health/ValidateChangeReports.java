@@ -135,7 +135,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          try {
             int x = 1;
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsUtil.getAtsBranch());
+                  ArtifactQuery.getArtifactListFromType(artifactTypeName, AtsUtil.getAtsBranch());
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -185,7 +185,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
-            ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsUtil.getAtsBranch());
+            ArtifactQuery.getArtifactListFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsUtil.getAtsBranch());
       String storedChangeReport = null;
       Artifact artifactForStore = null;
       if (arts.size() > 1) {
@@ -252,7 +252,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       try {
          for (Artifact art : currentChangeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW,
                ModificationType.DELETED, ModificationType.MERGED)) {
-            art.getDescriptiveName();
+            art.getName();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

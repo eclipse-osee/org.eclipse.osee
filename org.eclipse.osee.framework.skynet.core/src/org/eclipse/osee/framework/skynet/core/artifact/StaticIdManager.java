@@ -77,7 +77,7 @@ public class StaticIdManager {
       }
       if (artifacts.size() == 0) {
          // Retrieve database artifacts if cache has none
-         artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
+         artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
                staticId, branch));
       }
 

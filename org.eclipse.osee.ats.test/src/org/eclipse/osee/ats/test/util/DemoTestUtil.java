@@ -52,7 +52,7 @@ public class DemoTestUtil {
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Branch branch = BranchManager.getKeyedBranch("SAW_Bld_1");
 
-      if (ArtifactQuery.getArtifactsFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) return new Result(
+      if (ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       return Result.TrueResult;
    }
@@ -93,7 +93,7 @@ public class DemoTestUtil {
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getDescriptiveName().contains("Code")) {
+         if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }
       }
@@ -126,7 +126,7 @@ public class DemoTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", AtsUtil.getAtsBranch(), false));
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", AtsUtil.getAtsBranch(), false));
       }
       ArtifactPersistenceManager.purgeArtifacts(artifacts);
       TestUtil.sleep(4000);

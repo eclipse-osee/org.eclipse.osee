@@ -206,7 +206,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          TeamDefinitionArtifact teamDefHoldingVersions = teamDefs.iterator().next().getTeamDefinitionHoldingVersions();
          if (teamDefHoldingVersions == null) return null;
          for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
-            if (versionArtifact.getDescriptiveName().equals(versionStr)) {
+            if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }
          }

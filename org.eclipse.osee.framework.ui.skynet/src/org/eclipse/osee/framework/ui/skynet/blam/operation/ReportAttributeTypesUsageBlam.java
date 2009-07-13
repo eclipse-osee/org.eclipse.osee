@@ -42,7 +42,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       xResultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       xResultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"AttributeType", "Occurances"}));
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromAttributeType(attributeType.getName(), branch);
+         Collection<Artifact> arts = ArtifactQuery.getArtifactListFromAttributeType(attributeType.getName(), branch);
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
       xResultData.addRaw(AHTML.endMultiColumnTable());

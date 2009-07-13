@@ -67,11 +67,11 @@ public class RevertLabelProvider extends LabelProvider implements IStyledLabelPr
          TransferStatus status = transferObject.getStatus();
 
          if (status == TransferStatus.ERROR) {
-            styledString.append(transferObject.getArtifact().getDescriptiveName(), StyledString.DECORATIONS_STYLER);
+            styledString.append(transferObject.getArtifact().getName(), StyledString.DECORATIONS_STYLER);
             styledString.append(DASH);
             styledString.append(status.getMessage(), HIGHLIGHT_STYLE);
          } else {
-            styledString.append(transferObject.getArtifact().getDescriptiveName());
+            styledString.append(transferObject.getArtifact().getName());
             styledString.append(DASH);
             styledString.append(status.getMessage(), StyledString.COUNTER_STYLER);
          }

@@ -30,7 +30,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
    public DetailsBrowserComposite(Artifact artifact, Composite parent, int style, ToolBar toolBar) {
       super(parent, style, toolBar);
       StringBuffer sb =
-            new StringBuffer(AHTML.getLabelValueStr("Name", artifact.getDescriptiveName()) + AHTML.newline());
+            new StringBuffer(AHTML.getLabelValueStr("Name", artifact.getName()) + AHTML.newline());
       try {
          sb.append(AHTML.getLabelValueStr("GUID", artifact.getGuid()) + AHTML.newline());
          sb.append(AHTML.getLabelValueStr("HRID", artifact.getHumanReadableId()) + AHTML.newline());

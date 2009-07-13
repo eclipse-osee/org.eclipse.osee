@@ -30,7 +30,7 @@ public class LoadAllArtifactsOnBranch extends AbstractBlam {
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Parent Branch");
-      ArtifactQuery.getArtifactsFromBranch(branch, false);
+      ArtifactQuery.getArtifactListFromBranch(branch, false);
    }
 
    @Override

@@ -99,7 +99,7 @@ public class FindTraceUnitFromResource {
             if (items != null) {
                for (String artifactName : items) {
                   try {
-                     artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndName(artifactTypeName, artifactName, branch));
+                     artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactTypeName, artifactName, branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
                   }

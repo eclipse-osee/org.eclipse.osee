@@ -96,7 +96,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
-         return ((Artifact) element).getDescriptiveName();
+         return ((Artifact) element).getName();
       } else if (xCol.equals(CommitXManagerFactory.Configuring_Object_Col)) {
          return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {

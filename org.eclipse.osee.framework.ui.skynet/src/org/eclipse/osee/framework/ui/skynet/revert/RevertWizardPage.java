@@ -131,7 +131,7 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
       artifactSelectionBox = new Combo(parent, SWT.READ_ONLY);
       List<String> comboValues = new ArrayList<String>();
       for (List<Artifact> artList : artifacts) {
-         comboValues.add(artList.get(0).getDescriptiveName());
+         comboValues.add(artList.get(0).getName());
       }
       artifactSelectionBox.setItems(comboValues.toArray(new String[comboValues.size()]));
       artifactSelectionBox.addListener(SWT.Selection, listener);

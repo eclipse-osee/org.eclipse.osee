@@ -14,8 +14,8 @@ public class ArtifactNameComparator implements Comparator<Artifact> {
 
    @Override
    public int compare(Artifact artifact1, Artifact artifact2) {
-      String name1 = artifact1.getDescriptiveName();
-      String name2 = artifact2.getDescriptiveName();
+      String name1 = artifact1.getName();
+      String name2 = artifact2.getName();
 
       numberMatcher.reset(name1);
       if (numberMatcher.matches()) {

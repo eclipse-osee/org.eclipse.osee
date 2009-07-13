@@ -155,7 +155,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
       }
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {

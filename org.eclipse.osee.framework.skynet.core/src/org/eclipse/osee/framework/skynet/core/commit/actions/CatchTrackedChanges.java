@@ -79,6 +79,6 @@ public class CatchTrackedChanges implements CommitAction {
 
    private String getArtifactErrorMessage(Artifact artifact) {
       return String.format("Error validating: [(%s)(%s) - %s] on branchId:[%s]", artifact.getArtId(),
-            artifact.getHumanReadableId(), artifact.getDescriptiveName(), artifact.getBranch().getBranchId());
+            artifact.getHumanReadableId(), artifact.getName(), artifact.getBranch().getBranchId());
    }
 }

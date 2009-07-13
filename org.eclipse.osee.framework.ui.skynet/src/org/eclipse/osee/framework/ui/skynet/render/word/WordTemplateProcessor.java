@@ -323,7 +323,7 @@ public class WordTemplateProcessor {
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromName(name, branch, false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, false);
 
       variableMap.setValue("srsProducer.objects", artifacts);
    }
@@ -427,7 +427,7 @@ public class WordTemplateProcessor {
 
       if (attributeTypeName.equals("TIS Traceability")) {
          for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationEnumeration.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
+            wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getName());
          }
          return;
       }

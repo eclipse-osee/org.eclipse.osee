@@ -89,10 +89,10 @@ public class PolicyDialog extends Dialog {
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       subjectList.addAll(UserManager.getUsersSortedByName());
-      subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchManager.getCommonBranch()));
+      subjectList.addAll(ArtifactQuery.getArtifactListFromType("User Group", BranchManager.getCommonBranch()));
       Collections.sort(subjectList, new userComparator<Artifact>());
       for (Artifact subject : subjectList) {
-         String name = subject.getDescriptiveName();
+         String name = subject.getName();
          cmbUsers.add(name);
          cmbUsers.setData(name, subject);
       }
@@ -120,7 +120,7 @@ public class PolicyDialog extends Dialog {
       @Override
       public int compare(T o1, T o2) {
          if (o1 instanceof Artifact && o2 instanceof Artifact) {
-            return ((Artifact) o1).getDescriptiveName().compareToIgnoreCase(((Artifact) o2).getDescriptiveName());
+            return ((Artifact) o1).getName().compareToIgnoreCase(((Artifact) o2).getName());
          }
          return 0;
       }
@@ -228,7 +228,7 @@ public class PolicyDialog extends Dialog {
    private String getHeadertName(Object object) {
       String name = "";
       if (object instanceof Artifact) {
-         name = ((Artifact) object).getDescriptiveName();
+         name = ((Artifact) object).getName();
       } else if (object instanceof Branch) {
          name = ((Branch) object).getBranchName();
       }

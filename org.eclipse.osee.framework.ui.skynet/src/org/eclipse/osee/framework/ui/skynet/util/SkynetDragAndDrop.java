@@ -140,7 +140,7 @@ public abstract class SkynetDragAndDrop {
             Collection<String> names = new ArrayList<String>(artifacts.length);
 
             for (Artifact artifact : artifacts)
-               names.add(artifact.getDescriptiveName());
+               names.add(artifact.getName());
 
             event.data = Collections.toString(names, null, ", ", null);
          }

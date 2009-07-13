@@ -67,7 +67,7 @@ public class SMAPromptChangeStatus {
                            "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
                            //
                            "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
-                           taskArt.getDescriptiveName(), taskArt.getWorldViewRelatedToState(),
+                           taskArt.getName(), taskArt.getWorldViewRelatedToState(),
                            taskArt.getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName()));
             }
          }

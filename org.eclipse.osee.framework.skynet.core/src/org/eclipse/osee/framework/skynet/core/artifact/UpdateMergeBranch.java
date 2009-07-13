@@ -62,7 +62,7 @@ public class UpdateMergeBranch extends DbTransaction {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       long time = System.currentTimeMillis();
       Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
-      Collection<Artifact> goodMergeBranchArtifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
+      Collection<Artifact> goodMergeBranchArtifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, true);
 
       if (DEBUG) {
          System.out.println(String.format("        Get artifacts on branch took %s", Lib.getElapseString(time)));

@@ -36,7 +36,7 @@ public class ActionableItemFilter extends ViewerFilter {
 
    private boolean checkItemAndChildren(ActionableItemArtifact item) {
       try {
-         boolean show = item.getDescriptiveName().toLowerCase().contains(contains.toLowerCase());
+         boolean show = item.getName().toLowerCase().contains(contains.toLowerCase());
          if (show) return true;
          for (Artifact child : item.getChildren()) {
             show = checkItemAndChildren((ActionableItemArtifact) child);

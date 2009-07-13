@@ -50,7 +50,7 @@ public class DemoDbGroups {
       }
 
       // Add all Tasks to Group
-      for (Artifact task : ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
+      for (Artifact task : ArtifactQuery.getArtifactListFromType(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
          groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, task);
       }
       groupArt.persistRelations();

@@ -114,7 +114,7 @@ public class AccessControlData implements Comparable<AccessControlData> {
    }
 
    public int compareTo(AccessControlData data) {
-      return subject.getDescriptiveName().compareTo(data.subject.getDescriptiveName());
+      return subject.getName().compareTo(data.subject.getName());
    }
 
    /**

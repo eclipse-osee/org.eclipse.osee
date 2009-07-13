@@ -347,7 +347,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       }
       String names = "";
       for (GroupExplorerItem item : items)
-         if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getDescriptiveName());
+         if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getName());
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
          try {

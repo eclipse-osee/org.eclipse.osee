@@ -107,7 +107,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
          String result =
                (String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
-                     teamArt.getTeamDefinition().getDescriptiveName()));
+                     teamArt.getTeamDefinition().getName()));
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigArtifact commitConfigArt : teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
@@ -131,14 +131,14 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-                  modArt.getDescriptiveName(), attrStr, rpcrNum, "Content"}));
+                  modArt.getName(), attrStr, rpcrNum, "Content"}));
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-                  artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
+                  artChg.getName(), attrStr, rpcrNum, "Deleted"}));
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
             ModificationType.MODIFIED)) {
@@ -146,7 +146,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-                  artChg.getDescriptiveName(), attrStr, rpcrNum, "Relation"}));
+                  artChg.getName(), attrStr, rpcrNum, "Relation"}));
       }
    }
 

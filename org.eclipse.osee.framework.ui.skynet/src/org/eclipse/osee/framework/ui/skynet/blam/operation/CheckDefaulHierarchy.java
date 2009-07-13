@@ -39,7 +39,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       ArtifactType artifactType = variableMap.getArtifactType("Artifact Type");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(artifactType, branch, false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifactType, branch, false);
       for (Artifact artifact : artifacts) {
          try {
             if (!artifact.hasParent()) {

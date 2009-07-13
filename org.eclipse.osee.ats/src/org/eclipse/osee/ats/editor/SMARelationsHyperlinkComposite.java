@@ -104,7 +104,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
                         this,
                         String.format(
                               "\"%s\" - %s",
-                              art.getDescriptiveName().length() < 60 ? art.getDescriptiveName() : art.getDescriptiveName().substring(
+                              art.getName().length() < 60 ? art.getName() : art.getName().substring(
                                     0, 60), art.getHumanReadableId()), SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 

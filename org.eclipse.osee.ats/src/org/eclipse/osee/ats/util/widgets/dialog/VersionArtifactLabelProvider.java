@@ -31,7 +31,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
    public String getText(Object element) {
       if (element instanceof VersionArtifact) {
          VersionArtifact verArt = ((VersionArtifact) element);
-         String str = verArt.getDescriptiveName();
+         String str = verArt.getName();
          try {
             if (verArt.getEstimatedReleaseDate() != null) {
                str += " - Estimated Release: " + XDate.getDateStr(verArt.getEstimatedReleaseDate(), XDate.MMDDYY);

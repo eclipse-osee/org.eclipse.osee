@@ -39,7 +39,7 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (artifactTypeNames == null || artifactTypeNames.size() == 0) throw new OseeArgumentException(
             "Inavlid search \"" + getName() + "\"");
-      return ArtifactQuery.getArtifactsFromTypes(artifactTypeNames, AtsUtil.getAtsBranch(), false);
+      return ArtifactQuery.getArtifactListFromTypes(artifactTypeNames, AtsUtil.getAtsBranch(), false);
    }
 
    /* (non-Javadoc)

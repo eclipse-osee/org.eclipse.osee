@@ -343,7 +343,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                   } else {
                      if (!aSide.equals(aArtifact)) {
                         errorMessage =
-                              String.format("Item from different link sides selected [%s]", aSide.getDescriptiveName());
+                              String.format("Item from different link sides selected [%s]", aSide.getName());
                         break;
                      }
                   }
@@ -419,7 +419,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          @Override
          public void widgetSelected(SelectionEvent e) {
             TreeViewerReport report =
-                  new TreeViewerReport("Relation View Report for " + artifact.getDescriptiveName(), treeViewer);
+                  new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
             ignoreCols.add(COLUMN_ORDER);
             report.setIgnoreColumns(ignoreCols);

@@ -63,7 +63,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));*/
 
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(ArtifactQuery.getArtifactsFromAttributeWithKeywords(AtsUtil.getAtsBranch(), user.getUserId(), false,
+      arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(), false,
             false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));

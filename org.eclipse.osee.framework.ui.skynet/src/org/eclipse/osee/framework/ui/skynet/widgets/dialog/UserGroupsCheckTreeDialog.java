@@ -47,7 +47,7 @@ public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
       }
 
       public String getText(Object arg0) {
-         return ((Artifact) arg0).getDescriptiveName() + " - (" + ((Artifact) arg0).getArtifactTypeName() + ")";
+         return ((Artifact) arg0).getName() + " - (" + ((Artifact) arg0).getArtifactTypeName() + ")";
       }
 
       public void addListener(ILabelProviderListener arg0) {

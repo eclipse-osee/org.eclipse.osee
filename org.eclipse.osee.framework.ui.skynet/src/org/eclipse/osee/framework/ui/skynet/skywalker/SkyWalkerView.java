@@ -322,12 +322,12 @@ public class SkyWalkerView extends ViewPart {
          node.setBackgroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
          viewer.update(node, null);
       }
-      setPartName("Sky Walker (" + artifact.getDescriptiveName() + ")");
+      setPartName("Sky Walker (" + artifact.getName() + ")");
       inExplore = false;
    }
 
    public static void exploreArtifact(Artifact artifact) {
-      exploreArtifact(artifact.getDescriptiveName(), artifact);
+      exploreArtifact(artifact.getName(), artifact);
    }
 
    public static void exploreArtifact(String name, Artifact artifact) {

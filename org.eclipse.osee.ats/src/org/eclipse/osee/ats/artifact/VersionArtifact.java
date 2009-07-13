@@ -96,7 +96,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public String toString() {
-      return getDescriptiveName();
+      return getName();
    }
 
    public void setReleased(boolean released) throws OseeCoreException {
@@ -129,7 +129,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public String getFullDisplayName() throws OseeCoreException {
       String str = "";
-      if (!getDescriptiveName().equals(Artifact.UNNAMED)) str += getDescriptiveName();
+      if (!getName().equals(Artifact.UNNAMED)) str += getName();
       if (!getFullName().equals("")) {
          if (str.equals(""))
             str = getFullName();

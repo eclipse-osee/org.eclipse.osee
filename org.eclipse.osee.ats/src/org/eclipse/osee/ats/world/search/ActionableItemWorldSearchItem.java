@@ -130,7 +130,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
                Operator.NOT_EQUAL));
       }
 
-      return ArtifactQuery.getArtifactsFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      return ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
    }
 
    @Override

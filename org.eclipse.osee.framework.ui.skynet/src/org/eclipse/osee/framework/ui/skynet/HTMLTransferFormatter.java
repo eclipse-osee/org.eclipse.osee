@@ -53,7 +53,7 @@ public class HTMLTransferFormatter {
                OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, String.format("Error creating link for: [%s]",
                      artifact), ex);
             }
-            urls.add(link + "\">" + artifact.getDescriptiveName());
+            urls.add(link + "\">" + artifact.getName());
          }
 
          sb.append(Collections.toString(urls, START, END + ", " + START, END));

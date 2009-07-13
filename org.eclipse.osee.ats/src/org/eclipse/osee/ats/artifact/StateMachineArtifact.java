@@ -351,7 +351,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getEditorTitle() throws OseeCoreException {
-      return getWorldViewType() + ": " + getDescriptiveName();
+      return getWorldViewType() + ": " + getName();
    }
 
    public String getWorldViewActionableItems() throws OseeCoreException {
@@ -474,7 +474,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewTitle() throws OseeCoreException {
-      return getDescriptiveName();
+      return getName();
    }
 
    public String getWorldViewState() throws OseeCoreException {
@@ -849,7 +849,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
     */
    public String getHyperName() {
-      return getDescriptiveName();
+      return getName();
    }
 
    /*
@@ -970,7 +970,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : getAllSMATypeNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsUtil.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactListFromType(artType, AtsUtil.getAtsBranch()));
       }
       return result;
    }
@@ -978,7 +978,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public static List<Artifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         result.addAll(ArtifactQuery.getArtifactsFromType(artType, AtsUtil.getAtsBranch()));
+         result.addAll(ArtifactQuery.getArtifactListFromType(artType, AtsUtil.getAtsBranch()));
       }
       return result;
    }
@@ -1355,7 +1355,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getGroupExplorerName() throws OseeCoreException {
-      return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getDescriptiveName());
+      return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getName());
    }
 
    @Override

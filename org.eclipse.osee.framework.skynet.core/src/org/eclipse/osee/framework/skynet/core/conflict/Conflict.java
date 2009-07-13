@@ -251,7 +251,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public String getArtifactName() throws OseeCoreException {
-      return getArtifact().getDescriptiveName();
+      return getArtifact().getName();
    }
 
    public void handleResolvedSelection() throws Exception {

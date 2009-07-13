@@ -30,8 +30,8 @@ public class ArtifactViewerSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       if (reverse)
-         return getComparator().compare(((Artifact) o2).getDescriptiveName(), ((Artifact) o1).getDescriptiveName());
+         return getComparator().compare(((Artifact) o2).getName(), ((Artifact) o1).getName());
       else
-         return getComparator().compare(((Artifact) o1).getDescriptiveName(), ((Artifact) o2).getDescriptiveName());
+         return getComparator().compare(((Artifact) o1).getName(), ((Artifact) o2).getName());
    }
 }

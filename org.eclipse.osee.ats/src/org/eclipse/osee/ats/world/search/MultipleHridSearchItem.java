@@ -95,12 +95,12 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
       // This does artId search
       if (includeArtIds && branch != null) {
-         for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds), branch, false)) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(enteredIds), branch, false)) {
             artifacts.add(art);
          }
       }
       // This does hrid/guid search
-      for (Artifact art : ArtifactQuery.getArtifactsFromIds(ids, AtsUtil.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(ids, AtsUtil.getAtsBranch())) {
          artifacts.add(art);
       }
 

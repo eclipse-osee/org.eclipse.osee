@@ -226,7 +226,7 @@ public class SMAReviewInfoComposite extends Composite {
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
          for (ReviewSMArtifact art : smaMgr.getReviewManager().getReviews(forStateName)) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getDescriptiveName(),
+            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getName(),
                   art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());
@@ -270,7 +270,7 @@ public class SMAReviewInfoComposite extends Composite {
          strLabel.setText(revArt.getSmaMgr().getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
       }
 
-      String str = "[" + revArt.getDescriptiveName() + "]";
+      String str = "[" + revArt.getName() + "]";
       Hyperlink hyperLabel =
             toolkit.createHyperlink(workComp, ((str.length() > 300) ? Strings.truncate(str, 300) + "..." : str),
                   SWT.NONE);

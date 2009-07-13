@@ -66,7 +66,7 @@ public class RelationImporter implements RowProcessor {
       try {
          monitor.worked(1);
          Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
                      "Imported Paragraph Number", row[1], branch);
 
          Artifact rowArtifact;
@@ -80,10 +80,10 @@ public class RelationImporter implements RowProcessor {
          if (rowArtifact == null) {
             System.out.println("Skipping " + row[0] + " becuase no matching artifact was found");
          } else {
-            if (!row[0].equals(rowArtifact.getDescriptiveName())) {
-               System.out.printf("Warning %s != %s%n", row[0], rowArtifact.getDescriptiveName());
+            if (!row[0].equals(rowArtifact.getName())) {
+               System.out.printf("Warning %s != %s%n", row[0], rowArtifact.getName());
             }
-            monitor.subTask(rowArtifact.getDescriptiveName());
+            monitor.subTask(rowArtifact.getName());
             for (int i = 0; i < columnArtifacts.length; i++) {
                String rationale = row[i + leadingColumnCount];
                if (rationale != null) {
@@ -125,10 +125,10 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          try {
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactsFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount], branch);
+                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount], branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
-            monitor.subTask(columnArtifacts[i].getDescriptiveName());
+            monitor.subTask(columnArtifacts[i].getName());
          } catch (Exception ex) {
             System.out.println(ex);
          }

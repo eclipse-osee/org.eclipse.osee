@@ -44,8 +44,8 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    }
 
    public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getDescriptiveName()));
+      this(artifact.getName(), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getName()));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
 

@@ -33,7 +33,7 @@ public class PolicyLabelProvider implements ITableLabelProvider {
          if (element instanceof AccessControlData) {
             AccessControlData data = (AccessControlData) element;
             if (columnIndex == Columns.Person.ordinal()) {
-               return data.getSubject().getDescriptiveName();
+               return data.getSubject().getName();
             } else if (columnIndex == Columns.Branch.ordinal()) {
                PermissionEnum permissionEnum = data.getBranchPermission();
                if (permissionEnum != null) return permissionEnum.getName();

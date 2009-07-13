@@ -86,7 +86,7 @@ public class ExportArtifacts extends AbstractBlam {
          row[0] = artifact.getGuid();
          row[1] = artifact.getHumanReadableId();
          row[2] = artifact.getArtifactTypeName();
-         row[3] = artifact.getDescriptiveName();
+         row[3] = artifact.getName();
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             if (!attributeType.equals(nameAttributeType)) {
                String value = artifact.getAttributesToString(attributeType.getName());

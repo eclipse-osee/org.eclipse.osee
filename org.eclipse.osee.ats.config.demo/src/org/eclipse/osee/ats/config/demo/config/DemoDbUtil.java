@@ -42,7 +42,7 @@ public class DemoDbUtil {
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
                "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsUtil.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(), false)) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {
                   codeArt = (DemoCodeTeamWorkflowArtifact) art;
                   codeArts.add(codeArt);
@@ -73,7 +73,7 @@ public class DemoDbUtil {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getBranchName());
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
+            ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       return arts;

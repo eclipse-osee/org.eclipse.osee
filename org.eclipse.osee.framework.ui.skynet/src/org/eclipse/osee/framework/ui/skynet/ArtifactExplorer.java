@@ -365,14 +365,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       try {
          if (artifact.isDeleted()) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                  "The artifact " + artifact.getDescriptiveName() + " has been deleted.");
+                  "The artifact " + artifact.getName() + " has been deleted.");
          } else {
             if (artifact.isHistorical()) {
                artifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(), false);
             }
             if (artifact.isOrphan()) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                     "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).");
+                     "The artifact " + artifact.getName() + " does not have a parent (orphan).");
             } else {
                IWorkbenchPage page = AWorkbench.getActivePage();
                ArtifactExplorer artifactExplorer = findView(artifact.getBranch(), page);
@@ -679,7 +679,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format(
-                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getDescriptiveName(),
+                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
                            branch.getBranchName()));
                   }
                }
@@ -746,7 +746,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
       myTextBeingRenamed = new Text(myTree, SWT.BORDER);
       Object myTreeItemObject = myTreeItem.getData();
-      myTextBeingRenamed.setText(((Artifact) myTreeItemObject).getDescriptiveName());
+      myTextBeingRenamed.setText(((Artifact) myTreeItemObject).getName());
       myTextBeingRenamed.addFocusListener(new FocusAdapter() {
          @Override
          public void focusLost(FocusEvent e) {
@@ -921,7 +921,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                artifact = (Artifact) object;
 
                artifactTransferData.add(artifact);
-               textTransferData.add(artifact.getDescriptiveName());
+               textTransferData.add(artifact.getName());
             }
          }
          artifactClipboard.setArtifactsToClipboard(artifactTransferData, textTransferData);

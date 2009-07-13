@@ -59,7 +59,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    public static String getDefaultReviewTitle(SMAManager smaMgr) {
-      return "Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getDescriptiveName() + "\"";
+      return "Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getName() + "\"";
    }
 
    @Override
@@ -114,7 +114,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    @Override
    public String getHyperName() {
-      return getDescriptiveName();
+      return getName();
    }
 
    /*

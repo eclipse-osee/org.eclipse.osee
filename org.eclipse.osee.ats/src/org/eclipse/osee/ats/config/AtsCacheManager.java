@@ -136,7 +136,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       AtsBulkLoadCache.run(true);
       List<A> arts = new ArrayList<A>();
       for (Artifact art : instance.cache) {
-         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getDescriptiveName().equals(name)) {
+         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getName().equals(name)) {
             arts.add((A) art);
          }
       }

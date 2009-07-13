@@ -105,7 +105,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       int lineMatches = 0;
       try {
          List<ArtifactMatch> matches =
-               ArtifactQuery.getArtifactMatchesFromAttributeWithKeywords(branch, queryString, matchWordOrder,
+               ArtifactQuery.getArtifactMatchesFromAttributeKeywords(branch, queryString, matchWordOrder,
                      includeDeleted, findAllMatchLocations, isCaseSensitive, attributeTypeNames);
 
          endOfloadTime = System.currentTimeMillis();

@@ -60,7 +60,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public WorkFlowDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+      this(artifact.getName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));

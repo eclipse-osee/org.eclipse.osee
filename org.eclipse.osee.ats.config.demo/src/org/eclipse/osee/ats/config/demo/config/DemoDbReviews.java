@@ -94,7 +94,7 @@ public class DemoDbReviews {
          reviewTestArts = new ArrayList<DemoTestTeamWorkflowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
             DemoTestTeamWorkflowArtifact testArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsUtil.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(), false)) {
                if (art instanceof DemoTestTeamWorkflowArtifact) {
                   testArt = (DemoTestTeamWorkflowArtifact) art;
                   reviewTestArts.add(testArt);

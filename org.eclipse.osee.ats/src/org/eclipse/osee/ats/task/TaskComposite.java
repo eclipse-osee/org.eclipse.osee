@@ -489,7 +489,7 @@ public class TaskComposite extends Composite implements IActionable {
          else
             builder.append("these Tasks?\n\n");
          for (TaskArtifact taskItem : items) {
-            builder.append("\"" + taskItem.getDescriptiveName() + "\"\n");
+            builder.append("\"" + taskItem.getName() + "\"\n");
          }
 
          builder.append("\n\nNote: Workflow will be saved.");
@@ -555,7 +555,7 @@ public class TaskComposite extends Composite implements IActionable {
                "Resolution", "ID"}));
          for (TaskArtifact art : iXTaskViewer.getTaskArtifacts("")) {
             SMAManager smaMgr = new SMAManager(art);
-            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getDescriptiveName(),
+            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
                   art.getSmaMgr().getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
                   smaMgr.getSma().getWorldViewActivePoc(), smaMgr.getSma().getPercentCompleteSMATotal() + "",
                   smaMgr.getSma().getHoursSpentSMATotal() + "",

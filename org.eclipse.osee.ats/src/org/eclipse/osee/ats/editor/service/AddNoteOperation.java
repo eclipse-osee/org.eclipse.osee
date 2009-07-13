@@ -65,7 +65,7 @@ public class AddNoteOperation extends WorkPageService {
    private void performAddNote() {
       try {
          ArrayList<String> artifactNames = new ArrayList<String>();
-         artifactNames.add(smaMgr.getSma().getDescriptiveName() + " - " + smaMgr.getSma().getDescriptiveName());
+         artifactNames.add(smaMgr.getSma().getName() + " - " + smaMgr.getSma().getName());
          for (WorkPageDefinition workPageDefinition : smaMgr.getWorkFlowDefinition().getPagesOrdered())
             if (!workPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && !workPageDefinition.getPageName().equals(
                   DefaultTeamState.Completed.name())) artifactNames.add(workPageDefinition.getPageName());
@@ -76,7 +76,7 @@ public class AddNoteOperation extends WorkPageService {
          if (dialog.open() == 0) {
             String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
             String state = "";
-            if (!selected.startsWith(smaMgr.getSma().getDescriptiveName() + " - ")) state = selected;
+            if (!selected.startsWith(smaMgr.getSma().getName() + " - ")) state = selected;
             smaMgr.getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
                   noteWizard.mainPage.noteText.get(), UserManager.getUser());

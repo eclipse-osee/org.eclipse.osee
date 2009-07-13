@@ -118,7 +118,7 @@ public class ExtendedStatusReportJob extends Job {
          if (art instanceof ActionArtifact) {
             ActionArtifact actionArt = (ActionArtifact) art;
             String str =
-                  String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getDescriptiveName());
+                  String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getName());
             System.out.println(str);
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -163,7 +163,7 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Change_Type) {
             values.add((sma.getWorldViewChangeType().name().equals("") ? "." : sma.getWorldViewChangeType().name()));
          } else if (col == Columns.Title)
-            values.add(sma.getDescriptiveName());
+            values.add(sma.getName());
          else if (col == Columns.Analysis) {
             String desc = sma.getDescription();
             if (sma instanceof TaskArtifact) {

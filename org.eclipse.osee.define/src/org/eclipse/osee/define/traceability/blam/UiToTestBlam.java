@@ -105,7 +105,7 @@ public class UiToTestBlam extends AbstractBlam {
          if (Strings.isValid(input)) {
             for (String ui : input.split("\n")) {
                String toGet = ui.trim();
-               toTrace.addAll(ArtifactQuery.getArtifactsFromName(toGet, branch, false));
+               toTrace.addAll(ArtifactQuery.getArtifactListFromName(toGet, branch, false));
             }
          } else {
             RequirementData requirements = new RequirementData(branch);
@@ -196,7 +196,7 @@ public class UiToTestBlam extends AbstractBlam {
    }
 
    private void processTrace(Appendable appendable, Artifact requirement, String testType, IRelationEnumeration relationType) throws OseeCoreException {
-      String uiTitle = requirement.getDescriptiveName();
+      String uiTitle = requirement.getName();
       String uiType = requirement.getArtifactTypeName();
 
       List<Artifact> testUnits = requirement.getRelatedArtifacts(relationType);
@@ -205,7 +205,7 @@ public class UiToTestBlam extends AbstractBlam {
                EMPTY_STRING));
       } else {
          for (Artifact testUnit : testUnits) {
-            String testUnitName = testUnit.getDescriptiveName();
+            String testUnitName = testUnit.getName();
             String testUnitType = testUnit.getArtifactTypeName();
             List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
@@ -223,7 +223,7 @@ public class UiToTestBlam extends AbstractBlam {
    private List<String> getTrace(Artifact testUnit, IRelationEnumeration relation) throws OseeCoreException {
       List<String> toReturn = new ArrayList<String>();
       for (Artifact item : testUnit.getRelatedArtifacts(relation)) {
-         toReturn.add(item.getDescriptiveName());
+         toReturn.add(item.getName());
       }
       if (toReturn.isEmpty()) {
          toReturn.add("NONE");

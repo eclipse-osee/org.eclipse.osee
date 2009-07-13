@@ -203,7 +203,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                      fileNames.add(localFileName);
 
                      monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? "Unnamed Artifact" : newerArtifact.get(
-                           i).getDescriptiveName()));
+                           i).getName()));
                      monitor.worked(1);
 
                      if (monitor.isCanceled()) {

@@ -151,10 +151,10 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
 
          SkynetTransaction transaction = new SkynetTransaction(branch);
          List<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
+               ArtifactQuery.getArtifactListFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
          for (Artifact artifact : artifacts) {
             String data = artifact.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-            String name = artifact.getDescriptiveName();
+            String name = artifact.getName();
             try {
                String dataDbGuid = getDataDbGuid(data);
                if (Strings.isValid(dataDbGuid) || shouldIncludeItemsWithoutDbId) {

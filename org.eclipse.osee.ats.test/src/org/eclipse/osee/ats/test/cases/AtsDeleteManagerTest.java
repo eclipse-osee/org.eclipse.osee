@@ -187,7 +187,7 @@ public class AtsDeleteManagerTest {
    }
 
    private void verifyExists(TestNames testName, int numActions, int numCodeWorkflows, int numReqWorkflows, int numTasks, int numReviews) throws OseeCoreException {
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromName(testName + "%", AtsUtil.getAtsBranch(), false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName + "%", AtsUtil.getAtsBranch(), false);
 
       CountingMap<String> numArts = new CountingMap<String>();
       for (Artifact artifact : artifacts) {
@@ -216,7 +216,7 @@ public class AtsDeleteManagerTest {
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getDescriptiveName().contains("Code")) {
+         if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }
       }

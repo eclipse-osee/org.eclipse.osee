@@ -169,7 +169,7 @@ public class UserRoleManager {
          }
          builder.append("<TR>");
          builder.append("<TD>" + item.getRole().name() + "</TD>");
-         builder.append("<TD>" + item.getUser().getDescriptiveName() + "</TD>");
+         builder.append("<TD>" + item.getUser().getName() + "</TD>");
          builder.append("<TD>" + item.getHoursSpentStr() + "</TD>");
          builder.append("<TD>" + getNumMajor(item.getUser()) + "</TD>");
          builder.append("<TD>" + getNumMinor(item.getUser()) + "</TD>");

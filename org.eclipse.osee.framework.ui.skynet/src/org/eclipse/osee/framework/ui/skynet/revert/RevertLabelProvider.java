@@ -58,7 +58,7 @@ public class RevertLabelProvider extends LabelProvider { //StyledCellLabelProvid
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         String name = artifact.getDescriptiveName();
+         String name = artifact.getName();
          boolean toDelete = false;
          boolean linkToDelete = false;
          boolean rootArtifact = RevertDeletionCheck.isRootArtifact(artifact, artifactSelectionBox, artifacts);

@@ -37,7 +37,7 @@ public class LinkTestRunToTestScriptOperation {
       monitor.setTaskName(OPERATION_NAME);
       for (Artifact testRun : artifacts) {
 
-         monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getDescriptiveName(), ++count,
+         monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getName(), ++count,
                artifacts.length));
          TestRunOperator operator = new TestRunOperator(testRun);
          try {

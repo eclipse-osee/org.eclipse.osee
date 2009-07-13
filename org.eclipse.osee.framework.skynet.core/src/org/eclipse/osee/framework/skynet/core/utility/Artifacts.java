@@ -65,7 +65,7 @@ public final class Artifacts {
    public static String toTextList(Collection<? extends Artifact> artifacts, String separator) {
       StringBuilder sb = new StringBuilder();
       for (Artifact art : artifacts) {
-         sb.append(art.getDescriptiveName());
+         sb.append(art.getName());
          sb.append(separator);
       }
       if (sb.length() > separator.length()) {
@@ -77,7 +77,7 @@ public final class Artifacts {
    public static Collection<String> artNames(Collection<? extends Artifact> arts) {
       ArrayList<String> names = new ArrayList<String>();
       for (Artifact art : arts)
-         names.add(art.getDescriptiveName());
+         names.add(art.getName());
       return names;
    }
 

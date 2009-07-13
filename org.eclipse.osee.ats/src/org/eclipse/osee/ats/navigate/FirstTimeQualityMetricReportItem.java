@@ -185,7 +185,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             }
          }
          sb.append(AHTML.addRowMultiColumnTable(new String[] {
-               verMet.getVerArt().getDescriptiveName(),
+               verMet.getVerArt().getName(),
                XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
                XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
                numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),

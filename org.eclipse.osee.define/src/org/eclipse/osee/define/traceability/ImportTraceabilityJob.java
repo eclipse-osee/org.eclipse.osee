@@ -171,7 +171,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
 
       for (Artifact artifact : requirementData.getDirectSwRequirements()) {
-         excelWriter.writeRow(artifact.getDescriptiveName(), String.valueOf(reqsTraceCounts.get(artifact)),
+         excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
                Collections.toString(",", artifact.getAttributesToStringList(Requirements.PARTITION)));
       }
 
@@ -214,7 +214,7 @@ public class ImportTraceabilityJob extends Job {
 
       String name = null;
       if (reqArtifact != null) {
-         name = reqArtifact.getDescriptiveName();
+         name = reqArtifact.getName();
          requirementToCodeUnitsMap.put(reqArtifact, path);
       }
 

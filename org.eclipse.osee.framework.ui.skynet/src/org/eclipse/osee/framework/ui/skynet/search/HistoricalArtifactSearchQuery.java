@@ -33,7 +33,7 @@ public class HistoricalArtifactSearchQuery extends AbstractLegacyArtifactSearchQ
     */
    @Override
    public Collection<Artifact> getArtifacts() throws OseeCoreException {
-      return ArtifactQuery.getArtifactsFromHistoricalAttributeValue(attributePattern, branch);
+      return ArtifactQuery.getArtifactListFromHistoricalAttributeValue(attributePattern, branch);
    }
 
    public String getCriteriaLabel() {

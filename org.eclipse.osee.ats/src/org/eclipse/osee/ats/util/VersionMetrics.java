@@ -39,7 +39,7 @@ public class VersionMetrics {
    }
 
    public String toString() {
-      StringBuffer sb = new StringBuffer(verArt.getDescriptiveName() + "\n");
+      StringBuffer sb = new StringBuffer(verArt.getName() + "\n");
       try {
          sb.append("Workflows: " + verArt.getTargetedForTeamArtifacts().size());
          sb.append(" Problem: " + getTeamWorkFlows(ChangeType.Problem).size() + " Improve: " + getTeamWorkFlows(

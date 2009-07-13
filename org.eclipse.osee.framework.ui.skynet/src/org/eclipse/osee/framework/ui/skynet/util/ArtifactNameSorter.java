@@ -33,7 +33,7 @@ public class ArtifactNameSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       if (o1 instanceof Artifact && o2 instanceof Artifact)
-         return getComparator().compare(((Artifact) o1).getDescriptiveName(), ((Artifact) o2).getDescriptiveName());
+         return getComparator().compare(((Artifact) o1).getName(), ((Artifact) o2).getName());
       else if (o1 instanceof String && o2 instanceof String) return getComparator().compare(o1, o2);
       return super.compare(viewer, o1, o2);
    }

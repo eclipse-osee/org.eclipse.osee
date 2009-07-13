@@ -163,7 +163,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       // TODO Report Items that were not used from the TEST UNIT DATA Structure
       // Not Part of this class though
       if (!wasRelated) {
-         unRelatedUnits.add(traceUnitArtifact.getDescriptiveName());
+         unRelatedUnits.add(traceUnitArtifact.getName());
       }
 
       if (hasChange || artifactWasCreated) {
@@ -240,7 +240,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
          if (testCase.isOfType(Requirements.TEST_CASE)) {
             List<Artifact> testRuns =
-                  ArtifactQuery.getArtifactsFromTypeAndName(Requirements.TEST_RUN, testCase.getDescriptiveName(),
+                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.TEST_RUN, testCase.getName(),
                         transaction.getBranch());
 
             for (Artifact testRun : testRuns) {

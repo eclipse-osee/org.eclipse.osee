@@ -101,10 +101,6 @@ public class User extends Artifact implements Serializable {
       setSoleAttributeValue(Attributes.Email.toString(), email);
    }
 
-   public String getName() {
-      return getDescriptiveName();
-   }
-
    public String getPhone() throws OseeCoreException {
       return getSoleAttributeValue(Attributes.Phone.toString(), "");
    }

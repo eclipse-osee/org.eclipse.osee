@@ -79,7 +79,7 @@ public class RevertAttributeHandler extends AbstractHandler {
                @Override
                protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                   for (Attribute<?> attribute : attributes) {
-                     monitor.setTaskName(attribute.getArtifact().getDescriptiveName() + " : " + attribute.getDisplayableString());
+                     monitor.setTaskName(attribute.getArtifact().getName() + " : " + attribute.getDisplayableString());
                      ArtifactPersistenceManager.revertAttribute(connection, attribute);
                      monitor.worked(1);
                   }

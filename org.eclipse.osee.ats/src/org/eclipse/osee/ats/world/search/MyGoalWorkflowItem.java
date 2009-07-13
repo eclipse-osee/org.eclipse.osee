@@ -63,7 +63,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
       if (goalSearchState == GoalSearchState.InWork) {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelation.SmaToTask_Sma));
       } else {
-         artifacts.addAll(ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
+         artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
                "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch()));
       }
 

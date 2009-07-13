@@ -70,7 +70,7 @@ public class AtsPurgeTest {
             ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
-                        ArtifactQuery.getArtifactsFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
+                        ArtifactQuery.getArtifactListFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
                               AtsUtil.getAtsBranch())), transaction);
       actionArt.persistAttributesAndRelations(transaction);
       transaction.execute();

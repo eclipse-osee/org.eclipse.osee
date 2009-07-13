@@ -129,7 +129,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          UserRelatedToAtsObjectSearch srch =
                new UserRelatedToAtsObjectSearch("User search", user, false, LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
-            return "User name: \"" + user.getDescriptiveName() + "\" userId: \"" + user.getUserId() + "\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.";
+            return "User name: \"" + user.getName() + "\" userId: \"" + user.getUserId() + "\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.";
          }
       }
       return null;

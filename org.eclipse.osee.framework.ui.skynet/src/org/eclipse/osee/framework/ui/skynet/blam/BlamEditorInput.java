@@ -44,7 +44,7 @@ public class BlamEditorInput extends BaseArtifactEditorInput {
       if (getArtifact() == null) {
          return "No Artifact Input Provided";
       }
-      return getArtifact().getDescriptiveName() + " BLAM";
+      return getArtifact().getName() + " BLAM";
    }
 
    /* (non-Javadoc)

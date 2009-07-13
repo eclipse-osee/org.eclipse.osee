@@ -138,7 +138,7 @@ public class SMAMetrics {
                   (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
                   (versionArtifact != null ? String.format(
                         "Version: %s  EstRelDate: %s DaysLeft: %d ",
-                        versionArtifact.getDescriptiveName(),
+                        versionArtifact.getName(),
                         (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
                         daysTillRel) : ""));
    }
@@ -258,7 +258,7 @@ public class SMAMetrics {
             "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
             toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
             manDaysNeeded, hrsSpent, (versionArtifact != null ? String.format(
-                  "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getDescriptiveName(),
+                  "\nVersion: %s  Estimated Release Date: %s Days Left: %d ", versionArtifact.getName(),
                   (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
                   daysTillRel) : ""));
    }

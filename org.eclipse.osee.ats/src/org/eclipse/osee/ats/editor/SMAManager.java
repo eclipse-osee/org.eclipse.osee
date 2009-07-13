@@ -317,11 +317,11 @@ public class SMAManager {
          SMAManager smaMgr = new SMAManager(teamArt);
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
             AWorkbench.popup("ERROR",
-                  "Team \"" + teamArt.getTeamDefinition().getDescriptiveName() + "\" doesn't use versions.");
+                  "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
          if (smaMgr.isReleased()) {
-            String error = "Team Workflow\n \"" + teamArt.getDescriptiveName() + "\"\n is already released.";
+            String error = "Team Workflow\n \"" + teamArt.getName() + "\"\n is already released.";
             if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                   "Change Version", error + "\n\nOverride?")) {
                return false;
@@ -378,7 +378,7 @@ public class SMAManager {
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
          if (smaMgr.isReleased()) {
-            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getDescriptiveName() + "\"\n is already released.");
+            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getName() + "\"\n is already released.");
             return false;
          }
       }
@@ -417,7 +417,7 @@ public class SMAManager {
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
          if (smaMgr.isReleased()) {
-            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getDescriptiveName() + "\"\n is already released.");
+            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getName() + "\"\n is already released.");
             return false;
          }
       }
@@ -521,7 +521,7 @@ public class SMAManager {
 
    public boolean promptChangeReleaseDate() {
       if (isReleased()) {
-         AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getDescriptiveName() + "\"\n is already released.");
+         AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getName() + "\"\n is already released.");
          return false;
       }
       try {
@@ -532,7 +532,7 @@ public class SMAManager {
             DateSelectionDialog diag =
                   new DateSelectionDialog(
                         "Select Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
@@ -566,7 +566,7 @@ public class SMAManager {
             DateSelectionDialog diag =
                   new DateSelectionDialog(
                         "Select Estimated Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             if (diag.open() == 0) {
