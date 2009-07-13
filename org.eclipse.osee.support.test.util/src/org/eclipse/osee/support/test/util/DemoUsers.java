@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
  * @author Donald G. Dunne
  */
 public enum DemoUsers implements IOseeUserInfo {
-   Joe_Smith("Joe Smith", "Joe Smith", "", true),
-   Kay_Jones("Kay Jones", "Kay Jones", "", true),
-   Jason_Michael("Jason Michael", "Jason Michael", "", true),
-   Alex_Kay("Alex Kay", "Alex Kay", "", true);
+   Joe_Smith("Joe Smith", "Joe Smith", "Joe Smith", true),
+   Kay_Jones("Kay Jones", "Kay Jones", "Kay Jones", true),
+   Jason_Michael("Jason Michael", "Jason Michael", "Jason Michael", true),
+   Alex_Kay("Alex Kay", "Alex Kay", "Alex Kay", true);
    private final String name;
    private final String email;
    private final String userID;
