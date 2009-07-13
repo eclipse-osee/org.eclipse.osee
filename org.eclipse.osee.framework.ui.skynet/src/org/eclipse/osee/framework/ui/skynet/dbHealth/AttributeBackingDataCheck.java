@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -66,7 +67,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
          for (int index = 0; index < attrDatas.size(); index++) {
             checkForCancelledStatus(monitor);
             AttrData attrData = attrDatas.get(index);
-            monitor.subTask(String.format("[%s of %s] - attributes [%s]", index, totalAttrs, attrData.getUri()));
+            monitor.setTaskName(String.format("[%s of %s] - attributes [%s]", index, totalAttrs, attrData.getUri()));
             if (!isAttrDataValid(attrData)) {
                errors.add(attrData);
             }
@@ -95,10 +96,11 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
 
    private boolean isAttrDataValid(AttrData attrData) {
       boolean result = false;
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("uri", attrData.getUri());
-      parameters.put("check.available", "true");
       try {
+         Map<String, String> parameters = new HashMap<String, String>();
+         parameters.put("sessionId", ClientSessionManager.getSessionId());
+         parameters.put("uri", attrData.getUri());
+         parameters.put("check.available", "true");
          String url =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
