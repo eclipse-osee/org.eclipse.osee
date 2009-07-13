@@ -186,6 +186,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (SkynetDbInit.isDbInit()) return;
       // Only process notifications if this client is sender
       if (sender.isRemote()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;

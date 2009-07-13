@@ -14,6 +14,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.cases.AtsBranchConfigurationTest;
 import org.eclipse.osee.ats.test.cases.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.cases.AtsImageTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToMassEditorTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToTaskEditorTest;
+import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToWorldViewTest;
 import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 import org.eclipse.osee.ats.test.cases.AtsValidateAtsDatabaseTest;
 import org.eclipse.osee.ats.test.cases.SMAPromptChangeStatusTest;
@@ -25,7 +28,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {AtsImageTest.class, AtsTest_TestDb_Suite.class, SMAPromptChangeStatusTest.class,
       AtsDeleteManagerTest.class, AtsPurgeTest.class, AtsBranchConfigurationTest.class,
-      AtsValidateAtsDatabaseTest.class})
+      AtsValidateAtsDatabaseTest.class, AtsNavigateItemsToMassEditorTest.class, AtsNavigateItemsToTaskEditorTest.class,
+      AtsNavigateItemsToWorldViewTest.class})
 /**
  * @author Donald G. Dunne
  */

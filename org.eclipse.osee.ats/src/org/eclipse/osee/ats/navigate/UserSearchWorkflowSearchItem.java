@@ -91,7 +91,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       //
       "<XWidget displayName=\"Subscribed\"  xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Favorite\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Favorites\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Team Workflows\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -196,7 +196,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (widget.getLabel().equals("Subscribed")) {
          subscribedCheckbox = (XCheckBox) widget;
       }
-      if (widget.getLabel().equals("Originator")) {
+      if (widget.getLabel().equals("Originated")) {
          originatorCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Include Team Workflows")) {
@@ -254,6 +254,28 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
 
    public void setSelectedUser(User user) {
       if (assigneeCombo != null) assigneeCombo.set(user);
+   }
+
+   public void setSelected(UserSearchOption userSearchOption, boolean set) {
+      if (userSearchOption == UserSearchOption.Favorites) {
+         favoriteCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.Subscribed) {
+         subscribedCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.Originator) {
+         originatorCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.IncludeCancelled) {
+         includeCancelledCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.IncludeCompleted) {
+         includeCompletedCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.IncludeReviews) {
+         reviewsCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.IncludeTeamWorkflows) {
+         teamWorkflowsCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.IncludeTasks) {
+         tasksCheckbox.set(set);
+      } else {
+         throw new IllegalStateException(String.format("Unhandled checkbox [%s]", userSearchOption));
+      }
    }
 
    private boolean isIncludeCompletedCheckbox() {

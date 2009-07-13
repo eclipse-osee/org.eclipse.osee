@@ -51,6 +51,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (SkynetDbInit.isDbInit()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheChangedArtifacts) {
          if (artifact instanceof StateMachineArtifact) {

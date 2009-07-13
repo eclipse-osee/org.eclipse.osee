@@ -167,8 +167,12 @@ public class XMembersCombo extends XWidget {
    }
 
    private void resetSelectionList() {
+      // store off current selection
+      User currSelUser = selectedUser;
       searchControl.reset();
       dataCombo.setItems(searchControl.getItems());
+      // restore current selection
+      selectedUser = currSelUser;
       refresh();
    }
 

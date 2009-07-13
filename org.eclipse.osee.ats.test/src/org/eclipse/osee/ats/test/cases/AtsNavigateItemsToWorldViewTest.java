@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
@@ -52,6 +54,7 @@ import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
+import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -64,22 +67,23 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsNavigateItemsToWorldViewTest  {
+public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
-public void testDemoDatabase() throws Exception {
+   public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
       assertTrue(DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones) != null);
    }
 
    @org.junit.Test
-public void testAttributeDeletion() throws Exception {
+   public void testAttributeDeletion() throws Exception {
       Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
       arts.clear();
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
@@ -91,74 +95,156 @@ public void testAttributeDeletion() throws Exception {
    }
 
    @org.junit.Test
-public void testMyWorld() throws Exception {
+   public void testMyWorld() throws Exception {
       runGeneralLoadingTest("My World", StateMachineArtifact.class, 11, null);
       runGeneralXColTest(28, false);
    }
 
+   private XNavigateItem openUserSearchEditor() throws Exception {
+      WorldEditor.closeAll();
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Search");
+      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchWorkflowSearchItem);
+      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      return item;
+   }
+
    @org.junit.Test
-public void testMyFavoritesAndMyRecentlyVisited() throws Exception {
-      // Load My Favorites (test My Favorites and use results to test My Recently Visited
-      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
-      assertTrue(arts.size() == 3);
+   public void testUserSearchMyFavoritesTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
+      runGeneralUserSearchTest(item, 3);
       runGeneralXColTest(20, false);
       // test the task tab - this is being done via open ats task editor
       runGeneralXColTest(20, true);
       // Open all three favorites
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
       for (Artifact artifact : arts)
          SMAEditor.editArtifact(artifact);
       // Test that recently visited returns all three
-      runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
+      Collection<Artifact> artsLoaded = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, TeamWorkFlowArtifact.class, 3);
       runGeneralXColTest(20, false);
    }
 
    @org.junit.Test
-public void testMyReviews() throws Exception {
-      runGeneralLoadingTest("My Reviews", PeerToPeerReviewArtifact.class, 2, null);
-      runGeneralLoadingTest("My Reviews", DecisionReviewArtifact.class, 2, null);
+   public void testUserSearchMySubscribedTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), 1, arts.size());
+   }
+
+   @org.junit.Test
+   public void testUserSearchMyReviewsTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 2);
       runGeneralXColTest(4, false);
-      runGeneralLoadingTest("My Reviews - All", PeerToPeerReviewArtifact.class, 2, null);
-      runGeneralLoadingTest("My Reviews - All", DecisionReviewArtifact.class, 3, null);
+   }
+
+   @org.junit.Test
+   public void testUserSearchMyReviewsAllTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCancelled, true);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
       runGeneralXColTest(5, false);
    }
 
    @org.junit.Test
-public void testMySubscribed() throws Exception {
-      runGeneralLoadingTest("My Subscribed", TeamWorkFlowArtifact.class, 1, null);
-      runGeneralXColTest(1, false);
+   public void testUserSearchMyOriginatorTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 18);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 7);
    }
 
    @org.junit.Test
-public void testMyOriginator() throws Exception {
-      runGeneralLoadingTest("My Originator - InWork", TaskArtifact.class, DemoTestUtil.getNumTasks(), null);
-      runGeneralXColTest(68, false);
-      runGeneralLoadingTest("My Originator - InWork", TeamWorkFlowArtifact.class, 18, null);
-      runGeneralLoadingTest("My Originator - InWork", PeerToPeerReviewArtifact.class, 7, null);
-      runGeneralLoadingTest("My Originator - InWork", DecisionReviewArtifact.class, 7, null);
-      runGeneralLoadingTest("My Originator - All", TaskArtifact.class, DemoTestUtil.getNumTasks(), null);
-      runGeneralLoadingTest("My Originator - All", TeamWorkFlowArtifact.class, 25, null);
-      runGeneralLoadingTest("My Originator - All", PeerToPeerReviewArtifact.class, 7, null);
-      runGeneralLoadingTest("My Originator - All", DecisionReviewArtifact.class, 8, null);
+   public void testUserSearchMyOriginatorAllTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 25);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 8);
       runGeneralXColTest(84, false);
    }
 
-   @org.junit.Test
-public void testMyCompleted() throws Exception {
-      runGeneralLoadingTest("My Completed", TeamWorkFlowArtifact.class, 7, null);
-      runGeneralXColTest(17, false);
-      runGeneralLoadingTest("My Completed", PeerToPeerReviewArtifact.class, 1, null);
-      runGeneralLoadingTest("My Completed", DecisionReviewArtifact.class, 1, null);
-
+   public void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
+      WorldEditor editor = getSingleEditorOrFail();
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      // validate
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
    }
 
    @org.junit.Test
-public void testMyRecentlyVisited() throws Exception {
+   public void testUserSearchMyCompletedTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
+      runGeneralXColTest(29, false);
+   }
+
+   @org.junit.Test
+   public void testMyRecentlyVisited() throws Exception {
       // Load Recently Visited
       runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
    }
 
    @org.junit.Test
-public void testOtherUsersWorld() throws Exception {
+   public void testOtherUsersWorld() throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO,
             "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
@@ -166,40 +252,62 @@ public void testOtherUsersWorld() throws Exception {
    }
 
    @org.junit.Test
-public void testOtherUsersReviews() throws Exception {
-      runGeneralLoadingTest("User's Reviews - InWork", PeerToPeerReviewArtifact.class, 1,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
-      runGeneralLoadingTest("User's Reviews - All", PeerToPeerReviewArtifact.class, 2,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+   public void testUserSearchOtherUserReviewsTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
    }
 
    @org.junit.Test
-public void testOtherUsersSubscribed() throws Exception {
-      runGeneralLoadingTest("User's Subscribed", TeamWorkFlowArtifact.class, 0,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+   public void testUserSearchOtherUserAllReviewsTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, false);
+      editor.getActionPage().reSearch(true);
+
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
    }
 
    @org.junit.Test
-public void testOtherUsersFavorites() throws Exception {
-      runGeneralLoadingTest("User's Favorites", TeamWorkFlowArtifact.class, 0,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+   public void testUserSearchOtherUserFavoritesTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
    }
 
    @org.junit.Test
-public void testOtherUsersOriginator() throws Exception {
-      runGeneralLoadingTest("User's Originator - InWork", PeerToPeerReviewArtifact.class, 0,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
-      runGeneralLoadingTest("User's Originator - All", PeerToPeerReviewArtifact.class, 1,
-            DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+   public void testUserSearchOtherUserSubscribedTest() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
+      editor.getActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
    }
 
    @org.junit.Test
-public void testOtherUsersCompleted() throws Exception {
-      runGeneralLoadingTest("User's Completed", ActionArtifact.class, 0, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
-   }
-
-   @org.junit.Test
-public void testGroupsSearch() throws Exception {
+   public void testGroupsSearch() throws Exception {
       WorldEditor.closeAll();
       Artifact groupArt =
             ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
@@ -219,7 +327,7 @@ public void testGroupsSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testTeamWorkflowSearch() throws Exception {
+   public void testTeamWorkflowSearch() throws Exception {
       Set<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
@@ -287,16 +395,16 @@ public void testTeamWorkflowSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testUserCommunitySearch() throws Exception {
+   public void testUserCommunitySearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
-      ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm("Program 2");
+      ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm(AtsUserCommunity.Program_2.name());
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 4, null, TableLoadOption.DontCopySearchItem);
    }
 
    @org.junit.Test
-public void testActionableItemSearch() throws Exception {
+   public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
       ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
@@ -305,7 +413,7 @@ public void testActionableItemSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testTargetedForVersionTeamSearch() throws Exception {
+   public void testTargetedForVersionTeamSearch() throws Exception {
       List<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Version");
       // First one is the global one
       XNavigateItem item = items.iterator().next();
@@ -316,7 +424,7 @@ public void testTargetedForVersionTeamSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testTargetedForTeamSearch() throws Exception {
+   public void testTargetedForTeamSearch() throws Exception {
       List<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Next Version");
       // First one is the global one
       XNavigateItem item = items.iterator().next();
@@ -327,35 +435,35 @@ public void testTargetedForTeamSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testShowOpenDecisionReviewsSearch() throws Exception {
+   public void testShowOpenDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       runGeneralLoadingTest(item, DecisionReviewArtifact.class, 7);
    }
 
    @org.junit.Test
-public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
+   public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 7);
    }
 
    @org.junit.Test
-public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
+   public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       runGeneralLoadingTest(item, PeerToPeerReviewArtifact.class, 7);
    }
 
    @org.junit.Test
-public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
+   public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6);
    }
 
    @org.junit.Test
-public void testSearchByCurrentState() throws Exception {
+   public void testSearchByCurrentState() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search by Current State");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
       ((StateWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedStateClass("Implement");
@@ -363,7 +471,7 @@ public void testSearchByCurrentState() throws Exception {
    }
 
    @org.junit.Test
-public void testSearchForAuthorizeActions() throws Exception {
+   public void testSearchForAuthorizeActions() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search for Authorize Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 0);
