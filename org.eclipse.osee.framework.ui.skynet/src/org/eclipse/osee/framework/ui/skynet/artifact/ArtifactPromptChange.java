@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -179,13 +180,19 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist, boolean multiLine) throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
       EntryDialog ed = new EntryDialog("Enter " + displayName, "Enter " + displayName);
       ed.setFillVertically(multiLine);
-      if (smas.size() == 1) {
-         Object obj = smas.iterator().next().getSoleAttributeValueAsString(attributeName, null);
-         if (obj != null) {
-            ed.setEntry(String.valueOf(obj));
-         }
+      Object obj;
+      Iterator<? extends Artifact> smaIter = smas.iterator();
+      while (smaIter.hasNext()) {
+         obj = smaIter.next().getSoleAttributeValueAsString(attributeName, null);
+         strs.add(String.valueOf(obj));
+      }
+      // either there was only one value or for multiple workflows, the values are all the same; 
+      // otherwise, the dialog will open blank
+      if (strs.size() == 1) {
+         ed.setEntry(strs.iterator().next());
       }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
