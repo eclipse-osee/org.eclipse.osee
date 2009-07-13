@@ -660,7 +660,7 @@ public class BranchManager {
 
    public static List<Branch> getTopLevelBranches() throws OseeCoreException {
       List<Branch> topLevelBranches = new ArrayList<Branch>();
-      for (Branch branch : getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL)) {
+      for (Branch branch : getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.BASELINE)) {
          if (branch.isTopLevelBranch()) {
             topLevelBranches.add(branch);
          }
