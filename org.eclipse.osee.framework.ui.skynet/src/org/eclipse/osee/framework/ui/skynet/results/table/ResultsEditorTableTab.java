@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.table;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -29,6 +35,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -130,6 +137,49 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          public void widgetSelected(SelectionEvent event) {
             try {
                (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).exportTsv();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getProgramImage("pdf"));
+      item.setToolTipText("Export to PDF");
+      item.addSelectionListener(new SelectionAdapter() {
+
+         private List<String> getColumns() {
+            List<String> cols = new ArrayList<String>();
+            for (XViewerColumn col : columns) {
+               cols.add(col.getName());
+            }
+            return cols;
+         }
+
+         private void writeRows(TableWriterAdaptor writerAdaptor) {
+            List<String> rws = new ArrayList<String>();
+            for (IResultsXViewerRow row : rows) {
+               for (int i = 0; i < columns.size(); i++) {
+                  rws.add(row.getValue(i));
+               }
+               writerAdaptor.writeRow(rws.toArray(new String[rws.size()]));
+               rws.clear();
+            }
+         }
+
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            try {
+               File TableResultsFile = OseeData.getFile(tabName + ".pdf");
+               OutputStream outputStream = new FileOutputStream(TableResultsFile, true);
+               TableWriterAdaptor writerAdaptor = new TableWriterAdaptor("pdf", outputStream);
+               writerAdaptor.writeHeader(getColumns().toArray(new String[getColumns().size()]));
+               writeRows(writerAdaptor);
+               writerAdaptor.writeTitle(tabName);
+               writerAdaptor.openDocument();
+               writerAdaptor.writeDocument();
+               writerAdaptor.close();
+               Program.launch(TableResultsFile.getAbsolutePath());
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
