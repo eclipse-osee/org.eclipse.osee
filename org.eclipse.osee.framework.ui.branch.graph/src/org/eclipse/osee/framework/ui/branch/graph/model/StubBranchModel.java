@@ -26,7 +26,7 @@ public class StubBranchModel extends BranchModel {
 
    public static final Branch STUB_BRANCH =
          new Branch("Unreferenced", -1, 1, 1, false, 0, new Timestamp(new Date().getTime()),
-               "Dummy branch to allocate data errors", 0, BranchType.TOP_LEVEL, BranchState.CREATED);
+               "Dummy branch to allocate data errors", 0, BranchType.BASELINE, BranchState.CREATED);
 
    private final Map<Long, TxModel> stubs;
 

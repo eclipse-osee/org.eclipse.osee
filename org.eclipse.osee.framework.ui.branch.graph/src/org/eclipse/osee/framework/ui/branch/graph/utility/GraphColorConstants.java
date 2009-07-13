@@ -24,7 +24,6 @@ public class GraphColorConstants {
 
    private final static Color CURRENT_BRANCH = ColorConstants.orange;
    private final static Color SYSTEM_ROOT_BRANCH = new Color(null, 255, 180, 220);
-   private final static Color TOP_LEVEL_BRANCH = new Color(null, 122, 224, 255);
    private final static Color WORKING_BRANCH_COLOR = new Color(null, 244, 244, 244);
 
    private final static Color BASELINE_BRANCH = new Color(null, 120, 255, 120);
@@ -47,9 +46,6 @@ public class GraphColorConstants {
                break;
             case SYSTEM_ROOT:
                toReturn = GraphColorConstants.SYSTEM_ROOT_BRANCH;
-               break;
-            case TOP_LEVEL:
-               toReturn = GraphColorConstants.TOP_LEVEL_BRANCH;
                break;
             case WORKING:
                toReturn = GraphColorConstants.WORKING_BRANCH_COLOR;

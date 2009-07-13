@@ -330,7 +330,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * True if baseline or top level branch
     */
    public boolean isBaselineBranch() {
-      return branchType.equals(BranchType.BASELINE) || branchType.equals(BranchType.TOP_LEVEL);
+      return branchType.equals(BranchType.BASELINE);
    }
 
    public boolean isSystemRootBranch() {

@@ -68,7 +68,7 @@ public class HttpBranchCreation {
       String creationComment;
       if (branchType == BranchType.SYSTEM_ROOT) {
          creationComment = "System Root Branch Creation";
-      } else if (branchType == BranchType.TOP_LEVEL) {
+      } else if (branchType == BranchType.BASELINE) {
          creationComment = String.format("Root Branch [%s] Creation", branchName);
       } else {
          Branch parentBranch = BranchManager.getBranch(parentBranchId);

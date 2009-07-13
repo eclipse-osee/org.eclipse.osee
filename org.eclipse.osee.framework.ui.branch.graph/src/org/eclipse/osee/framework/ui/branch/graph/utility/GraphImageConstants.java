@@ -31,9 +31,6 @@ public class GraphImageConstants {
          case SYSTEM_ROOT:
             image = ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
             break;
-         case TOP_LEVEL:
-            image = ImageManager.getImage(FrameworkImage.BRANCH_TOP);
-            break;
          case BASELINE:
             image = ImageManager.getImage(FrameworkImage.BRANCH_BASELINE);
             break;

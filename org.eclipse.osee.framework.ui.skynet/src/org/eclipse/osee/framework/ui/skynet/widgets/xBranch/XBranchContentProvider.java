@@ -103,8 +103,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
       try {
          if (AccessControlManager.isOseeAdmin()) {
             branchTypes.add(BranchType.SYSTEM_ROOT);
-         } else {
-            branchTypes.add(BranchType.TOP_LEVEL);
          }
 
          if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
@@ -114,7 +112,6 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchState = BranchArchivedState.ALL;
          }
          if (showChildBranchesAtMainLevel) {
-            branchTypes.add(BranchType.TOP_LEVEL);
             branchTypes.add(BranchType.BASELINE);
             branchTypes.add(BranchType.WORKING);
          }
@@ -123,6 +120,15 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (showOnlyWorkingBranches) {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL,
                   BranchType.WORKING));
+         }
+         if (!showChildBranchesAtMainLevel) {
+            branchTypes.add(BranchType.BASELINE);
+            for (Branch branch : BranchManager.getBranches(branchState, BranchControlled.ALL,
+                  branchTypes.toArray(new BranchType[branchTypes.size()]))) {
+               if (branch.isTopLevelBranch()) {
+                  branchesToReturn.add(branch);
+               }
+            }
          } else {
             branchesToReturn.addAll(BranchManager.getBranches(branchState, BranchControlled.ALL,
                   branchTypes.toArray(new BranchType[branchTypes.size()])));

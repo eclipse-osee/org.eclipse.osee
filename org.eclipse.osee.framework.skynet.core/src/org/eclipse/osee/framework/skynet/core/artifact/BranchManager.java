@@ -149,8 +149,7 @@ public class BranchManager {
     */
    public static List<Branch> getNormalBranches() throws OseeCoreException {
       List<Branch> branches =
-            getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
-                  BranchType.BASELINE);
+            getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
    }
@@ -163,8 +162,7 @@ public class BranchManager {
     */
    public static List<Branch> getNormalAllBranches() throws OseeCoreException {
       List<Branch> branches =
-            getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
-                  BranchType.BASELINE);
+            getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
       Collections.sort(branches);
       return branches;
    }
@@ -302,8 +300,7 @@ public class BranchManager {
    }
 
    public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.TOP_LEVEL,
-            BranchType.BASELINE);
+      return getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
    }
 
    /**
@@ -608,6 +605,30 @@ public class BranchManager {
    }
 
    /**
+    * Creates a new Branch based on the transaction number selected and the parent branch.
+    * 
+    * @param parentTransactionId
+    * @param childBranchName
+    * @throws OseeCoreException
+    */
+   public static Branch createBaselineBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
+            parentTransactionId.getBranchId(), childBranchName, null, associatedArtifact);
+   }
+
+   /**
+    * Creates a new Branch based on the most recent transaction on the parent branch.
+    * 
+    * @param parentTransactionId
+    * @param childBranchName
+    * @throws OseeCoreException
+    */
+   public static Branch createBaselineBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+      TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
+      return createBaselineBranch(parentTransactionId, childBranchName, associatedArtifact);
+   }
+
+   /**
     * Creates a new root branch, imports skynet types and initializes. If programatic access is necessary, setting the
     * staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
@@ -625,9 +646,8 @@ public class BranchManager {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(systemRootBranch);
 
       Branch branch =
-            HttpBranchCreation.createFullBranch(BranchType.TOP_LEVEL, parentTransactionId.getTransactionNumber(),
+            HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
                   systemRootBranch.getBranchId(), branchName, staticBranchName, null);
-
       if (staticBranchName != null) {
          setKeyedBranchInCache(staticBranchName, branch);
       }
@@ -650,7 +670,7 @@ public class BranchManager {
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.CHANGE_MANAGED, BranchType.WORKING,
-            BranchType.TOP_LEVEL, BranchType.BASELINE);
+            BranchType.BASELINE);
    }
 
    private void initializeLastBranchValue() {

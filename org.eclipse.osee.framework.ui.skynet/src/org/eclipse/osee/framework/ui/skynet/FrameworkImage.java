@@ -35,7 +35,6 @@ public enum FrameworkImage implements OseeImage {
    BLAM("blam.gif"),
    BRANCH_CHANGE("branch_change.gif"),
    BRANCH("branch.gif"),
-   BRANCH_TOP("top.gif"),
    BRANCH_SYSTEM_ROOT("branchYellow.gif"),
    BRANCH_BASELINE("baseline.gif"),
    BRANCH_MERGE("merge.gif"),

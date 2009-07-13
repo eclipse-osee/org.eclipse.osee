@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.enums;
  * @author Ryan D. Brooks
  */
 public enum BranchType {
-   WORKING(0), TOP_LEVEL(1), BASELINE(2), MERGE(3), SYSTEM_ROOT(4);
+   WORKING(0), BASELINE(2), MERGE(3), SYSTEM_ROOT(4);
    private final int value;
 
    BranchType(int value) {
