@@ -26,9 +26,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsImageTest.class, AtsTest_TestDb_Suite.class, SMAPromptChangeStatusTest.class,
-      AtsDeleteManagerTest.class, AtsPurgeTest.class, AtsBranchConfigurationTest.class,
-      AtsValidateAtsDatabaseTest.class, AtsNavigateItemsToMassEditorTest.class, AtsNavigateItemsToTaskEditorTest.class,
+@Suite.SuiteClasses( {AtsImageTest.class, SMAPromptChangeStatusTest.class, AtsDeleteManagerTest.class,
+      AtsPurgeTest.class, AtsBranchConfigurationTest.class, AtsValidateAtsDatabaseTest.class,
+      AtsNavigateItemsToMassEditorTest.class, AtsNavigateItemsToTaskEditorTest.class,
       AtsNavigateItemsToWorldViewTest.class})
 /**
  * @author Donald G. Dunne
