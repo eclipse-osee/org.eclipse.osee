@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -57,25 +58,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
     */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      List<AttrData> attrDatas = loadAttributeData(monitor);
-      monitor.worked(calculateWork(0.40));
-
-      List<AttrData> errors = new ArrayList<AttrData>();
-      if (!attrDatas.isEmpty()) {
-         int totalAttrs = attrDatas.size();
-         int work = calculateWork(0.40) / totalAttrs;
-         for (int index = 0; index < attrDatas.size(); index++) {
-            checkForCancelledStatus(monitor);
-            AttrData attrData = attrDatas.get(index);
-            monitor.setTaskName(String.format("[%s of %s] - attributes [%s]", index, totalAttrs, attrData.getUri()));
-            if (!isAttrDataValid(attrData)) {
-               errors.add(attrData);
-            }
-            monitor.worked(work);
-         }
-      } else {
-         monitor.worked(calculateWork(0.40));
-      }
+      List<AttrData> errors = getInvalidAttributeData(monitor);
       setItemsToFix(errors.size());
 
       // Write Report;
@@ -94,6 +77,30 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
+   private List<AttrData> getInvalidAttributeData(IProgressMonitor monitor) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      List<AttrData> data = new ArrayList<AttrData>();
+      SubMonitor subMonitor = SubMonitor.convert(monitor, (int) (getTotalWorkUnits() * 0.80));
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(READ_VALID_ATTRIBUTES);
+         while (chStmt.next()) {
+            checkForCancelledStatus(monitor);
+            String uri = chStmt.getString("uri");
+            if (Strings.isValid(uri)) {
+               AttrData attrData =
+                     new AttrData(uri, chStmt.getLong("gamma_id"), chStmt.getInt("attr_id"), chStmt.getInt("art_id"));
+               if (!isAttrDataValid(attrData)) {
+                  data.add(attrData);
+               }
+            }
+            subMonitor.worked(1);
+         }
+      } finally {
+         chStmt.close();
+      }
+      return data;
+   }
+
    private boolean isAttrDataValid(AttrData attrData) {
       boolean result = false;
       try {
@@ -108,30 +115,13 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
          if (acquireResult.wasSuccessful()) {
             result = true;
          } else {
-            attrData.setReason(outputStream.toString(acquireResult.getEncoding()));
+            String encoding = acquireResult.getEncoding();
+            attrData.setReason(outputStream.toString(Strings.isValid(encoding) ? encoding : "UTF-8"));
          }
       } catch (Exception ex) {
          attrData.setReason(Lib.exceptionToString(ex));
       }
       return result;
-   }
-
-   private List<AttrData> loadAttributeData(IProgressMonitor monitor) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      List<AttrData> data = new ArrayList<AttrData>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(READ_VALID_ATTRIBUTES);
-         while (chStmt.next()) {
-            checkForCancelledStatus(monitor);
-            String uri = chStmt.getString("uri");
-            if (Strings.isValid(uri)) {
-               data.add(new AttrData(uri, chStmt.getLong("gamma_id"), chStmt.getInt("attr_id"), chStmt.getInt("art_id")));
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
-      return data;
    }
 
    /* (non-Javadoc)
