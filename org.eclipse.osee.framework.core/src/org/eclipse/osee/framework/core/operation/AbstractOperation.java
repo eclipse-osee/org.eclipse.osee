@@ -212,7 +212,7 @@ public abstract class AbstractOperation implements IOperation {
             }
          }
          if (!wasCancelled) {
-            throw new OperationCanceledException();
+            throw new OperationCanceledException("Cancelled");
          }
       }
    }
