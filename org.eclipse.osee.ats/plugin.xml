@@ -117,7 +117,7 @@
    </view>
    <view
          class="org.eclipse.osee.ats.hyper.ActionHyperView"
-         icon="images/hyper.gif"
+         icon="images/action.gif"
          category="org.eclipse.osee.ats.category"
          name="Action View"
          id="org.eclipse.osee.ats.hyper.ActionHyperView">
@@ -125,7 +125,7 @@
 <!-- Don't allow access to this yet 
     <view
          class="org.eclipse.osee.ats.hyper.ActionSkyWalker"
-         icon="images/hyper.gif"
+         icon="images/action.gif"
          category="org.eclipse.osee.ats.category"
          name="Action View"
          id="org.eclipse.osee.ats.hyper.ActionSkyWalker">

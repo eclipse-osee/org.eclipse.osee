@@ -227,7 +227,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      myWorldAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.MY_WORLD));
+      myWorldAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
       myWorldAction.setToolTipText("My World");
 
       Action myFavoritesAction = new Action("My Favorites") {

@@ -37,7 +37,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public StateWorldSearchItem(StateWorldSearchItem stateWorldSearchItem) {
-      super(stateWorldSearchItem, AtsImage.GLOBE);
+      super(stateWorldSearchItem, AtsImage.STATE);
       this.stateClass = stateWorldSearchItem.stateClass;
    }
 
@@ -54,7 +54,7 @@ public class StateWorldSearchItem extends WorldUISearchItem {
    }
 
    public StateWorldSearchItem(String name, String stateClass) {
-      super(name);
+      super(name, AtsImage.STATE);
       this.stateClass = stateClass;
    }
 

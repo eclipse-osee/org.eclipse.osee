@@ -133,21 +133,21 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s", DecisionReviewArtifact.ARTIFACT_NAME, false,
-               false), AtsImage.REVIEW);
+               false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Workflows Waiting " + DecisionReviewArtifact.ARTIFACT_NAME + "s",
-               DecisionReviewArtifact.ARTIFACT_NAME, false, true), AtsImage.REVIEW);
+               DecisionReviewArtifact.ARTIFACT_NAME, false, true, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s", PeerToPeerReviewArtifact.ARTIFACT_NAME,
-               false, false), AtsImage.REVIEW);
+               false, false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Workflows Waiting " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
-               PeerToPeerReviewArtifact.ARTIFACT_NAME, false, true), AtsImage.REVIEW);
+               PeerToPeerReviewArtifact.ARTIFACT_NAME, false, true, AtsImage.REVIEW));
          new NewPeerToPeerReviewItem(reviewItem);
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);
 
-         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.GLOBE);
+         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.STATE);
          new SearchNavigateItem(stateItems, new StateWorldSearchItem());
          new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
          items.add(stateItems);
