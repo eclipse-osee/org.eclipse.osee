@@ -328,7 +328,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private boolean areAllConflictsResolved() {
       int resolved = 0;
       for (Conflict conflict : conflicts) {
-         if (conflict.statusResolved() || conflict.statusCommitted()) {
+         if (conflict.statusResolved() || conflict.statusCommitted() || conflict.statusInformational()) {
             resolved++;
          }
       }
