@@ -25,19 +25,12 @@ public class XNavigateItem {
    private final List<XNavigateItem> children = new ArrayList<XNavigateItem>();
    private String name;
    private XNavigateItem parent;
-   private final Image image;
+   private final OseeImage oseeImage;
 
    public XNavigateItem(XNavigateItem parent, String name, OseeImage oseeImage) {
       this.parent = parent;
       this.name = name;
-      this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
-      if (parent != null) parent.addChild(this);
-   }
-   
-   public XNavigateItem(XNavigateItem parent, String name, Image oseeImage) {
-      this.parent = parent;
-      this.name = name;
-      this.image = oseeImage;
+      this.oseeImage = oseeImage;
       if (parent != null) parent.addChild(this);
    }
 
@@ -69,7 +62,10 @@ public class XNavigateItem {
     * @return the image
     */
    public Image getImage() {
-      return image;
+      if (oseeImage != null) {
+         return ImageManager.getImage(oseeImage);
+      }
+      return null;
    }
 
    /**

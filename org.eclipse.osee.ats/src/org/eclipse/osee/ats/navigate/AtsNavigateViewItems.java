@@ -40,10 +40,8 @@ import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
-import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
-import org.eclipse.osee.ats.world.search.MyOrigSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
@@ -102,6 +100,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
+         items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
          if (AtsUtil.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
                GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
@@ -109,36 +108,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
-         XNavigateItem otherItems = new XNavigateItemFolder(null, "Other My Searches");
-         new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", user));
-         new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork", user,
-               MyOrigSearchItem.OriginatedState.InWork));
-         new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - All", user,
-               MyOrigSearchItem.OriginatedState.All));
-         new SearchNavigateItem(otherItems, new MyCompletedSearchItem("My Completed", user));
-         new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("My Reviews - All", user, ReviewState.All));
-         items.add(otherItems);
-
-         otherItems = new XNavigateItemFolder(null, "Other User Searches");
-         new SearchNavigateItem(otherItems, new MyWorldSearchItem("User's World"));
-         new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - InWork", null,
-               MyOrigSearchItem.OriginatedState.InWork));
-         new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null,
-               MyOrigSearchItem.OriginatedState.All));
-         new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
-         new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
-         new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
-         new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - InWork", null,
-               ReviewState.InWork));
-         new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
-         if (AtsUtil.isAtsAdmin()) {
-            new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
-                  "User's All Related Objects - Admin Only", null, false, LoadView.WorldEditor));
-            new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
-                  "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
-         }
-         items.add(otherItems);
-
+         items.add(new SearchNavigateItem(null, new UserSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
          items.add(new SearchNavigateItem(null, new GroupWorldSearchItem((Branch) null)));
          items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
@@ -163,16 +133,16 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s", DecisionReviewArtifact.ARTIFACT_NAME, false,
-               false));
+               false), AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Workflows Waiting " + DecisionReviewArtifact.ARTIFACT_NAME + "s",
-               DecisionReviewArtifact.ARTIFACT_NAME, false, true));
+               DecisionReviewArtifact.ARTIFACT_NAME, false, true), AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Open " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s", PeerToPeerReviewArtifact.ARTIFACT_NAME,
-               false, false));
+               false, false), AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
                "Show Workflows Waiting " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
-               PeerToPeerReviewArtifact.ARTIFACT_NAME, false, true));
+               PeerToPeerReviewArtifact.ARTIFACT_NAME, false, true), AtsImage.REVIEW);
          new NewPeerToPeerReviewItem(reviewItem);
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);
@@ -220,6 +190,11 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             new UpdateAtsWorkItemDefinitions(adminItems);
             new UpdateAssigneesRelations(adminItems);
             new DisplayCurrentOseeEventListeners(adminItems);
+
+            new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
+                  "User's All Related Objects - Admin Only", null, false, LoadView.WorldEditor));
+            new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
+                  "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
 
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Action"));
             new SearchNavigateItem(adminItems,

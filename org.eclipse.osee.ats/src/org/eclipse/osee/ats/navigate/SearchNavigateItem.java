@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.swt.graphics.Image;
 
@@ -31,6 +32,11 @@ public class SearchNavigateItem extends XNavigateItem {
     */
    public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) throws OseeCoreException {
       super(parent, wsi.getName(), AtsImage.GLOBE);
+      this.wsi = wsi;
+   }
+
+   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, OseeImage oseeImage) throws OseeCoreException {
+      super(parent, wsi.getName(), oseeImage);
       this.wsi = wsi;
    }
 

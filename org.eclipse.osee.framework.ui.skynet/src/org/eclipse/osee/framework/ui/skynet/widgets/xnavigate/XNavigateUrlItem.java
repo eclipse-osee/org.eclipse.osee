@@ -14,6 +14,7 @@ import java.net.URL;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -40,7 +41,7 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @throws OseeArgumentException
     */
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external) throws OseeArgumentException {
-      this(parent, name, url, external, null);
+      this(parent, name, url, external, FrameworkImage.GEAR);
    }
 
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external, OseeImage oseeImage) throws OseeArgumentException {
