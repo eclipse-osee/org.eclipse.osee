@@ -99,7 +99,7 @@ public class FrameworkTestUtil {
    public static void cleanupSimpleTest(Branch branch, Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactsFromName(title + "%", branch, false));
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, false));
       }
       ArtifactPersistenceManager.purgeArtifacts(artifacts);
       TestUtil.sleep(4000);

@@ -99,13 +99,13 @@ public class Artifact_setAttributeValues {
    }
 
    private Artifact getArtifact() throws Exception {
-      return ArtifactQuery.getArtifactsFromName(getClass().getSimpleName(),
+      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
             BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false).iterator().next();
    }
 
    private static void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromName(Artifact_setAttributeValues.class.getSimpleName(),
+            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       ArtifactPersistenceManager.purgeArtifacts(arts);
    }

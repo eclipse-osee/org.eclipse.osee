@@ -410,7 +410,7 @@ public class DeletionTest {
    public static void dumpArtifact(Artifact artifact) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         System.out.println("  Artifact Dump : " + artifact.getDescriptiveName());
+         System.out.println("  Artifact Dump : " + artifact.getName());
          chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch().getBranchId(), artifact.getArtId());
          while (chStmt.next()) {
             System.out.println(String.format(

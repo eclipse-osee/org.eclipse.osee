@@ -293,7 +293,7 @@ public class ConflictTest {
          Branch mergeBranch =
                BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, true);
          if (DEBUG) {
             System.out.println("Found the following Artifacts on the branch ");
             System.out.print("     ");

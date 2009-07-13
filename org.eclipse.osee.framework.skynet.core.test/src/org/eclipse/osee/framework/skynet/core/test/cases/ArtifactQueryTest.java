@@ -37,11 +37,11 @@ public class ArtifactQueryTest {
    @org.junit.Test
    public void testGetArtifactsFromBranch() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(common, true);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(common, true);
 
       assertTrue(artifacts.size() > 0);
       for (Artifact artifact : artifacts) {
-         assertTrue(artifact.getDescriptiveName().length() > 0);
+         assertTrue(artifact.getName().length() > 0);
          artifact.isOrphan(); // this is good exercise - like doing push-ups
       }
    }
@@ -88,7 +88,7 @@ public class ArtifactQueryTest {
 
    private void checkSearch(Branch branch, String query, String expected, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, String... attributeTypes) throws Exception {
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactsFromAttributeWithKeywords(branch, query, matchWordOrder, allowDeleted,
+            ArtifactQuery.getArtifactListFromAttributeKeywords(branch, query, matchWordOrder, allowDeleted,
                   isCaseSensitive, attributeTypes);
       Collections.sort(artifacts);
       Artifact[] results = artifacts.toArray(new Artifact[artifacts.size()]);

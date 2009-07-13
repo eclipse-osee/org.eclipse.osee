@@ -126,7 +126,7 @@ public class NativeArtifactTest {
 
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromName(getClass().getSimpleName(),
+            ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       ArtifactPersistenceManager.purgeArtifacts(arts);
    }

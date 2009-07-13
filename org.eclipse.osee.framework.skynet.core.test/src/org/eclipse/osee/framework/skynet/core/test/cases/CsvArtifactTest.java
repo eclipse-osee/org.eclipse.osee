@@ -70,7 +70,7 @@ public void testCleanupPost() throws Exception {
 
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromName(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
+            ArtifactQuery.getArtifactListFromName(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
       ArtifactPersistenceManager.purgeArtifacts(arts);
    }
 }

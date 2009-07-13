@@ -54,7 +54,7 @@ public class StaticIdManagerTest {
    public static void testCleanupForReRun() throws OseeCoreException, InterruptedException {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
       for (String staticIdValue : ALL_STATIC_IDS) {
-         for (Artifact artifact : ArtifactQuery.getArtifactsFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
+         for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
                staticIdValue, BranchManager.getCommonBranch())) {
             artifact.deleteAndPersist(transaction);
             System.out.println("Deleting " + artifact.getHumanReadableId());
