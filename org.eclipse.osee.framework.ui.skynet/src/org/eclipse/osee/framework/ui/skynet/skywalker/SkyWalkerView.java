@@ -172,7 +172,7 @@ public class SkyWalkerView extends ViewPart {
       };
       filterAction.setChecked(options.isFilterEnabled());
       filterAction.setToolTipText("Enable Filters");
-      filterAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
+      filterAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       tbm.add(filterAction);
 
       Action action = new Action() {

@@ -221,7 +221,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    private final class OpenOutlineAction extends Action {
       public OpenOutlineAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("outline_co.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTLINE));
          setToolTipText("Open Outline");
       }
 

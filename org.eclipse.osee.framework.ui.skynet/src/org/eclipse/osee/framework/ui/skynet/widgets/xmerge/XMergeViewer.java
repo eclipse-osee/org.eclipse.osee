@@ -671,7 +671,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private final class CustomizeTableAction extends Action {
       public CustomizeTableAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("customize.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.CUSTOMIZE));
          setToolTipText("Customize Table");
       }
 
@@ -684,7 +684,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private final class ApplyPriorMergeResultsAction extends Action {
       public ApplyPriorMergeResultsAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_merge.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.OUTGOING_MERGED));
          setToolTipText("Apply Merge Results From Prior Merge");
       }
 

@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
@@ -103,7 +105,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
          }
       });
       onDataChanged();
-      
+
       PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.define.testRunView");
    }
 
@@ -155,7 +157,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
          }
       };
       refreshAction.setToolTipText("Refresh Table");
-      refreshAction.setImageDescriptor(OteUiDefinePlugin.getInstance().getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
 
    }
 

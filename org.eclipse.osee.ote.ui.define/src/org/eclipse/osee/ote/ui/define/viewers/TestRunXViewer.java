@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
@@ -55,7 +57,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TestRunXViewer extends XViewer {
 
    private static final ImageDescriptor COMMIT_IMAGE = OteUiDefinePlugin.getInstance().getImageDescriptor("commit.gif");
-   private static final ImageDescriptor REMOVE_IMAGE = OteUiDefinePlugin.getInstance().getImageDescriptor("remove.gif");
+   private static final ImageDescriptor REMOVE_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.REMOVE);
    private static final ImageDescriptor REMOVE_ALL_IMAGE =
          OteUiDefinePlugin.getInstance().getImageDescriptor("removeAll.gif");
    private XViewerDataManager dataManager;
@@ -262,10 +264,12 @@ public class TestRunXViewer extends XViewer {
                Artifact dispoArtifact = null;
                try {
                   dispoArtifact =
-                        ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name, artifact.getBranch());
+                        ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
+                              artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
-                     dispoArtifact = ArtifactTypeManager.getType("Test Run Disposition").makeNewArtifact(artifact.getBranch());
-                     dispoArtifact.setDescriptiveName(name);
+                  dispoArtifact =
+                        ArtifactTypeManager.getType("Test Run Disposition").makeNewArtifact(artifact.getBranch());
+                  dispoArtifact.setDescriptiveName(name);
                }
                if (dispoArtifact != null) {
                   dispositionArtifacts.add(dispoArtifact);
