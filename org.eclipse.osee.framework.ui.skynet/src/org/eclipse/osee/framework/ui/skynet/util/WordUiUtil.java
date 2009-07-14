@@ -22,6 +22,18 @@ import org.eclipse.swt.widgets.Display;
  */
 public class WordUiUtil {
 
+   public static void displayErrorMessageDialog(final String title, final String message) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            MessageDialog.openError(Display.getCurrent().getActiveShell(), title, message);
+         }
+      }, true);
+   }
+
    public static void displayWarningMessageDialog(final String title, final String message) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
