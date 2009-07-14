@@ -196,7 +196,7 @@ public class ArtifactPersistenceManager {
             deleteTrace(childArtifact, transaction, false);
          }
          try {
-            artifact.setDeleted();
+            artifact.internalSetDeleted();
             RelationManager.deleteRelationsAll(artifact, reorderRelations);
             if (transaction != null) {
                artifact.persistAttributesAndRelations(transaction);

@@ -158,7 +158,7 @@ public class PurgeDbTransaction extends DbTransaction {
                transactionJoinId);
 
          for (Artifact art : artifactsToPurge) {
-            art.setDeleted();
+            art.internalSetDeleted();
             for (RelationLink rel : art.getRelationsAll(false)) {
                rel.markAsPurged();
             }

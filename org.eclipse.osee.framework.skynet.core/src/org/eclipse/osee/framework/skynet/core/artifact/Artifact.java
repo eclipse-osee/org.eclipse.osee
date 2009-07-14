@@ -509,14 +509,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws BranchDoesNotExist
     */
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
-      Collection<AttributeType> attributeTypes =
-            TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
-      for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.getName().equals(attributeName)) {
-            return true;
-         }
-      }
-      return false;
+      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch).contains(AttributeTypeManager.getType(attributeName));
    }
 
    /**
@@ -834,8 +827,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                remainingAttributes.remove(attribute);
                found = true;
                break;
+      }
             }
-         }
          if (!found) {
             remainingNewValues.add(newValue);
          }
@@ -852,9 +845,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
 
       for (Attribute<String> attribute : remainingAttributes) {
-         attribute.delete();
+            attribute.delete();
+         }
       }
-   }
 
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
@@ -935,16 +928,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    private String getInternalAttributeValue(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
-      if (!isAttributeTypeValid(attributeTypeName)) {
+         if (!isAttributeTypeValid(attributeTypeName)) {
          throw new OseeStateException(String.format(
-               "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
-               getArtifactTypeName(), getGuid()));
-      }
-      for (Attribute<?> attribute : internalGetAttributes()) {
-         if (attribute.isOfType(attributeTypeName)) {
-            return (String) attribute.getValue();
+                  "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
+                  getArtifactTypeName(), getGuid()));
          }
-      }
+         for (Attribute<?> attribute : internalGetAttributes()) {
+            if (attribute.isOfType(attributeTypeName)) {
+               return (String) attribute.getValue();
+            }
+         }
       return "";
    }
 
@@ -970,11 +963,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
+    * This is used to mark that the artifact deleted.
     * 
     * @throws OseeCoreException
     */
-   public void setDeleted() throws OseeCoreException {
+   public void internalSetDeleted() throws OseeCoreException {
       this.modType = ModificationType.DELETED;
 
       for (Attribute<?> attribute : getAttributes(false)) {
@@ -1533,9 +1526,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Artifact reflectedArtifact =
             artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
                   branch, ModificationType.INTRODUCED);
-
+      
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
-         if (sourceAttribute.isInDb()) {
+         //In order to reflect attributes they must exist in the data store and be valid for the destination branch as well
+         if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType().getName())) {
             reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
                   sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class RelationLink {
    private int relationId;
    private int gammaId;
-   private boolean deleted;
    private int aOrder;
    private int bOrder;
    private String rationale;
@@ -38,8 +38,11 @@ public class RelationLink {
    private final int bArtifactId;
    private final Branch aBranch;
    private final Branch bBranch;
+   private ModificationType modificationType;
+   private static final boolean SET_DIRTY = true;
+   private static final boolean SET_NOT_DIRTY = false;
 
-   public RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder) {
+   public RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -48,17 +51,21 @@ public class RelationLink {
          this.aOrder = aOrder;
          this.bOrder = bOrder;
       }
-      this.deleted = false;
       this.dirty = false;
       this.aArtifactId = aArtifactId;
       this.bArtifactId = bArtifactId;
       this.aBranch = aBranch;
       this.bBranch = bBranch;
+      this.modificationType = modificationType;
    }
 
-   public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale) {
+   /**
+    * This constructor creates new relations that does not already exist in the data store.
+    * @param modificationType TODO
+    */
+   public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
       this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
-            0, rationale, 0, 0);
+            0, rationale, 0, 0, modificationType);
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -107,7 +114,7 @@ public class RelationLink {
     * @return Returns the deleted.
     */
    public boolean isDeleted() {
-      return deleted;
+      return modificationType.isDeleted();
    }
 
    /**
@@ -118,34 +125,32 @@ public class RelationLink {
    }
 
    public void delete(boolean reorderRelations) throws ArtifactDoesNotExist {
+      internalDelete(reorderRelations, true);
+   }
+
+   public void internalRemoteEventDelete() throws ArtifactDoesNotExist {
       internalDelete(true, false);
    }
 
-   public void deleteWithoutDirtyAndEvent() throws ArtifactDoesNotExist {
-      internalDelete(true, true);
-   }
-
-   private void internalDelete(boolean reorderRelations, boolean markAsNotDirty) {
-      if (!deleted) {
+   private void internalDelete(boolean reorderRelations, boolean setDirty) {
+      if (!isDeleted()) {
          Artifact aArt = null;
          Artifact bArt = null;
          if (reorderRelations) {
             aArt = preloadArtifactForDelete(RelationSide.SIDE_A);
             bArt = preloadArtifactForDelete(RelationSide.SIDE_B);
          }
-         markAsDeleted();
-         if (!markAsNotDirty) {
-            setDirty();
-         }
+
+         markAsDeleted(setDirty);
 
          if (aArt != null) {
-            RelationManager.setOrderValues(aArt, getRelationType(), RelationSide.SIDE_B, markAsNotDirty);
+            RelationManager.setOrderValues(aArt, getRelationType(), RelationSide.SIDE_B, setDirty);
          }
          if (bArt != null) {
-            RelationManager.setOrderValues(bArt, getRelationType(), RelationSide.SIDE_A, markAsNotDirty);
+            RelationManager.setOrderValues(bArt, getRelationType(), RelationSide.SIDE_A, setDirty);
          }
 
-         if (!markAsNotDirty) {
+         if (setDirty) {
             try {
                OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Deleted, this,
                      getABranch(), relationType.getTypeName());
@@ -167,12 +172,15 @@ public class RelationLink {
    }
 
    public void markAsDeleted() {
-      deleted = true;
+      markAsDeleted(SET_DIRTY);
+   }
+
+   private void markAsDeleted(boolean setDirty) {
+      markedAsChanged(ModificationType.DELETED, setDirty);
    }
 
    public void markAsPurged() {
-      markAsDeleted();
-      setNotDirty();
+      markAsDeleted(SET_NOT_DIRTY);
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws OseeCoreException {
@@ -216,7 +224,7 @@ public class RelationLink {
    public void setAOrder(int order) {
       if (aOrder != order) {
          aOrder = order;
-         setDirty();
+         markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
       }
    }
 
@@ -237,7 +245,7 @@ public class RelationLink {
    public void setBOrder(int order) {
       if (bOrder != order) {
          bOrder = order;
-         setDirty();
+         markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
       }
    }
 
@@ -259,7 +267,7 @@ public class RelationLink {
       if (this.rationale.equals(rationale)) return;
 
       this.rationale = rationale;
-      setDirty();
+      markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
 
       if (notify) {
          try {
@@ -371,15 +379,35 @@ public class RelationLink {
       return getBranch(RelationSide.SIDE_A);
    }
 
-   /**
-    * @param side
-    * @param order
-    */
    public void setOrder(RelationSide side, int order) {
       if (RelationSide.SIDE_A == side) {
          setAOrder(order);
       } else if (RelationSide.SIDE_B == side) {
          setBOrder(order);
       }
+   }
+
+   private void markedAsChanged(ModificationType modificationType, boolean setDirty) {
+      //Because deletes can reorder links and we want the final mod type to be the delete and not the modify.
+      if (modificationType != ModificationType.DELETED || modificationType != ModificationType.ARTIFACT_DELETED) {
+         this.modificationType = modificationType;
+      }
+
+      if (setDirty) {
+         setDirty();
+      }else{
+         setNotDirty();
+      }
+   }
+
+   /**
+    * @return the modificationType
+    */
+   public ModificationType getModificationType() {
+      return modificationType;
+   }
+
+   public void setArtifactDeleted() {
+      markedAsChanged(ModificationType.ARTIFACT_DELETED, SET_DIRTY);
    }
 }

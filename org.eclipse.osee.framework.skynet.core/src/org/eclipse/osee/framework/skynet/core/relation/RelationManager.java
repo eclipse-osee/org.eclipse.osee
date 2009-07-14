@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
@@ -499,7 +500,7 @@ public class RelationManager {
 
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-         relation = new RelationLink(artifactA, artifactB, relationType, rationale);
+         relation = new RelationLink(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
 
          setDefaultRelationOrder(relation, artifactA, artifactB);
@@ -641,7 +642,7 @@ public class RelationManager {
             getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
-         relation = new RelationLink(artifactA, artifactB, relationType, rationale);
+         relation = new RelationLink(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
 
          setDefaultRelationOrder(relation, artifactA, artifactB);

@@ -502,7 +502,7 @@ public class RemoteEventManager {
                               }
                               ModificationType modificationType = skynetAttributeChange.getModificationType();
                               if (modificationType.isDeleted()) {
-                                 attribute.setModificationType(modificationType);
+                                 attribute.internalSetModificationType(modificationType);
                               } else {
                                  attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
                               }
@@ -534,7 +534,7 @@ public class RemoteEventManager {
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
                   if (!InternalEventManager.enableRemoteEventLoopback) {
-                     artifact.setDeleted();
+                     artifact.internalSetDeleted();
                   }
 
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
@@ -644,7 +644,7 @@ public class RemoteEventManager {
                         RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                               event.getArtAId(), event.getArtBId(), branch, branch);
                   if (relation != null) {
-                     relation.deleteWithoutDirtyAndEvent();
+                     relation.internalRemoteEventDelete();
 
                      xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, relation,
                            relation.getBranch(), relation.getRelationType().getTypeName()));
@@ -660,7 +660,7 @@ public class RemoteEventManager {
                                  event.getRelId(), event.getGammaId(),
                                  ((NetworkNewRelationLinkEvent) event).getRationale(),
                                  ((NetworkNewRelationLinkEvent) event).getAOrder(),
-                                 ((NetworkNewRelationLinkEvent) event).getBOrder());
+                                 ((NetworkNewRelationLinkEvent) event).getBOrder(), ModificationType.NEW);
                      RelationManager.manageRelation(relation, RelationSide.SIDE_A);
                      RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                      if (bArtifactLoaded) {

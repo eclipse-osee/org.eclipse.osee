@@ -405,7 +405,7 @@ public final class ArtifactLoader {
 
                relation =
                      new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                           rationale, aOrderValue, bOrderValue);
+                           rationale, aOrderValue, bOrderValue, ModificationType.getMod(chStmt.getInt("mod_type")));
 
             }
             RelationManager.manageRelation(relation, RelationSide.SIDE_A);

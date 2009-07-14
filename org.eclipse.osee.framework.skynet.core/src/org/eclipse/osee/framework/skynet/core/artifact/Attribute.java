@@ -266,9 +266,6 @@ public abstract class Attribute<T> {
       markAsChanged(ModificationType.DELETED);
    }
 
-   /**
-    * @return the modificationType Warning ... This is only currently being set for delete and artifact deleted.
-    */
    public ModificationType getModificationType() {
       return modificationType;
    }
@@ -339,7 +336,7 @@ public abstract class Attribute<T> {
    /**
     * @param modificationType the modificationType to set
     */
-   public void setModificationType(ModificationType modificationType) {
+   public void internalSetModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
    }
 }
