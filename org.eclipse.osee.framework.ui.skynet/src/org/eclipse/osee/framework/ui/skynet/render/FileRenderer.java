@@ -194,12 +194,6 @@ public abstract class FileRenderer extends FileSystemRenderer {
          super(time, unit);
       }
 
-      private synchronized void setLastModified(File file, Long value) {
-         if (filesToWatch.containsKey(file)) {
-            filesToWatch.put(file, value);
-         }
-      }
-
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.skynet.core.utility.FileWatcher#run()
        */
@@ -229,9 +223,6 @@ public abstract class FileRenderer extends FileSystemRenderer {
                         if (event.getResult().isOK()) {
                            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                                  "Updated artifact linked to: " + file.getAbsolutePath());
-                        } else {
-                           // There was an error during saving set last modified back so next time we try again
-                           setLastModified(file, storedLastModified);
                         }
                      }
                   });
