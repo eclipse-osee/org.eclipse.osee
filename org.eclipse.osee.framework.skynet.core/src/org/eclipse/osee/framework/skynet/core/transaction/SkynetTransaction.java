@@ -355,7 +355,9 @@ public class SkynetTransaction extends DbTransaction {
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
-      BranchManager.setBranchState(connection, branch, BranchState.MODIFIED);
+      if (branch.getBranchState() == BranchState.CREATED) {
+         BranchManager.setBranchState(connection, branch, BranchState.MODIFIED);
+      }
    }
 
    /* (non-Javadoc)
