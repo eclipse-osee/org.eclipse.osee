@@ -104,7 +104,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    // TODO This method will need to be removed
    public XWidget getXWidget() {
       if (xWidget == null) {
-         xWidget = xWidgetFactory.createXWidget(xWidgetName, name, this);
+         xWidget = xWidgetFactory.createXWidget(this);
       }
       return xWidget;
    }

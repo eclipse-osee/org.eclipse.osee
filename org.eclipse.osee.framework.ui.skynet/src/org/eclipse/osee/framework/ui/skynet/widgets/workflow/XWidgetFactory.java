@@ -79,10 +79,8 @@ public class XWidgetFactory {
    }
 
    public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) {
-      return createXWidget(xWidgetLayoutData.getXWidgetName(), xWidgetLayoutData.getName(), xWidgetLayoutData);
-   }
-
-   public XWidget createXWidget(String xWidgetName, String name, DynamicXWidgetLayoutData xWidgetLayoutData) {
+      String xWidgetName = xWidgetLayoutData.getXWidgetName();
+      String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;
 
       // Look for widget provider to create widget

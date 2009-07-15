@@ -113,7 +113,7 @@ public class XCombo extends XWidget {
 
       dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL);
       dataCombo.setItems(displayArray);
-      dataCombo.setVisibleItemCount(Math.min(displayArray.length, 25));
+      dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));
 
       gd = new GridData();
       if (fillHorizontally) gd.grabExcessHorizontalSpace = true;

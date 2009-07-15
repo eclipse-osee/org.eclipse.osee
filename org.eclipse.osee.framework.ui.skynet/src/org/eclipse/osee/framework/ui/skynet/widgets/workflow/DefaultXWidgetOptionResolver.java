@@ -24,7 +24,8 @@ public class DefaultXWidgetOptionResolver implements IXWidgetOptionResolver {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWidgetOptionResolver#getWidgetOptions(java.lang.String)
     */
    public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
-      Matcher m = Pattern.compile("\\((.*?)\\)").matcher(xWidgetData.getXWidgetName());
+      Matcher m = Pattern.compile("\\((.*?)\\)$").matcher(xWidgetData.getXWidgetName());
+
       if (m.find()) {
          String data = m.group(1);
          return data.split(",");
