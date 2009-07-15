@@ -50,7 +50,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
     */
    public void writeRow(String... row) throws IOException {
       for (int i = 0; i < row.length; i++) {
-         writeCell(row[i], i);
+         writeCell(row[i]);
       }
 
       endRow();
