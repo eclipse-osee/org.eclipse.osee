@@ -335,6 +335,19 @@ public class ArtifactQuery {
    }
 
    /**
+    * search for artifacts by relation
+    * 
+    * @param artifactId
+    * @param branch
+    * @param criteria
+    * @return a collection of the artifacts found or an empty collection if none are found
+    */
+   public static List<Artifact> getArtifactListFromRelation(RelationType relationType, RelationSide relationSide, Branch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, false, new RelationCriteria(relationType, relationSide)).getArtifacts(
+            1000, null);
+   }
+
+   /**
     * search for artifacts of the given type with an attribute of the given type and value
     * 
     * @param artifactTypeName
@@ -462,4 +475,5 @@ public class ArtifactQuery {
 
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
    public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
+
 }
