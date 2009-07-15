@@ -111,13 +111,10 @@ public class XCombo extends XWidget {
          }
       }
 
-      dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+      dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL);
       dataCombo.setItems(displayArray);
-      if (displayArray.length < 15) {
-         dataCombo.setVisibleItemCount(displayArray.length);
-      } else {
-         dataCombo.setVisibleItemCount(25);
-      }
+      dataCombo.setVisibleItemCount(Math.min(displayArray.length, 25));
+
       gd = new GridData();
       if (fillHorizontally) gd.grabExcessHorizontalSpace = true;
       if (fillVertically) gd.grabExcessVerticalSpace = true;
