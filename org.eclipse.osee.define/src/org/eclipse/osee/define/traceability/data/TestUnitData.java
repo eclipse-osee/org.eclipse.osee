@@ -82,6 +82,8 @@ public class TestUnitData extends BaseTraceDataCache {
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch().getBranchShortName()));
          testProcedures.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_PROCEDURE, getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType("Test Procedure WML", getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType("Test Procedure XL", getBranch()));
          populateTraceMap(monitor, testProcedures, testProcedureMap);
          subMonitor.worked(20);
       }
