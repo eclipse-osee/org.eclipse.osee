@@ -69,6 +69,7 @@ public final class BranchData implements Cloneable {
       return DataToSql.toDataArray(metadata, backingData);
    }
 
+   @Override
    public BranchData clone() {
       BranchData clone = new BranchData();
       for (String key : this.backingData.keySet()) {
@@ -90,16 +91,22 @@ public final class BranchData implements Cloneable {
     */
    @Override
    public boolean equals(Object obj) {
-      if (obj == this) return true;
-      if (!(obj instanceof BranchData)) return false;
+      if (obj == this) {
+         return true;
+      }
+      if (!(obj instanceof BranchData)) {
+         return false;
+      }
       BranchData other = (BranchData) obj;
       boolean keysMatch = Collections.setComplement(this.backingData.keySet(), other.backingData.keySet()).isEmpty();
-      if (!keysMatch) return false;
+      if (!keysMatch) {
+         return false;
+      }
       boolean valuesMatch = true;
       for (String key : this.backingData.keySet()) {
          Object obj1 = this.backingData.get(key);
          Object obj2 = other.backingData.get(key);
-         if (obj1 == null && obj2 != null || obj1 != null && obj2 == null || (obj1 != null && obj2 != null && !obj1.equals(obj2))) {
+         if (obj1 == null && obj2 != null || obj1 != null && obj2 == null || obj1 != null && obj2 != null && !obj1.equals(obj2)) {
             valuesMatch = false;
             break;
          }
@@ -124,6 +131,6 @@ public final class BranchData implements Cloneable {
    }
 
    public void setBranchType(BranchType branchType) {
-      this.backingData.put(BRANCH_TYPE, branchType.ordinal());
+      this.backingData.put(BRANCH_TYPE, branchType.getValue());
    }
 }
