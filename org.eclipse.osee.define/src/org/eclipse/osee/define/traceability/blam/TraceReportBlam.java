@@ -214,7 +214,7 @@ public class TraceReportBlam extends AbstractBlam {
             executeReports(subMonitor, reports);
          }
          subMonitor = new SubProgressMonitor(monitor, TASK_WORK);
-         displayReports(subMonitor, writer, excelInputStream);
+         displayReports(subMonitor, writer, excelInputStream, output);
       } finally {
          try {
             for (AbstractArtifactRelationReport report : reports.values()) {
@@ -251,19 +251,27 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void displayReports(IProgressMonitor monitor, ISheetWriter writer, InputStream inputStream) throws IOException, OseeCoreException {
+   private void displayReports(IProgressMonitor monitor, ISheetWriter excelWriter, CharBackedInputStream excelInputStream, OutputType outputType) throws IOException, OseeCoreException {
       try {
-         boolean wasEmpty = resultsTabs.isEmpty();
-         monitor.beginTask("Open Reports", !wasEmpty ? (inputStream != null ? 2 : 1) : 1);
-         if (wasEmpty) {
+         boolean wasEmpty = resultsTabs == null || resultsTabs.isEmpty();
+         monitor.beginTask("Open Reports", 2);
+         boolean createReport = true;
+         boolean excelValid = excelInputStream != null && excelInputStream.available() > 0;
+
+         if (wasEmpty && !excelValid) {
             resultsTabs.add(new ResultsEditorHtmlTab(getName(), getName(), "Nothing Reported"));
+            createReport = false;
          }
-         if (inputStream != null && writer != null) {
-            writer.endWorkbook();
-            openExcel(inputStream);
-            monitor.worked(1);
-         }
+
          openReport(resultsTabs);
+         monitor.worked(1);
+
+         if (createReport) {
+            if (excelWriter != null && isExcelOutput(outputType)) {
+               excelWriter.endWorkbook();
+               openExcel(excelInputStream);
+            }
+         }
          monitor.worked(1);
       } finally {
          monitor.done();
