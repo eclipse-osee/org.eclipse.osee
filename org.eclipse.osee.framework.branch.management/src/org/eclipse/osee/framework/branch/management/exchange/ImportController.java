@@ -180,6 +180,7 @@ final class ImportController {
       initializeHandler(connection, handler, metadata);
       if (importSourceFile.getPriority() > 0) {
          boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+         cleanDataTable &= !doesSavePointExist(currentSavePoint);
          OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
                importSourceFile.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
          if (cleanDataTable) {
@@ -203,6 +204,7 @@ final class ImportController {
          currentSavePoint = item.getSource();
          if (!doesSavePointExist(currentSavePoint)) {
             DbTransaction importTx = new DbTransaction() {
+               @Override
                protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
                   process(handler, connection, item);
                   handler.store();
@@ -373,7 +375,7 @@ final class ImportController {
    }
 
    private final class SavePoint {
-      private String savePointName;
+      private final String savePointName;
       private List<Throwable> errors;
 
       public SavePoint(String name) {
