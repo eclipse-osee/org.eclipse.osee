@@ -61,6 +61,6 @@ public class LexicographicalRelationSort extends AbstractBlam {
    }
 
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("Util");
    }
 }
