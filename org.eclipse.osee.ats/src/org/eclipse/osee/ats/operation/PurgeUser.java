@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbTransaction;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -45,9 +44,9 @@ public class PurgeUser extends AbstractBlam {
    private static int numOfASideRelations = 0;
    private static int numOfBSideRelations = 0;
 
-   private static final String GET_AUTHORED_TRANSACTIONS = "select * from osee_tx_details where author=?";
-   private static final String GET_RELATIONS_ASIDE = "select * from osee_relation_link where a_art_id=?";
-   private static final String GET_RELATIONS_BSIDE = "select * from osee_relation_link where b_art_id=?";
+   private static final String GET_AUTHORED_TRANSACTIONS = "SELECT count(1) from osee_tx_details where author=?";
+   private static final String GET_RELATIONS_ASIDE = "SELECT count(1) from osee_relation_link where a_art_id=?";
+   private static final String GET_RELATIONS_BSIDE = "SELECT count(1) from osee_relation_link where b_art_id=?";
    private static final String UPDATE_AUTHORED_TRANSACTIONS = "update osee_tx_details set author=? where author=?";
    private static final String UPDATE_RELATIONS_ASIDE = "update osee_relation_link set a_art_id=? where a_art_id=?";
    private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
@@ -92,27 +91,28 @@ public class PurgeUser extends AbstractBlam {
                displayReport(mon, toUser, fromUser);
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            } finally {
+               numOfAuthoredTransactions = 0;
+               numOfASideRelations = 0;
+               numOfBSideRelations = 0;
             }
-
          };
       });
    }
 
    private void confirmDeletionOfArtifact(final OseeConnection connection, final User fromUser) throws OseeCoreException {
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Persist Confirnmation",
+      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Persist Confirmation",
             "Do you wish to delete the duplicate User?")) {
          deleteArtifact(connection, fromUser);
       }
    }
 
    private void findAndUpdateAuthoredTransactions(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      chStmt1.runPreparedQuery(GET_AUTHORED_TRANSACTIONS, new Object[] {fromUser.getArtId()});
-      while (chStmt1.next()) {
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, new Object[] {toUser.getArtId(),
-               fromUser.getArtId()});
-         numOfAuthoredTransactions++;
-      }
+      numOfAuthoredTransactions =
+            ConnectionHandler.runPreparedQueryFetchInt(-1, GET_AUTHORED_TRANSACTIONS,
+                  new Object[] {fromUser.getArtId()});
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void findAndUpdateRelations(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
@@ -121,23 +121,17 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void updateRelationA(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      chStmt1.runPreparedQuery(GET_RELATIONS_ASIDE, new Object[] {fromUser.getArtId()});
-      while (chStmt1.next()) {
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, new Object[] {toUser.getArtId(),
-               fromUser.getArtId()});
-         numOfASideRelations++;
-      }
+      numOfASideRelations =
+            ConnectionHandler.runPreparedQueryFetchInt(-1, GET_RELATIONS_ASIDE, new Object[] {fromUser.getArtId()});
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void updateRelationB(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      chStmt1.runPreparedQuery(GET_RELATIONS_BSIDE, new Object[] {fromUser.getArtId()});
-      while (chStmt1.next()) {
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, new Object[] {toUser.getArtId(),
-               fromUser.getArtId()});
-         numOfBSideRelations++;
-      }
+      numOfBSideRelations =
+            ConnectionHandler.runPreparedQueryFetchInt(-1, GET_RELATIONS_BSIDE, new Object[] {fromUser.getArtId()});
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, new Object[] {toUser.getArtId(),
+            fromUser.getArtId()});
    }
 
    private void deleteArtifact(OseeConnection connection, final User fromUser) throws OseeCoreException {
