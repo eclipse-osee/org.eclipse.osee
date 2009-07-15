@@ -97,7 +97,7 @@ public class ExchangeUtil {
          reader.setContentHandler(handler);
          reader.parse(new InputSource(inputStream));
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw new OseeWrappedException(String.format("Error reading: [%s]", fileToProcess), ex);
       } finally {
          if (inputStream != null) {
             try {
