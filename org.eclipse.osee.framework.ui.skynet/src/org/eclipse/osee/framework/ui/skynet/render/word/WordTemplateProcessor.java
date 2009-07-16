@@ -163,15 +163,10 @@ public class WordTemplateProcessor {
       } catch (CharacterCodingException ex) {
          throw new OseeWrappedException(ex);
       }
-      //         previousTemplateCopyIndex = 0;
 
-      if (outlineNumber == null) {
-         outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts);
-         this.outlineNumber = outlineNumber;
-      }
+      this.outlineNumber = outlineNumber == null? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
 
       template = wordMl.setHeadingNumbers(outlineNumber, template, outlineType);
-
       template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);
@@ -311,7 +306,6 @@ public class WordTemplateProcessor {
                nextParagraphNumber, outlineType, presentationType));
 
          wordMl.createHyperLinkDoc(subDocFileName);
-         // wordMl.createSubDoc(subDocFileName);
       } else {
          populateVariableMap(variableMap);
       }
@@ -330,7 +324,6 @@ public class WordTemplateProcessor {
 
    private void extractOutliningOptions(String artifactElement) {
       Matcher matcher = outlineElementsPattern.matcher(artifactElement);
-
       if (matcher.find()) {
          matcher = internalOutlineElementsPattern.matcher(matcher.group(4));
          outlining = true;
@@ -403,10 +396,12 @@ public class WordTemplateProcessor {
                }
             }
          } else {
+
             if (artifact.isAttributeTypeValid(attributeName)) {
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false,
                      presentationType, multipleArtifacts);
             }
+ 
          }
       }
 

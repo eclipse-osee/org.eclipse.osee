@@ -258,12 +258,16 @@ public class WordMLProducer extends Producer {
       String[] nextOutlineNumbers = nextOutlineNumber.split("\\.");
       Arrays.fill(outlineNumber, 0);
 
-      for (int i = 0; i < nextOutlineNumbers.length; i++) {
+      try {
+         for (int i = 0; i < nextOutlineNumbers.length; i++) {
 
-         outlineNumber[i + 1] = Integer.parseInt(nextOutlineNumbers[i]);
+            outlineNumber[i + 1] = Integer.parseInt(nextOutlineNumbers[i]);
+         }
+         outlineNumber[nextOutlineNumbers.length]--;
+         outlineLevel = nextOutlineNumbers.length - 1;
+      } catch (NumberFormatException ex) {
+         //Do nothing
       }
-      outlineNumber[nextOutlineNumbers.length]--;
-      outlineLevel = nextOutlineNumbers.length - 1;
    }
 
    /**
