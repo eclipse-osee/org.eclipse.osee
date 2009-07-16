@@ -382,7 +382,7 @@ public class ConflictTestManager {
       }
       if (sBranch == null) {
          for (Branch branch : BranchManager.getArchivedBranches()) {
-            if (branch.getBranchName().equals(SOURCE_BRANCH)) {
+            if (branch.getName().equals(SOURCE_BRANCH)) {
                sBranch = branch;
                break;
             }
@@ -394,7 +394,7 @@ public class ConflictTestManager {
       }
       if (dBranch == null) {
          for (Branch branch : BranchManager.getArchivedBranches()) {
-            if (branch.getBranchName().equals(DEST_BRANCH)) {
+            if (branch.getName().equals(DEST_BRANCH)) {
                dBranch = branch;
                break;
             }

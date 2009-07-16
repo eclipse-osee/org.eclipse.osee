@@ -79,7 +79,7 @@ public class FrameworkTestUtil {
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
             for (String branchName : branchNamesContain) {
-               if (workingBranch.getBranchName().contains(branchName)) {
+               if (workingBranch.getName().contains(branchName)) {
                   BranchManager.purgeBranchInJob(workingBranch);
                   TestUtil.sleep(2000);
                }
