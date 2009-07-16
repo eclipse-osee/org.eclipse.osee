@@ -187,12 +187,7 @@
 	</extension>
 	<extension id="PurgeTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeTransaction"/>
-	</extension>
-	
-		<extension id="SortRelationsByBranch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.SortRelationsByBranch"/>
-	</extension>
-	
+	</extension>	
 	<extension id="LoadAllArtifactsOnBranch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.LoadAllArtifactsOnBranch"/>
 	</extension>
