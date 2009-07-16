@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.List;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -21,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -55,7 +57,7 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget.setBranchOptions(BranchOptions.FAVORITES_FIRST, BranchOptions.FLAT);
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
       branchWidget.loadData();
-      
+
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
       gd.widthHint = 800;
@@ -75,6 +77,7 @@ public class BranchSelectionDialog extends MessageDialog {
           */
          @Override
          public void widgetSelected(SelectionEvent e) {
+            getButton(IDialogConstants.OK_ID).setEnabled(true);
             storeSelectedBranch();
          }
 
@@ -83,6 +86,15 @@ public class BranchSelectionDialog extends MessageDialog {
          }
       });
       return branchWidget.getControl();
+   }
+
+   protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
+      Button selectionButton = super.createButton(parent, id, label, defaultButton);
+      // default the ok button to disabled until the user selects a branch
+      if (id == IDialogConstants.OK_ID) {
+         selectionButton.setEnabled(false);
+      }
+      return selectionButton;
    }
 
    public Branch getSelected() {
