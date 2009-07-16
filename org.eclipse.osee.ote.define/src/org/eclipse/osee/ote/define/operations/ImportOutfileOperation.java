@@ -110,7 +110,7 @@ public class ImportOutfileOperation {
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {
       Map<Branch, List<Artifact>> commitMap = getArtifactsByBranch(items);
       for (Branch branch : commitMap.keySet()) {
-         monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getBranchName()));
+         monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          commitTestRunTx(monitor, commitComment, branch, artList.toArray(new Artifact[artList.size()]));
       }

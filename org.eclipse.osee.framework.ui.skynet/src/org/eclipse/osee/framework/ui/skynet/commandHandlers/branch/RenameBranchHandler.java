@@ -90,7 +90,7 @@ public class RenameBranchHandler extends CommandHandler {
             oldEditor.dispose();
          }
          final Text textBeingRenamed = new Text(tree, SWT.BORDER);
-         textBeingRenamed.setText(selectedBranch.getBranchName());
+         textBeingRenamed.setText(selectedBranch.getName());
 
          textBeingRenamed.addFocusListener(new FocusAdapter() {
             @Override
@@ -124,7 +124,7 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    private void updateText(String newLabel, Branch selectedBranch) {
-      selectedBranch.setBranchName(newLabel);
+      selectedBranch.setName(newLabel);
       try {
          selectedBranch.rename(newLabel);
       } catch (Exception ex) {

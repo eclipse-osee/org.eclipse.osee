@@ -101,9 +101,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
          if (element instanceof VersionArtifact) {
-            return (branch == null ? "Parent Branch Not Configured for Version [" + (element) + "]" : branch.getBranchShortName());
+            return (branch == null ? "Parent Branch Not Configured for Version [" + (element) + "]" : branch.getShortName());
          } else if (element instanceof TeamDefinitionArtifact) {
-            return (branch == null ? "Parent Branch Not Configured for Team Definition [" + (element) + "]" : branch.getBranchShortName());
+            return (branch == null ? "Parent Branch Not Configured for Team Definition [" + (element) + "]" : branch.getShortName());
          }
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          CommitStatus commitStatus =

@@ -98,7 +98,7 @@ public class CommitIntoCompoundContributionItem extends CompoundContributionItem
       parameters.put(BranchView.BRANCH_ID, String.valueOf(branch.getBranchId()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "false");
       CommandContributionItem contributionItem;
-      String label = branch.getBranchName();
+      String label = branch.getName();
 
       contributionItem =
             new CommandContributionItem(new CommandContributionItemParameter(

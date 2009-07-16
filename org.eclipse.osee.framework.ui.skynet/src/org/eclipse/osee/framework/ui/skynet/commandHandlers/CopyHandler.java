@@ -61,7 +61,7 @@ public class CopyHandler extends AbstractHandler {
                }
 
                if (selectionObject instanceof Branch) {
-                  names.add(((Branch) selectionObject).getBranchName());
+                  names.add(((Branch) selectionObject).getName());
                } else if (selectionObject instanceof Artifact) {
                   Artifact artifact = (Artifact) selectionObject;
                   names.add(artifact.getName());

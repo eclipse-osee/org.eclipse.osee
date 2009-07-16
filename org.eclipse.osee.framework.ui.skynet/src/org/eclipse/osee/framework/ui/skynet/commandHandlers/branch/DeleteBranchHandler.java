@@ -38,7 +38,7 @@ public class DeleteBranchHandler extends CommandHandler {
 
       MessageDialog dialog =
             new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
-                  "Are you sure you want to delete the branch: " + selectedBranch.getBranchName(),
+                  "Are you sure you want to delete the branch: " + selectedBranch.getName(),
                   MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {

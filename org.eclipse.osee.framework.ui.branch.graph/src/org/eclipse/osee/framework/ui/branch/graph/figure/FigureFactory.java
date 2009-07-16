@@ -62,7 +62,7 @@ public class FigureFactory {
       Color fgcolor = GraphColorConstants.FONT_COLOR;
 
       Branch branch = branchModel.getBranch();
-      String branchName = branch.getBranchName();
+      String branchName = branch.getName();
       Image image = GraphImageConstants.getImage(branch);
 
       return new BranchFigure(branchName, image, createBranchNoteFigure(branchModel), bgcolor, fgcolor);
@@ -77,16 +77,16 @@ public class FigureFactory {
    public static IFigure createTxNoteFigure(TxModel txModel) {
       TxData txData = txModel.getTxData();
       Branch branch = txData.getBranch();
-      String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getBranchShortName());
-      return createNoteFigure(title, branch.getBranchName(), txData.getAuthor(), txData.getTimeStamp(),
+      String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getShortName());
+      return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(),
             txData.getComment());
    }
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
       Branch branch = branchModel.getBranch();
       String title =
-            String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getBranchShortName());
-      return createNoteFigure(title, branch.getBranchName(), branchModel.getFirstTx().getTxData().getAuthor(),
+            String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
+      return createNoteFigure(title, branch.getName(), branchModel.getFirstTx().getTxData().getAuthor(),
             branch.getCreationDate(), branch.getCreationComment());
    }
 

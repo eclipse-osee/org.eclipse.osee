@@ -113,7 +113,7 @@ public class RelationChanged extends Change {
 
       if (bArtifact == null) {
          throw new ArtifactDoesNotExist(
-               "Artifact: " + bArtId + " Does not exist on branch: " + getBranch().getBranchName() + " branch id: " + getBranch().getBranchId());
+               "Artifact: " + bArtId + " Does not exist on branch: " + getBranch().getName() + " branch id: " + getBranch().getBranchId());
       }
 
       return bArtifact;

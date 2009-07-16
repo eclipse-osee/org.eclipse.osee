@@ -82,7 +82,7 @@ public class GroupListDialog extends ArtifactListDialog {
          if (obj instanceof Artifact) {
             Artifact art = (Artifact) obj;
             if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
-               return art.toString() + " (" + art.getBranch().getBranchShortName() + ")";
+               return art.toString() + " (" + art.getBranch().getShortName() + ")";
             }
             art.toString();
          }

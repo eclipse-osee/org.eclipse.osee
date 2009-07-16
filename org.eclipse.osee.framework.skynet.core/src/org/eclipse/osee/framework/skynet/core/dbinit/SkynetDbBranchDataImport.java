@@ -58,7 +58,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
-            if (!branch.getBranchName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
+            if (!branch.getName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
                BranchManager.purgeBranchInJob(branch);
             }
          }

@@ -115,7 +115,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    @Override
    public String getReportData() {
       Branch branch = selectComposite.getSelectedBranch();
-      return branch != null ? branch.getBranchName() : "";
+      return branch != null ? branch.getName() : "";
    }
 
    /* (non-Javadoc)

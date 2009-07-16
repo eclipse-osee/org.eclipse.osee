@@ -68,7 +68,7 @@ public class BranchCreator {
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId = userToBlame == null ? UserManager.getUser(SystemUser.OseeSystem).getArtId() : userToBlame.getArtId();
       String comment =
-            NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
+            NEW_MERGE_BRANCH_COMMENT + parentBranch.getName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
             initializeBranch(connection, sourceTransactionId, childBranchName, userId, timestamp, comment,
@@ -186,8 +186,8 @@ public class BranchCreator {
          branchWithTransactionNumber =
                createMergeBranchWithBaselineTransactionNumber(connection, UserManager.getUser(),
                      TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
-                     "Merge " + sourceBranch.getBranchShortName() + " <=> " + destBranch.getBranchShortName(),
-                     "Merge " + sourceBranch.getBranchShortName() + " <=> " + destBranch.getBranchShortName(),
+                     "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName(),
+                     "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName(),
                      BranchType.MERGE, BranchState.CREATED, destBranch);
 
          List<Object[]> datas = new LinkedList<Object[]>();

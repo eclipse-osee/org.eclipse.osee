@@ -94,9 +94,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          StringBuilder stringBuilder = new StringBuilder();
          try {
             if (AccessControlManager.isOseeAdmin()) {
-               stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getBranchName());
+               stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getName());
             } else {
-               stringBuilder.append(branch.getBranchName());
+               stringBuilder.append(branch.getName());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -125,7 +125,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getBranchType().name();
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
          try {
-            return branch.getParentBranch().getBranchName();
+            return branch.getParentBranch().getName();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

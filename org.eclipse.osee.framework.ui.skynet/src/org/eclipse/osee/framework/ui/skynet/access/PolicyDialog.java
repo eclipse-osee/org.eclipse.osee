@@ -230,7 +230,7 @@ public class PolicyDialog extends Dialog {
       if (object instanceof Artifact) {
          name = ((Artifact) object).getName();
       } else if (object instanceof Branch) {
-         name = ((Branch) object).getBranchName();
+         name = ((Branch) object).getName();
       }
       return name;
    }

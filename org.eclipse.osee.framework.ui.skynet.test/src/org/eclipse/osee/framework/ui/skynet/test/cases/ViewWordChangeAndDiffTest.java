@@ -181,7 +181,7 @@ public class ViewWordChangeAndDiffTest {
             fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
          } else {
             fileName =
-                  baseArtifact != null ? baseArtifact.getBranch().getBranchShortName() : newerArtifact.getBranch().getBranchShortName();
+                  baseArtifact != null ? baseArtifact.getBranch().getShortName() : newerArtifact.getBranch().getShortName();
          }
          variableMap.setValue("fileName", fileName + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
       }

@@ -339,7 +339,7 @@ public class CommitDbTx extends DbTransaction {
          BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
          time = System.currentTimeMillis();
          if (DEBUG) {
-            System.out.println(String.format("   Set Merge Branch [%s] to closed in %s", mergeBranch.getBranchName(),
+            System.out.println(String.format("   Set Merge Branch [%s] to closed in %s", mergeBranch.getName(),
                   Lib.getElapseString(time)));
          }
       }
@@ -418,7 +418,7 @@ public class CommitDbTx extends DbTransaction {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      String comment = BranchManager.COMMIT_COMMENT + childBranch.getBranchName();
+      String comment = BranchManager.COMMIT_COMMENT + childBranch.getName();
       int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(connection, COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
             parentBranch.getBranchId(), newTransactionNumber, comment, timestamp, authorId,

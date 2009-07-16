@@ -652,7 +652,7 @@ public class AtsBranchManager {
          if (popup && !MessageDialog.openConfirm(
                Display.getCurrent().getActiveShell(),
                "Create Working Branch",
-               "Create a working branch from parent branch\n\n\"" + parentBranch.getBranchName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+               "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
             return Result.FalseResult;
          }
          createWorkingBranch(pageId, parentBranch);

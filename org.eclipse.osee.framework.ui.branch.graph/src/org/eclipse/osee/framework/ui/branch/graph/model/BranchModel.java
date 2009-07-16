@@ -184,7 +184,7 @@ public class BranchModel extends Node implements Serializable {
     */
    @Override
    public String toString() {
-      return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getBranchName(),
+      return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getName(),
             branch.getBranchType().name(), children.size(), txs.size());
    }
 

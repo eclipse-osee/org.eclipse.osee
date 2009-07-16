@@ -101,7 +101,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             "Branch's and Transaction ID can't be null");
       if (DEBUG && sourceBranch != null && destBranch != null) {
          System.out.println(String.format("Openeing Merge View with Source Branch: %s and Destination Branch: %s",
-               sourceBranch.getBranchName(), destBranch.getBranchName()));
+               sourceBranch.getName(), destBranch.getName()));
       }
       openViewUpon(sourceBranch, destBranch, tranId, null, true);
    }
@@ -590,7 +590,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       try {
          xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
          if (sourceBranch != null) {
-            setPartName("Merge Manager: " + sourceBranch.getBranchShortName() + " <=> " + destBranch.getBranchShortName());
+            setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
          } else if (commitTrans != null) {
             setPartName("Merge Manager: " + commitTrans.getTransactionNumber());
          } else {

@@ -122,7 +122,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getBranchShortName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getShortName() + "\"");
 
          HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
@@ -146,7 +146,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                            XResultData.getHyperlink(assocArt), assocArt.getName()}));
                   } else {
-                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
+                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getName()}));
                   }
                   workingBranchesFound = true;
                }

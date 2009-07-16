@@ -97,9 +97,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    /**
-    * @return Returns the branchName.
+    * @return Returns the full branchName.
     */
-   public String getBranchName() {
+   public String getName() {
       return branchName;
    }
 
@@ -108,18 +108,15 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * 
     * @param branchName The branchName to set.
     */
-   public void setBranchName(String branchName) {
-      if (branchName == null) {
-         throw new IllegalArgumentException("The branchName parameter can not be null.");
-      }
+   public void setName(String branchName) {
       this.branchName = branchName;
    }
 
    /**
     * @return Returns the short branch name if provided else returns null.
     */
-   public String getBranchShortName() {
-      return Strings.isValid(getBranchName()) ? StringFormat.truncate(getBranchName(), SHORT_NAME_LIMIT) : Strings.emptyString();
+   public String getShortName() {
+      return Strings.isValid(getName()) ? StringFormat.truncate(getName(), SHORT_NAME_LIMIT) : Strings.emptyString();
    }
 
    private void kickRenameEvents() throws OseeCoreException {
@@ -132,7 +129,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @param branchName The branchName to set.
     */
    public void rename(String branchName) throws OseeCoreException {
-      setBranchName(branchName);
+      setName(branchName);
       ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET branch_name = ? WHERE branch_id = ?", branchName,
             branchId);
       kickRenameEvents();
@@ -159,7 +156,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    @Override
    public String toString() {
-      return getBranchName();
+      return getName();
    }
 
    public Branch getParentBranch() throws OseeCoreException {
@@ -292,7 +289,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @see java.lang.Comparable#compareTo(T)
     */
    public int compareTo(Branch branch) {
-      return getBranchName().compareToIgnoreCase(branch.getBranchName());
+      return getName().compareToIgnoreCase(branch.getName());
    }
 
    /**
@@ -365,7 +362,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public String asFolderName() {
-      String branchName = this.getBranchShortName();
+      String branchName = this.getShortName();
 
       // Remove illegal filename characters
       // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name

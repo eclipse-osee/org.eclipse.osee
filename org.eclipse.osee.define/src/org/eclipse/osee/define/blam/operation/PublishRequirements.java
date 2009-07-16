@@ -161,7 +161,7 @@ public class PublishRequirements extends AbstractBlam {
       }
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getBranchName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }

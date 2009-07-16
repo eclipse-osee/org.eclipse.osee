@@ -261,7 +261,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
                         } else {
                            String infoLabel =
                                  String.format("History: %s on branch: %s", artifact.getName(),
-                                       artifact.getBranch().getBranchShortName());
+                                       artifact.getBranch().getShortName());
                            extraInfoLabel.setText(infoLabel);
                            xHistoryViewer.setInput(historyItems);
                         }

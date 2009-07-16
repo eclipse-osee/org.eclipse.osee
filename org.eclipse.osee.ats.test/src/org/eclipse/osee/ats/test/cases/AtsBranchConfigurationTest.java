@@ -375,7 +375,7 @@ public class AtsBranchConfigurationTest {
          // delete working branches
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
-            if (workingBranch.getBranchName().contains(testType.name())) {
+            if (workingBranch.getName().contains(testType.name())) {
                BranchManager.purgeBranchInJob(workingBranch);
                TestUtil.sleep(2000);
             }

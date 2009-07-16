@@ -200,7 +200,7 @@ public class BranchManager {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = null;
       for (Branch branch : instance.branchCache.values()) {
-         if (branch.getBranchName().equals(branchName)) {
+         if (branch.getName().equals(branchName)) {
             if (branches == null) {
                branches = new ArrayList<Branch>();
             }
@@ -232,7 +232,7 @@ public class BranchManager {
                   cachedBranch = initializeBranchObject(chStmt);
                   branchCache.put(cachedBranch.getBranchId(), cachedBranch);
                } else {
-                  cachedBranch.setBranchName(chStmt.getString("branch_name"));
+                  cachedBranch.setName(chStmt.getString("branch_name"));
                   cachedBranch.setArchived(chStmt.getInt("archived") == 1);
                   cachedBranch.setBranchType(chStmt.getInt("branch_type"));
                }

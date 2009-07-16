@@ -72,7 +72,7 @@ public class HttpBranchCreation {
          creationComment = String.format("Root Branch [%s] Creation", branchName);
       } else {
          Branch parentBranch = BranchManager.getBranch(parentBranchId);
-         creationComment = "New Branch from " + parentBranch.getBranchName() + "(" + parentTransactionNumber + ")";
+         creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
       }
       parameters.put("creationComment", creationComment);
 

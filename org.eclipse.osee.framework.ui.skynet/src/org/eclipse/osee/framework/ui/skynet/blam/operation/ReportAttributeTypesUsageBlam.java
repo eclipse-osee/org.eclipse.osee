@@ -38,7 +38,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
 
       XResultData xResultData = new XResultData();
       Branch branch = variableMap.getBranch("Branch");
-      xResultData.log(getName() + " " + branch.getBranchName());
+      xResultData.log(getName() + " " + branch.getName());
       xResultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       xResultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"AttributeType", "Occurances"}));
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
@@ -46,7 +46,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
       xResultData.addRaw(AHTML.endMultiColumnTable());
-      xResultData.report(getName() + " " + branch.getBranchName());
+      xResultData.report(getName() + " " + branch.getName());
    }
 
    @Override

@@ -81,7 +81,7 @@ public class CommitTestRunJob extends Job {
    private void commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
       Map<Branch, List<Artifact>> commitMap = getArtifactsByBranch(items);
       for (Branch branch : commitMap.keySet()) {
-         monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getBranchName()));
+         monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
          ImportOutfileOperation.commitTestRunTx(monitor, comment, branch, artList.toArray(new Artifact[artList.size()]));
       }

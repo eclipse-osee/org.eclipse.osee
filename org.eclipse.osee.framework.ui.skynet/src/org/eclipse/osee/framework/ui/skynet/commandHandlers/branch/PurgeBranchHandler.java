@@ -38,7 +38,7 @@ public class PurgeBranchHandler extends CommandHandler {
 
       MessageDialog dialog =
             new MessageDialog(Display.getCurrent().getActiveShell(), "Purge Branch", null,
-                  "Are you sure you want to purge the branch: " + selectedBranch.getBranchName(),
+                  "Are you sure you want to purge the branch: " + selectedBranch.getName(),
                   MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {

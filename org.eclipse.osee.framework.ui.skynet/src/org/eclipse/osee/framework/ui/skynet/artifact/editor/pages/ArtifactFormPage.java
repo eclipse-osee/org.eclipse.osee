@@ -161,7 +161,7 @@ public class ArtifactFormPage extends FormPage {
       Artifact artifact = getEditor().getEditorInput().getArtifact();
       String description =
             String.format("<form><p><b>Branch:</b> %s <b>Type:</b> %s <b>HRID:</b> %s</p></form>",
-                  artifact.getBranch().getBranchShortName(), artifact.getArtifactTypeName(),
+                  artifact.getBranch().getShortName(), artifact.getArtifactTypeName(),
                   artifact.getHumanReadableId());
       return description;
    }

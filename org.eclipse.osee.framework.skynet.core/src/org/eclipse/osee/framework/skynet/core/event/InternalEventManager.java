@@ -230,7 +230,7 @@ public class InternalEventManager {
                      try {
                         branch = BranchManager.getBranch(branchId);
                         RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
-                              branch.getBranchName(), branch.getBranchShortName()));
+                              branch.getName(), branch.getShortName()));
                      } catch (Exception ex) {
                         // do nothing
                      }

@@ -33,7 +33,7 @@ public class BranchNameSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
 
-      return getComparator().compare(((Branch) o1).getBranchName(), ((Branch) o2).getBranchName());
+      return getComparator().compare(((Branch) o1).getName(), ((Branch) o2).getName());
    }
 
 }

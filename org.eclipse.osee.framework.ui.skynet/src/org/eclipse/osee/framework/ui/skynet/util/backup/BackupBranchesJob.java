@@ -78,8 +78,8 @@ public class BackupBranchesJob extends EmailableJob {
          rd.log(getName());
          rd.log("Starting OSEE DB Backup - " + XDate.getDateNow());
          for (Branch branch : branches) {
-            rd.log("Backing up \"" + branch.getBranchShortName() + "\" - " + XDate.getDateNow());
-            String backupName = StringFormat.truncate(branch.getBranchName(), 25);
+            rd.log("Backing up \"" + branch.getShortName() + "\" - " + XDate.getDateNow());
+            String backupName = StringFormat.truncate(branch.getName(), 25);
             backupName = backupName.replaceAll("\\W+", "_");
             File xmlFile =
                   new File(
@@ -97,11 +97,11 @@ public class BackupBranchesJob extends EmailableJob {
                //                  rd.logError(ex.getLocalizedMessage());
                //               }
             }
-            rd.log("Zipping up \"" + branch.getBranchShortName() + "\" - " + XDate.getDateNow());
+            rd.log("Zipping up \"" + branch.getShortName() + "\" - " + XDate.getDateNow());
             Zip.zip(new String[] {xmlFile.getAbsolutePath()}, xmlFile.getAbsolutePath().replaceFirst(".xml", ".zip"));
             // Delete backup file
             xmlFile.delete();
-            rd.log("Finished with \"" + branch.getBranchShortName() + "\" - " + XDate.getDateNow());
+            rd.log("Finished with \"" + branch.getShortName() + "\" - " + XDate.getDateNow());
          }
          rd.log("Completed - " + XDate.getDateNow());
          rd.report(getName());

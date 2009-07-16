@@ -57,7 +57,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       Branch sourceBranch = conflictManager.getSourceBranch();
       Branch destinationBranch = conflictManager.getDestinationBranch();
 
-      String originalBranchName = sourceBranch.getBranchName();
+      String originalBranchName = sourceBranch.getName();
       Artifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
       sourceBranch.rename(getUpdatedName(originalBranchName));
@@ -77,8 +77,8 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-            conflictManager.getSourceBranch().getBranchShortName(),
-            conflictManager.getDestinationBranch().getBranchShortName()));
+            conflictManager.getSourceBranch().getShortName(),
+            conflictManager.getDestinationBranch().getShortName()));
       return super.createErrorStatus(error);
    }
 

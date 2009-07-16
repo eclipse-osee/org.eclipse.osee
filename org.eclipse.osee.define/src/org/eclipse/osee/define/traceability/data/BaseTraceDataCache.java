@@ -46,7 +46,7 @@ public abstract class BaseTraceDataCache {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
          reset();
-         monitor.subTask(String.format("Loading %s from: [%s]", traceType, getBranch().getBranchShortName()));
+         monitor.subTask(String.format("Loading %s from: [%s]", traceType, getBranch().getShortName()));
 
          doBulkLoad(monitor);
 

@@ -71,7 +71,7 @@ public class DemoDbUtil {
 
    public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr, Branch branch) throws Exception {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getBranchName());
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromTypeAndName(artifactType, "%" + artifactNameStr + "%", branch);
 

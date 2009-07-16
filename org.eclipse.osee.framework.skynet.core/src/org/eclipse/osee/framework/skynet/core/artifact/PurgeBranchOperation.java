@@ -68,7 +68,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
     * @param branch
     */
    public PurgeBranchOperation(Branch branch) {
-      super(String.format("Purge Branch: [(%s)-%s]", branch.getBranchId(), branch.getBranchName()), Activator.PLUGIN_ID);
+      super(String.format("Purge Branch: [(%s)-%s]", branch.getBranchId(), branch.getName()), Activator.PLUGIN_ID);
       this.branch = branch;
    }
 

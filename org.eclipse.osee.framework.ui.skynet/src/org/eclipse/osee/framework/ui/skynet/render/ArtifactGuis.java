@@ -49,7 +49,7 @@ public class ArtifactGuis {
             sb.append("has");
          sb.append(" already been modified on the following branches:");
          for (Branch branch : otherBranches)
-            sb.append("\n\t" + branch.getBranchName());
+            sb.append("\n\t" + branch.getName());
          sb.append("\n\nDo you still want to proceed?");
 
          synchronized (sb) {

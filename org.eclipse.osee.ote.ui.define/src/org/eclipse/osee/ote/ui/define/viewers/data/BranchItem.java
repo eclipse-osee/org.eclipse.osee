@@ -34,7 +34,7 @@ public class BranchItem extends DataItem implements IXViewerItem {
     */
    @Override
    public String getData() {
-      return branch.getBranchName();
+      return branch.getName();
    }
 
    public Image getImage() {

@@ -121,7 +121,7 @@ public class BranchSelectComposite extends Composite implements Listener {
    public void setSelected(Branch branch) {
       if (branch != null) {
          selectedBranch = branch;
-         branchSelectTextWidget.setText(selectedBranch.getBranchName());
+         branchSelectTextWidget.setText(selectedBranch.getName());
       } else {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
       }

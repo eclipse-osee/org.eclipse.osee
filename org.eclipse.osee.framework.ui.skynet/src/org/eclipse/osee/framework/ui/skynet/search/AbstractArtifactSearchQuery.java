@@ -37,7 +37,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    public String getResultLabel() {
       String branch = "";
       if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
-         branch = " on Branch: \"" + aResult.getArtifactResults().get(0).getBranch().getBranchShortName() + "\"";
+         branch = " on Branch: \"" + aResult.getArtifactResults().get(0).getBranch().getShortName() + "\"";
       }
       return getCriteriaLabel() + " - " + (doneRunning ? (aResult.getMatchCount() + " matches" + branch) : "busy");
    }

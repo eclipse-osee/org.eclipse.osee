@@ -110,7 +110,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
       parameters.put(BranchView.BRANCH_ID, Integer.toString(branchId));
       CommandContributionItem contributionItem;
       String label =
-            branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getBranchName();
+            branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getName();
 
       contributionItem =
             new CommandContributionItem(new CommandContributionItemParameter(

@@ -45,7 +45,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
          EntryDialog ed =
                new EntryDialog(
                      "Set Associated Artifact",
-                     "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getBranchName() + "\"" + (selectedBranch.getAssociatedArtifact() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifact() : ""));
+                     "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifact() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifact() : ""));
          if (selectedBranch.getAssociatedArtifact() != null) ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
          if (ed.open() == 0) {
             String artId = ed.getEntry();
@@ -54,7 +54,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
             if (MessageDialog.openConfirm(
                   Display.getCurrent().getActiveShell(),
                   "Set Associated Artifact",
-                  "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getBranchName() + "\"\nto\nArtifact: " + associatedArtifact)) {
+                  "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
                selectedBranch.setAssociatedArtifact(associatedArtifact);
             }
          }

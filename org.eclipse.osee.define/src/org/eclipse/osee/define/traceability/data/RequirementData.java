@@ -63,7 +63,7 @@ public class RequirementData extends BaseTraceDataCache {
 
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
-               getBranch().getBranchShortName()));
+               getBranch().getShortName()));
          inDirectSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(Requirements.INDIRECT_SOFTWARE_REQUIREMENT,
                getBranch()));
          populateTraceMap(monitor, inDirectSwRequirements, indirectMap);

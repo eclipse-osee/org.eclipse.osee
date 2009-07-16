@@ -258,7 +258,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       xViewer.setContentProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassContentProvider(
             xViewer));
       xViewer.setLabelProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassLabelProvider(xViewer));
-      branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getBranchShortName()));
+      branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getShortName()));
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
 

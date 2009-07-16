@@ -161,7 +161,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    private String getWorkingBranchShortName() {
       if (getWorkingBranch() != null) {
-         return getWorkingBranch().getBranchShortName();
+         return getWorkingBranch().getShortName();
       }
       return "";
    }

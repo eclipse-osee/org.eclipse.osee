@@ -111,7 +111,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigArtifact commitConfigArt : teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
-            processTeam(teamArt, commitConfigArt.getParentBranch().getBranchShortName(), byAttribute, commitConfigArt,
+            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt,
                   rd);
          }
          x++;

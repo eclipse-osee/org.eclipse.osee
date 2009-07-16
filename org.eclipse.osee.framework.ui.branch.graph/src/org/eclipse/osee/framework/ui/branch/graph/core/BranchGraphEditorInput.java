@@ -44,7 +44,7 @@ public class BranchGraphEditorInput implements IEditorInput {
    }
 
    public String getName() {
-      return branch != null ? branch.getBranchName() : "Branch was Null";
+      return branch != null ? branch.getName() : "Branch was Null";
    }
 
    public IPersistableElement getPersistable() {

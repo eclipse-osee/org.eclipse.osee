@@ -62,13 +62,13 @@ public class UpdateBranchOperation extends AbstractOperation {
     */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
-      setStatusMessage(String.format("Error updating branch [%s]", originalBranch.getBranchShortName()));
+      setStatusMessage(String.format("Error updating branch [%s]", originalBranch.getShortName()));
       return super.createErrorStatus(error);
    }
 
    private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {
       Branch parentBranch = originalBranch.getParentBranch();
-      String branchUpdateName = getUpdatedName(originalBranch.getBranchName());
+      String branchUpdateName = getUpdatedName(originalBranch.getName());
       return BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
             UserManager.getUser(SystemUser.OseeSystem));
    }

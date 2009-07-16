@@ -472,7 +472,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       if (conflicts != null && conflicts.length != 0) {
          if (sourceBranch != null) {
             displayLabelText =
-                  "Source Branch :  " + sourceBranch.getBranchName() + "\nDestination Branch :  " + destBranch.getBranchName();
+                  "Source Branch :  " + sourceBranch.getName() + "\nDestination Branch :  " + destBranch.getName();
          } else {
             displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
          }
@@ -701,7 +701,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
                         ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getBranchId());
                   for (Integer integer : destBranches) {
                      if (integer.intValue() != destBranch.getBranchId()) {
-                        selections.add(BranchManager.getBranch(integer).getBranchName());
+                        selections.add(BranchManager.getBranch(integer).getName());
                         branchIds.add(integer);
                      }
                   }

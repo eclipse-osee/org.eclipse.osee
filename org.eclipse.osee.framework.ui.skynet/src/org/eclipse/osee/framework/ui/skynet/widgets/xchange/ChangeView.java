@@ -164,9 +164,9 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
          if (branch == null) {
             String comment = transactionId.getComment() != null ? " - " + transactionId.getComment() : "";
-            setPartName("Change Report: " + transactionId.getBranch().getBranchShortName() + comment);
+            setPartName("Change Report: " + transactionId.getBranch().getShortName() + comment);
          } else {
-            setPartName("Change Report: " + branch.getBranchShortName());
+            setPartName("Change Report: " + branch.getShortName());
          }
 
          xChangeWidget.setInputData(branch, transactionId, loadChangeReport);

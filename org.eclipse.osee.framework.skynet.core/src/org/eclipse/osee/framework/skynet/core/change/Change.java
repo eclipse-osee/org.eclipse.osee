@@ -133,7 +133,7 @@ public abstract class Change implements IAdaptable {
 
       if (artifact == null) {
          throw new ArtifactDoesNotExist(
-               "Artifact: " + artId + " Does not exist on branch: " + branch.getBranchName() + " branch id: " + branch.getBranchId());
+               "Artifact: " + artId + " Does not exist on branch: " + branch.getName() + " branch id: " + branch.getBranchId());
       }
       return artifact;
    }

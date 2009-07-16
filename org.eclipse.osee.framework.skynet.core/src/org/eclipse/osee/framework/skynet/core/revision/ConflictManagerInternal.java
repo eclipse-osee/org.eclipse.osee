@@ -420,7 +420,7 @@ public class ConflictManagerInternal {
             }
             if (transactionId == 0) {
                chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                     BranchManager.COMMIT_COMMENT + sourceBranch.getBranchName(), destBranch.getBranchId());
+                     BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getBranchId());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");
                }
@@ -463,7 +463,7 @@ public class ConflictManagerInternal {
       }
       if (commonBranch == null) {
          throw new OseeCoreException(String.format("Can not find a common ancestor for Branch %s and Branch %s",
-               sourceBranch.getBranchShortName(), destBranch.getBranchShortName()));
+               sourceBranch.getShortName(), destBranch.getShortName()));
       }
       int sourceTransaction = 0;
       int destTransaction = 0;

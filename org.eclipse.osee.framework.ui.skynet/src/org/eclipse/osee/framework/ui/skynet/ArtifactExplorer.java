@@ -680,7 +680,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format(
                            "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
-                           branch.getBranchName()));
+                           branch.getName()));
                   }
                }
 
@@ -993,7 +993,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
-      setPartName("Artifact Explorer: " + artifact.getBranch().getBranchShortName());
+      setPartName("Artifact Explorer: " + artifact.getBranch().getShortName());
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }

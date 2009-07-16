@@ -149,7 +149,7 @@ class CommitJobDialog extends UIJob {
                   CommitColumnEnum column = CommitColumnEnum.values()[columnIndex - DUMMY_COLUMNS];
                   switch (column) {
                      case Branch:
-                        toReturn = artifact.getBranch().getBranchName();
+                        toReturn = artifact.getBranch().getName();
                         break;
                      case Id:
                         try {

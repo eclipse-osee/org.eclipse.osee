@@ -93,7 +93,7 @@ public class UpdateBranchHandler extends CommandHandler {
          boolean isUpdateAllowed =
                MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                      "Update Branch", String.format("Are you sure you want to update [%s] branch",
-                           branchToUpdate.getBranchName()));
+                           branchToUpdate.getName()));
          if (isUpdateAllowed) {
             BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
          }

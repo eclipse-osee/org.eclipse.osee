@@ -181,13 +181,13 @@ public class MergeXViewer extends XViewer {
                   AttributeCompareItem leftContributionItem =
                         new AttributeCompareItem(
                               attributeConflict,
-                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getBranchName(),
+                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
                               attributeConflict.getAttribute().getDisplayableString(), true,
                               ImageManager.getImage(attributeConflict.getArtifact()));
                   AttributeCompareItem rightContributionItem =
                         new AttributeCompareItem(
                               attributeConflict,
-                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getBranchName(),
+                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
                               attributeConflict.getDestDisplayData(), false,
                               ImageManager.getImage(attributeConflict.getArtifact()));
 

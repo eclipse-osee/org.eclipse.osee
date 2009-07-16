@@ -108,8 +108,8 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
       String childBranch;
 
       try {
-         parentBranch = BranchManager.getBranch(parentBranchId).getBranchName();
-         childBranch = BranchManager.getBranch(childBranchId).getBranchName();
+         parentBranch = BranchManager.getBranch(parentBranchId).getName();
+         childBranch = BranchManager.getBranch(childBranchId).getName();
       } catch (Exception ex) {
          parentBranch = Integer.toString(parentBranchId);
          childBranch = Integer.toString(childBranchId);

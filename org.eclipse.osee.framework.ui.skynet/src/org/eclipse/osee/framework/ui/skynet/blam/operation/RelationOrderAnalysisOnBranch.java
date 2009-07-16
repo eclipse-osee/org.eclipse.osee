@@ -96,7 +96,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
       for (Branch branch : branchToArtifactsToSort.keySet()) {
          SkynetTransaction transaction = new SkynetTransaction(branch);
          print(String.format("We have %d artifacts that have unsorted relations on branch %s.",
-               branchToArtifactsToSort.get(branch).size(), branch.getBranchName()));
+               branchToArtifactsToSort.get(branch).size(), branch.getName()));
 
          Map<Integer, ArtifactOrder> artifactOrder = branchToArtifactsToSort.get(branch);
          for (Integer artId : artifactOrder.keySet()) {
@@ -155,7 +155,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
                   artifactsToSort.clear();
                }
 
-               Jobs.startJob(new Job(String.format("Analyizing %s for unsorted relations.", branch.getBranchName())) {
+               Jobs.startJob(new Job(String.format("Analyizing %s for unsorted relations.", branch.getName())) {
 
                   @Override
                   protected IStatus run(IProgressMonitor monitor) {
@@ -166,7 +166,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
                         OseeLog.unregisterLoggerListener(listener);
 
                         File branchReport =
-                              OseeData.getFile(String.format("relationOrder_%s.txt", branch.getBranchShortName()));
+                              OseeData.getFile(String.format("relationOrder_%s.txt", branch.getShortName()));
                         FileOutputStream fos = new FileOutputStream(branchReport);
                         for (String msg : messages) {
                            fos.write(msg.getBytes());
