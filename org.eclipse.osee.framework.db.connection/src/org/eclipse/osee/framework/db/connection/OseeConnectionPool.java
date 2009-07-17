@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 class OseeConnectionPool {
+   private static final int MAX_CONNECTIONS_PER_CLIENT = 8;
    private final List<OseeConnection> connections = new CopyOnWriteArrayList<OseeConnection>();
    private final String dbDriver;
    private final String dbUrl;
@@ -54,8 +55,6 @@ class OseeConnectionPool {
 
    synchronized void removeConnection(OseeConnection conn) {
       connections.remove(conn);
-      OseeLog.log(InternalActivator.class, Level.INFO, String.format(
-            "removeConnection - %s - connection pool size [%s]", dbUrl, connections.size()));
    }
 
    public synchronized OseeConnection getConnection() throws OseeDataStoreException {
@@ -65,11 +64,13 @@ class OseeConnectionPool {
          }
       }
 
+      if (connections.size() >= MAX_CONNECTIONS_PER_CLIENT) {
+         throw new OseeDataStoreException(
+               "This client has reached the maximum number of allowed simultaneous database connections of : " + MAX_CONNECTIONS_PER_CLIENT);
+      }
       try {
          OseeConnection connection = getOseeConnection();
          connections.add(connection);
-         OseeLog.log(InternalActivator.class, Level.INFO, String.format(
-               "getConnection - %s - connection pool size [%s]", dbUrl, connections.size()));
          return connection;
       } catch (Throwable th) {
          throw new OseeDataStoreException("Unable to get a database connection: ", th);
