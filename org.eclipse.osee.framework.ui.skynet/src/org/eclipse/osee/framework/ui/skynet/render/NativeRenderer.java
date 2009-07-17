@@ -67,8 +67,12 @@ public class NativeRenderer extends FileRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ((artifact.isOfType("Native") || artifact.isOfType("General Data")) && presentationType == PresentationType.SPECIALIZED_EDIT) {
-         return PRESENTATION_SUBTYPE_MATCH;
+      if ((artifact.isOfType("Native") || artifact.isOfType("General Data"))) {
+         switch (presentationType) {
+            case SPECIALIZED_EDIT:
+            case PREVIEW:
+               return PRESENTATION_SUBTYPE_MATCH;
+         }
       }
       return NO_MATCH;
    }

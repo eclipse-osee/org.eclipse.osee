@@ -116,7 +116,8 @@ public class RendererManager {
       if (bestRenderer instanceof FileRenderer) {
          return (FileRenderer) bestRenderer;
       }
-      throw new OseeArgumentException("No FileRenderer found for " + artifact);
+      throw new OseeArgumentException(
+            "No FileRenderer found for " + artifact + " of type " + artifact.getArtifactTypeName());
    }
 
    private static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
@@ -194,12 +195,12 @@ public class RendererManager {
          public IStatus run(IProgressMonitor monitor) throws Exception {
 
             if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
-            HashCollection<IRenderer, Artifact> rendererArtifactMap =
-                  createRenderMap(presentationType, artifacts, options);
+               HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                     createRenderMap(presentationType, artifacts, options);
 
-            for (IRenderer renderer : rendererArtifactMap.keySet()) {
-               renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
-            }
+               for (IRenderer renderer : rendererArtifactMap.keySet()) {
+                  renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+               }
             }
             return Status.OK_STATUS;
          }
