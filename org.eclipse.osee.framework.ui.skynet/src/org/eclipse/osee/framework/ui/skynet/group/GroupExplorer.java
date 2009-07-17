@@ -101,7 +101,9 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    @Override
    public void createPartControl(Composite parent) {
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         return;
+      }
 
       GridData gridData = new GridData();
       gridData.verticalAlignment = GridData.FILL;
@@ -346,8 +348,11 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          return;
       }
       String names = "";
-      for (GroupExplorerItem item : items)
-         if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getName());
+      for (GroupExplorerItem item : items) {
+         if (item.isUniversalGroup()) {
+            names += String.format("%s\n", item.getArtifact().getName());
+         }
+      }
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
          try {
@@ -384,7 +389,9 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    public GroupExplorerItem getSelectedItem() {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       Iterator<?> itemsIter = selection.iterator();
-      if (itemsIter.hasNext()) return (GroupExplorerItem) itemsIter.next();
+      if (itemsIter.hasNext()) {
+         return (GroupExplorerItem) itemsIter.next();
+      }
       return null;
    }
 
@@ -421,17 +428,25 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    }
 
    private boolean isOnlyGroupsSelected() {
-      if (getSelectedItems().size() == 0) return false;
+      if (getSelectedItems().size() == 0) {
+         return false;
+      }
       for (GroupExplorerItem item : getSelectedItems()) {
-         if (!item.isUniversalGroup()) return false;
+         if (!item.isUniversalGroup()) {
+            return false;
+         }
       }
       return true;
    }
 
    private boolean isOnlyGroupItemsSelected() {
-      if (getSelectedItems().size() == 0) return false;
+      if (getSelectedItems().size() == 0) {
+         return false;
+      }
       for (GroupExplorerItem item : getSelectedItems()) {
-         if (item.isUniversalGroup()) return false;
+         if (item.isUniversalGroup()) {
+            return false;
+         }
       }
       return true;
    }
@@ -459,10 +474,12 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       }
 
       Artifact topArt = null;
-      try {
-         topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      if (branch != null) {
+         try {
+            topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
       if (topArt == null) {
          rootArt = null;
@@ -473,7 +490,9 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          rootItem.getGroupItems();
       }
 
-      if (treeViewer != null) treeViewer.setInput(rootItem);
+      if (treeViewer != null) {
+         treeViewer.setInput(rootItem);
+      }
 
    }
 
@@ -497,7 +516,9 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) return;
+      if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) {
+         return;
+      }
       try {
          Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
          if (topArt != null) {

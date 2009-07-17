@@ -139,7 +139,6 @@ public class DatabaseHealth extends AbstractBlam {
             operation.setFixOperationEnabled(isFix);
             operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
-            setStatus(operation.getStatus());
 
             String detailedReport = operation.getDetailedReport().toString();
             if (Strings.isValid(detailedReport)) {

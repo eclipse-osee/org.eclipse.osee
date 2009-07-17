@@ -46,7 +46,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
-   
    public String getXWidgetsXml() {
       return AbstractBlam.branchXWidgetXml;
    }
@@ -59,6 +58,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public void setOutput(Appendable output) {
       this.output = output;
+   }
+
+   protected Appendable getOutput() {
+      return output;
    }
 
    public void print(String value) {
