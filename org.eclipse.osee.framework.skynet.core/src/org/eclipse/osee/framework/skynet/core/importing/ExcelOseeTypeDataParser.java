@@ -15,8 +15,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -55,7 +57,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    public ExcelOseeTypeDataParser(IOseeDataTypeProcessor dataTypeProcessor) throws SAXException, IOException {
       this.dataTypeProcessor = dataTypeProcessor;
       excelHandler = new ExcelSaxHandler(this, true, true);
-      superTypeMap = new HashCollection<String, String>();
+      superTypeMap = new HashCollection<String, String>(false, HashSet.class);
       validityArray = new ArrayList<ValidityRow>();
       attributeMapRows = new ArrayList<AttributeRow>();
 
@@ -70,9 +72,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    }
 
    private void ensureAllSuperTypesInheritFromArtifact() {
-      Collection<String> artifactSubTypes = superTypeMap.getValues("Artifact");
-      for (String typeName : superTypeMap.keySet()) {
-         if (!typeName.equals("Artifact") && !artifactSubTypes.contains(typeName)) {
+      Set<String> superTypes = new HashSet<String>(superTypeMap.keySet());
+      for (String typeName : superTypes) {
+         if (!typeName.equals("Artifact")) {
             superTypeMap.put("Artifact", typeName);
          }
       }
@@ -131,7 +133,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
     * @see osee.define.artifact.Import.RowProcessor#processHeaderRow(java.lang.String[])
     */
    public void processHeaderRow(String[] headerRow) {
-      if (done) return;
+      if (done) {
+         return;
+      }
       if (tableIterator.hasNext()) {
          currentTable = tableIterator.next();
       } else {
@@ -146,7 +150,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
     * @param row
     */
    public void processRow(String[] row) {
-      if (done) return;
+      if (done) {
+         return;
+      }
       try {
          switch (currentTable) {
             case ARTIFACT_TYPE_TABLE:
@@ -174,7 +180,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    }
 
    private void associateAttribute(String[] row) {
-      if (debugRows) System.out.println("   associateAttribute => " + row[0] + "," + row[1]);
+      if (debugRows) {
+         System.out.println("   associateAttribute => " + row[0] + "," + row[1]);
+      }
       attributeMapRows.add(new AttributeRow(row));
    }
 
@@ -183,7 +191,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
     * @throws Exception
     */
    private void addAttributeType(String[] row) throws Exception {
-      if (debugRows) System.out.println("   addAttributeType => " + row[0] + "," + row[1]);
+      if (debugRows) {
+         System.out.println("   addAttributeType => " + row[0] + "," + row[1]);
+      }
       String attrBaseType = row[0];
       String attrProviderType = row[1];
       String attributeName = row[2];
@@ -204,7 +214,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
     * @throws OseeCoreException
     */
    private void addRelationType(String[] row) throws Exception {
-      if (debugRows) System.out.println("   addRelationType => " + row[0] + "," + row[1]);
+      if (debugRows) {
+         System.out.println("   addRelationType => " + row[0] + "," + row[1]);
+      }
       String relationTypeName = row[0];
       String sideAName = row[1];
       String abPhrasing = row[2];
@@ -218,7 +230,9 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    }
 
    private void addArtifactType(String[] row) throws Exception {
-      if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
+      if (debugRows) {
+         System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
+      }
       String factoryClassName = row[0];
       String artifactTypeName = row[1];
       String superTypeName = row[2];
@@ -303,6 +317,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
          this.sideBmax = sideBmax;
       }
 
+      @Override
       public String toString() {
          return String.format("RelationType:[%s] ArtifactSuperType:[%s] Sides(A,B) - (%s, %s)", relationTypeName,
                artifactSuperTypeName, sideAmax, sideBmax);
@@ -310,8 +325,8 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    }
 
    private class AttributeRow {
-      private String artifactSuperTypeName;
-      private String attributeName;
+      private final String artifactSuperTypeName;
+      private final String attributeName;
 
       public AttributeRow(String[] row) {
          super();
