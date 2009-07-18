@@ -136,20 +136,17 @@ public class RevisionManager {
    public static Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws OseeCoreException {
       IArtifactNameDescriptorResolver resolver = new ArtifactNameDescriptorResolver(tData.getBranch());
 
-      return getTransactionChanges(OUTGOING, tData.getTransactionId(), tData.getTransactionId(),
-            tData.getAssociatedArtId(), resolver);
-   }
+      TransactionId fromTransactionId = tData.getTransactionId();
+      TransactionId toTransactionId = fromTransactionId;
 
-   @Deprecated
-   private static Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
       Collection<AttributeChange> attributeChanges =
-            getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
-                  toTransactionId.getTransactionNumber(), artId);
+            getAttributeChanges(OUTGOING, fromTransactionId.getTransactionNumber(),
+                  toTransactionId.getTransactionNumber(), tData.getAssociatedArtId());
       Collection<RelationLinkChange> linkChanges =
-            getRelationLinkChanges(changeType, fromTransactionId.getTransactionNumber(),
-                  toTransactionId.getTransactionNumber(), artId, artifactNameDescriptorResolver);
+            getRelationLinkChanges(OUTGOING, fromTransactionId.getTransactionNumber(),
+                  toTransactionId.getTransactionNumber(), tData.getAssociatedArtId(), resolver);
       Collection<ArtifactChange> artifactChanges =
-            getArtifactChanges(changeType, fromTransactionId, toTransactionId, artId);
+            getArtifactChanges(OUTGOING, fromTransactionId, toTransactionId, tData.getAssociatedArtId());
 
       Collection<RevisionChange> changes = new ArrayList<RevisionChange>(attributeChanges.size() + linkChanges.size());
       changes.addAll(attributeChanges);
@@ -242,17 +239,6 @@ public class RevisionManager {
       return changes;
    }
 
-   /**
-    * Produces <code>AttributeChange</code>'s from a ResultSet. <br/>
-    * <br/>
-    * For deleted attributes, the following columns must be available from the set: <li>gamma_id</li> <li>
-    * modification_id</li> <li>name</li> <br/>
-    * <br/>
-    * For new and modified attributes, the following columns must be available from the set: <li>gamma_id</li> <li>
-    * modification_id</li> <li>name</li> <li>value</li>
-    * 
-    * @author Robert A. Fisher
-    */
    private static class AttributeChangeProcessor implements RsetProcessor<AttributeChange> {
       private final ChangeType changeType;
 
@@ -283,17 +269,6 @@ public class RevisionManager {
       }
    }
 
-   /**
-    * Produces <code>RelationLinkChange</code>'s from a ResultSet. <br/>
-    * <br/>
-    * For deleted links, the following columns must be available from the set: <li>gamma_id</li> <li>modification_id</li>
-    * <li>type_name</li> <li>art_id</li> <br/>
-    * <br/>
-    * For new and modified attributes, the following columns must be available from the set: <li>gamma_id</li> <li>
-    * modification_id</li> <li>type_name</li> <li>art_id</li> <li>rationale</li> <li>order_val</li>
-    * 
-    * @author Robert A. Fisher
-    */
    private static class RelationLinkChangeProcessor implements RsetProcessor<RelationLinkChange> {
       private final IArtifactNameDescriptorResolver artifactNameDescriptorResolver;
       private final ChangeType changeType;
