@@ -101,9 +101,9 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Data Source"}));
       try {
          builder.append(AHTML.addRowMultiColumnTable(String.format(
-               "<b>Name:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s",
-               ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreDriver(),
-               ClientSessionManager.isProductionDataStore())));
+               "<b>Name:</b> %s<br/><b>Schema:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s",
+               ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName(),
+               ClientSessionManager.getDataStoreDriver(), ClientSessionManager.isProductionDataStore())));
       } catch (Exception ex) {
          builder.append(Lib.exceptionToString(ex));
       } finally {
