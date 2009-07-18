@@ -59,7 +59,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
             if (!branch.getName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
-               BranchManager.purgeBranchInJob(branch);
+               BranchManager.purgeBranch(branch);
             }
          }
 
@@ -136,8 +136,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    }
 
    private final class ImportData {
-      private File exchangeFile;
-      private Set<String> selectedBranches;
+      private final File exchangeFile;
+      private final Set<String> selectedBranches;
 
       public ImportData(File exchangeFile) {
          super();
@@ -149,6 +149,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
          this.selectedBranches.add(branchName);
       }
 
+      @Override
       public String toString() {
          return String.format("%s - %s", exchangeFile, selectedBranches);
       }
