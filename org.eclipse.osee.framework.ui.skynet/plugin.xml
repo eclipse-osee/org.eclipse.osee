@@ -86,6 +86,15 @@
           name="Configuration Details">
     </page>
  </extension>
+ 	<extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.DataSourceDetails"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.DataSourceServerPreferences"
+          name="Data Source Details">
+    </page>
+ </extension>
 	<extension
        point="org.eclipse.ui.preferencePages">
     <page

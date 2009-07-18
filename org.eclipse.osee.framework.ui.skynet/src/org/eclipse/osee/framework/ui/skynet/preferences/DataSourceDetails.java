@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.logging.IHealthStatus;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -32,7 +33,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * @author Roberto E. Escobar
  */
-public class ConfigurationDetails extends PreferencePage implements IWorkbenchPreferencePage {
+public class DataSourceDetails extends PreferencePage implements IWorkbenchPreferencePage {
    private static final String HTML_HEADER =
          "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">\n";
 
@@ -44,7 +45,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    private Browser browser;
 
-   public ConfigurationDetails() {
+   public DataSourceDetails() {
       super();
       this.browser = null;
    }
@@ -54,7 +55,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
     */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
-      setDescription("See below for OSEE configuration details.");
+      setDescription("See below for OSEE Data Source Details.");
    }
 
    /* (non-Javadoc)
@@ -72,7 +73,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       Group composite = new Group(content, SWT.NONE);
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      composite.setText("Connections");
+      composite.setText("Data Source(s)");
 
       browser = new Browser(composite, SWT.READ_ONLY | SWT.BORDER);
       browser.setLayout(new FillLayout());
@@ -88,24 +89,48 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    private void generatePage() {
       StringBuilder builder = new StringBuilder();
-      builder.append("<table class=\"oseeTable\" width=\"100%\">");
-      builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Info", "Status"}));
-
-      builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Version</b>", OseeCodeVersion.getVersion(),
-            "<font color=\"green\"><b>Ok</b></font>"));
-      for (IHealthStatus status : OseeLog.getStatus()) {
-         builder.append(AHTML.addRowMultiColumnTable(
-               "<b>" + status.getSourceName() + "</b>",
-               status.getMessage().replaceAll("]", "]<br/>"),
-               status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
-      }
-      builder.append(AHTML.addRowMultiColumnTable(
-            "<b>Remote Event Service</b>",
-            "",
-            RemoteEventManager.isConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
-
-      builder.append(AHTML.endMultiColumnTable());
+      builder.append(getDatabaseSourceInfo());
+      builder.append("<br/>");
+      builder.append(getDatabaseImportSource());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
    }
 
+   private String getDatabaseSourceInfo() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<table class=\"oseeTable\" width=\"100%\">");
+      builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Data Source"}));
+      try {
+         builder.append(AHTML.addRowMultiColumnTable(String.format(
+               "<b>Name:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s",
+               ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreDriver(),
+               ClientSessionManager.isProductionDataStore())));
+      } catch (Exception ex) {
+         builder.append(Lib.exceptionToString(ex));
+      } finally {
+         builder.append(AHTML.endMultiColumnTable());
+      }
+      return builder.toString();
+   }
+
+   private String getDatabaseImportSource() {
+      DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+      StringBuilder builder = new StringBuilder();
+      builder.append("<table class=\"oseeTable\" width=\"100%\">");
+      builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Source Id", "Exported On", "Imported On"}));
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery("select * from osee_import_source");
+         while (chStmt.next()) {
+            builder.append(AHTML.addRowMultiColumnTable(chStmt.getString("db_source_guid"),
+                  dateFormat.format(chStmt.getTimestamp("source_export_date")),
+                  dateFormat.format(chStmt.getTimestamp("date_imported"))));
+         }
+      } catch (Exception ex) {
+         builder.append(AHTML.addRowSpanMultiColumnTable(Lib.exceptionToString(ex), 3));
+      } finally {
+         builder.append(AHTML.endMultiColumnTable());
+         chStmt.close();
+      }
+      return builder.toString().replaceAll("\n", "<br/>");
+   }
 }
