@@ -64,6 +64,7 @@ plugin@org.eclipse.osee.framework.ui.service.control=SVN,url=https://dev.eclipse
 plugin@org.eclipse.osee.framework.ui.skynet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.ui.swt=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.ui.workspacebundleloader=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
+plugin@org.eclipse.osee.framework.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 
 feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 !plugin@org.eclipse.team.svn.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
