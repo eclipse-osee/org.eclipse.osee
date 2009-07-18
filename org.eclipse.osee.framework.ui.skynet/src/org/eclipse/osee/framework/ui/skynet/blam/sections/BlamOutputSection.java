@@ -52,7 +52,7 @@ public class BlamOutputSection extends BaseBlamSection {
       Section section = getSection();
       section.setText("Execute");
       section.setLayout(new GridLayout());
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
