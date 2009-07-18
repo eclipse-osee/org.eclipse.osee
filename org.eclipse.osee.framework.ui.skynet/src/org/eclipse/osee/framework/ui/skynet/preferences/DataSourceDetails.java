@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.OseeDatabaseId;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -101,9 +102,10 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Data Source"}));
       try {
          builder.append(AHTML.addRowMultiColumnTable(String.format(
-               "<b>Name:</b> %s<br/><b>Schema:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s",
+               "<b>Name:</b> %s<br/><b>Schema:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s<br/><b>ID:</b> %s<br/>",
                ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName(),
-               ClientSessionManager.getDataStoreDriver(), ClientSessionManager.isProductionDataStore())));
+               ClientSessionManager.getDataStoreDriver(), ClientSessionManager.isProductionDataStore(),
+               OseeDatabaseId.getGuid())));
       } catch (Exception ex) {
          builder.append(Lib.exceptionToString(ex));
       } finally {
