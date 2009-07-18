@@ -67,6 +67,10 @@ public class ClientSessionManager {
       return getSessionGrant().getDatabaseInfo().getDatabaseLoginName();
    }
 
+   public static String getDataStoreDriver() throws OseeAuthenticationRequiredException {
+      return getSessionGrant().getDatabaseInfo().getDriver();
+   }
+
    public static String getDataStoreName() throws OseeAuthenticationRequiredException {
       return getSessionGrant().getDatabaseInfo().getDatabaseName();
    }
