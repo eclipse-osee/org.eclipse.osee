@@ -9,6 +9,7 @@
 		<dirname property="workspaceLocationSub" file="${basedir}" />
 		<dirname property="workspaceLocation" file="${workspaceLocationSub}" />
 		<property name="buildDirectory" value="${workspaceLocation}/sandbox" />
+		<property name="pdeTarget" value="main" />
 
 		<delete dir="${buildDirectory}/features" />
 		<delete dir="${buildDirectory}/repository" />
@@ -18,19 +19,24 @@
 		</copy>
 		<antcall target="copySupplementalMapFile" />
 
-		<!-- ${equinoxLauncherPluginVersion} -->
-		<ant antfile="${baseLocation}/plugins/org.eclipse.pde.build_3.4.1.R34x_v20081217/scripts/build.xml" target="${pdeTarget}" />
+		<pathconvert property="pdePathPrefix" setonempty="false" pathsep=" ">
+			<path>
+				<dirset dir="${baseLocation}/plugins" includes="org.eclipse.pde.build_*" />
+			</path>
+		</pathconvert>
+
+		<ant antfile="${pdePathPrefix}/scripts/build.xml" target="${pdeTarget}" />
 
 		<antcall target="internalPostBuild" />
-		
+
 		<antcall target="copyToUpdatesite" />
 	</target>
 
-	
+
 	<target name="internalPostBuild" if="postBuildFile">
 		<ant antfile="${postBuildFile}" target="${postBuildTarget}" />
 	</target>
-	
+
 	<target name="copyToUpdatesite" if="update.site">
 		<delete failonerror="false">
 			<fileset dir="${update.site}" includes="**/*" defaultexcludes="false" />
