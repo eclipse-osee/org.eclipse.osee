@@ -477,12 +477,17 @@ public final class ArtifactLoader {
                }
             }
 
-            // if a different attribute than the previous iteration and its attribute had not already been loaded
-            if ((attrId != previousAttrId || branchId != previousBranchId) && artifact != null) {
-               artifact.internalInitializeAttribute(AttributeTypeManager.getType(chStmt.getInt("attr_type_id")), attrId,
-                     chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")), false,
+            // if we get more than one version from the same attribute on the same artifact on the same branch
+            if (attrId == previousAttrId && branchId == previousBranchId && artifactId == previousArtifactId) {
+               OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
+                     "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d]", attrId, artifactId,
+                     branchId));
+            } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
+               artifact.internalInitializeAttribute(AttributeTypeManager.getType(chStmt.getInt("attr_type_id")),
+                     attrId, chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")), false,
                      chStmt.getString("value"), chStmt.getString("uri"));
             }
+
             previousArtifactId = artifactId;
             previousBranchId = branchId;
             previousAttrId = attrId;
