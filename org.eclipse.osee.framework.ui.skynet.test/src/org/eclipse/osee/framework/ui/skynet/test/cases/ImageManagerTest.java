@@ -14,12 +14,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -37,10 +43,36 @@ public abstract class ImageManagerTest {
 
    private final OseeImage[] oseeImages;
    private final String imageClassName;
+   private static SevereLoggingMonitor monitorLog;
 
    public ImageManagerTest(String imageClassName, OseeImage[] oseeImages) {
       this.imageClassName = imageClassName;
       this.oseeImages = oseeImages;
+   }
+
+   @org.junit.BeforeClass
+   public static void testSetup() throws Exception {
+      monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
+   }
+
+   @org.junit.AfterClass
+   public static void testCleanup() throws Exception {
+      List<IHealthStatus> stats = monitorLog.getAllLogs();
+      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+         if (stat.getException() != null) {
+            fail("Exception: " + Lib.exceptionToString(stat.getException()));
+         }
+      }
+      StringBuffer sb = new StringBuffer();
+      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+         if (stat.getMessage().contains("Unable to load the image for") && !stat.getMessage().contains("NOT_HERE")) {
+            sb.append(stat.getMessage() + "\n");
+         }
+      }
+      if (!sb.toString().equals("")) {
+         fail(sb.toString());
+      }
    }
 
    /**
@@ -50,7 +82,8 @@ public abstract class ImageManagerTest {
     */
    @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
-      assertEquals(ImageManager.getImage(MissingImage.ACCEPT), ImageManager.getImage(FrameworkImage.MISSING));
+      // This will throw an OseeLog exceptino cause NOT_HERE can't be found; this is expected
+      assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(FrameworkImage.MISSING));
    }
 
    /**
@@ -127,7 +160,7 @@ public abstract class ImageManagerTest {
    }
 
    public enum MissingImage implements OseeImage {
-      ACCEPT("nothere.gif");
+      NOT_HERE("nothere.gif");
 
       private final String fileName;
 
