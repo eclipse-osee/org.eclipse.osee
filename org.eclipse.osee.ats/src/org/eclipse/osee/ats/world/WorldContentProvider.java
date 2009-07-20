@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
@@ -124,6 +126,10 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact instanceof ActionArtifact) {
                return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
             }
+            if (artifact instanceof GoalArtifact) {
+               return artifact.getRelatedArtifacts(AtsRelation.Goal_Member, false).toArray(
+                     new Artifact[artifact.getRelatedArtifactsCount(AtsRelation.Goal_Member)]);
+            }
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                List<Artifact> arts = new ArrayList<Artifact>();
@@ -163,6 +169,9 @@ public class WorldContentProvider implements ITreeContentProvider {
             }
             if (artifact instanceof ReviewSMArtifact) {
                ((TeamWorkFlowArtifact) artifact).getParentSMA();
+            }
+            if (artifact instanceof GoalArtifact) {
+               ((GoalArtifact) artifact).getParentSMA();
             }
          } catch (Exception ex) {
             // do nothing

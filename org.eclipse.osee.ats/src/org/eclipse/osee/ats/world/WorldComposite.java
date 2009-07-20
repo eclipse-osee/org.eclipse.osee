@@ -95,12 +95,12 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
    private TableLoadOption[] tableLoadOptions;
    private final ToolBar toolBar;
-   private final WorldEditor worldEditor;
+   private final IWorldEditor iWorldEditor;
    private final Composite mainComp;
 
-   public WorldComposite(WorldEditor worldEditor, Composite parent, int style, ToolBar toolBar) {
+   public WorldComposite(IWorldEditor worldEditor, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
-      this.worldEditor = worldEditor;
+      this.iWorldEditor = worldEditor;
       this.toolBar = toolBar;
 
       setLayout(new GridLayout(1, true));
@@ -253,7 +253,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          }
       }, true);
       // Need to reflow the managed page based on the results.  Don't put this in the above thread.
-      worldEditor.getActionPage().reflow();
+      iWorldEditor.reflow();
    }
 
    public class FilterLabelProvider implements ILabelProvider {
@@ -300,7 +300,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               worldEditor.setTableTitle(title, warning);
+               iWorldEditor.setTableTitle(title, warning);
                worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
@@ -339,9 +339,12 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
          @Override
          public void run() {
+            if (iWorldEditor.getWorldEditorProvider() == null) {
+               AWorkbench.popup("Unimplemented");
+               return;
+            }
             try {
-               IWorldEditorProvider provider =
-                     ((WorldEditorInput) worldEditor.getEditorInput()).getIWorldEditorProvider().copyProvider();
+               IWorldEditorProvider provider = iWorldEditor.getWorldEditorProvider().copyProvider();
                provider.setCustomizeData(worldXViewer.getCustomizeMgr().generateCustDataFromTable());
                provider.setTableLoadOptions(TableLoadOption.NoUI);
                WorldEditor.open(provider);
@@ -428,7 +431,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          @Override
          public void run() {
             try {
-               worldEditor.reSearch();
+               iWorldEditor.reSearch();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -513,8 +516,10 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
          new ToolItem(toolBar, SWT.SEPARATOR);
          actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
 
-         OseeAts.addButtonToEditorToolBar(worldEditor, AtsPlugin.getInstance(), toolBar, WorldEditor.EDITOR_ID,
-               "ATS World");
+         if (iWorldEditor.getIActionable() != null) {
+            OseeAts.addButtonToEditorToolBar(iWorldEditor.getIActionable(), AtsPlugin.getInstance(), toolBar,
+                  WorldEditor.EDITOR_ID, "ATS World");
+         }
          new ToolItem(toolBar, SWT.SEPARATOR);
 
          createToolBarPulldown(toolBar, toolBar.getParent());
@@ -546,31 +551,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
       actionToMenuItem(menu, toTask, SWT.PUSH);
       actionToMenuItem(menu, toReview, SWT.PUSH);
-      new MenuItem(menu, SWT.SEPARATOR);
-      try {
-         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (final IAtsWorldEditorMenuItem atsMenuItem : item.getWorldEditorMenuItems(
-                  worldEditor.getWorldEditorProvider(), worldEditor)) {
-               MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-               menuItem.setText(atsMenuItem.getMenuItemName());
-               menuItem.addSelectionListener(new SelectionAdapter() {
-                  /* (non-Javadoc)
-                   * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                   */
-                  @Override
-                  public void widgetSelected(SelectionEvent e) {
-                     try {
-                        atsMenuItem.runMenuItem(worldEditor);
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
-                  }
-               });
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      iWorldEditor.createToolBarPulldown(menu);
 
    }
 
@@ -642,7 +623,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     load(worldEditor.getCurrentTitleLabel(), arts);
+                     load(iWorldEditor.getCurrentTitleLabel(), arts);
                   }
                });
             } catch (OseeCoreException ex) {
@@ -677,7 +658,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     load(worldEditor.getCurrentTitleLabel(), arts);
+                     load(iWorldEditor.getCurrentTitleLabel(), arts);
                   }
                });
             } catch (OseeCoreException ex) {
@@ -711,7 +692,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     load(worldEditor.getCurrentTitleLabel(), arts);
+                     load(iWorldEditor.getCurrentTitleLabel(), arts);
                   }
                });
             } catch (OseeCoreException ex) {
@@ -745,7 +726,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     load(worldEditor.getCurrentTitleLabel(), arts);
+                     load(iWorldEditor.getCurrentTitleLabel(), arts);
                   }
                });
             } catch (OseeCoreException ex) {

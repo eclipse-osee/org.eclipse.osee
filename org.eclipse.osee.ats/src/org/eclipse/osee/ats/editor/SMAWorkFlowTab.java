@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
@@ -92,6 +93,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAActionableItemHeader actionableItemHeader;
    private SMAWorkflowMetricsHeader workflowMetricsHeader;
    private SMADetailsSection smaDetailsSection;
+   private SMARelationsSection smaRelationsSection;
+   private SMAGoalMembersSection smaGoalMembersSection;
+   private SMAGoalMembersSection smaGoalMembers2Section;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -150,6 +154,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             pages.add(atsWorkPage);
          }
       }
+      if (smaMgr.getSma() instanceof GoalArtifact) {
+         smaGoalMembers2Section = new SMAGoalMembersSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+         managedForm.addPart(smaGoalMembers2Section);
+      }
+
+      smaRelationsSection = new SMARelationsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+      managedForm.addPart(smaRelationsSection);
 
       smaDetailsSection = new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
       managedForm.addPart(smaDetailsSection);
@@ -274,6 +285,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
+      }
+      if (smaRelationsSection != null) {
+         smaRelationsSection.dispose();
+      }
+      if (smaGoalMembers2Section != null) {
+         smaGoalMembers2Section.dispose();
+      }
+      if (smaGoalMembersSection != null) {
+         smaGoalMembersSection.dispose();
       }
       for (SMAWorkFlowSection section : sections)
          section.dispose();

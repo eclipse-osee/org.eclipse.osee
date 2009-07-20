@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -151,8 +155,18 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
                addTasksAHIs(teamAHI, team);
             }
          }
-         if (topArt instanceof ReviewSMArtifact) {
-            addTasksAHIs(topAHI, topArt);
+         if (topArt instanceof GoalArtifact) {
+            List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
+            for (Artifact member : topArt.getRelatedArtifacts(AtsRelation.Goal_Member)) {
+               if (member instanceof TaskArtifact) {
+                  taskArts.add((TaskArtifact) member);
+               } else if ((member instanceof IHyperArtifact)) {
+                  ActionHyperItem teamAHI = new ActionHyperItem((IHyperArtifact) member);
+                  teamAHI.setRelationToolTip("Member");
+                  topAHI.addBottom(teamAHI);
+               }
+            }
+            topAHI.addBottom(new TasksActionHyperItem(taskArts));
          }
 
          if (activeEditorIsActionEditor()) {

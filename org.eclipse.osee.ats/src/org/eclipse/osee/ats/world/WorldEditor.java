@@ -30,7 +30,11 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -41,7 +45,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider, IActionable {
+public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
    private WorldXWidgetActionPage actionPage;
@@ -176,7 +180,8 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
+               "org.eclipse.osee.ats.help.ui");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -266,5 +271,54 @@ public class WorldEditor extends AbstractArtifactEditor implements IDirtiableEdi
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return actionPage.getWorldComposite().getManHoursPerDayPreference();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditor#reflow()
+    */
+   @Override
+   public void reflow() {
+      getActionPage().reflow();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditor#createToolBarPulldown(org.eclipse.swt.widgets.Menu)
+    */
+   @Override
+   public void createToolBarPulldown(Menu menu) {
+      final WorldEditor fWorldEditor = this;
+      new MenuItem(menu, SWT.SEPARATOR);
+      try {
+         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+            for (final IAtsWorldEditorMenuItem atsMenuItem : item.getWorldEditorMenuItems(getWorldEditorProvider(),
+                  this)) {
+               MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+               menuItem.setText(atsMenuItem.getMenuItemName());
+               menuItem.addSelectionListener(new SelectionAdapter() {
+                  /* (non-Javadoc)
+                   * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                   */
+                  @Override
+                  public void widgetSelected(SelectionEvent e) {
+                     try {
+                        atsMenuItem.runMenuItem(fWorldEditor);
+                     } catch (Exception ex) {
+                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     }
+                  }
+               });
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldEditor#getIActionable()
+    */
+   @Override
+   public IActionable getIActionable() {
+      return null;
    }
 }

@@ -73,10 +73,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R238C1:R265C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R239C1:R266C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="271" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="274" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="286.5"/>
    <Column ss:AutoFitWidth="0" ss:Width="339.75"/>
@@ -1346,6 +1346,15 @@
     <Cell><Data ss:Type="String">PV</Data></Cell>
     <Cell><Data ss:Type="String">Yes</Data></Cell>
    </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell><Data ss:Type="String">has member</Data></Cell>
+    <Cell><Data ss:Type="String">Member</Data></Cell>
+    <Cell><Data ss:Type="String">is a member of</Data></Cell>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell><Data ss:Type="String">Yes</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
     <Cell><Data ss:Type="String"># NOTE: The way relations are added and because All Artifacts are of SuperType &quot;Artifact&quot;, line Defect,ArtifactToDef will set Defect's max with 0,0 and Artifact,ArtifactToDefect will add n,0 to all other artifact types</Data></Cell>
@@ -1716,6 +1725,20 @@
     <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell><Data ss:Type="String">Goal</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="String">Artifact</Data></Cell>
+   </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Print>
@@ -1725,13 +1748,13 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>9</TopRowVisible>
+   <TopRowVisible>213</TopRowVisible>
    <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>41</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>232</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

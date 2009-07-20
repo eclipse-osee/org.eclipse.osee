@@ -36,6 +36,9 @@ public enum AtsRelation implements IRelationEnumeration {
    TeamMember_Team(true, "TeamMember"),
    TeamMember_Member(false, "TeamMember"),
    //
+   Goal_Member(false, "Goal"),
+   Goal_Goal(true, "Goal"),
+   //
    ParallelVersion_Parent(true, "ParallelVersion"),
    ParallelVersion_Child(false, "ParallelVersion"),
    //

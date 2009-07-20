@@ -6,10 +6,13 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -35,6 +38,7 @@ public class GoalArtifact extends StateMachineArtifact {
     */
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
+      registerAtsWorldRelation(AtsRelation.Goal_Member);
    }
 
    /* (non-Javadoc)
@@ -50,7 +54,11 @@ public class GoalArtifact extends StateMachineArtifact {
     */
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      return null;
+      List<Artifact> parents = getRelatedArtifacts(AtsRelation.Goal_Goal);
+      if (parents.size() == 0) return null;
+      if (parents.size() == 1) return (StateMachineArtifact) parents.iterator().next();
+      System.err.println("Two parent goals, what do here?");
+      return (StateMachineArtifact) parents.iterator().next();
    }
 
    /* (non-Javadoc)
