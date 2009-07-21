@@ -424,7 +424,7 @@ public abstract class XStackedWidget<T> extends XLabel {
          IStatus status = validate(numberOfPages + 1);
          if (status.isOK()) {
             setMessage(IStatus.OK, "");
-            String id = GUID.generateGuidStr();
+            String id = GUID.create();
             if (pageIds.add(id)) {
                Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
                composite.setLayout(new GridLayout());

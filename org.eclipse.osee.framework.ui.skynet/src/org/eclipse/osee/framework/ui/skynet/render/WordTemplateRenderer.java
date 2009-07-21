@@ -148,13 +148,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
                //if the file name is null we will give it a GUID
                if (fileName == null) {
-                  fileName = GUID.generateGuidStr() + ".xml";
+                  fileName = GUID.create() + ".xml";
                }
 
                monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
-               IFolder changeReportFolder = OseeData.getFolder(".diff/" + GUID.generateGuidStr());
+               IFolder changeReportFolder = OseeData.getFolder(".diff/" + GUID.create());
                String baseFileStr = "c:/UserData";
                String localFileName = null;
 
@@ -199,7 +199,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                            newerArtifact.get(i) != null ? newerArtifact.get(i).getSoleAttribute(
                                  WordAttribute.WORD_TEMPLATE_CONTENT) : null, newAnnotationValue);
                      baseFileStr = changeReportFolder.getLocation().toOSString();
-                     localFileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
+                     localFileName = baseFileStr + "/" + GUID.create() + ".xml";
                      fileNames.add(localFileName);
 
                      monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? "Unnamed Artifact" : newerArtifact.get(

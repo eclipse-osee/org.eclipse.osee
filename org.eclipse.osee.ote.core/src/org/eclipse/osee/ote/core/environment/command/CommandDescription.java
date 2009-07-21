@@ -21,7 +21,7 @@ public class CommandDescription implements Serializable {
     * 
     */
    private static final long serialVersionUID = 538355585678229304L;
-   protected final GUID guid;
+   protected final String guid;
    protected final String description;
 
    /**
@@ -31,7 +31,7 @@ public class CommandDescription implements Serializable {
     */
    public CommandDescription(String description) {
       super();
-      guid = new GUID();
+      this.guid = GUID.create();
       this.description = description;
    }
 
@@ -42,11 +42,14 @@ public class CommandDescription implements Serializable {
       return description;
    }
 
+   @Override
    public boolean equals(Object obj) {
 
-      if (obj instanceof GUID)
+      if (obj instanceof GUID) {
          return guid.equals(obj);
-      else if (obj instanceof CommandDescription) return guid.equals(((CommandDescription) obj).guid);
+      } else if (obj instanceof CommandDescription) {
+         return guid.equals(((CommandDescription) obj).guid);
+      }
 
       return false;
    }
@@ -54,10 +57,11 @@ public class CommandDescription implements Serializable {
    /**
     * @return Returns the guid.
     */
-   public GUID getGuid() {
+   public String getGuid() {
       return guid;
    }
 
+   @Override
    public String toString() {
       return "GUID: " + guid + "\n" + "Desc: " + description;
    }

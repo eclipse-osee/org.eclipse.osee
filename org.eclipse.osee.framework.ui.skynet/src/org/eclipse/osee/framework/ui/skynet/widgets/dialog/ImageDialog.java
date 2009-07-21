@@ -83,7 +83,7 @@ public class ImageDialog extends MessageDialog {
       if (imageType == ImageType.JPG)
          format = SWT.IMAGE_JPEG;
       else if (imageType == ImageType.PNG) format = SWT.IMAGE_PNG;
-      File file = OseeData.getFile(GUID.generateGuidStr() + "." + imageType.name());
+      File file = OseeData.getFile(GUID.create() + "." + imageType.name());
       loader.save(file.getAbsolutePath(), format);
       Program.launch(file.getAbsolutePath());
    }

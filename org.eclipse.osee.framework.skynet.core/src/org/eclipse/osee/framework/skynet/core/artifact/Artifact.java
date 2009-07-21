@@ -103,7 +103,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       modType = ModificationType.NEW;
       if (guid == null) {
-         this.guid = GUID.generateGuidStr();
+         this.guid = GUID.create();
       } else {
          this.guid = guid;
       }

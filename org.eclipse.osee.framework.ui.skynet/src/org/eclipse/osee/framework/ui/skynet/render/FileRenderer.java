@@ -141,7 +141,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
          name.append(".");
          name.append(getAssociatedExtension(artifact));
       } else {
-         name.append(GUID.generateGuidStr());
+         name.append(GUID.create());
          name.append(".xml");
       }
       return name.toString();

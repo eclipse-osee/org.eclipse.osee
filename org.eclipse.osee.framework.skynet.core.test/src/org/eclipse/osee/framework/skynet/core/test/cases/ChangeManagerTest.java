@@ -54,7 +54,7 @@ public class ChangeManagerTest {
 
       sleep(5000);
 
-      String branchName = "Change Manager Test Branch" + GUID.generateGuidStr();
+      String branchName = "Change Manager Test Branch" + GUID.create();
 
       branch =
             BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), branchName,

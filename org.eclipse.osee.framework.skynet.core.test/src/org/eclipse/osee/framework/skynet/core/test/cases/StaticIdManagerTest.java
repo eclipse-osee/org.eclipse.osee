@@ -79,7 +79,7 @@ public class StaticIdManagerTest {
 
    @org.junit.Test
    public void testStaticIdsGettingCached() throws OseeCoreException {
-      String staticId = "org." + GUID.generateGuidStr();
+      String staticId = "org." + GUID.create();
       Collection<Artifact> artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
       assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.size() == 0);
       Artifact art = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());

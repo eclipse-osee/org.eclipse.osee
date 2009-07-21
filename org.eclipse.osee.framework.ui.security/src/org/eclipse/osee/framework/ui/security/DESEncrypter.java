@@ -51,7 +51,7 @@ public class DESEncrypter {
     * @throws NoSuchAlgorithmException
     */
    public DESEncrypter() throws InvalidKeySpecException, NoSuchAlgorithmException {
-      this(GUID.generateGuidStr());
+      this(GUID.create());
    }
 
    /**

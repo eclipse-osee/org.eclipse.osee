@@ -77,7 +77,7 @@ public class WordUtil {
 
          String guid = guidMap.get(oldName);
          if (guid == null) {
-            guid = GUID.generateGuidStr();
+            guid = GUID.create();
             guidMap.put(oldName, guid);
          }
 

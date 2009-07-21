@@ -21,10 +21,10 @@ import org.eclipse.swt.SWT;
  * @author Jeff C. Phillips
  */
 public class BranchXViewerFactory extends SkynetXViewerFactory {
-   public static XViewerColumn branch_name =
+   public static XViewerColumn branchName =
          new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String,
                false, null);
-   public static XViewerColumn time_stamp =
+   public static XViewerColumn timeStamp =
          new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
    public static XViewerColumn author =
@@ -38,6 +38,11 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn branchType =
          new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, false, SortDataType.String, false, null);
+   public static XViewerColumn branchGuid =
+         new XViewerColumn("framework.branch.guid", "Branch GUID", 200, SWT.LEFT, false, SortDataType.String, false,
+               null);
+   public static XViewerColumn branchId =
+         new XViewerColumn("framework.branch.id", "Branch Id", 80, SWT.LEFT, false, SortDataType.Integer, false, null);
    public static XViewerColumn parentBranch =
          new XViewerColumn("framework.branch.parentBranch", "Parent Branch", 100, SWT.LEFT, false, SortDataType.String,
                false, null);
@@ -46,13 +51,12 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(branch_name, time_stamp, author, comment, associatedArtifact, branchState, branchType,
-            parentBranch);
+      registerColumns(branchName, timeStamp, author, comment, associatedArtifact, branchState, branchType, branchGuid,
+            branchId, parentBranch);
    }
 
    @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
-
 }

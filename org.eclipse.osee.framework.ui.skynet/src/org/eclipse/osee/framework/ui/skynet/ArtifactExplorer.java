@@ -208,7 +208,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
       try {
          ArtifactExplorer explorer =
-               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
+               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
                      IWorkbenchPage.VIEW_ACTIVATE);
          explorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
@@ -261,7 +261,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void createPartControl(Composite parent) {
       try {
-         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+            return;
+         }
 
          GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
          gridData.heightHint = 1000;
@@ -464,12 +466,15 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                Artifact parent = exploreRoot.getParent();
 
-               if (parent == null) return;
+               if (parent == null) {
+                  return;
+               }
 
                Object[] expanded = treeViewer.getExpandedElements();
                Object[] expandedPlus = new Object[expanded.length + 1];
-               for (int i = 0; i < expanded.length; i++)
+               for (int i = 0; i < expanded.length; i++) {
                   expandedPlus[i] = expanded[i];
+               }
                expandedPlus[expandedPlus.length - 1] = exploreRoot;
 
                explore(parent);
@@ -498,7 +503,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             ArtifactExplorer artifactExplorer;
             try {
                artifactExplorer =
-                     (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
+                     (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
                            IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
@@ -762,7 +767,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       myTextBeingRenamed.addKeyListener(new KeyAdapter() {
          @Override
          public void keyReleased(KeyEvent e) {
-            if ((e.character == SWT.CR)) {
+            if (e.character == SWT.CR) {
                updateText(myTextBeingRenamed.getText(), myTreeItem);
                myTextBeingRenamed.dispose();
             } else if (e.keyCode == SWT.ESC) {
@@ -845,7 +850,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private void createAccessControlMenuItem(Menu parentMenu) {
       accessControlMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       accessControlMenuItem.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
-      accessControlMenuItem.setText("&Access Control");
+      accessControlMenuItem.setText("&Access Control ");
       // accessControlMenuItem.setEnabled(false);
       accessControlMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -989,7 +994,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
     */
    @Override
    public void setFocus() {
-      if (treeViewer != null) treeViewer.getControl().setFocus();
+      if (treeViewer != null) {
+         treeViewer.getControl().setFocus();
+      }
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
@@ -1156,7 +1163,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
 
-      if (SkynetGuiPlugin.areOSEEServicesAvailable().isFalse()) return;
+      if (SkynetGuiPlugin.areOSEEServicesAvailable().isFalse()) {
+         return;
+      }
 
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
@@ -1356,7 +1365,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, final RelationLink link, Branch branch, String relationType) {
       try {
-         if (this.branch == null || !this.branch.equals(branch)) return;
+         if (this.branch == null || !this.branch.equals(branch)) {
+            return;
+         }
          if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)

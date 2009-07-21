@@ -12,15 +12,16 @@ package org.eclipse.osee.ote.core.framework.command;
 
 import java.rmi.server.ExportException;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 
-
 public interface ITestServerCommand {
 
-	UserTestSessionKey getUserSessionKey();
-	ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException;
-	ITestCommandResult execute(TestEnvironment context) throws Exception;
-	GUID getGUID(); 
+   UserTestSessionKey getUserSessionKey();
+
+   ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException;
+
+   ITestCommandResult execute(TestEnvironment context) throws Exception;
+
+   String getGUID();
 }

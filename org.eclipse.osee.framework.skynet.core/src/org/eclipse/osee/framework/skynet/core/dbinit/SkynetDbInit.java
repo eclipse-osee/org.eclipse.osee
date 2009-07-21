@@ -81,7 +81,7 @@ public class SkynetDbInit implements IDbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig);
       DbInit.addViews();
       initializeApplicationServer();
-      OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
+      OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.create());
       populateSequenceTable();
       addDefaultPermissions();
    }

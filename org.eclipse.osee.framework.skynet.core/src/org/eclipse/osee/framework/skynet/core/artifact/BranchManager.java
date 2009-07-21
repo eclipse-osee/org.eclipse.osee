@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -96,9 +97,6 @@ public class BranchManager {
 
    private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
 
-   // This hash is keyed on the branchId
-   private final TreeMap<Integer, Branch> branchCache = new TreeMap<Integer, Branch>();
-
    public static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final boolean MERGE_DEBUG =
@@ -106,6 +104,10 @@ public class BranchManager {
 
    private Branch systemRoot;
 
+   // This hash is keyed on the branchId
+   private final TreeMap<Integer, Branch> branchCache = new TreeMap<Integer, Branch>();
+
+   private final Map<String, Branch> branchGuidCache = new HashMap<String, Branch>();
    private final Map<String, Branch> keynameBranchMap = new HashMap<String, Branch>();
    private static final String GET_MAPPED_BRANCH_INFO = "SELECT * FROM osee_branch_definitions";
    private List<CommitAction> commitActions;
@@ -214,6 +216,14 @@ public class BranchManager {
       return branches;
    }
 
+   public static Branch getBranchByGuid(String guid) throws OseeCoreException {
+      if (!GUID.isValid(guid)) {
+         throw new OseeArgumentException(String.format("[%s] is not a valid GUID", guid));
+      }
+      instance.ensurePopulatedCache(false);
+      return instance.branchGuidCache.get(guid);
+   }
+
    public static boolean branchExists(String branchName) throws OseeDataStoreException {
       return !getBranchesByName(branchName).isEmpty();
    }
@@ -231,6 +241,7 @@ public class BranchManager {
                if (cachedBranch == null) {
                   cachedBranch = initializeBranchObject(chStmt);
                   branchCache.put(cachedBranch.getBranchId(), cachedBranch);
+                  branchGuidCache.put(cachedBranch.getGuid(), cachedBranch);
                } else {
                   cachedBranch.setName(chStmt.getString("branch_name"));
                   cachedBranch.setArchived(chStmt.getInt("archived") == 1);
@@ -314,10 +325,10 @@ public class BranchManager {
       }
    }
 
-   public static Branch createBranchObject(String branchName, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
+   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       Branch branch =
-            new Branch(branchName, branchId, parentBranchId, parentTransactionId, archived, authorId, creationDate,
-                  creationComment, associatedArtifactId, branchType, branchState);
+            new Branch(branchName, branchGuid, branchId, parentBranchId, parentTransactionId, archived, authorId,
+                  creationDate, creationComment, associatedArtifactId, branchType, branchState);
       instance.branchCache.put(branchId, branch);
       return branch;
    }
@@ -331,10 +342,11 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
-      return createBranchObject(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
-            chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
-            chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
-            chStmt.getInt("associated_art_id"), BranchType.getBranchType(chStmt.getInt("branch_type")),
+      return createBranchObject(chStmt.getString("branch_name"), chStmt.getString("branch_guid"),
+            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
+            chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
+            chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
+            BranchType.getBranchType(chStmt.getInt("branch_type")),
             BranchState.getBranchState(chStmt.getInt("branch_state")));
    }
 

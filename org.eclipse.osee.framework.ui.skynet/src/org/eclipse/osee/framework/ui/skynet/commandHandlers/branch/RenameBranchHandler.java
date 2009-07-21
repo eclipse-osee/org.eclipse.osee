@@ -81,7 +81,7 @@ public class RenameBranchHandler extends CommandHandler {
          myTreeEditor.horizontalAlignment = SWT.LEFT;
          myTreeEditor.grabHorizontal = true;
          myTreeEditor.minimumWidth = 50;
-         myTreeEditor.setColumn(findColumnIndex(treeViewer, BranchXViewerFactory.branch_name.getName()));
+         myTreeEditor.setColumn(findColumnIndex(treeViewer, BranchXViewerFactory.branchName.getName()));
 
          final TreeItem myTreeItem = myTreeItemsSelected[0];
 
@@ -107,7 +107,7 @@ public class RenameBranchHandler extends CommandHandler {
          textBeingRenamed.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-               if ((e.character == SWT.CR)) {
+               if (e.character == SWT.CR) {
                   updateText(textBeingRenamed.getText(), selectedBranch);
                   treeViewer.refresh();
                   textBeingRenamed.dispose();
@@ -137,7 +137,9 @@ public class RenameBranchHandler extends CommandHandler {
     */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
+      if (AWorkbench.getActivePage() == null) {
+         return false;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

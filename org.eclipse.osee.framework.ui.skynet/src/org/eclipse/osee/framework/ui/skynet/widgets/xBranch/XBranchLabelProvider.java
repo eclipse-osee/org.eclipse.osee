@@ -90,7 +90,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    }
 
    private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
-      if (cCol.equals(BranchXViewerFactory.branch_name)) {
+      if (cCol.equals(BranchXViewerFactory.branchName)) {
          StringBuilder stringBuilder = new StringBuilder();
          try {
             if (AccessControlManager.isOseeAdmin()) {
@@ -105,7 +105,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             stringBuilder.insert(0, "[Archived] - ");
          }
          return stringBuilder.toString();
-      } else if (cCol.equals(BranchXViewerFactory.time_stamp)) {
+      } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          return String.valueOf(branch.getCreationDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          return UserManager.getUserNameById(branch.getAuthorId());
@@ -123,6 +123,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getBranchState().name();
       } else if (cCol.equals(BranchXViewerFactory.branchType)) {
          return branch.getBranchType().name();
+      } else if (cCol.equals(BranchXViewerFactory.branchGuid)) {
+         return branch.getGuid();
+      } else if (cCol.equals(BranchXViewerFactory.branchId)) {
+         return String.valueOf(branch.getBranchId());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
          try {
             return branch.getParentBranch().getName();
@@ -136,10 +140,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    private String getTransactionText(TransactionId transaction, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
 
-      if (cCol.equals(BranchXViewerFactory.branch_name)) {
+      if (cCol.equals(BranchXViewerFactory.branchName)) {
          columnText = String.valueOf(transaction.getTransactionNumber());
       }
-      if (cCol.equals(BranchXViewerFactory.time_stamp)) {
+      if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          columnText = String.valueOf(transaction.getTime());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
@@ -147,7 +151,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = transaction.getComment();
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            if (transaction.getCommitArtId() == 0) return "";
+            if (transaction.getCommitArtId() == 0) {
+               return "";
+            }
             Artifact art =
                   ArtifactQuery.getArtifactFromId(transaction.getCommitArtId(), BranchManager.getCommonBranch());
             if (art != null) {
@@ -187,7 +193,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             }
          } else if (element instanceof TransactionId) {
             try {
-               if (((TransactionId) element).getCommitArtId() == 0) return null;
+               if (((TransactionId) element).getCommitArtId() == 0) {
+                  return null;
+               }
                Artifact artifact =
                      ArtifactQuery.getArtifactFromId(((TransactionId) element).getCommitArtId(),
                            BranchManager.getCommonBranch());

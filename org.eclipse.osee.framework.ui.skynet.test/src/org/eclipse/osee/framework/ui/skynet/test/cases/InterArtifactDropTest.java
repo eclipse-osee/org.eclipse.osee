@@ -53,8 +53,8 @@ public class InterArtifactDropTest {
    public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      String sourceBranchName = "Source Branch" + GUID.generateGuidStr();
-      String destinationBranchName = "Destination Branch" + GUID.generateGuidStr();
+      String sourceBranchName = "Source Branch" + GUID.create();
+      String destinationBranchName = "Destination Branch" + GUID.create();
 
       sourceBranch =
             BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), sourceBranchName,

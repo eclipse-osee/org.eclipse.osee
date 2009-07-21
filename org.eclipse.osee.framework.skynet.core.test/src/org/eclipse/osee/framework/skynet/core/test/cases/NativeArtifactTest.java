@@ -84,7 +84,7 @@ public class NativeArtifactTest {
     */
    @org.junit.Test
    public void testSetNativeContentFile() throws Exception {
-      File file = OseeData.getFile(GUID.generateGuidStr() + ".txt");
+      File file = OseeData.getFile(GUID.create() + ".txt");
       Lib.writeStringToFile("hello world", file);
       NativeArtifact nativeArtifact = getNativeArtifact();
       nativeArtifact.setNativeContent(file);

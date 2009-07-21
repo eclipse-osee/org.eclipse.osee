@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -25,7 +26,7 @@ public class StubBranchModel extends BranchModel {
    private static final long serialVersionUID = -6424441243526185426L;
 
    public static final Branch STUB_BRANCH =
-         new Branch("Unreferenced", -1, 1, 1, false, 0, new Timestamp(new Date().getTime()),
+         new Branch("Unreferenced", GUID.create(), -1, 1, 1, false, 0, new Timestamp(new Date().getTime()),
                "Dummy branch to allocate data errors", 0, BranchType.BASELINE, BranchState.CREATED);
 
    private final Map<Long, TxModel> stubs;

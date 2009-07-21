@@ -172,7 +172,7 @@ public class RemoteEventManager {
             @Override
             public void run() {
                try {
-                  String newSessionId = GUID.generateGuidStr();
+                  String newSessionId = GUID.create();
                   for (ISkynetEvent event : events) {
                      event.getNetworkSender().sessionId = newSessionId;
                   }

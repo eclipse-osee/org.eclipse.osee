@@ -75,7 +75,7 @@ public class XResultPage {
       super();
       this.title = title;
       this.html = html;
-      id = GUID.generateGuidStr();
+      id = GUID.create();
       for (Manipulations man : manipulations) {
          if (man == Manipulations.ALL) {
             this.manipulations.add(Manipulations.HRID_CMD_HYPER);

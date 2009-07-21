@@ -297,6 +297,7 @@
 	
 	
 	<Table name="OSEE_BRANCH" schema="OSEE" tablespace="osee_data">
+		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />		
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />

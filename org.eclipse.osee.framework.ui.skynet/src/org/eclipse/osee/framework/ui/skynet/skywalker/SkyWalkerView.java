@@ -64,9 +64,9 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 public class SkyWalkerView extends ViewPart {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView";
    protected GraphViewer viewer;
-   private static final String INPUT = "input";
-   private static final String GUID = "guid";
-   private static final String BRANCHID = "branchId";
+   private static final String INPUT_KEY = "input";
+   private static final String GUID_KEY = "guid";
+   private static final String BRANCHID_KEY = "branchId";
    private String storedGuid;
    private String storedBrandId;
    private final SkyWalkerOptions options = new SkyWalkerOptions();
@@ -101,7 +101,9 @@ public class SkyWalkerView extends ViewPart {
             Iterator<?> itemsIter = selection.iterator();
             while (itemsIter.hasNext()) {
                Object obj = itemsIter.next();
-               if (!(obj instanceof Artifact)) continue;
+               if (!(obj instanceof Artifact)) {
+                  continue;
+               }
                Artifact artifact = (Artifact) obj;
                explore(artifact);
             }
@@ -122,22 +124,27 @@ public class SkyWalkerView extends ViewPart {
          public void modified(ModType... modTypes) {
             List<ModType> modList = Arrays.asList(modTypes);
             // Don't redraw if artifact has been changed; else get in infinite loop
-            if (modList.contains(ModType.Artifact)) return;
-            if (modList.contains(ModType.Layout))
+            if (modList.contains(ModType.Artifact)) {
+               return;
+            }
+            if (modList.contains(ModType.Layout)) {
                viewer.setLayoutAlgorithm(options.getLayout(), true);
-            else if (modList.contains(ModType.Show_Attribute)) {
+            } else if (modList.contains(ModType.Show_Attribute)) {
                try {
                   // exploring another artifact and then the original forces a redraw of all the
                   // objects
                   // which is necessary for a node size change
                   Artifact art = (Artifact) viewer.getInput();
                   explore(UserManager.getUser(SystemUser.UnAssigned));
-                  if (art != null) explore(art);
+                  if (art != null) {
+                     explore(art);
+                  }
                } catch (Exception ex) {
                   // DO Nothing
                }
-            } else
+            } else {
                redraw();
+            }
          }
       });
 
@@ -150,7 +157,9 @@ public class SkyWalkerView extends ViewPart {
          if (storedGuid != null) {
             Artifact art =
                   ArtifactQuery.getArtifactFromId(storedGuid, BranchManager.getBranch(Integer.parseInt(storedBrandId)));
-            if (art != null) explore(art);
+            if (art != null) {
+               explore(art);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -273,7 +282,9 @@ public class SkyWalkerView extends ViewPart {
    }
 
    public void redraw() {
-      if (viewer.getInput() != null) explore((Artifact) viewer.getInput());
+      if (viewer.getInput() != null) {
+         explore((Artifact) viewer.getInput());
+      }
    }
 
    /*
@@ -303,21 +314,25 @@ public class SkyWalkerView extends ViewPart {
 
    private void explore(Artifact artifact, boolean fromHistory) {
       // If already in explore method, don't respond to events trying to redraw
-      if (inExplore) return;
+      if (inExplore) {
+         return;
+      }
       inExplore = true;
       options.setArtifact(artifact);
 
       // Add current artifact to history only if explore wasn't caused by going back in history
       if (!fromHistory && viewer.getInput() != null) {
          Artifact currArt = (Artifact) viewer.getInput();
-         if (history.size() == 0)
+         if (history.size() == 0) {
             history.add(currArt);
-         else if (history.size() > 0 && !history.get(history.size() - 1).equals(currArt)) history.add(currArt);
+         } else if (history.size() > 0 && !history.get(history.size() - 1).equals(currArt)) {
+            history.add(currArt);
+         }
       }
       viewer.setInput(options.getArtifact());
       // Highlight center object
       GraphItem item = viewer.findGraphItem(options.getArtifact());
-      if (item != null && (item instanceof GraphNode)) {
+      if (item != null && item instanceof GraphNode) {
          GraphNode node = (GraphNode) item;
          node.setBackgroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
          viewer.update(node, null);
@@ -334,8 +349,8 @@ public class SkyWalkerView extends ViewPart {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       SkyWalkerView view;
       try {
-         view =
-               (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, new GUID().toString(), IWorkbenchPage.VIEW_ACTIVATE);
+         String id = GUID.create();
+         view = (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, id, IWorkbenchPage.VIEW_ACTIVATE);
          view.explore(artifact);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
@@ -351,11 +366,13 @@ public class SkyWalkerView extends ViewPart {
    public void saveState(IMemento memento) {
       super.saveState(memento);
 
-      if (viewer.getInput() == null) return;
+      if (viewer.getInput() == null) {
+         return;
+      }
       Artifact artifact = (Artifact) viewer.getInput();
-      memento = memento.createChild(INPUT);
-      memento.putString(GUID, artifact.getGuid());
-      memento.putString(BRANCHID, String.valueOf(artifact.getBranch().getBranchId()));
+      memento = memento.createChild(INPUT_KEY);
+      memento.putString(GUID_KEY, artifact.getGuid());
+      memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranch().getBranchId()));
    }
 
    @Override
@@ -363,10 +380,10 @@ public class SkyWalkerView extends ViewPart {
       super.init(site, memento);
       try {
          if (memento != null) {
-            memento = memento.getChild(INPUT);
+            memento = memento.getChild(INPUT_KEY);
             if (memento != null) {
-               storedGuid = memento.getString(GUID);
-               storedBrandId = memento.getString(BRANCHID);
+               storedGuid = memento.getString(GUID_KEY);
+               storedBrandId = memento.getString(BRANCHID_KEY);
             }
          }
       } catch (Exception ex) {

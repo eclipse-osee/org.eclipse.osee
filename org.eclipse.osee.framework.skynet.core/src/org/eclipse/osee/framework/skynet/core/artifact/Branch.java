@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllable {
    private static final int SHORT_NAME_LIMIT = 25;
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
+   private final String branchGuid;
    private final int branchId;
    private final int parentBranchId;
    private TransactionId parentTransactionId;
@@ -66,8 +67,9 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    private Branch destBranch;
    private BranchState branchState;
 
-   public Branch(String branchName, int branchId, int parentBranchId, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
+   public Branch(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       this.branchId = branchId;
+      this.branchGuid = branchGuid;
       this.branchName = branchName;
       this.parentBranchId = parentBranchId;
       this.parentTransactionIdNumber = parentTransactionIdNumber;
@@ -79,6 +81,10 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       this.associatedArtifact = null;
       this.branchType = branchType;
       this.branchState = branchState;
+   }
+
+   public String getGuid() {
+      return branchGuid;
    }
 
    public BranchState getBranchState() {
