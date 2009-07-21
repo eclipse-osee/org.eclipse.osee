@@ -210,7 +210,7 @@ public class BranchStateTest {
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
 
          // Modify same artifact on working branch
-         Artifact sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getHumanReadableId(), workingBranch);
+         Artifact sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
          sameArtifact.setSoleAttributeFromString("Annotation", "This is the working branch update annotation");
          sameArtifact.persistAttributes();
 
@@ -240,8 +240,7 @@ public class BranchStateTest {
          assertTrue("Branch was not editable", workingBranch.isEditable());
          assertTrue("Branch state was set to rebaselined before complete", !workingBranch.isRebaselined());
 
-         assertEquals("Branch name was changed before update was complete", originalBranchName,
-               workingBranch.getName());
+         assertEquals("Branch name was changed before update was complete", originalBranchName, workingBranch.getName());
 
          // Check that a new destination branch exists
          Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();

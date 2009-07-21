@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,9 +61,8 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public WorkFlowDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""),
+            artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
 
@@ -171,7 +171,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * @return
     */
    private String getFullPageId(String pageId) {
-      return (pageId.contains(".")) ? pageId : getId() + "." + pageId;
+      return pageId.contains(".") ? pageId : getId() + "." + pageId;
    }
 
    public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException {
@@ -186,7 +186,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (ruleId == null || ruleId.equals("")) return workRules;
+      if (ruleId == null || ruleId.equals("")) {
+         return workRules;
+      }
       // Get work rules from team definition
       for (WorkRuleDefinition workRuleDefinition : getWorkRules()) {
          if (!workRuleDefinition.getId().equals("") && workRuleDefinition.getId().startsWith(ruleId)) {
@@ -215,8 +217,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * @return Returns the defaultToPage.
     */
    public WorkPageDefinition getDefaultToPage(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      if (getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPageAsDefault).size() > 0) return getPageDefinitions(
-            workPageDefinition.getId(), TransitionType.ToPageAsDefault).iterator().next();
+      if (getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPageAsDefault).size() > 0) {
+         return getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPageAsDefault).iterator().next();
+      }
       return null;
    }
 
@@ -236,7 +239,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public static void addTransitionsFromArtifact(Artifact artifact, Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String workflowId) throws OseeCoreException {
-      if (artifact == null) return;
+      if (artifact == null) {
+         return;
+      }
       // Read in this workflow's transition information
       for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
          String[] strs = transition.split(";");
@@ -244,8 +249,8 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
             OseeLog.log(
                   SkynetGuiPlugin.class,
                   OseeLevel.SEVERE_POPUP,
-                  new IllegalStateException(
-                        "Transition attribute from artifact " + artifact.getHumanReadableId() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
+                  new OseeStateException(
+                        "Transition attribute from artifact " + artifact.getGuid() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
             continue;
          }
          TransitionType transType = TransitionType.valueOf(strs[1]);
@@ -371,8 +376,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public List<WorkPageDefinition> getPagesOrdered() throws OseeCoreException {
       WorkPageDefinition startWorkPageDefinition = getStartPage();
-      if (startWorkPageDefinition == null) throw new IllegalArgumentException(
-            "Can't locate Start WorkPageDefinition for workflow " + getName());
+      if (startWorkPageDefinition == null) {
+         throw new IllegalArgumentException("Can't locate Start WorkPageDefinition for workflow " + getName());
+      }
 
       // Get ordered pages starting with start page
       List<WorkPageDefinition> orderedPages = new ArrayList<WorkPageDefinition>();
@@ -380,8 +386,11 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
       // Move completed to the end if it exists
       WorkPageDefinition completedPage = null;
-      for (WorkPageDefinition workPageDefinition : orderedPages)
-         if (workPageDefinition.isCompletePage()) completedPage = workPageDefinition;
+      for (WorkPageDefinition workPageDefinition : orderedPages) {
+         if (workPageDefinition.isCompletePage()) {
+            completedPage = workPageDefinition;
+         }
+      }
       if (completedPage != null) {
          orderedPages.remove(completedPage);
          orderedPages.add(completedPage);
@@ -393,12 +402,19 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    private void getOrderedPages(WorkPageDefinition workPageDefinition, List<WorkPageDefinition> pages) throws OseeCoreException {
       // Add this page first
-      if (!pages.contains(workPageDefinition)) pages.add(workPageDefinition);
+      if (!pages.contains(workPageDefinition)) {
+         pages.add(workPageDefinition);
+      }
       // Add default page
-      if (getDefaultToPage(workPageDefinition) != null) getOrderedPages(getDefaultToPage(workPageDefinition), pages);
+      if (getDefaultToPage(workPageDefinition) != null) {
+         getOrderedPages(getDefaultToPage(workPageDefinition), pages);
+      }
       // Add remaining pages
-      for (WorkPageDefinition wPage : getToPages(workPageDefinition))
-         if (!pages.contains(wPage)) getOrderedPages(wPage, pages);
+      for (WorkPageDefinition wPage : getToPages(workPageDefinition)) {
+         if (!pages.contains(wPage)) {
+            getOrderedPages(wPage, pages);
+         }
+      }
    }
 
    /**

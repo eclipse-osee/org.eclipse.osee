@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.data.OseeInfo;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -49,10 +50,8 @@ public class BinaryContentUtils {
       } catch (Exception ex) {
          // Do Nothing - this is not important
       }
-      if (OseeInfo.getCachedValue(OseeInfo.USE_GUID_STORAGE).equals("TRUE"))
-         builder.append(attribute.getArtifact().getGuid());
-      else
-         builder.append(attribute.getArtifact().getHumanReadableId());
+
+      builder.append(getStorageName(attribute));
 
       String fileTypeExtension = getExtension(attribute);
       if (Strings.isValid(fileTypeExtension)) {
@@ -68,5 +67,15 @@ public class BinaryContentUtils {
          fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension", "");
       }
       return fileTypeExtension;
+   }
+
+   public static String getStorageName(Attribute<?> attribute) throws OseeDataStoreException {
+      String name;
+      if (Boolean.valueOf(OseeInfo.getCachedValue(OseeInfo.USE_GUID_STORAGE))) {
+         name = attribute.getArtifact().getGuid();
+      } else {
+         name = attribute.getArtifact().getHumanReadableId();
+      }
+      return name;
    }
 }

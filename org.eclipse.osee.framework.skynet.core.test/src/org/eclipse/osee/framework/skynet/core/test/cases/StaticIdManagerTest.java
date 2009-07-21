@@ -57,7 +57,7 @@ public class StaticIdManagerTest {
          for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
                staticIdValue, BranchManager.getCommonBranch())) {
             artifact.deleteAndPersist(transaction);
-            System.out.println("Deleting " + artifact.getHumanReadableId());
+            System.out.println("Deleting " + artifact.getGuid());
          }
       }
       transaction.execute();
@@ -66,7 +66,7 @@ public class StaticIdManagerTest {
          Collection<Artifact> artifacts =
                StaticIdManager.getArtifacts(GeneralData.ARTIFACT_TYPE, staticIdValue, BranchManager.getCommonBranch());
          for (Artifact artifact : artifacts) {
-            System.err.println("Search returned non-deleted " + artifact.getHumanReadableId());
+            System.err.println("Search returned non-deleted " + artifact.getGuid());
          }
          assertTrue("Expected 0 artifacts; Returned " + artifacts.size(), artifacts.size() == 0);
       }

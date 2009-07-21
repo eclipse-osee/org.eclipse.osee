@@ -47,9 +47,11 @@ public abstract class XStateAssigneesDam extends XTextDam {
                return state;
             }
          }
-         if (create) return new SMAState(stateName);
+         if (create) {
+            return new SMAState(stateName);
+         }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error parsing state data for " + sma.getHumanReadableId(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + sma.getGuid(), ex);
       }
       return null;
    }
@@ -61,8 +63,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
-               new Date());
+               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 
@@ -73,8 +74,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(),
-               new Date());
+               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 
@@ -87,7 +87,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
             states.add(state);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error parsing state data for " + sma.getHumanReadableId(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + sma.getGuid(), ex);
       }
       return states;
    }
@@ -107,7 +107,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          // Else, doesn't exist yet, create
          sma.addAttribute(attributeTypeName, state.toXml());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE,  "Error setting state data for " + sma.getHumanReadableId(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + sma.getGuid(), ex);
       }
    }
 }

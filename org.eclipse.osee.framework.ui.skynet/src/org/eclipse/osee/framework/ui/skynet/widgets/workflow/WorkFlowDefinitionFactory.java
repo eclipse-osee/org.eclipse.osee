@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -22,9 +23,11 @@ public class WorkFlowDefinitionFactory {
       // Check extensions for WorkFlowDefinition for given artifact
       for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
          WorkFlowDefinition workFlowDefinition = provider.getWorkFlowDefinition(artifact);
-         if (workFlowDefinition != null) return workFlowDefinition;
+         if (workFlowDefinition != null) {
+            return workFlowDefinition;
+         }
       }
-      throw new IllegalArgumentException(
-            "No WorkFlowDefinition found for artifact " + artifact.getArtifactTypeName() + " - " + artifact.getHumanReadableId());
+      throw new OseeArgumentException(
+            "No WorkFlowDefinition found for artifact " + artifact.getArtifactTypeName() + " - " + artifact.getGuid());
    }
 }

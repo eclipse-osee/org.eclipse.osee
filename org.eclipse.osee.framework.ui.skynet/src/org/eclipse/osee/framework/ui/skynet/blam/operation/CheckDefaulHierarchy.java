@@ -43,7 +43,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
       for (Artifact artifact : artifacts) {
          try {
             if (!artifact.hasParent()) {
-               print("\n" + artifact.getHumanReadableId() + " has no parent\n");
+               print("\n" + artifact.getGuid() + " has no parent\n");
             }
          } catch (MultipleArtifactsExist ex) {
             print("\n" + ex.getLocalizedMessage() + "\n");
@@ -61,6 +61,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
       "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }

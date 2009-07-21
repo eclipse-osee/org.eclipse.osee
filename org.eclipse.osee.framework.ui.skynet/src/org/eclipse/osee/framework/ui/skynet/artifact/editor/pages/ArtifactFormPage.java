@@ -141,7 +141,7 @@ public class ArtifactFormPage extends FormPage {
       if (add) {
          manager.add(new RefreshAction());
          manager.add(new Separator());
-         (getEditor()).getActionBarContributor().contributeToToolBar(manager);
+         getEditor().getActionBarContributor().contributeToToolBar(manager);
          manager.update(true);
       } else {
          manager.removeAll();
@@ -160,9 +160,8 @@ public class ArtifactFormPage extends FormPage {
    private String getArtifactShortInfo() {
       Artifact artifact = getEditor().getEditorInput().getArtifact();
       String description =
-            String.format("<form><p><b>Branch:</b> %s <b>Type:</b> %s <b>HRID:</b> %s</p></form>",
-                  artifact.getBranch().getShortName(), artifact.getArtifactTypeName(),
-                  artifact.getHumanReadableId());
+            String.format("<form><p><b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
+                  artifact.getBranch().getShortName(), artifact.getArtifactTypeName(), artifact.getGuid());
       return description;
    }
 
@@ -188,9 +187,9 @@ public class ArtifactFormPage extends FormPage {
       FormColors colors = toolkit.getColors();
       Color top = colors.getColor(IFormColors.H_GRADIENT_END);
       Color bot = colors.getColor(IFormColors.H_GRADIENT_START);
-      if (add)
+      if (add) {
          form.getForm().setTextBackground(new Color[] {top, bot}, new int[] {100}, true);
-      else {
+      } else {
          form.getForm().setTextBackground(null, null, false);
          form.getForm().setBackground(colors.getBackground());
       }

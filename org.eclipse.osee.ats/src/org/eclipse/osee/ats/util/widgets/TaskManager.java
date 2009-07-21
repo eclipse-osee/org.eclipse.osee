@@ -49,12 +49,13 @@ public class TaskManager {
    public String getStatus(String stateName) throws OseeCoreException {
       int completed = 0, cancelled = 0, inWork = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(stateName)) {
-         if (taskArt.isCompleted())
+         if (taskArt.isCompleted()) {
             completed++;
-         else if (taskArt.isCancelled())
+         } else if (taskArt.isCancelled()) {
             cancelled++;
-         else
+         } else {
             inWork++;
+         }
       }
       return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
             getTaskArtifacts(stateName).size(), inWork, completed, cancelled);
@@ -72,7 +73,9 @@ public class TaskManager {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : smaMgr.getSma().getRelatedArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class)) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
-               stateName)) arts.add(taskArt);
+               stateName)) {
+            arts.add(taskArt);
+         }
       }
       return arts;
    }
@@ -117,7 +120,7 @@ public class TaskManager {
       try {
          for (TaskArtifact taskArt : getTaskArtifacts()) {
             if (taskArt.isInWork()) {
-               return new Result(false, "Task " + taskArt.getHumanReadableId() + " Not Complete");
+               return new Result(false, "Task " + taskArt.getGuid() + " Not Complete");
             }
          }
       } catch (Exception ex) {
@@ -131,7 +134,7 @@ public class TaskManager {
       try {
          for (TaskArtifact taskArt : getTaskArtifacts(stateName)) {
             if (taskArt.isInWork()) {
-               return new Result(false, "Task " + taskArt.getHumanReadableId() + " Not Complete");
+               return new Result(false, "Task " + taskArt.getGuid() + " Not Complete");
             }
          }
       } catch (Exception ex) {
@@ -149,8 +152,9 @@ public class TaskManager {
     */
    public double getEstimatedHours(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
          hours += taskArt.getEstimatedHoursTotal();
+      }
       return hours;
    }
 
@@ -162,8 +166,9 @@ public class TaskManager {
     */
    public double getEstimatedHours() throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts())
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
          hours += taskArt.getEstimatedHoursFromArtifact();
+      }
       return hours;
 
    }
@@ -176,8 +181,9 @@ public class TaskManager {
     */
    public double getRemainHours(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
          hours += taskArt.getRemainHoursFromArtifact();
+      }
       return hours;
    }
 
@@ -189,8 +195,9 @@ public class TaskManager {
     */
    public double getRemainHours() throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts())
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
          hours += taskArt.getRemainHoursFromArtifact();
+      }
       return hours;
 
    }
@@ -203,8 +210,9 @@ public class TaskManager {
     */
    public double getHoursSpent(String relatedToStateName) throws OseeCoreException {
       double spent = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
          spent += taskArt.getHoursSpentSMATotal();
+      }
       return spent;
    }
 
@@ -217,9 +225,12 @@ public class TaskManager {
    public int getPercentComplete(String relatedToStateName) throws OseeCoreException {
       int spent = 0;
       Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToStateName);
-      for (TaskArtifact taskArt : taskArts)
+      for (TaskArtifact taskArt : taskArts) {
          spent += taskArt.getPercentCompleteSMATotal();
-      if (spent == 0) return 0;
+      }
+      if (spent == 0) {
+         return 0;
+      }
       return spent / taskArts.size();
    }
 

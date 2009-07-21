@@ -131,7 +131,7 @@ public class SkynetTransaction extends DbTransaction {
       if (!artifact.getBranch().equals(branch)) {
          String msg =
                String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
-                     artifact.getHumanReadableId(), artifact.getBranch(), branch);
+                     artifact.getGuid(), artifact.getBranch(), branch);
          throw new OseeStateException(msg);
       }
    }
@@ -148,7 +148,7 @@ public class SkynetTransaction extends DbTransaction {
    private void ensureBranchIsEditable(Artifact artifact) throws OseeStateException {
       if (!artifact.getBranch().isEditable()) {
          String msg =
-               String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getHumanReadableId(),
+               String.format("The artifact [%s] is on a non-editable branch [%s]", artifact.getGuid(),
                      artifact.getBranch());
          throw new OseeStateException(msg);
       }

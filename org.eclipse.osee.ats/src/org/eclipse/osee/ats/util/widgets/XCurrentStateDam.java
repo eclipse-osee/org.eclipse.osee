@@ -33,8 +33,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    public SMAState getState() throws OseeCoreException {
       Set<SMAState> states = getStates();
-      if (states.size() != 1) throw new OseeArgumentException(
-            "Must be one current state.  Found " + states.size() + " for " + sma.getHumanReadableId());
+      if (states.size() != 1) {
+         throw new OseeArgumentException("Must be one current state.  Found " + states.size() + " for " + sma.getGuid());
+      }
       return states.iterator().next();
    }
 
@@ -48,7 +49,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
-      if (logMetrics) logMetrics();
+      if (logMetrics) {
+         logMetrics();
+      }
    }
 
    public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
@@ -56,12 +59,14 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
-      if (logMetrics) logMetrics();
+      if (logMetrics) {
+         logMetrics();
+      }
    }
 
    public void logMetrics() throws OseeCoreException {
-      logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), "",
-            UserManager.getUser(), new Date());
+      logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()),
+            "", UserManager.getUser(), new Date());
    }
 
    public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {

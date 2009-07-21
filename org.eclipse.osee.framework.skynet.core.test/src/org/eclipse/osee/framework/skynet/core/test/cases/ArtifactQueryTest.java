@@ -27,11 +27,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class ArtifactQueryTest {
 
    @org.junit.Test
-   public void testGetArtifactFromId() throws OseeCoreException {
+   public void testGetArtifactFromHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getHumanReadableId(), common);
       assertEquals(root.getHumanReadableId(), artifact.getHumanReadableId());
+   }
+
+   @org.junit.Test
+   public void testGetArtifactFromGUID() throws OseeCoreException {
+      Branch common = BranchManager.getCommonBranch();
+      Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact artifact = ArtifactQuery.getArtifactFromId(root.getGuid(), common);
+      assertEquals(root.getGuid(), artifact.getGuid());
    }
 
    @org.junit.Test
