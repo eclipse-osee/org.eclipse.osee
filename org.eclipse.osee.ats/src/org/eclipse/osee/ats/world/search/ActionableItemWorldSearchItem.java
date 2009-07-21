@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -43,23 +45,28 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean showFinished;
    private boolean selectedShowFinished; // Used to not corrupt original values
+   private boolean showAction;
+   private boolean selectedShowAction; // Used to not corrupt original values
    private final Collection<String> actionItemNames;
 
-   public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean recurseChildren) {
+   public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean recurseChildren, boolean showAction) {
       super(displayName, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = actionItemNames;
       this.showFinished = showFinished;
       this.selectedShowFinished = showFinished; // Set as default in case UI is not used
       this.recurseChildren = recurseChildren;
       this.selectedRecurseChildren = recurseChildren; // Set as default in case UI is not used
+      this.showAction = showAction;
+      this.selectedShowAction = showAction;
    }
 
-   public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean recurseChildren) {
+   public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean recurseChildren, boolean showAction) {
       super(displayName, AtsImage.ACTIONABLE_ITEM);
       this.actionItemNames = null;
       this.actionItems = actionItems;
       this.showFinished = showFinished;
       this.recurseChildren = recurseChildren;
+      this.showAction = showAction;
    }
 
    public ActionableItemWorldSearchItem(ActionableItemWorldSearchItem item) {
@@ -68,6 +75,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       this.actionItems = item.actionItems;
       this.showFinished = item.showFinished;
       this.recurseChildren = item.recurseChildren;
+      this.showAction = item.showAction;
    }
 
    public Collection<String> getProductSearchName() {
@@ -87,7 +95,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    public void getActionableItems() throws OseeCoreException {
       if (actionItemNames != null && actionItems == null) {
          for (String actionItemName : actionItemNames) {
-            ActionableItemArtifact aia = AtsCacheManager.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
+            ActionableItemArtifact aia =
+                  AtsCacheManager.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
             if (aia != null) {
                actionItems.add(aia);
             }
@@ -121,7 +130,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
 
       criteria.add(new AttributeCriteria(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), actionItemGuids));
-
+      // exclude completed or canceled
       if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
@@ -129,8 +138,24 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
                Operator.NOT_EQUAL));
       }
-
-      return ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      Collection<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      // show as actions
+      if (selectedShowAction) {
+         Set<Artifact> arts = new HashSet<Artifact>();
+         for (Artifact art : artifacts) {
+            if (art instanceof ActionArtifact) {
+               arts.add(art);
+            } else if (art instanceof StateMachineArtifact) {
+               Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
+               if (parentArt != null) {
+                  arts.add(parentArt);
+               }
+            }
+         }
+         return arts;
+      } else
+         return artifacts;
    }
 
    @Override
@@ -142,10 +167,12 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       ActionActionableItemListDialog diag = new ActionActionableItemListDialog(Active.Both);
       diag.setShowFinished(showFinished);
       diag.setRecurseChildren(recurseChildren);
+      diag.setShowAction(showAction);
       int result = diag.open();
       if (result == 0) {
          selectedShowFinished = diag.isShowFinished();
          selectedRecurseChildren = diag.isRecurseChildren();
+         selectedShowAction = diag.isShowAction();
          if (selectedActionItems == null)
             selectedActionItems = new HashSet<ActionableItemArtifact>();
          else
@@ -176,6 +203,10 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
     */
    public void setRecurseChildren(boolean recurseChildren) {
       this.recurseChildren = recurseChildren;
+   }
+
+   public void setShowAction(boolean showAction) {
+      this.showAction = showAction;
    }
 
    /**

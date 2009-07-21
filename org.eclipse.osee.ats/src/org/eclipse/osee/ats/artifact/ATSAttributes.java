@@ -30,6 +30,7 @@ public class ATSAttributes {
    public static final ATSAttributes CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS =
          new ATSAttributes("Create Code/Test Tasks");
    public static final ATSAttributes CHECK_SIGNALS_VIA_CDB_WIDGET = new ATSAttributes("Check Signals Via CDB");
+   public static final ATSAttributes SHOW_CDB_DIFF_REPORT_WIDGET = new ATSAttributes("Show CDB Differences Report");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
    public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE =
          new ATSAttributes("Actionable Item", "Actionable Items that are impacted by this change.");
