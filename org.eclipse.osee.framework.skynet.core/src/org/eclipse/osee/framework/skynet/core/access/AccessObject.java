@@ -10,9 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+
 /**
  * @author Jeff C. Phillips
  */
 public abstract class AccessObject {
+   public abstract void removeFromCache();
 
+   public abstract void removeFromDatabase(int subjectId) throws OseeDataStoreException;
+
+   public abstract int getBranchId();
+
+   public static AccessObject getAccessObject(Object object) {
+      if (object instanceof Artifact) {
+         return ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
+      } else if (object instanceof Branch) {
+         return BranchAccessObject.getBranchAccessObject((Branch) object);
+      } else
+         return null;
+   }
+
+   public static AccessObject getAccessObjectFromCache(Object object) {
+      if (object instanceof Artifact) {
+         return ArtifactAccessObject.getArtifactAccessObjectFromCache((Artifact) object);
+      } else if (object instanceof Branch) {
+         return BranchAccessObject.getBranchAccessObjectFromCache((Branch) object);
+      } else
+         return null;
+   }
 }

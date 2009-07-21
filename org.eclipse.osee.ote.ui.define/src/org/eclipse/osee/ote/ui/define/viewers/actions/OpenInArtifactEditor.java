@@ -66,7 +66,7 @@ public class OpenInArtifactEditor extends AbstractActionHandler {
    }
 
    private void checkPermissions(Artifact artifact) throws OseeCoreException {
-      if (true != AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+      if (true != AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
          throw new OseeArgumentException(String.format("The user %s does not have read access to %s",
                UserManager.getUser(), artifact));
       }

@@ -269,12 +269,12 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(WorldViewColumns);
+      registerColumns(WorldViewColumns);
       // Register all ats.* attribute columns
       try {
          for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
             if (attributeType.getName().startsWith("ats.")) {
-               registerColumn(getAttributeColumn(attributeType));
+               registerColumns(getAttributeColumn(attributeType));
             }
          }
       } catch (Exception ex) {
@@ -285,7 +285,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             for (XViewerColumn xCol : item.getXViewerColumns()) {
-               registerColumn(xCol);
+               registerColumns(xCol);
             }
          }
       } catch (Exception ex) {

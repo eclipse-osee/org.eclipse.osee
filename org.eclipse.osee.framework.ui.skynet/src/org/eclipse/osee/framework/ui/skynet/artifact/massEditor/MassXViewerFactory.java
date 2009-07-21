@@ -29,11 +29,11 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
       super(NAMESPACE);
-      registerColumn(nameCol);
+      registerColumns(nameCol);
       registerAllAttributeColumnsForArtifacts(artifacts, true);
-      registerColumn(new XViewerHridColumn("ID"));
-      registerColumn(new XViewerGuidColumn("GUID"));
-      registerColumn(new XViewerArtifactTypeColumn("Artifact Type"));
+      registerColumns(new XViewerHridColumn("ID"));
+      registerColumns(new XViewerGuidColumn("GUID"));
+      registerColumns(new XViewerArtifactTypeColumn("Artifact Type"));
    }
 
    /* (non-Javadoc)

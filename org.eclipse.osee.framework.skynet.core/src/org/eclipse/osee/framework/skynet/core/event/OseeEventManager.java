@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
@@ -92,13 +92,6 @@ public class OseeEventManager {
 
    /**
     * Kick LOCAL and REMOTE access control events
-    * 
-    * @param sender
-    * @param branchModType
-    * @param branchId
-    * @throws OseeAuthenticationRequiredException
-    * @throws OseeAuthenticationRequiredException
-    * @throws OseeCoreException
     */
    public static void kickAccessControlArtifactsEvent(Object source, final AccessControlEventType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) return;
@@ -107,11 +100,6 @@ public class OseeEventManager {
 
    /**
     * Kick local event to notify application that the branch to artifact cache has been updated
-    * 
-    * @param sender
-    * @param branchModType
-    * @param branchId
-    * @throws OseeCoreException
     */
    public static void kickLocalBranchToArtifactCacheUpdateEvent(Object source) throws OseeCoreException {
       if (isDisableEvents()) return;

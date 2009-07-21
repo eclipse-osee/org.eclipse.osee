@@ -276,7 +276,7 @@ public class ImageManager {
 
       if (AccessControlManager.hasLock(artifact)) {
          OseeImage overlay =
-               AccessControlManager.getInstance().hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
+               AccessControlManager.hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
          return setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT);
       }
 

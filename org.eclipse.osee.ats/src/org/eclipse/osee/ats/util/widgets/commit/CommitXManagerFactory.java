@@ -42,7 +42,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-      registerColumn(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col, Configuring_Object_Col);
+      registerColumns(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col, Configuring_Object_Col);
    }
 
    /* (non-Javadoc)

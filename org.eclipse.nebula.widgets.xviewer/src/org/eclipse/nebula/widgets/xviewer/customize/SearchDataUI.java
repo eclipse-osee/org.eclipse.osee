@@ -133,7 +133,7 @@ public class SearchDataUI {
       xViewer.getCustomizeMgr().setFilterText("");
    }
 
-   public void getStatusLabelAddition(StringBuffer sb) {
+   public void appendToStatusLabel(StringBuffer sb) {
       if (searchText != null && !searchText.getText().equals("")) {
          sb.append("[Text Search]");
       }

@@ -91,7 +91,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
             try {
                Set<Artifact> accessibleArts = new HashSet<Artifact>();
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+                  if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                            "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;

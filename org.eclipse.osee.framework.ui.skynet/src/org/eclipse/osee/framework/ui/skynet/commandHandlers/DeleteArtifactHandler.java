@@ -76,7 +76,7 @@ public class DeleteArtifactHandler extends CommandHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+         isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
       }
       return isEnabled;
    }

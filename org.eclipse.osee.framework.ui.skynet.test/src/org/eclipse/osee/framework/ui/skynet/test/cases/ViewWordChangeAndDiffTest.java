@@ -81,7 +81,7 @@ public class ViewWordChangeAndDiffTest {
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right
-      assertTrue("Valid object permissions", (AccessControlManager.getInstance().checkObjectListPermission(artifacts,
+      assertTrue("Valid object permissions", (AccessControlManager.checkObjectListPermission(artifacts,
             PermissionEnum.READ)));
       // initialize the lists for the test
       initializeViewChangeReportBaseAndNewArtifacts();
@@ -102,7 +102,7 @@ public class ViewWordChangeAndDiffTest {
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right
-      assertTrue("Valid object permissions", (AccessControlManager.checkObjectPermission(
+      assertTrue("Valid object permissions", (AccessControlManager.hasPermission(
             artifactChanges.iterator().next().getArtifact(), PermissionEnum.READ)));
       initializeBaseAndNewArtifact(artifactChanges.iterator().next());
       singleNativeDiff(baseArtifact, newerArtifact);

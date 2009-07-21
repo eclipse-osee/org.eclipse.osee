@@ -28,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public abstract class AbstractEditorHandler extends CommandHandler {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    protected List<Artifact> artifacts;
    ISelectionProvider selectionProvider;
 
@@ -50,7 +49,7 @@ public abstract class AbstractEditorHandler extends CommandHandler {
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
          isEnabled =
-               !artifacts.isEmpty() && accessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
+               !artifacts.isEmpty() && AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
       }
       return isEnabled;
    }

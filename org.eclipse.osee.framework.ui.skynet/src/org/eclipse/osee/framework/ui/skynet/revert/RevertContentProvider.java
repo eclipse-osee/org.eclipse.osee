@@ -48,7 +48,7 @@ public class RevertContentProvider extends ArtifactContentProvider {
             return EMPTY_ARRAY;
          }
          try {
-            if (AccessControlManager.checkObjectPermission(parentItem, PermissionEnum.READ)) {
+            if (AccessControlManager.hasPermission(parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
                   List<Artifact> childs = new ArrayList<Artifact>();

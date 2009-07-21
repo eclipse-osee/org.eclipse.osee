@@ -80,7 +80,6 @@ import org.eclipse.ui.part.ViewPart;
  * @author Donald G. Dunne
  */
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IFrameworkTransactionEventListener {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    public static String HELP_CONTEXT_ID = "Merge_Manager_View";
    private XMergeViewer xMergeViewer;
@@ -741,7 +740,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
          }
 
-         return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+         return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
       }
    }
 
@@ -906,7 +905,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
 
          }
-         return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+         return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
       }
    }
 

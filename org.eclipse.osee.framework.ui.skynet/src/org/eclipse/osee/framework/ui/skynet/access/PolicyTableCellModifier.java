@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.access;
 
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.ui.skynet.access.PolicyTableViewer.Columns;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Jeff C. Phillips
@@ -29,53 +27,31 @@ public class PolicyTableCellModifier implements ICellModifier {
       this.policyTableViewer = policyTableViewer;
    }
 
-   /**
-    * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
-    */
    public boolean canModify(Object element, String property) {
-      // Find the index of the column
-      int columnIndex = Columns.valueOf(property).ordinal();
-      if (columnIndex == Columns.Delete.ordinal() && isEnabled()) return true;
+      if (property.equals(PolicyTableColumns.delete.toString())) return true;
       return false;
    }
 
-   /**
-    * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
-    */
    public Object getValue(Object element, String property) {
-      // Find the index of the column
-      int columnIndex = Columns.valueOf(property).ordinal();
-      if (columnIndex == Columns.Delete.ordinal()) {
+      if (property.equals(PolicyTableColumns.delete.toString()))
          return new Boolean(false);
-      } else if (columnIndex == Columns.Artifact.ordinal()) {
+      else if (property.equals(PolicyTableColumns.artifact.toString())) {
          return ((AccessControlData) element).getPermission().ordinal();
       }
       return "";
    }
 
-   /**
-    * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String, java.lang.Object)
-    */
    public void modify(Object element, String property, Object value) {
-
-      // Find the index of the column
-      int columnIndex = Columns.valueOf(property).ordinal();
-
-      TableItem item = (TableItem) element;
+      TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
 
-      if (columnIndex == Columns.Delete.ordinal()) {
+      if (property.equals(PolicyTableColumns.delete.toString())) {
          policyTableViewer.removeData(data);
-      } else if (columnIndex == Columns.Delete.ordinal()) {
-         int index = (Integer) value;
-         if (index != -1) policyTableViewer.modifyPermissionLevel(data, PermissionEnum.values()[index]);
       }
+
       policyTableViewer.refresh();
    }
 
-   /**
-    * @return the enabled
-    */
    public boolean isEnabled() {
       return enabled;
    }

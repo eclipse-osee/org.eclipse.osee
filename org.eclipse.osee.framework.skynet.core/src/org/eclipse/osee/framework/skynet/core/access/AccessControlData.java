@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AccessControlData implements Comparable<AccessControlData> {
 
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private boolean dirty = false;
    private boolean birth = false;
    private Artifact subject;
@@ -98,19 +97,16 @@ public class AccessControlData implements Comparable<AccessControlData> {
       return object;
    }
 
-   /**
-    * @return Returns the birth.
-    */
    public boolean isBirth() {
       return birth;
    }
 
    public void persist() {
-      accessManager.persistPermission(this, false);
+      AccessControlManager.persistPermission(this, false);
    }
 
    public void persist(boolean recurse) {
-      accessManager.persistPermission(this, recurse);
+      AccessControlManager.persistPermission(this, recurse);
    }
 
    public int compareTo(AccessControlData data) {

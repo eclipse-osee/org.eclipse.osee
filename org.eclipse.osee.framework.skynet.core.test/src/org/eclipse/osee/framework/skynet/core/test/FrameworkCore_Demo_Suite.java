@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertTrue;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_setAttributeValues;

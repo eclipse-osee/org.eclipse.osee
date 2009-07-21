@@ -220,7 +220,7 @@ public class CustomizeManager {
       (new XViewerCustomizeDialog(xViewer)).open();
    }
 
-   public void getStatusLabelAddition(StringBuffer sb) {
+   public void appendToStatusLabel(StringBuffer sb) {
       if (currentCustData != null && currentCustData.getName() != null &&
       //
       !currentCustData.getName().equals(CURRENT_LABEL) &&

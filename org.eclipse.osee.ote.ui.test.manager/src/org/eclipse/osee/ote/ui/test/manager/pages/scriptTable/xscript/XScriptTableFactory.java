@@ -54,7 +54,7 @@ public class XScriptTableFactory extends XViewerFactory {
          folder = new File(System.getProperty("java.io.tmpdir"));
       }
       propertyStoreCustomizations = new FileStoreCustomizations(folder, "OteScript", ".xml", "DefaultOteScript.xml", defaultCustomDataXml);
-      registerColumn(RUN, TEST, RESULT, STATUS, OUPUT_FILE, TEST_LOCATION);
+      registerColumns(RUN, TEST, RESULT, STATUS, OUPUT_FILE, TEST_LOCATION);
    }
 
    @Override

@@ -28,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class OpenMassArtifactEditorHandler extends CommandHandler {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 
    /* (non-Javadoc)
@@ -54,7 +53,7 @@ public class OpenMassArtifactEditorHandler extends CommandHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+         isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
       }
       return isEnabled;
    }

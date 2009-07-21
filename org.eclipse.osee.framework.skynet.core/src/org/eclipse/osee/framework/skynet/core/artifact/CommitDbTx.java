@@ -225,7 +225,7 @@ public class CommitDbTx extends DbTransaction {
          newTransactionNumber =
                addCommitTransactionToDatabase(connection, destinationBranch, sourceBranch, userToBlame);
          fromBranchId = sourceBranch.getBranchId();
-         AccessControlManager.getInstance().removeAllPermissionsFromBranch(connection, sourceBranch);
+         AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
       } else {
          //Commit transaction instead of a branch
       }

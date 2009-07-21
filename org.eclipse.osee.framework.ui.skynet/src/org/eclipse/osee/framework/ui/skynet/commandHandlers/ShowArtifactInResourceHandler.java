@@ -69,7 +69,7 @@ public class ShowArtifactInResourceHandler extends CommandHandler {
 
          boolean readPermission = true;
          for (Artifact artifact : artifacts) {
-            readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
+            readPermission &= AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
          }
          isEnabled = readPermission;
       }

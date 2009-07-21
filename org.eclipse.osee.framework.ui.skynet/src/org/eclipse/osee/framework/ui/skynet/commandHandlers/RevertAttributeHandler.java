@@ -122,7 +122,7 @@ public class RevertAttributeHandler extends AbstractHandler {
                if (attributes == null) {
 
                }
-               isEnabled = AccessControlManager.checkObjectPermission(attribute.getArtifact(), PermissionEnum.WRITE);
+               isEnabled = AccessControlManager.hasPermission(attribute.getArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }

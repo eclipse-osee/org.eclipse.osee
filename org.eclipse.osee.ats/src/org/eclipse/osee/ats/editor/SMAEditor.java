@@ -489,7 +489,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
-      item.setToolTipText("Access Control");
+      item.setToolTipText("&Access Control");
+      item.setText("&Access Control");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -708,17 +709,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       workFlowTab.refresh();
    }
 
-   /**
-    * @return the isAccessControlWrite
-    * @throws OseeCoreException
-    */
    public boolean isAccessControlWrite() throws OseeCoreException {
-      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(smaMgr.getSma(), PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(smaMgr.getSma(), PermissionEnum.WRITE);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {

@@ -27,14 +27,13 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class AddEveryoneGroupToBranches extends AbstractBlam {
 
-   
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       for (Branch brnch : BranchManager.getNormalBranches()) {
 
-         if (!AccessControlManager.getInstance().getAccessControlList(brnch).isEmpty()) {
+         if (!AccessControlManager.getAccessControlList(brnch).isEmpty()) {
             Artifact everyone =
                   ArtifactQuery.getArtifactFromAttribute("Name", "Everyone", BranchManager.getCommonBranch());
-            AccessControlManager.getInstance().setPermission(everyone, brnch, PermissionEnum.READ);
+            AccessControlManager.setPermission(everyone, brnch, PermissionEnum.READ);
          }
       }
    }

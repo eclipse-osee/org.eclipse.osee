@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -31,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  */
 public class AccessControlHandler extends CommandHandler {
-   private Object object;
+   private IAccessControllable object;
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
@@ -62,7 +63,7 @@ public class AccessControlHandler extends CommandHandler {
       if (enabled) {
          object = hasArtifacts ? artifacts.iterator().next() : branches.iterator().next();
          enabled &=
-               (AccessControlManager.isOseeAdmin() || AccessControlManager.checkObjectPermission(object,
+               (AccessControlManager.isOseeAdmin() || AccessControlManager.hasPermission(object,
                      PermissionEnum.FULLACCESS));
       }
 

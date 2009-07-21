@@ -54,7 +54,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber, lastModDate);
+      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber, lastModDate);
       registerAllAttributeColumns();
    }
 

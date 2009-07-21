@@ -138,6 +138,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             "XCreateCodeTestTasksButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CHECK_SIGNALS_VIA_CDB_WIDGET,
             "XCheckSiganlsViaCDBButton", XOption.NONE));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SHOW_CDB_DIFF_REPORT_WIDGET,
+            "XShowCdbDiffReportButton", XOption.NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
             AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",

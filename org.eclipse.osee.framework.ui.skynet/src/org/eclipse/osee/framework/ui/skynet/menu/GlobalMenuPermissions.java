@@ -67,9 +67,9 @@ public class GlobalMenuPermissions {
       for (Artifact objectArtifact : artifacts) {
 
          writePermission &=
-               AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getBranch().isEditable();
-         readPermission &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.READ);
-         fullAccess &= AccessControlManager.checkObjectPermission(objectArtifact, PermissionEnum.FULLACCESS);
+               AccessControlManager.hasPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getBranch().isEditable();
+         readPermission &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.READ);
+         fullAccess &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);
          accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, UserManager.getUser());
 
@@ -133,7 +133,7 @@ public class GlobalMenuPermissions {
     * @return the branchReadable
     */
    public boolean isBranchReadable(Branch branch) throws OseeCoreException {
-      return AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
+      return AccessControlManager.hasPermission(branch, PermissionEnum.READ);
    }
 
    /**

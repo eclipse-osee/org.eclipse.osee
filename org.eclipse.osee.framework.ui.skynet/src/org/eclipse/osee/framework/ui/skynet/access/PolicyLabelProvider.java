@@ -11,88 +11,75 @@
 package org.eclipse.osee.framework.ui.skynet.access;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.access.PolicyTableViewer.Columns;
 import org.eclipse.swt.graphics.Image;
 
-public class PolicyLabelProvider implements ITableLabelProvider {
+public class PolicyLabelProvider extends XViewerLabelProvider {
 
-   public PolicyLabelProvider() {
-      super();
-   };
+   public PolicyLabelProvider(XViewer viewer) {
+      super(viewer);
+   }
 
-   /**
-    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-    */
-   public String getColumnText(Object element, int columnIndex) {
+   @Override
+   public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws Exception {
+      String ret;
       try {
-         if (element instanceof AccessControlData) {
-            AccessControlData data = (AccessControlData) element;
-            if (columnIndex == Columns.Person.ordinal()) {
-               return data.getSubject().getName();
-            } else if (columnIndex == Columns.Branch.ordinal()) {
-               PermissionEnum permissionEnum = data.getBranchPermission();
-               if (permissionEnum != null) return permissionEnum.getName();
-            } else if (columnIndex == Columns.Artifact.ordinal()) {
-               PermissionEnum permissionEnum = data.getArtifactPermission();
-               if (permissionEnum != null) return permissionEnum.getName();
-            } else if (columnIndex == Columns.Artifact_Type.ordinal()) {
-               PermissionEnum permissionEnum = data.getArtifactTypePermission();
-               if (permissionEnum != null) return permissionEnum.getName();
-            } else if (columnIndex == Columns.Total.ordinal()) {
-               PermissionEnum permissionEnum = data.getPermission();
-               if (permissionEnum != null) return permissionEnum.getName();
-            }
-         }
+         ret = getColumnText(col, (AccessControlData) element);
       } catch (Exception ex) {
-         return "Error: " + ex.getLocalizedMessage();
+         ret = "Error: " + ex.getLocalizedMessage();
       }
+
+      return ret;
+   }
+
+   private String getColumnText(XViewerColumn col, AccessControlData data) {
+      String colId = col.getId();
+      if (colId.equals(PolicyTableColumns.userName.toString()))
+         return data.getSubject().getName();
+      else {
+         PermissionEnum permissionEnum = null;
+         if (colId.equals(PolicyTableColumns.totalAccess.toString())) {
+            permissionEnum = data.getPermission();
+         } else if (colId.equals(PolicyTableColumns.branchAccess.toString())) {
+            permissionEnum = data.getBranchPermission();
+         } else if (colId.equals(PolicyTableColumns.artifactType.toString())) {
+            permissionEnum = data.getArtifactTypePermission();
+         } else if (colId.equals(PolicyTableColumns.artifact.toString())) {
+            permissionEnum = data.getArtifactPermission();
+         }
+
+         if (permissionEnum != null) return permissionEnum.getName();
+      }
+
       return "";
    }
 
-   /**
-    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-    */
-   public Image getColumnImage(Object element, int columnIndex) {
-      if (columnIndex == Columns.Delete.ordinal()) return ImageManager.getImage(FrameworkImage.REMOVE);
-      return null;
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
+      String colId = col.getId();
+      if (colId.equals(PolicyTableColumns.delete.toString()))
+         return ImageManager.getImage(FrameworkImage.REMOVE);
+      else
+         return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    public void dispose() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void addListener(ILabelProviderListener listener) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
-    *      java.lang.String)
-    */
    public boolean isLabelProperty(Object element, String property) {
       return true;
    }
+
 }

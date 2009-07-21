@@ -49,7 +49,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
 
    public DefectXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
+      registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
             Description_Col, Location_Col, Resolution_Col);
    }
 

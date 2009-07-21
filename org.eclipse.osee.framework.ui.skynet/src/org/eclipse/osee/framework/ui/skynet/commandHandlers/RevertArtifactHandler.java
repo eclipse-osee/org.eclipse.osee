@@ -92,7 +92,7 @@ public class RevertArtifactHandler extends AbstractHandler {
 
             for (ArtifactChange artifactChange : artifactChanges) {
                isEnabled =
-                     AccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+                     AccessControlManager.hasPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }

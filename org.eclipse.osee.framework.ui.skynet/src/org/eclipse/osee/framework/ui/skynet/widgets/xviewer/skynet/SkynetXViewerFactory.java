@@ -72,7 +72,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public void registerAllAttributeColumns() {
       try {
-         registerColumn(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
+         registerColumns(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -82,7 +82,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          for (XViewerColumn xCol : SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts)) {
             xCol.setShow(show);
-            registerColumn(xCol);
+            registerColumns(xCol);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

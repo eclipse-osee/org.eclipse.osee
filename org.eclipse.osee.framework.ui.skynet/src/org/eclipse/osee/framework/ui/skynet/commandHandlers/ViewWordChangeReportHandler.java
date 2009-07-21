@@ -132,7 +132,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());
             }
-            isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.READ);
+            isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

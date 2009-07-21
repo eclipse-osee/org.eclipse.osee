@@ -290,7 +290,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          public void run() {
             try {
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+                  if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
                            "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                   } else {
@@ -308,7 +308,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (!AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+               if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
                         "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                } else if (artifact != null) {

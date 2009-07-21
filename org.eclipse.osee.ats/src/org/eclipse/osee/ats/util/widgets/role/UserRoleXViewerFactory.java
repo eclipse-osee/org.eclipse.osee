@@ -39,7 +39,7 @@ public class UserRoleXViewerFactory extends SkynetXViewerFactory {
 
    public UserRoleXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(Role_Col, User_Col, Hours_Spent_Col, Completed_Col, Num_Major_Col, Num_Minor_Col, Num_Issues_Col);
+      registerColumns(Role_Col, User_Col, Hours_Spent_Col, Completed_Col, Num_Major_Col, Num_Minor_Col, Num_Issues_Col);
    }
 
 }

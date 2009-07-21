@@ -104,7 +104,7 @@ public class FilterDataUI {
       xViewer.getCustomizeMgr().setFilterText("");
    }
 
-   public void getStatusLabelAddition(StringBuffer sb) {
+   public void appendToStatusLabel(StringBuffer sb) {
       if (filterText != null && !filterText.getText().equals("")) {
          sb.append("[Text Filter]");
       }

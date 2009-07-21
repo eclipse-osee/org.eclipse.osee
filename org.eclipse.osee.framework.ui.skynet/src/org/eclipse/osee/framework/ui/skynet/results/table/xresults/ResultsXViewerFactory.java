@@ -28,7 +28,7 @@ public class ResultsXViewerFactory extends XViewerFactory {
       super("xviewer.test");
       this.columns = columns;
       for (XViewerColumn xCol : columns) {
-         registerColumn(xCol);
+         registerColumns(xCol);
       }
    }
 

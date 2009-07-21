@@ -45,7 +45,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
 
    public HistoryXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(transaction, gamma, itemType, was, is, timeStamp, author, comment);
+      registerColumns(transaction, gamma, itemType, was, is, timeStamp, author, comment);
       registerAllAttributeColumns();
    }
 

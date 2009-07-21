@@ -46,7 +46,7 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
 
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");
-      registerColumn(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
+      registerColumns(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }
 

@@ -40,7 +40,7 @@ public abstract class XViewerFactory implements IXViewerFactory {
       this.namespace = namespace;
    }
 
-   public void registerColumn(XViewerColumn... columns) {
+   public void registerColumns(XViewerColumn... columns) {
       if (columns.length == 0) throw new IllegalArgumentException("columns can't be null");
       for (XViewerColumn xCol : columns) {
          if (!columnRegistered(xCol)) {

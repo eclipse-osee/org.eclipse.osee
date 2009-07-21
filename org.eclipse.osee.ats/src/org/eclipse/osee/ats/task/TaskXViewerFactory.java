@@ -45,21 +45,21 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          XViewerColumn newCol = taskCol.copy();
          newCol.setShow(true);
          newCol.setWidth(widths[widthIndex++]);
-         registerColumn(newCol);
+         registerColumns(newCol);
       }
       // Add remaining columns from world columns
       for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
          if (!TaskViewerVisibleColumns.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);
-            registerColumn(newCol);
+            registerColumns(newCol);
          }
       }
       // Register any columns from other plugins
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             for (XViewerColumn xCol : item.getXViewerColumns()) {
-               registerColumn(xCol);
+               registerColumns(xCol);
             }
          }
       } catch (Exception ex) {

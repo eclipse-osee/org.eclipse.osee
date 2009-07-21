@@ -162,7 +162,7 @@ public class SMAManager {
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
-      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(sma, PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(sma, PermissionEnum.WRITE);
    }
 
    public User getOriginator() throws OseeCoreException {
@@ -316,8 +316,7 @@ public class SMAManager {
       for (TeamWorkFlowArtifact teamArt : smas) {
          SMAManager smaMgr = new SMAManager(teamArt);
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
-            AWorkbench.popup("ERROR",
-                  "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
+            AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
          if (smaMgr.isReleased()) {

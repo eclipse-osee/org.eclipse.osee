@@ -45,7 +45,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
             return null;
          }
-         if (AccessControlManager.checkObjectPermission(selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
+         if (AccessControlManager.hasPermission(selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
             if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
             else

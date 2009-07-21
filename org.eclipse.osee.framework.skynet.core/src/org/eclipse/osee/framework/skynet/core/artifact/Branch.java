@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -45,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 /**
  * @author Robert A. Fisher
  */
-public class Branch implements Comparable<Branch>, IAdaptable {
+public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllable {
    private static final int SHORT_NAME_LIMIT = 25;
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private final int branchId;
@@ -96,9 +98,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchId;
    }
 
-   /**
-    * @return Returns the full branchName.
-    */
    public String getName() {
       return branchName;
    }
@@ -475,5 +474,15 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public int getParentTransactionNumber() {
       return parentTransactionIdNumber;
+   }
+
+   @Override
+   public Branch getAccessControlBranch() {
+      return this;
+   }
+
+   @Override
+   public PermissionEnum getUserPermission(Artifact subject, PermissionEnum permission) {
+      return null;
    }
 }

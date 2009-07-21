@@ -58,7 +58,7 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
       branchWidget.loadData();
 
-      GridData gd = new GridData(GridData.FILL_BOTH);
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       gd.widthHint = 800;
       branchWidget.getXViewer().getTree().setLayoutData(gd);

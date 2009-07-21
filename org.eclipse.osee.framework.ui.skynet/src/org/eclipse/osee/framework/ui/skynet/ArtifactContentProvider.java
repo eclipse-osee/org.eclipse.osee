@@ -71,7 +71,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact parentItem = (Artifact) parentElement;
 
          try {
-            if (AccessControlManager.checkObjectPermission(parentItem, PermissionEnum.READ)) {
+            if (AccessControlManager.hasPermission(parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
                   return children.toArray();
@@ -116,7 +116,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
          try {
-            if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+            if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                if (artifact.isDeleted()) return false;
                return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
             } else {

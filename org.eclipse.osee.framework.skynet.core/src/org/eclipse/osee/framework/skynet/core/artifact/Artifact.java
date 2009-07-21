@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeCh
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
@@ -72,7 +73,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IAdaptable, Comparable<Artifact> {
+public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessControllable {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -367,8 +368,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             return artifact;
          }
       }
-      throw new ArtifactDoesNotExist(
-            "\"" + getName() + "\" has no child with the name \"" + descriptiveName + "\"");
+      throw new ArtifactDoesNotExist("\"" + getName() + "\" has no child with the name \"" + descriptiveName + "\"");
    }
 
    public boolean hasChild(String descriptiveName) throws OseeCoreException {
@@ -509,7 +509,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws BranchDoesNotExist
     */
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
-      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch).contains(AttributeTypeManager.getType(attributeName));
+      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch).contains(
+            AttributeTypeManager.getType(attributeName));
    }
 
    /**
@@ -827,8 +828,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                remainingAttributes.remove(attribute);
                found = true;
                break;
-      }
             }
+         }
          if (!found) {
             remainingNewValues.add(newValue);
          }
@@ -845,9 +846,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
 
       for (Attribute<String> attribute : remainingAttributes) {
-            attribute.delete();
-         }
+         attribute.delete();
       }
+   }
 
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
@@ -928,16 +929,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    private String getInternalAttributeValue(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
-         if (!isAttributeTypeValid(attributeTypeName)) {
+      if (!isAttributeTypeValid(attributeTypeName)) {
          throw new OseeStateException(String.format(
-                  "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
-                  getArtifactTypeName(), getGuid()));
+               "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
+               getArtifactTypeName(), getGuid()));
+      }
+      for (Attribute<?> attribute : internalGetAttributes()) {
+         if (attribute.isOfType(attributeTypeName)) {
+            return (String) attribute.getValue();
          }
-         for (Attribute<?> attribute : internalGetAttributes()) {
-            if (attribute.isOfType(attributeTypeName)) {
-               return (String) attribute.getValue();
-            }
-         }
+      }
       return "";
    }
 
@@ -1016,8 +1017,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public boolean isReadOnly() {
       try {
-         return isDeleted() || isHistorical() || !getBranch().isEditable() || !AccessControlManager.checkObjectPermission(
-               this, PermissionEnum.WRITE);
+         return isDeleted() || isHistorical() || !getBranch().isEditable() || !AccessControlManager.hasPermission(this,
+               PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return true;
@@ -1064,7 +1065,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
-      if (!UserManager.duringMainUserCreation() && !AccessControlManager.checkObjectPermission(getBranch(),
+      if (!UserManager.duringMainUserCreation() && !AccessControlManager.hasPermission(getBranch(),
             PermissionEnum.WRITE)) {
          throw new OseeArgumentException(
                "No write permissions for the branch that this artifact belongs to:" + getBranch());
@@ -1526,7 +1527,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Artifact reflectedArtifact =
             artifactType.getFactory().reflectExisitingArtifact(artId, guid, humanReadableId, artifactType, gammaId,
                   branch, ModificationType.INTRODUCED);
-      
+
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          //In order to reflect attributes they must exist in the data store and be valid for the destination branch as well
          if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType().getName())) {
@@ -1795,10 +1796,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   /**
-    * @return the modType
-    */
    public ModificationType getModType() {
       return modType;
+   }
+
+   @Override
+   public Branch getAccessControlBranch() {
+      return branch;
+   }
+
+   @Override
+   public PermissionEnum getUserPermission(Artifact subject, PermissionEnum permission) {
+      return AccessControlManager.getArtifactPermission(subject, this, permission);
    }
 }

@@ -101,7 +101,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 
             if (!artifacts.isEmpty()) {
                boolean writePermission =
-                     AccessControlManager.checkObjectPermission(artifacts.get(0), PermissionEnum.WRITE);
+                     AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
                enabled = writePermission && AccessControlManager.isOseeAdmin();
             }
          }

@@ -175,7 +175,8 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       public AccessControlAction() {
          super();
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.AUTHENTICATED));
-         setToolTipText("Access Control");
+         setToolTipText("&Access Control");
+         setText("&Access Control");
       }
 
       @Override

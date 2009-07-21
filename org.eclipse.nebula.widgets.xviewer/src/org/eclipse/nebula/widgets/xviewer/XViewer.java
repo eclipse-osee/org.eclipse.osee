@@ -13,7 +13,6 @@ package org.eclipse.nebula.widgets.xviewer;
 
 import java.util.Collection;
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -188,14 +187,13 @@ public class XViewer extends TreeViewer {
          };
       });
       getTree().addMouseListener(new XViewerMouseListener());
-      
+
       getTree().setMenu(getMenuManager().getMenu());
       columnFilterDataUI.createWidgets();
 
       customizeMgr.loadCustomization();
    }
 
-   
    /**
     * @param col
     */
@@ -404,11 +402,11 @@ public class XViewer extends TreeViewer {
          loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
       }
       sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-      customizeMgr.getStatusLabelAddition(sb);
+      customizeMgr.appendToStatusLabel(sb);
       if (filterDataUI != null) {
-         filterDataUI.getStatusLabelAddition(sb);
+         filterDataUI.appendToStatusLabel(sb);
       }
-      columnFilterDataUI.getStatusLabelAddition(sb);
+      columnFilterDataUI.appendToStatusLabel(sb);
       sb.append(getStatusString());
    }
 
@@ -456,6 +454,10 @@ public class XViewer extends TreeViewer {
 
    public void setColumnMultiEditEnabled(boolean columnMultiEditEnabled) {
       this.columnMultiEditEnabled = columnMultiEditEnabled;
+   }
+
+   public void setEnabled(boolean arg) {
+      this.getControl().setEnabled(arg);
    }
 
    /**
@@ -521,13 +523,13 @@ public class XViewer extends TreeViewer {
       }
       return returnVal;
    }
-   
+
    private final class XViewerMouseListener implements MouseListener {
       @Override
       public void mouseDoubleClick(MouseEvent e) {
          TreeColumn column = getColumnUnderMouseClick(e);
          TreeItem itemToReturn = getItemUnderMouseClick(e);
-         
+
          handleDoubleClick(column, itemToReturn);
       }
 
@@ -537,12 +539,12 @@ public class XViewer extends TreeViewer {
             rightClickSelectedColumn = null;
             rightClickSelectedColumnNum = null;
             rightClickSelectedItem = null;
-            
+
             rightClickSelectedItem = getItemUnderMouseClick(event);
             if (rightClickSelectedItem == null) return;
             rightClickSelectedColumn = getColumnUnderMouseClick(event);
             rightClickSelectedColumnNum = getColumnNumberUnderMouseClick(event);
-            
+
          }
       }
 
@@ -557,9 +559,8 @@ public class XViewer extends TreeViewer {
       @Override
       public void mouseUp(MouseEvent event) {
          TreeItem item = getItemUnderMouseClick(event);
-         if( item == null )
-            return;
-         
+         if (item == null) return;
+
          TreeColumn column = getColumnUnderMouseClick(event);
 
          if (isLeftClick(event) && controlNotBeingHeld(event)) {
@@ -574,7 +575,7 @@ public class XViewer extends TreeViewer {
             }
          }
          updateStatusLabel();
-      
+
       }
 
       /**
@@ -634,7 +635,7 @@ public class XViewer extends TreeViewer {
             }
             columnCount++;
          }
-         
+
          int columnNumber = columnOrder[columnCount];
          return columnNumber;
       }
@@ -642,17 +643,14 @@ public class XViewer extends TreeViewer {
       private TreeItem getItemUnderMouseClick(MouseEvent event) {
          Point pt = new Point(event.x, event.y);
          TreeItem itemToReturn = getTree().getItem(pt);
-         
-         if( itemToReturn == null )
-         {
+
+         if (itemToReturn == null) {
             int sum;
             sum = 0;
             TreeItem[] allItems = getTree().getItems();
-            for( TreeItem item : allItems)
-            {
+            for (TreeItem item : allItems) {
                sum = sum + getTree().getItemHeight();
-               if( sum > event.y)
-               {
+               if (sum > event.y) {
                   itemToReturn = item;
                   break;
                }

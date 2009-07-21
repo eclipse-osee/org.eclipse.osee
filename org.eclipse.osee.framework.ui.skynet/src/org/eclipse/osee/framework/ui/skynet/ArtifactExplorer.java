@@ -679,8 +679,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format(
-                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
-                           branch.getName()));
+                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch.getName()));
                   }
                }
 
@@ -845,7 +844,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    private void createAccessControlMenuItem(Menu parentMenu) {
       accessControlMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      accessControlMenuItem.setText("&Access Control ");
+      accessControlMenuItem.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
+      accessControlMenuItem.setText("&Access Control");
       // accessControlMenuItem.setEnabled(false);
       accessControlMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -878,9 +878,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                try {
                   Artifact object = (Artifact) iterator.next();
                   if ((new GlobalMenuPermissions(object)).isLocked()) {
-                     AccessControlManager.getInstance().unLockObject(object, UserManager.getUser());
+                     AccessControlManager.unLockObject(object, UserManager.getUser());
                   } else {
-                     AccessControlManager.getInstance().lockObject(object, UserManager.getUser());
+                     AccessControlManager.lockObject(object, UserManager.getUser());
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1245,7 +1245,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
             boolean writePermission;
             try {
-               writePermission = AccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+               writePermission = AccessControlManager.hasPermission(mySelectedArtifact, PermissionEnum.WRITE);
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                writePermission = false;

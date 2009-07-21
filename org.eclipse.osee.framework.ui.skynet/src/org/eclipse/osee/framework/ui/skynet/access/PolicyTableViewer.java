@@ -17,10 +17,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
@@ -29,9 +28,10 @@ import org.eclipse.osee.framework.skynet.core.access.AccessObject;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.PolicyTableXViewerFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Displays an <Code>Artifact</Code> access control list, used by the <Code>PolicyDialog</Code>.
@@ -40,88 +40,49 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class PolicyTableViewer {
 
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
-   private Table table;
-   private TableViewer tableViewer;
+   private XViewer tableXViewer;
    private Map<String, AccessControlData> accessControlList;
    private Object object;
-   public static enum Columns {
-      Delete, Person, Total, Branch, Artifact_Type, Artifact
-   };
-   private final static int[] columnWidths = new int[] {25, 125, 75, 75, 75, 75};
-   private String[] columnNames;
+   private Composite parent;
 
-   /**
-    * @param table -
-    */
-   public PolicyTableViewer(Table table, Object object) {
-      this.table = table;
-      this.createControl();
+   public PolicyTableViewer(Composite parent, Object object) {
+      this.parent = parent;
+      this.createTableViewer();
       this.accessControlList = new HashMap<String, AccessControlData>();
       this.object = object;
 
-      tableViewer.setContentProvider(new PolicyContentProvider());
-      tableViewer.setLabelProvider(new PolicyLabelProvider());
-      tableViewer.setInput(accessControlList.values());
+      tableXViewer.setContentProvider(new PolicyContentProvider());
+      tableXViewer.setLabelProvider(new PolicyLabelProvider(tableXViewer));
+      tableXViewer.setInput(accessControlList.values());
    }
 
-   /**
-    * Disables the cell modifiers, not the entire table so user can still scroll
-    * 
-    * @param enabled
-    */
-   public void setEnabled(boolean enabled) {
-      ((PolicyTableCellModifier) tableViewer.getCellModifier()).setEnabled(enabled);
+   public void allowTableModification(boolean allow) {
+      ((PolicyTableCellModifier) tableXViewer.getCellModifier()).setEnabled(allow);
    }
 
    public void addItem(Artifact subject, Object object, PermissionEnum permission) {
-      AccessObject accessObject = accessManager.getAccessObject(object);
+      AccessObject accessObject = AccessControlManager.getAccessObject(object);
       AccessControlData data = new AccessControlData(subject, accessObject, permission, true);
       accessControlList.put(data.getSubject().getGuid(), data);
-      tableViewer.refresh();
+      tableXViewer.refresh();
    }
 
-   private void createControl() {
-      createColumns();
-      createTableViewer();
-   }
-
-   /**
-    * Create the TableViewer
-    */
    private void createTableViewer() {
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 150;
+      gd.widthHint = 500;
 
-      tableViewer = new TableViewer(table);
-      tableViewer.setUseHashlookup(true);
-      columnNames = new String[Columns.values().length];
-      for (Columns col : Columns.values())
-         columnNames[col.ordinal()] = col.name();
-      tableViewer.setColumnProperties(columnNames);
+      tableXViewer = new XViewer(parent, SWT.BORDER | SWT.FULL_SELECTION, new PolicyTableXViewerFactory(), true, true);
+      tableXViewer.setUseHashlookup(true);
+      tableXViewer.setColumnProperties(PolicyTableColumns.getNames());
+      tableXViewer.getTree().setLayoutData(gd);
 
-      CellEditor[] validEditors = new CellEditor[Columns.values().length];
-      validEditors[Columns.Delete.ordinal()] = new CheckboxCellEditor(table, SWT.NONE);
-      validEditors[Columns.Artifact.ordinal()] =
-            new ComboBoxCellEditor(table, PermissionEnum.getPermissionNames(), SWT.READ_ONLY);
-
-      // Assign the cell editors to the viewer
-      tableViewer.setCellEditors(validEditors);
-      // Assign the cell modifier to the viewer
-      tableViewer.setCellModifier(new PolicyTableCellModifier(this));
-   }
-
-   /**
-    * Create the Columns
-    */
-   private void createColumns() {
-      table.setLinesVisible(true);
-      table.setHeaderVisible(true);
-
-      for (Columns col : Columns.values()) {
-         TableColumn column = new TableColumn(table, SWT.LEFT, col.ordinal());
-         column.setText(col.name());
-         column.setWidth(columnWidths[col.ordinal()]);
-      }
-
+      CellEditor[] validEditors = new CellEditor[PolicyTableColumns.values().length];
+      validEditors[1] = new CheckboxCellEditor(parent, SWT.NONE);
+      //      validEditors[Columns.Artifact.ordinal()] =
+      //            new ComboBoxCellEditor(table, PermissionEnum.getPermissionNames(), SWT.READ_ONLY);
+      tableXViewer.setCellEditors(validEditors);
+      tableXViewer.setCellModifier(new PolicyTableCellModifier(this));
    }
 
    public Map<String, AccessControlData> getAccessControlList() {
@@ -129,19 +90,12 @@ public class PolicyTableViewer {
    }
 
    public void refresh() {
-      tableViewer.refresh();
-   }
-
-   /**
-    * @return Returns the table.
-    */
-   public Table getTable() {
-      return table;
+      tableXViewer.refresh();
    }
 
    public void removeData(AccessControlData data) {
       try {
-         accessManager.removeAccessControlData(data, true);
+         AccessControlManager.removeAccessControlDataIf(true, data);
       } catch (OseeDataStoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -155,11 +109,8 @@ public class PolicyTableViewer {
    public int getCount() {
       return accessControlList.size();
    }
-   /**
-    * InnerClass that acts as a proxy for the FilterModelList providing content for the Table. It implements the
-    * IFilterListViewer interface since it must register changeListeners with the FilterModelList
-    */
-   class PolicyContentProvider implements IStructuredContentProvider {
+
+   class PolicyContentProvider implements ITreeContentProvider {
 
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
       }
@@ -175,37 +126,33 @@ public class PolicyTableViewer {
       }
 
       private void populateSubjectsFromDb() {
-         Collection<AccessControlData> datas = accessManager.getAccessControlList(object);
+         Collection<AccessControlData> data = AccessControlManager.getAccessControlList(object);
 
-         for (AccessControlData data : datas) {
-            if (!accessControlList.containsKey(data.getSubject().getGuid()) && data.getPermission() != PermissionEnum.LOCK) accessControlList.put(
-                  data.getSubject().getGuid(), data);
+         for (AccessControlData entry : data) {
+            if (isUniqueUnlockedEntry(entry)) accessControlList.put(entry.getSubject().getGuid(), entry);
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IFilterListViewer#addFilter(FilterModel)
-       */
-      public void addFilter(AccessControlData data) {
-         tableViewer.add(data);
+      private boolean isUniqueUnlockedEntry(AccessControlData entry) {
+         String subjectGuid = entry.getSubject().getGuid();
+         boolean isUnique = !accessControlList.containsKey(subjectGuid);
+         boolean isUnlocked = entry.getPermission() != PermissionEnum.LOCK;
+         return isUnique && isUnlocked;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IFilterListViewer#removeFilter(FilterModel)
-       */
-      public void removeFilter(AccessControlData data) {
-         tableViewer.remove(data);
+      @Override
+      public Object[] getChildren(Object parentElement) {
+         return getElements(parentElement);
       }
-   }
 
-   /**
-    * @return the columnNames
-    */
-   public String[] getColumnNames() {
-      return columnNames;
+      @Override
+      public Object getParent(Object element) {
+         return null;
+      }
+
+      @Override
+      public boolean hasChildren(Object element) {
+         return false;
+      }
    }
 }

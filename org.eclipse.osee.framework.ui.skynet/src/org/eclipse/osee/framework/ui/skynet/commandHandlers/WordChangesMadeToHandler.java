@@ -90,7 +90,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
 
          try {
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
-            boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
+            boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);
             boolean wordArtifactSelected = changedArtifact.isOfType(WordArtifact.ARTIFACT_NAME);
             isEnabled = readPermission && wordArtifactSelected;
          } catch (Exception ex) {

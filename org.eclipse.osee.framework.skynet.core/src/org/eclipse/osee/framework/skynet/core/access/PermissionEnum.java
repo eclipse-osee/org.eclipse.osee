@@ -51,16 +51,10 @@ public enum PermissionEnum {
       this.name = name;
    }
 
-   /**
-    * @return Returns the level.
-    */
    public int getRank() {
       return permissionId;
    }
 
-   /**
-    * @return Returns the name.
-    */
    public String getName() {
       return name;
    }
@@ -77,9 +71,6 @@ public enum PermissionEnum {
       return NAME_ARRAY;
    }
 
-   /**
-    * @return Returns the permId.
-    */
    public int getPermId() {
       return permissionId;
    }

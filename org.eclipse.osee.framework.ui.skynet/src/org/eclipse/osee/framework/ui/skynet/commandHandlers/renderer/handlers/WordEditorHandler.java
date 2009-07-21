@@ -29,13 +29,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class WordEditorHandler extends AbstractEditorHandler {
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
@@ -51,9 +44,6 @@ public class WordEditorHandler extends AbstractEditorHandler {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler#getPermissionLevel()
-    */
    @Override
    protected PermissionEnum getPermissionLevel() {
       return PermissionEnum.WRITE;
@@ -73,7 +63,7 @@ public class WordEditorHandler extends AbstractEditorHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
+         isEnabled = AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
       }
 
       for (Artifact artifact : artifacts) {

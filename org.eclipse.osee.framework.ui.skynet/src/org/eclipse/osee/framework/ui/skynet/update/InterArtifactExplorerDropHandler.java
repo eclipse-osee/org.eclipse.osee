@@ -58,7 +58,7 @@ public class InterArtifactExplorerDropHandler {
    }
 
    public boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return AccessControlManager.checkObjectPermission(destinationBranch, PermissionEnum.WRITE) && AccessControlManager.checkObjectPermission(
+      return AccessControlManager.hasPermission(destinationBranch, PermissionEnum.WRITE) && AccessControlManager.hasPermission(
             sourceBranch, PermissionEnum.READ);
    }
 

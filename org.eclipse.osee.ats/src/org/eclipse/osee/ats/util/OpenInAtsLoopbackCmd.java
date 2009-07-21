@@ -47,7 +47,7 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
          try {
             boolean hasPermissionToRead = false;
             try {
-               hasPermissionToRead = AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
+               hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

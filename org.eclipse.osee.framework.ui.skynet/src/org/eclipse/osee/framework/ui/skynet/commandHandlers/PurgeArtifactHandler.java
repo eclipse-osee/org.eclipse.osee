@@ -97,8 +97,8 @@ public class PurgeArtifactHandler extends CommandHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
          isEnabled =
-               AccessControlManager.isOseeAdmin() && AccessControlManager.getInstance().checkObjectListPermission(
-                     artifacts, PermissionEnum.WRITE);
+               AccessControlManager.isOseeAdmin() && AccessControlManager.checkObjectListPermission(artifacts,
+                     PermissionEnum.WRITE);
       }
       return isEnabled;
    }

@@ -54,7 +54,7 @@ public class XViewerTestFactory extends XViewerFactory {
 
    public XViewerTestFactory() {
       super("xviewer.test");
-      registerColumn(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Last_Run_Date, Category, Notification,
+      registerColumns(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Last_Run_Date, Category, Notification,
             Description, Other_Description);
    }
 

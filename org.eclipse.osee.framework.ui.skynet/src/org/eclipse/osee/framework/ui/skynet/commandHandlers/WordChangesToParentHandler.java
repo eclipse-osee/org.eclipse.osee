@@ -102,7 +102,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             boolean wordArtifactSelected = changedArtifact.isOfType(WordArtifact.ARTIFACT_NAME);
             boolean validDiffParent = wordArtifactSelected && reportBranch.hasParentBranch();
 
-            boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
+            boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);
             boolean modifiedWordArtifactSelected =
                   wordArtifactSelected && mySelectedArtifactChange.getModificationType() == MODIFIED;
             isEnabled = validDiffParent && modifiedWordArtifactSelected && readPermission;

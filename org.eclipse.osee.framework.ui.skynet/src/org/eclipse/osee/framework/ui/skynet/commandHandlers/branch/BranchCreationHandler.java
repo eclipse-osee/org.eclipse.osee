@@ -113,7 +113,7 @@ public class BranchCreationHandler extends CommandHandler {
          return false;
       }
 
-      enabled = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
+      enabled = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
       return enabled;
    }
 }

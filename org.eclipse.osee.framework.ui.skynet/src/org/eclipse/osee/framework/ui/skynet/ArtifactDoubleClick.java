@@ -61,7 +61,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "The artifact associated with the double-click was null");
       } else {
          try {
-            if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+            if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
                artifacts.add(artifact);
 

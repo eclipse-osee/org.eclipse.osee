@@ -56,19 +56,17 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
          "INSERT INTO " + SkynetDatabase.BRANCH_TABLE_ACL + " (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
+
    private static final String UPDATE_ARTIFACT_ACL =
          "UPDATE " + SkynetDatabase.ARTIFACT_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
    private static final String UPDATE_BRANCH_ACL =
          "UPDATE " + SkynetDatabase.BRANCH_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
+
    private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
          "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
-
    private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
          "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
-   private static final String DELETE_ARTIFACT_ACL =
-         "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
-   private static final String DELETE_BRANCH_ACL =
-         "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE privilege_entity_id = ? AND branch_id =?";
+
    private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH =
          "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE  branch_id =?";
    private static final String DELETE_BRANCH_ACL_FROM_BRANCH =
@@ -80,34 +78,21 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
    }
 
-   private final DoubleKeyHashMap<Integer, Object, PermissionEnum> accessControlListCache;
-   // <objectId, branchId>
-   private final DoubleKeyHashMap<Integer, Integer, AccessObject> accessObjectCache;
-   private final Map<Integer, BranchAccessObject> branchAccessObjectCache;
-   private final HashCollection<AccessObject, Integer> objectToSubjectCache;
-   // <subjectId, groupId>
-   private final HashCollection<Integer, Integer> subjectToGroupCache;
-   // <groupId, subjectId>
-   private final HashCollection<Integer, Integer> groupToSubjectsCache;
-   // <artId, branchId>
-   private final Map<Integer, Integer> objectToBranchLockCache;
-   // object, subject
-   private final Map<Integer, Integer> lockedObjectToSubject;
-   // subject, permission
-   private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
+   private static DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
+   private static HashCollection<AccessObject, Integer> objectToSubjectCache; // <subjectId, groupId>
+   private static HashCollection<Integer, Integer> subjectToGroupCache; // <groupId, subjectId>
+   private static HashCollection<Integer, Integer> groupToSubjectsCache; // <artId, branchId>
+   private static Map<Integer, Integer> objectToBranchLockCache; // object, subject
+   private static Map<Integer, Integer> lockedObjectToSubject; // subject, permission
+   private static HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
 
    private static final AccessControlManager instance = new AccessControlManager();
 
-   public static AccessControlManager getInstance() {
-      return instance;
-   }
+   /*   public static AccessControlManager getInstance() {
+         return instance;
+      }*/
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
-    */
-   public void onManagerWebInit() throws Exception {
+   public static void onManagerWebInit() throws Exception {
 
       // This can result in a call to SkynetAuthentication, so it must be here (instead of in the
       // constructor) to stop a cycle from occurring.
@@ -115,15 +100,13 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private AccessControlManager() {
-      this.accessControlListCache = new DoubleKeyHashMap<Integer, Object, PermissionEnum>();
-      this.accessObjectCache = new DoubleKeyHashMap<Integer, Integer, AccessObject>();
-      this.objectToSubjectCache = new HashCollection<AccessObject, Integer>();
-      this.branchAccessObjectCache = new HashMap<Integer, BranchAccessObject>();
-      this.subjectToGroupCache = new HashCollection<Integer, Integer>();
-      this.groupToSubjectsCache = new HashCollection<Integer, Integer>();
-      this.objectToBranchLockCache = new HashMap<Integer, Integer>();
-      this.lockedObjectToSubject = new HashMap<Integer, Integer>();
-      this.subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
+      accessControlListCache = new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
+      objectToSubjectCache = new HashCollection<AccessObject, Integer>();
+      subjectToGroupCache = new HashCollection<Integer, Integer>();
+      groupToSubjectsCache = new HashCollection<Integer, Integer>();
+      objectToBranchLockCache = new HashMap<Integer, Integer>();
+      lockedObjectToSubject = new HashMap<Integer, Integer>();
+      subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
 
       try {
          populateAccessControlLists();
@@ -134,43 +117,12 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       OseeEventManager.addListener(this);
    }
 
-   /**
-    * populates all of the access control lists.
-    * 
-    * @throws OseeCoreException
-    */
-   private void populateAccessControlLists() throws OseeCoreException {
+   private static void populateAccessControlLists() throws OseeCoreException {
       populateArtifactAccessControlList();
       populateBranchAccessControlList();
-      // populateSubjectsAccessControlList();
    }
 
-   // TODO:: Enable Subject Based Control
-   // /**
-   // * populates subjects access control list
-   // */
-   // private void populateSubjectsAccessControlList() {
-   // ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-   // // select * from table order by subject_id
-   // // subject_id, permission_id
-   // try {
-   // while (chStmt.next()) {
-   // subjectToPermissionCache.put(chStmt.getRset().getInt("subject_id"),
-   // PermissionEnum.getPermission(chStmt.getRset().getInt("permission_id")));
-   // }
-   // }
-   // catch (SQLException ex) {
-   // OseeLog.log(Activator.class, Level.SEVERE, ex);
-   // }
-   // finally {
-   // chStmt.close();
-   // }
-   // }
-
-   /**
-    * populates the branch access control list.
-    */
-   private void populateBranchAccessControlList() throws OseeCoreException {
+   private static void populateBranchAccessControlList() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
@@ -179,7 +131,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             Integer branchId = chStmt.getInt("branch_id");
             int subjectArtifactTypeId = chStmt.getInt("art_type_id");
             PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
-            BranchAccessObject branchAccessObject = getBranchAccessObject(branchId);
+            BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
 
             accessControlListCache.put(subjectId, branchAccessObject, permission);
             objectToSubjectCache.put(branchAccessObject, subjectId);
@@ -193,13 +145,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   /**
-    * popualtes the artifact access control list cache
-    * 
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    */
-   private void populateArtifactAccessControlList() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private static void populateArtifactAccessControlList() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
@@ -215,7 +161,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                objectToBranchLockCache.put(objectId, branchId);
                lockedObjectToSubject.put(objectId, subjectId);
             } else {
-               AccessObject accessObject = getArtifactAccessObject(objectId, branchId);
+               AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branchId);
                cacheAccessObject(objectId, subjectId, permission, accessObject);
 
                if (ArtifactTypeManager.getType(subjectArtifactTypeId).isTypeCompatible("User Group")) {
@@ -228,7 +174,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   private void populateGroupMembers(Integer groupId) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private static void populateGroupMembers(Integer groupId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
@@ -249,25 +195,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   /**
-    * Checks permission for the subject.
-    * 
-    * @param permission
-    * @return true if the subject has permission.
-    * @throws OseeCoreException
-    */
-   public boolean checkSubjectPermission(PermissionEnum permission) throws OseeCoreException {
-      return checkObjectPermission(UserManager.getUser(), permission);
-   }
-
-   /**
-    * Checks permission for the subject.
-    * 
-    * @param subject
-    * @param permission
-    * @return true if the subject has permission.
-    */
-   public boolean checkSubjectPermission(Artifact subject, PermissionEnum permission) {
+   public static boolean checkSubjectPermission(Artifact subject, PermissionEnum permission) {
       boolean isValid = false;
 
       if (subjectToPermissionCache.containsKey(subject.getArtId())) {
@@ -280,7 +208,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return isValid;
    }
 
-   public boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) throws OseeCoreException {
+   public static boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) throws OseeCoreException {
       boolean isValid = true;
 
       if (objectList.isEmpty()) {
@@ -288,43 +216,25 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
 
       for (Object object : objectList) {
-         isValid &= checkObjectPermission(object, permission);
+         isValid &= hasPermission((IAccessControllable) object, permission);
       }
       return isValid;
    }
 
-   /**
-    * Check permissions for the currently authenticated user.
-    * 
-    * @param object
-    * @param permission
-    * @return true if the subject has permission for an object else false.
-    * @throws OseeCoreException
-    */
-   public static boolean checkObjectPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-      return checkObjectPermission(UserManager.getUser(), object, permission);
+   public static boolean hasPermission(IAccessControllable object, PermissionEnum permission) throws OseeCoreException {
+      return hasPermission(UserManager.getUser(), object, permission);
    }
 
-   public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) throws OseeCoreException {
-      return checkObjectPermission(object, permission);
-   }
-
-   public PermissionEnum getObjectPermission(Artifact subject, Object object) {
+   public static PermissionEnum getObjectPermission(Artifact subject, IAccessControllable object) {
       for (PermissionEnum permissionEnum : PermissionEnum.values()) {
-         boolean result = checkObjectPermission(subject, object, permissionEnum);
+         boolean result = hasPermission(subject, object, permissionEnum);
          System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
          if (result) return permissionEnum;
       }
       return PermissionEnum.FULLACCESS;
    }
 
-   /**
-    * @param subject
-    * @param object
-    * @param permission
-    * @return true if the subject has permission for an object else false.
-    */
-   public static boolean checkObjectPermission(Artifact subject, Object object, PermissionEnum permission) {
+   private static boolean hasPermission(Artifact subject, IAccessControllable object, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       PermissionEnum branchPermission = null;
       Branch branch = null;
@@ -332,13 +242,13 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       if (object instanceof Artifact) {
          Artifact artifact = (Artifact) object;
          branch = artifact.getBranch();
-         userPermission = instance.getArtifactPermission(subject, (Artifact) object, permission);
+         userPermission = getArtifactPermission(subject, (Artifact) object, permission);
       } else if (object instanceof Branch) {
          branch = (Branch) object;
       } else
          throw new IllegalStateException("Unhandled object type for access control - " + object);
 
-      branchPermission = instance.getBranchPermission(subject, branch, permission);
+      branchPermission = getBranchPermission(subject, branch, permission);
 
       if (branchPermission != null && (branchPermission.equals(PermissionEnum.DENY) || (userPermission == null && userPermission != PermissionEnum.LOCK))) {
          userPermission = branchPermission;
@@ -354,10 +264,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return userPermission.getRank() >= permission.getRank() && !userPermission.equals(PermissionEnum.DENY);
    }
 
-   public PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
+   private static PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
       PermissionEnum userPermission = null;
-      AccessObject accessObject = null;
-      accessObject = branchAccessObjectCache.get(branch.getBranchId());
+      AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
       if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;
@@ -367,7 +276,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return userPermission;
    }
 
-   public PermissionEnum getArtifactPermission(Artifact subject, Artifact artifact, PermissionEnum permission) {
+   public static PermissionEnum getArtifactPermission(Artifact subject, Artifact artifact, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = null;
 
@@ -378,7 +287,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       Integer branchId = artifact.getBranch().getBranchId();
       Integer lockedBranchId;
 
-      accessObject = accessObjectCache.get(artId, branchId);
+      //      accessObject = accessObjectCache.get(artId, branchId);
+      accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artId, branchId);
 
       if (objectToBranchLockCache.containsKey(artId)) {
          lockedBranchId = objectToBranchLockCache.get(artId);
@@ -395,10 +305,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return userPermission;
    }
 
-   /**
-    * @return The subjects permission on an accessObject.
-    */
-   private PermissionEnum acquirePermissionRank(Artifact subject, AccessObject accessObject, PermissionEnum permission) {
+   private static PermissionEnum acquirePermissionRank(Artifact subject, AccessObject accessObject, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       int subjectId = subject.getArtId();
 
@@ -422,18 +329,11 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return userPermission;
    }
 
-   public void persistPermission(AccessControlData data) {
+   public static void persistPermission(AccessControlData data) {
       persistPermission(data, false);
    }
 
-   /**
-    * Sets a permission on the object for the subject.
-    * 
-    * @param subject
-    * @param object
-    * @param permission
-    */
-   public void setPermission(Artifact subject, Object object, PermissionEnum permission) {
+   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
       AccessObject accessObject = getAccessObject(object);
 
       boolean newAccessControlData = !accessControlListCache.containsKey(subject.getArtId(), accessObject);
@@ -444,12 +344,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   /**
-    * persists an AccessControlData. This should be used internal to the AccessControl framework.
-    * 
-    * @param data
-    */
-   protected void persistPermission(AccessControlData data, boolean recurse) {
+   protected static void persistPermission(AccessControlData data, boolean recurse) {
       Artifact subject = data.getSubject();
       PermissionEnum permission = data.getPermission();
 
@@ -513,7 +408,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   private void cacheAccessControlData(AccessControlData data) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private static void cacheAccessControlData(AccessControlData data) throws OseeTypeDoesNotExist, OseeDataStoreException {
       AccessObject accessObject = data.getObject();
       int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();
@@ -526,22 +421,12 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   /**
-    * @param object
-    * @return collection of subjects and their permissions to access the object.
-    */
-   public List<AccessControlData> getAccessControlList(Object object) {
+   public static List<AccessControlData> getAccessControlList(Object object) {
       List<AccessControlData> datas = new LinkedList<AccessControlData>();
       AccessObject accessObject = null;
 
       try {
-         if (object instanceof Artifact) {
-            Artifact artifact = (Artifact) object;
-            accessObject = accessObjectCache.get(artifact.getArtId(), artifact.getBranch().getBranchId());
-         } else if (object instanceof Branch) {
-            Branch branch = (Branch) object;
-            accessObject = branchAccessObjectCache.get(branch.getBranchId());
-         }
+         accessObject = AccessObject.getAccessObjectFromCache(object);
 
          if (accessObject == null) return datas;
 
@@ -553,7 +438,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return datas;
    }
 
-   private List<AccessControlData> generateAccessControlList(AccessObject accessObject) throws OseeCoreException {
+   private static List<AccessControlData> generateAccessControlList(AccessObject accessObject) throws OseeCoreException {
       List<AccessControlData> datas = new LinkedList<AccessControlData>();
 
       Collection<Integer> subjects = objectToSubjectCache.getValues(accessObject);
@@ -578,47 +463,29 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeCoreException {
-      Branch branch = null;
-      if (object instanceof BranchAccessObject) {
-         branch = BranchManager.getBranch(((BranchAccessObject) object).getBranchId());
-      } else if (object instanceof ArtifactAccessObject) {
-         branch = BranchManager.getBranch(((ArtifactAccessObject) object).getBranchId());
-      }
-      return AccessControlManager.getInstance().getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
+   private static PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeCoreException {
+      int branchId = ((AccessObject) object).getBranchId();
+      Branch branch = BranchManager.getBranch(branchId);
+
+      return AccessControlManager.getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
    }
 
-   /**
-    * Remove an item from their access control list
-    * 
-    * @param data
-    * @throws OseeDataStoreException
-    */
-   public void removeAccessControlData(AccessControlData data, boolean removeFromDb) throws OseeDataStoreException {
-      if (data.getObject() instanceof ArtifactAccessObject) {
-         ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
-         
-         if(removeFromDb){
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
-               object.getBranchId());
-         }
-         accessControlListCache.remove(object.getArtId(), object.getBranchId());
-
-      } else if (data.getObject() instanceof BranchAccessObject) {
-         BranchAccessObject object = (BranchAccessObject) data.getObject();
-         
-         if(removeFromDb){
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
-         }
-         branchAccessObjectCache.remove(object.getBranchId());
+   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {
+      int subjectId = data.getSubject().getArtId();
+      AccessObject accessControlledObject = data.getObject();
+      if (removeFromDb) {
+         accessControlledObject.removeFromDatabase(subjectId);
       }
+
+      if (accessControlledObject instanceof ArtifactAccessObject) {
+         accessControlledObject.removeFromCache();
+         // accessControlledObject.removeFromCache(accessControlListCache);
+      }
+      // branchAccessObjectCache.remove(object.getBranchId()); (commented out due to 3KJSW)
       deCacheAccessControlData(data);
    }
 
-   /**
-    * @param data
-    */
-   private void deCacheAccessControlData(AccessControlData data) {
+   private static void deCacheAccessControlData(AccessControlData data) {
       if (data == null) throw new IllegalArgumentException("Can not remove a null AccessControlData.");
 
       AccessObject accessObject = data.getObject();
@@ -634,70 +501,20 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          }
       }
       if (!objectToSubjectCache.containsKey(accessObject)) {
-         if (accessObject instanceof ArtifactAccessObject) {
-            ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) accessObject;
-            accessObjectCache.remove(artifactAccessObject.getArtId(), artifactAccessObject.getBranchId());
-         } else if (accessObject instanceof BranchAccessObject) {
-            BranchAccessObject branchAccessObject = (BranchAccessObject) accessObject;
-            branchAccessObjectCache.remove(branchAccessObject.getBranchId());
-         }
+         accessObject.removeFromCache();
       }
    }
 
-   /**
-    * @param object
-    */
-   public AccessObject getAccessObject(Object object) {
-      AccessObject accessObject = null;
-
-      if (object instanceof Branch) {
-         accessObject = getBranchAccessObject(((Branch) object).getBranchId());
-      } else if (object instanceof Artifact) {
-         Artifact artifact = (Artifact) object;
-         Integer objectId = artifact.getArtId();
-         Integer branchId = artifact.getBranch().getBranchId();
-
-         accessObject = getArtifactAccessObject(objectId, branchId);
-      }
-      return accessObject;
+   public static AccessObject getAccessObject(Object object) {
+      return AccessObject.getAccessObject(object);
    }
 
-   private ArtifactAccessObject getArtifactAccessObject(Integer objectId, Integer branchId) {
-      ArtifactAccessObject accessObject = (ArtifactAccessObject) getAccessObjectIfCached(objectId, branchId);
-
-      if (accessObject == null) {
-         accessObject = new ArtifactAccessObject(objectId, branchId);
-         accessObjectCache.put(objectId, branchId, accessObject);
-      }
-      return accessObject;
-   }
-
-   private AccessObject getAccessObjectIfCached(Integer objectId, Integer branchId) {
-      AccessObject accessObject = null;
-
-      if (accessObjectCache.containsKey(objectId, branchId)) {
-         accessObject = accessObjectCache.get(objectId, branchId);
-      }
-      return accessObject;
-   }
-
-   private BranchAccessObject getBranchAccessObject(Integer branchId) {
-      BranchAccessObject branchAccessObject;
-      if (branchAccessObjectCache.containsKey(branchId)) {
-         branchAccessObject = branchAccessObjectCache.get(branchId);
-      } else {
-         branchAccessObject = new BranchAccessObject(branchId);
-         branchAccessObjectCache.put(branchId, branchAccessObject);
-      }
-      return branchAccessObject;
-   }
-
-   private void cacheAccessObject(Integer objectId, Integer subjectId, PermissionEnum permission, AccessObject accessObject) {
+   private static void cacheAccessObject(Integer objectId, Integer subjectId, PermissionEnum permission, AccessObject accessObject) {
       accessControlListCache.put(subjectId, accessObject, permission);
       objectToSubjectCache.put(accessObject, subjectId);
    }
 
-   public void lockObject(Artifact object, Artifact subject) {
+   public static void lockObject(Artifact object, Artifact subject) {
       Integer objectArtId = object.getArtId();
       Integer subjectArtId = subject.getArtId();
       Integer objectBranchId = object.getBranch().getBranchId();
@@ -709,7 +526,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
          try {
-            OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsLocked,
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked,
                   new LoadedArtifacts(object));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -717,7 +534,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   public void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public static void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       Integer objectArtId = object.getArtId();
       Integer branchId = object.getBranch().getBranchId();
       Integer lockedBranchId;
@@ -727,49 +544,37 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          if (branchId.equals(lockedBranchId)) {
             AccessObject accessObject = getAccessObject(object);
-            removeAccessControlData(new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false), true);
+            removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsUnlocked,
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked,
                   new LoadedArtifacts(object));
          }
       }
    }
 
-   /**
-    * Removes all locks from a branch
-    */
-   public void removeAllPermissionsFromBranch(OseeConnection connection, Branch branch) throws OseeCoreException {
+   public static void removeAllPermissionsFromBranch(OseeConnection connection, Branch branch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
       ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
    }
 
-   /**
-    * @return - Returns true if the object has been locked on any branch.
-    */
    public static boolean hasLock(Artifact object) {
       if (!object.isInDb()) return false;
 
-      return instance.objectToBranchLockCache.containsKey(object.getArtId());
+      return objectToBranchLockCache.containsKey(object.getArtId());
    }
 
-   /**
-    * @return - Returns true if the subject locked the object else false.
-    */
    public static boolean canUnlockObject(Artifact object, Artifact subject) {
-      Integer subjectId = instance.lockedObjectToSubject.get(object.getArtId());
+      Integer subjectId = lockedObjectToSubject.get(object.getArtId());
       return subjectId != null && subjectId.intValue() == subject.getArtId();
    }
 
-   /**
-    * @return - Returns the subject who has the artifact locked or null if the object is not locked.
-    */
    public static Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException {
       Artifact subject = null;
 
       if (object instanceof Artifact) {
-         Integer subjectArtId = instance.lockedObjectToSubject.get(((Artifact) object).getArtId());
+         Integer subjectArtId = lockedObjectToSubject.get(((Artifact) object).getArtId());
 
          if (subjectArtId != null) {
             subject = UserManager.getUserByArtId(subjectArtId);
@@ -778,10 +583,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return subject;
    }
 
-   /**
-    * @return Returns true if the object is being accessed on the same branch it was locked on.
-    */
-   public boolean hasLockAccess(Artifact object) {
+   public static boolean hasLockAccess(Artifact object) {
       boolean hasAccess = false;
 
       if (!object.isInDb()) {
@@ -794,23 +596,18 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return hasAccess;
    }
 
-   /**
-    * @return whether the current user belongs to the OSEE Administration System Group
-    * @throws OseeCoreException
-    */
    public static boolean isOseeAdmin() throws OseeCoreException {
       return SystemGroup.OseeAdmin.isCurrentUserMember();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (branchModType == BranchEventType.Deleted) {
          try {
-            for (AccessControlData accessControlData : generateAccessControlList(branchAccessObjectCache.get(branchId))) {
-               AccessControlManager.getInstance().removeAccessControlData(accessControlData, sender.isLocal());
+            BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
+            List<AccessControlData> acl = generateAccessControlList(branchAccessObject);
+            for (AccessControlData accessControlData : acl) {
+               AccessControlManager.removeAccessControlDataIf(sender.isLocal(), accessControlData);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -818,23 +615,18 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            for (AccessControlData accessControlData : generateAccessControlList(accessObjectCache.get(
-                  artifact.getArtId(), artifact.getBranch().getBranchId()))) {
-               AccessControlManager.getInstance().removeAccessControlData(accessControlData, sender.isLocal());
+            ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(artifact);
+            List<AccessControlData> acl = generateAccessControlList(artifactAccessObject);
+            for (AccessControlData accessControlData : acl) {
+               AccessControlManager.removeAccessControlDataIf(sender.isLocal(), accessControlData);
             }
          }
       } catch (OseeCoreException ex) {

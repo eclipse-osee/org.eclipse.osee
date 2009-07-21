@@ -46,7 +46,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(branch_name, time_stamp, author, comment, associatedArtifact, branchState, branchType,
+      registerColumns(branch_name, time_stamp, author, comment, associatedArtifact, branchState, branchType,
             parentBranch);
    }
 
