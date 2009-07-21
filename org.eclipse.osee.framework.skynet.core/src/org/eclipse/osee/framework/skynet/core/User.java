@@ -143,7 +143,7 @@ public class User extends Artifact implements Serializable {
       if (!found) {
          addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
       }
-      persistAttributes();
+      setSetting(favoriteBranchAttributeName, String.valueOf(favoriteBranch.getBranchId()));
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
