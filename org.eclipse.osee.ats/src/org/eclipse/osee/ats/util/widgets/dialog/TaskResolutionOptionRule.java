@@ -61,7 +61,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule =
-               new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
+               new TaskResolutionOptionRule(null, GUID.create(), null);
          taskResolutionOptionRule.fromXml(workItemDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
          return taskResolutionOptionRule;
       }

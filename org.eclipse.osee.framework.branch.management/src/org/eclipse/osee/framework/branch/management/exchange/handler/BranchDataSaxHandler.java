@@ -161,28 +161,28 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeDataStoreException {
-      Map<String, BranchData> nameToImportFileBranchData = new HashMap<String, BranchData>();
+      Map<String, BranchData> guidToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
-         nameToImportFileBranchData.put(data.getBranchName(), data);
+         guidToImportFileBranchData.put(data.getBranchGuid(), data);
       }
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
-            String name = chStmt.getString(BranchData.BRANCH_NAME);
+            String branchGuid = chStmt.getString(BranchData.BRANCH_GUID);
             Long branchId = chStmt.getLong(BranchData.BRANCH_ID);
-            BranchData branchData = nameToImportFileBranchData.get(name);
+            BranchData branchData = guidToImportFileBranchData.get(branchGuid);
             if (branchData != null) {
                getTranslator().checkIdMapping("branch_id", (long) branchData.getBranchId(), branchId);
                // Remove from to store list so we don't store duplicate information
-               nameToImportFileBranchData.remove(name);
+               guidToImportFileBranchData.remove(branchGuid);
             }
          }
       } finally {
          chStmt.close();
       }
-      return nameToImportFileBranchData.values();
+      return guidToImportFileBranchData.values();
    }
 
    /* (non-Javadoc)

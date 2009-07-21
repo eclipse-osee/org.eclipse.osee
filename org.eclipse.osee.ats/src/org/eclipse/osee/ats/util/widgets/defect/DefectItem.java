@@ -35,7 +35,7 @@ public class DefectItem {
    private String location = "";
    private String resolution = "";
    private User user;
-   private String guid = GUID.generateGuidStr();
+   private String guid = GUID.create();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;

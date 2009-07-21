@@ -55,5 +55,4 @@ public class BranchManagerServlet extends OseeHttpServlet {
       resp.getWriter().flush();
       resp.getWriter().close();
    }
-
 }

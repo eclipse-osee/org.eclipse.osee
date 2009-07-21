@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResol
  */
 public class DiagramNode {
 
-   private String id = GUID.generateGuidStr();
+   private String id = GUID.create();
    private String name;
    private ArrayList<DiagramNode> fromPages = new ArrayList<DiagramNode>();
    private ArrayList<DiagramNode> toPages = new ArrayList<DiagramNode>();

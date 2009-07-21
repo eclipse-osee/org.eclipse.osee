@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -36,7 +37,7 @@ public class BranchCreation implements IBranchCreation {
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_txs txs1, osee_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
 
    private static final String BRANCH_TABLE_INSERT =
-         "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
 
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
@@ -96,10 +97,10 @@ public class BranchCreation implements IBranchCreation {
 
       private int initializeBranch(OseeConnection connection, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws OseeDataStoreException, OseeArgumentException {
          int branchId = SequenceManager.getNextBranchId();
-
-         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchName, parentBranchId,
-               parentTransactionId, 0, associatedArtifactId, branchType.getValue(), branchState.getValue());
-
+         String branchGuid = GUID.create();
+         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchGuid, branchName,
+               parentBranchId, parentTransactionId, 0, associatedArtifactId, branchType.getValue(),
+               branchState.getValue());
          return branchId;
       }
 

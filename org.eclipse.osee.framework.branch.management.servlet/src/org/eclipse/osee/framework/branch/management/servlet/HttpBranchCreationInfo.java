@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 class HttpBranchCreationInfo {
    private int parentBranchId;
    private int parentTransactionId;
-   private String branchName;
-   private String creationComment;
-   private int associatedArtifactId;
-   private int authorId;
-   private String staticBranchName;
-   private BranchType branchType;
+   private final String branchName;
+   private final String creationComment;
+   private final int associatedArtifactId;
+   private final int authorId;
+   private final String staticBranchName;
+   private final BranchType branchType;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws OseeArgumentException {
       String parentBranchIdStr = req.getParameter("parentBranchId");

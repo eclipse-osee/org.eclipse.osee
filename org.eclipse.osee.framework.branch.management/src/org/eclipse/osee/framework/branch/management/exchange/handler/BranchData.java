@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public final class BranchData implements Cloneable {
    public static final String BRANCH_NAME = "branch_name";
+   public static final String BRANCH_GUID = "branch_guid";
    public static final String BRANCH_ID = "branch_id";
    private static final String BRANCH_TYPE = "branch_type";
    public static final String COMMIT_ART_ID = "associated_art_id";
@@ -63,6 +64,10 @@ public final class BranchData implements Cloneable {
 
    public int getParentTransactionId() {
       return (Integer) backingData.get(PARENT_TRANSACTION_ID);
+   }
+
+   public String getBranchGuid() {
+      return (String) backingData.get(BRANCH_GUID);
    }
 
    public Object[] toArray(MetaData metadata) {

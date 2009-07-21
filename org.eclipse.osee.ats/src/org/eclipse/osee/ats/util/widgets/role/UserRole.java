@@ -31,7 +31,7 @@ public class UserRole {
    private Role role = Role.Reviewer;
    private User user;
    private Double hoursSpent = null;
-   private String guid = GUID.generateGuidStr();
+   private String guid = GUID.create();
    private Boolean completed = false;
 
    public static enum Role {

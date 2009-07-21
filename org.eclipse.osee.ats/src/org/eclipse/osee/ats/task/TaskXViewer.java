@@ -58,7 +58,7 @@ public class TaskXViewer extends WorldXViewer {
    private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
    private boolean addDeleteTaskEnabled = false;
-   private static String viewerId = GUID.generateGuidStr();
+   private static String viewerId = GUID.create();
 
    /**
     * @param parent
