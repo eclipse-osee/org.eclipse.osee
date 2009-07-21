@@ -12,16 +12,15 @@ package org.eclipse.osee.framework.jdk.core.reportdata;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public class ReportDataItem implements Serializable {
 
    private static final long serialVersionUID = 7072248922173369711L;
 
-   private GUID guid;
-   private ArrayList<String> cells;
+   private final String guid;
+   private final ArrayList<String> cells;
 
-   public ReportDataItem(GUID guid, ArrayList<String> items) {
+   public ReportDataItem(String guid, ArrayList<String> items) {
       this.guid = guid;
       this.cells = items;
    }
@@ -29,7 +28,7 @@ public class ReportDataItem implements Serializable {
    /**
     * @return Returns the guid.
     */
-   public GUID getGuid() {
+   public String getGuid() {
       return guid;
    }
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
-import java.io.Serializable;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import sun.misc.CharacterEncoder;
 
@@ -19,91 +17,59 @@ import sun.misc.CharacterEncoder;
  * @author Ryan D. Brooks
  * @author Robert A. Fisher
  */
-public class GUID implements Serializable {
-   private final long time;
-   private final int hash;
-   private final int rand;
-   private final String guidString;
-   private static final long serialVersionUID = -3849714490764637010L;
+public class GUID {
+   private final static Pattern pattern = Pattern.compile("[0-9A-Za-z\\+_=]{20,22}");
 
    private static final ThreadLocal<byte[]> threadLocalBytes = new ThreadLocal<byte[]>() {
+      @Override
       protected synchronized byte[] initialValue() {
-         return new byte[16];
+         return new byte[15];
       }
    };
 
    private static final ThreadLocal<CharacterEncoder> threadLocalEncoder = new ThreadLocal<CharacterEncoder>() {
+      @Override
       protected synchronized CharacterEncoder initialValue() {
          return new sun.misc.BASE64Encoder();
       }
    };
 
+   private GUID() {
+   }
+
+   public static String create() {
+      long time = System.nanoTime();
+      long rand = (long) (Math.random() * Long.MAX_VALUE);
+
+      // 120-bit value
+      byte[] rawValue = chopMostSignificantByte(time, rand);
+      CharacterEncoder base64Encoder = threadLocalEncoder.get();
+      return base64Encoder.encode(rawValue).replaceAll("/", "_");
+   }
+
    public static boolean isValid(String guid) {
-      if (guid.length() != 22) {
-         return false;
-      }
-      Matcher m = Pattern.compile("^[0-9A-Za-z\\+_]+$").matcher(guid);
-      if (!m.find()) {
-         return false;
-      }
-      return true;
+      return pattern.matcher(guid).matches();
    }
 
-   public GUID() {
-      this(GUIDType.ARTIFACT);
-   }
+   private static byte[] chopMostSignificantByte(long high, long low) {
+      byte[] writeBuffer = threadLocalBytes.get();
+      // Omit the first byte (high >>> 56);
+      writeBuffer[0] = (byte) (high >>> 48);
+      writeBuffer[1] = (byte) (high >>> 40);
+      writeBuffer[2] = (byte) (high >>> 32);
+      writeBuffer[3] = (byte) (high >>> 24);
+      writeBuffer[4] = (byte) (high >>> 16);
+      writeBuffer[5] = (byte) (high >>> 8);
+      writeBuffer[6] = (byte) (high >>> 0);
 
-   public GUID(GUIDType type) {
-      this.time = System.currentTimeMillis();
-      this.hash = Thread.currentThread().hashCode();
-      this.rand = (int) (Math.random() * Integer.MAX_VALUE);
-
-      this.guidString = toGuidString(time, hash, rand, type);
-   }
-
-   public static String generateGuidStr() {
-      return generateGuidStr(GUIDType.ARTIFACT);
-   }
-
-   public static String generateGuidStr(GUIDType type) {
-      long time = System.currentTimeMillis();
-      int hash = Thread.currentThread().hashCode();
-      int rand = (int) (Math.random() * Integer.MAX_VALUE);
-      return toGuidString(time, hash, rand, type);
-   }
-
-   private static String toGuidString(long time, int hash, int rand, GUIDType type) {
-      byte[] rawBytes = (byte[]) threadLocalBytes.get();
-      ByteUtil.toBytes(rawBytes, 0, time);
-      ByteUtil.toBytes(rawBytes, 8, hash);
-      ByteUtil.toBytes(rawBytes, 12, rand);
-
-      CharacterEncoder base64Encoder = (CharacterEncoder) threadLocalEncoder.get();
-      /*
-       * 64 = 2^6 64^22 > 2^128 (2^6)^22 > 2^128 2^132 > 2^128 thus a 22 digit base64 number is
-       * needed to represent a 16 byte number
-       */
-      return type + base64Encoder.encode(rawBytes).replace('/', '_').substring(1, 22);
-   }
-
-   public boolean equals(Object other) {
-
-      if (other instanceof GUID) {
-         return this.time == ((GUID) other).time && this.hash == ((GUID) other).hash && this.rand == ((GUID) other).rand;
-      }
-
-      return false;
-   }
-
-   public int hashCode() {
-      int result = 17;
-      result = result + (int) (time ^ (time >>> 32));
-      result = 37 * result + hash;
-      result = 37 * result + rand;
-      return result;
-   }
-
-   public String toString() {
-      return guidString;
+      writeBuffer[7] = (byte) (low >>> 56);
+      writeBuffer[8] = (byte) (low >>> 48);
+      writeBuffer[9] = (byte) (low >>> 40);
+      writeBuffer[10] = (byte) (low >>> 32);
+      writeBuffer[11] = (byte) (low >>> 24);
+      writeBuffer[12] = (byte) (low >>> 16);
+      writeBuffer[13] = (byte) (low >>> 8);
+      writeBuffer[14] = (byte) (low >>> 0);
+      return writeBuffer;
    }
 }

@@ -13,14 +13,13 @@ package org.eclipse.osee.framework.jdk.core.reportdata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public class ReportData implements Serializable {
 
    private static final long serialVersionUID = 6645261625619889708L;
 
    private List<String> headers;
-   private List<ReportDataItem> items;
+   private final List<ReportDataItem> items;
 
    /**
     * Creates the ReportData class with the given headers. The number of headers should match the values passed into
@@ -39,7 +38,7 @@ public class ReportData implements Serializable {
     * @param guid The GUID corresponding to the item added
     * @param values The values (such as username, script name) associated with the item. These should match the headers.
     */
-   public void addItem(GUID guid, ArrayList<String> values) {
+   public void addItem(String guid, ArrayList<String> values) {
       ReportDataItem item = new ReportDataItem(guid, values);
       items.add(item);
    }

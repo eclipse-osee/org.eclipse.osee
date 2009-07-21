@@ -160,7 +160,7 @@ public class SessionManager implements ISessionManager {
          IOseeUserInfo oseeUserInfo = authenticationManager.asOseeUser(credential);
 
          OseeSession session =
-               new OseeSession(GUID.generateGuidStr(), oseeUserInfo.getUserID(), timestamp,
+               new OseeSession(GUID.create(), oseeUserInfo.getUserID(), timestamp,
                      credential.getClientMachineName(), credential.getClientAddress(), credential.getPort(),
                      credential.getVersion(), timestamp, sessionState.name().toLowerCase());
 
