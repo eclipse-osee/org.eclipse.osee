@@ -20,9 +20,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -91,20 +91,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
 
    private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
       if (cCol.equals(BranchXViewerFactory.branchName)) {
-         StringBuilder stringBuilder = new StringBuilder();
-         try {
-            if (AccessControlManager.isOseeAdmin()) {
-               stringBuilder.append("(" + branch.getBranchId() + ") " + branch.getName());
-            } else {
-               stringBuilder.append(branch.getName());
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-         if (branch.isArchived()) {
-            stringBuilder.insert(0, "[Archived] - ");
-         }
-         return stringBuilder.toString();
+         return branch.getName();
+      } else if (cCol.equals(BranchXViewerFactory.archivedState)) {
+         return (branch.isArchived() ? BranchArchivedState.ARCHIVED : BranchArchivedState.UNARCHIVED).toString();
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          return String.valueOf(branch.getCreationDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
