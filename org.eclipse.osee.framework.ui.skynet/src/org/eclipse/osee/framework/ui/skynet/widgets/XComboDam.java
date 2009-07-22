@@ -79,7 +79,7 @@ public class XComboDam extends XCombo implements IArtifactWidget {
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
-      if (status.isOK()) {
+      if (status.isOK() && !data.equals("")) {
          status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeTypeName, get());
       }
       return status;
