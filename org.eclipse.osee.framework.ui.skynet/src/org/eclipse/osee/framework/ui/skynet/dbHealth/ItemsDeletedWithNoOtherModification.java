@@ -82,17 +82,17 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    }
 
    private void detectAndCollectErrors(IProgressMonitor monitor, TxChange txChange, ModificationType modificationType) throws OseeCoreException {
-      monitor.subTask("Loading Artifacts that were Introduced as Deleted");
+      monitor.setTaskName("Loading Artifacts that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS, txChange, modificationType);
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.20));
 
-      monitor.subTask("Loading Attributes that were Introduced as Deleted");
+      monitor.setTaskName("Loading Attributes that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_ATTRIBUTES, txChange, modificationType);
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.20));
 
-      monitor.subTask("Loading Relation Links that were Introduced as Deleted");
+      monitor.setTaskName("Loading Relation Links that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_RELATIONS, txChange, modificationType);
    }
 
