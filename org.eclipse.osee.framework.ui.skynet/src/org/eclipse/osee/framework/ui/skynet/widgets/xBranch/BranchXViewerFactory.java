@@ -51,12 +51,13 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(branchName, timeStamp, author, comment, associatedArtifact, branchState, branchType, branchGuid,
-            branchId, parentBranch);
+      registerColumns(branchName, timeStamp, author, comment, associatedArtifact, branchState, branchType,
+            parentBranch, branchId, branchGuid);
    }
 
    @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
+
 }
