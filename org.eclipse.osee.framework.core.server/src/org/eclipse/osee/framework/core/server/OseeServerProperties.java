@@ -23,7 +23,6 @@ public class OseeServerProperties {
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String CHECK_TAG_QUEUE_ON_START_UP = "osee.check.tag.queue.on.startup";
-   public static final String OSEE_DERBY_SERVER = "osee.derby.server";
    private static final String OSEE_VERSION = "osee.version";
 
    private static boolean wasBinaryDataChecked = false;

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.derby;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
 import org.eclipse.osee.framework.db.connection.IConnection;
 
@@ -23,7 +22,7 @@ public class EmbeddedDerbyConnection implements IConnection {
 
    private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 
-   public Connection getConnection(Properties properties, String connectionURL) throws ClassNotFoundException, SQLException {
+   public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driver);
       Connection connection = DriverManager.getConnection(connectionURL, properties);
       return connection;

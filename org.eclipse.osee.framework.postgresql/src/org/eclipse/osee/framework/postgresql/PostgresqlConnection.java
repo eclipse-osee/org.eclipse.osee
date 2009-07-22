@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.postgresql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
 import org.eclipse.osee.framework.db.connection.IConnection;
 
@@ -23,7 +22,7 @@ public class PostgresqlConnection implements IConnection {
    public PostgresqlConnection() {
    }
 
-   public Connection getConnection(Properties properties, String connectionURL) throws ClassNotFoundException, SQLException {
+   public Connection getConnection(Properties properties, String connectionURL) throws Exception {
       Class.forName(driverName);
       Connection connection = DriverManager.getConnection(connectionURL, properties);
       return connection;

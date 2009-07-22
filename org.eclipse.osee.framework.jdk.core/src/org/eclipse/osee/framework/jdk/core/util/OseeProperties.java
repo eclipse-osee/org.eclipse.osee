@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 
 /**
  * @author Roberto E. Escobar
@@ -28,8 +29,19 @@ public class OseeProperties {
 
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
+   private static final String OSEE_DERBY_SERVER = "osee.derby.server";
 
    protected OseeProperties() {
+   }
+
+   public static ObjectPair<String, Integer> getDerbyServerAddress() {
+      ObjectPair<String, Integer> addressAndPort = null;
+      String serverAddress = System.getProperty(OSEE_DERBY_SERVER, "");
+      if (Strings.isValid(serverAddress)) {
+         String[] hostPort = serverAddress.split(":");
+         addressAndPort = new ObjectPair<String, Integer>(hostPort[0], Integer.parseInt(hostPort[1]));
+      }
+      return addressAndPort;
    }
 
    public static int getOseePortScannerStartPort() {
@@ -133,6 +145,7 @@ public class OseeProperties {
       }
    }
 
+   @Override
    public String toString() {
       List<String> list = new ArrayList<String>();
       toStringHelper(list, getClass());

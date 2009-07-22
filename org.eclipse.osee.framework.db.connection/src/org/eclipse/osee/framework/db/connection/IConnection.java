@@ -11,14 +11,13 @@
 package org.eclipse.osee.framework.db.connection;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IConnection {
-   Connection getConnection(Properties properties, String connectionURL) throws ClassNotFoundException, SQLException;
+   Connection getConnection(Properties properties, String connectionURL) throws Exception;
 
    String getDriver();
 }
