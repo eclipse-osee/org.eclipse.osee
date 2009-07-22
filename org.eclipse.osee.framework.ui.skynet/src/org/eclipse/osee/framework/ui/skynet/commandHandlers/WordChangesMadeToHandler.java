@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  */
 public class WordChangesMadeToHandler extends AbstractHandler {
-   private List<ArtifactChange> mySelectedArtifactChangeList;
+   private List<Change> mySelectedArtifactChangeList;
 
    public WordChangesMadeToHandler() {
    }
@@ -48,7 +48,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
+      Change selectedArtifactChange = mySelectedArtifactChangeList.get(0);
       try {
          execute(selectedArtifactChange);
       } catch (Exception ex) {
@@ -58,10 +58,10 @@ public class WordChangesMadeToHandler extends AbstractHandler {
       return null;
    }
 
-   public void execute(ArtifactChange artifactChange) throws Exception {
+   public void execute(Change artifactChange) throws Exception {
       Artifact firstArtifact =
             artifactChange.getModificationType() == NEW ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
+                  artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
       Artifact secondArtifact =
             artifactChange.getModificationType() == DELETED ? null : ArtifactQuery.getHistoricalArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true);
@@ -86,7 +86,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
          if (mySelectedArtifactChangeList.size() == 0) {
             return false;
          }
-         ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
+         Change mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
          try {
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();

@@ -15,12 +15,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -40,25 +39,31 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof HistoryTransactionItem)) return "";
-         HistoryTransactionItem data = (HistoryTransactionItem) element;
+         if (!(element instanceof Change)) return "";
+         Change data = (Change) element;
 
          if (cCol.equals(HistoryXViewerFactory.transaction)) {
-            return String.valueOf(data.getTransactionNumber());
+            return String.valueOf(data.getToTransactionId().getTransactionNumber());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
          } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
-            return data.getChangeType();
+            return data instanceof RelationChanged? data.getName() : data.getItemTypeName();
+         } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
+            return data.getItemKind();
+         } else if (cCol.equals(HistoryXViewerFactory.modType)) {
+            return data.getModificationType().getDisplayName();
+         } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
+            return String.valueOf(data.getItemTypeId());
          } else if (cCol.equals(HistoryXViewerFactory.was)) {
             return data.getWasValue();
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return data.getTimeStamp();
+            return String.valueOf(data.getToTransactionId().getTime());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
-            return data.getAuthorName();
+            return UserManager.getUserNameById(data.getToTransactionId().getAuthorArtId());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-            return data.getComment();
+            return data.getToTransactionId().getComment();
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -88,18 +93,12 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof HistoryTransactionItem)) return null;
-         HistoryTransactionItem change = (HistoryTransactionItem) element;
+         if (!(element instanceof Change)) return null;
+         Change change = (Change) element;
          if (xCol.equals(HistoryXViewerFactory.transaction)) {
-            try {
-               return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
-            } catch (IllegalArgumentException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
+            return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
          } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
-            return ImageManager.getChangeImage(change.getRevisionChange());
+            return ImageManager.getChangeTypeImage(change);
          }
 
       } catch (Exception ex) {

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
@@ -43,8 +43,8 @@ public class ArtifactsUi {
 
             try {
                // This to support the changeReportView
-               if (firstElement instanceof ITreeNode && ((ITreeNode) firstElement).getBackingData() instanceof ArtifactChange) {
-                  ArtifactChange artifactChange = (ArtifactChange) ((ITreeNode) firstElement).getBackingData();
+               if (firstElement instanceof ITreeNode && ((ITreeNode) firstElement).getBackingData() instanceof Change) {
+                  Change artifactChange = (Change) ((ITreeNode) firstElement).getBackingData();
                   selectedItems.add(artifactChange.getArtifact());
                }
                // Resource History

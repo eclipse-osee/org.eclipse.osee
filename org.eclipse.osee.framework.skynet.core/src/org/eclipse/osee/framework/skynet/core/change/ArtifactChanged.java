@@ -19,18 +19,14 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ArtifactChanged extends Change {
-   private ArtifactType artifactSubtypeDescriptor;
-   private ArtifactChange artifactChange;
 
    /**
     * @param artTypeId
@@ -73,15 +69,6 @@ public class ArtifactChanged extends Change {
       return "";
    }
 
-   private ArtifactChange getArtifactChange() throws OseeCoreException {
-      if (artifactChange == null) {
-         artifactChange =
-               new ArtifactChange(getChangeType(), getModificationType(), getArtifact(), null, null,
-                     getFromTransactionId(), getFromTransactionId(), getToTransactionId(), getGamma(), isHistorical());
-      }
-      return artifactChange;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
@@ -91,15 +78,14 @@ public class ArtifactChanged extends Change {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
 
       try {
-         // this is a temporary fix until the old change report goes away.
-         if (adapter.isInstance(getArtifactChange())) {
-            return getArtifactChange();
-         }
          if (adapter.isInstance(getArtifact())) {
-            return getArtifactChange().getArtifact();
+            return getArtifact();
          }
-         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
+         }
+         else if (adapter.isInstance(this)) {
+            return this;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -129,5 +115,13 @@ public class ArtifactChanged extends Change {
    @Override
    public int getItemTypeId() {
       return getArtifactType().getArtTypeId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemId()
+    */
+   @Override
+   public int getItemId() {
+      return getArtId();
    }
 }

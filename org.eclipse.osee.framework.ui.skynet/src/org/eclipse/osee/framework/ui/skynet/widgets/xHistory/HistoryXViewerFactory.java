@@ -22,13 +22,22 @@ import org.eclipse.swt.SWT;
  */
 public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn transaction =
-         new XViewerColumn("framework.history.transaction", "Transaction", 100, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.history.transaction", "Transaction", 70, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn gamma =
-         new XViewerColumn("framework.history.gamma", "Gamma", 70, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn itemType =
          new XViewerColumn("framework.history.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String,
                false, null);
+   public static XViewerColumn itemChange =
+      new XViewerColumn("framework.history.itemChange", "Item Kind", 100, SWT.LEFT, true, SortDataType.String,
+            false, null);
+   public static XViewerColumn modType =
+      new XViewerColumn("framework.history.modType", "Mod Type", 70, SWT.LEFT, true, SortDataType.String,
+            false, null);
+   public static XViewerColumn itemId =
+      new XViewerColumn("framework.history.itemId", "Item ID", 55, SWT.LEFT, true, SortDataType.String,
+            false, null);
    public static XViewerColumn was =
          new XViewerColumn("framework.history.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn is =
@@ -45,7 +54,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
 
    public HistoryXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(transaction, gamma, itemType, was, is, timeStamp, author, comment);
+      registerColumns(transaction, gamma, itemType, itemChange, modType, itemId, was, is, timeStamp, author, comment);
       registerAllAttributeColumns();
    }
 

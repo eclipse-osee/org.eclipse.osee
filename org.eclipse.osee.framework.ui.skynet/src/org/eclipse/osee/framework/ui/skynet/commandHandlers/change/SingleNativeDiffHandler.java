@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -45,7 +45,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class SingleNativeDiffHandler extends CommandHandler {
-   private ArrayList<ArtifactChange> artifactChanges;
+   private ArrayList<Change> changes;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
@@ -65,12 +65,12 @@ public class SingleNativeDiffHandler extends CommandHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-            artifactChanges =
-                  new ArrayList<ArtifactChange>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+            changes =
+                  new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
 
             enabled =
-                  artifactChanges.size() == 1 && AccessControlManager.hasPermission(
-                        artifactChanges.get(0).getArtifact(), PermissionEnum.READ);
+                  changes.size() == 1 && AccessControlManager.hasPermission(
+                        changes.get(0).getArtifact(), PermissionEnum.READ);
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
@@ -83,16 +83,16 @@ public class SingleNativeDiffHandler extends CommandHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ArtifactChange artifactChange = artifactChanges.iterator().next();
+      Change change = changes.iterator().next();
       Set<Artifact> artifacts = new HashSet<Artifact>();
       try {
          Artifact baseArtifact =
-               (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                     artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
+               (change.getModificationType() == NEW || change.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                     change.getArtifact().getArtId(), change.getFromTransactionId(), true);
          artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
          Artifact newerArtifact =
-               artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                     artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
+               change.getModificationType() == DELETED ? null : (change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                     change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact());
          artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
          if (artifacts.isEmpty()) {
             VariableMap variableMap = new VariableMap();

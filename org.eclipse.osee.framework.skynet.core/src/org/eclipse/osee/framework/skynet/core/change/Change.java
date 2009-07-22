@@ -208,6 +208,8 @@ public abstract class Change implements IAdaptable {
    public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist;
 
    public abstract String getItemKind();
+   
+   public abstract int getItemId();
 
    /**
     * @param branch the branch to set

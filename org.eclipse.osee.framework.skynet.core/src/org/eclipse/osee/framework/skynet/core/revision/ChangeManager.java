@@ -40,6 +40,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class ChangeManager {
 
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IStatusMonitor monitor)throws OseeCoreException{
+      return InternalChangeManager.getInstance().getChangesPerArtifact(artifact, monitor);
+   }
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     * 

@@ -15,8 +15,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
@@ -79,11 +79,11 @@ public class ArtifactDiffMenu {
       boolean valid = false;
       Object[] selections = selection.toArray();
 
-      if (selections[1] instanceof HistoryTransactionItem && selections[0] instanceof HistoryTransactionItem) {
+      if (selections[1] instanceof Change && selections[0] instanceof Change) {
          try {
             valid =
                   (RendererManager.getBestFileRenderer(PresentationType.DIFF,
-                        ((HistoryTransactionItem) selections[0]).getTransactionData().getArtifact()).supportsCompare());
+                        ((Change) selections[0]).getArtifact()).supportsCompare());
          } catch (OseeCoreException ex) {
          }
       }
@@ -100,21 +100,23 @@ public class ArtifactDiffMenu {
          firstSelection = selections[0];
          secondSelection = selections[1];
 
-         if (firstSelection instanceof HistoryTransactionItem && secondSelection instanceof HistoryTransactionItem) {
+         if (firstSelection instanceof Change && secondSelection instanceof Change) {
 
-            TransactionData firstTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
-            TransactionData secondTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
+            Change firstChange = (Change) firstSelection;
+            Change secondChange = (Change)secondSelection;
+            TransactionId firstTransactionId = firstChange.getFromTransactionId();
+            TransactionId secondTransactionId = secondChange.getFromTransactionId();
 
-            if (firstTransactionData.getTransactionId().getTransactionNumber() < secondTransactionData.getTransactionId().getTransactionNumber()) {
-               firstTransactionData = ((HistoryTransactionItem) secondSelection).getTransactionData();
-               secondTransactionData = ((HistoryTransactionItem) firstSelection).getTransactionData();
+            if (firstTransactionId.getTransactionNumber() < secondTransactionId.getTransactionNumber()) {
+               firstTransactionId = secondChange.getFromTransactionId();
+               secondTransactionId = firstChange.getFromTransactionId();
             }
             newerArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(firstTransactionData.getAssociatedArtId(),
-                        firstTransactionData.getTransactionId(), true);
+                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(),
+                        firstTransactionId, true);
             baselineArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(secondTransactionData.getAssociatedArtId(),
-                        secondTransactionData.getTransactionId(), true);
+                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(),
+                        secondTransactionId, true);
          }
       }
       RendererManager.diffInJob(baselineArtifact, newerArtifact);

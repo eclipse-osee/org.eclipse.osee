@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -32,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -45,7 +41,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-   private Set<ArtifactChange> artifactChanges;
+   private List<Change> changes;
 
    /*
     * (non-Javadoc)
@@ -54,26 +50,26 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) {
-      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChanges.size());
-      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChanges.size());
+      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(changes.size());
+      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(changes.size());
       VariableMap variableMap = new VariableMap();
       String fileName = null;
 
-      for (ArtifactChange artifactChange : artifactChanges) {
+      for (Change artifactChange : changes) {
          try {
             Artifact baseArtifact =
-                  (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId(), true);
+                  (artifactChange.getModificationType() == ModificationType.NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
             Artifact newerArtifact =
-                  artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getModificationType() == ModificationType.DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
                         artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
 
             if (fileName == null) {
-               if (artifactChanges.size() == 1) {
+               if (changes.size() == 1) {
                   fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
                } else {
                   fileName =
@@ -125,12 +121,14 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-            artifactChanges =
-                  new LinkedHashSet<ArtifactChange>(
-                        Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
-
-            for (ArtifactChange artifactChange : artifactChanges) {
-               artifacts.add(artifactChange.getArtifact());
+            List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+            changes = new ArrayList<Change>(localChanges.size());
+            
+            for (Change change : localChanges) {
+               if(!artifacts.contains(change.getArtifact())){
+                  artifacts.add(change.getArtifact());
+                  changes.add(change);
+               }
             }
             isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
          }

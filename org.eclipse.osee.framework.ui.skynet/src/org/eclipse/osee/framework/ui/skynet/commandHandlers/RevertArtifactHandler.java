@@ -20,11 +20,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
@@ -36,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class RevertArtifactHandler extends AbstractHandler {
-   private List<ArtifactChange> artifactChanges;
+   private List<Change> changes;
 
    public RevertArtifactHandler() {
    }
@@ -53,13 +54,19 @@ public class RevertArtifactHandler extends AbstractHandler {
       List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();
       Set<Artifact> duplicateCheck = new HashSet<Artifact>();
 
-      for (ArtifactChange artifactChange : artifactChanges) {
+      for (Change change : changes) {
          List<Artifact> artifactList = new LinkedList<Artifact>();
-         if (!duplicateCheck.contains(artifactChange.getArtifact())) {
-            artifactList.add(artifactChange.getArtifact());
-            artifacts.add(artifactList);
-            duplicateCheck.add(artifactChange.getArtifact());
+
+         try {
+            if (!duplicateCheck.contains(change.getArtifact())) {
+               artifactList.add(change.getArtifact());
+               artifacts.add(artifactList);
+               duplicateCheck.add(change.getArtifact());
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
+
       }
       RevertWizard wizard = new RevertWizard(artifacts);
       NonmodalWizardDialog dialog = new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
@@ -81,18 +88,14 @@ public class RevertArtifactHandler extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            List<ArtifactChange> artifactChanges =
-                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+            changes = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
-            if (artifactChanges.isEmpty()) {
+            if (changes.isEmpty()) {
                return false;
             }
 
-            this.artifactChanges = artifactChanges;
-
-            for (ArtifactChange artifactChange : artifactChanges) {
-               isEnabled =
-                     AccessControlManager.hasPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+            for (Change change : changes) {
+               isEnabled = AccessControlManager.hasPermission(change.getArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }

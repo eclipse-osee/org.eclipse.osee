@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
@@ -43,9 +43,9 @@ public class ShowPreviewHandler extends AbstractHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-         List<ArtifactChange> mySelectedArtifactChangeList =
+         List<Change> mySelectedArtifactChangeList =
                Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
-         for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
+         for (Change mySelectedArtifactChange : mySelectedArtifactChangeList) {
             Artifact selectedArtifact;
             try {
                selectedArtifact = mySelectedArtifactChange.getArtifact();

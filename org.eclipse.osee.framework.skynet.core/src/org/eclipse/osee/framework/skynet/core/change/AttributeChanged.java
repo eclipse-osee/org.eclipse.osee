@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
@@ -37,7 +36,6 @@ public class AttributeChanged extends Change {
    private final int attrId;
    private final int attrTypeId;
    private AttributeType dynamicAttributeDescriptor;
-   private ArtifactChange artifactChange;
    private final ModificationType artModType;
 
    /**
@@ -155,15 +153,6 @@ public class AttributeChanged extends Change {
       this.wasValue = wasValue;
    }
 
-   private ArtifactChange getArtifactChange() throws ArtifactDoesNotExist {
-      if (artifactChange == null) {
-         artifactChange =
-               new ArtifactChange(getChangeType(), getArtModType(), getArtifact(), null, null, getFromTransactionId(),
-                     getFromTransactionId(), getToTransactionId(), getGamma(), isHistorical());
-      }
-      return artifactChange;
-   }
-
    public Attribute<?> getAttribute() throws OseeCoreException {
       for (Attribute<?> attribute : getArtifact().getAttributes(true)) {
          if (attribute.getAttrId() == attrId) {
@@ -181,15 +170,14 @@ public class AttributeChanged extends Change {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
 
       try {
-         // this is a temporary fix until the old change report goes away.
-         if (adapter.isInstance(getArtifactChange())) {
-            return getArtifactChange();
-         }
          if (adapter.isInstance(getArtifact())) {
-            return getArtifactChange().getArtifact();
+            return getArtifact();
          }
-         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
+         }
+         else if (adapter.isInstance(this)) {
+            return this;
          }
          try {
             if (adapter.isInstance(getAttribute())) {
@@ -217,5 +205,13 @@ public class AttributeChanged extends Change {
    @Override
    public int getItemTypeId() {
       return attrTypeId;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemId()
+    */
+   @Override
+   public int getItemId() {
+      return attrId;
    }
 }

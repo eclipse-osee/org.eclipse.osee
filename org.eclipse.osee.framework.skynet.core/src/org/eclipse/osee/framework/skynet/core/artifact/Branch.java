@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -273,7 +273,8 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    }
 
    public boolean hasChanges() throws OseeCoreException {
-      return RevisionManager.branchHasChanges(this);
+        Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(this);
+      return transactions.getKey() != transactions.getValue();
    }
 
    public int getAuthorId() {

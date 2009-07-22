@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -37,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
-   private ArtifactChange artifactChange;
+   private Change change;
 
    /*
     * (non-Javadoc)
@@ -48,9 +48,9 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
          Artifact secondArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(artifactChange.getArtifact().getArtId(),
-                     artifactChange.getToTransactionId(), true);
-         RendererManager.diffInJob(artifactChange.getConflictingModArtifact(), secondArtifact);
+               ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
+                     change.getToTransactionId(), true);
+         RendererManager.diffInJob(null, secondArtifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -69,22 +69,22 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<ArtifactChange> artifactChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+         List<Change> artifactChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
          if (artifactChanges.size() == 0) {
             return false;
          }
 
-         artifactChange = artifactChanges.get(0);
+         change = artifactChanges.get(0);
          try {
-            Artifact artifact = artifactChange.getArtifact();
+            Artifact artifact = change.getArtifact();
 
             boolean readPermission = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
             boolean wordArtifactSelected = artifact.isOfType(WordArtifact.ARTIFACT_NAME);
             boolean modifiedWordArtifactSelected =
-                  wordArtifactSelected && artifactChange.getModificationType() == ModificationType.MODIFIED;
+                  wordArtifactSelected && change.getModificationType() == ModificationType.MODIFIED;
             boolean conflictedWordArtifactSelected =
-                  modifiedWordArtifactSelected && artifactChange.getChangeType() == ChangeType.CONFLICTING;
+                  modifiedWordArtifactSelected && change.getChangeType() == ChangeType.CONFLICTING;
             isEnabled = readPermission && conflictedWordArtifactSelected;
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

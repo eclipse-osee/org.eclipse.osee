@@ -43,10 +43,6 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
-import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.swt.graphics.Image;
@@ -149,21 +145,6 @@ public class ImageManager {
          return getArtifactChangeImage(change.getArtifactType(), change.getChangeType(), change.getModificationType());
       }
       return getChangeTypeImage(change);
-   }
-
-   public static Image getChangeImage(RevisionChange change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
-      if (change instanceof AttributeChange) {
-         return getAttributeChangeImage(change.getChangeType(), change.getModificationType());
-      }
-      if (change instanceof ArtifactChange) {
-
-         return getArtifactChangeImage(((ArtifactChange) change).getArtifact().getArtifactType(),
-               change.getChangeType(), change.getModificationType());
-      }
-      if (change instanceof RelationLinkChange) {
-         return getRelationChangeImage(change.getChangeType(), change.getModificationType());
-      }
-      throw new OseeArgumentException("Change not of supported type");
    }
 
    private static Image getArtifactChangeImage(ArtifactType artifactType, ChangeType changeType, ModificationType modType) {

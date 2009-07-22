@@ -26,17 +26,16 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -198,11 +197,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            try {
-               changeReportMenuItem.setEnabled(selections.size() == 1 && ((HistoryTransactionItem) selections.iterator().next()).getTransactionData().getTransactionId().getTxType() != TransactionDetailsType.Baselined);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
+            changeReportMenuItem.setEnabled(selections.size() == 1 && ((Change) selections.iterator().next()).getFromTransactionId().getTxType() != TransactionDetailsType.Baselined);
          }
 
       });
@@ -218,9 +213,9 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
             IStructuredSelection selection = (IStructuredSelection) xHistoryWidget.getXViewer().getSelection();
             Object selectedObject = selection.getFirstElement();
 
-            if (selectedObject instanceof HistoryTransactionItem) {
+            if (selectedObject instanceof Change) {
                try {
-                  ChangeView.open(((HistoryTransactionItem) selectedObject).getTransactionData().getTransactionId());
+                  ChangeView.open(((Change) selectedObject).getFromTransactionId());
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

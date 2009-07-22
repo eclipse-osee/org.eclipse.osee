@@ -10,21 +10,55 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.ui.PlatformUI;
 
 public class ArtifactGuis {
    public ArtifactGuis() {
       super();
+   }
+
+   private static final String OTHER_EDIT_SQL =
+         "select distinct t3.branch_id from osee_artifact_version t1, osee_txs t2, osee_tx_details t3, (select min(transaction_id) as min_tx_id, branch_id from osee_tx_details group by branch_id) t4, osee_branch t5 where t1.art_id = ? and t1.gamma_id = t2.gamma_id and t2.transaction_id <> t4.min_tx_id and t2.transaction_id = t3.transaction_id and t3.branch_id = t4.branch_id and t4.branch_id <> ? and t5.parent_branch_id = ? and t4.branch_id = t5.branch_id and t5.archived = 0";
+
+   /**
+    * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
+    * 
+    * @param artifact
+    * @throws OseeDataStoreException
+    * @throws BranchDoesNotExist
+    */
+   private static Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeDataStoreException, BranchDoesNotExist {
+      Collection<Branch> otherBranches = new LinkedList<Branch>();
+
+      // Can only be on other branches it has already been saved
+      if (artifact.isInDb()) {
+
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         try {
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getBranchId(),
+                  artifact.getBranch().getParentBranchId());
+
+            while (chStmt.next()) {
+               otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return otherBranches;
    }
 
    public static boolean checkOtherEdit(List<Artifact> artifacts) throws OseeDataStoreException, BranchDoesNotExist {
@@ -34,7 +68,7 @@ public class ArtifactGuis {
 
       Set<Branch> otherBranches = new HashSet<Branch>();
       for (Artifact artifact : artifacts) {
-         otherBranches.addAll(RevisionManager.getOtherEdittedBranches(artifact));
+         otherBranches.addAll(getOtherEdittedBranches(artifact));
       }
 
       if (!otherBranches.isEmpty()) {

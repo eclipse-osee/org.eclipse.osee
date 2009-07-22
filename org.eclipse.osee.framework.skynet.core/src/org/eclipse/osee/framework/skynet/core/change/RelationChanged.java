@@ -76,12 +76,14 @@ public class RelationChanged extends Change {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
 
       try {
-         // this is a temporary fix until the old change report goes away.
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
          }
-         if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
+         }
+         else if (adapter.isInstance(this)) {
+            return this;
          }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -214,5 +216,13 @@ public class RelationChanged extends Change {
    @Override
    public int getItemTypeId() {
       return relationType.getRelationTypeId();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemId()
+    */
+   @Override
+   public int getItemId() {
+      return relLinkId;
    }
 }

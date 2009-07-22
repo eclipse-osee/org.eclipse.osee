@@ -28,16 +28,15 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.revision.HistoryTransactionItem;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -241,29 +240,26 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Collection<HistoryTransactionItem> historyItems = new ArrayList<HistoryTransactionItem>();
+            final Collection<Change> changes = new ArrayList<Change>();
 
             try {
                if (loadHistory) {
-                  for (TransactionData transactionData : RevisionManager.getTransactionsPerArtifact(artifact, true)) {
-                     for (RevisionChange revisionChange : RevisionManager.getTransactionChanges(transactionData)) {
-                        historyItems.add(new HistoryTransactionItem(transactionData, revisionChange));
-                     }
-                  }
+                  SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
+                  changes.addAll(ChangeManager.getChangesPerArtifact(artifact, swtMonitor));
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
                      if (loadHistory) {
-                        if (historyItems.size() == 0) {
+                        if (changes.size() == 0) {
                            extraInfoLabel.setText(NO_HISTORY);
-                           xHistoryViewer.setInput(historyItems);
+                           xHistoryViewer.setInput(changes);
                         } else {
                            String infoLabel =
                                  String.format("History: %s on branch: %s", artifact.getName(),
                                        artifact.getBranch().getShortName());
                            extraInfoLabel.setText(infoLabel);
-                           xHistoryViewer.setInput(historyItems);
+                           xHistoryViewer.setInput(changes);
                         }
                      } else {
                         extraInfoLabel.setText("Cleared on shut down - press refresh to reload");

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.PlatformUI;
@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  */
 public class WordChangesToParentHandler extends AbstractHandler {
-   private List<ArtifactChange> mySelectedArtifactChangeList;
+   private List<Change> mySelectedArtifactChangeList;
 
    public WordChangesToParentHandler() {
    }
@@ -49,12 +49,12 @@ public class WordChangesToParentHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (mySelectedArtifactChangeList.size() > 0) {
-         ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
+         Change selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          try {
             Artifact firstArtifact =
                   selectedArtifactChange.getModificationType() == NEW ? null : ArtifactQuery.getHistoricalArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(),
-                        selectedArtifactChange.getBaselineTransactionId(), true);
+                        selectedArtifactChange.getFromTransactionId(), true);
 
             Artifact secondArtifact = null;
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();
@@ -91,7 +91,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             if (mySelectedArtifactChangeList.size() == 0) {
                return (false);
             }
-            ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
+            Change mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
             if (mySelectedArtifactChange.getModificationType() == NEW || mySelectedArtifactChange.getModificationType() == DELETED) {
                return (false);
