@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
+import org.eclipse.osee.framework.skynet.core.dbinit.OseeTypesImport;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -46,7 +46,7 @@ public class AddCommonBranch implements IDbInitializationTask {
     */
    public void run() throws OseeCoreException {
       Branch systemBranch = BranchManager.createSystemRootBranch();
-      MasterSkynetTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
+      OseeTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
 
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, systemBranch,

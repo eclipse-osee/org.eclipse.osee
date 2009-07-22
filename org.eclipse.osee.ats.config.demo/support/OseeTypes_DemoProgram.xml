@@ -47,12 +47,6 @@
    </Borders>
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s23">
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
   <Style ss:ID="s24">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Borders>
@@ -217,96 +211,82 @@
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="108.75"/>
    <Column ss:StyleID="s21" ss:Width="56.25"/>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s22"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Hardware Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Narrative</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">Requirement</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Software Design</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Design</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Software Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Indirect Software Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">System Design</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Design</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Subsystem Design</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Design</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Subsystem Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Supporting Content</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">FileArtifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">System Requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Test Procedure WML</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">MS Word</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Test Procedure</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">FileArtifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s27"/>
+    <Cell ss:Index="5" ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s23"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="String">Test Case</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -1572,7 +1552,7 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>15</ActiveRow>
+     <ActiveRow>7</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

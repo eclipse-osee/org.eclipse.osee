@@ -87,56 +87,44 @@
    <Column ss:AutoFitWidth="0" ss:Width="91.5"/>
    <Column ss:Index="9" ss:Width="63.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="57"/>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String"># Factory to Artifact Mapping</Data></Cell>
-   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s21"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s21"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s21"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Team Definition</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Actionable Item</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Action</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Goal</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Task</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Decision Review</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.artifact.AtsArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">PeerToPeer Review</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -1748,12 +1736,10 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>213</TopRowVisible>
-   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>232</ActiveRow>
+     <ActiveRow>6</ActiveRow>
      <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
+import org.eclipse.osee.framework.skynet.core.dbinit.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
@@ -126,7 +126,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
-      MasterSkynetTypesImport.importSkynetDbTypes(skynetTypeImport);
+      OseeTypesImport.importSkynetDbTypes(skynetTypeImport);
 
       BranchManager.createTopLevelBranch(branchName, branchName);
    }

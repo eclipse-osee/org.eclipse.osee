@@ -233,14 +233,13 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       if (debugRows) {
          System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       }
-      String factoryClassName = row[0];
-      String artifactTypeName = row[1];
-      String superTypeName = row[2];
+      String artifactTypeName = row[0];
+      String superTypeName = row[1];
 
       if (!artifactTypeName.equals("Artifact")) {
          superTypeMap.put(superTypeName, artifactTypeName);
       }
-      dataTypeProcessor.onArtifactType(factoryClassName, "", artifactTypeName);
+      dataTypeProcessor.onArtifactType("", artifactTypeName);
    }
 
    /*

@@ -104,26 +104,20 @@
    <Column ss:AutoFitWidth="0" ss:Width="162.75"/>
    <Column ss:Width="78"/>
    <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="63"/>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String"># Factory to Artifact Mapping</Data></Cell>
-   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s21"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s21"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s21"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.config.demo.artifact.DemoArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Demo Code Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.config.demo.artifact.DemoArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Demo Test Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell><Data ss:Type="String">org.eclipse.osee.ats.config.demo.artifact.DemoArtifactFactory</Data></Cell>
     <Cell><Data ss:Type="String">Demo Req Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -1236,12 +1230,10 @@
    </Print>
    <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>122</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>189</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>4</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -39,10 +39,10 @@ import org.xml.sax.SAXException;
  * @author Donald G. Dunne
  * @see BranchManager#createTopLevelBranch(String, String, String, Collection, boolean)
  */
-public class MasterSkynetTypesImport {
+public class OseeTypesImport {
    private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.OseeTypes";
 
-   private MasterSkynetTypesImport() {
+   private OseeTypesImport() {
    }
 
    /**

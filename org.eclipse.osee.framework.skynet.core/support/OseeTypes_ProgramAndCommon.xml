@@ -82,14 +82,6 @@
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom" ss:WrapText="1"/>
    <Font x:Family="Swiss" ss:Size="9"/>
   </Style>
-  <Style ss:ID="s30">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat ss:Format="Short Date"/>
-  </Style>
   <Style ss:ID="s31">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Borders>
@@ -229,86 +221,74 @@
     <Cell ss:MergeAcross="1" ss:StyleID="s23"><Data ss:Type="String"># Copyright (c) 2004, 2007 Boeing.&#10;# All rights reserved. This program and the accompanying materials&#10;# are made available under the terms of the Eclipse Public License v1.0&#10;# which accompanies this distribution, and is available at&#10;# http://www.eclipse.org/legal/epl-v10.html&#10;# &#10;# Contributors:&#10;#     Boeing - initial API and implementation</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s25"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.blam.BlamFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Blam Workflow</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Folder</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.NativeArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">General Document</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">NativeArtifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s30"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Heading</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Root Artifact</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Support Document</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Universal Group</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Url</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">FileArtifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">General Data</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:Index="5" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Workspace File</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
@@ -687,8 +667,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>22</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>11</ActiveRow>
+     <ActiveCol>3</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -205,7 +205,7 @@ public class ArtifactTypeManager {
       return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
-   public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static ArtifactType createType(String namespace, String artifactTypeName, String factoryKey) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ArtifactType artifactType;
       if (!typeExists(namespace, artifactTypeName)) {
          int artTypeId = SequenceManager.getNextArtifactTypeId();
@@ -213,7 +213,7 @@ public class ArtifactTypeManager {
 
          ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, namespace, artifactTypeName);
       } else {
-         // Check if anything valuable is different
+         // TODO: Check if anything valuable is different and update it
          artifactType = getType(namespace, artifactTypeName);
       }
       return artifactType;

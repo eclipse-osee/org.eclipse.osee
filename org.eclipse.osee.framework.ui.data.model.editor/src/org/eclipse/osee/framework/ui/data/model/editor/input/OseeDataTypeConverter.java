@@ -43,7 +43,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
     * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onArtifactType(java.lang.String, java.lang.String, java.lang.String)
     */
    @Override
-   public void onArtifactType(String factoryName, String namespace, String name) throws OseeCoreException {
+   public void onArtifactType(String namespace, String name) throws OseeCoreException {
       ArtifactDataType artifactDataType = new ArtifactDataType(namespace, name, null);
 
       this.dataTypeSource.add(artifactDataType);

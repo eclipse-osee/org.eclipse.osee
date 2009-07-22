@@ -43,8 +43,8 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
     * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onArtifactType(java.lang.String, java.lang.String, java.lang.String)
     */
    @Override
-   public void onArtifactType(String factoryName, String namespace, String artifactTypeName) throws OseeCoreException {
-      ArtifactTypeManager.createType(factoryName, namespace, artifactTypeName, artifactTypeName);
+   public void onArtifactType(String namespace, String artifactTypeName) throws OseeCoreException {
+      ArtifactTypeManager.createType(namespace, artifactTypeName, artifactTypeName);
    }
 
    /* (non-Javadoc)

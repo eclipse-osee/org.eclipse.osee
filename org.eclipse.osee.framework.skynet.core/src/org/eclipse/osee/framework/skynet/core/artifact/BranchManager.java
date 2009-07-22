@@ -61,7 +61,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOpe
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
+import org.eclipse.osee.framework.skynet.core.dbinit.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -650,7 +650,7 @@ public class BranchManager {
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
     * @see BranchManager#intializeBranch
-    * @see MasterSkynetTypesImport#importSkynetDbTypes
+    * @see OseeTypesImport#importSkynetDbTypes
     * @see BranchManager#getKeyedBranch(String)
     */
    public static Branch createTopLevelBranch(String branchName, String staticBranchName) throws OseeCoreException {

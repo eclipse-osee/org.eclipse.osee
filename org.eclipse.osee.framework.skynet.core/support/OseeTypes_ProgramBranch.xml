@@ -59,12 +59,6 @@
    </Borders>
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s26">
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
   <Style ss:ID="s27">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Borders>
@@ -218,35 +212,28 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="15">
     <Cell ss:StyleID="s24"/>
-    <Cell ss:StyleID="s24"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
-    <Cell ss:StyleID="s25"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Super Type Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Code Unit</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">FileArtifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Component</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Spreadsheet</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Safety Assessment</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">MS Word</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s30"/>
     <Cell ss:StyleID="s29"/>
    </Row>
@@ -516,8 +503,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>17</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>2</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

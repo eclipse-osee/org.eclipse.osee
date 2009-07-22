@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchControlled;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
+import org.eclipse.osee.framework.skynet.core.dbinit.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -303,7 +303,7 @@ public class AtsBranchConfigurationTest {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
-      MasterSkynetTypesImport.importSkynetDbTypes(skynetTypeImport);
+      OseeTypesImport.importSkynetDbTypes(skynetTypeImport);
 
       return BranchManager.createTopLevelBranch(branchName, branchName);
    }
