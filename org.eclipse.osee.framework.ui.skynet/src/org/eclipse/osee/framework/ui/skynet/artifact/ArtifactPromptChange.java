@@ -186,7 +186,7 @@ public class ArtifactPromptChange {
       Object obj;
       Iterator<? extends Artifact> smaIter = smas.iterator();
       while (smaIter.hasNext()) {
-         obj = smaIter.next().getSoleAttributeValueAsString(attributeName, null);
+         obj = smaIter.next().getSoleAttributeValueAsString(attributeName, "");
          strs.add(String.valueOf(obj));
       }
       // either there was only one value or for multiple workflows, the values are all the same; 
