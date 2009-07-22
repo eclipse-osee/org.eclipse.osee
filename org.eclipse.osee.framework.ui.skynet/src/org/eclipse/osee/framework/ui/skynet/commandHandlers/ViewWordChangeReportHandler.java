@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -79,7 +78,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             }
 
          } catch (OseeCoreException ex1) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex1);
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex1);
          }
       }
 
