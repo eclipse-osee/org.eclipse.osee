@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
@@ -38,7 +38,7 @@ public class PreviewWholeWordHandler extends AbstractEditorHandler {
             dispose();
 
          } catch (OseeCoreException ex) {
-            OseeLog.log(PreviewWholeWordHandler.class, Level.SEVERE, ex);
+            OseeLog.log(PreviewWholeWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return null;
