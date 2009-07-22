@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -33,7 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -113,14 +114,12 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    /**
     * Reveal a branch in the viewer and select it.
     */
-   public static void revealBranch(Branch branch) {
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      BranchView branchView;
+   public static void revealBranch(Branch branch) throws OseeWrappedException {
       try {
-         branchView = (BranchView) page.showView(VIEW_ID);
+         BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
          branchView.reveal(branch);
-      } catch (Exception ex) {
-         throw new RuntimeException(ex);
+      } catch (PartInitException ex) {
+         throw new OseeWrappedException(ex);
       }
    }
 
