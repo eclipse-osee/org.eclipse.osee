@@ -25,21 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * @author Theron Virgin
  */
 public class DuplicateAttributes extends DatabaseHealthOperation {
-   private final class AttributeData {
-      protected int artId;
-      protected int attrId1;
-      protected int attrId2;
-      protected String name;
-      protected String value1;
-      protected String value2;
-      protected String uri1;
-      protected String uri2;
-      protected int gamma1;
-      protected int gamma2;
-      protected int attrIDToDelete = 0;
-      protected List<Integer> branches1 = new LinkedList<Integer>();
-      protected List<Integer> branches2 = new LinkedList<Integer>();
-   }
 
    private static final String GET_DUPLICATE_ATTRIBUTES =
          "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND tx_current = 1) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id and tx_current = 1) order by aty1.NAME, attr1.art_id";
@@ -52,11 +37,23 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
    private static final String FILTER_DELTED =
          "SELECT * FROM osee_txs txs, osee_attribute atr WHERE txs.tx_current = 1 AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ?";
 
-   boolean fixErrors = false;
-   boolean processTxCurrent = true;
-
    public DuplicateAttributes() {
       super("Duplicate Attribute Errors");
+   }
+
+   private DuplicateAttributeData createAttributeData(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+      AttributeData attributeData1 =
+            new AttributeData(chStmt.getInt("attr_id_1"), chStmt.getInt("gamma_id_1"), chStmt.getString("value_1"),
+                  chStmt.getString("uri_1"));
+      AttributeData attributeData2 =
+            new AttributeData(chStmt.getInt("attr_id_2"), chStmt.getInt("gamma_id_2"), chStmt.getString("value_2"),
+                  chStmt.getString("uri_2"));
+      return new DuplicateAttributeData(chStmt.getInt("art_id"), chStmt.getString("name"), attributeData1,
+            attributeData2);
+   }
+
+   private boolean isAttributeIdSetToCurrent(int attrId) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, attrId) != -1;
    }
 
    /* (non-Javadoc)
@@ -64,49 +61,38 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
     */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      List<AttributeData> sameValues = new LinkedList<AttributeData>();
-      List<AttributeData> diffValues = new LinkedList<AttributeData>();
+      List<DuplicateAttributeData> sameValues = new LinkedList<DuplicateAttributeData>();
+      List<DuplicateAttributeData> diffValues = new LinkedList<DuplicateAttributeData>();
 
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
-      fixErrors = isFixOperationEnabled();
+      monitor.subTask("Querying for Duplicate Attributes");
+
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
 
-      monitor.subTask("Querying for Duplicate Attributes");
-      checkForCancelledStatus(monitor);
+      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
       try {
          chStmt1.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
          monitor.worked(6);
          monitor.subTask("Processing Results");
          checkForCancelledStatus(monitor);
          while (chStmt1.next()) {
-            ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
-            try {
-               if (ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, chStmt1.getInt("attr_id_1")) != -1) {
-                  chStmt2.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
-                  if (chStmt2.next()) {
-                     AttributeData duplicateAttribute;
-                     duplicateAttribute = new AttributeData();
-                     duplicateAttribute.artId = chStmt1.getInt("art_id");
-                     duplicateAttribute.attrId1 = chStmt1.getInt("attr_id_1");
-                     duplicateAttribute.attrId2 = chStmt1.getInt("attr_id_2");
-                     duplicateAttribute.name = chStmt1.getString("name");
-                     duplicateAttribute.value1 = chStmt1.getString("value_1");
-                     duplicateAttribute.value2 = chStmt1.getString("value_2");
-                     duplicateAttribute.uri1 = chStmt1.getString("uri_1");
-                     duplicateAttribute.uri2 = chStmt1.getString("uri_2");
-                     duplicateAttribute.gamma1 = chStmt1.getInt("gamma_id_1");
-                     duplicateAttribute.gamma2 = chStmt1.getInt("gamma_id_2");
+            DuplicateAttributeData duplicateAttribute = createAttributeData(chStmt1);
+            checkForCancelledStatus(monitor);
 
-                     if (duplicateAttribute.value1 != null && duplicateAttribute.value2 != null && duplicateAttribute.value1.equals(duplicateAttribute.value2) || duplicateAttribute.uri1 != null && duplicateAttribute.uri2 != null && duplicateAttribute.uri1.equals(duplicateAttribute.uri2) || duplicateAttribute.value1 == null && duplicateAttribute.value2 == null && duplicateAttribute.uri1 == null && duplicateAttribute.uri2 == null) {
-                        sameValues.add(duplicateAttribute);
-                     } else {
-                        diffValues.add(duplicateAttribute);
-                     }
-                  }
+            boolean isCurrentAtLeastOnceForAttrId1 =
+                  isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData1().getAttrId());
+            checkForCancelledStatus(monitor);
+
+            boolean isCurrentAtLeastOnceForAttrId2 =
+                  isAttributeIdSetToCurrent(duplicateAttribute.getAttributeData2().getAttrId());
+            checkForCancelledStatus(monitor);
+
+            if (isCurrentAtLeastOnceForAttrId1 && isCurrentAtLeastOnceForAttrId2) {
+               if (duplicateAttribute.areAttributeValuesEqual() && duplicateAttribute.areAttributeURIEqual()) {
+                  sameValues.add(duplicateAttribute);
+               } else {
+                  diffValues.add(duplicateAttribute);
                }
-            } finally {
-               chStmt2.close();
             }
          }
       } finally {
@@ -127,7 +113,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
             sbFull.append(AHTML.beginMultiColumnTable(100, 1));
             sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
-            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull);
+            int count = showAttributeCleanUpDecisions(sameValues, true, sbFull);
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with different values", columnHeaders.length));
             count += showAttributeCleanUpDecisions(diffValues, false, sbFull);
             getSummary().append(String.format("Found %d duplicate attributes\n", count));
@@ -142,45 +128,57 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
    }
 
-   protected void showText(AttributeData duplicate, int x, boolean removeAttribute, StringBuffer builder) {
-      String str =
-            AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.artId),
-                  String.valueOf(duplicate.attrId1), String.valueOf(duplicate.attrId2), duplicate.name,
-                  duplicate.value1, duplicate.value2, duplicate.uri1, duplicate.uri2, String.valueOf(duplicate.gamma1),
-                  String.valueOf(duplicate.gamma2),
-                  removeAttribute ? String.valueOf(duplicate.attrIDToDelete) : "Requires Hand Analysis"});
-      builder.append(str);
-   }
+   private int showAttributeCleanUpDecisions(List<DuplicateAttributeData> values, boolean canFixAutomatically, StringBuffer builder) throws OseeDataStoreException {
+      int count = 0;
+      for (DuplicateAttributeData duplicate : values) {
+         String fixMessage;
+         if (canFixAutomatically) {
+            AttributeData attributeToDelete = null;
 
-   private int showAttributeCleanUpDecisions(List<AttributeData> values, boolean removeAttribute, StringBuffer builder) throws OseeDataStoreException {
-      int x = 0;
+            loadBranchesWhereOnlyOneIsUsed(duplicate.getAttributeData1(), duplicate.getAttributeData2().getAttrId());
+            loadBranchesWhereOnlyOneIsUsed(duplicate.getAttributeData2(), duplicate.getAttributeData1().getAttrId());
 
-      for (AttributeData loopDuplicate : values) {
-         findProminentAttribute(loopDuplicate.attrId1, loopDuplicate.attrId2, loopDuplicate.branches1);
-         findProminentAttribute(loopDuplicate.attrId2, loopDuplicate.attrId1, loopDuplicate.branches2);
+            if (duplicate.getAttributeData1().isEmptyBranches()) {
+               attributeToDelete = duplicate.getAttributeData1();
+            } else if (duplicate.getAttributeData2().isEmptyBranches()) {
+               attributeToDelete = duplicate.getAttributeData2();
+            }
 
-         if (loopDuplicate.branches1.size() == 0) {
-            loopDuplicate.attrIDToDelete = loopDuplicate.attrId1;
-         } else if (loopDuplicate.branches2.size() == 0) {
-            loopDuplicate.attrIDToDelete = loopDuplicate.attrId2;
+            if (attributeToDelete != null) {
+               String prefix;
+               if (isFixOperationEnabled()) {
+                  ConnectionHandler.runPreparedUpdate(DELETE_ATTR, attributeToDelete.getAttrId());
+                  prefix = "Fixed";
+               } else {
+                  prefix = "Needs Fix";
+               }
+               fixMessage = String.format("[%s] - %s ", attributeToDelete.getAttrId(), prefix);
+            } else {
+               fixMessage = "Attributes in Use";
+            }
+         } else {
+            fixMessage = "Requires Hand Analysis";
          }
 
-         if (loopDuplicate.attrIDToDelete != 0 && removeAttribute) {
-            ConnectionHandler.runPreparedUpdate(DELETE_ATTR, loopDuplicate.attrIDToDelete);
-         }
-         showText(loopDuplicate, x++, removeAttribute, builder);
+         AttributeData attributeData1 = duplicate.getAttributeData1();
+         AttributeData attributeData2 = duplicate.getAttributeData2();
+         builder.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.getArtId()),
+               String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()), duplicate.name,
+               attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(), attributeData2.getUri(),
+               String.valueOf(attributeData1.getGamma()), String.valueOf(attributeData2.getGamma()), fixMessage}));
+         count++;
       }
-      return x;
+      return count;
    }
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
-   private void findProminentAttribute(int attrId1, int attrId2, List<Integer> branches) throws OseeDataStoreException {
+   private void loadBranchesWhereOnlyOneIsUsed(AttributeData attributeData, int otherAttrId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, SupportedDatabase.getComplementSql()), attrId1,
-               attrId2);
+         chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, SupportedDatabase.getComplementSql()),
+               attributeData.getAttrId(), otherAttrId);
          while (chStmt.next()) {
-            branches.add(new Integer(chStmt.getInt("branch_id")));
+            attributeData.addBranchId(chStmt.getInt("branch_id"));
          }
       } finally {
          chStmt.close();
@@ -192,7 +190,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
     */
    @Override
    public String getCheckDescription() {
-      return "Enter Check Description Here";
+      return "Find duplicate attributes which are current and are used in the same branches.";
    }
 
    /* (non-Javadoc)
@@ -200,7 +198,91 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
     */
    @Override
    public String getFixDescription() {
-      return "Enter Fix Description Here";
+      return "Deletes attributes that have been identified as duplicates by attr id.";
    }
 
+   private final class AttributeData {
+      private final int attrId;
+      private final String value;
+      private final String uri;
+      private final int gamma;
+      private final List<Integer> branches;
+
+      public AttributeData(int attrId, int gamma, String value, String uri) {
+         super();
+         this.attrId = attrId;
+         this.value = value;
+         this.uri = uri;
+         this.gamma = gamma;
+         this.branches = new LinkedList<Integer>();
+      }
+
+      public int getAttrId() {
+         return attrId;
+      }
+
+      public String getValue() {
+         return value;
+      }
+
+      public String getUri() {
+         return uri;
+      }
+
+      public int getGamma() {
+         return gamma;
+      }
+
+      public void addBranchId(Integer branchId) {
+         branches.add(branchId);
+      }
+
+      public boolean isEmptyBranches() {
+         return branches.isEmpty();
+      }
+   }
+
+   private final class DuplicateAttributeData {
+      private final AttributeData attributeData1;
+      private final AttributeData attributeData2;
+
+      private final int artId;
+      private final String name;
+
+      public DuplicateAttributeData(int artId, String name, AttributeData attributeData1, AttributeData attributeData2) {
+         super();
+         this.artId = artId;
+         this.name = name;
+         this.attributeData1 = attributeData1;
+         this.attributeData2 = attributeData2;
+      }
+
+      public AttributeData getAttributeData1() {
+         return attributeData1;
+      }
+
+      public AttributeData getAttributeData2() {
+         return attributeData2;
+      }
+
+      public int getArtId() {
+         return artId;
+      }
+
+      public String getName() {
+         return name;
+      }
+
+      public boolean areAttributeValuesEqual() {
+         return areEqual(attributeData1.getValue(), attributeData2.getValue());
+      }
+
+      public boolean areAttributeURIEqual() {
+         return areEqual(attributeData1.getUri(), attributeData2.getUri());
+      }
+
+      private boolean areEqual(Object object1, Object object2) {
+         return object1 != null && object2 != null && object1.equals(object2) || object1 == null && object2 == null;
+      }
+   }
 }
