@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -109,10 +108,6 @@ public class NativeRenderer extends FileRenderer {
 
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      if (artifact.getAttributeCount(NativeArtifact.CONTENT_NAME) == 0) {
-         artifact.addAttributeFromString(NativeArtifact.CONTENT_NAME,
-               WordWholeDocumentAttribute.getEmptyDocumentContent());
-      }
       return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
    }
 

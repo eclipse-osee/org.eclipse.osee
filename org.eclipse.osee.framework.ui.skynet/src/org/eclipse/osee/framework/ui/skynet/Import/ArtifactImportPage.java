@@ -343,32 +343,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          }
          extractors.add(new ObjectPair<ArtifactExtractor, Button>(artifactExtractor, extractorButton));
       }
-
-      /*      radWordOutlineExtractor = new Button(composite, SWT.RADIO);
-            radWordOutlineExtractor.setText("Word Outline");
-            radWordOutlineExtractor.setToolTipText(WordOutlineExtractor.getDescription());
-            radWordOutlineExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-            radWordOutlineExtractor.addListener(SWT.Selection, this);
-
-            radWholeWordExtractor = new Button(composite, SWT.RADIO);
-            radWholeWordExtractor.setText("Whole Word Document");
-            radWholeWordExtractor.setToolTipText(WholeWordDocumentExtractor.getDescription());
-            radWholeWordExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-            radWholeWordExtractor.addListener(SWT.Selection, this);
-
-            radExcelExtractor = new Button(composite, SWT.RADIO);
-            radExcelExtractor.setText("Excel XML Artifacts");
-            radExcelExtractor.setToolTipText(ExcelArtifactExtractor.getDescription());
-            radExcelExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-            radExcelExtractor.addListener(SWT.Selection, this);
-
-            radGeneralExtractor = new Button(composite, SWT.RADIO);
-            radGeneralExtractor.setText("General Documents (Any Format)");
-            radGeneralExtractor.setToolTipText(NativeDocumentExtractor.getDescription());
-            radGeneralExtractor.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
-            radGeneralExtractor.addListener(SWT.Selection, this);
-
-            radWordOutlineExtractor.setSelection(true);*/
    }
 
    /*
