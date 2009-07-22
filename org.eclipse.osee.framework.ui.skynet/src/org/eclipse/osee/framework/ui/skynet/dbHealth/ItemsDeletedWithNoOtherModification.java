@@ -27,11 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
- * Identifies and removes addressing from the transaction table that no longer addresses other tables.
- * 
  * @author Theron Virgin
  */
-public class CommitedNewAndDeleted extends DatabaseHealthOperation {
+public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation {
    private class LocalValues {
       public int relLinkId;
       public int artId;
@@ -51,11 +49,12 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
       }
    }
    private static final String COMMITTED_NEW_AND_DELETED_ARTIFACTS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_artifact_version art1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_artifact_version art2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
+         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_artifact_version art1 WHERE txs1.tx_current = %s AND txs1.mod_type = %s AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_artifact_version art2 WHERE txs2.mod_type != %s AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
    private static final String COMMITTED_NEW_AND_DELETED_ATTRIBUTES =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, att1.attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_attribute att1, osee_branch brn WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = att1.gamma_id  AND  det1.branch_id = brn.branch_id AND brn.branch_type != " + BranchType.MERGE.getValue() + " AND NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_attribute att2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = att1.attr_id)";
+         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, att1.attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_attribute att1, osee_branch brn WHERE txs1.tx_current = %s AND txs1.mod_type = %s AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = att1.gamma_id  AND  det1.branch_id = brn.branch_id AND brn.branch_type != " + BranchType.MERGE.getValue() + " AND NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_attribute att2 WHERE txs2.mod_type != %s AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = att1.attr_id)";
    private static final String COMMITTED_NEW_AND_DELETED_RELATIONS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, 0 as attr_id, rel1.rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_relation_link rel1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = rel1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_relation_link rel2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = rel1.rel_link_id)";
+         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, 0 as attr_id, rel1.rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_relation_link rel1 WHERE txs1.tx_current = %s AND txs1.mod_type = %s AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = rel1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_relation_link rel2 WHERE txs2.mod_type != %s AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = rel1.rel_link_id)";
+
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS =
          "DELETE FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
 
@@ -64,8 +63,27 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
 
    private Set<LocalValues> addressing = null;
 
-   public CommitedNewAndDeleted() {
-      super("Artifacts, Relation, Attributes that were Introduced on a Branch as Deleted");
+   public ItemsDeletedWithNoOtherModification() {
+      super("Items marked as deleted or artifact deleted without other entries in txs");
+   }
+
+   private String getQuery(String query, TxChange txChange, ModificationType modificationType) {
+      return String.format(query, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
+   }
+
+   private void detectAndCollectErrors(IProgressMonitor monitor, TxChange txChange, ModificationType modificationType) throws OseeCoreException {
+      monitor.subTask("Loading Artifacts that were Introduced as Deleted");
+      loadData(getQuery(COMMITTED_NEW_AND_DELETED_ARTIFACTS, txChange, modificationType));
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.20));
+
+      monitor.subTask("Loading Attributes that were Introduced as Deleted");
+      loadData(getQuery(COMMITTED_NEW_AND_DELETED_ATTRIBUTES, txChange, modificationType));
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.20));
+
+      monitor.subTask("Loading Relation Links that were Introduced as Deleted");
+      loadData(getQuery(COMMITTED_NEW_AND_DELETED_RELATIONS, txChange, modificationType));
    }
 
    /* (non-Javadoc)
@@ -73,23 +91,12 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
     */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      boolean fix = isFixOperationEnabled();
-      boolean verify = !fix;
+      boolean verify = !isFixOperationEnabled();
 
       if (verify || addressing == null) {
          addressing = new HashSet<LocalValues>();
-         monitor.subTask("Loading Artifacts that were Introduced as Deleted");
-         loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.20));
-
-         monitor.subTask("Loading Attributes that were Introduced as Deleted");
-         loadData(COMMITTED_NEW_AND_DELETED_ATTRIBUTES);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.20));
-
-         monitor.subTask("Loading Relation Links that were Introduced as Deleted");
-         loadData(COMMITTED_NEW_AND_DELETED_RELATIONS);
+         detectAndCollectErrors(monitor, TxChange.DELETED, ModificationType.DELETED);
+         detectAndCollectErrors(monitor, TxChange.ARTIFACT_DELETED, ModificationType.ARTIFACT_DELETED);
       } else {
          monitor.worked(calculateWork(0.40));
       }
@@ -105,7 +112,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
 
       setItemsToFix(addressing != null ? addressing.size() : 0);
 
-      if (fix) {
+      if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (LocalValues value : addressing) {
             insertParameters.add(new Object[] {value.gammaId, value.transactionId});
@@ -153,7 +160,6 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
       builder.append(" Relation Links that were Introduced as Deleted\n");
    }
 
-   //LocalValues(int artId, int attributeId, int branchId, int gammaId, int relLinkId, int transactionId)
    private void loadData(String sql) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -167,13 +173,13 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
          chStmt.close();
       }
    }
-   
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
     */
    @Override
    public String getCheckDescription() {
-      return "Enter Check Description Here";
+      return "Detects items from txs table with tx_current of (deleted or artifact deleted) having no other entries in the txs not equal to mod type (deleted or artifact deleted), respectively.";
    }
 
    /* (non-Javadoc)
@@ -181,7 +187,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthOperation {
     */
    @Override
    public String getFixDescription() {
-      return "Enter Fix Description Here";
+      return "Remove addressing with delete errors.";
    }
 
 }

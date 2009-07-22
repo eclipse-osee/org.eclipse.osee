@@ -1730,7 +1730,7 @@
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitedNewAndDeleted">
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.ItemsDeletedWithNoOtherModification">
      </DatabaseHealthOperation>
   </extension>
   <extension
