@@ -289,37 +289,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
 
          if (artifact instanceof StateMachineArtifact) {
-            for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
-               if (attrType.getName().contains("ats")) {
-                  int count = artifact.getAttributeCount(attrType.getName());
-                  if (count > attrType.getMaxOccurrences()) {
-                     String result =
-                           String.format(
-                                 "Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
-                                 artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(),
-                                 count, artifact.getAttributesToString(attrType.getName()));
-                     Set<String> values = new HashSet<String>();
-                     values.addAll(artifact.getAttributesToStringList(attrType.getName()));
-                     if (values.size() == 1) {
-                        result += " - SAME VALUES - FIX AVAILABLE";
-                        xResultData.logError(result);
-                        if (fixAttributeValues) {
-                           Attribute<?> lastAttr = getLatestAttribute(artifact.getAttributes(attrType.getName()));
-                           for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
-                              if (!attr.equals(lastAttr)) {
-                                 attr.delete();
-                              }
-                           }
-                           artifact.persistAttributes(transaction);
-                           xResultData.log("Fixed");
-                        }
-                     } else {
-                        xResultData.logError(result);
-                     }
-
-                  }
-               }
-            }
+            checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, xResultData,
+                  fixAttributeValues, transaction);
          }
 
          // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
@@ -365,7 +336,41 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       transaction.execute();
    }
 
-   private Attribute<?> getLatestAttribute(List<Attribute<Object>> attributes) {
+   public static void checkAndResolveDuplicateAttributesForAttributeNameContains(String nameContainsStr, Artifact artifact, XResultData xResultData, boolean fixAttributeValues, SkynetTransaction transaction) throws OseeCoreException {
+      for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
+         if (attrType.getName().contains(nameContainsStr)) {
+            int count = artifact.getAttributeCount(attrType.getName());
+            if (count > attrType.getMaxOccurrences()) {
+               String result =
+                     String.format(
+                           "Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
+                           artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
+                           artifact.getAttributesToString(attrType.getName()));
+               Set<String> values = new HashSet<String>();
+               values.addAll(artifact.getAttributesToStringList(attrType.getName()));
+               if (values.size() == 1) {
+                  result += " - SAME VALUES - FIX AVAILABLE";
+                  xResultData.logError(result);
+                  if (fixAttributeValues) {
+                     Attribute<?> lastAttr = getLatestAttribute(artifact.getAttributes(attrType.getName()));
+                     for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
+                        if (!attr.equals(lastAttr)) {
+                           attr.delete();
+                        }
+                     }
+                     artifact.persistAttributes(transaction);
+                     xResultData.log("Fixed");
+                  }
+               } else {
+                  xResultData.logError(result);
+               }
+
+            }
+         }
+      }
+   }
+
+   private static Attribute<?> getLatestAttribute(List<Attribute<Object>> attributes) {
       int gammaId = 0;
       for (Attribute<?> attr : attributes) {
          if (attr.getGammaId() > gammaId) {
