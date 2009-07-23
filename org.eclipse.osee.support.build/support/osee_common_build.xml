@@ -4,6 +4,7 @@
 
 	<target name="PdeBuild">
 		<tstamp />
+		<property name="topLevelElementType" value="feature" />
 		<property name="builder" value="${basedir}" />
 		<dirname property="baseLocation" file="${eclipse.launcher}" />
 		<dirname property="workspaceLocationSub" file="${basedir}" />
