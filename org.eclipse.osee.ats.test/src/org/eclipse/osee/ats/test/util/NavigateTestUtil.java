@@ -29,7 +29,8 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class NavigateTestUtil {
    private static Map<String, List<XNavigateItem>> nameToNavItem;
-   public static String[] expectedErrorCols1 = {"ats.column.type", "ats.column.team", "ats.column.initWf"};
+   public static String[] expectedErrorCols1 =
+         {"ats.column.type", "ats.column.team", "ats.column.initWf", "ats.column.origWf"};
    public static String[] expectedErrorCols2 =
          {"ats.column.state", "ats.column.assignees", "ats.column.versionTarget", "ats.column.annualCostAvoidance",
                "ats.column.remainingHours", "ats.column.statePercentComplete", "ats.column.stateTaskPercentComplete",
