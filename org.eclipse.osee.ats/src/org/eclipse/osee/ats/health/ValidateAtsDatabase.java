@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,6 +59,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -288,10 +289,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
 
          if (artifact instanceof StateMachineArtifact) {
-            try {
-               artifact.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
-            } catch (MultipleAttributesExist ex) {
-               xResultData.logError("Artifact: " + XResultData.getHyperlink(artifact) + " Multiple resolution attributes exist");
+            for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
+               if (attrType.getName().contains("ats")) {
+                  int count = artifact.getAttributeCount(attrType.getName());
+                  if (count > attrType.getMaxOccurrences()) xResultData.logError(String.format(
+                        "Artifact: " + XResultData.getHyperlink(artifact) + " AttrType [%s] Max Occurences [%d] != Actual [%d]",
+                        attrType.getName(), attrType.getMaxOccurrences(), count));
+               }
             }
          }
 
