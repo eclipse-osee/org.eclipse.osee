@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Arrays;
+import java.util.Collections;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -20,6 +21,8 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -163,6 +166,19 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
       teamArt.persistAttributes();
 
+      // Make changes and transition
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion258());
+      teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
+      teamArt.persistAttributesAndRelations(transaction);
+      transaction.execute();
+
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      teamArt.getSmaMgr().transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
+            transaction, TransitionOption.Persist);
+      teamArt.persistAttributesAndRelations(transaction);
+      transaction.execute();
+
       validateActionAtEnd(actionArt);
 
       // Wait for destination client to end
@@ -227,16 +243,20 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), null));
       testEquals("Priority", PriorityType.Priority_3.getShortName(), teamArt.getSoleAttributeValue(
             ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
-      testEquals("Validation Required", "true", String.valueOf(teamArt.getSoleAttributeValue(
+      testEquals("Validation Required", "false", String.valueOf(teamArt.getSoleAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
-      testEquals("Targeted Version", teamArt.getSmaMgr().getTargetedForVersion().toString(), "2.5.8");
+      testEquals(
+            "Targeted Version",
+            (teamArt.getSmaMgr().getTargetedForVersion() != null ? teamArt.getSmaMgr().getTargetedForVersion().toString() : "not set"),
+            "2.5.8");
+      testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getSmaMgr().getStateMgr().getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) throws OseeCoreException {
       if (!expected.equals(actual)) {
-         resultData.logError(String.format("Error: [%s] - expected [%s] actual[%s]", name, expected, actual));
+         resultData.logError(String.format("Error: [%s] - expected [%s] actual [%s]", name, expected, actual));
       } else {
-         resultData.log(String.format("Valid: [%s] - expected [%s] actual[%s]", name, expected, actual));
+         resultData.log(String.format("Valid: [%s] - expected [%s] actual [%s]", name, expected, actual));
       }
    }
 
