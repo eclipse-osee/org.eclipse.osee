@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.After;
 import org.junit.Before;
 
 /**
@@ -326,7 +327,8 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
+      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(VersionArtifact.ARTIFACT_NAME,
+            AtsUtil.getAtsBranch())) {
          if (verArt.getName().contains(testType.name())) {
             verArt.deleteAndPersist(transaction);
          }
@@ -434,6 +436,12 @@ public class AtsBranchConfigurationTest {
       implementPageDef.addRelation(AtsRelation.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
       implementPageDef.persistAttributesAndRelations();
+   }
+
+   @After
+   public void tearDown() throws Exception {
+      cleanupBranchTest(TestType.BranchViaVersions);
+      cleanupBranchTest(TestType.BranchViaTeamDef);
    }
 
 }
