@@ -292,9 +292,32 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
                if (attrType.getName().contains("ats")) {
                   int count = artifact.getAttributeCount(attrType.getName());
-                  if (count > attrType.getMaxOccurrences()) xResultData.logError(String.format(
-                        "Artifact: " + XResultData.getHyperlink(artifact) + " AttrType [%s] Max Occurences [%d] != Actual [%d]",
-                        attrType.getName(), attrType.getMaxOccurrences(), count));
+                  if (count > attrType.getMaxOccurrences()) {
+                     String result =
+                           String.format(
+                                 "Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
+                                 artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(),
+                                 count, artifact.getAttributesToString(attrType.getName()));
+                     Set<String> values = new HashSet<String>();
+                     values.addAll(artifact.getAttributesToStringList(attrType.getName()));
+                     if (values.size() == 1) {
+                        result += " - SAME VALUES - FIX AVAILABLE";
+                        xResultData.logError(result);
+                        if (fixAttributeValues) {
+                           Attribute<?> lastAttr = getLatestAttribute(artifact.getAttributes(attrType.getName()));
+                           for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
+                              if (!attr.equals(lastAttr)) {
+                                 attr.delete();
+                              }
+                           }
+                           artifact.persistAttributes(transaction);
+                           xResultData.log("Fixed");
+                        }
+                     } else {
+                        xResultData.logError(result);
+                     }
+
+                  }
                }
             }
          }
@@ -340,6 +363,23 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       transaction.execute();
+   }
+
+   private Attribute<?> getLatestAttribute(List<Attribute<Object>> attributes) {
+      int gammaId = 0;
+      for (Attribute<?> attr : attributes) {
+         if (attr.getGammaId() > gammaId) {
+            gammaId = attr.getGammaId();
+         }
+      }
+      if (gammaId != 0) {
+         for (Attribute<?> attr : attributes) {
+            if (attr.getGammaId() == gammaId) {
+               return attr;
+            }
+         }
+      }
+      return null;
    }
 
    private void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
