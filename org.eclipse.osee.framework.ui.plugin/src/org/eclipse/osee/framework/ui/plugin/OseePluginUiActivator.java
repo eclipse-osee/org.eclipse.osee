@@ -35,17 +35,10 @@ public class OseePluginUiActivator extends OseeUiActivator {
 
    private BundleContext context;
 
-   /**
-    * The constructor
-    */
    public OseePluginUiActivator() {
       plugin = this;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       super.start(context);
       this.context = context;
@@ -89,28 +82,16 @@ public class OseePluginUiActivator extends OseeUiActivator {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       plugin = null;
       context = null;
    }
 
-   /**
-    * Returns the shared instance
-    * 
-    * @return the shared instance
-    */
    public static OseePluginUiActivator getInstance() {
       return plugin;
    }
 
-   /**
-    * @return
-    */
    public BundleContext getContext() {
       return context;
    }

@@ -89,7 +89,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          }
       }
 
-      this.currentDbGuid = OseeInfo.getValue("osee.db.guid");
+      this.currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
    }
 
    private void cleanUp() {

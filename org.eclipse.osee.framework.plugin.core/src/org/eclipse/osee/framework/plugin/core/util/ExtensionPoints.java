@@ -64,7 +64,6 @@ public class ExtensionPoints {
     * 
     * @param extensionPointId <plugin>.Point Id
     * @param extensionPointUniqueIds array of unique ids
-    * @return
     */
    public static List<IExtension> getExtensionsByUniqueId(String extensionPointId, Collection<String> extensionPointUniqueIds) {
       List<IExtension> extensions = new ArrayList<IExtension>();

@@ -19,8 +19,6 @@ public interface IConnectionService {
 
    /**
     * finds all currently existing connectors
-    * 
-    * @return
     */
    Collection<IServiceConnector> getAllConnectors();
 
@@ -29,7 +27,6 @@ public interface IConnectionService {
     * 
     * @param pattern
     * @param filterChain
-    * @return
     */
    Collection<IServiceConnector> findConnectors(IConnectorFilter[] filterChain);
 

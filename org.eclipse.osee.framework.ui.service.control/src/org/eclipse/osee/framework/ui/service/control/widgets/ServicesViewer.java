@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.widgets;
 
+import static org.eclipse.osee.framework.ui.skynet.ImageManager.getImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.data.CategoryParent;
 import org.eclipse.osee.framework.ui.service.control.data.GroupParent;
 import org.eclipse.osee.framework.ui.service.control.data.ServiceNode;
@@ -44,12 +45,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ServicesViewer extends Composite {
 
-   private static final Image CONFIG_IMAGE = ControlPlugin.getInstance().getImage("config.gif");
+   private static final Image CONFIG_IMAGE = getImage(ServiceControlImage.CONFIG);
    private static final Image FOLDER_IMAGE =
          PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-   private static final Image GROUP_IMAGE = ControlPlugin.getInstance().getImage("group.gif");
-   private static final Image CONNECT_FOLDER_IMAGE = ControlPlugin.getInstance().getImage("connect_folder.gif");
-   private static final Image CONNECTED_IMAGE = ControlPlugin.getInstance().getImage("connected_plug.gif");
+   private static final Image GROUP_IMAGE = getImage(ServiceControlImage.GROUP);
+   private static final Image CONNECT_FOLDER_IMAGE = getImage(ServiceControlImage.CONNECT_FOLDER);
+   private static final Image CONNECTED_IMAGE = getImage(ServiceControlImage.CONNECTED_PLUG);
 
    private StructuredViewer viewer;
    private Map<Class<?>, Image> serviceIconMap;

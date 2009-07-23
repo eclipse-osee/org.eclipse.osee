@@ -84,7 +84,8 @@ public class SkyWalkerRelTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setAllChecked(true);
+            //            treeViewer.setAllChecked(true);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
             storeSelected();
          }
       });
@@ -96,7 +97,8 @@ public class SkyWalkerRelTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setAllChecked(false);
+            //            treeViewer.setAllChecked(false);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
             storeSelected();
          }
       });
@@ -133,7 +135,8 @@ public class SkyWalkerRelTypeTabItem {
       if (modList.contains(ModType.Artifact)) {
          if (treeViewer.getInput() == null && options.getAllRelTypes() != null && options.getAllRelTypes().size() > 0) {
             treeViewer.setInput(options.getAllRelationLinkDescriptorTypes());
-            treeViewer.setAllChecked(true);
+            //            treeViewer.setAllChecked(true);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
          }
       }
    }

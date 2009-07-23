@@ -24,7 +24,6 @@ public interface IWorkDefinitionProvider {
     * Workflow Definitions. This should only be used for development as all WorkItemDefinitions should be imported into
     * the DB using ImportWorkItemDefinitions.
     * 
-    * @return
     * @throws Exception TODO
     */
    public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException;
@@ -33,7 +32,6 @@ public interface IWorkDefinitionProvider {
     * Return WorkFlowDefinition to use for the given state machine artifact.
     * 
     * @param artifact
-    * @return
     * @throws Exception TODO
     */
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException;
@@ -45,7 +43,6 @@ public interface IWorkDefinitionProvider {
     * @param workFlowDefinition current workflow
     * @param workPageDefinition current workpage
     * @param data information provided to the extending plugins to determine if work item definitions should be added
-    * @return
     * @throws Exception TODO
     */
    public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException;

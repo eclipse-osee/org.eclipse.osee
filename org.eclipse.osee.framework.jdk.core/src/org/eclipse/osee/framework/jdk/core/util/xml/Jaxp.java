@@ -168,7 +168,6 @@ public class Jaxp {
     * corresponding to the character data for one of the elements in the collection.
     * 
     * @param elements
-    * @return
     */
    public static List<String> getElementsCharacterData(Collection<Element> elements) {
       List<String> result = new ArrayList<String>(elements.size());
@@ -440,13 +439,13 @@ public class Jaxp {
       d.appendChild(d.createComment(comment));
       d.getChildNodes().item(0);
    }
-   
+
    public static void prependComment(Document d, String comment) {
-	      Node commentNode = d.createComment(comment);
-	      
-	      Node firstNode = getChild(d.getDocumentElement(), "TestScript");
-	      d.insertBefore(commentNode, firstNode);
-	   }
+      Node commentNode = d.createComment(comment);
+
+      Node firstNode = getChild(d.getDocumentElement(), "TestScript");
+      d.insertBefore(commentNode, firstNode);
+   }
 
    /**
     * Writes the XML document 'document' to the 'file'.

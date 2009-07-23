@@ -16,54 +16,64 @@ import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 
-
 public interface IRuntimeLibraryManager extends Xmlizable {
    /**
     * @param version
-    * @return
     * @deprecated use isBundleAvailable
     */
    @Deprecated
    boolean isMessageJarAvailable(String version);
+
    boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest);
-   
-    ReturnStatus isRunningJarVersions(String[] versions);
-    /**
-     * Sets up the class loader
-     * @param jarVersions
-     * @param classPaths
-     * @return true if there is no change in class loader configuration
-     * @throws Exception
-     */
-    boolean setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception;
-    void addRuntimeLibraryListener(RuntimeLibraryListener listener);
-    void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
-    
-    /**
-     * @param jarData
-     * @throws IOException
-     * @deprecated see loadBundle
-     */
-    @Deprecated
-    void addJarToClassLoader(byte[] jarData) throws IOException;
-    void loadBundles(Collection<BundleDescription> bundles) throws Exception;
-    void updateBundles(Collection<BundleDescription> bundles) throws Exception;
-    
-    void resetScriptLoader(String[] strings) throws Exception;
-    Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException;
-    Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException;
-    void cleanup();
-    
+
+   ReturnStatus isRunningJarVersions(String[] versions);
+
+   /**
+    * Sets up the class loader
+    * 
+    * @param jarVersions
+    * @param classPaths
+    * @return true if there is no change in class loader configuration
+    * @throws Exception
+    */
+   boolean setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception;
+
+   void addRuntimeLibraryListener(RuntimeLibraryListener listener);
+
+   void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
+
+   /**
+    * @param jarData
+    * @throws IOException
+    * @deprecated see loadBundle
+    */
+   @Deprecated
+   void addJarToClassLoader(byte[] jarData) throws IOException;
+
+   void loadBundles(Collection<BundleDescription> bundles) throws Exception;
+
+   void updateBundles(Collection<BundleDescription> bundles) throws Exception;
+
+   void resetScriptLoader(String[] strings) throws Exception;
+
+   Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException;
+
+   Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException;
+
+   void cleanup();
+
    /**
     * This will be replaced by using OSGi bundles and services in the future
-    * @deprecated 
+    * 
+    * @deprecated
     */
    @Deprecated
    void onRuntimeUnloaded();
 
    /**
     * This will be replaced by using OSGi bundles and services in the future
-    * @deprecated 
+    * 
+    * @deprecated
     */
    @Deprecated
    void onRuntimeLoaded();

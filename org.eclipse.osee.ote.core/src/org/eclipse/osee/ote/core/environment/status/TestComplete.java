@@ -16,57 +16,45 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public class TestComplete implements Serializable,
-IServiceStatusData{
-	private static final long serialVersionUID = -7969548718769021626L;
-	private final String className;
-	private final CommandEndedStatusEnum status;
-	private final String serverOutfilePath;
-	private final String clientOutfilePath;
-	private final List<IHealthStatus> healthStatus;
-	
-	public TestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus){
-		this.className = className;
-		this.serverOutfilePath = serverOutfilePath;
-		this.clientOutfilePath = clientOutfilePath;
-		this.status = status;
-		this.healthStatus = healthStatus;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.environment.status.IServiceStatusData#accept(org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor)
-	 */
-	public void accept(IServiceStatusDataVisitor visitor) {
-		  visitor.asTestComplete(this);
-	}
-	/**
-	 * @return
-	 */
-	public String getClassName() {
-		return className;
-	}
-	/**
-	 * @return
-	 */
-	public CommandEndedStatusEnum getStatus() {
-		return status;
-	}
-	/**
-	 * @return
-	 */
-	public String getServerOutfilePath() {
-		return serverOutfilePath;
-	}
-	/**
-	 * @return
-	 */
-	public String getClientOutfilePath() {
-		return clientOutfilePath;
-	}
-	
-	public List<IHealthStatus> getHealthStatus(){
-		return this.healthStatus;
-	}
+public class TestComplete implements Serializable, IServiceStatusData {
+   private static final long serialVersionUID = -7969548718769021626L;
+   private final String className;
+   private final CommandEndedStatusEnum status;
+   private final String serverOutfilePath;
+   private final String clientOutfilePath;
+   private final List<IHealthStatus> healthStatus;
+
+   public TestComplete(String className, String serverOutfilePath, String clientOutfilePath, CommandEndedStatusEnum status, List<IHealthStatus> healthStatus) {
+      this.className = className;
+      this.serverOutfilePath = serverOutfilePath;
+      this.clientOutfilePath = clientOutfilePath;
+      this.status = status;
+      this.healthStatus = healthStatus;
+   }
+
+   public void accept(IServiceStatusDataVisitor visitor) {
+      visitor.asTestComplete(this);
+   }
+
+   public String getClassName() {
+      return className;
+   }
+
+   public CommandEndedStatusEnum getStatus() {
+      return status;
+   }
+
+   public String getServerOutfilePath() {
+      return serverOutfilePath;
+   }
+
+   public String getClientOutfilePath() {
+      return clientOutfilePath;
+   }
+
+   public List<IHealthStatus> getHealthStatus() {
+      return this.healthStatus;
+   }
 
 }

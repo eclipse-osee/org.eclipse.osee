@@ -48,4 +48,8 @@ public class OseeInfo {
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
       cache.put(key, value);
    }
+
+   public static String getGuid() throws OseeDataStoreException {
+      return getCachedValue("osee.db.guid");
+   }
 }

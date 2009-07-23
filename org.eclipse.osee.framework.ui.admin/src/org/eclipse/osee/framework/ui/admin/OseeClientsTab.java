@@ -225,7 +225,8 @@ public class OseeClientsTab {
    }
 
    private void selectAll(boolean isSelectAll) {
-      peopleCheckboxTreeViewer.setAllChecked(isSelectAll);
+      peopleCheckboxTreeViewer.setSubtreeChecked(peopleCheckboxTreeViewer.getTree().getItems(), isSelectAll);
+      //      peopleCheckboxTreeViewer.setAllChecked(isSelectAll);
    }
 
    private class TreeContentProvider implements ITreeContentProvider {

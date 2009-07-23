@@ -53,6 +53,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -92,8 +94,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private TransactionId transactionId;
    private TransactionId commitTrans;
    private boolean showConflicts;
-
-   //   private CompleteCommitAction commitAction;
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
       if (sourceBranch == null && destBranch == null && tranId == null) throw new IllegalArgumentException(
@@ -160,13 +160,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
    }
 
-   /*
-    * @see IWorkbenchPart#createPartControl(Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       /*
-       * Create a grid layout object so the text and treeviewer are layed out the way I want.
+       * Create a grid layout object so the text and treeviewer are laid out the way I want.
        */
 
       PlatformUI.getWorkbench().getService(IHandlerService.class);
@@ -233,9 +230,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       OseeEventManager.addListener(this);
    }
 
-   /**
-    * @param menuManager
-    */
    private void addPreviewMenuItem(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Preview", "previewTransaction");
       menuManager.add(subMenuManager);
@@ -244,9 +238,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       addPreviewItems(subMenuManager, "Preview Merge Artifact");
    }
 
-   /**
-    * @param menuManager
-    */
    private void createPreviewMenuItem(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Preview", "previewTransaction");
       menuManager.add(subMenuManager);
@@ -255,27 +246,18 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       createPreviewItems(subMenuManager, new PreviewHandler(menuManager, 3), "Preview Merge Artifact");
    }
 
-   /**
-    * @param subMenuManager
-    */
    private String addPreviewItems(MenuManager subMenuManager, String command) {
       CommandContributionItem previewCommand =
             Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null,
-                  SkynetGuiPlugin.getInstance().getImageDescriptor("preview_artifact.gif"), null, null, null);
+                  ImageManager.getImageDescriptor(FrameworkImage.PREVIEW_ARTIFACT), null, null, null);
       subMenuManager.add(previewCommand);
       return previewCommand.getId();
    }
 
-   /**
-    * @param subMenuManager
-    */
    private void createPreviewItems(MenuManager subMenuManager, PreviewHandler handler, String command) {
       handlerService.activateHandler(addPreviewItems(subMenuManager, command), handler);
    }
 
-   /**
-    * @param menuManager
-    */
    private void addDiffMenuItem(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
@@ -286,9 +268,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       addDiffItems(subMenuManager, "Show Destination/Merge Differences");
    }
 
-   /**
-    * @param menuManager
-    */
    private void createDiffMenuItem(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
@@ -299,9 +278,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       createDiffItems(subMenuManager, new DiffHandler(menuManager, 5), "Show Destination/Merge Differences");
    }
 
-   /**
-    * @param subMenuManager
-    */
    private String addDiffItems(MenuManager subMenuManager, String command) {
       CommandContributionItem diffCommand =
             Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null,
@@ -310,16 +286,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       return diffCommand.getId();
    }
 
-   /**
-    * @param subMenuManager
-    */
    private void createDiffItems(MenuManager subMenuManager, DiffHandler handler, String command) {
       handlerService.activateHandler(addDiffItems(subMenuManager, command), handler);
    }
 
-   /**
-    * @param menuManager
-    */
    private String addEditArtifactMenuItem(MenuManager menuManager) {
       CommandContributionItem editArtifactCommand;
       //RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, attributeConflict.getArtifact()).getImage(attributeConflict.getArtifact());
@@ -335,7 +305,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       sourecResourceCommand =
             Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
                   "Show Source Artifact Resource History", null, null,
-                  SkynetGuiPlugin.getInstance().getImageDescriptor("DBiconBlueEdit.gif"), null, null,
+                  ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
                   "source_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
@@ -345,8 +315,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       CommandContributionItem sourecResourceCommand;
       sourecResourceCommand =
             Commands.getLocalCommandContribution(getSite(), "destResourceHistory",
-                  "Show Dest Artifact Resource History", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
-                        "DBiconBlueEdit.gif"), null, null, "dest_Resource_History");
+                  "Show Dest Artifact Resource History", null, null,
+                  ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
+                  "dest_Resource_History");
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
@@ -356,7 +327,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       sourceReveal =
             Commands.getLocalCommandContribution(getSite(), "sourceRevealArtifactExplorer",
                   "Reveal Source Artifact in Artifact Explorer", null, null,
-                  SkynetGuiPlugin.getInstance().getImageDescriptor("magnify.gif"), null, null, "source_Reveal");
+                  ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "source_Reveal");
       menuManager.add(sourceReveal);
       return sourceReveal.getId();
    }
@@ -366,14 +337,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       destReveal =
             Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
                   "Reveal Dest Artifact in Artifact Explorer", null, null,
-                  SkynetGuiPlugin.getInstance().getImageDescriptor("magnify.gif"), null, null, "dest_Reveal");
+                  ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "dest_Reveal");
       menuManager.add(destReveal);
       return destReveal.getId();
    }
 
-   /**
-    * @param menuManager
-    */
    private void createEditArtifactMenuItem(MenuManager menuManager) {
 
       handlerService.activateHandler(addEditArtifactMenuItem(menuManager),
@@ -538,9 +506,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       });
    }
 
-   /**
-    * @param menuManager
-    */
    private String addMergeMenuItem(MenuManager menuManager) {
       CommandContributionItem mergeArtifactCommand;
       mergeArtifactCommand =
@@ -551,9 +516,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       return mergeArtifactCommand.getId();
    }
 
-   /**
-    * @param menuManager
-    */
    private void createMergeMenuItem(MenuManager menuManager) {
 
       handlerService.activateHandler(addMergeMenuItem(menuManager),
@@ -668,11 +630,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private static final String TRANSACTION_NUMBER = "transactionNumber";
    private static final String COMMIT_NUMBER = "commitTransactionNumber";
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
-    */
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
@@ -909,16 +866,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (sourceBranch != null && destBranch != null && (sourceBranch.getBranchId() == branchId || destBranch.getBranchId() == branchId)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                if (xMergeViewer != null && xMergeViewer.getXViewer().getTree().isDisposed() != true) {
@@ -929,16 +880,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
@@ -951,9 +896,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
       final MergeView mergeView = this;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) return;

@@ -35,19 +35,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
  */
 public class ValidateChangeReportByHrid extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    * @throws OseeArgumentException
-    */
    public ValidateChangeReportByHrid(XNavigateItem parent) throws OseeArgumentException {
       super(parent, "Validate Change Reports by HRID", FrameworkImage.ADMIN);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       EntryCheckDialog ed = new EntryCheckDialog(getName(), "Enter HRID", "Display Was/Is data in Results View.");
@@ -70,11 +61,6 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
          this.exportWasIs = exportWasIs;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
@@ -82,7 +68,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
             try {
                TeamWorkFlowArtifact teamArt =
                      (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsUtil.getAtsBranch());
-               String currentDbGuid = OseeInfo.getValue("osee.db.guid");
+               String currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
                ValidateChangeReports.changeReportValidated(currentDbGuid, teamArt, rd, exportWasIs);
             } catch (Exception ex) {
                rd.logError(ex.getLocalizedMessage());

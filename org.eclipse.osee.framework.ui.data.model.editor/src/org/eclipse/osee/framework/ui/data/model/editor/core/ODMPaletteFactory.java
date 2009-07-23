@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -97,14 +98,14 @@ public class ODMPaletteFactory {
                }
                break;
             case Attribute_Types:
-               image = ODMImages.getImageDescriptor(ODMImages.LOCAL_ATTRIBUTE);
+               image = ImageManager.getImageDescriptor(ODMImage.LOCAL_ATTRIBUTE);
                for (AttributeDataType dataType : dataTypeSource.getAttributeTypeManager().getAllSorted()) {
                   message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "attribute", "an artifact type");
                   toReturn.add(createDataTypeToolEntry(dataType, image, message));
                }
                break;
             case Relation_Types:
-               image = ODMImages.getImageDescriptor(ODMImages.LOCAL_RELATION);
+               image = ImageManager.getImageDescriptor(ODMImage.LOCAL_RELATION);
                for (RelationDataType dataType : dataTypeSource.getRelationTypeManager().getAllSorted()) {
                   message = String.format(DATA_TYPE_TIP_FORMAT, dataType.getName(), "relation", "an artifact type");
                   toReturn.add(createDataTypeToolEntry(dataType, image, message));
@@ -145,7 +146,7 @@ public class ODMPaletteFactory {
       toolbar.add(new MarqueeToolEntry());
       toolbar.add(new PaletteSeparator());
 
-      ImageDescriptor img = ODMImages.getImageDescriptor(ODMImages.INHERITANCE);
+      ImageDescriptor img = ImageManager.getImageDescriptor(ODMImage.INHERITANCE);
       toolbar.add(new ConnectionCreationToolEntry("Inheritance", "Inherit from an artifact", new SimpleFactory(
             InheritanceLinkModel.class), img, img));
 

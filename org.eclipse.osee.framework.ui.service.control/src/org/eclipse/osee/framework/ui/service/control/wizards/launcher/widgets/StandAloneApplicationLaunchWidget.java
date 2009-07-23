@@ -11,9 +11,10 @@
 
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher.widgets;
 
+import static org.eclipse.osee.framework.ui.skynet.ImageManager.getImage;
 import java.io.File;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.StandAloneApplicationLaunchJob;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchWizard;
@@ -187,7 +188,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
 
       Button fileDialog = new Button(group, SWT.NONE);
       fileDialog.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-      fileDialog.setImage(ControlPlugin.getInstance().getImage("file.gif"));
+      fileDialog.setImage(getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
             DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN);
@@ -229,7 +230,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
 
       Button fileDialog = new Button(group, SWT.NONE);
       fileDialog.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-      fileDialog.setImage(ControlPlugin.getInstance().getImage("file.gif"));
+      fileDialog.setImage(getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {

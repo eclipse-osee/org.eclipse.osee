@@ -185,8 +185,6 @@ public class BranchManager {
       instance.ensurePopulatedCache(true);
    }
 
-   @Deprecated
-   // use getKeyedBranch() or get the branch by id or from getBranches(...)
    public static Branch getBranch(String branchName) throws OseeCoreException {
       Collection<Branch> branches = getBranchesByName(branchName);
       if (branches.isEmpty()) {

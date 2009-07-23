@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
@@ -51,23 +53,23 @@ public class OteNavigateView extends ViewPart implements IActionable {
     * @see IWorkbenchPart#createPartControl(Composite)
     */
    public void createPartControl(Composite parent) {
-	  PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
-	  xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
-	  
+      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
+      xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
+
       xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
 
       createActions();
       xNavComp.refresh();
-      
+
       addExtensionPointListenerBecauseOfWorkspaceLoading();
    }
 
-   private void addExtensionPointListenerBecauseOfWorkspaceLoading(){
+   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-      extensionRegistry.addListener(new IRegistryEventListener(){
+      extensionRegistry.addListener(new IRegistryEventListener() {
          @Override
          public void added(IExtension[] extensions) {
-            refresh(); 
+            refresh();
          }
 
          @Override
@@ -77,16 +79,16 @@ public class OteNavigateView extends ViewPart implements IActionable {
 
          @Override
          public void removed(IExtension[] extensions) {
-            refresh(); 
+            refresh();
          }
 
          @Override
          public void removed(IExtensionPoint[] extensionPoints) {
-            refresh(); 
+            refresh();
          }
       }, "org.eclipse.osee.ote.ui.OteNavigateItem");
    }
-   
+
    protected void createActions() {
       Action refreshAction = new Action("Refresh") {
 
@@ -94,7 +96,7 @@ public class OteNavigateView extends ViewPart implements IActionable {
             xNavComp.refresh();
          }
       };
-      refreshAction.setImageDescriptor(TestCoreGuiPlugin.getDefault().getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       OseeAts.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");

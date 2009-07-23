@@ -57,11 +57,6 @@ public class SkyWalkerArtTypeTabItem {
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new ArrayTreeContentProvider());
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             storeSelected();
          }
@@ -92,7 +87,8 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setAllChecked(true);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
+            //            treeViewer.setAllChecked(true);
             storeSelected();
          }
       });
@@ -104,16 +100,12 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setAllChecked(false);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
+            //            treeViewer.setAllChecked(false);
             storeSelected();
          }
       });
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener#modified(org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType[])
-          */
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }
@@ -139,7 +131,8 @@ public class SkyWalkerArtTypeTabItem {
       if (modList.contains(ModType.Artifact)) {
          if (treeViewer.getInput() == null && options.getAllArtTypes() != null && options.getAllArtTypes().size() > 0) {
             treeViewer.setInput(options.getAllArtTypes());
-            treeViewer.setAllChecked(true);
+            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
+            //            treeViewer.setAllChecked(true);
          }
       }
    }

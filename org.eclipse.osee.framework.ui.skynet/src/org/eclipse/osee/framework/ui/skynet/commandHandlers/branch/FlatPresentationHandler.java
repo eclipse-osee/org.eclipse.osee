@@ -32,9 +32,10 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.flatCommand";
    private ICommandService service;
 
-   public FlatPresentationHandler(){
+   public FlatPresentationHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ((BranchView) HandlerUtil.getActivePartChecked(event)).changeBranchPresentation(true);
@@ -43,16 +44,14 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      element.setChecked(Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
+      element.setChecked(Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(
+            BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       service.refreshElements(COMMAND_ID, null);
-      
+
       return true;
    }
 }

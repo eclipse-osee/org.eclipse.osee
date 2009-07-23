@@ -98,7 +98,7 @@ public class QueryLogView extends ViewPart implements IActionable {
             viewer.refresh();
          }
       };
-      clearLogAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("delete_edit.gif"));
+      clearLogAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DELETE_EDIT));
       clearLogAction.setToolTipText("Delete Log");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
@@ -109,7 +109,8 @@ public class QueryLogView extends ViewPart implements IActionable {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(viewer.getControl(), "query_log_table", "org.eclipse.osee.framework.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(viewer.getControl(), "query_log_table",
+            "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

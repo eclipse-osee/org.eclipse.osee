@@ -63,9 +63,6 @@ public class AttributeMatch extends Match implements IAdaptable {
       return fLineElement;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class adapter) {
       if (Artifact.class.equals(adapter)) {

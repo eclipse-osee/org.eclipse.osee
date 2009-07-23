@@ -50,17 +50,17 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       /*
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
+            "<" + user.getUserId() + ">", DeprecatedOperator.CONTAINS));
       if (!activeObjectsOnly) {
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
+               "<" + user.getUserId() + ">", DeprecatedOperator.CONTAINS));
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-               "userId=\"" + user.getUserId() + "\"", DepricatedOperator.CONTAINS));
+               "userId=\"" + user.getUserId() + "\"", DeprecatedOperator.CONTAINS));
       }
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "userId>" + user.getUserId() + "</userId", DepricatedOperator.CONTAINS));
+            "userId>" + user.getUserId() + "</userId", DeprecatedOperator.CONTAINS));
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));*/
+            "user>" + user.getUserId() + "</user", DeprecatedOperator.CONTAINS));*/
 
       List<Artifact> arts = new ArrayList<Artifact>();
       arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(), false,

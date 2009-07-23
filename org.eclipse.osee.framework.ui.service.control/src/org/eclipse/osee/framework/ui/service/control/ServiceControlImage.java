@@ -10,11 +10,22 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
- * @author b1528444
- *
+ * @author Andrew M. Finkbeiner
  */
 public enum ServiceControlImage implements OseeImage {
-   MONITOR("monitor.GIF");
+   ANNOTATE("annotate.gif"),
+   CONFIG("config.gif"),
+   CONNECT_FOLDER("connect_folder.gif"),
+   CONNECTED_PLUG("connected_plug.gif"),
+   CONNECTION("connection.gif"),
+   DISCONNECTED("disconnected.gif"),
+   FILE("file.gif"),
+   GROUP("group.gif"),
+   HELP("help.gif"),
+   MONITOR("monitor. GIF"),
+   REFRESH("refresh.gif"),
+   ROCKET("rocket.gif"),
+   TOOLS("tools.gif");
 
    private final String fileName;
 

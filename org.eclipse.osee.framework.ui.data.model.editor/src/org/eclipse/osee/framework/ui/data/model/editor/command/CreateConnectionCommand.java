@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkMode
  */
 public class CreateConnectionCommand extends Command {
 
-   private ConnectionModel connectionModel;
+   private ConnectionModel<ArtifactDataType> connectionModel;
    private ArtifactDataType source;
    private ArtifactDataType target;
    private ArtifactDataType oldAncestor;
 
-   public CreateConnectionCommand(ConnectionModel connectionModel, ArtifactDataType source) {
+   public CreateConnectionCommand(ConnectionModel<ArtifactDataType> connectionModel, ArtifactDataType source) {
       super("Create connection");
       this.connectionModel = connectionModel;
       this.source = source;

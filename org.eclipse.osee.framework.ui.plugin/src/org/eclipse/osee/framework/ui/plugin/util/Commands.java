@@ -20,6 +20,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
@@ -43,7 +44,6 @@ public final class Commands {
     * @param mnemonic may be null
     * @param tooltip may be null
     * @param helpContextId may be null
-    * @return
     */
    public static CommandContributionItem getLocalCommandContribution(IWorkbenchPartSite site, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
       return createCommandContributionItem(site, site.getId(), shortCommandId, name, parameterDefs, parameters, image,
@@ -63,7 +63,6 @@ public final class Commands {
     * @param mnemonic may be null
     * @param tooltip may be null
     * @param helpContextId may be null
-    * @return
     */
    public static CommandContributionItem getLocalCommandContribution(String id, IWorkbenchSite site, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
       return createCommandContributionItem(site, id, shortCommandId, name, parameterDefs, parameters, image, mnemonic,
@@ -85,7 +84,8 @@ public final class Commands {
       }
 
       // Use the commandId as the id so calling code can get to the commandId
-      return new CommandContributionItem(site, command.getId(), command.getId(), parameters, image, null, null, name,
-            mnemonic, tooltip, CommandContributionItem.STYLE_PUSH);
+      return new CommandContributionItem(new CommandContributionItemParameter(site, command.getId(), command.getId(),
+            parameters, image, null, null, name, mnemonic, tooltip, CommandContributionItem.STYLE_PUSH, helpContextId,
+            false));
    }
 }

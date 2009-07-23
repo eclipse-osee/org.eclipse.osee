@@ -32,11 +32,14 @@ public enum FrameworkImage implements OseeImage {
    ATTRIBUTE_DISABLED("disabled_attribute.gif"),
    APPLICATION_SERVER("appserver.gif"),
    AUTHENTICATED("authenticated.gif"),
+   BACK("back.gif"),
    BLAM("blam.gif"),
    BRANCH_CHANGE("branch_change.gif"),
    BRANCH("branch.gif"),
    BRANCH_SYSTEM_ROOT("branchYellow.gif"),
    BRANCH_BASELINE("baseline.gif"),
+   BRANCH_CHANGE_DEST("branch_change_dest.gif"),
+   BRANCH_CHANGE_SOURCE("branch_change_source.gif"),
    BRANCH_MERGE("merge.gif"),
    BRANCH_WORKING("working.gif"),
    BRANCH_FAVORITE_OVERLAY("star_9_9.gif"),
@@ -53,13 +56,16 @@ public enum FrameworkImage implements OseeImage {
    COPYTOCLIPBOARD("copyToClipboard.gif"),
    CUSTOMIZE("customize.gif"),
    DB_ICON_BLUE("DBiconBlue.GIF"),
+   DB_ICON_BLUE_EDIT("DBiconBlueEdit.gif"),
    DELETE("delete.gif"),
+   DELETE_EDIT("delete_edit.gif"),
    DIRTY("dirty.gif"),
    DOT_RED("red_light.gif"),
    DOT_YELLOW("yellow_light.gif"),
    DOT_GREEN("green_light.gif"),
    DUPLICATE("duplicate.gif"),
    EDIT("edit.gif"),
+   EDIT2("edit2.gif"),
    EDIT_BLUE("DBiconBlueEdit.GIF"),
    EDIT_ARTIFACT("edit_artifact.gif"),
    EMAIL("email.gif"),
@@ -88,6 +94,7 @@ public enum FrameworkImage implements OseeImage {
    LASER("laser_16_16.gif"),
    LASER_OVERLAY("laser_8_8.gif"),
    LINE_MATCH("line_match.gif"),
+   LOAD("load.gif"),
    LOCKED_KEY("lockkey.gif"),
    LOCKED_NO_ACCESS("red_lock.gif"),
    LOCKED_WITH_ACCESS("green_lock.gif"),
@@ -120,6 +127,7 @@ public enum FrameworkImage implements OseeImage {
    OUTGOING_NEW("OUTGOING_New.gif"),
    OUTLINE("outline_co.gif"),
    PROBLEM("greenBug.gif"),
+   PREVIEW_ARTIFACT("preview_artifact.gif"),
    PRINT("print.gif"),
    PURPLE("purple.gif"),
    RECTANGLE_16("rectangle16.gif"),
@@ -127,6 +135,7 @@ public enum FrameworkImage implements OseeImage {
    REFRESH("refresh.gif"),
    RELATION("relate.gif"),
    REMOVE("remove.gif"),
+   REMOVE_ALL("removeAll.gif"),
    REJECT("reject.gif"),
    RUN_EXC("run_exc.gif"),
    PAGE("page.gif"),
@@ -138,6 +147,7 @@ public enum FrameworkImage implements OseeImage {
    SEVERITY_MINOR("minor.gif"),
    SEVERITY_ISSUE("issue.gif"),
    SLASH_RED_OVERLAY("red_slash.gif"),
+   SWITCHED("switched.gif"),
    TRASH("trash.gif"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
@@ -164,9 +174,6 @@ public enum FrameworkImage implements OseeImage {
       this.fileName = fileName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageDescriptor()
-    */
    @Override
    public ImageDescriptor createImageDescriptor() {
       if (this == MISSING) {
@@ -175,9 +182,6 @@ public enum FrameworkImage implements OseeImage {
       return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-    */
    @Override
    public String getImageKey() {
       return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;

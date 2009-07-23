@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
@@ -21,31 +21,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
    private String typeName;
-   private DepricatedOperator operation;
+   private DeprecatedOperator operation;
    private static final String tables = ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE;
    private final static String TOKEN = ";";
 
    /**
     * @param typeName
     */
-   public ArtifactTypeSearch(String typeName, DepricatedOperator operation) {
+   public ArtifactTypeSearch(String typeName, DeprecatedOperator operation) {
       super();
       this.typeName = typeName;
       this.operation = operation;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
             ARTIFACT_TYPE_TABLE.column("name") + operation + " ? AND " + ARTIFACT_TYPE_TABLE.column("art_type_id") + EQUAL + ARTIFACT_TABLE.column("art_type_id");
@@ -72,7 +64,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       if (values.length != 2) throw new IllegalStateException(
             "Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
 
-      return new ArtifactTypeSearch(values[0], DepricatedOperator.valueOf(values[1]));
+      return new ArtifactTypeSearch(values[0], DeprecatedOperator.valueOf(values[1]));
    }
 
 }

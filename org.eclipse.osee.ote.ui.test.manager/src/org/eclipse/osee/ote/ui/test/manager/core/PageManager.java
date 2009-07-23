@@ -59,7 +59,6 @@ public class PageManager {
       advancedPage.createPage();
       registerPage(advancedPage);
 
-      
    }
 
    private void registerPage(TestManagerPage page) {
@@ -158,31 +157,27 @@ public class PageManager {
       return builder.toString();
    }
 
-    public boolean onPostConnect(ConnectionEvent event) {
-	boolean problemEncountered = false;
-	for (TestManagerPage page : pages) {
-	    problemEncountered |= page.onConnection(event);
-	}
-	return problemEncountered;
-    }
+   public boolean onPostConnect(ConnectionEvent event) {
+      boolean problemEncountered = false;
+      for (TestManagerPage page : pages) {
+         problemEncountered |= page.onConnection(event);
+      }
+      return problemEncountered;
+   }
 
-    public boolean onPreDisconnect(ConnectionEvent event) {
-	boolean problemEncountered = false;
-	for (TestManagerPage page : pages) {
-	    problemEncountered |= page.onDisconnect(event);
-	}
-	return problemEncountered;
-    }
+   public boolean onPreDisconnect(ConnectionEvent event) {
+      boolean problemEncountered = false;
+      for (TestManagerPage page : pages) {
+         problemEncountered |= page.onDisconnect(event);
+      }
+      return problemEncountered;
+   }
 
-	/**
-	 * @param testHost
-	 * @return
-	 */
-	public boolean onConnectionLost(IHostTestEnvironment testHost) {
-		boolean problemEncountered = false;
-		for (TestManagerPage page : pages) {
-		    problemEncountered |= page.onConnectionLost(testHost);
-		}
-		return problemEncountered;
-	}
+   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+      boolean problemEncountered = false;
+      for (TestManagerPage page : pages) {
+         problemEncountered |= page.onConnectionLost(testHost);
+      }
+      return problemEncountered;
+   }
 }

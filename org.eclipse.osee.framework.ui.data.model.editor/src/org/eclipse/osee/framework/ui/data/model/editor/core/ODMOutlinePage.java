@@ -29,7 +29,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.ui.data.model.editor.outline.OutlineTreePartFactory;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -144,7 +145,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       bars.updateActionBars();
 
       IToolBarManager manager = bars.getToolBarManager();
-      ImageDescriptor img = ODMImages.getImageDescriptor(ODMImages.EXPAND_ALL);
+      ImageDescriptor img = ImageManager.getImageDescriptor(ODMImage.EXPAND_ALL);
       IAction action = new Action("Expand All", img) {
          public void run() {
             expand(((Tree) viewer.getControl()).getItems());

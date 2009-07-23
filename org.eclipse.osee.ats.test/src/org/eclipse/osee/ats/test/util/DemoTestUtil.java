@@ -81,7 +81,6 @@ public class DemoTestUtil {
     * 
     * @param title
     * @param transaction
-    * @return
     * @throws OseeCoreException
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {

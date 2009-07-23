@@ -35,7 +35,7 @@ public class TestRunThread extends OseeTestThread {
    private volatile boolean abort = false;
    private ReentrantLock lock = new ReentrantLock();
    private ResultBuilder rb = new ResultBuilder(false);
-   
+
    /**
     * @param propertyStore
     * @param test2
@@ -53,48 +53,46 @@ public class TestRunThread extends OseeTestThread {
 
    @Override
    protected void run() throws Exception {
-      try{
+      try {
          rb.append(listenerProvider.notifyPreRun(dataProvider.createOnPreRun(propertyStore, test)));
          //todo we need to make it so that the setup and teardown test casees get added to the list.... from the getTestCases() method
          //we also need to make sure script initialization gets added through a prerun listener
-         if(rb.isReturnStatusOK()){
+         if (rb.isReturnStatusOK()) {
             List<TestCase> testCases = test.getTestCases();
             for (TestCase testCase : testCases) {
-               if (abort) 
-               {
+               if (abort) {
                   addAbortResult(null);
                   break;
                }
-               rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test, testCase)));
+               rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test,
+                     testCase)));
                lock.lock();
                try {
                   testCase.baseDoTestCase(getEnvironment());
-                  if( Thread.interrupted() )
-                     throw new InterruptedException("Thread probably aborted");
-   
+                  if (Thread.interrupted()) throw new InterruptedException("Thread probably aborted");
+
                } catch (Throwable ex) {
-                  if( abort )
-                  {
+                  if (abort) {
                      addAbortResult(null);
-                  }
-                  else
-                  {
+                  } else {
                      abort = true;
                      this.test.setAborted(true);
                      MethodResultImpl methodresult = new MethodResultImpl();
                      methodresult.setReturnCode(ReturnCode.ERROR);
                      methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
                      rb.append(methodresult);
-                     OseeLog.log(this.getClass().getName(), 
-                           "org.eclipse.osee.ote.core", 
-                           Level.SEVERE, 
+                     OseeLog.log(
+                           this.getClass().getName(),
+                           "org.eclipse.osee.ote.core",
+                           Level.SEVERE,
                            "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
-                           ex );
+                           ex);
                   }
                } finally {
                   lock.unlock();
                }
-               rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test, testCase)));
+               rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test,
+                     testCase)));
             }
          }
       } finally {
@@ -106,11 +104,10 @@ public class TestRunThread extends OseeTestThread {
     * 
     */
    private void addAbortResult(Throwable th) {
-      if( rb.isReturnStatusOK() )
-      {
+      if (rb.isReturnStatusOK()) {
          MethodResultImpl methodresult = new MethodResultImpl();
          methodresult.setReturnCode(ReturnCode.ABORTED);
-         if(th == null){
+         if (th == null) {
             methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "USER ABORTED"));
          } else {
             methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, th));
@@ -131,21 +128,23 @@ public class TestRunThread extends OseeTestThread {
          this.interrupt();
       }
       try {
-            this.join(60000);
-            
-            if (this.isAlive()) {
-               OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "Waited 60s for test to abort but the thread did not die."));
-               return false;
-            }
+         this.join(60000);
+
+         if (this.isAlive()) {
+            OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
+                  "Waited 60s for test to abort but the thread did not die."));
+            return false;
+         }
       } catch (InterruptedException ex) {
-         OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "Failed to wait for abort to complete successfully.", ex));
+         OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
+               "Failed to wait for abort to complete successfully.", ex));
          return false;
       }
       return true;
    }
-   
+
    public boolean abort(Throwable th, boolean wait) {
-      if(abort) return true;
+      if (abort) return true;
       abort = true;
       this.test.setAborted(true);
       addAbortResult(th);
@@ -159,13 +158,9 @@ public class TestRunThread extends OseeTestThread {
       }
       return true;
    }
-   
 
-/**
- * @return
- */
-public IMethodResult getResult() {
+   public IMethodResult getResult() {
       return rb.get();
-}
+   }
 
 }

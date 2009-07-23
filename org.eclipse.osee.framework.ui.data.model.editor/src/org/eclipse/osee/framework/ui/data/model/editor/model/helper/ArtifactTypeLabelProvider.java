@@ -14,7 +14,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -39,26 +40,20 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-    */
    @Override
    public Image getImage(Object element) {
       if (element instanceof ArtifactDataType) {
          return ((ArtifactDataType) element).getImage();
       }
       if (element instanceof DataTypeSource) {
-         return ((DataTypeSource) element).isFromDataStore() ? ODMImages.getImage(ODMImages.DATASTORE_IMAGE) : ODMImages.getImage(ODMImages.FILE_SOURCE_IMAGE);
+         return ((DataTypeSource) element).isFromDataStore() ? ImageManager.getImage(ODMImage.DATASTORE_IMAGE) : ImageManager.getImage(ODMImage.FILE_SOURCE_IMAGE);
       }
       if (element instanceof PackageModel) {
-         return ODMImages.getImage(ODMImages.NAMESPACE_IMAGE);
+         return ImageManager.getImage(ODMImage.NAMESPACE_IMAGE);
       }
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-    */
    @Override
    public String getText(Object element) {
       if (element instanceof DataTypeSource) {

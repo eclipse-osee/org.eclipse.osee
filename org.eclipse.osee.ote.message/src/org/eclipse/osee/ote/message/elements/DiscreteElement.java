@@ -1441,8 +1441,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element {
     * This method checks a an array of EnumBase objects to determine if a given EnumBase object is or isn't in the list.
     * It then returns a CheckGroup object that describes the checks and pass/fail status.
     * 
-    * @param isInList
-    *           <ul>
+    * @param isInList <ul>
     *           <li><b>True </b> used to get a pass iff the item is in the list.</li>
     *           <li><b>False </b> used to get a pass iff the item is not in the list.</li>
     *           </ul>
@@ -1503,7 +1502,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element {
    }
 
    /**
-    * Will be removed in MS_0.1.6. Use {@link #getValue()} instead
+    * Will be removed in MS_0.1.6.
+    * 
+    * @use {@link #getValue()} instead
     */
    @Deprecated
    public T get() {
@@ -1514,7 +1515,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element {
     * gets this element's current value. Does logging
     * 
     * @param accessor
-    * @return
     */
    public T get(ITestEnvironmentAccessor accessor) {
       accessor.getLogger().methodCalled(accessor, new MethodFormatter());

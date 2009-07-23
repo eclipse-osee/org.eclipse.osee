@@ -137,8 +137,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       for (String verName : new String[] {DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name(),
             DemoSawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     AtsUtil.getAtsBranch(), verName);
+               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
+                     verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }
@@ -155,8 +155,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.name(), DemoCISBuilds.CIS_Bld_2.name(),
             DemoCISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                     AtsUtil.getAtsBranch(), verName);
+               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
+                     verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
          }

@@ -292,17 +292,11 @@ public class XBranchWidget extends XWidget implements IActionable {
       Jobs.startJob(job);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;

@@ -11,8 +11,9 @@
 package org.eclipse.osee.framework.ui.service.control.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -25,7 +26,7 @@ public class HideLookupsAction extends Action {
    public HideLookupsAction(ManagerMain mainWindow) {
       super("", Action.AS_CHECK_BOX);
       this.mainWindow = mainWindow;
-      setImageDescriptor(ControlPlugin.getInstance().getImageDescriptor("tools.gif"));
+      setImageDescriptor(ImageManager.getImageDescriptor(ServiceControlImage.TOOLS));
       setText("Display " + ACTION_TITLE);
    }
 

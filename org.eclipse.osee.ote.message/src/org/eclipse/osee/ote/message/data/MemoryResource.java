@@ -135,7 +135,7 @@ public class MemoryResource {
       }
       return (int) (v >>> (7 - lsb % 8));
    }
-   
+
    public final long getLong(int offset, int msb, int lsb) {
       offset += _offset;
       if ((lsb - msb) <= 63) {
@@ -395,7 +395,6 @@ public class MemoryResource {
 
    /**
     * @param src
-    * @return
     */
    public void copyData(ByteBuffer src) {
       copyData(0, src, src.remaining());

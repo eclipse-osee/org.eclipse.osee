@@ -58,7 +58,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
 
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.branch.graph.BranchGraphEditor";
-   private static final String MAIN_HELP_CONTEXT = "oseeBranchGraph";
 
    private BranchGraphOutlinePage overviewOutlinePage;
    private ActionRegistry actionRegistry;
@@ -169,6 +168,9 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       // Scroll-wheel Zoom
       viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
+      //      IHandlerService service = (IHandlerService) getSite().getService(IHandlerService.class);
+      //      service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn));
+      //      service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut));
       getSite().getKeyBindingService().registerAction(zoomIn);
       getSite().getKeyBindingService().registerAction(zoomOut);
       List<String> zoomContributions =

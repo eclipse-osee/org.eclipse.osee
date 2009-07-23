@@ -46,11 +46,6 @@ public class RevertAttributeHandler extends AbstractHandler {
    public RevertAttributeHandler() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       // This is serious stuff, make sure the user understands the impact.

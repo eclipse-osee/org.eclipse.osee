@@ -101,16 +101,10 @@ public class ArtifactExportPage extends WizardDataTransferPage {
       setControl(composite);
    }
 
-   /**
-    * @return
-    */
    public Collection<Artifact> getExportArtifacts() {
       return selectedArtifacts;
    }
 
-   /**
-    * @return
-    */
    public File getExportPath() {
       return exportPath;
    }

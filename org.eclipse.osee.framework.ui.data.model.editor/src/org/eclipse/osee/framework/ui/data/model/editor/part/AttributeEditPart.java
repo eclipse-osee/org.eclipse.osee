@@ -15,7 +15,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -36,12 +37,12 @@ public class AttributeEditPart extends ComponentEditPart {
       SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String displayText = ODMConstants.getDataTypeText(getModelAsDataType());
       labelFigure.setText(displayText);
-      labelFigure.setIcon(ODMImages.getImage(ODMImages.LOCAL_ATTRIBUTE));
+      labelFigure.setIcon(ImageManager.getImage(ODMImage.LOCAL_ATTRIBUTE));
       labelFigure.setSelectable(true);
 
       if (isInherited()) {
          labelFigure.setBackgroundColor(ColorConstants.tooltipBackground);
-         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITED_ATTRIBUTE));
+         labelFigure.setIcon(ImageManager.getImage(ODMImage.INHERITED_ATTRIBUTE));
          labelFigure.setSelectable(false);
       }
    }

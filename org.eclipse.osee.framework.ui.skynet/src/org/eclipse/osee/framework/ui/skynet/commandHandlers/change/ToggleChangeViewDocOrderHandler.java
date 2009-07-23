@@ -32,9 +32,10 @@ public class ToggleChangeViewDocOrderHandler extends AbstractHandler implements 
    boolean itemChk;
    private ICommandService service;
 
-   public ToggleChangeViewDocOrderHandler(){
+   public ToggleChangeViewDocOrderHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ((ChangeView) HandlerUtil.getActivePartChecked(event)).changeShowDocumentOrder(!itemChk);
@@ -43,13 +44,12 @@ public class ToggleChangeViewDocOrderHandler extends AbstractHandler implements 
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(ChangeView.VIEW_ID).getBoolean(ChangeViewPresentationPreferences.SHOW_DOC_ORDER, false);
+      itemChk =
+            Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(ChangeView.VIEW_ID).getBoolean(
+                  ChangeViewPresentationPreferences.SHOW_DOC_ORDER, false);
       element.setChecked(itemChk);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       service.refreshElements(COMMAND_ID, null);

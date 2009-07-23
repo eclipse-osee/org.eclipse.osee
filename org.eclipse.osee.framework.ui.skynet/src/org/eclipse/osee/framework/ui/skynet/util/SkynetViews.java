@@ -60,7 +60,7 @@ public class SkynetViews {
    public static void addDatabaseSourceId(IMemento memento) {
       if (memento != null) {
          try {
-            memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getValue("osee.db.guid"));
+            memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getCachedValue("osee.db.guid"));
          } catch (OseeDataStoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
          }

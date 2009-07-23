@@ -15,47 +15,44 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 
-public class TestException extends RuntimeException{
+public class TestException extends RuntimeException {
 
    /**
     * 
     */
    private static final long serialVersionUID = -5628986844200418864L;
-   
+
    private final String threadCauseName;
    private final Level level;
    private List<IHealthStatus> status = new ArrayList<IHealthStatus>();
-   
+
    public TestException(String message, Level level) {
       this(message, level, null);
    }
-   
+
    public TestException(String message, Level level, Throwable cause) {
       super(message, cause);
       this.level = level;
       threadCauseName = Thread.currentThread().getName();
    }
-   
-   /**
- * @param status
- */
-public TestException(String message, List<IHealthStatus> status) {
-	this(message, Level.SEVERE);
-	this.status = status;
-}
 
-public String getThreadName() {
+   /**
+    * @param status
+    */
+   public TestException(String message, List<IHealthStatus> status) {
+      this(message, Level.SEVERE);
+      this.status = status;
+   }
+
+   public String getThreadName() {
       return threadCauseName;
    }
-   
+
    public Level getLevel() {
       return level;
    }
 
-/**
- * @return
- */
-public List<IHealthStatus> getHealthStatus() {
-	return status;
-}
+   public List<IHealthStatus> getHealthStatus() {
+      return status;
+   }
 }

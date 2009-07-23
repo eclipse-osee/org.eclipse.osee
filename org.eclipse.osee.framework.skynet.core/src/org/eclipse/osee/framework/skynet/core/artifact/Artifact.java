@@ -134,9 +134,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public boolean isAnnotation(ArtifactAnnotation.Type type) throws OseeCoreException {
       for (ArtifactAnnotation notify : getAnnotations()) {
-         if (notify.getType() == type) {
-            return true;
-         }
+         if (notify.getType() == type) return true;
       }
       return false;
    }
@@ -150,13 +148,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public ArtifactAnnotation.Type getMainAnnotationType() throws OseeCoreException {
-      if (isAnnotation(ArtifactAnnotation.Type.Error)) {
+      if (isAnnotation(ArtifactAnnotation.Type.Error))
          return ArtifactAnnotation.Type.Error;
-      } else if (isAnnotation(ArtifactAnnotation.Type.Warning)) {
+      else if (isAnnotation(ArtifactAnnotation.Type.Warning))
          return ArtifactAnnotation.Type.Warning;
-      } else if (isAnnotation(ArtifactAnnotation.Type.Info)) {
-         return ArtifactAnnotation.Type.Info;
-      }
+      else if (isAnnotation(ArtifactAnnotation.Type.Info)) return ArtifactAnnotation.Type.Info;
       return ArtifactAnnotation.Type.None;
    }
 
@@ -630,7 +626,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
                "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
                attributeTypeName, getGuid()));
       }
-      return soleAttributes.iterator().next();
+      return (soleAttributes.iterator().next());
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws OseeCoreException {
@@ -674,7 +670,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
                   getArtifactTypeName()));
          }
          throw new AttributeDoesNotExist(
-               "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getGuid());
+               "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getHumanReadableId());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
                "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getHumanReadableId());
@@ -722,7 +718,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
             OseeLog.log(
                   Activator.class,
                   Level.SEVERE,
-                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
+                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
          return value;
@@ -769,9 +765,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public void deleteAttribute(String attributeTypeName, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
-         if (attribute.getValue().equals(value)) {
-            attribute.delete();
-         }
+         if (attribute.getValue().equals(value)) attribute.delete();
       }
    }
 
@@ -1050,9 +1044,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @throws IllegalStateException if the artifact is deleted
     */
    public void reloadAttributesAndRelations() throws OseeCoreException {
-      if (!isInDb()) {
-         return;
-      }
+      if (!isInDb()) return;
 
       ArtifactQuery.reloadArtifactFromId(getArtId(), getBranch());
    }
@@ -1135,8 +1127,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
       for (Artifact child : getChildren()) {
-         if (caseSensitive && child.getName().equals(humanReadableId) || !caseSensitive && child.getName().equalsIgnoreCase(
-               humanReadableId)) {
+         if ((caseSensitive && child.getName().equals(humanReadableId)) || (!caseSensitive && child.getName().equalsIgnoreCase(
+               humanReadableId))) {
             descendants.add(child);
          }
          descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
@@ -1268,9 +1260,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
-      if (artifactsInNewOrder.size() == 0) {
-         return;
-      }
+      if (artifactsInNewOrder.size() == 0) return;
       List<Artifact> currentOrder = getRelatedArtifacts(relationSide, Artifact.class);
       // Insert first artifact before first artifact in list
       Artifact previousArtifact = currentOrder.iterator().next();
@@ -1389,11 +1379,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return linksLoaded;
    }
 
-   /**
-    * @return Returns the humanReadableId.
-    */
    public String getHumanReadableId() {
       return humanReadableId;
+   }
+
+   public void generateHumanReadableID() throws OseeDataStoreException {
+      humanReadableId = generateHumanReadableId();
    }
 
    private static final char[][] chars =
@@ -1421,11 +1412,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
       String id_string = new String(id);
 
-      if (isUniqueHRID(id_string)) {
+      if (isUniqueHRID(id_string))
          return id_string;
-      } else {
+      else
          return generateHumanReadableId();
-      }
    }
 
    /**
@@ -1482,11 +1472,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
                   return art.getArtifactTypeName() + " \"" + art + "\" => dirty\n";
                }
                // Check the links to this artifact
-               for (RelationLink link : getRelations(side, art)) {
+               for (RelationLink link : getRelations(side, art))
                   if (link.isDirty()) {
                      return "Link \"" + link + "\" => dirty\n";
                   }
-               }
             }
          }
       } catch (Exception ex) {
@@ -1628,9 +1617,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    private Set<IArtifactAnnotation> artifactAnnotationExtensions;
 
    private Set<IArtifactAnnotation> getAnnotationExtensions() {
-      if (artifactAnnotationExtensions != null) {
-         return artifactAnnotationExtensions;
-      }
+      if (artifactAnnotationExtensions != null) return artifactAnnotationExtensions;
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint(
@@ -1680,9 +1667,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
 
       if (adapter.isInstance(this)) {
          return this;
@@ -1719,7 +1704,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    @Override
    public int hashCode() {
-      return 37 * guid.hashCode() + branch.hashCode();
+      return (37 * guid.hashCode()) + branch.hashCode();
    }
 
    /* (non-Javadoc)

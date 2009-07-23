@@ -52,7 +52,7 @@ public class OseeDataTypeFactory {
    }
 
    public static void addTypesFromDataStore(DataTypeCache cache) throws OseeCoreException {
-      String sourceId = OseeInfo.getValue("osee.db.guid");
+      String sourceId = OseeInfo.getCachedValue("osee.db.guid");
       DataTypeSource dataTypeSource = new DataTypeSource(sourceId, true);
       dataTypeSource.addAll(OseeDataTypeDatastore.getArtifactDataTypes());
       dataTypeSource.addAll(OseeDataTypeDatastore.getAttributeTypes());

@@ -28,6 +28,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.configuration.ConfigFactory;
@@ -54,7 +56,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public class ScriptTableViewer {
    private static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
-   
+
    private ScriptTaskList taskList = new ScriptTaskList();
    private TestManagerEditor testManagerEditor = null;
    final int POPUP_NAVIGATOR = 2;
@@ -225,7 +227,7 @@ public class ScriptTableViewer {
    }
 
    public void refresh(ScriptTask task) {
-      scriptTable.refresh(task);     
+      scriptTable.refresh(task);
    }
 
    public void removeSelectedTasks() {
@@ -319,7 +321,7 @@ public class ScriptTableViewer {
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Run",
-            plugin.getImageDescriptor("chkbox_enabled.gif")) {
+            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_ENABLED)) {
          @Override
          public void run() {
             IStructuredSelection sel = (IStructuredSelection) getSelection();
@@ -333,7 +335,7 @@ public class ScriptTableViewer {
          }
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Not Run",
-            plugin.getImageDescriptor("chkbox_disabled.gif")) {
+            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_DISABLED)) {
          @Override
          public void run() {
             IStructuredSelection sel = (IStructuredSelection) getSelection();
@@ -348,14 +350,14 @@ public class ScriptTableViewer {
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Select All to Run",
-            plugin.getImageDescriptor("chkbox_enabled.gif")) {
+            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_ENABLED)) {
          @Override
          public void run() {
             setAllTasksRun(true);
          }
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Deselect All to Run",
-            plugin.getImageDescriptor("chkbox_disabled.gif")) {
+            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_DISABLED)) {
          @Override
          public void run() {
             setAllTasksRun(false);
@@ -417,11 +419,11 @@ public class ScriptTableViewer {
             refresh();
          } else if (type == POPUP_NAVIGATOR) {
             task.getScriptModel().openPackageExplorer();
-         } else if (type == POPUP_RESULTS){
+         } else if (type == POPUP_RESULTS) {
             Iterator it = selection.iterator();
-            while(it.hasNext()){
-               Object obj = it.next();
-               OutputModelJob.getSingleton().addTask((ScriptTask)obj);
+            while (it.hasNext()) {
+               ScriptTask currentTask = (ScriptTask) it.next();
+               OutputModelJob.getSingleton().addTask(currentTask);
             }
          }
       }
@@ -438,7 +440,7 @@ public class ScriptTableViewer {
                   ".*\\..*")) {
                ScriptTask newTask = new ScriptTask(files[i], testManagerEditor.getAlternateOutputDir());
                if (!taskList.contains(newTask)) {
-//                  newTask.computeExists();
+                  //                  newTask.computeExists();
                   if (newTask.getScriptModel().getOutputModel() != null) {
                      if (newTask.getScriptModel().getOutputModel().getIFile() != null) {
                         MarkerPlugin.getDefault().addMarkers(newTask.getScriptModel().getOutputModel().getIFile());
@@ -476,21 +478,21 @@ public class ScriptTableViewer {
    }
 
    private void attachKeyListeners() {
-	   scriptTable.getTree().addKeyListener(new KeyListener() {
-		   public void keyPressed(KeyEvent e) {
-	         }
+      scriptTable.getTree().addKeyListener(new KeyListener() {
+         public void keyPressed(KeyEvent e) {
+         }
 
-	         public void keyReleased(KeyEvent e) {
-	            // If they press enter, do the same as a double click
-	            if (e.character == SWT.DEL) {
-	               removeSelectedTasks();
-	               refresh();
-	            }
-	            if (e.character == 'r') {
-	               refresh();
-	            }
-	         }
-	   });   
+         public void keyReleased(KeyEvent e) {
+            // If they press enter, do the same as a double click
+            if (e.character == SWT.DEL) {
+               removeSelectedTasks();
+               refresh();
+            }
+            if (e.character == 'r') {
+               refresh();
+            }
+         }
+      });
    }
 
    /**

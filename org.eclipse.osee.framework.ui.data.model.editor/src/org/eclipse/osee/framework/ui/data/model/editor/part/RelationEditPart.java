@@ -15,7 +15,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.figure.SelectableLabel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -35,12 +36,12 @@ public class RelationEditPart extends ComponentEditPart {
       SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String text = ODMConstants.getDataTypeText(getModelAsDataType());
       labelFigure.setText(text);
-      labelFigure.setIcon(ODMImages.getImage(ODMImages.LOCAL_RELATION));
+      labelFigure.setIcon(ImageManager.getImage(ODMImage.LOCAL_RELATION));
       labelFigure.setSelectable(true);
 
       if (isInherited()) {
          labelFigure.setBackgroundColor(ColorConstants.blue);
-         labelFigure.setIcon(ODMImages.getImage(ODMImages.INHERITED_RELATION));
+         labelFigure.setIcon(ImageManager.getImage(ODMImage.INHERITED_RELATION));
          labelFigure.setSelectable(false);
       }
    }

@@ -73,9 +73,6 @@ public class DESEncrypter {
       configureCipher(key);
    }
 
-   /**
-    * @return
-    */
    public SecretKey getKey() {
       return key;
    }

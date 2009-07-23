@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.LIKE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.LIKE;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.swt.widgets.Control;
 
@@ -40,7 +40,7 @@ public abstract class SearchFilter {
    }
 
    protected class OperatorAndValue {
-      DepricatedOperator operator;
+      DeprecatedOperator operator;
       String value;
    }
 

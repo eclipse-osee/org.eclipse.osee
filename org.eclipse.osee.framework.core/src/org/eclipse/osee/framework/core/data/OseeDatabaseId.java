@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
 public class OseeDatabaseId {
 
    private static final String DB_ID_KEY = "osee.db.guid";
-   private static String databaseId = null;
 
    private OseeDatabaseId() {
    }
@@ -31,9 +30,6 @@ public class OseeDatabaseId {
    }
 
    public synchronized static String getGuid() throws OseeDataStoreException {
-      if (databaseId == null) {
-         databaseId = OseeInfo.getValue(DB_ID_KEY);
-      }
-      return databaseId;
+      return OseeInfo.getCachedValue(DB_ID_KEY);
    }
 }

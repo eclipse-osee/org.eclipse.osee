@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.viewers.IDataChangedListener;
 import org.eclipse.osee.ote.ui.define.viewers.TestRunXViewer;
@@ -132,7 +133,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
             viewer.getTree().setRedraw(true);
          }
       };
-      expandAction.setImageDescriptor(OteUiDefinePlugin.getInstance().getImageDescriptor("expandState.gif"));
+      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(OteDefineImage.EXPAND_STATE));
       expandAction.setToolTipText("Expand All");
 
       collapseAction = new Action("Collapse All") {
@@ -143,7 +144,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
             viewer.getTree().setRedraw(true);
          }
       };
-      collapseAction.setImageDescriptor(OteUiDefinePlugin.getInstance().getImageDescriptor("collapseState.gif"));
+      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(OteDefineImage.COLLAPSE_STATE));
       collapseAction.setToolTipText("Collapse All");
 
       refreshAction = new Action("Refresh") {

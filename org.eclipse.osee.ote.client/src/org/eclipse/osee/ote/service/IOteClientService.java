@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.service;
 
 import java.net.InetAddress;
 import java.util.Collection;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -75,13 +74,12 @@ public interface IOteClientService {
    void setUser(OSEEPerson1_4 user, InetAddress address) throws TestSessionException;
 
    /**
-     * gets the current user as set by the
-     * {@link #setUser(OSEEPerson1_4, InetAddress)} method
-     * 
-     * @return the current user or null if no user has been set
-     */
+    * gets the current user as set by the {@link #setUser(OSEEPerson1_4, InetAddress)} method
+    * 
+    * @return the current user or null if no user has been set
+    */
    OSEEPerson1_4 getUser();
-   
+
    /**
     * creates a connection to a test server. <B>NOTE: </B><I>A user must be logged in prior to calling this method.>/I>
     * 
@@ -110,26 +108,23 @@ public interface IOteClientService {
     */
    ITestEnvironment getConnectedEnvironment();
 
-   /** returns the connector for the currently connected test environment
-    * 
-    * @return
+   /**
+    * returns the connector for the currently connected test environment
     */
    IServiceConnector getConnector();
-   
+
    IHostTestEnvironment getConnectedHost();
-   
+
    OteServiceProperties getProperties(IHostTestEnvironment testHost);
-   
+
    boolean isConnected();
-   
-    /**
-     * sets a {@link SessionDelegate} who will handle certain aspects of the
-     * client session A successful call to
-     * {@link #setUser(OSEEPerson1_4, InetAddress)} must have occurred prior to
-     * calling this method.
-     * 
-     * @param sessionDelegate
-     */
+
+   /**
+    * sets a {@link SessionDelegate} who will handle certain aspects of the client session A successful call to
+    * {@link #setUser(OSEEPerson1_4, InetAddress)} must have occurred prior to calling this method.
+    * 
+    * @param sessionDelegate
+    */
    void setSessionDelegate(SessionDelegate sessionDelegate);
 
    /**
@@ -141,12 +136,10 @@ public interface IOteClientService {
 
    /**
     * returns a collection of all the {@link IHostTestEnvironment} that are currently available.
-    * 
-    * @return
     */
    Collection<IHostTestEnvironment> getAvailableTestHosts();
-   
+
    IServiceConnector getConnector(IHostTestEnvironment host);
-   
+
    UserTestSessionKey getSessionKey();
 }

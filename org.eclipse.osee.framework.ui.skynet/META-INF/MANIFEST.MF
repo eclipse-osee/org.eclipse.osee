@@ -31,11 +31,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.zest.core,
  org.eclipse.ui.views,
- org.eclipse.osee.framework.help.ui;resolution:=optional
+ org.eclipse.osee.framework.help.ui;resolution:=optional,
+ org.eclipse.osee.framework.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: com.lowagie.text,
  org.eclipse.nebula.widgets.calendarcombo,
+ org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,

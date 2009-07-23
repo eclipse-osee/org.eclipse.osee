@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -23,7 +22,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMToXmlOperation;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -32,14 +32,13 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ODMExportWizard extends Wizard implements IExportWizard {
 
-   private ISelection selection;
    private ODMSelectPage selectTypesPage;
    private ODMExportOutputPage exportOutputPage;
    private DataTypeCache dataTypeCache;
 
    public ODMExportWizard(DataTypeCache dataTypeCache) {
       setDialogSettings(ODMEditorActivator.getInstance().getDialogSettings());
-      setDefaultPageImageDescriptor(ODMImages.getImageDescriptor(ODMImages.EXPORT_IMAGE));
+      setDefaultPageImageDescriptor(ImageManager.getImageDescriptor(ODMImage.EXPORT_IMAGE));
       setNeedsProgressMonitor(true);
       setWindowTitle("Osee Data Model Export Wizard");
       this.dataTypeCache = dataTypeCache;
@@ -115,11 +114,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      this.selection = selection;
    }
 }

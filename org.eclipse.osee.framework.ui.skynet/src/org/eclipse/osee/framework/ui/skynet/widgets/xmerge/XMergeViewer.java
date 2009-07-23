@@ -94,22 +94,27 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
-   /**
-    * @param label
-    */
    public XMergeViewer() {
       super("Merge Manager");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
+      Composite mainComp = new Composite(parent, SWT.BORDER);
+      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      Tree tree = mergeXViewer.getTree();
 
-      // Create Text Widgets
+      createTextWidgets(parent);
+      createMainComposite(mainComp);
+      createMergeXViewer();
+      createTree(tree);
+
+      if (toolkit != null) {
+         toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
+      }
+   }
+
+   private void createTextWidgets(Composite parent) {
       if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
@@ -117,8 +122,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
             labelWidget.setToolTipText(getToolTip());
          }
       }
+   }
 
-      Composite mainComp = new Composite(parent, SWT.BORDER);
+   private void createMainComposite(Composite mainComp) {
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) {
@@ -126,8 +132,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       }
 
       createTaskActionBar(mainComp);
+   }
 
-      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+   private void createMergeXViewer() {
       mergeXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       XMergeLabelProvider labelProvider = new XMergeLabelProvider(mergeXViewer);
       mergeXViewer.addLabelProvider(labelProvider);
@@ -135,28 +142,19 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       mergeXViewer.setContentProvider(new XMergeContentProvider(mergeXViewer));
       mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
       mergeXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             refreshActionEnablement();
          }
       });
+   }
 
-      if (toolkit != null) {
-         toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
-      }
-
-      Tree tree = mergeXViewer.getTree();
+   private void createTree(Tree tree) {
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 100;
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -366,11 +364,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       return mergeXViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return mergeXViewer.getInput();
@@ -388,9 +381,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
-    */
    public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
@@ -485,9 +475,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
@@ -539,9 +526,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    }
 
    private final class MergeViewerActionable implements IActionable {
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-       */
       @Override
       public String getActionDescription() {
          StringBuilder sb = new StringBuilder();
@@ -609,7 +593,8 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       public ShowSourceBranchChangeReportAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_source.gif"));
+         //         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_source.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE_SOURCE));
          setToolTipText("Show Source Branch Change Report");
       }
 
@@ -637,7 +622,8 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       public ShowDestinationBranchChangeReportAction() {
          super();
-         setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_dest.gif"));
+         // setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_dest.gif"));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE_DEST));
          setToolTipText("Show Destination Branch Change Report");
       }
 

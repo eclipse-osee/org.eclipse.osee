@@ -152,7 +152,8 @@ public class GenerateTypeEnumAction implements IActionDelegate {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
                boolean wasChecked = event.getChecked();
-               getTreeViewer().setAllChecked(false);
+               //               getTreeViewer().setAllChecked(false);
+               getTreeViewer().setSubtreeChecked(getTreeViewer().getTree().getItems(), false);
                event.getCheckable().setChecked(event.getElement(), wasChecked);
             }
 

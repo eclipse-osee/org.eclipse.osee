@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -220,36 +220,33 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
    private void initializeImages() throws OseeArgumentException {
       Artifact artifact = getData();
       Image defaultImage = ImageManager.getImage(artifact);
-      OseeUiActivator plugin = OteUiDefinePlugin.getInstance();
       DecorationOverlayIcon overlay = null;
       if (FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE == null) {
          OverlayImage overlayImage =
-               new OverlayImage(defaultImage, plugin.getImageDescriptor("addition.gif"), Location.BOT_RIGHT);
+               new OverlayImage(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.ADDITION),
+                     Location.BOT_RIGHT);
          FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE = overlayImage.createImage();
       }
       if (FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage, plugin.getImageDescriptor("confauto_ov.gif"),
+               new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.CONFAUTO_OV),
                      IDecoration.BOTTOM_RIGHT);
          FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE = overlay.createImage();
       }
       if (FROM_DATABASE_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage, plugin.getImageDescriptor("version_controlled.gif"),
-                     IDecoration.BOTTOM_RIGHT);
+               new DecorationOverlayIcon(defaultImage,
+                     ImageManager.getImageDescriptor(OteDefineImage.VERSION_CONTROLLED), IDecoration.BOTTOM_RIGHT);
          FROM_DATABASE_IMAGE = overlay.createImage();
       }
       if (INVALID_SCRIPT_IMAGE == null) {
          overlay =
-               new DecorationOverlayIcon(defaultImage, plugin.getImageDescriptor("obstructed.gif"),
+               new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.OBSTRUCTED),
                      IDecoration.BOTTOM_RIGHT);
          INVALID_SCRIPT_IMAGE = overlay.createImage();
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getKey()
-    */
    @Override
    public Object getKey() {
       return key;
@@ -263,9 +260,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       return ArtifactItem.isFullDescriptionMode;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (artifact.isDeleted()) return;
@@ -284,9 +278,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       }
       if (transData.isRelAddedChangedDeleted(artifact) || transData.isChanged(artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                if (!xViewer.getTree().isDisposed())

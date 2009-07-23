@@ -28,9 +28,6 @@ public class HridValueFilter extends SearchFilter {
       this.hridValue = hridValue;
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.search.SearchFilter#addFilterTo(osee.define.artifact.search.filter.FilterTableViewer)
-    */
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       OperatorAndValue result = handleWildCard(hridValue.getText());
@@ -39,17 +36,11 @@ public class HridValueFilter extends SearchFilter {
       filterViewer.addItem(primitive, getFilterName(), "huid", result.value);
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.search.SearchFilter#isValid()
-    */
    @Override
    public boolean isValid() {
       return !hridValue.getText().equals("");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
-    */
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = ArtifactHridSearch.getPrimitive(storageString);

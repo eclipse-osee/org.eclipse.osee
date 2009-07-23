@@ -19,7 +19,5 @@ public class AllResourceLocatorAttributeTests extends TestSuite {
 
    public AllResourceLocatorAttributeTests() {
       addTestSuite(TestResourceLocatorAttribute.class);
-      addTestSuite(TestHRIDCompatibility.class);
    }
-
 }

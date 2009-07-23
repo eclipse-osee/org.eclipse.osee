@@ -129,9 +129,6 @@ public class OteMarkerHelper {
       }
    }
 
-   /**
-    * @return
-    */
    public List<IMarker> getMarkers() {
       return markersToDelete;
    }

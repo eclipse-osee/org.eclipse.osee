@@ -26,9 +26,9 @@ import javax.xml.namespace.NamespaceContext;
 
 public class SimpleNamespaceContext implements NamespaceContext {
 
-   private Map urisByPrefix = new HashMap();
+   private Map<String, String> urisByPrefix = new HashMap<String, String>();
 
-   private Map prefixesByURI = new HashMap();
+   private Map<String, Set<String>> prefixesByURI = new HashMap<String, Set<String>>();
 
    public SimpleNamespaceContext() {
       // prepopulate with xml and xmlns prefixes
@@ -40,9 +40,9 @@ public class SimpleNamespaceContext implements NamespaceContext {
    public synchronized void addNamespace(String prefix, String namespaceURI) {
       urisByPrefix.put(prefix, namespaceURI);
       if (prefixesByURI.containsKey(namespaceURI)) {
-         ((Set) prefixesByURI.get(namespaceURI)).add(prefix);
+         ((Set<String>) prefixesByURI.get(namespaceURI)).add(prefix);
       } else {
-         Set set = new HashSet();
+         Set<String> set = new HashSet<String>();
          set.add(prefix);
          prefixesByURI.put(namespaceURI, set);
       }
@@ -60,10 +60,10 @@ public class SimpleNamespaceContext implements NamespaceContext {
       return (String) getPrefixes(namespaceURI).next();
    }
 
-   public Iterator getPrefixes(String namespaceURI) {
+   public Iterator<String> getPrefixes(String namespaceURI) {
       if (namespaceURI == null) throw new IllegalArgumentException("namespaceURI cannot be null");
       if (prefixesByURI.containsKey(namespaceURI)) {
-         return ((Set) prefixesByURI.get(namespaceURI)).iterator();
+         return ((Set<String>) prefixesByURI.get(namespaceURI)).iterator();
       } else {
          return Collections.EMPTY_SET.iterator();
       }

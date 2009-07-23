@@ -150,10 +150,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     */
    @SuppressWarnings("unchecked")
    public void addMessage(Message message) {
-	   if (!messages.contains(message)) {
-		   messages.add(message);
-		   message.addPreMessageDisposeListener(disposeListener);
-	   }
+      if (!messages.contains(message)) {
+         messages.add(message);
+         message.addPreMessageDisposeListener(disposeListener);
+      }
    }
 
    /**
@@ -212,18 +212,16 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       reader = null;
    }
 
-   
    public void copyData(int destOffset, byte[] data, int srcOffset, int length) {
       setCurrentLength(length + destOffset);
       mem.copyData(destOffset, data, srcOffset, length);
    }
-   
 
-   public void copyData(int destOffset, ByteBuffer data, int length) throws MessageSystemException{
-	   try {
-		   setCurrentLength(destOffset + length);
-		   mem.copyData(destOffset, data, length);
-	   } catch (MessageSystemException e) {
+   public void copyData(int destOffset, ByteBuffer data, int length) throws MessageSystemException {
+      try {
+         setCurrentLength(destOffset + length);
+         mem.copyData(destOffset, data, length);
+      } catch (MessageSystemException e) {
 		   OseeLog.log(MessageSystemTestEnvironment.class,Level.WARNING, 
 				   String.format(
 						   "increasing backing store for %s to %d. prev length: %d, recv cnt: %d", 
@@ -232,12 +230,12 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 						   mem.getData().length,
 						   this.activityCount),
 				   e);
-		   setNewBackingBuffer(data, destOffset, length);
-	   }
+         setNewBackingBuffer(data, destOffset, length);
+      }
    }
 
    public void copyData(ByteBuffer data) {
-	   copyData(0, data, data.remaining());
+      copyData(0, data, data.remaining());
    }
 
    /**
@@ -247,18 +245,18 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     */
    @SuppressWarnings("unchecked")
    public void notifyListeners() throws MessageSystemException {
-	   final MemType memType = getType();
-	   for (Message message : messages) {
-		   try {
-			   if (!message.isDestroyed()) {
-				   message.notifyListeners(this, memType);
-			   }
+      final MemType memType = getType();
+      for (Message message : messages) {
+         try {
+            if (!message.isDestroyed()) {
+               message.notifyListeners(this, memType);
+            }
 		   }
 		   catch (Throwable t) {
 			   final String msg = String.format("Problem during listener notification for message %s. Data=%s, MemType=%s", message.getName(), this.getName(), this.getType());
-			   OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, msg, t);
-		   }
-	   }
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, msg, t);
+         }
+      }
    }
 
    /**
@@ -281,41 +279,38 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     * @param data
     */
    public void setNewBackingBuffer(byte[] data) {
-	   setCurrentLength(data.length);
+      setCurrentLength(data.length);
       this.mem.setData(data);
       if (this.getMsgHeader() != null) {
          initializeDefaultHeaderValues();
-      }
-      else {
+      } else {
          // System.out.println("what??-- bad HeaderData");
       }
 
    }
-   
+
    public void setNewBackingBuffer(ByteBuffer buffer) {
-	   byte[] data = new byte[buffer.remaining()];
-	   buffer.get(data);
-	   this.mem.setData(data);
-	   setCurrentLength(data.length);
-	   if (this.getMsgHeader() != null) {
-		   initializeDefaultHeaderValues();
-	   }
-	   else {
-		   // System.out.println("what??-- bad HeaderData");
-	   }
+      byte[] data = new byte[buffer.remaining()];
+      buffer.get(data);
+      this.mem.setData(data);
+      setCurrentLength(data.length);
+      if (this.getMsgHeader() != null) {
+         initializeDefaultHeaderValues();
+      } else {
+         // System.out.println("what??-- bad HeaderData");
+      }
    }
-   
+
    public void setNewBackingBuffer(ByteBuffer buffer, int offset, int length) {
-	   byte[] data = new byte[offset + length];
-	   buffer.get(data, offset, length);
-	   this.mem.setData(data);
-	   setCurrentLength(data.length);
-	   if (this.getMsgHeader() != null) {
-		   initializeDefaultHeaderValues();
-	   }
-	   else {
-		   // System.out.println("what??-- bad HeaderData");
-	   }
+      byte[] data = new byte[offset + length];
+      buffer.get(data, offset, length);
+      this.mem.setData(data);
+      setCurrentLength(data.length);
+      if (this.getMsgHeader() != null) {
+         initializeDefaultHeaderValues();
+      } else {
+         // System.out.println("what??-- bad HeaderData");
+      }
 
    }
 
@@ -345,8 +340,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          if (val == ReturnCode.OK) {
             incrementActivityCount();
             notifyListeners();
-         }
-         else {
+         } else {
             Env.getInstance().severe(val.getDescription());
          }
       }
@@ -461,7 +455,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       return null;
    }
 
-   
    /*
     * (non-Javadoc)
     * 
@@ -472,41 +465,39 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          copyData(0, input, 0, input.length);
       }
       catch (MessageSystemException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class,Level.WARNING, 
-                 
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.WARNING,
+
      			 String.format("Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(), this.mem.getData().length, input.length));
          setNewBackingBuffer(input);
       }
    }
-   
-   
+
    public void setFromByteBuffer(ByteBuffer buffer) {
-	   try {
-		   copyData(buffer);
-   } catch (Exception e) {
+      try {
+         copyData(buffer);
+      } catch (Exception e) {
       OseeLog.log(MessageSystemTestEnvironment.class, 
             	   Level.SEVERE,  
 				   String.format("Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(), this.mem.getData().length, buffer.limit()));
-		   setNewBackingBuffer(buffer);
-	   }
+         setNewBackingBuffer(buffer);
+      }
    }
 
    public ByteBuffer toByteBuffer() {
-	   return mem.getAsBuffer();
+      return mem.getAsBuffer();
    }
 
    public void setFromByteArray(byte[] input, int length) {
-	   try {
-		   copyData(0, input, 0, length);
+      try {
+         copyData(0, input, 0, length);
 	   }
 	   catch (MessageSystemException ex) {
 	      OseeLog.log(MessageSystemTestEnvironment.class,		   Level.SEVERE,  
 				   String.format("Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(), this.mem.getData().length, length));
-		   setNewBackingBuffer(input);
-	   }
+         setNewBackingBuffer(input);
+      }
    }
-   
-   
+
    public void setFromByteArray(int destOffset, byte[] input, int srcOffset, int length) {
       try {
          copyData(destOffset, input, srcOffset, length);
@@ -518,16 +509,16 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          setNewBackingBuffer(input);
       }
    }
-   
+
    public void setFromByteArray(ByteBuffer input, int length) {
-	   try {
-		   copyData(0, input, length);
+      try {
+         copyData(0, input, length);
 	   }
 	   catch (MessageSystemException ex) {
 	      OseeLog.log(MessageSystemTestEnvironment.class,	   Level.SEVERE,  
 				   String.format("Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(), this.mem.getData().length, length));
-		   setNewBackingBuffer(input);
-	   }
+         setNewBackingBuffer(input);
+      }
    }
 
    public byte[] toByteArray() {
@@ -544,7 +535,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    public void send() throws MessageSystemException {
       if (writer == null) {
-    	  OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, getName() + " - the writer is null");
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, getName() + " - the writer is null");
       }
       else if (shouldSendData()) {
          try {
@@ -554,13 +545,12 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
             writer.write(null, null, this, null);
             incrementSentCount();
             notifyPostSendListeners();
-         }
-         catch (Throwable ex) {
+         } catch (Throwable ex) {
             throw new MessageSystemException("Could not send message data " + getName(), Level.SEVERE, ex);
          }
       }
    }
-   
+
    protected void sendTo(IDestination destination, ISource source) throws MessageSystemException {
       if (writer == null) {
          OseeLog.log(MessageSystemTestEnvironment.class,
@@ -580,8 +570,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    }
 
    /**
-    * Override this method if you want to specialize the send criteria in a data source. For
-    * example, if you only want to send data to the MUX driver if the data has changed.
+    * Override this method if you want to specialize the send criteria in a data source. For example, if you only want
+    * to send data to the MUX driver if the data has changed.
     * 
     * @return boolean
     */
@@ -589,23 +579,14 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       return true;
    }
 
-   /**
-    * @return
-    */
    public TypeSupport getTypeSupport() {
       return new DDSTypeSupport(this, getName(), getName(), getPayloadSize());
    }
 
-   /**
-    * @return
-    */
    public String getTopicName() {
       return getName();
    }
 
-   /**
-    * @return
-    */
    public String getTypeName() {
       return typeName;
    }
@@ -614,14 +595,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       return true;
    }
 
-   /**
-    * @return Object
-    */
    public Namespace getNamespace() {
       if (isWriter()) {
          return new Namespace(writer.getTopic().getNamespace());
-      }
-      else {
+      } else {
          return new Namespace(reader.getTopicDescription().getNamespace());
       }
    }
@@ -633,12 +610,11 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    public boolean isWriter() {
       if (writer != null && reader == null) {
          return true;
-      }
-      else if (writer == null && reader != null) {
+      } else if (writer == null && reader != null) {
          return false;
-      }
-      else {
-         throw new MessageSystemException("This is an illegal message it has neither a reader or a writer [" + this.getName() + "].", Level.SEVERE);
+      } else {
+         throw new MessageSystemException(
+               "This is an illegal message it has neither a reader or a writer [" + this.getName() + "].", Level.SEVERE);
       }
    }
 
@@ -655,22 +631,21 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    };
 
-   
    public void copyFrom(Data data) {
-	   ByteBuffer buffer = data.toByteBuffer();
-	   copyData(data.getOffset(), buffer, buffer.remaining());
+      ByteBuffer buffer = data.toByteBuffer();
+      copyData(data.getOffset(), buffer, buffer.remaining());
    }
 
-/* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
+   /* (non-Javadoc)
+       * @see java.lang.Object#toString()
+       */
    @Override
    public String toString() {
-	   return getClass().getName() + ": name=" + getName();
+      return getClass().getName() + ": name=" + getName();
    }
 
    public int getOffset() {
-	   return 0;
+      return 0;
    }
 
    /**
@@ -712,7 +687,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          OseeLog.log(Message.class, Level.SEVERE, ex);
       }
    }
-   
+
    public void addSendListener(IMessageSendListener listener) {
       messageSendListeners.add(listener);
    }

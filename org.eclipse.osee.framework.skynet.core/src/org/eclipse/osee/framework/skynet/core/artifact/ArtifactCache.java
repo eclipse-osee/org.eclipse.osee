@@ -129,7 +129,6 @@ public class ArtifactCache {
     * 
     * @param artId
     * @param branch
-    * @return
     */
    public static Artifact getActive(Integer artId, Branch branch) {
       return getActive(artId, branch.getBranchId());
@@ -141,7 +140,6 @@ public class ArtifactCache {
     * 
     * @param artId
     * @param branchId
-    * @return
     */
    public synchronized static Artifact getActive(Integer artId, Integer branchId) {
       return instance.artifactIdCache.get(artId, branchId);
@@ -153,7 +151,6 @@ public class ArtifactCache {
     * 
     * @param artId
     * @param branchId
-    * @return
     */
    public synchronized static Artifact getActive(String artGuid, Integer branchId) {
       return instance.artifactGuidCache.get(artGuid, branchId);
@@ -164,7 +161,6 @@ public class ArtifactCache {
     * 
     * @param key
     * @param branch
-    * @return
     */
    public synchronized static Artifact getByTextId(String key, Branch branch) {
       return instance.keyedArtifactCache.get(key, branch);

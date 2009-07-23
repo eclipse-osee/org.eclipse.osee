@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.jobs.UploadRemoteFileJob;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.swt.DynamicWizardPage;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
@@ -53,7 +54,7 @@ public class UploadPage extends DynamicWizardPage {
    private FormattedText cmdText;
    private ProgressBar progress;
 
-   private static final Image HELP_IMAGE = ControlPlugin.getInstance().getImage("help.gif");
+   private static final Image HELP_IMAGE = ImageManager.getImage(ServiceControlImage.HELP);
 
    public UploadPage(String pageName, String previous, String next, ServiceLaunchingInformation serviceInfo) {
       super(pageName, previous, next);

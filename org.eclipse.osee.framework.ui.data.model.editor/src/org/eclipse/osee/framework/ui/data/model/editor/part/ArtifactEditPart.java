@@ -155,7 +155,7 @@ public class ArtifactEditPart extends DataTypeEditPart {
       }
 
       protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-         ConnectionModel<?> connectionModel = (ConnectionModel<?>) request.getNewObject();
+         ConnectionModel connectionModel = (ConnectionModel) request.getNewObject();
          if (connectionModel instanceof RelationLinkModel || connectionModel instanceof InheritanceLinkModel) {
             ArtifactDataType source = (ArtifactDataType) getHost().getModel();
             Command cmd = new CreateConnectionCommand(connectionModel, source);

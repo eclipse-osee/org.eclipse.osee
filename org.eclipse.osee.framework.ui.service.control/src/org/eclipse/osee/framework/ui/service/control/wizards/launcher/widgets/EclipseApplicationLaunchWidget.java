@@ -17,11 +17,13 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
+import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.EclipseApplicationLaunchJob;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.JiniGroupSelector;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -174,7 +176,7 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
 
       Button fileDialog = new Button(group, SWT.NONE);
       fileDialog.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-      fileDialog.setImage(ControlPlugin.getInstance().getImage("file.gif"));
+      fileDialog.setImage(ImageManager.getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {

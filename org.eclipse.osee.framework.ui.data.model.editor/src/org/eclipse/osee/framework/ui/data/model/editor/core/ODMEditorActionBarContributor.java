@@ -21,7 +21,8 @@ import org.eclipse.gef.ui.actions.ZoomOutRetargetAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImages;
+import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 
@@ -44,8 +45,8 @@ public class ODMEditorActionBarContributor extends ActionBarContributor {
       addRetargetAction(new ZoomOutRetargetAction());
       RetargetAction action =
             new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, null, IAction.AS_CHECK_BOX);
-      action.setImageDescriptor(ODMImages.getImageDescriptor(ODMImages.SNAP_TO_GRID));
-      action.setDisabledImageDescriptor(ODMImages.getImageDescriptor(ODMImages.SNAP_TO_GRID_DISABLED));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(ODMImage.SNAP_TO_GRID));
+      action.setDisabledImageDescriptor(ImageManager.getImageDescriptor(ODMImage.SNAP_TO_GRID_DISABLED));
       action.setToolTipText("Enable Snap To Geometry");
       addRetargetAction(action);
    }

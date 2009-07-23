@@ -51,18 +51,12 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       pluginInstance = this;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.OseeFormActivator#stop(org.osgi.framework.BundleContext)
-    */
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       packageAdminTracker.close();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.OseeUiActivator#start(org.osgi.framework.BundleContext)
-    */
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
@@ -92,36 +86,24 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       }
    }
 
-   /**
-    * Returns the shared instance.
-    */
    public static SkynetGuiPlugin getInstance() {
       return pluginInstance;
    }
 
-   /* (non-Javadoc)
-    * @see osee.plugin.core.util.plugin.OseePlugin#getPluginName()
-    */
    @Override
    protected String getPluginName() {
       return PLUGIN_ID;
    }
 
-   /**
-    * @return PackageAdmin
-    */
    public PackageAdmin getPackageAdmin() {
       return (PackageAdmin) this.packageAdminTracker.getService();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBroadcastEventListneer#handleBroadcastEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, java.lang.String)
-    */
    @Override
    public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, final String message) {
       boolean isShutdownAllowed = false;
 
-      // Determine whether this is a shutdown event
+      // Determine whetherf this is a shutdown event
       // Prevent shutting down users without a valid message
       if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
          if (message == null || message.length() == 0) return;

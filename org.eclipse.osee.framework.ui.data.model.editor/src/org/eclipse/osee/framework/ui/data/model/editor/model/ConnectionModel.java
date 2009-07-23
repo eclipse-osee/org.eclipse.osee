@@ -106,9 +106,6 @@ public class ConnectionModel<T extends NodeModel> extends Model {
       return bendPoints;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.Model#addListener(org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener)
-    */
    @Override
    public void addListener(IModelListener listener) {
       if (getSource() != null) {
@@ -120,9 +117,6 @@ public class ConnectionModel<T extends NodeModel> extends Model {
       super.addListener(listener);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.Model#removeListener(org.eclipse.osee.framework.ui.data.model.editor.model.IModelListener)
-    */
    @Override
    public void removeListener(IModelListener listener) {
       if (getSource() != null) {

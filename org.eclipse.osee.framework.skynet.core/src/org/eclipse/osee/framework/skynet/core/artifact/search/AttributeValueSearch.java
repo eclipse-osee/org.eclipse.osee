@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.IS;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.IS;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 public class AttributeValueSearch implements ISearchPrimitive {
    private String attributeName;
    private String attributeValue;
-   private DepricatedOperator operator;
+   private DeprecatedOperator operator;
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_2");
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
@@ -33,19 +33,11 @@ public class AttributeValueSearch implements ISearchPrimitive {
    private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;
    private final static String TOKEN = ";";
 
-   /**
-    * @param attributeName
-    */
    public AttributeValueSearch(String attributeName) {
       this(attributeName, null, null);
    }
 
-   /**
-    * @param attributeName
-    * @param attributeValue
-    * @param operator
-    */
-   public AttributeValueSearch(String attributeName, String attributeValue, DepricatedOperator operator) {
+   public AttributeValueSearch(String attributeName, String attributeValue, DeprecatedOperator operator) {
 
       if (attributeValue == null && operator != null) throw new IllegalArgumentException(
             "An attributeValue must be supplied if an operator is supplied");
@@ -64,24 +56,14 @@ public class AttributeValueSearch implements ISearchPrimitive {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql;
 
-      if (operator == DepricatedOperator.LIKE || operator == DepricatedOperator.CONTAINS)
+      if (operator == DeprecatedOperator.LIKE || operator == DeprecatedOperator.CONTAINS)
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + " LIKE ?";
       else
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + "=?";
@@ -94,7 +76,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
       if (attributeValue != null) {
          sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
-         if (operator == DepricatedOperator.CONTAINS)
+         if (operator == DeprecatedOperator.CONTAINS)
             dataList.add("%" + attributeValue + "%");
          else
             dataList.add(attributeValue);
@@ -122,6 +104,6 @@ public class AttributeValueSearch implements ISearchPrimitive {
       if (values.length != 3) throw new IllegalStateException(
             "Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
 
-      return new AttributeValueSearch(values[0], values[1], DepricatedOperator.valueOf(values[2]));
+      return new AttributeValueSearch(values[0], values[1], DeprecatedOperator.valueOf(values[2]));
    }
 }

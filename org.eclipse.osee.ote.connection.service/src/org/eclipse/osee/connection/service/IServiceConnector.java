@@ -26,8 +26,6 @@ public interface IServiceConnector {
 
    /**
     * gets the service provided by this connector
-    * 
-    * @return
     */
    Object getService();
 
@@ -41,20 +39,18 @@ public interface IServiceConnector {
     * makes the callback accessible by this connector's service
     * 
     * @param callback
-    * @return
     * @throws Exception
     */
    Object export(Object callback) throws ExportException;
 
    /**
-	 * finds the matching exported representation of supplied object
-	 * 
-	 * @param callback
-	 * @return
-	 * @throws Exception
-	 */
+    * finds the matching exported representation of supplied object
+    * 
+    * @param callback
+    * @throws Exception
+    */
    Object findExport(Object callback);
-   
+
    void unexport(Object callback) throws Exception;
 
    void addPropertyChangeListener(IServicePropertyChangeListener listener);
@@ -65,7 +61,6 @@ public interface IServiceConnector {
     * uploads a file to a service and creates an {@link URI} that the service can access.
     * 
     * @param file
-    * @return
     * @throws Exception
     */
    URI upload(File file) throws Exception;

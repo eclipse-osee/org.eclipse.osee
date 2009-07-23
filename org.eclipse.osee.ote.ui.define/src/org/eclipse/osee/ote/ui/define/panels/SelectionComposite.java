@@ -36,6 +36,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -53,9 +55,9 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Roberto E. Escobar
  */
 public class SelectionComposite extends Composite {
-   private static final Image CONFLICT_IMAGE = OteUiDefinePlugin.getInstance().getImage("obstructed_16x16.gif");
-   private static final Image CHECKED_IMAGE = OteUiDefinePlugin.getInstance().getImage("chkbox_enabled.gif");
-   private static final Image UNCHECKED_IMAGE = OteUiDefinePlugin.getInstance().getImage("chkbox_disabled.gif");
+   private static final Image CONFLICT_IMAGE = ImageManager.getImage(OteDefineImage.OBSTRUCTED);
+   private static final Image CHECKED_IMAGE = ImageManager.getImage(OteDefineImage.CHECKBOX_ENABLED);
+   private static final Image UNCHECKED_IMAGE = ImageManager.getImage(OteDefineImage.CHECKBOX_DISABLED);
    private static Image CHECK_OVERRIDEN_IMAGE = null;
    private static Image UNCHECKED_OVERRIDEN_IMAGE = null;
 
@@ -317,8 +319,8 @@ public class SelectionComposite extends Composite {
          if (isOverriden != false) {
             if (CHECK_OVERRIDEN_IMAGE == null || UNCHECKED_OVERRIDEN_IMAGE == null) {
                DecorationOverlayIcon overlay =
-                     new DecorationOverlayIcon(toReturn, OteUiDefinePlugin.getInstance().getImageDescriptor(
-                           "switched.gif"), IDecoration.BOTTOM_RIGHT);
+                     new DecorationOverlayIcon(toReturn, ImageManager.getImageDescriptor(OteDefineImage.SWITCHED),
+                           IDecoration.BOTTOM_RIGHT);
 
                Image overlayedImage = overlay.createImage();
                if (isChecked != false) {

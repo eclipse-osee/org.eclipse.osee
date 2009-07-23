@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ArtifactIdSearch implements ISearchPrimitive {
    private int artId;
-   private DepricatedOperator operator;
+   private DeprecatedOperator operator;
 
    /**
     * @param humanReadableId The human readable id to search for
     */
-   public ArtifactIdSearch(int artId, DepricatedOperator operator) {
+   public ArtifactIdSearch(int artId, DeprecatedOperator operator) {
       super();
       this.operator = operator;
       this.artId = artId;
@@ -38,20 +38,10 @@ public class ArtifactIdSearch implements ISearchPrimitive {
       this(artId, EQUAL);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql = ARTIFACT_TABLE.column("art_id") + operator + "?";
       dataList.add(artId);

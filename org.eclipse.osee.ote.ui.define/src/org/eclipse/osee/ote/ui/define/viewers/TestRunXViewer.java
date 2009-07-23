@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
 import org.eclipse.osee.ote.ui.define.utilities.CommitConfiguration;
@@ -56,10 +56,9 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TestRunXViewer extends XViewer {
 
-   private static final ImageDescriptor COMMIT_IMAGE = OteUiDefinePlugin.getInstance().getImageDescriptor("commit.gif");
-   private static final ImageDescriptor REMOVE_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.REMOVE);
-   private static final ImageDescriptor REMOVE_ALL_IMAGE =
-         OteUiDefinePlugin.getInstance().getImageDescriptor("removeAll.gif");
+   private static final ImageDescriptor COMMIT_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.COMMIT);
+   private static final ImageDescriptor REMOVE_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.REMOVE);
+   private static final ImageDescriptor REMOVE_ALL_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.REMOVE_ALL);
    private XViewerDataManager dataManager;
    private final List<AbstractActionHandler> actionList = new ArrayList<AbstractActionHandler>();
    private Action editDisposition;

@@ -121,9 +121,6 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
          }
       }
 
-      /**
-       * @return
-       */
       public boolean stop() {
          return stopLoading;
       }
@@ -159,7 +156,7 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
                ScriptTask task = new ScriptTask(file.getLocation().toString(), alternatePath);
                task.setRun(Boolean.parseBoolean(runnable));
                scriptTasks.add(task);
-            } catch (NullPointerException e) {            
+            } catch (NullPointerException e) {
                e.printStackTrace();
             }
          } else {

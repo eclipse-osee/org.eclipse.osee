@@ -31,7 +31,6 @@ import org.eclipse.osee.ote.core.enums.PromptResponseType;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.command.CommandDescription;
-import org.eclipse.osee.ote.core.environment.interfaces.IExecutionUnitManagement;
 import org.eclipse.osee.ote.core.environment.interfaces.IScriptCompleteListener;
 import org.eclipse.osee.ote.core.environment.interfaces.IScriptInitializer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -221,8 +220,7 @@ public abstract class TestScript implements ITimeout {
    }
 
    public void abort() {
-      OseeLog.log(TestEnvironment.class, Level.SEVERE,
-            "Aborting script", new Exception());
+      OseeLog.log(TestEnvironment.class, Level.SEVERE, "Aborting script", new Exception());
       aborted = true;
    }
 
@@ -590,7 +588,7 @@ public abstract class TestScript implements ITimeout {
    /**
     * Use addTestRunListener(ITestRunListener listener) instead.
     * 
-    * @see addTestRunListener(ITestRunListener listener)
+    * @see #addTestRunListener(ITestRunListener listener)
     */
    @Deprecated
    public void addScriptCompleteListener(IScriptCompleteListener listener) {
@@ -665,9 +663,8 @@ public abstract class TestScript implements ITimeout {
          try {
             listener.onScriptComplete();
          } catch (Throwable t) {
-            OseeLog.log(TestEnvironment.class, 
-                  Level.SEVERE, "exception while notifying script complete listener " + listener.getClass().getName(),
-                  t);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE,
+                  "exception while notifying script complete listener " + listener.getClass().getName(), t);
          }
       }
    }
@@ -687,16 +684,10 @@ public abstract class TestScript implements ITimeout {
       return this.listenerProvider.removeTestRunListener(listener);
    }
 
-   /**
-    * @return
-    */
    public int getPasses() {
       return pass;
    }
 
-   /**
-    * @return
-    */
    public int getFails() {
       return fail;
    }
@@ -706,30 +697,18 @@ public abstract class TestScript implements ITimeout {
       return this.sciprtResultRecord;
    }
 
-   /**
-    * @return
-    */
    public ScriptLogHandler getScriptLogHandler() {
       return this.scriptLogHandler;
    }
 
-   /**
-    * @param b
-    */
    public void setAborted(boolean aborted) {
       this.aborted = aborted;
    }
 
-   /**
-    * @param currentTestCase the currentTestCase to set
-    */
    void setTestCase(TestCase currentTestCase) {
       this.currentTestCase = currentTestCase;
    }
 
-   /**
-    * @return
-    */
    public String getOutfileComment() {
       return "\nNO_OUTFILE_COMMENT\n";
    }

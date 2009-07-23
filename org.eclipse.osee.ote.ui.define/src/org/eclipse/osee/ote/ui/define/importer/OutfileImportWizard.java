@@ -14,6 +14,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -23,8 +25,7 @@ import org.eclipse.ui.IWorkbench;
  */
 public class OutfileImportWizard extends Wizard implements IImportWizard {
    private static final String TITLE = "Import outfiles into Define";
-   private static final ImageDescriptor WIZARD_IMAGE =
-         OteUiDefinePlugin.getInstance().getImageDescriptor("commit_wiz.png");
+   private static final ImageDescriptor WIZARD_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.COMMIT_WIZ);
    private OutfileImportPage mainPage;
 
    public OutfileImportWizard() {
@@ -34,22 +35,11 @@ public class OutfileImportWizard extends Wizard implements IImportWizard {
       setDefaultPageImageDescriptor(WIZARD_IMAGE);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       return mainPage.finish();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.mainPage = new OutfileImportPage(selection);
       mainPage.setTitle(TITLE);

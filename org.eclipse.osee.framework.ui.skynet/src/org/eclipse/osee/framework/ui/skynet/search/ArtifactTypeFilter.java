@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -29,11 +29,6 @@ public class ArtifactTypeFilter extends SearchFilter {
       this.searchTypeList = searchTypeList;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.search.SearchFilter#addFilterTo(osee.define.artifact.search.filter.FilterTableViewer)
-    */
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       for (String type : searchTypeList.getList().getSelection()) {

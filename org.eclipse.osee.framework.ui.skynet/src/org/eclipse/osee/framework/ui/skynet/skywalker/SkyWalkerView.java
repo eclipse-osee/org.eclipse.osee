@@ -192,7 +192,7 @@ public class SkyWalkerView extends ViewPart {
       };
       action.setText("Open Selected");
       action.setToolTipText("Open Selected");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("edit2.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT2));
       tbm.add(action);
 
       action = new Action() {
@@ -207,7 +207,7 @@ public class SkyWalkerView extends ViewPart {
       };
       action.setText("Back");
       action.setToolTipText("Back");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("back.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BACK));
       tbm.add(action);
 
       action = new Action() {
@@ -219,7 +219,7 @@ public class SkyWalkerView extends ViewPart {
       };
       action.setText("Print");
       action.setToolTipText("Print");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("print.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PRINT));
       tbm.add(action);
 
       action = new Action() {
@@ -230,7 +230,7 @@ public class SkyWalkerView extends ViewPart {
       };
       action.setText("Save Options");
       action.setToolTipText("Save Options");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("save.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE));
       tbm.add(action);
 
       action = new Action() {
@@ -241,7 +241,7 @@ public class SkyWalkerView extends ViewPart {
       };
       action.setText("Load Options");
       action.setToolTipText("Load Options");
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("load.gif"));
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.LOAD));
       tbm.add(action);
 
       action = new Action() {

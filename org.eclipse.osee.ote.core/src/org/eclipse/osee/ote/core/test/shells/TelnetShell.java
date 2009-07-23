@@ -162,25 +162,25 @@ public class TelnetShell implements TelnetNotificationHandler {
       }
 
    }
-   
-   public String writeAndGetPrompt(String string, int timeout) throws Exception{
+
+   public String writeAndGetPrompt(String string, int timeout) throws Exception {
       inputBuffer.clear();
       // currentOutput = inputBuffer.getLength() + string.length() + 1;
-         for (byte b : string.getBytes("us-ascii")) {
-            out.write(b);
-            out.flush();
-
-            try {
-               Thread.sleep(10);
-            } catch (InterruptedException ex) {
-               ex.printStackTrace();
-            }
-
-         }
-         out.write(NEWLINE);
+      for (byte b : string.getBytes("us-ascii")) {
+         out.write(b);
          out.flush();
-         Thread.sleep(timeout);
-         return inputBuffer.getBuffer();
+
+         try {
+            Thread.sleep(10);
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+         }
+
+      }
+      out.write(NEWLINE);
+      out.flush();
+      Thread.sleep(timeout);
+      return inputBuffer.getBuffer();
 
    }
 
@@ -188,7 +188,6 @@ public class TelnetShell implements TelnetNotificationHandler {
     * Sits on the line, reading in characters, and waits for the expected output from telnet
     * 
     * @param string The String this function will stop on and return
-    * @return The entire string seen up to finding the string provided
     * @throws InterruptedException
     */
    public synchronized void waitFor(String string) throws InterruptedException {
@@ -230,7 +229,6 @@ public class TelnetShell implements TelnetNotificationHandler {
     * Writes the command to telnet and waits for the normal command prompt
     * 
     * @param string The command to issue
-    * @return Returns the whole buffer up to the prompt
     * @throws InterruptedException
     */
    public void sendCommand(String string) throws InterruptedException {

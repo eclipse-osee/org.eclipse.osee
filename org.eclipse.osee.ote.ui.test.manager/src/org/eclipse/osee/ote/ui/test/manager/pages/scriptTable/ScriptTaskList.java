@@ -40,7 +40,7 @@ public class ScriptTaskList {
     * Add a new task to the collection of tasks
     */
    public void addTask(ScriptTask inTask) {
-	  inTask.updateStatusOnConnected(this.isConnected);
+      inTask.updateStatusOnConnected(this.isConnected);
       tasks.add(tasks.size(), inTask);
       Iterator<ITaskListViewer> iterator = changeListeners.iterator();
       while (iterator.hasNext())
@@ -48,8 +48,7 @@ public class ScriptTaskList {
    }
 
    public void addTasks(List<ScriptTask> inTasks) {
-      for( ScriptTask task : inTasks)
-      {
+      for (ScriptTask task : inTasks) {
          task.updateStatusOnConnected(isConnected);
       }
       ScriptTask[] array = new ScriptTask[inTasks.size()];
@@ -68,12 +67,12 @@ public class ScriptTaskList {
 
    public void onConnected(boolean connected) {
       synchronized (tasks) {
-    	  	this.isConnected = connected;
+         this.isConnected = connected;
          Iterator<ScriptTask> iter = tasks.iterator();
          while (iter.hasNext()) {
-        	 ScriptTask task = iter.next();
-//        	 task.computeExists();
-        	 task.updateStatusOnConnected(connected);
+            ScriptTask task = iter.next();
+            //        	 task.computeExists();
+            task.updateStatusOnConnected(connected);
          }
       }
    }
@@ -119,11 +118,10 @@ public class ScriptTaskList {
 
    /**
     * @param newTask
-    * @return
     */
    public boolean contains(ScriptTask newTask) {
-      for(ScriptTask task:tasks){
-         if(task.getPath().equals(newTask.getPath())){
+      for (ScriptTask task : tasks) {
+         if (task.getPath().equals(newTask.getPath())) {
             return true;
          }
       }

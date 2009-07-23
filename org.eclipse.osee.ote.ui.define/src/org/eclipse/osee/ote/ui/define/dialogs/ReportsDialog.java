@@ -38,8 +38,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.define.jobs.RemoteResourceRequestJob;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.panels.ListSelectionPanel;
 import org.eclipse.osee.ote.ui.define.panels.PreviewPanel;
@@ -69,8 +71,8 @@ import org.eclipse.swt.widgets.Text;
  * @author Roberto E. Escobar
  */
 public class ReportsDialog extends TitleAreaDialog {
-   private static final Image MESSAGE_IMAGE = OteUiDefinePlugin.getInstance().getImage("commit_wiz.png");
-   private static final Image TITLE_BAR_IMAGE = OteUiDefinePlugin.getInstance().getImage("commit.gif");
+   private static final Image MESSAGE_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT_WIZ);
+   private static final Image TITLE_BAR_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT);
 
    private static final String MESSAGE_TITLE = "Select a report";
    private static final String TITLE_BAR_TEXT = "OSEE Test Run Reports";

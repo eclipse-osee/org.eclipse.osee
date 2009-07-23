@@ -124,7 +124,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    }
 
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
-      String currentDbGuid = OseeInfo.getValue("osee.db.guid");
+      String currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
@@ -201,8 +201,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists
          if (artifactForStore == null) {
-            artifactForStore =
-                  ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsUtil.getAtsBranch(), name);
+            artifactForStore = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsUtil.getAtsBranch(), name);
          }
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
                currentDbGuid, currentChangeData));

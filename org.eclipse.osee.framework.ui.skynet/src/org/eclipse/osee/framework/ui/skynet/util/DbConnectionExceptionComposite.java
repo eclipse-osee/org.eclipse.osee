@@ -33,7 +33,6 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
     * DbConnectionExceptionComposite will be displayed in parent giving exception information.
     * 
     * @param parent
-    * @return
     */
    public static boolean dbConnectionIsOk(Composite parent) {
       //      try {

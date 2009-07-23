@@ -32,7 +32,6 @@ public class NonBlockingMessagePrompt extends AbstractRemotePrompt implements IR
    /**
     * @param session
     * @param timeout
-    * @return true if the user did not respond within the time specified and false if the user responded in time
     * @throws Exception
     */
    public void open(IUserSession session) throws Exception {
@@ -41,9 +40,6 @@ public class NonBlockingMessagePrompt extends AbstractRemotePrompt implements IR
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IResumeResponse#resume()
-    */
    public void resume() throws RemoteException {
 
    }

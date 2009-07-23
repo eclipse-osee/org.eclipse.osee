@@ -42,8 +42,6 @@ public class DemoDbTasks {
 
    /**
     * Return different set of task titles for first and second workflow that make request
-    * 
-    * @return
     */
    public static Collection<String> getTaskTitles(boolean firstTaskWorkflow) {
       if (firstTaskWorkflow) {

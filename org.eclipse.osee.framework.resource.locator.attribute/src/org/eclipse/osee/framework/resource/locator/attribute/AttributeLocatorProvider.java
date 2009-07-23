@@ -24,19 +24,10 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
  * @author Roberto E. Escobar
  */
 public class AttributeLocatorProvider implements IResourceLocatorProvider {
-   private HRIDCompatibility compatibilityCode;
 
    public AttributeLocatorProvider() {
-      compatibilityCode = new HRIDCompatibility();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.framework.resource.management.IResourceLocatorProvider
-    * #generateResourceLocator(java.lang.String)
-    */
    @Override
    public IResourceLocator generateResourceLocator(String seed, String name) throws MalformedLocatorException {
       URI uri = null;
@@ -48,13 +39,6 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       return new ResourceLocator(uri);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.framework.resource.management.IResourceLocatorProvider
-    * #getResourceLocator(java.lang.String)
-    */
    @Override
    public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
       URI uri = null;
@@ -70,13 +54,6 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       return new ResourceLocator(uri);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.framework.resource.management.IResourceLocatorProvider
-    * #isValid(java.lang.String)
-    */
    @Override
    public boolean isValid(String protocol) {
       return isArgValid(protocol) != false && protocol.startsWith("attr") != false;

@@ -34,7 +34,6 @@ public class AFile {
     * exceptions
     * 
     * @param stream
-    * @return
     */
    public static String readFile(String filename) {
       return readFile(new File(filename));
@@ -45,7 +44,6 @@ public class AFile {
     * exceptions
     * 
     * @param stream
-    * @return
     */
    public static String readFile(File file) {
       try {

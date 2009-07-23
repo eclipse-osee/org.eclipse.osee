@@ -14,18 +14,16 @@ import java.nio.ByteBuffer;
 
 /**
  * @author Ken J. Aguilar
- *
  */
 public interface IOteData extends Data {
    /**
-    * signals the end of processing for this data instance. This will return it to the
-    * data cache so that it can be reused
+    * signals the end of processing for this data instance. This will return it to the data cache so that it can be
+    * reused
     */
    void finish();
-   
+
    /**
-    * gets the data buffer associated with this instance. 
-    * @return
+    * gets the data buffer associated with this instance.
     */
    ByteBuffer getDataBuffer();
 }

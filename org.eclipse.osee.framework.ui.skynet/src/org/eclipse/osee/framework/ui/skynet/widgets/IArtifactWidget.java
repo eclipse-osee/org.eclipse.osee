@@ -45,7 +45,6 @@ public interface IArtifactWidget {
    /**
     * Return true if storage data different than widget data
     * 
-    * @return
     * @throws Exception TODO
     */
    public Result isDirty() throws OseeCoreException;

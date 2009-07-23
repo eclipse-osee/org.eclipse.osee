@@ -391,8 +391,6 @@ public class LatLongBox extends Composite {
    /**
     * returns the value in degrees with a fractional part calculated from minutes and seconds. For example 50 degrees
     * and 30 minutes would return 50.5 degrees
-    * 
-    * @return
     */
    public Double getValue() {
       return dValue;
