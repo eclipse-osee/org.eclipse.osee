@@ -28,6 +28,9 @@ public final class OseeCodeVersion {
     * @return the version
     */
    public static String getVersion() {
+      if (!System.getProperty("osee.version", "").equals("")) {
+         return System.getProperty("osee.version", "");
+      }
       String bundleVersion = getBundleVersion();
       if (isDevelopment(bundleVersion)) {
          return "Development";

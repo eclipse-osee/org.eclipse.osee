@@ -117,4 +117,11 @@ public class NewActionJob extends Job {
       this.saveIt = saveIt;
    }
 
+   /**
+    * @return the actionArt
+    */
+   public ActionArtifact getActionArt() {
+      return actionArt;
+   }
+
 }

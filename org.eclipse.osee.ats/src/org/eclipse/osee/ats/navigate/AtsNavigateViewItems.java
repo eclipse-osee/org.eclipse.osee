@@ -190,6 +190,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             new UpdateAtsWorkItemDefinitions(adminItems);
             new UpdateAssigneesRelations(adminItems);
             new DisplayCurrentOseeEventListeners(adminItems);
+            new AtsRemoteEventTestItem(adminItems);
 
             new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
                   "User's All Related Objects - Admin Only", null, false, LoadView.WorldEditor));
