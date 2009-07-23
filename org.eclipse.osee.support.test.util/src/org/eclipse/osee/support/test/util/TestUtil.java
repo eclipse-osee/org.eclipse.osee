@@ -43,8 +43,7 @@ public class TestUtil {
    }
 
    public static boolean isDemoDb() throws OseeCoreException {
-      String dbType = OseeInfo.getValue("osee.db.type");
-      return DEMO_DB_TYPE.equals(dbType);
+      return DEMO_DB_TYPE.equals(OseeInfo.getCachedValue("osee.db.type"));
    }
 
    public static void sleep(long milliseconds) throws Exception {
