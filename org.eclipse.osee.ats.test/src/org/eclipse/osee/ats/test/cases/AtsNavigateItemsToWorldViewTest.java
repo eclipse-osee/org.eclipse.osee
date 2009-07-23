@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
@@ -78,6 +79,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testDemoDatabase() throws Exception {
+      VisitedItems.clearVisited();
       DemoTestUtil.setUpTest();
       assertTrue(DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones) != null);
    }
@@ -239,7 +241,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testMyRecentlyVisited() throws Exception {
-      // Load Recently Visited
+      // Load Recently Visited      
       runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
    }
 

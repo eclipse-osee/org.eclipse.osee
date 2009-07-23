@@ -40,6 +40,12 @@ public class VisitedItems extends XNavigateItemAction {
       if (!visited.contains(art)) visited.add(art);
    }
 
+   public static void clearVisited() {
+      if (visited != null) {
+         visited.clear();
+      }
+   }
+
    /**
     * @param parent
     */
