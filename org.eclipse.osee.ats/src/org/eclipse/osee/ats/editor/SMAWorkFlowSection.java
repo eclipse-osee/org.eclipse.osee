@@ -269,9 +269,13 @@ public class SMAWorkFlowSection extends SectionPart {
       return Result.FalseResult;
    }
 
-   public void saveXWidgetToArtifact() throws OseeCoreException {
+   public void getDirtyIArtifactWidgets(List<IArtifactWidget> widgets) throws OseeCoreException {
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
-         if (widget instanceof IArtifactWidget) ((IArtifactWidget) widget).saveToArtifact();
+         if (widget instanceof IArtifactWidget) {
+            if (((IArtifactWidget) widget).isDirty().isTrue()) {
+               widgets.add((IArtifactWidget) widget);
+            }
+         }
       }
    }
 
