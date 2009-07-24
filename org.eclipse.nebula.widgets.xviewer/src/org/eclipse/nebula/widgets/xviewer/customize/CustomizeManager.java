@@ -159,8 +159,13 @@ public class CustomizeManager {
 
    public void setFilterText(String text) {
       currentCustData.filterData.setFilterText(text);
-      xViewerTextFilter.update();
-      xViewer.refresh();
+      try {
+         xViewer.getTree().setRedraw(false);
+         xViewerTextFilter.update();
+         xViewer.refresh();
+      } finally {
+         xViewer.getTree().setRedraw(true);
+      }
    }
 
    public String getFilterText() {
