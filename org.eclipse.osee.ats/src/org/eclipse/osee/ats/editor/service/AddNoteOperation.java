@@ -17,7 +17,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,10 +64,9 @@ public class AddNoteOperation extends WorkPageService {
    private void performAddNote() {
       try {
          ArrayList<String> artifactNames = new ArrayList<String>();
-         artifactNames.add(smaMgr.getSma().getName() + " - " + smaMgr.getSma().getName());
+         artifactNames.add("Whole \"" + smaMgr.getSma().getArtifactTypeName() + "\"");
          for (WorkPageDefinition workPageDefinition : smaMgr.getWorkFlowDefinition().getPagesOrdered())
-            if (!workPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && !workPageDefinition.getPageName().equals(
-                  DefaultTeamState.Completed.name())) artifactNames.add(workPageDefinition.getPageName());
+            artifactNames.add("\"" + workPageDefinition.getPageName() + "\" State");
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);

@@ -46,7 +46,7 @@ public class NewNotePage extends WizardPage {
       typeList.setRequiredSelected(1, 1);
       typeList.add(NoteType.getNames());
       typeList.setVerticalLabel(true);
-      artifactList = new XList("Against Artifact");
+      artifactList = new XList("Against State or Workflow");
       artifactList.setVerticalLabel(true);
       artifactList.setRequiredEntry(true);
       artifactList.setGrabHorizontal(true);
@@ -96,6 +96,9 @@ public class NewNotePage extends WizardPage {
             update();
          };
       });
+      gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.widthHint = 300;
+      artifactList.getList().setLayoutData(gd);
 
       Composite bottomC = new Composite(composite, SWT.NONE);
       bottomC.setLayout(new GridLayout());
