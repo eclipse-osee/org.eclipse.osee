@@ -158,7 +158,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Support.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_3.getShortName());
-      teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion258());
+      teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
       teamArt.persistAttributesAndRelations(transaction);
       transaction.execute();
 
@@ -168,7 +168,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion258());
+      teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persistAttributesAndRelations(transaction);
       transaction.execute();
@@ -248,7 +248,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals(
             "Targeted Version",
             (teamArt.getSmaMgr().getTargetedForVersion() != null ? teamArt.getSmaMgr().getTargetedForVersion().toString() : "not set"),
-            "2.5.8");
+            "2.5.7");
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getSmaMgr().getStateMgr().getCurrentStateName());
    }
 

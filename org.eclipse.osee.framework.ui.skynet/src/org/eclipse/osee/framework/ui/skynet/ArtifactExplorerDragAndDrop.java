@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
+import java.util.Collections;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -133,7 +134,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
                   // Replace all of the parent relations
                   for (Artifact artifact : artifactsToBeRelated) {
-                     artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                     artifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
+                           Collections.singleton(parentArtifact));
                      artifact.persistAttributesAndRelations(transaction);
                   }
                   transaction.execute();

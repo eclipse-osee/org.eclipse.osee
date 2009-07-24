@@ -413,11 +413,19 @@ public class RemoteEventManager {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof ISkynetArtifactEvent) {
-                     updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
-                     lastArtifactRelationModChangeSender = sender;
+                     try {
+                        updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
+                        lastArtifactRelationModChangeSender = sender;
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
                   } else if (event instanceof ISkynetRelationLinkEvent) {
-                     updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
-                     lastArtifactRelationModChangeSender = sender;
+                     try {
+                        updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
+                        lastArtifactRelationModChangeSender = sender;
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
                   } else if (event instanceof NetworkArtifactChangeTypeEvent) {
                      try {
                         LoadedArtifacts loadedArtifacts =
@@ -654,7 +662,7 @@ public class RemoteEventManager {
                         RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                               event.getArtAId(), event.getArtBId(), branch, branch);
 
-                  if (relation == null) {
+                  if (relation == null || (relation.getModificationType() == ModificationType.DELETED)) {
                      relation =
                            new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
                                  event.getRelId(), event.getGammaId(),

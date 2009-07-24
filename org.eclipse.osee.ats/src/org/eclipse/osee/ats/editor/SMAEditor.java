@@ -218,6 +218,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          } else {
             try {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               // If change was made on Attribute tab, persist sma separately.  This is cause attribute
+               // tab changes conflict with XWidget changes
                if (getActivePage() == attributesPageIndex) {
                   smaMgr.getSma().persistAttributes(transaction);
                }

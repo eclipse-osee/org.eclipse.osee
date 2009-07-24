@@ -1315,21 +1315,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    /**
-    * Overwrites all existing relations to this artifact with a single relation to an artifact
-    * 
-    * @param relationSide
-    * @param artifact
-    * @throws OseeCoreException
-    */
-   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
-      // Delete all existing relations
-      for (RelationLink relationLink : getRelations(relationSide)) {
-         relationLink.delete(true);
-      }
-      setRelations(relationSide, Arrays.asList(artifact));
-   }
-
-   /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     * 
     * @param relationSide
@@ -1338,16 +1323,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
-      // Add new relations if don't exist
-      for (Artifact artifact : artifacts) {
-         if (!currentlyRelated.contains(artifact)) {
-            addRelation(relationSide, artifact);
-         }
-      }
       // Remove relations that have been removed
       for (Artifact artifact : currentlyRelated) {
          if (!artifacts.contains(artifact)) {
             deleteRelation(relationSide, artifact);
+         }
+      }
+      // Add new relations if don't exist
+      for (Artifact artifact : artifacts) {
+         if (!currentlyRelated.contains(artifact)) {
+            addRelation(relationSide, artifact);
          }
       }
    }
@@ -1416,7 +1401,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          return id_string;
       else
          return generateHumanReadableId();
-   }
+      }
 
    /**
     * Searches the database to verify that the given HRID is not already taken
@@ -1476,8 +1461,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
                   if (link.isDirty()) {
                      return "Link \"" + link + "\" => dirty\n";
                   }
+               }
             }
-         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

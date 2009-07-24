@@ -354,7 +354,8 @@ public class SMAManager {
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
       for (TeamWorkFlowArtifact teamArt : smas) {
-         teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
+         teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version,
+               java.util.Collections.singleton(newVersion));
       }
       if (persist) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());

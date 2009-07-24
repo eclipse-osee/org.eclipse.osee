@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.update;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -132,7 +133,8 @@ public class InterArtifactExplorerDropHandler {
             Artifact reflectedArtifact;
             if (status == TransferStatus.INTRODUCE) {
                reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
-               reflectedArtifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+               reflectedArtifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
+                     Collections.singleton(parentArtifact));
             } else {
                reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
                reloadArtifacts.add(reflectedArtifact);
