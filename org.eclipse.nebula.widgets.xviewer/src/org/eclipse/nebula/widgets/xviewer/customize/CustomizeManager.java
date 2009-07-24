@@ -418,7 +418,7 @@ public class CustomizeManager {
    public void loadCustomization(final CustomizeData newCustData) {
       loading = true;
       if (xViewerTextFilter == null) {
-         xViewerTextFilter = new XViewerTextFilter(xViewer);
+         xViewerTextFilter = xViewer.getXViewerTextFilter();
          xViewer.addFilter(xViewerTextFilter);
       }
       if (xViewer.getTree().isDisposed()) return;

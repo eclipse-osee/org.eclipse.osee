@@ -660,4 +660,10 @@ public class XViewer extends TreeViewer {
       }
    }
 
+   /**
+    * Override to provide extended filter capabilities
+    */
+   public XViewerTextFilter getXViewerTextFilter() {
+      return new XViewerTextFilter(this);
+   }
 }

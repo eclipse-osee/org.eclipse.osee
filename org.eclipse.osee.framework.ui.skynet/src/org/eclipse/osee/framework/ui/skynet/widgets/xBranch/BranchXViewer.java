@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
@@ -82,6 +83,14 @@ public class BranchXViewer extends XViewer {
     */
    public XBranchWidget getXBranchViewer() {
       return xBranchViewer;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.nebula.widgets.xviewer.XViewer#getXViewerTextFilter()
+    */
+   @Override
+   public XViewerTextFilter getXViewerTextFilter() {
+      return new XBranchTextFilter(this);
    }
 
 }
