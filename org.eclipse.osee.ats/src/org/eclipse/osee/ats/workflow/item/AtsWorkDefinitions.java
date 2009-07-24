@@ -160,6 +160,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
             XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, "XDateDam",
+            XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
             "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,

@@ -35,6 +35,7 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
