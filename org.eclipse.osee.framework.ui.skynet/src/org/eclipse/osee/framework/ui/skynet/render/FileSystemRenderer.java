@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbench;
@@ -80,6 +81,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             if (!artifacts.isEmpty()) {
                Artifact firstArtifact = artifacts.iterator().next();
                try {
+                  FileUiUtil.ensureFilenameLimit(file);
                   Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
                } catch (Exception ex) {
