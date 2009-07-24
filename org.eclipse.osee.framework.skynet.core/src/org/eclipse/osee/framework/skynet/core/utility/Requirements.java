@@ -58,6 +58,7 @@ public class Requirements {
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
+   public static String FOLDER = "Folder";
 
    public static boolean isSoftwareRequirement(Artifact artifact) {
       return Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(artifact.getArtifactTypeName());
