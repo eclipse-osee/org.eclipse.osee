@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -100,12 +99,10 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, relationPageIndex,
-         attributesPageIndex;
+   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
-   private RelationsComposite relationsComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
    private boolean priviledgedEditModeEnabled = false;
@@ -164,7 +161,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
 
          createHistoryTab();
-         createRelationsTab();
          createAttributesTab();
          createMetricsTab();
 
@@ -272,9 +268,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       workFlowTab.dispose();
       if (taskComposite != null) {
          taskComposite.disposeTaskComposite();
-      }
-      if (relationsComposite != null) {
-         relationsComposite.dispose();
       }
       if (metricsComposite != null) metricsComposite.disposeComposite();
 
@@ -400,51 +393,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   private void createRelationsTab() {
-      try {
-         // Create Relations tab
-         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
-         ToolBar toolBar = createToolBar(composite);
-
-         if (AtsUtil.isAtsAdmin()) {
-            final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
-
-            showAllRelationsItem.setImage(ImageManager.getImage(FrameworkImage.RELATION));
-            showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
-            showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  if (showAllRelationsItem.getSelection()) {
-                     relationsComposite.getTreeViewer().removeFilter(userRelationsFilter);
-                     relationsComposite.refreshArtifact(smaMgr.getSma());
-                  } else {
-                     relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
-                  }
-                  relationsComposite.refresh();
-               }
-            });
-         }
-
-         ToolItem item = new ToolItem(toolBar, SWT.CHECK);
-         item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               relationsComposite.refreshArtifact(smaMgr.getSma());
-            }
-         });
-
-         relationsComposite = new RelationsComposite(this, composite, SWT.NONE, smaMgr.getSma());
-         relationPageIndex = addPage(composite);
-         setPageText(relationPageIndex, "Relations");
-         // Don't allow users to see all relations
-         relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-
-   }
-
    private static List<String> filteredRelationTypeNames =
          Arrays.asList(AtsRelation.ActionToWorkflow_Action.getTypeName(), AtsRelation.SmaToTask_Sma.getTypeName(),
                AtsRelation.TeamActionableItem_ActionableItem.getTypeName(),
@@ -526,7 +474,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (getContainer() == null || getContainer().isDisposed()) return;
       if (workFlowTab != null) workFlowTab.refresh();
       if (historyComposite != null) historyComposite.refresh();
-      if (relationsComposite != null) relationsComposite.refreshArtifact(smaMgr.getSma());
       if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
       smaMgr.getEditor().onDirtied();
       updatePartName();

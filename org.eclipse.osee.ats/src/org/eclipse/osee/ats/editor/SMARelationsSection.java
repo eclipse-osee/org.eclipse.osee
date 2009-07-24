@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -85,7 +83,8 @@ public class SMARelationsSection extends SectionPart {
                } else {
                   relationComposite.getTreeViewer().addFilter(userRelationsFilter);
                }
-               relationComposite.refresh();
+               getManagedForm().getForm().getBody().layout();
+               getManagedForm().reflow(true);
             }
          });
       }
@@ -99,18 +98,6 @@ public class SMARelationsSection extends SectionPart {
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
-      relationComposite.getTreeViewer().getTree().addTreeListener(new TreeListener() {
-
-         @Override
-         public void treeCollapsed(TreeEvent e) {
-            getManagedForm().getForm().getBody().layout();
-         }
-
-         @Override
-         public void treeExpanded(TreeEvent e) {
-            getManagedForm().getForm().getBody().layout();
-         }
-      });
    }
 
    public RelationsComposite getRelationComposite() {
