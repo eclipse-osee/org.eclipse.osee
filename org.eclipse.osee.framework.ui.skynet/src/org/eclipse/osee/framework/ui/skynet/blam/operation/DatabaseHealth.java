@@ -87,20 +87,20 @@ public class DatabaseHealth extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Verification Operations to Run:\"/>");
       for (DatabaseHealthOperation healthOp : DatabaseHealthOpsExtensionManager.getVerifyOperations()) {
-         builder.append(getOperationsCheckBoxe(healthOp, false));
+         builder.append(getOperationsCheckBoxes(healthOp, false));
       }
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
       for (DatabaseHealthOperation fixOp : DatabaseHealthOpsExtensionManager.getFixOperations()) {
-         builder.append(getOperationsCheckBoxe(fixOp, true));
+         builder.append(getOperationsCheckBoxes(fixOp, true));
       }
 
       builder.append("</xWidgets>");
       return builder.toString();
    }
 
-   private String getOperationsCheckBoxe(DatabaseHealthOperation fixOp, boolean fix) {
+   private String getOperationsCheckBoxes(DatabaseHealthOperation fixOp, boolean fix) {
       StringBuilder builder = new StringBuilder();
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
       builder.append(fix ? fixOp.getFixTaskName() : fixOp.getVerifyTaskName());
@@ -137,22 +137,23 @@ public class DatabaseHealth extends AbstractBlam {
          checkForCancelledStatus(monitor);
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);
+            println(String.format("\nProcessing: [%s]", operation.getName()));
             operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
-
             String detailedReport = operation.getDetailedReport().toString();
             if (Strings.isValid(detailedReport)) {
                XResultData result = new XResultData();
                result.addRaw(detailedReport.toString());
                result.report(operation.getName(), Manipulations.RAW_HTML);
             }
+            println(String.format("Completed:  [%s]", operation.getName()));
          }
       }
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          int totalTasks = fixOperations.size() + verifyOperations.size();
-         double workPercentage = totalTasks / getTotalWorkUnits();
+         double workPercentage = (double) totalTasks / (double) getTotalWorkUnits();
          if (!AccessControlManager.isOseeAdmin()) {
             throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
          } else {
@@ -162,9 +163,7 @@ public class DatabaseHealth extends AbstractBlam {
             }
             for (DatabaseHealthOperation operation : verifyOperations) {
                executeOperation(monitor, operation, builder, workPercentage, false);
-
             }
-
             setStatusMessage(builder.toString());
          }
       }

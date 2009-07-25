@@ -1802,4 +1802,10 @@
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
     </extension>
+        <extension
+              point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+           <DatabaseHealthOperation
+                 className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeSmartTagsRemovedHealthOperation">
+           </DatabaseHealthOperation>
+        </extension>
 </plugin>

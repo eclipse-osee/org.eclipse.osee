@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
@@ -94,6 +95,14 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
 
    public MultipleParentRelations() {
       super("Multiple Parent Relations");
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixTaskName()
+    */
+   @Override
+   public String getFixTaskName() {
+      return Strings.emptyString();
    }
 
    /* (non-Javadoc)

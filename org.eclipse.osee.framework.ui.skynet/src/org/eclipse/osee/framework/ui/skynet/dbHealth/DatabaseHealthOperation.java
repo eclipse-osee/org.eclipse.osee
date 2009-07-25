@@ -25,7 +25,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
    private int itemToFixCount;
 
    private Appendable appendableBuffer;
-   private final Appendable detailedReport;
+   private final StringBuilder detailedReport;
 
    public DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
@@ -89,24 +89,20 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
     */
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
+      detailedReport.delete(0, detailedReport.length());
       setItemsToFix(0);
-      //      monitor.beginTask(isFixOperationEnabled() ? getFixTaskName() : getVerifyTaskName(), getTotalWorkUnits());
-      //      try {
       doHealthCheck(monitor);
-      //      } finally {
-      //         monitor.done();
-      //      }
    }
 
    /**
     * @return Returns description of check and any other useful information i.e. time of execution
     */
    public abstract String getCheckDescription();
-   
+
    /**
     * @return Returns description of what will happen and any consequences to clients
     */
    public abstract String getFixDescription();
-   
+
    protected abstract void doHealthCheck(IProgressMonitor monitor) throws Exception;
 }

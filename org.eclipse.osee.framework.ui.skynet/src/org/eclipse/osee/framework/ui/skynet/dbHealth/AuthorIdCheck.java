@@ -101,7 +101,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          }
          rd.addRaw(AHTML.endMultiColumnTable());
          rd.addRaw(infoSb.toString());
-         getSummary().append("Processed " + authors.size() + " items");
+         getSummary().append("Processed " + authors.size() + " author ids\n");
 
       } finally {
          rd.report(getName());

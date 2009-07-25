@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.dbHealth;
+
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class WordAttributeSmartTagsRemovedHealthOperation extends AbstractWordAttributeHealthOperation {
+
+   public WordAttributeSmartTagsRemovedHealthOperation() {
+      super("Word Attribute with Smart Tags");
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
+    */
+   @Override
+   protected void applyFix(AttrData attrData) {
+      String fixedData = WordUtil.removeWordMarkupSmartTags(attrData.getResource().getData());
+      attrData.getResource().setData(fixedData);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
+    */
+   @Override
+   protected boolean isFixRequired(AttrData attrData, Resource resource) {
+      boolean result = false;
+      String wordMarkup = resource.getData();
+      if (Strings.isValid(wordMarkup)) {
+         String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// example smart (cough, cough) tags <st1:place>|</st1:place>
+         result = splitsOnSmartTagStart.length > 1;
+      }
+      return result;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
+    */
+   @Override
+   public String getCheckDescription() {
+      return "Checks Word Attribute data to detect Smart Tags";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
+    */
+   @Override
+   public String getFixDescription() {
+      return "Removes smart tags from word attributes";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#getBackUpPrefix()
+    */
+   @Override
+   protected String getBackUpPrefix() {
+      return "SmartTagsFix_";
+   }
+
+}

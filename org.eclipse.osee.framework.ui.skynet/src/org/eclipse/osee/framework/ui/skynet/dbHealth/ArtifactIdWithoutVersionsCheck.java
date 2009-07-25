@@ -75,7 +75,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       setItemsToFix(allInvalidArtIds.size());
       createReport(monitor, beforeArtifactCheck, getItemsToFixCount(), itemsToDelete);
 
-      if (false && isFixOperationEnabled() && getItemsToFixCount() > 0) {
+      if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
          for (ItemEntry entry : itemsToDelete) {
             if (!entry.invalids.isEmpty()) {
                String deleteSql = String.format("delete from %s where %s = ?", entry.table, entry.itemIdName);
@@ -87,7 +87,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
             }
          }
       }
-      getSummary().append(String.format("Found [%s] invalid artIds referencedBy", getItemsToFixCount()));
+      getSummary().append(String.format("Found %s invalid artIds referenced\n", getItemsToFixCount()));
       monitor.worked(calculateWork(0.50));
    }
 
