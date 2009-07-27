@@ -14,15 +14,16 @@ import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
 import org.eclipse.osee.ote.ui.test.manager.configuration.SaveWidget;
@@ -143,7 +144,7 @@ public abstract class ScriptPage extends TestManagerPage {
    public StatusWindowWidget getStatusWindow() {
       return statusWindow;
    }
-   
+
    public void onScriptRunning(final boolean running) {
       PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
          public void run() {
@@ -176,7 +177,7 @@ public abstract class ScriptPage extends TestManagerPage {
       loadWidget.createToolItem(configToolBar);
 
       deleteButton = new ToolItem(configToolBar, SWT.PUSH | SWT.CENTER);
-      deleteButton.setImage(plugin.getImage("file_delete.gif"));
+      deleteButton.setImage(ImageManager.getImage(OteTestManagerImage.FILE_DELETE));
       deleteButton.setToolTipText("Deletes Selected (highlighted) Scripts");
       deleteButton.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
@@ -204,8 +205,8 @@ public abstract class ScriptPage extends TestManagerPage {
       ToolBar controlsToolBar = new ToolBar(coolBar, SWT.FLAT | SWT.HORIZONTAL);
 
       runButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      runButton.setImage(plugin.getImage("sel_run_exec.gif"));
-      runButton.setDisabledImage(plugin.getImage("unsel_run_exec.gif"));
+      runButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_RUN_EXEC));
+      runButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_RUN_EXEC));
       runButton.setToolTipText("Runs the Checked Scripts");
       runButton.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
@@ -223,8 +224,8 @@ public abstract class ScriptPage extends TestManagerPage {
 
       // Create and configure the "Abort" button
       abortButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      abortButton.setImage(plugin.getImage("sel_abort_stop.gif"));
-      abortButton.setDisabledImage(plugin.getImage("unsel_abort_stop.gif"));
+      abortButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_ABORT_STOP));
+      abortButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_ABORT_STOP));
       abortButton.setToolTipText("Abort Currently Running Script");
       abortButton.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
@@ -249,8 +250,8 @@ public abstract class ScriptPage extends TestManagerPage {
       abortButton.setEnabled(false);
 
       abortBatchButton = new ToolItem(controlsToolBar, SWT.PUSH | SWT.CENTER);
-      abortBatchButton.setImage(plugin.getImage("sel_batch_abort_stop.gif"));
-      abortBatchButton.setDisabledImage(plugin.getImage("unsel_batch_abort_stop.gif"));
+      abortBatchButton.setImage(ImageManager.getImage(OteTestManagerImage.SEL_BATCH_ABORT_STOP));
+      abortBatchButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_BATCH_ABORT_STOP));
       abortBatchButton.setToolTipText("Abort Script Batch");
       abortBatchButton.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
@@ -288,11 +289,11 @@ public abstract class ScriptPage extends TestManagerPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       scriptTable = new ScriptTableViewer(composite, this.getTestManager());
-//      scriptTable.addDisposeListener(new DisposeListener() {
-//         public void widgetDisposed(DisposeEvent e) {
-//            testManagerEditor.storeValue(testManagerEditor.scriptsQualName, scriptTable.getStorageString());
-//         }
-//      });
+      //      scriptTable.addDisposeListener(new DisposeListener() {
+      //         public void widgetDisposed(DisposeEvent e) {
+      //            testManagerEditor.storeValue(testManagerEditor.scriptsQualName, scriptTable.getStorageString());
+      //         }
+      //      });
 
    }
 
@@ -325,25 +326,21 @@ public abstract class ScriptPage extends TestManagerPage {
 
    // TODO this stuff needs some updating too...
    protected void handleAbortButton() {
-       TestCoreGuiPlugin.getDefault().getConsole().write(
-		"Aborting Test Script...");
+      TestCoreGuiPlugin.getDefault().getConsole().write("Aborting Test Script...");
       try {
-	  getScriptManager().abortScript(false);
+         getScriptManager().abortScript(false);
       } catch (RemoteException e) {
-	  TestCoreGuiPlugin.getDefault().getConsole().writeError(
-		    Lib.exceptionToString(e));
+         TestCoreGuiPlugin.getDefault().getConsole().writeError(Lib.exceptionToString(e));
       }
    }
 
    // TODO this stuff needs some updating too...
    protected void handleBatchAbortButton() {
-       TestCoreGuiPlugin.getDefault().getConsole().write(
-		"Aborting Test Script Batch...");
+      TestCoreGuiPlugin.getDefault().getConsole().write("Aborting Test Script Batch...");
       try {
          getScriptManager().abortScript(true);
       } catch (RemoteException e) {
-	  TestCoreGuiPlugin.getDefault().getConsole().writeError(
-		    Lib.exceptionToString(e));
+         TestCoreGuiPlugin.getDefault().getConsole().writeError(Lib.exceptionToString(e));
       }
    }
 
@@ -409,61 +406,58 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    @Override
-    public boolean onConnection(final ConnectionEvent event) {
-	boolean result = getScriptManager().connect(event);
-	Display.getDefault().asyncExec(new Runnable() {
+   public boolean onConnection(final ConnectionEvent event) {
+      boolean result = getScriptManager().connect(event);
+      Display.getDefault().asyncExec(new Runnable() {
 
-	    @Override
-	    public void run() {
-		runButton.setEnabled(true);
-		abortButton.setEnabled(false);
-		abortBatchButton.setEnabled(false);
-		scriptTable.onConnectionChanged(true);
-		statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), event
-			.getProperties().getStation(), SWT.BOLD,
-			SWT.COLOR_DARK_GREEN);
-		statusWindow.refresh();
-	    }
+         @Override
+         public void run() {
+            runButton.setEnabled(true);
+            abortButton.setEnabled(false);
+            abortBatchButton.setEnabled(false);
+            scriptTable.onConnectionChanged(true);
+            statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), event.getProperties().getStation(), SWT.BOLD,
+                  SWT.COLOR_DARK_GREEN);
+            statusWindow.refresh();
+         }
 
-	});
-	return result;
-    }
+      });
+      return result;
+   }
 
-    public boolean onDisconnect(ConnectionEvent event) {
-		boolean result = getScriptManager().disconnect(event);
-		Display.getDefault().asyncExec(new Runnable() {
-	
-		    @Override
-		    public void run() {
-		        runButton.setEnabled(false);
-			abortButton.setEnabled(false);
-			abortBatchButton.setEnabled(false);
-			scriptTable.onConnectionChanged(false);
-			statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(),
-				NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
-			statusWindow.refresh();
-		    }
-		});
-		return result;
-    }
-    
-    public boolean onConnectionLost(IHostTestEnvironment testHost) {
-    	boolean result = getScriptManager().onConnectionLost(testHost);
-		Display.getDefault().asyncExec(new Runnable() {
-	
-		    @Override
-		    public void run() {
-		        runButton.setEnabled(false);
-			abortButton.setEnabled(false);
-			abortBatchButton.setEnabled(false);
-			scriptTable.onConnectionChanged(false);
-			statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(),
-				NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
-			statusWindow.refresh();
-		    }
-		});
-		return result;
-    }
+   public boolean onDisconnect(ConnectionEvent event) {
+      boolean result = getScriptManager().disconnect(event);
+      Display.getDefault().asyncExec(new Runnable() {
+
+         @Override
+         public void run() {
+            runButton.setEnabled(false);
+            abortButton.setEnabled(false);
+            abortBatchButton.setEnabled(false);
+            scriptTable.onConnectionChanged(false);
+            statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
+            statusWindow.refresh();
+         }
+      });
+      return result;
+   }
+
+   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+      boolean result = getScriptManager().onConnectionLost(testHost);
+      Display.getDefault().asyncExec(new Runnable() {
+
+         @Override
+         public void run() {
+            runButton.setEnabled(false);
+            abortButton.setEnabled(false);
+            abortBatchButton.setEnabled(false);
+            scriptTable.onConnectionChanged(false);
+            statusWindow.setValue(UpdateableLabel.HOSTLABEL.name(), NOT_CONNECTED, SWT.BOLD, SWT.COLOR_DARK_RED);
+            statusWindow.refresh();
+         }
+      });
+      return result;
+   }
 
    public abstract ScriptManager getScriptManager();
 

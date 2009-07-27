@@ -25,12 +25,14 @@ import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.test.manager.ITestManagerFactory;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.ExtensionContributions;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.TestManagerStorageKeys;
@@ -58,7 +60,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * </ul>
  */
 public abstract class TestManagerEditor extends MultiPageEditorPart implements IActionable, ITestConnectionListener {
-   private static final Image errorImage = TestManagerPlugin.getInstance().getImage("error.gif");
+   private static final Image errorImage = ImageManager.getImage(OteTestManagerImage.ERROR);
    public static final String namespace = "org.eclipse.osee.ote.ui.test.manager.editors.TestManagerEditor";
 
    public final QualifiedName clearCaseViewName = new QualifiedName(namespace, "CLEARCASEVIEW");
@@ -95,6 +97,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private ITestEnvironment connectedEnv = null;
    private IServiceConnector connector = null;
+
    public TestManagerEditor(final ITestManagerFactory testManagerFactory) {
       super();
 
@@ -552,12 +555,12 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    public ITestEnvironment getConnectedEnvironment() {
       return connectedEnv;
    }
-   
-   public IServiceConnector getConnector() {
-		return connector;
-	}
-   public abstract void createHostWidget(Composite parent);
 
+   public IServiceConnector getConnector() {
+      return connector;
+   }
+
+   public abstract void createHostWidget(Composite parent);
 
    /**
     * @param array

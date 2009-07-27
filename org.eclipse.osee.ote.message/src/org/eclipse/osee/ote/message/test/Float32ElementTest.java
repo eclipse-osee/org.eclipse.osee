@@ -55,10 +55,8 @@ public class Float32ElementTest extends TestCase {
          el.setValue(val);
          expectedVals[i] = val;
          if (el.getValue() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						expectedVals[i], 
-						el.get());
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  expectedVals[i], el.getValue());
          }
       }
    }
@@ -70,10 +68,8 @@ public class Float32ElementTest extends TestCase {
          el.setValue(val);
          expectedVals[i] = val;
          if (el.getValue() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						Double.toHexString(expectedVals[i]), 
-						Double.toHexString(el.get()));
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
          }
       }
    }
@@ -81,9 +77,8 @@ public class Float32ElementTest extends TestCase {
    private void check(Float32Element[] e, float[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          Float32Element el = e[i];
-			Assert.assertTrue(
-				String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-				expectedVals[i] ==el.getValue());
+         Assert.assertTrue(String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
+               el.getLsb()), expectedVals[i] == el.getValue());
       }
    }
 }

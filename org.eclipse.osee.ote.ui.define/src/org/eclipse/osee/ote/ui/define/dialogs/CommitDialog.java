@@ -12,7 +12,8 @@ package org.eclipse.osee.ote.ui.define.dialogs;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.panels.CommentComposite;
 import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;
 import org.eclipse.osee.ote.ui.define.panels.SelectionComposite;
@@ -32,8 +33,8 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class CommitDialog extends TitleAreaDialog {
 
-   private static final Image MESSAGE_IMAGE = OteUiDefinePlugin.getInstance().getImage("commit_wiz.png");
-   private static final Image TITLE_BAR_IMAGE = OteUiDefinePlugin.getInstance().getImage("commit.gif");
+   private static final Image MESSAGE_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT_WIZ);
+   private static final Image TITLE_BAR_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT);
 
    private static final String MESSAGE_TITLE = "Enter a commit comment";
    private static final String TITLE_BAR_TEXT = "OSEE Commit";

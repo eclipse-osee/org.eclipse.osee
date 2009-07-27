@@ -12,6 +12,8 @@ package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.StatusWindowWidget;
@@ -46,7 +48,7 @@ public class LoadWidget {
 
       MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
       menuItem.setText("Load File...");
-      menuItem.setImage(plugin.getImage("fldr_obj.gif"));
+      menuItem.setImage(ImageManager.getImage(OteTestManagerImage.FLDR_OBJ));
       menuItem.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {
@@ -76,7 +78,7 @@ public class LoadWidget {
       });
 
       final ToolItem item = new ToolItem(toolBar, SWT.DROP_DOWN);
-      item.setImage(plugin.getImage("loadConfig.gif"));
+      item.setImage(ImageManager.getImage(OteTestManagerImage.LOAD_CONFIG));
       item.setToolTipText("Load current page configuration from file");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent event) {

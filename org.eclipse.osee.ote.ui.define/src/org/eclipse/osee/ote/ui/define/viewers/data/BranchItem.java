@@ -13,7 +13,8 @@ package org.eclipse.osee.ote.ui.define.viewers.data;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -29,28 +30,19 @@ public class BranchItem extends DataItem implements IXViewerItem {
       this.branch = branch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getData()
-    */
    @Override
    public String getData() {
       return branch.getName();
    }
 
    public Image getImage() {
-      return OteUiDefinePlugin.getInstance().getImage("childBranch.gif");
+      return ImageManager.getImage(OteDefineImage.CHILD_BRANCH);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.IXViewerItem#getLabel(int)
-    */
    public String getLabel(int index) {
       return index == 0 ? getData() : "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getKey()
-    */
    @Override
    public Object getKey() {
       return branch;

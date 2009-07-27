@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -134,8 +136,7 @@ public class EnvironmentPreferencePage {
          }
 
          public void keyReleased(KeyEvent e) {
-            if (e.character == SWT.DEL)
-               environmentPageEventHandler.handleRemoveSelectedViewEvent();
+            if (e.character == SWT.DEL) environmentPageEventHandler.handleRemoveSelectedViewEvent();
          }
       });
 
@@ -233,8 +234,8 @@ public class EnvironmentPreferencePage {
       treeGridData.horizontalAlignment = GridData.FILL;
       treeGridData.verticalAlignment = GridData.FILL;
 
-      treeViewer = new CheckboxTreeViewer(areaComposite, SWT.MULTI | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL
-            | SWT.BORDER);
+      treeViewer =
+            new CheckboxTreeViewer(areaComposite, SWT.MULTI | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getTree().setLayoutData(treeGridData);
       treeViewer.setContentProvider(new ITreeContentProvider() {
 
@@ -283,7 +284,7 @@ public class EnvironmentPreferencePage {
       treeViewer.setLabelProvider(new LabelProvider() {
 
          public Image getImage(Object obj) {
-            return TestManagerPlugin.getInstance().getImage("environment.gif");
+            return ImageManager.getImage(OteTestManagerImage.ENVIRONMENT);
          }
 
          public String getText(Object obj) {

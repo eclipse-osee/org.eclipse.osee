@@ -14,7 +14,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Roberto E. Escobar
@@ -46,17 +45,6 @@ public enum ODMImage implements OseeImage {
 
    private ODMImage(String fileName) {
       this.fileName = fileName;
-   }
-
-   @Deprecated
-   public static Image getImage(String imageName) {
-      return ODMEditorActivator.getInstance().getImage(imageName);
-
-   }
-
-   @Deprecated
-   public static ImageDescriptor getImageDescriptor(String imageName) {
-      return ODMEditorActivator.getInstance().getImageDescriptor(imageName);
    }
 
    @Override

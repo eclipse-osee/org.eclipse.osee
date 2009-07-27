@@ -12,6 +12,8 @@ package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
@@ -50,7 +52,7 @@ public class SaveWidget {
 
       MenuItem saveAsMenuItem = new MenuItem(menu, SWT.PUSH);
       saveAsMenuItem.setText("SaveAs...");
-      saveAsMenuItem.setImage(plugin.getImage("saveas_edit.gif"));
+      saveAsMenuItem.setImage(ImageManager.getImage(OteTestManagerImage.SAVEAS_EDIT));
       saveAsMenuItem.addSelectionListener(new SelectionListener() {
          public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
@@ -80,8 +82,7 @@ public class SaveWidget {
                   tm.storeValue(tm.configFileName, selectedFile);
                   statusWindow.refresh();
                   handleSaveEvent();
-               }
-               else {
+               } else {
                   handleFileSelectError();
                }
             }
@@ -89,7 +90,7 @@ public class SaveWidget {
       });
 
       final ToolItem item = new ToolItem(toolBar, SWT.DROP_DOWN);
-      item.setImage(plugin.getImage("save_edit.gif"));
+      item.setImage(ImageManager.getImage(OteTestManagerImage.SAVE_EDIT));
       item.setToolTipText("Saves current page configuration to file");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent event) {
@@ -101,8 +102,7 @@ public class SaveWidget {
                Point pt = item.getParent().toDisplay(new Point(rect.x, rect.y));
                menu.setLocation(pt.x, pt.y + rect.height);
                menu.setVisible(true);
-            }
-            else {
+            } else {
                handleSaveEvent();
             }
          }
@@ -122,13 +122,12 @@ public class SaveWidget {
    private void handleSaveEvent() {
       TestManagerEditor tm = tmPage.getTestManager();
       String configFile = tm.loadValue(tm.configFileName);
-      
+
       ISaveConfig saveConfig = ConfigFactory.getInstance().getSaveConfigHandler(tmPage);
       try {
 
          saveConfig.saveConfig(new File(configFile));
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          Dialogs.popupError("Error Saving File", String.format("Error saving file: [%s]\n%s", configFile,
                TestManagerPlugin.getStackMessages(ex)));
       }

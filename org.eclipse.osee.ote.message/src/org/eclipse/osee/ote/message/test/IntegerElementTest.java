@@ -201,11 +201,9 @@ public class IntegerElementTest extends TestCase {
          } else {
             expectedVals[i] = val;
          }
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						expectedVals[i], 
-						el.get());
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  expectedVals[i], el.getValue());
          }
       }
    }
@@ -221,11 +219,9 @@ public class IntegerElementTest extends TestCase {
          } else {
             expectedVals[i] = val;
          }
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						Long.toHexString(expectedVals[i]), 
-						Long.toHexString(el.get()));
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
          }
       }
    }
@@ -233,11 +229,9 @@ public class IntegerElementTest extends TestCase {
    private void check(IntegerElement[] e, int[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          IntegerElement el = e[i];
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						expectedVals[i], 
-						e[i].get());
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
+                  el.getLsb()), expectedVals[i], e[i].getValue());
          }
       }
    }

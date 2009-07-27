@@ -56,11 +56,9 @@ public class SignedInteger16ElementTest extends TestCase {
    }
 
    private void check(SignedInteger16Element e, int expectedVals) {
-      if (e.get() != expectedVals) {
-         failNotEquals(
-               String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()), 
-               expectedVals, 
-               e.get());
+      if (e.getValue() != expectedVals) {
+         failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
+               expectedVals, e.getValue());
       }
    }
 }

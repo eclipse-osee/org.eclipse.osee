@@ -12,6 +12,7 @@ public enum OteDefineImage implements OseeImage {
    ADDITION("addition.gif"),
    CHECKBOX_ENABLED("chkbox_enabled.gif"),
    CHECKBOX_DISABLED("chkbox_disabled.gif"),
+   CHILD_BRANCH("childBranch.gif"),
    COLLAPSE_STATE("collapseState.gif"),
    COMMIT("commit.gif"),
    COMMIT_WIZ("commit_wiz.png"),

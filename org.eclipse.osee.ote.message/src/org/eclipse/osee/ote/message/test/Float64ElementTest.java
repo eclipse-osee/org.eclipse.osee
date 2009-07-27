@@ -49,11 +49,9 @@ public class Float64ElementTest extends TestCase {
          Float64Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						expectedVals[i], 
-						el.get());
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  expectedVals[i], el.getValue());
          }
 
       }
@@ -65,11 +63,9 @@ public class Float64ElementTest extends TestCase {
          Float64Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						Double.toHexString(expectedVals[i]), 
-						Double.toHexString(el.get()));
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
          }
       }
    }
@@ -77,19 +73,15 @@ public class Float64ElementTest extends TestCase {
    private void check(Float64Element[] e, double[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          Float64Element el = e[i];
-			if (el.get() != expectedVals[i]) {
-				failNotEquals(
-						String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						expectedVals[i], 
-						e[i].get());
+         if (el.getValue() != expectedVals[i]) {
+            failNotEquals(String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(),
+                  el.getLsb()), expectedVals[i], e[i].getValue());
          }
 
          String v = Double.toString(expectedVals[i]);
          if (!el.valueOf().equals(v)) {
-				failNotEquals(
-						String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), 
-						v, 
-						el.valueOf());
+            failNotEquals(String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+                  v, el.valueOf());
          }
       }
    }

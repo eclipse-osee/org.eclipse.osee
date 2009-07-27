@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -41,7 +40,6 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
-   protected static final String imagePath = "images/";
    private OseeUiActivator parentPlugin;
    private ActivatorHelper helper;
 
@@ -105,25 +103,13 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       super.stop(context);
    }
 
-   public Image getImageFromRegistry(String imageKey) {
-      return getImageRegistry().get(imageKey);
-   }
-
-   public void addImageToRegistry(String imageKey, Image image) throws IllegalArgumentException {
-      Image previousImage = getImageFromRegistry(imageKey);
-      if (previousImage == null) {
-         getImageRegistry().put(imageKey, image);
-      } else {
-         throw new IllegalArgumentException("The image registry already contains an image mapped to " + imageKey);
-      }
-   }
-
    /**
     * Returns the Image for the icon with the given path under images/
     * 
     * @return the Image object
     * @use ImageManager.getImage
     */
+   /*
    @Deprecated
    public Image getImage(String imageName) {
       Image image = getImageFromRegistry(imageName);
@@ -148,18 +134,18 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       }
       return image;
    }
-
+   */
    /**
     * Returns the ImageDiscriptor from images/ with the given icon name
     * 
     * @return the Image object
     * @use ImageManager.getImageDescriptor
     */
-   @Deprecated
-   public ImageDescriptor getImageDescriptor(String name) {
-      return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
-   }
-
+   /*   @Deprecated
+      public ImageDescriptor getImageDescriptor(String name) {
+         return AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name);
+      }
+   */
    public Object getBundleHeaderValue(String name) {
       return getBundle().getHeaders().get(name);
    }

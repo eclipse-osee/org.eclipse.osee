@@ -12,7 +12,8 @@ package org.eclipse.osee.ote.ui.test.manager.panels;
 
 import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.util.Dialogs;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -34,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class FileOrDirectorySelectionPanel extends Composite {
 
-   private static final Image FILE_SELECT_IMAGE = TestManagerPlugin.getInstance().getImage("file.gif");
+   private static final Image FILE_SELECT_IMAGE = ImageManager.getImage(OteTestManagerImage.FILE);
    private static final String DIRECTORY_ERROR_MESSAGE = "Directory should be blank or set an accessible directory.";
    private static final String FILE_ERROR_MESSAGE = "Unable to access file.";
    private static final String DEFAULT_FILE = "/dev/null";

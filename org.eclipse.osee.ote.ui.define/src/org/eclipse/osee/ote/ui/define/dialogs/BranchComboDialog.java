@@ -22,8 +22,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -38,8 +40,8 @@ import org.eclipse.ui.PlatformUI;
  * @author Roberto E. Escobar
  */
 public class BranchComboDialog extends TitleAreaDialog implements Listener {
-   private static final Image TITLE_BAR_IMAGE = OteUiDefinePlugin.getInstance().getImage("childBranch.gif");
-   private static final Image MESSAGE_IMAGE = OteUiDefinePlugin.getInstance().getImage("commit_wiz.png");
+   private static final Image TITLE_BAR_IMAGE = ImageManager.getImage(OteDefineImage.CHILD_BRANCH);
+   private static final Image MESSAGE_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT_WIZ);
    private static final String MESSAGE_TITLE = "Select a Working Branch";
    private static final String TITLE_BAR_TEXT = "Working Branch";
    private static final String MESSAGE = "Select a working branch";

@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.batches.util.SelectionUtil;
 import org.eclipse.swt.widgets.Display;
@@ -30,11 +32,8 @@ import org.eclipse.ui.IDecoratorManager;
  */
 public class TestBatchDecorator extends LabelProvider implements ILightweightLabelDecorator {
    private static final String DECORATOR_ID = "org.eclipse.osee.ote.ui.test.manager.decorator";
-   private static final ImageDescriptor IMAGE = TestManagerPlugin.getInstance().getImageDescriptor("test.gif");
+   private static final ImageDescriptor IMAGE = ImageManager.getImageDescriptor(OteTestManagerImage.TEST);
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object, org.eclipse.jface.viewers.IDecoration)
-    */
    public void decorate(Object element, IDecoration decoration) {
       try {
          IProject project = null;

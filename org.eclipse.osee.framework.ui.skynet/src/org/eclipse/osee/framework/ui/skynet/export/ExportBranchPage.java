@@ -28,24 +28,13 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
 public class ExportBranchPage extends WizardDataTransferPage {
    private DirectoryOrFileSelector directoryFileSelector;
 
-   @SuppressWarnings("unused")
-   private final Branch branch;
-
-   /**
-    * @param name
-    * @param selection
-    */
    public ExportBranchPage(String name, Branch branch) {
       super(name);
-      this.branch = branch;
 
       setTitle("Import OSEE Types");
       setDescription("Import OSEE Types");
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -90,9 +79,6 @@ public class ExportBranchPage extends WizardDataTransferPage {
       setPageComplete(determinePageCompletion());
    }
 
-   /*
-    * @see WizardPage#becomesVisible
-    */
    @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -125,11 +111,6 @@ public class ExportBranchPage extends WizardDataTransferPage {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;

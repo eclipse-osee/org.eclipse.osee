@@ -22,7 +22,9 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
+import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.dialogs.CommitDialog;
 import org.eclipse.osee.ote.ui.define.dialogs.OverrideInvalidScriptRevisions;
@@ -35,7 +37,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Roberto E. Escobar
  */
 class CommitJobDialog extends UIJob {
-   private static final Image CHILD_BRANCH_IMAGE = OteUiDefinePlugin.getInstance().getImage("childBranch.gif");
+   private static final Image CHILD_BRANCH_IMAGE = ImageManager.getImage(OteDefineImage.CHILD_BRANCH);
 
    private static String JOB_NAME = "Commit Test Run";
    private String message;
