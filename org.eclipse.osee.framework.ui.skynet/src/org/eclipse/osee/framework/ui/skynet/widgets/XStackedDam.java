@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -47,7 +46,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
 public class XStackedDam extends XStackedWidget<String> implements IArtifactWidget {
-   private Font defaultLabelFont;
    private Artifact artifact;
    private String attributeTypeName;
    private final Map<String, XWidget> xWidgets;
