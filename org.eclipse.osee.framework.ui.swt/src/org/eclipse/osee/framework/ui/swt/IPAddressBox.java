@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import java.net.InetAddress;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
@@ -53,8 +54,8 @@ public class IPAddressBox extends Composite {
       Label sep1 = new Label(this, SWT.CENTER);
       sep1.setText(separator);
       sep1.setBackground(background);
-      Widgets.attachToParent(sep1, SWT.LEFT, 25, 0);
-      Widgets.attachToParent(sep1, SWT.TOP, 0, 3);
+      Widgets.attachToParent(sep1, SWT.LEFT, 25, -2);
+      Widgets.attachToParent(sep1, SWT.TOP, 0, 0);
 
       Label sep2 = new Label(this, SWT.CENTER);
       sep2.setText(separator);
@@ -77,8 +78,8 @@ public class IPAddressBox extends Composite {
             clamp(box[0], value);
          }
       };
-      Widgets.attachToParent(box[0], SWT.LEFT, 0, 2);
-      Widgets.attachToControl(box[0], sep1, SWT.RIGHT, SWT.LEFT, -2);
+      Widgets.attachToParent(box[0], SWT.LEFT, 0, 0);
+      Widgets.attachToControl(box[0], sep1, SWT.RIGHT, SWT.LEFT, 0);
       Widgets.attachToControl(box[0], sep1, SWT.TOP, SWT.CENTER, 0);
 
       box[1] = new Text(this, SWT.SINGLE | SWT.RIGHT | style & NO_BORDER_MASK);
@@ -90,8 +91,8 @@ public class IPAddressBox extends Composite {
             clamp(box[1], value);
          }
       };
-      Widgets.attachToControl(box[1], sep1, SWT.LEFT, SWT.RIGHT, 2);
-      Widgets.attachToControl(box[1], sep2, SWT.RIGHT, SWT.LEFT, -2);
+      Widgets.attachToControl(box[1], sep1, SWT.LEFT, SWT.RIGHT, 0);
+      Widgets.attachToControl(box[1], sep2, SWT.RIGHT, SWT.LEFT, 0);
       Widgets.attachToControl(box[1], sep1, SWT.TOP, SWT.CENTER, 0);
 
       box[2] = new Text(this, SWT.SINGLE | SWT.RIGHT | style & NO_BORDER_MASK);
@@ -103,8 +104,8 @@ public class IPAddressBox extends Composite {
             clamp(box[2], value);
          }
       };
-      Widgets.attachToControl(box[2], sep2, SWT.LEFT, SWT.RIGHT, 2);
-      Widgets.attachToControl(box[2], sep3, SWT.RIGHT, SWT.LEFT, -2);
+      Widgets.attachToControl(box[2], sep2, SWT.LEFT, SWT.RIGHT, 0);
+      Widgets.attachToControl(box[2], sep3, SWT.RIGHT, SWT.LEFT, 0);
       Widgets.attachToControl(box[2], sep1, SWT.TOP, SWT.CENTER, 0);
 
       box[3] = new Text(this, SWT.SINGLE | SWT.RIGHT | style & NO_BORDER_MASK);
@@ -116,8 +117,8 @@ public class IPAddressBox extends Composite {
             clamp(box[3], value);
          }
       };
-      Widgets.attachToParent(box[3], SWT.RIGHT, 100, -2);
-      Widgets.attachToControl(box[3], sep3, SWT.LEFT, SWT.RIGHT, 2);
+      Widgets.attachToParent(box[3], SWT.RIGHT, 100, 0);
+      Widgets.attachToControl(box[3], sep3, SWT.LEFT, SWT.RIGHT, 0);
       Widgets.attachToControl(box[3], sep1, SWT.TOP, SWT.CENTER, 0);
    }
 
