@@ -290,7 +290,7 @@ public class PurgeTransactionJob extends Job {
       }
    }
 
-   private final class TxDeleteInfo {
+   private final static class TxDeleteInfo {
       private final TransactionId txToDelete;
       private final TransactionId previousTxFromTxToDelete;
 

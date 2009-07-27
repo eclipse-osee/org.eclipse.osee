@@ -187,7 +187,7 @@ public class RemoteEventManager {
       }
    }
 
-   private class InternalSkynetEventManager implements IServiceLookupListener {
+   private static class InternalSkynetEventManager implements IServiceLookupListener {
       private ISkynetEventService currentEventService;
 
       private InternalSkynetEventManager() {
@@ -336,11 +336,13 @@ public class RemoteEventManager {
 
                for (ISkynetEvent event : events) {
 
-                  Sender sender = new Sender((event).getNetworkSender());
+                  Sender sender = new Sender(event.getNetworkSender());
                   // If the sender's sessionId is the same as this client, then this event was
                   // created in this client and returned by remote event manager; ignore and continue
                   try {
-                     if (sender.isLocal()) continue;
+                     if (sender.isLocal()) {
+                        continue;
+                     }
                   } catch (OseeAuthenticationRequiredException ex1) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex1);
                   }
@@ -482,7 +484,9 @@ public class RemoteEventManager {
        * @param event
        */
       private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
-         if (event == null) return;
+         if (event == null) {
+            return;
+         }
 
          try {
             int artId = event.getArtId();
@@ -560,7 +564,9 @@ public class RemoteEventManager {
        * @param newTransactionId
        */
       private static void updateRelations(Sender sender, ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
-         if (event == null) return;
+         if (event == null) {
+            return;
+         }
 
          try {
             RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
@@ -662,7 +668,7 @@ public class RemoteEventManager {
                         RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                               event.getArtAId(), event.getArtBId(), branch, branch);
 
-                  if (relation == null || (relation.getModificationType() == ModificationType.DELETED)) {
+                  if (relation == null || relation.getModificationType() == ModificationType.DELETED) {
                      relation =
                            new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
                                  event.getRelId(), event.getGammaId(),

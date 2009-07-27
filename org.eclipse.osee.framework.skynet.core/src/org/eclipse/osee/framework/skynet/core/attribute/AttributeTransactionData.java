@@ -114,7 +114,7 @@ public class AttributeTransactionData extends BaseTransactionData {
       return newGammaId;
    }
 
-   private final class DAOToSQL {
+   private static final class DAOToSQL {
       private String uri;
       private String value;
 

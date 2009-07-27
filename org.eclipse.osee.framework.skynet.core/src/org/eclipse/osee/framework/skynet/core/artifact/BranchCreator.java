@@ -226,9 +226,7 @@ public class BranchCreator {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      Pair<Branch, Integer> branchWithTransactionNumber;
       TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();
-      branchWithTransactionNumber = new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
 
       List<Object[]> datas = new LinkedList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -239,12 +237,12 @@ public class BranchCreator {
       }
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
-         insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
-         insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
+         Integer startTransactionNumber = startTransactionId.getTransactionNumber();
+         insertGammas(connection, attributeGammas, startTransactionNumber, queryId, sourceBranch);
+         insertGammas(connection, artifactVersionGammas, startTransactionNumber, queryId, sourceBranch);
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);
       }
-      mergeBranch = branchWithTransactionNumber.getKey();
    }
 
    private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {

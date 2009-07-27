@@ -374,7 +374,7 @@ public class ArtifactQueryBuilder {
       return alias;
    }
 
-   private class NextAlias {
+   private static class NextAlias {
       String aliasPrefix;
       int aliasSuffix;
 

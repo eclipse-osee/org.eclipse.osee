@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactAccessObject extends AccessObject {
 
-   private Integer artId;
-   private Integer branchId;
+   private final Integer artId;
+   private final Integer branchId;
    private static final DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject> cache =
          new DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject>();
 
@@ -79,8 +79,10 @@ public class ArtifactAccessObject extends AccessObject {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof ArtifactAccessObject)) return false;
+      if (!(obj instanceof ArtifactAccessObject)) {
+         return false;
+      }
       ArtifactAccessObject ao = (ArtifactAccessObject) obj;
-      return (ao.artId == artId) && (ao.branchId == branchId);
+      return ao.artId.equals(this.artId) && ao.branchId.equals(this.branchId);
    }
 }

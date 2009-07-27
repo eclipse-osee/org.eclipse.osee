@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  */
 public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
 
-   private List<XmlArtifactSearchResult> results;
+   private final List<XmlArtifactSearchResult> results;
    private XmlArtifactSearchResult currentResult;
    private long currentAttribute;
    private int currentArtifact;
@@ -145,9 +145,9 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
    }
 
    public final class XmlArtifactSearchResult {
-      private ArtifactJoinQuery artifactJoinQuery;
+      private final ArtifactJoinQuery artifactJoinQuery;
       private int branchId;
-      private Map<Integer, HashCollection<Long, MatchLocation>> attributeMatches;
+      private final Map<Integer, HashCollection<Long, MatchLocation>> attributeMatches;
 
       public XmlArtifactSearchResult() {
          this.artifactJoinQuery = JoinUtility.createArtifactJoinQuery();
@@ -189,9 +189,9 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
       }
    }
 
-   public class MatchLocation {
-      private int startPosition;
-      private int endPosition;
+   public static class MatchLocation {
+      private final int startPosition;
+      private final int endPosition;
 
       public MatchLocation(int startPosition, int endPosition) {
          this.startPosition = startPosition;

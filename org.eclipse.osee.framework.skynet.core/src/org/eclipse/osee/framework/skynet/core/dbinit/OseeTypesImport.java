@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -86,7 +87,17 @@ public class OseeTypesImport {
                URL url = bundle.getEntry(file);
                OseeLog.log(Activator.class, Level.INFO, String.format("Importing [%s] from [%s]", file,
                      url != null ? url.getPath() : "url was null"));
-               importer.extractTypesFromSheet(url.openStream());
+               if (url != null) {
+                  InputStream inputStream = null;
+                  try {
+                     inputStream = url.openStream();
+                     importer.extractTypesFromSheet(inputStream);
+                  } finally {
+                     if (inputStream != null) {
+                        inputStream.close();
+                     }
+                  }
+               }
             }
          }
       }

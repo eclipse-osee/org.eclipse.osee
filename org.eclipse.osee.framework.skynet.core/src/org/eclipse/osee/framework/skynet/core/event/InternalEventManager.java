@@ -367,12 +367,20 @@ public class InternalEventManager {
             try {
                if (sender.isLocal() && accessControlEventType.isRemoteEventType()) {
                   Integer branchId = null;
-                  if (loadedArtifacts != null && loadedArtifacts.getLoadedArtifacts().size() > 0) {
+                  if (loadedArtifacts != null && !loadedArtifacts.getLoadedArtifacts().isEmpty()) {
                      branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId();
                   }
+                  Collection<Integer> artifactIds;
+                  Collection<Integer> artifactTypeIds;
+                  if (loadedArtifacts != null) {
+                     artifactIds = loadedArtifacts.getAllArtifactIds();
+                     artifactTypeIds = loadedArtifacts.getAllArtifactTypeIds();
+                  } else {
+                     artifactIds = Collections.emptyList();
+                     artifactTypeIds = Collections.emptyList();
+                  }
                   RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlEventType.name(),
-                        branchId == null ? 0 : branchId, loadedArtifacts.getAllArtifactIds(),
-                        loadedArtifacts.getAllArtifactTypeIds(), sender.getNetworkSender()));
+                        branchId == null ? -1 : branchId, artifactIds, artifactTypeIds, sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

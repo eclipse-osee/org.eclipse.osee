@@ -221,14 +221,9 @@ public class CommitDbTx extends DbTransaction {
                relLinks.size(), Lib.getElapseString(time)));
       }
       time = System.currentTimeMillis();
-      if (sourceBranch != null) {
-         newTransactionNumber =
-               addCommitTransactionToDatabase(connection, destinationBranch, sourceBranch, userToBlame);
-         fromBranchId = sourceBranch.getBranchId();
-         AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
-      } else {
-         //Commit transaction instead of a branch
-      }
+      newTransactionNumber = addCommitTransactionToDatabase(connection, destinationBranch, sourceBranch, userToBlame);
+      fromBranchId = sourceBranch.getBranchId();
+      AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
       if (DEBUG) {
          System.out.println(String.format("   Added commit transaction [%d] into the DB in %s", newTransactionNumber,
                Lib.getElapseString(time)));

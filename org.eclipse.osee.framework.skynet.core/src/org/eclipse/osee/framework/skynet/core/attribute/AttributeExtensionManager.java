@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class AttributeExtensionManager {
       for (String elementName : elementNames) {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
          for (IConfigurationElement element : elements) {
-            IExtension extension = ((IExtension) element.getParent());
+            IExtension extension = (IExtension) element.getParent();
             String name = extension.getUniqueIdentifier();
             String className = element.getAttribute(classNameAttribute);
             String bundleName = element.getContributor().getName();
@@ -106,8 +107,8 @@ public class AttributeExtensionManager {
       }
       if (toReturn.size() == 0) {
          throw new OseeStateException(String.format(
-               "No Objects loaded for [%s] with element names [%s] and attribute [%s]", extensionPointId, elementNames,
-               classNameAttribute));
+               "No Objects loaded for [%s] with element names %s and attribute [%s]", extensionPointId,
+               Arrays.asList(elementNames), classNameAttribute));
       }
       return toReturn;
    }

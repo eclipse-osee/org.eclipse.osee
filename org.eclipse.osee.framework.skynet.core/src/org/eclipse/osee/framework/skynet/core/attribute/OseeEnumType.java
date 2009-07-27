@@ -155,7 +155,7 @@ public class OseeEnumType {
          } else {
             result &= other.getEnumTypeName() == null && getEnumTypeName() == null;
          }
-         return result & getEnumTypeId() == other.getEnumTypeId();
+         return result && getEnumTypeId() == other.getEnumTypeId();
       }
       return false;
    }
@@ -228,7 +228,7 @@ public class OseeEnumType {
             } else {
                result &= other.name == null && name == null;
             }
-            return result & ordinal == other.ordinal & getDeclaringClass().equals(other.getDeclaringClass());
+            return result && ordinal == other.ordinal && getDeclaringClass().equals(other.getDeclaringClass());
          }
          return false;
       }

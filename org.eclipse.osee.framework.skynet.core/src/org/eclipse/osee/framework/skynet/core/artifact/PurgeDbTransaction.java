@@ -134,7 +134,7 @@ public class PurgeDbTransaction extends DbTransaction {
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
                      transactionJoinId);
 
-         int txdDeletes =
+         int txDetails =
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
                      transactionJoinId);
 
@@ -151,7 +151,7 @@ public class PurgeDbTransaction extends DbTransaction {
                Level.INFO,
                String.format(
                      "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
-                     txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
+                     txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txDetails,
                      (relationVersions + attributeVersions + artifactVersions)));
 
          ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",

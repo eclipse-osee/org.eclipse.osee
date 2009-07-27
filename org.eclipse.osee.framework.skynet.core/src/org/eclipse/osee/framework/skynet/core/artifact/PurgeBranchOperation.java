@@ -95,9 +95,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeHelper(monitor, connection, "Relation Versions", PURGE_RELATION_VERSIONS, 0.15, branch.getBranchId());
       purgeHelper(monitor, connection, "Artifact Versions", PURGE_ARTIFACT_VERSIONS, 0.15, branch.getBranchId());
 
-      String exceptSyntax = SupportedDatabase.isDatabaseType(SupportedDatabase.oracle) ? "MINUS" : "EXCEPT";
-
-      String deleteFromArtifactTable = String.format(DELETE_FROM_ARTIFACT, exceptSyntax);
+      String deleteFromArtifactTable = String.format(DELETE_FROM_ARTIFACT, SupportedDatabase.getComplementSql());
       //TODO review sql      purgeHelper(monitor, connection, "Artifact", deleteFromArtifactTable, 0.15);
       monitor.worked(calculateWork(0.15));
 

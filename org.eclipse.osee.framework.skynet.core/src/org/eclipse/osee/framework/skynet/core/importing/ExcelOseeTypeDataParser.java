@@ -303,7 +303,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       return concreteTypes;
    }
 
-   private class ValidityRow {
+   private static class ValidityRow {
       public String artifactSuperTypeName;
       public String relationTypeName;
       public int sideAmax;
@@ -323,7 +323,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       }
    }
 
-   private class AttributeRow {
+   private static class AttributeRow {
       private final String artifactSuperTypeName;
       private final String attributeName;
 

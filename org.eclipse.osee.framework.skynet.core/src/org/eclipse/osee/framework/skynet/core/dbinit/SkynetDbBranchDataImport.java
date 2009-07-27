@@ -135,7 +135,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       return toReturn;
    }
 
-   private final class ImportData {
+   private final static class ImportData {
       private final File exchangeFile;
       private final Set<String> selectedBranches;
 

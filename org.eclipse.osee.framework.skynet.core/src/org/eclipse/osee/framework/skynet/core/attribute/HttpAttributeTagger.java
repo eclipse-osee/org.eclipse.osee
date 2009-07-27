@@ -69,7 +69,7 @@ public class HttpAttributeTagger {
       OseeEventManager.removeListener(eventRelay);
    }
 
-   private final class TagService implements Runnable {
+   private final static class TagService implements Runnable {
       private final Set<Integer> changedGammas;
 
       public TagService() {
