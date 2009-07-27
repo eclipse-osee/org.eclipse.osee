@@ -26,7 +26,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
@@ -73,6 +76,7 @@ public class EmailWizardPage extends WizardPage {
    @SuppressWarnings("unchecked")
    public void createControl(Composite parent) {
       setTitle("Email Action");
+      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EMAIL));
 
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout gl = new GridLayout();
@@ -106,7 +110,8 @@ public class EmailWizardPage extends WizardPage {
       namesList.getViewer().setContentProvider(new ArrayTreeContentProvider());
       namesList.getViewer().setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 75;
+      gd.heightHint = 150;
+      gd.widthHint = 250;
       namesList.getViewer().getTree().setLayoutData(gd);
       namesList.getViewer().getTree().setLinesVisible(false);
       namesList.getViewer().setInput(names);
@@ -154,8 +159,11 @@ public class EmailWizardPage extends WizardPage {
 
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
-            for (Object obj : sel.toList())
-               toList.add(obj);
+            for (Object obj : sel.toList()) {
+               if (isEmailObjectValid(obj)) {
+                  toList.add(obj);
+               }
+            }
          }
       });
 
@@ -163,7 +171,8 @@ public class EmailWizardPage extends WizardPage {
       toList.setContentProvider(new ArrayContentProvider());
       toList.setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 50;
+      gd.heightHint = 75;
+      gd.widthHint = 150;
       toList.getList().setLayoutData(gd);
       if (initialAddress != null) toList.setInput(initialAddress);
       toList.getList().setMenu(getDeletePopup(toList));
@@ -178,8 +187,11 @@ public class EmailWizardPage extends WizardPage {
 
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
-            for (Object obj : sel.toList())
-               ccList.add(obj);
+            for (Object obj : sel.toList()) {
+               if (isEmailObjectValid(obj)) {
+                  ccList.add(obj);
+               }
+            }
          }
       });
 
@@ -187,7 +199,8 @@ public class EmailWizardPage extends WizardPage {
       ccList.setContentProvider(new ArrayContentProvider());
       ccList.setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 20;
+      gd.heightHint = 50;
+      gd.widthHint = 150;
       ccList.getList().setLayoutData(gd);
       ccList.getList().setMenu(getDeletePopup(ccList));
 
@@ -201,8 +214,11 @@ public class EmailWizardPage extends WizardPage {
 
          public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
-            for (Object obj : sel.toList())
-               bccList.add(obj);
+            for (Object obj : sel.toList()) {
+               if (isEmailObjectValid(obj)) {
+                  bccList.add(obj);
+               }
+            }
          }
       });
 
@@ -210,11 +226,14 @@ public class EmailWizardPage extends WizardPage {
       bccList.setContentProvider(new ArrayContentProvider());
       bccList.setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 20;
+      gd.heightHint = 50;
+      gd.widthHint = 150;
       bccList.getList().setLayoutData(gd);
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
-         bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
+         if (EmailUtil.isEmailValid(UserManager.getUser())) {
+            bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -233,6 +252,23 @@ public class EmailWizardPage extends WizardPage {
       text.setLayoutData(gd);
 
       setControl(composite);
+   }
+
+   private boolean isEmailObjectValid(Object obj) {
+      try {
+         if (obj instanceof User && EmailUtil.isEmailValid(((User) obj).getEmail())) {
+            AWorkbench.popup(String.format("Email not configured for [%s]", obj));
+            return false;
+         } else if (obj instanceof EmailGroup && !((EmailGroup) obj).hasEmails()) {
+            AWorkbench.popup(String.format("Email not configured for [%s]", obj));
+            return false;
+         } else {
+            return true;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
    }
 
    private Menu getDeletePopup(ListViewer listView) {
@@ -290,11 +326,15 @@ public class EmailWizardPage extends WizardPage {
       }
 
       public String getText(Object element) {
-         if (element instanceof User)
-            return ((User) element).getName();
-         else if (element instanceof EmailGroup)
-            return ((EmailGroup) element).toString();
-         else if (element instanceof String) return ((String) element).toString();
+         try {
+            if (element instanceof User)
+               return ((User) element).getName() + " (" + ((User) element).getEmail() + ")";
+            else if (element instanceof EmailGroup)
+               return ((EmailGroup) element).toString();
+            else if (element instanceof String) return ((String) element).toString();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         }
          return "";
       }
 

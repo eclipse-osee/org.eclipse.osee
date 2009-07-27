@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 
 /**
  * @author Donald G. Dunne
@@ -54,17 +55,17 @@ public class OseeNotifyUsersJob extends Job {
    @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
-         Set<User> users = new HashSet<User>();
+         Set<User> uniqueUusers = new HashSet<User>();
          for (OseeNotificationEvent notificationEvent : notificationEvents) {
-            users.addAll(notificationEvent.getUsers());
+            uniqueUusers.addAll(notificationEvent.getUsers());
          }
          XResultData resultData = new XResultData();
          if (testing) {
             resultData.log("Testing Results Report for Osee Notification; Email to current user.<br>");
-            users.clear();
-            users.addAll(Arrays.asList(UserManager.getUser()));
+            uniqueUusers.clear();
+            uniqueUusers.addAll(Arrays.asList(UserManager.getUser()));
          }
-         for (User user : users) {
+         for (User user : EmailUtil.getValidEmailUsers(uniqueUusers)) {
             List<OseeNotificationEvent> notifyEvents = new ArrayList<OseeNotificationEvent>();
             for (OseeNotificationEvent notificationEvent : notificationEvents) {
                if (testing || notificationEvent.getUsers().contains(user)) {
@@ -96,6 +97,10 @@ public class OseeNotifyUsersJob extends Job {
    private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
       if (user == UserManager.getUser(SystemUser.OseeSystem) || user == UserManager.getUser(SystemUser.UnAssigned) || user == UserManager.getUser(SystemUser.Guest)) {
          // do nothing
+         return;
+      }
+      if (EmailUtil.isEmailValid(UserManager.getUser())) {
+         // do nothing; can't send email from user with invalid email address
          return;
       }
       String html = notificationEventsToHtml(notificationEvents);

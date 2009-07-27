@@ -12,6 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -19,27 +23,42 @@ import java.util.Collection;
 public class EmailGroup {
 
    private final String groupName;
-   private ArrayList<String> emails = new ArrayList<String>();
+   private final ArrayList<String> emails = new ArrayList<String>();
 
    public EmailGroup(String groupName, Collection<String> emails) {
+      setEmails(emails);
       this.groupName = groupName;
-      for (String s : emails)
-         this.emails.add(s);
    }
 
    public String getGroupName() {
       return groupName;
    }
 
+   public boolean hasEmails() {
+      if (emails.size() == 0) return false;
+      for (String str : emails) {
+         if (EmailUtil.isEmailValid(str)) return true;
+      }
+      return false;
+   }
+
+   @Override
    public String toString() {
-      return groupName;
+      return groupName + " (" + Collections.toString("; ", emails) + ")";
    }
 
    public ArrayList<String> getEmails() {
       return emails;
    }
 
-   public void setEmails(ArrayList<String> emails) {
-      this.emails = emails;
+   public void setEmails(Collection<String> emails) {
+      this.emails.clear();
+      for (String str : emails) {
+         if (EmailUtil.isEmailValid(str)) {
+            this.emails.add(str);
+         } else {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format("Invalid Email [%s]", str));
+         }
+      }
    }
 }

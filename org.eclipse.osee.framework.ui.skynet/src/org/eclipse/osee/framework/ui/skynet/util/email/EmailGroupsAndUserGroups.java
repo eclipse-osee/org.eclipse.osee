@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.Arrays;
 import java.util.HashSet;

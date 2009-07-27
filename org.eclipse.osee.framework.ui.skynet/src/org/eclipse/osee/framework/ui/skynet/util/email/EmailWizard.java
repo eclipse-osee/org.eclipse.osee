@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 
@@ -56,6 +57,16 @@ public class EmailWizard extends Wizard {
    @Override
    public boolean performFinish() {
       try {
+         if (UserManager.getUser().getEmail().equals("")) {
+            AWorkbench.popup(String.format(
+                  "Current user [%s] has no email address configured.\n\nEmail can not be sent", UserManager.getUser()));
+            return true;
+         }
+         if (wizardPage.getToAddresses().length == 0) {
+            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent",
+                  UserManager.getUser()));
+            return true;
+         }
          OseeEmail emailMessage =
                new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
                      UserManager.getUser().getEmail(), subject, "", BodyType.Html);

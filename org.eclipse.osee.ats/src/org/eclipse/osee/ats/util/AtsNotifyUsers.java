@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -74,8 +76,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
                "AtsNotifyUsers: testing is enabled....turn off for production.");
       }
-      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith(
-            "tt "))) {
+      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith("tt "))) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
@@ -86,7 +87,10 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          if (testing) {
             originator = UserManager.getUser();
          }
-         if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+         if (EmailUtil.isEmailValid(originator)) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
+                  originator.getEmail(), originator.getName()));
+         } else if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                Arrays.asList(originator),
                getIdString(sma),
                NotifyType.Originator.name(),
@@ -99,6 +103,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             assignees.clear();
             assignees.add(UserManager.getUser());
          }
+         assignees = EmailUtil.getValidEmailUsers(assignees);
          if (testing || assignees.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   assignees,
@@ -113,6 +118,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             subscribed.clear();
             subscribed.add(UserManager.getUser());
          }
+         subscribed = EmailUtil.getValidEmailUsers(subscribed);
          if (subscribed.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   subscribed,
@@ -127,12 +133,13 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             if (testing) {
                originator = UserManager.getUser();
             }
-            if (!UserManager.getUser().equals(originator)) {
+            if (EmailUtil.isEmailValid(originator)) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
+                     originator.getEmail(), originator.getName()));
+            } else if (!UserManager.getUser().equals(originator)) {
                if (smaMgr.isCompleted()) {
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                        Arrays.asList(originator),
-                        getIdString(sma),
-                        NotifyType.Completed.name(),
+                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                        getIdString(sma), NotifyType.Completed.name(),
                         "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" is Completed"));
                }
                if (smaMgr.isCancelled()) {
@@ -157,12 +164,15 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   authorModerator.clear();
                   authorModerator.add(UserManager.getUser());
                }
-               for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                        authorModerator,
-                        getIdString(sma),
-                        NotifyType.Reviewed.name(),
-                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" has been Reviewed by " + role.getUser().getName()));
+               authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
+               if (authorModerator.size() > 0) {
+                  for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
+                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                           authorModerator,
+                           getIdString(sma),
+                           NotifyType.Reviewed.name(),
+                           "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" has been Reviewed by " + role.getUser().getName()));
+                  }
                }
             }
          }

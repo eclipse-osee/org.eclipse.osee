@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
-import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups.GroupType;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 
 /**
