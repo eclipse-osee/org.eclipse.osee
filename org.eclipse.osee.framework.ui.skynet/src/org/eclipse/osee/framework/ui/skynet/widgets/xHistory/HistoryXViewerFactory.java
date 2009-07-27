@@ -22,29 +22,28 @@ import org.eclipse.swt.SWT;
  */
 public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn transaction =
-         new XViewerColumn("framework.history.transaction", "Transaction", 70, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.history.transaction", "Transaction", 70, SWT.LEFT, true, SortDataType.Integer,
                false, null);
    public static XViewerColumn gamma =
-         new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, true, SortDataType.Integer, false, null);
    public static XViewerColumn itemType =
-         new XViewerColumn("framework.history.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String,
-               false, null);
+         new XViewerColumn("framework.history.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn itemChange =
-      new XViewerColumn("framework.history.itemChange", "Item Kind", 100, SWT.LEFT, true, SortDataType.String,
-            false, null);
+         new XViewerColumn("framework.history.itemChange", "Item Kind", 100, SWT.LEFT, true, SortDataType.String,
+               false, null);
    public static XViewerColumn modType =
-      new XViewerColumn("framework.history.modType", "Mod Type", 70, SWT.LEFT, true, SortDataType.String,
-            false, null);
+         new XViewerColumn("framework.history.modType", "Mod Type", 70, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn itemId =
-      new XViewerColumn("framework.history.itemId", "Item ID", 55, SWT.LEFT, true, SortDataType.String,
-            false, null);
+         new XViewerColumn("framework.history.itemId", "Item ID", 55, SWT.LEFT, true, SortDataType.Integer, false, null);
    public static XViewerColumn was =
          new XViewerColumn("framework.history.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn is =
          new XViewerColumn("framework.history.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
-         new XViewerColumn("framework.history.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.String,
-               false, null);
+         new XViewerColumn("framework.history.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.Date, false,
+               null);
    public static XViewerColumn author =
          new XViewerColumn("framework.history.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
@@ -58,6 +57,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
       registerAllAttributeColumns();
    }
 
+   @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
