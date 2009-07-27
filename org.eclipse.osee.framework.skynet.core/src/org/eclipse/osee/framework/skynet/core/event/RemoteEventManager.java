@@ -502,35 +502,71 @@ public class RemoteEventManager {
                } else if (!artifact.isHistorical()) {
                   for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
                      if (!InternalEventManager.enableRemoteEventLoopback) {
-                        boolean attributeNeedsCreation = true;
-                        AttributeType attributeType = AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
-                        for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
-                           if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-                              if (attribute.isDirty()) {
-                                 dirtyAttributeName.add(attribute.getNameValueDescription());
-                                 OseeLog.log(Activator.class, Level.INFO, String.format(
-                                       "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                       attribute.getAttrId(), attribute.toString()));
+                        try {
+                           boolean attributeNeedsCreation = true;
+                           AttributeType attributeType =
+                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
+                           for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
+                              if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+                                 if (attribute.isDirty()) {
+                                    dirtyAttributeName.add(attribute.getNameValueDescription());
+                                    OseeLog.log(Activator.class, Level.INFO, String.format(
+                                          "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
+                                          attribute.getAttrId(), attribute.toString()));
+                                 }
+                                 try {
+                                    ModificationType modificationType = skynetAttributeChange.getModificationType();
+                                    if (modificationType == null) {
+                                       modificationType =
+                                             AttributeTypeManager.internalGetModificationTypeFromDb(attribute);
+                                    }
+                                    if (modificationType == null) {
+                                       OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                                             "Can't get mod type for %s's attribute %d [/n%s/n].",
+                                             artifact.getSafeName(), attribute.getAttrId(), attribute.toString()));
+                                       continue;
+                                    }
+                                    if (modificationType.isDeleted()) {
+                                       attribute.internalSetModificationType(modificationType);
+                                    } else {
+                                       attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                                    }
+                                    attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
+                                    attributeNeedsCreation = false;
+                                    attribute.setNotDirty();
+                                    break;
+                                 } catch (OseeCoreException ex) {
+                                    OseeLog.log(Activator.class, Level.INFO, String.format(
+                                          "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
+                                          attribute.getAttrId(), attribute.toString()), ex);
+                                 }
                               }
-                              ModificationType modificationType = skynetAttributeChange.getModificationType();
-                              if (modificationType.isDeleted()) {
-                                 attribute.internalSetModificationType(modificationType);
-                              } else {
-                                 attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                              }
-                              attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
-                              attributeNeedsCreation = false;
-                              attribute.setNotDirty();
-                              break;
                            }
-                        }
-                        if (attributeNeedsCreation) {
-                           artifact.internalInitializeAttribute(
-                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
-                                 skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
-                                 skynetAttributeChange.getModificationType(), false, skynetAttributeChange.getData());
+                           if (attributeNeedsCreation) {
+                              ModificationType modificationType = skynetAttributeChange.getModificationType();
+                              if (modificationType == null) {
+                                 modificationType =
+                                       AttributeTypeManager.internalGetModificationTypeFromDb(
+                                             artifact.getBranch().getBranchId(), skynetAttributeChange.getGammaId());
+                              }
+                              if (modificationType == null) {
+                                 OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                                       "Can't get mod type for %s's attribute %d.", artifact.getSafeName(),
+                                       skynetAttributeChange.getAttributeId()));
+                                 continue;
+                              }
+                              artifact.internalInitializeAttribute(
+                                    AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
+                                    skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                                    modificationType, false, skynetAttributeChange.getData());
+                           }
+                        } catch (OseeCoreException ex) {
+                           OseeLog.log(Activator.class, Level.INFO, String.format(
+                                 "Exception updating %s's attribute change for attributeTypeId %d.",
+                                 artifact.getSafeName(), skynetAttributeChange.getTypeId()), ex);
                         }
                      }
+
                   }
 
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,
