@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -134,7 +135,7 @@ public class AJavaProject {
    public static String getJavaPackage(File javaFile) throws IOException {
       String packageName = "";
       String javaFileContent = Lib.fileToString(javaFile);
-      Pattern pattern = Pattern.compile(".*package\\s*(.*?);.*", Pattern.DOTALL);
+      Pattern pattern = Pattern.compile(".*?package\\s*(.*?);.*", Pattern.DOTALL);
       Matcher match = pattern.matcher(javaFileContent);
       if (match.matches()) {
          packageName = match.group(1);
