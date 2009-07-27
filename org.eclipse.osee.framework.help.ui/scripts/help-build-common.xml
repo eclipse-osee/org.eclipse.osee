@@ -5,7 +5,7 @@
 
 	<property name="eclipse.plugin.dir" value="${eclipse.home}/plugins" />
 
-	<property name="wikitext.build" value="1.0.1.v20090411-0400-e3x" />
+	<property name="wikitext.build" value="1.1.0.v20090617-0100-e3x" />
 
 	<path id="tasks.classpath">
 		<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
