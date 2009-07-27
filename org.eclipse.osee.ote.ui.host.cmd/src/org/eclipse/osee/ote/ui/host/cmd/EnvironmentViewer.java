@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.ui.host.cmd;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -26,6 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -36,18 +36,17 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-
 /**
  * @author Roberto E. Escobar
  */
 public class EnvironmentViewer extends Composite {
 
-   private static final Image ENVIRONMENT_IMAGE = PlatformUI.getWorkbench().getSharedImages().getImage(
-         ISharedImages.IMG_OBJ_FOLDER);
+   private static final Image ENVIRONMENT_IMAGE =
+         PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
 
-   private static final Image USER_IMAGE = UiPlugin.getInstance().getImage("user.gif");
+   private static final Image USER_IMAGE = ImageManager.getImage(OteUiHostCmdImage.USER);
 
-   private static final Image CONSOLE_IMAGE = UiPlugin.getInstance().getImage("console.gif");
+   private static final Image CONSOLE_IMAGE = ImageManager.getImage(OteUiHostCmdImage.CONSOLE);
 
    protected enum ColumnEnum {
       Service(SWT.LEFT), Users;
@@ -142,8 +141,7 @@ public class EnvironmentViewer extends Composite {
          Image toReturn = null;
          if (obj instanceof UserNode) {
             toReturn = USER_IMAGE;
-         }
-         else if (obj instanceof ConsoleNode) {
+         } else if (obj instanceof ConsoleNode) {
             toReturn = CONSOLE_IMAGE;
          } else if (obj instanceof TreeParent) {
             toReturn = ENVIRONMENT_IMAGE;
@@ -153,7 +151,7 @@ public class EnvironmentViewer extends Composite {
 
       public String getText(Object obj) {
          if (obj instanceof ConsoleNode) {
-            ((ConsoleNode)obj).getName();
+            ((ConsoleNode) obj).getName();
          }
          return obj.toString();
       }
@@ -165,8 +163,7 @@ public class EnvironmentViewer extends Composite {
             case Service:
                if (element instanceof UserNode) {
                   toReturn = USER_IMAGE;
-               }
-               else if (element instanceof ConsoleNode) {
+               } else if (element instanceof ConsoleNode) {
                   toReturn = CONSOLE_IMAGE;
                } else if (element instanceof TreeParent) {
                   toReturn = ENVIRONMENT_IMAGE;
@@ -191,10 +188,10 @@ public class EnvironmentViewer extends Composite {
                break;
             case Users:
                if (element instanceof ConsoleNode) {
-                  toReturn = ((ConsoleNode)element).getUsers();
+                  toReturn = ((ConsoleNode) element).getUsers();
                }
                break;
-            default:               
+            default:
                break;
          }
          return toReturn;

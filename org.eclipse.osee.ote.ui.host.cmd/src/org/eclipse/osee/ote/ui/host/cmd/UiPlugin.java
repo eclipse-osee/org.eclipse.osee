@@ -12,12 +12,11 @@ package org.eclipse.osee.ote.ui.host.cmd;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
-
 /**
  * The main plugin class to be used in the desktop.
  */
-public class UiPlugin  extends OseeUiActivator {
-
+public class UiPlugin extends OseeUiActivator {
+   public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.host.cmd";
    private static UiPlugin plugin;
 
    public UiPlugin() {
