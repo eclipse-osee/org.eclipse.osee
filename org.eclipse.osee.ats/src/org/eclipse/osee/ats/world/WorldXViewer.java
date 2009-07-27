@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -113,11 +114,14 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) {
+         if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
             return;
          }
-         // ContentProvider ensures in display thread
-         ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
+         IContentProvider contentProvider = getContentProvider();
+         if (contentProvider instanceof WorldContentProvider) {
+            // ContentProvider ensures in display thread
+            ((WorldContentProvider) contentProvider).removeAll(loadedArtifacts.getLoadedArtifacts());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
