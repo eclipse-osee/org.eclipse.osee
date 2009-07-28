@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 
 /**

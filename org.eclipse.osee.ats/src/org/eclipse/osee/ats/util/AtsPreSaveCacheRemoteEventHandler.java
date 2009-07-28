@@ -13,14 +13,14 @@ package org.eclipse.osee.ats.util;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * This class handles updating ATS state machine artifacts based on remote events that change the assignees. Without
@@ -37,7 +37,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
    }
 
    private AtsPreSaveCacheRemoteEventHandler() {
-      if (SkynetDbInit.isDbInit()) return;
+      if (DbUtil.isDbInit()) return;
       OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Pre-Save Remote Event Handler");
       OseeEventManager.addListener(this);
    }
@@ -51,7 +51,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (SkynetDbInit.isDbInit()) return;
+      if (DbUtil.isDbInit()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheChangedArtifacts) {
          if (artifact instanceof StateMachineArtifact) {

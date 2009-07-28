@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.database.utility.GroupSelection;
-import org.eclipse.osee.framework.database.utility.IAddDbInitChoice;
+import org.eclipse.osee.framework.database.init.GroupSelection;
+import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 
 /**
  * @author Donald G. Dunne

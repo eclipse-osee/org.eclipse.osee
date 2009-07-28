@@ -28,7 +28,7 @@ import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.define.utility.IResourceHandler;
 import org.eclipse.osee.define.utility.UriResourceContentFinder;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

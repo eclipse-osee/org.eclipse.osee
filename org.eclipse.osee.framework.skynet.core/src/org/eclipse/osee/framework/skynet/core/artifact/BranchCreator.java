@@ -20,24 +20,24 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -105,7 +105,7 @@ public class BranchCreator {
       int parentTransactionIdNumnber = sourceTransactionId.getTransactionNumber();
       int associatedArtifactId = -1;
 
-      if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
+      if (associatedArtifact == null && !DbUtil.isDbInit()) {
          associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
       }
 

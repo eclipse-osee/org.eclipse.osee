@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 
 /**

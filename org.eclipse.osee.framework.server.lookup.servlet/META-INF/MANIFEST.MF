@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Servlet Lookup Servlet Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.server.lookup.servlet
+Bundle-SymbolicName: org.eclipse.osee.framework.server.lookup.servlet;singleton:=true
 Bundle-Version: 0.5.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.server.lookup.servlet.ServerLookupActivator
 Bundle-Vendor: Boeing
@@ -10,8 +10,9 @@ Import-Package: javax.servlet,
  javax.servlet.http,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
- org.eclipse.osee.framework.db.connection.exception,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.osgi.framework,
  org.osgi.util.tracker
+Bundle-ActivationPolicy: lazy

@@ -25,5 +25,4 @@ Export-Package: org.eclipse.osee.ote.define,
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.logging

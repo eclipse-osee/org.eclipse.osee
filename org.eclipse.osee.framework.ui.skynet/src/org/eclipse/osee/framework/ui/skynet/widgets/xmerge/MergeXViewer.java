@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
+import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;

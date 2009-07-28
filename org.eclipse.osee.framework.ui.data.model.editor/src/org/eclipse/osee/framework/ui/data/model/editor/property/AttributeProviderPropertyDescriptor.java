@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;

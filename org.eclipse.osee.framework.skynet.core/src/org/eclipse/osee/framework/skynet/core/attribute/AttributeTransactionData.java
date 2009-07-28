@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.OseeSql;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;

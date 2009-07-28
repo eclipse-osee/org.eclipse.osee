@@ -14,7 +14,7 @@ import java.sql.DatabaseMetaData;
 import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

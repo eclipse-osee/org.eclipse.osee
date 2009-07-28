@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 
 /**

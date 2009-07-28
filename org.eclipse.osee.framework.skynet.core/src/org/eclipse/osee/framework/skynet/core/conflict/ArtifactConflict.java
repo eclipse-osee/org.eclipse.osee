@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.BranchMergeException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 

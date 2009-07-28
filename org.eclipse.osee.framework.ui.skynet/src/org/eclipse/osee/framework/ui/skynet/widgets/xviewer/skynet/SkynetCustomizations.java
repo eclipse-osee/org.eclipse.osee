@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

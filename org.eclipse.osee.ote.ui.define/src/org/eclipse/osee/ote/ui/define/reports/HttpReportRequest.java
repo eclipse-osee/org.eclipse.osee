@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.client.server.HttpRequest;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;

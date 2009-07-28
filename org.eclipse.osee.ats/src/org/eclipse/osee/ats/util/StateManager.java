@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;

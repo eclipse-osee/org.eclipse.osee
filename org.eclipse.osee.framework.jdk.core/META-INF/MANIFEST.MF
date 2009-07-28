@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
- org.eclipse.osee.framework.jdk.core.db,
  org.eclipse.osee.framework.jdk.core.directory,
  org.eclipse.osee.framework.jdk.core.persistence,
  org.eclipse.osee.framework.jdk.core.reportdata,

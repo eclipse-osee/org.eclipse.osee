@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.server;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeUser;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

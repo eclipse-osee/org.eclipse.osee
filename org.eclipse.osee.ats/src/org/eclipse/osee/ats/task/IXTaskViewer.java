@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.task;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**

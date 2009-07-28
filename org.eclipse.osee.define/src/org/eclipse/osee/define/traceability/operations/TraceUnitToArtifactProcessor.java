@@ -28,7 +28,7 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;

@@ -21,8 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -140,34 +139,23 @@ public class ExchangeDb {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(0, "export.manifest", items));
       items.add(new MetadataExportItem(0, "export.db.schema", items));
-      items.add(new RelationalExportItem(1, "osee.branch.data", SkynetDatabase.BRANCH_TABLE.toString(),
-            BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(2, "osee.branch.definitions", SkynetDatabase.BRANCH_DEFINITIONS.toString(),
+      items.add(new RelationalExportItem(1, "osee.branch.data", "osee_branch", BRANCH_TABLE_QUERY));
+      items.add(new RelationalExportItem(2, "osee.branch.definitions", "osee_branch_definitions",
             BRANCH_DEFINITION_QUERY));
-      items.add(new RelationalExportItem(3, "osee.tx.details.data", SkynetDatabase.TRANSACTION_DETAIL_TABLE.toString(),
-            TX_DETAILS_TABLE_QUERY));
-      items.add(new RelationalExportItem(4, "osee.txs.data", SkynetDatabase.TRANSACTIONS_TABLE.toString(),
-            TXS_TABLE_QUERY));
-      items.add(new RelationalExportItemWithType(5, "osee.artifact.data", SkynetDatabase.ARTIFACT_TABLE.toString(),
-            ARTIFACT_TYPE_ID, ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
-      items.add(new RelationalExportItem(6, "osee.artifact.version.data",
-            SkynetDatabase.ARTIFACT_VERSION_TABLE.toString(), ARTIFACT_VERSION_QUERY));
-      items.add(new RelationalExportItemWithType(7, "osee.attribute.data",
-            SkynetDatabase.ATTRIBUTE_VERSION_TABLE.toString(), ATTRIBUTE_TYPE_ID, ATTRIBUTE_TABLE_QUERY,
-            ATTRIBUTE_TYPE_QUERY));
-      items.add(new RelationalExportItemWithType(8, "osee.relation.link.data",
-            SkynetDatabase.RELATION_LINK_VERSION_TABLE.toString(), RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY,
-            RELATION_TYPE_QUERY));
-
-      items.add(new RelationalExportItem(9, "osee.merge.data", SkynetDatabase.OSEE_MERGE_TABLE.toString(),
-            MERGE_TABLE_QUERY));
-      items.add(new RelationalExportItem(10, "osee.conflict.data", SkynetDatabase.OSEE_CONFLICT_TABLE.toString(),
-            CONFLICT_TABLE_QUERY));
-
-      items.add(new RelationalExportItem(11, "osee.branch.acl.data", SkynetDatabase.BRANCH_TABLE_ACL.toString(),
-            BRANCH_ACL_QUERY));
-      items.add(new RelationalExportItem(12, "osee.artifact.acl.data", SkynetDatabase.ARTIFACT_TABLE_ACL.toString(),
-            ARTIFACT_ACL_QUERY));
+      items.add(new RelationalExportItem(3, "osee.tx.details.data", "osee_tx_details", TX_DETAILS_TABLE_QUERY));
+      items.add(new RelationalExportItem(4, "osee.txs.data", "osee_txs", TXS_TABLE_QUERY));
+      items.add(new RelationalExportItemWithType(5, "osee.artifact.data", "osee_artifact", ARTIFACT_TYPE_ID,
+            ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
+      items.add(new RelationalExportItem(6, "osee.artifact.version.data", "osee_artifact_version",
+            ARTIFACT_VERSION_QUERY));
+      items.add(new RelationalExportItemWithType(7, "osee.attribute.data", "osee_attribute", ATTRIBUTE_TYPE_ID,
+            ATTRIBUTE_TABLE_QUERY, ATTRIBUTE_TYPE_QUERY));
+      items.add(new RelationalExportItemWithType(8, "osee.relation.link.data", "osee_relation_link", RELATION_TYPE_ID,
+            RELATION_LINK_TABLE_QUERY, RELATION_TYPE_QUERY));
+      items.add(new RelationalExportItem(9, "osee.merge.data", "osee_merge", MERGE_TABLE_QUERY));
+      items.add(new RelationalExportItem(10, "osee.conflict.data", "osee_conflict", CONFLICT_TABLE_QUERY));
+      items.add(new RelationalExportItem(11, "osee.branch.acl.data", "osee_branch_acl", BRANCH_ACL_QUERY));
+      items.add(new RelationalExportItem(12, "osee.artifact.acl.data", "osee_artifact_acl", ARTIFACT_ACL_QUERY));
 
       return items;
    }

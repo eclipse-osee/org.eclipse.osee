@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem.IExportColumnListener;
-import org.eclipse.osee.framework.core.data.JoinUtility;
-import org.eclipse.osee.framework.core.data.JoinUtility.ExportImportJoinQuery;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
 
 /**
  * @author Roberto E. Escobar

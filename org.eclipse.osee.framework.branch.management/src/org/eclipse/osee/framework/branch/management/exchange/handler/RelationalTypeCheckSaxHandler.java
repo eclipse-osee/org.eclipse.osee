@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

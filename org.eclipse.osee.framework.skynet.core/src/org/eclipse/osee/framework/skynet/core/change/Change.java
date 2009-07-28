@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;

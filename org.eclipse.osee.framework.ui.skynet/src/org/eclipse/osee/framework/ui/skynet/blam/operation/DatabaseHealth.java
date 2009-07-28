@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.db.connection.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -140,6 +140,7 @@ public class DatabaseHealth extends AbstractBlam {
             println(String.format("\nProcessing: [%s]", operation.getName()));
             operation.setSummary(appendable);
             doSubWork(operation, monitor, workPercentage);
+
             String detailedReport = operation.getDetailedReport().toString();
             if (Strings.isValid(detailedReport)) {
                XResultData result = new XResultData();
@@ -163,7 +164,9 @@ public class DatabaseHealth extends AbstractBlam {
             }
             for (DatabaseHealthOperation operation : verifyOperations) {
                executeOperation(monitor, operation, builder, workPercentage, false);
+
             }
+
             setStatusMessage(builder.toString());
          }
       }

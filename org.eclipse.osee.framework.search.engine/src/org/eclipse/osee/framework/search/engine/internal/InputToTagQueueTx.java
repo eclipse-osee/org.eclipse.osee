@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.JoinUtility;
-import org.eclipse.osee.framework.core.data.JoinUtility.TagQueueJoinQuery;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 

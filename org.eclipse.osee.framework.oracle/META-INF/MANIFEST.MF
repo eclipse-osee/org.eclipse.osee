@@ -8,7 +8,7 @@ Bundle-Vendor: Eclipse.org
 OseeEarlyStart: true
 Service-Component: OSGI-INF/oracle.connection.driver.provider.xml
 Import-Package: oracle.jdbc;resolution:=optional,
- org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.database.core,
  org.osgi.framework
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.equinox.ds

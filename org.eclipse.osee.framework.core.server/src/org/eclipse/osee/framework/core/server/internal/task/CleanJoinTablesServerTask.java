@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.core.server.internal.task;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IServerTask;
 import org.eclipse.osee.framework.core.server.SchedulingScheme;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

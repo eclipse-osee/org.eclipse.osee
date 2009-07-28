@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**

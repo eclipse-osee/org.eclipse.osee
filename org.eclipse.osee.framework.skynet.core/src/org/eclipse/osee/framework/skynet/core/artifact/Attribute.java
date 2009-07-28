@@ -17,11 +17,11 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -321,7 +321,7 @@ public abstract class Attribute<T> {
     */
    public boolean isDeleted() {
       try {
-         return modificationType.isDeleted();
+      return modificationType.isDeleted();
       } catch (NullPointerException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]",

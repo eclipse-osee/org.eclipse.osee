@@ -7,14 +7,9 @@ Bundle-Activator: org.eclipse.osee.framework.search.engine.internal.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.server,
- org.eclipse.osee.framework.db.connection,
- org.eclipse.osee.framework.db.connection.core,
- org.eclipse.osee.framework.db.connection.core.query,
- org.eclipse.osee.framework.db.connection.core.schema,
- org.eclipse.osee.framework.db.connection.core.transaction,
- org.eclipse.osee.framework.db.connection.exception,
- org.eclipse.osee.framework.db.connection.info,
+ org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,

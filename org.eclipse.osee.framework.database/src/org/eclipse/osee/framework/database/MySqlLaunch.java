@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database;
 
 import java.io.File;
 import java.io.IOException;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 
 /**
  * @author Andrew M. Finkbeiner

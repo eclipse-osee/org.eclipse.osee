@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -74,9 +73,9 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          } else {
             if (priority > 0) {
                ImportFile importFile = new ImportFile(fileName, source, priority);
-               if (source.equals(SkynetDatabase.BRANCH_TABLE.toString().toLowerCase())) {
+               if (source.equals("osee_branch")) {
                   branchFile = importFile;
-               } else if (source.equals(SkynetDatabase.BRANCH_DEFINITIONS.toString().toLowerCase())) {
+               } else if (source.equals("osee_branch_definitions")) {
                   branchDefinitionsFile = importFile;
                } else {
                   filesToImport.add(importFile);

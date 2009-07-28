@@ -11,9 +11,9 @@
 package org.eclipse.osee.demo.db.connection;
 
 import java.net.URL;
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
+import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
 
 /**
  * @author Andrew M Finkbeiner

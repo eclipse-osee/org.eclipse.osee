@@ -19,11 +19,11 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
-import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -40,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventLis
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
@@ -250,7 +250,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          instance.userIdToUserCache.put(user.getUserId(), user);
 
          // this is here in case a user is created at an unexpected time
-         if (!SkynetDbInit.isDbInit()) {
+         if (!DbUtil.isDbInit()) {
             OseeLog.log(Activator.class, Level.INFO, "Created user " + user, new Exception(
                   "just wanted the stack trace"));
          }

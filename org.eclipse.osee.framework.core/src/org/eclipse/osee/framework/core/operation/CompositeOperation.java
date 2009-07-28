@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.operation;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Roberto E. Escobar

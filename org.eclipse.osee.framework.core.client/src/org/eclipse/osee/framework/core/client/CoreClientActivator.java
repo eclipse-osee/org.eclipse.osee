@@ -10,21 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class CoreClientActivator extends OseeActivator {
+public class CoreClientActivator extends Plugin {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.client";
-   private static CoreClientActivator plugin;
+   private static CoreClientActivator instance;
    private BundleContext context;
 
    public CoreClientActivator() {
-      plugin = this;
+      instance = this;
       context = null;
    }
 
@@ -46,7 +46,7 @@ public class CoreClientActivator extends OseeActivator {
    }
 
    public static CoreClientActivator getInstance() {
-      return plugin;
+      return instance;
    }
 
    public static BundleContext getBundleContext() {

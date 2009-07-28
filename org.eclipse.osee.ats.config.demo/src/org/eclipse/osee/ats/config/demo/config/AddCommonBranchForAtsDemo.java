@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.init.AddCommonBranch;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 /**

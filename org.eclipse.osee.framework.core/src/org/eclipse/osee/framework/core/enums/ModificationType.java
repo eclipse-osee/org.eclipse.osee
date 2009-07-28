@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import java.io.Serializable;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks

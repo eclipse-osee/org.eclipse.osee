@@ -26,18 +26,18 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.enums.OseeSql;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.core.server.SessionData.SessionState;
-import org.eclipse.osee.framework.db.connection.DatabaseInfoManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -160,9 +160,9 @@ public class SessionManager implements ISessionManager {
          IOseeUserInfo oseeUserInfo = authenticationManager.asOseeUser(credential);
 
          OseeSession session =
-               new OseeSession(GUID.create(), oseeUserInfo.getUserID(), timestamp,
-                     credential.getClientMachineName(), credential.getClientAddress(), credential.getPort(),
-                     credential.getVersion(), timestamp, sessionState.name().toLowerCase());
+               new OseeSession(GUID.create(), oseeUserInfo.getUserID(), timestamp, credential.getClientMachineName(),
+                     credential.getClientAddress(), credential.getPort(), credential.getVersion(), timestamp,
+                     sessionState.name().toLowerCase());
 
          SessionData sessionData = new SessionData(sessionState, session);
          sessionCache.put(sessionData.getSessionId(), sessionData);

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;

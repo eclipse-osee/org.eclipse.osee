@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbDescribe.Describe;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;

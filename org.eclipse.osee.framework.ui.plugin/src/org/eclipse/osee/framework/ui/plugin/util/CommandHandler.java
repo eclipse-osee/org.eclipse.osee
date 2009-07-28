@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 

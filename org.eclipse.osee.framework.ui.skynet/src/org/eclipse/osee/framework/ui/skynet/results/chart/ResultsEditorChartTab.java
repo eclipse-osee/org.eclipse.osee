@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.results.chart;
 
 import org.eclipse.birt.chart.model.Chart;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;

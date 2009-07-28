@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
-import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
  * @author Roberto E. Escobar

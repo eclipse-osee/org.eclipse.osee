@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

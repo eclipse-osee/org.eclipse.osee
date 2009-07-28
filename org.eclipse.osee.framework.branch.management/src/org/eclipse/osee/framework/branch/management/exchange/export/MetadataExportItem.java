@@ -18,9 +18,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

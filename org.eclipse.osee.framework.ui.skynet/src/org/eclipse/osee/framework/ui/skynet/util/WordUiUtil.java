@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

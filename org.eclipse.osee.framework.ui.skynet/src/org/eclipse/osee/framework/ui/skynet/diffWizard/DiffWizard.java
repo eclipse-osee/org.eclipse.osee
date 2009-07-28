@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.diffWizard;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.EditWFCAttributeWizardPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeLabelProvider;

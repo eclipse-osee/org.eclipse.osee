@@ -16,8 +16,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
  * @author Roberto E. Escobar

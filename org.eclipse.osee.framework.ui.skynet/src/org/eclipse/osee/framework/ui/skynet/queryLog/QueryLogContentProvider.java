@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.queryLog;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.core.query.QueryLog;
-import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
+import org.eclipse.osee.framework.database.sql.QueryLog;
+import org.eclipse.osee.framework.database.sql.QueryRecord;
 
 /**
  * @author Robert A. Fisher

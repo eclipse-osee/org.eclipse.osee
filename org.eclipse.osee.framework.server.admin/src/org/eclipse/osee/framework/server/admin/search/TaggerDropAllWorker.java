@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 
 /**

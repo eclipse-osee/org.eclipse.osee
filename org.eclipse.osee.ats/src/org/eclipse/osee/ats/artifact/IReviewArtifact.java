@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

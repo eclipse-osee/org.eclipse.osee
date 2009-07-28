@@ -22,12 +22,5 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.db.connection,
- org.eclipse.osee.framework.db.connection.core,
- org.eclipse.osee.framework.db.connection.core.query,
- org.eclipse.osee.framework.db.connection.core.schema,
- org.eclipse.osee.framework.db.connection.core.transaction,
- org.eclipse.osee.framework.db.connection.exception,
- org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

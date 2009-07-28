@@ -38,8 +38,8 @@ import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -48,10 +48,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -102,8 +102,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       AtsUtil.setEmailEnabled(false);
       if (AtsUtil.isProductionDb()) throw new IllegalStateException(
             "PopulateDemoActions should not be run on production DB");
-      if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && (!prompt || (prompt && MessageDialog.openConfirm(
-            Display.getCurrent().getActiveShell(), getName(), getName()))))) {
+      if (DbUtil.isDbInit() || (!prompt || (prompt && MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+            getName(), getName())))) {
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
@@ -252,8 +252,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       // Delete two artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.daVinci,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               (new StringBuilder("Deleting artifact => ")).append(art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Deleting artifact => ")).append(
+               art).toString());
          art.deleteAndPersist();
       }
 
@@ -355,8 +355,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       // Delete one artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               (new StringBuilder("Deleting artifact => ")).append(art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Deleting artifact => ")).append(
+               art).toString());
          art.deleteAndPersist();
       }
 

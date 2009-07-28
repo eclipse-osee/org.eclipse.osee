@@ -15,11 +15,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -118,7 +117,7 @@ final class ClientUser {
             return Status.OK_STATUS;
          }
 
-      }, CoreClientActivator.class, CoreClientActivator.PLUGIN_ID);
+      }, Activator.class, Activator.PLUGIN_ID);
 
    }
 }

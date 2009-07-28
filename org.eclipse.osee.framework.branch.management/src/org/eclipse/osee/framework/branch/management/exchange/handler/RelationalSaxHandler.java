@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -199,7 +198,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
     */
    @Override
    public void clearDataTable() throws OseeDataStoreException {
-      if (!getMetaData().getTableName().equals(SkynetDatabase.TRANSACTION_DETAIL_TABLE.toString().toLowerCase())) {
+      if (!getMetaData().getTableName().equals("osee_tx_details")) {
          super.clearDataTable();
       }
    }

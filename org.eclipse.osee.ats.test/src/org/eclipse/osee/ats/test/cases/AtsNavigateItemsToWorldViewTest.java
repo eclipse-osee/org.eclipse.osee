@@ -56,7 +56,7 @@ import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;

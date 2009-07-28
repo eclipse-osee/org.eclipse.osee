@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="uri.connection.contributor">
+	<implementation class="org.eclipse.osee.framework.database.internal.UriDbConnectionInfo"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor"/>
+	</service>	
+</component>

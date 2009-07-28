@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 

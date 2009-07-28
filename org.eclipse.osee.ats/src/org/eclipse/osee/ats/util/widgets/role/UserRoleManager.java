@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;

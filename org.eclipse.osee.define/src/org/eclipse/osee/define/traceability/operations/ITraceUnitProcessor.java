@@ -12,7 +12,7 @@ package org.eclipse.osee.define.traceability.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

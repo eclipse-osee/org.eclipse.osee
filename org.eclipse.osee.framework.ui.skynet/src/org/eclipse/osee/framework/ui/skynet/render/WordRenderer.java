@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;

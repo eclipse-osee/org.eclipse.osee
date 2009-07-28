@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

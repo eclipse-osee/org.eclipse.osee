@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.database.SkynetTypesEnumGenerator;
+import org.eclipse.osee.framework.database.init.SkynetTypesEnumGenerator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

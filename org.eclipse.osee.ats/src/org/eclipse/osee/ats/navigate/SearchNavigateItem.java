@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;

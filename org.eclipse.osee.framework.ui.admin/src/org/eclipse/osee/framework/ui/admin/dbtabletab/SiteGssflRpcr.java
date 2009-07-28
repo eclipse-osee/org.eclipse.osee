@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
 
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 

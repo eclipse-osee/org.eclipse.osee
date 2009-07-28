@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.IHyperlinkListener;

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.access;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 
 /**
  * @author Jeff C. Phillips

@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

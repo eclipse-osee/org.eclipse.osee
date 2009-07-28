@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.OseeSql;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 
 /**

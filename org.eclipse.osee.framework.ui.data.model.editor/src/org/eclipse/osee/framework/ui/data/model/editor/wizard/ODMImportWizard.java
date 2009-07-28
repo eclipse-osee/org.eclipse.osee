@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.wizard;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
@@ -33,7 +32,6 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
    public ODMImportWizard(ODMEditor editor) {
       this.editor = editor;
       dataTypeCache = new DataTypeCache();
-      setDialogSettings(ODMEditorActivator.getInstance().getDialogSettings());
       setDefaultPageImageDescriptor(ImageManager.getImageDescriptor(ODMImage.IMPORT_IMAGE));
       setNeedsProgressMonitor(true);
       setWindowTitle("Osee Data Model Import Wizard");

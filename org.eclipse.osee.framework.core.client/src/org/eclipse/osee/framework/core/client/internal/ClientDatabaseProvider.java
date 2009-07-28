@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.core.client.internal;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider;
-import org.eclipse.osee.framework.db.connection.IDatabaseInfo;
+import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 

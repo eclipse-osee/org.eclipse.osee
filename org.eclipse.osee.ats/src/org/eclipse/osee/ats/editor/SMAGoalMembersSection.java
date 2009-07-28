@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldComposite;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;

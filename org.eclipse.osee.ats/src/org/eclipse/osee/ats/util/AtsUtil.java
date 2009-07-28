@@ -38,10 +38,10 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -138,7 +138,7 @@ public class AtsUtil implements IAtsLib {
    }
 
    public static void setEmailEnabled(boolean enabled) {
-      if (!SkynetDbInit.isDbInit()) System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+      if (!DbUtil.isDbInit()) System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
       emailEnabled = enabled;
    }
 

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;

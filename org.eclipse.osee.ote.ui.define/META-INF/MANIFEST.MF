@@ -40,7 +40,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.logging,
  org.eclipse.ui.forms.widgets

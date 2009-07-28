@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface ArtifactExtractor {

@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
+import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TXD_COMMENT;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,22 +34,23 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchStorageState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.OseeDbConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOpe
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.dbinit.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -648,7 +648,6 @@ public class BranchManager {
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
     * @see BranchManager#intializeBranch
-    * @see OseeTypesImport#importSkynetDbTypes
     * @see BranchManager#getKeyedBranch(String)
     */
    public static Branch createTopLevelBranch(String branchName, String staticBranchName) throws OseeCoreException {

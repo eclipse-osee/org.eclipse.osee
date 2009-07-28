@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;

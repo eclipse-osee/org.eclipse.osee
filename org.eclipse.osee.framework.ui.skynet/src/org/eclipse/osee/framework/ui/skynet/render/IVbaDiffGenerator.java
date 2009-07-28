@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Theron Virgin

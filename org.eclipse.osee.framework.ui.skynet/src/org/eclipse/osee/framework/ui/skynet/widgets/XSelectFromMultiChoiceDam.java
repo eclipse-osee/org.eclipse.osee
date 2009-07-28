@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;

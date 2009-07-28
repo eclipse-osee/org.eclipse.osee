@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;

@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;

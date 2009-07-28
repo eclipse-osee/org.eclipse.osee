@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.graphics.Image;
 

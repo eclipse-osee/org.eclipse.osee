@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 
 public class DbDescribe {
 

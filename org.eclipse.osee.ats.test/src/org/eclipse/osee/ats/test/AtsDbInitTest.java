@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.junit.Before;
 
 /**

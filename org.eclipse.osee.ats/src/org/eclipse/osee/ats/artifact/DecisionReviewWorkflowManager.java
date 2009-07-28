@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;

@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.server.admin.conversion;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 
 /**
  * @author Roberto E. Escobar

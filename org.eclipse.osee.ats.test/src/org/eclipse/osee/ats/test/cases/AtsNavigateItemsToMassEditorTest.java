@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IEditorInput;

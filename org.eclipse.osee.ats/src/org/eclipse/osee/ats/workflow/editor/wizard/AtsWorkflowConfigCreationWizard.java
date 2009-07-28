@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

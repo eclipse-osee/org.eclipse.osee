@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.server;
 
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar

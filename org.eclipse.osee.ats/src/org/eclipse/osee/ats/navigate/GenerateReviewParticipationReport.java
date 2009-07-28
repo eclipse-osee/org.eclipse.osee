@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaStateColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;

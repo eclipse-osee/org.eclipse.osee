@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.swt.SWT;

@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.world;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Menu;
 

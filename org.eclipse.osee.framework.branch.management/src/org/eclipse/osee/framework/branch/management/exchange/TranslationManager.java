@@ -15,10 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 
 public class TranslationManager {

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
 import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

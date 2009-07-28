@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -102,7 +102,7 @@ public class HttpBranchCreation {
 
    private static String getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
       int associatedArtifactId = -1;
-      if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
+      if (associatedArtifact == null && !DbUtil.isDbInit()) {
          associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
       }
       if (associatedArtifact != null) {

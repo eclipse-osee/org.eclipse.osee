@@ -23,18 +23,18 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -58,7 +58,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
    }
 
    private AtsNotifyUsers() {
-      if (SkynetDbInit.isDbInit()) return;
+      if (DbUtil.isDbInit()) return;
       OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Notification Handler");
       OseeEventManager.addListener(this);
    }
@@ -196,7 +196,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (SkynetDbInit.isDbInit()) return;
+      if (DbUtil.isDbInit()) return;
       // Only process notifications if this client is sender
       if (sender.isRemote()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;

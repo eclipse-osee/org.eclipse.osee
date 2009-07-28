@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
@@ -416,15 +416,15 @@ public class RemoteEventManager {
                      }
                   } else if (event instanceof ISkynetArtifactEvent) {
                      try {
-                        updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
-                        lastArtifactRelationModChangeSender = sender;
+                     updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
+                     lastArtifactRelationModChangeSender = sender;
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof ISkynetRelationLinkEvent) {
                      try {
-                        updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
-                        lastArtifactRelationModChangeSender = sender;
+                     updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
+                     lastArtifactRelationModChangeSender = sender;
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
@@ -503,19 +503,19 @@ public class RemoteEventManager {
                   for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
                      if (!InternalEventManager.enableRemoteEventLoopback) {
                         try {
-                           boolean attributeNeedsCreation = true;
+                        boolean attributeNeedsCreation = true;
                            AttributeType attributeType =
                                  AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
-                           for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
-                              if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-                                 if (attribute.isDirty()) {
-                                    dirtyAttributeName.add(attribute.getNameValueDescription());
-                                    OseeLog.log(Activator.class, Level.INFO, String.format(
-                                          "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                          attribute.getAttrId(), attribute.toString()));
-                                 }
+                        for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
+                           if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+                              if (attribute.isDirty()) {
+                                 dirtyAttributeName.add(attribute.getNameValueDescription());
+                                 OseeLog.log(Activator.class, Level.INFO, String.format(
+                                       "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
+                                       attribute.getAttrId(), attribute.toString()));
+                              }
                                  try {
-                                    ModificationType modificationType = skynetAttributeChange.getModificationType();
+                              ModificationType modificationType = skynetAttributeChange.getModificationType();
                                     if (modificationType == null) {
                                        modificationType =
                                              AttributeTypeManager.internalGetModificationTypeFromDb(attribute);
@@ -526,23 +526,23 @@ public class RemoteEventManager {
                                              artifact.getSafeName(), attribute.getAttrId(), attribute.toString()));
                                        continue;
                                     }
-                                    if (modificationType.isDeleted()) {
-                                       attribute.internalSetModificationType(modificationType);
-                                    } else {
-                                       attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                                    }
-                                    attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
-                                    attributeNeedsCreation = false;
-                                    attribute.setNotDirty();
-                                    break;
+                              if (modificationType.isDeleted()) {
+                                 attribute.internalSetModificationType(modificationType);
+                              } else {
+                                 attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                              }
+                              attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
+                              attributeNeedsCreation = false;
+                              attribute.setNotDirty();
+                              break;
                                  } catch (OseeCoreException ex) {
                                     OseeLog.log(Activator.class, Level.INFO, String.format(
                                           "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
                                           attribute.getAttrId(), attribute.toString()), ex);
                                  }
-                              }
                            }
-                           if (attributeNeedsCreation) {
+                        }
+                        if (attributeNeedsCreation) {
                               ModificationType modificationType = skynetAttributeChange.getModificationType();
                               if (modificationType == null) {
                                  modificationType =
@@ -555,9 +555,9 @@ public class RemoteEventManager {
                                        skynetAttributeChange.getAttributeId()));
                                  continue;
                               }
-                              artifact.internalInitializeAttribute(
-                                    AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
-                                    skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                           artifact.internalInitializeAttribute(
+                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
+                                 skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
                                     modificationType, false, skynetAttributeChange.getData());
                            }
                         } catch (OseeCoreException ex) {
@@ -566,7 +566,6 @@ public class RemoteEventManager {
                                  artifact.getSafeName(), skynetAttributeChange.getTypeId()), ex);
                         }
                      }
-
                   }
 
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,

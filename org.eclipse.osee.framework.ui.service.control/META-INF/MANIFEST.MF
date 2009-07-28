@@ -33,5 +33,5 @@ Require-Bundle: org.eclipse.ui,
  com.jcraft.jsch
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.db.connection.exception,
+Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.logging

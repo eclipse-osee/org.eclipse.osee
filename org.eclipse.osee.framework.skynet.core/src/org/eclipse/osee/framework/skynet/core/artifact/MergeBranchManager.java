@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Theron Virgin

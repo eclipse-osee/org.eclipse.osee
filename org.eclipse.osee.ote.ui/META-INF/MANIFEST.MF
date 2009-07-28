@@ -18,8 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.client,
  org.eclipse.osee.ote.connection.service,
  org.eclipse.help,
- org.eclipse.osee.framework.ui.service.control,
- org.eclipse.osee.framework.db.connection
+ org.eclipse.osee.framework.ui.service.control
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui,
  org.eclipse.osee.ote.ui.navigate,
@@ -29,6 +28,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.osee.framework.core.client,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.runtimemanager

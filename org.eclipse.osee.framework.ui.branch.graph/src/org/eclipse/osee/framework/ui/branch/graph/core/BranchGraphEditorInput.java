@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;

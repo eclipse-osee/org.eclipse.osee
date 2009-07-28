@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks

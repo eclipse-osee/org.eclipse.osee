@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IDbInitializationTask {
    public abstract void run() throws OseeCoreException;

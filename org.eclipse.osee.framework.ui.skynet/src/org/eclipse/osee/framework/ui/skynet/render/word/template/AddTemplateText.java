@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 

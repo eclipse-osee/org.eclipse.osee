@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;

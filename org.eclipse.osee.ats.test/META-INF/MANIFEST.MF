@@ -6,10 +6,9 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.ats
 Require-Bundle: org.junit4,
- org.eclipse.osee.support.test.util;bundle-version="1.0.0"
+ org.eclipse.osee.support.test.util
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.ui.skynet.test.cases
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.test,

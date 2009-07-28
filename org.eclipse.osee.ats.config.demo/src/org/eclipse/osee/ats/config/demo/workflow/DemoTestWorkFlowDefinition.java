@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config.demo.workflow;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**

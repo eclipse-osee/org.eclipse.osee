@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Andrew M Finkbeiner

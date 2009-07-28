@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 
 /**

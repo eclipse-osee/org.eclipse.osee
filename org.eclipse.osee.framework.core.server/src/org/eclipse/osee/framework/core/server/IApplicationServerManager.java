@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

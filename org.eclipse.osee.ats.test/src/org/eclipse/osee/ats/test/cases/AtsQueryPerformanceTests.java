@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

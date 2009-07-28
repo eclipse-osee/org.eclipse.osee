@@ -5,21 +5,19 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core.client;singleton:=true
 Bundle-Version: 0.5.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.client.CoreClientActivator
 Bundle-Vendor: Boeing
-Require-Bundle: org.eclipse.equinox.ds,
- org.eclipse.core.runtime,
- org.eclipse.osee.framework.plugin.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.core.runtime.preferences,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.db.connection,
- org.eclipse.osee.framework.db.connection.exception,
- org.eclipse.osee.framework.db.connection.info,
- org.eclipse.osee.framework.jdk.core.db,
+ org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core.util,
+ org.osgi.framework
 Service-Component: OSGI-INF/application.db.provider.xml
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,

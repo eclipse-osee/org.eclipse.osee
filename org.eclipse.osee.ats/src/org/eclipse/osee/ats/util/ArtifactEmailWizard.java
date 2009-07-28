@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 

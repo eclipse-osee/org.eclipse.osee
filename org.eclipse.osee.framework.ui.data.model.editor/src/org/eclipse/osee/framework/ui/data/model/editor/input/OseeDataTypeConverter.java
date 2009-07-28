@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor;

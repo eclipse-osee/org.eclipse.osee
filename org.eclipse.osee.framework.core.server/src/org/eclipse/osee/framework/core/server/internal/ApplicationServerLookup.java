@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 

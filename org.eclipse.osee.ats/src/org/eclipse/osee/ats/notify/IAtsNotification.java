@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 
 /**

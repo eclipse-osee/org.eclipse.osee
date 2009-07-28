@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -60,15 +60,13 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
          for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
             // Only add group if have read permissions
-            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art,
-                  PermissionEnum.READ)) groupOptions.add(art);
+            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
          for (Artifact art : ArtifactQuery.getArtifactListFromType("User Group", BranchManager.getCommonBranch())) {
             // Only add group if have read permissions
-            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art,
-                  PermissionEnum.READ)) groupOptions.add(art);
+            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       return groupOptions;

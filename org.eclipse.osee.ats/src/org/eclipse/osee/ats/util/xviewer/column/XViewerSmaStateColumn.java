@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 
 /**

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;

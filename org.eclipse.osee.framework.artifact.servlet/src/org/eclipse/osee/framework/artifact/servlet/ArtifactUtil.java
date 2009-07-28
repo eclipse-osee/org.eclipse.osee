@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.artifact.servlet;
 
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**
  * @author Roberto E. Escobar

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.JoinUtility;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 

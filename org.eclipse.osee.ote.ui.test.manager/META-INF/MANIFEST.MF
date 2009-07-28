@@ -48,4 +48,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.jdt.core,
- org.eclipse.osee.framework.db.connection.exception
+ org.eclipse.osee.framework.core.exception

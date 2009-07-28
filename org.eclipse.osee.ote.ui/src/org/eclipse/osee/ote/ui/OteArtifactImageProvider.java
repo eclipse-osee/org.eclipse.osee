@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ote.ui;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 

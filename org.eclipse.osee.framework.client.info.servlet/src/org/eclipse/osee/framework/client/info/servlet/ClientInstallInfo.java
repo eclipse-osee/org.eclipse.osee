@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.client.info.servlet;
 
 import java.io.StringReader;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

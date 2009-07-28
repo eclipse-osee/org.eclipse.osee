@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class CleanUpAttrFromDeletedArt extends DatabaseHealthOperation {

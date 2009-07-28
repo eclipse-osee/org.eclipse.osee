@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;

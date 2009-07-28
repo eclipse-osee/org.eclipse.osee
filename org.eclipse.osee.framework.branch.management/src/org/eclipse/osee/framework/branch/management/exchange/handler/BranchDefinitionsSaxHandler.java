@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar

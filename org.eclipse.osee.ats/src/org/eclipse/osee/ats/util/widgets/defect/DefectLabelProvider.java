@@ -16,7 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;

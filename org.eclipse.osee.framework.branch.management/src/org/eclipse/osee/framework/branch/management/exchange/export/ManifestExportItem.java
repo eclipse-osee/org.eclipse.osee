@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.core.data.OseeInfo;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 
 /**
  * @author Roberto E. Escobar

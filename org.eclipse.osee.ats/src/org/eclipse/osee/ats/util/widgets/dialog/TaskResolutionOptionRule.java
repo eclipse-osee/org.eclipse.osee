@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

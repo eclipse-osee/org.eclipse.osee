@@ -37,7 +37,6 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
    private DataTypeCache dataTypeCache;
 
    public ODMExportWizard(DataTypeCache dataTypeCache) {
-      setDialogSettings(ODMEditorActivator.getInstance().getDialogSettings());
       setDefaultPageImageDescriptor(ImageManager.getImageDescriptor(ODMImage.EXPORT_IMAGE));
       setNeedsProgressMonitor(true);
       setWindowTitle("Osee Data Model Export Wizard");

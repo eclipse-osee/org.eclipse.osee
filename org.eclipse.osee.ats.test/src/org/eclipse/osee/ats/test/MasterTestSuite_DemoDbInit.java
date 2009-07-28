@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.database.initialize.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 

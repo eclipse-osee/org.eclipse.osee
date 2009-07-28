@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.customize.FileStoreCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.swt.SWT;

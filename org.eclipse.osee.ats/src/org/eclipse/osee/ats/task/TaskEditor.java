@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

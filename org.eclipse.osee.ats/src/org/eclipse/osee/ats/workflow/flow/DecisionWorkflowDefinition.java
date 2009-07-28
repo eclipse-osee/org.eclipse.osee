@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.workflow.page.AtsDecisionCompletedWorkPageDefinition
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;

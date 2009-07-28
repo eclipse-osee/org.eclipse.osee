@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.logging.OseeLog;

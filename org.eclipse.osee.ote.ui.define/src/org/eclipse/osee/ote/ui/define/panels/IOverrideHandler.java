@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.define.panels;
 
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

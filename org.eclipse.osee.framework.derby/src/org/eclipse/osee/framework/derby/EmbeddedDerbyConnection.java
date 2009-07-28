@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.derby;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.db.connection.IConnection;
+import org.eclipse.osee.framework.database.core.IConnection;
 
 /**
  * @author Roberto E. Escobar

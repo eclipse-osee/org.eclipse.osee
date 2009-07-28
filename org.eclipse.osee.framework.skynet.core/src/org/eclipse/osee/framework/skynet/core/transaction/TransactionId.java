@@ -17,10 +17,10 @@ import java.io.Serializable;
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**

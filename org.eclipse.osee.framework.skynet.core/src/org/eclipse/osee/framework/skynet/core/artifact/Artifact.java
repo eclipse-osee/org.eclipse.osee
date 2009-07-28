@@ -28,20 +28,21 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.DbTransaction;
-import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
-import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
@@ -1401,7 +1401,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          return id_string;
       else
          return generateHumanReadableId();
-      }
+   }
 
    /**
     * Searches the database to verify that the given HRID is not already taken
@@ -1461,8 +1461,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
                   if (link.isDirty()) {
                      return "Link \"" + link + "\" => dirty\n";
                   }
-               }
             }
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

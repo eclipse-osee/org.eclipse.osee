@@ -12,13 +12,14 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**
  * @author Donald G. Dunne
  */
 public class DbUtil {
+   private static boolean isInDbInit;
 
    public static void getTableRowCounts(Map<String, Integer> tableCount, Collection<String> tableNames) throws OseeDataStoreException {
       for (String tableName : tableNames) {
@@ -30,4 +31,11 @@ public class DbUtil {
       return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
    }
 
+   public static boolean isDbInit() {
+      return isInDbInit;
+   }
+
+   public static void setDbInit(boolean isInDbInit) {
+      DbUtil.isInDbInit = isInDbInit;
+   }
 }

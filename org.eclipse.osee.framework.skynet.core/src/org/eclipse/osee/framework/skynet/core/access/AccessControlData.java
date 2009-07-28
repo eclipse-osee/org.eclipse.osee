@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

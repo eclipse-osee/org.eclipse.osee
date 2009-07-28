@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -161,8 +161,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-                  toList.add(obj);
-               }
+               toList.add(obj);
+         }
             }
          }
       });
@@ -189,8 +189,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-                  ccList.add(obj);
-               }
+               ccList.add(obj);
+         }
             }
          }
       });
@@ -216,8 +216,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-                  bccList.add(obj);
-               }
+               bccList.add(obj);
+         }
             }
          }
       });
@@ -232,7 +232,7 @@ public class EmailWizardPage extends WizardPage {
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
          if (EmailUtil.isEmailValid(UserManager.getUser())) {
-            bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
+         bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -327,11 +327,11 @@ public class EmailWizardPage extends WizardPage {
 
       public String getText(Object element) {
          try {
-            if (element instanceof User)
+         if (element instanceof User)
                return ((User) element).getName() + " (" + ((User) element).getEmail() + ")";
-            else if (element instanceof EmailGroup)
-               return ((EmailGroup) element).toString();
-            else if (element instanceof String) return ((String) element).toString();
+         else if (element instanceof EmailGroup)
+            return ((EmailGroup) element).toString();
+         else if (element instanceof String) return ((String) element).toString();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
          }

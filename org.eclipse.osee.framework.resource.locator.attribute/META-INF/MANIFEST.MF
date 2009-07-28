@@ -8,8 +8,7 @@ Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/locator.provider.attribute.xml
 Import-Package: org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.db.connection,
- org.eclipse.osee.framework.db.connection.exception,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,

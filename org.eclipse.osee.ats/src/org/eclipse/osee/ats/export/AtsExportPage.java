@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;

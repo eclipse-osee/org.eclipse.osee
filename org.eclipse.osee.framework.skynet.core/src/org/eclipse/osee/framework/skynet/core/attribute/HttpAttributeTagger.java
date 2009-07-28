@@ -24,11 +24,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventLis
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
@@ -91,7 +91,7 @@ public class HttpAttributeTagger {
          try {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("sessionId", ClientSessionManager.getSessionId());
-            if (SkynetDbInit.isDbInit()) {
+            if (DbUtil.isDbInit()) {
                parameters.put("wait", "true");
             }
             StringBuilder payload = new StringBuilder(XML_START);
@@ -201,7 +201,7 @@ public class HttpAttributeTagger {
          }
          if (taggingInfo.size() > 0) {
             Future<?> future = executor.submit(taggingInfo);
-            if (SkynetDbInit.isDbInit()) {
+            if (DbUtil.isDbInit()) {
                try {
                   future.get();
                } catch (Exception ex) {

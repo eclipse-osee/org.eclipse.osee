@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;

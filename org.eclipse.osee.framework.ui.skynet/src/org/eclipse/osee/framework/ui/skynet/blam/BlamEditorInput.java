@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;

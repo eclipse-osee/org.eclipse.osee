@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;

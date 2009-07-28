@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.workflow.editor.model;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 

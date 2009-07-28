@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.db.connection.exception.InvalidTaggerException;
+import org.eclipse.osee.framework.core.exception.InvalidTaggerException;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.MatchLocation;

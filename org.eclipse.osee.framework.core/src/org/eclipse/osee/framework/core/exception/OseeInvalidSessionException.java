@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.task;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;

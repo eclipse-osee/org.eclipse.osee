@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.data.OseeInfo;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 

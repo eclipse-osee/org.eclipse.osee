@@ -3,30 +3,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Database Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.database.DatabaseActivator
-Export-Package: org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.config,
- org.eclipse.osee.framework.database.core,
- org.eclipse.osee.framework.database.data,
- org.eclipse.osee.framework.database.initialize,
- org.eclipse.osee.framework.database.initialize.tasks,
- org.eclipse.osee.framework.database.initialize.tasks.relational,
- org.eclipse.osee.framework.database.sql,
- org.eclipse.osee.framework.database.sql.datatype,
- org.eclipse.osee.framework.database.utility
+Bundle-Activator: org.eclipse.osee.framework.database.internal.Activator
+Export-Package: org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.database.sql
 Require-Bundle: 
  org.eclipse.core.runtime,
  org.apache.commons.lang,
  org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.core,
- org.eclipse.osee.framework.core.client
+ org.eclipse.osee.framework.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
-Import-Package: org.eclipse.osee.framework.core.client,
- org.eclipse.osee.framework.db.connection,
- org.eclipse.osee.framework.db.connection.core,
- org.eclipse.osee.framework.db.connection.core.schema,
- org.eclipse.osee.framework.db.connection.exception,
- org.eclipse.osee.framework.db.connection.info,
+Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/uri.connection.contributor.xml,
+ OSGI-INF/db.connection.consumer.xml,
+ OSGI-INF/db.connection.contributor.consumer.xml,
+ OSGI-INF/application.db.provider.consumer.xml

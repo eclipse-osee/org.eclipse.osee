@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.ui.define.dialogs;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;

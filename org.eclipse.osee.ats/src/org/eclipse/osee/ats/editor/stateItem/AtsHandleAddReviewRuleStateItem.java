@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionParameter;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;

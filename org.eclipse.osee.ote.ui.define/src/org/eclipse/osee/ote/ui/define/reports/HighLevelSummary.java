@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;

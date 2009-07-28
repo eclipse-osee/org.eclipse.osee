@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;

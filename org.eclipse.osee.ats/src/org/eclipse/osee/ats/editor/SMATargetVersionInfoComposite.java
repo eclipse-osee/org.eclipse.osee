@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.service.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FontManager;
