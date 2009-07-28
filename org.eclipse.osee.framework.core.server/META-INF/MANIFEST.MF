@@ -27,5 +27,6 @@ Service-Component:  OSGI-INF/server.application.db.provider.xml,
  OSGI-INF/application.lookup.server.manager.xml,
  OSGI-INF/session.manager.xml,
  OSGI-INF/server.task.scheduler.xml,
- OSGI-INF/join.cleanup.task.provider.xml
+ OSGI-INF/join.cleanup.task.provider.xml,
+ OSGI-INF/demo.authentication.provider.xml
 Require-Bundle: org.eclipse.equinox.ds
