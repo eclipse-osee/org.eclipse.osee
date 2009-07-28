@@ -3,19 +3,28 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Database Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.database.internal.Activator
+Bundle-Activator: org.eclipse.osee.framework.database.internal.InternalActivator
 Export-Package: org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.sql
 Require-Bundle: 
- org.eclipse.core.runtime,
- org.apache.commons.lang,
- org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.core,
  org.eclipse.equinox.ds;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
-Import-Package: org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.logging
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.core.runtime.jobs,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.framework.jdk.core.util.xml,
+ org.eclipse.osee.framework.jdk.core.util.time,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.logging,
+ org.osgi.util.tracker,
+ org.eclipse.equinox.app,
+ org.osgi.framework
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/uri.connection.contributor.xml,
  OSGI-INF/db.connection.consumer.xml,
