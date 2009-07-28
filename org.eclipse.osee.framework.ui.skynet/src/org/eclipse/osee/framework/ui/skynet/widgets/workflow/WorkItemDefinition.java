@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -79,19 +80,21 @@ public abstract class WorkItemDefinition {
       this(name, id, parentId, type, null);
    }
 
-   public WorkItemDefinition(String name, String id, String parentId, String type, String description) {
+   private WorkItemDefinition(String name, String id, String parentId, String type, String description) {
       this.name = name;
       this.id = id;
       this.type = type;
       this.parentId = parentId;
       this.description = description;
-      if (parentId != null && parentId.equals("")) throw new IllegalArgumentException(
-            "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
+      if (parentId != null && parentId.equals("")) {
+         throw new IllegalArgumentException(
+               "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
+      }
       if (type != null && type.equals("")) {
          throw new IllegalArgumentException(
                "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
       }
-      if (this.id == null || this.id.equals("")) {
+      if (!Strings.isValid(id)) {
          throw new IllegalArgumentException("id must be unique and non-null");
       }
 
@@ -108,15 +111,19 @@ public abstract class WorkItemDefinition {
    public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException {
       // Collect all ids already visited
       Set<String> visitedIds = new HashSet<String>();
-      for (String visitedId : visitedPageIds)
+      for (String visitedId : visitedPageIds) {
          visitedIds.add(visitedId);
+      }
 
       // Check for circular dependency
-      if (visitedIds.contains(getId())) throw new IllegalStateException(
-            "Circular dependency detected.  Id already visited: " + getId());
+      if (visitedIds.contains(getId())) {
+         throw new IllegalStateException("Circular dependency detected.  Id already visited: " + getId());
+      }
 
       // Check for instanceof 
-      if (getId().equals(pageId)) return true;
+      if (getId().equals(pageId)) {
+         return true;
+      }
 
       // If parentId exists, check if it isInstanceOfPage
       if (getParentId() != null) {
@@ -128,11 +135,13 @@ public abstract class WorkItemDefinition {
    }
 
    public boolean hasParent() {
-      return (getParentId() != null);
+      return getParentId() != null;
    }
 
    public WorkItemDefinition getParent() throws OseeCoreException {
-      if (!hasParent()) return null;
+      if (!hasParent()) {
+         return null;
+      }
       return WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
    }
 
@@ -199,13 +208,16 @@ public abstract class WorkItemDefinition {
       //         return artifact;
       //      }
       artifact.setDescriptiveName(getName());
-      if (getParentId() != null && !getParentId().equals("")) artifact.setSoleAttributeValue(
-            WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
-      if (getDescription() != null) artifact.setSoleAttributeValue(
-            WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), getDescription());
+      if (getParentId() != null && !getParentId().equals("")) {
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
+      }
+      if (getDescription() != null) {
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), getDescription());
+      }
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
-      if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
-            getType());
+      if (getType() != null) {
+         artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), getType());
+      }
       if (workDataKeyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<String>();
          for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
