@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <component name="authentication.provider">
-	<implementation class="org.eclipse.osee.framework.core.server.internal.TrustAllAuthenticationProvider"/>
+	<implementation class="org.eclipse.osee.framework.core.server.internal.authentication.TrustAllAuthenticationProvider"/>
 	<service>
 		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"/>
 	</service>	

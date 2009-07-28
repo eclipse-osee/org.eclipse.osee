@@ -8,11 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.core.server.internal.authentication;
 
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
+import org.eclipse.osee.framework.core.server.UserDataStore;
 
 /**
  * @author Roberto E. Escobar
