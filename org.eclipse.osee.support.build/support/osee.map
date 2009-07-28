@@ -48,6 +48,7 @@ plugin@org.eclipse.osee.framework.skynet.core=SVN,url=https://dev.eclipse.org/sv
 plugin@org.eclipse.osee.framework.svn=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.templates=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.updater=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
+plugin@org.eclipse.osee.framework.database.init=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee.framework.database.init,tag=trunk
   
 feature@org.eclipse.osee.framework.ui.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.nebula.widgets.calendarcombo=CVS,cvsRoot=:pserver;proxy=www-slb-proxy.boeing.com;proxyport=31060:anonymous@dev.eclipse.org:/cvsroot/technology,path=org.eclipse.swt.nebula/org.eclipse.nebula.widgets.calendarcombo,tag=HEAD
