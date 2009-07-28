@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -54,7 +54,7 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(" tablespace ");
       toExecute.append(tableDef.getTablespace());
       toExecute.append("\n");
-      OseeLog.log(Activator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 
@@ -74,7 +74,7 @@ public class OracleSqlManager extends SqlManager {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " cascade constraints purge");
-      OseeLog.log(Activator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 }

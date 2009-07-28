@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -54,14 +54,14 @@ public class PostgreSqlManager extends SqlManagerImpl {
       toExecute +=
             handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
-      OseeLog.log(Activator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(connection, toExecute);
    }
 
    @Override
    public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " CASCADE";
-      OseeLog.log(Activator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute);
    }
 
@@ -79,7 +79,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
          if (iData.ignoreMySql()) continue;
-         OseeLog.log(Activator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(),
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(),
                tableName));
          if (iData.getId().equals("PRIMARY")) {
             ConnectionHandler.runPreparedUpdate(connection,
@@ -134,14 +134,14 @@ public class PostgreSqlManager extends SqlManagerImpl {
                }
 
                else {
-                  OseeLog.log(Activator.class, Level.WARNING,
+                  OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                         "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
@@ -179,7 +179,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
          String toExecute =
                String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId, tableName,
                      appliesTo);
-         OseeLog.log(Activator.class, Level.INFO, toExecute);
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute);
          ConnectionHandler.runPreparedUpdate(connection, toExecute);
       }
    }

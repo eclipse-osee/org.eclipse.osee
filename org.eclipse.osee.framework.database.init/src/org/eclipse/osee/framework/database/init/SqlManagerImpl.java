@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -51,7 +51,7 @@ public class SqlManagerImpl extends SqlManager {
       toExecute.append(handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
             tableDef.getFullyQualifiedTableName()));
       toExecute.append(" \n)\n");
-      OseeLog.log(Activator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 
@@ -60,7 +60,7 @@ public class SqlManagerImpl extends SqlManager {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\."));
-      OseeLog.log(Activator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 }

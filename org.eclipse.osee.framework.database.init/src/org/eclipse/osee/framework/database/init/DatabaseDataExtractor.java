@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.init.TableElement.TableTags;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -102,7 +102,7 @@ public class DatabaseDataExtractor {
 
             buildXml(chStmt, table, outputStream);
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE,
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
             chStmt.close();
@@ -122,7 +122,7 @@ public class DatabaseDataExtractor {
          try {
             worker.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
          }
       }
    }

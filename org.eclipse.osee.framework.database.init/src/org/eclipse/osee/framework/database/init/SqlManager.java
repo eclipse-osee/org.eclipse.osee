@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -213,14 +213,14 @@ public abstract class SqlManager {
                }
 
                else {
-                  OseeLog.log(Activator.class, Level.WARNING,
+                  OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                         "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
@@ -277,7 +277,7 @@ public abstract class SqlManager {
                String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                      appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
-         OseeLog.log(Activator.class, Level.INFO, toExecute + "\n");
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute + "\n");
          ConnectionHandler.runPreparedUpdate(toExecute);
       }
    }
@@ -290,7 +290,7 @@ public abstract class SqlManager {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
-         OseeLog.log(Activator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(),
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(),
                tableName));
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }

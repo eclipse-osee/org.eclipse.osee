@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.database.core.OseeDatabaseId;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -85,7 +85,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          String url =
                HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
          String response = HttpProcessor.post(new URL(url));
-         OseeLog.log(Activator.class, Level.INFO, response);
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, response);
       } catch (Exception ex1) {
          throw new OseeDataStoreException(ex1);
       }
@@ -107,7 +107,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          URL serverUrl = new URL(server);
          Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());
          if (socket.getInetAddress().isLoopbackAddress()) {
-            OseeLog.log(Activator.class, Level.INFO, "Deleting binary data from application server...");
+            OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Deleting binary data from application server...");
             String binaryDataPath = ClientSessionManager.getDataStorePath();
             Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
             Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
@@ -118,7 +118,7 @@ public class SkynetDbInit implements IDbInitializationTask {
          displayWarning = true;
       }
       if (displayWarning) {
-         OseeLog.log(Activator.class, Level.WARNING, "Unable to delete binary data from application server");
+         OseeLog.log(DatabaseInitActivator.class, Level.WARNING, "Unable to delete binary data from application server");
       }
    }
 
@@ -143,7 +143,7 @@ public class SkynetDbInit implements IDbInitializationTask {
                      IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
                      isAllowed = rule.isAllowed();
                   } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
                   }
                }
 

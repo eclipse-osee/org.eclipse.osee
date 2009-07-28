@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="DatabaseInitializationConfiguration" name="DatabaseInitializationConfiguration" schema="schema/DatabaseInitializationConfiguration.exsd"/>
+   <extension-point id="DatabaseInitializationTask" name="DatabaseInitializationTask" schema="schema/DatabaseInitializationTask.exsd"/>
+   <extension
+         id="configClient"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.eclipse.osee.framework.database.init.ConfigDatabase"/>
+      </application>
+   </extension>
+   <extension
+      	id="AddCommonBranch"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.AddCommonBranch">
+   	</DatabaseInitializationTask>
+	</extension>
+   <extension
+   		id="BackupTableData"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+      <DatabaseInitializationTask
+            classname="org.eclipse.osee.framework.database.init.BackupTableData">
+      </DatabaseInitializationTask>
+   </extension>
+   <extension
+   		id="RestoreTableData"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.RestoreTableData">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="ImportDataFromDbService"
+   	   point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+         	classname="org.eclipse.osee.framework.database.init.ImportDataFromDbService">
+      </DatabaseInitializationTask>
+	</extension>	
+	<extension
+			id="PostDatabaseInitialization"
+      	point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.PostDatabaseInitialization">
+      </DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="PostDbUserCleanUp"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.PostDbUserCleanUp">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="PrintTables"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.PrintTables">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="RestoreTableData"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.RestoreTableData">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="SimpleTemplateProviderTask"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="SkynetDbBranchDataImport"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport">
+   	</DatabaseInitializationTask>
+	</extension>
+	<extension
+			id="SkynetDbInit"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.framework.database.init.SkynetDbInit">
+   	</DatabaseInitializationTask>
+	</extension>
+
+</plugin>
+ 

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +38,8 @@ import org.osgi.framework.Bundle;
  * @author Roberto E. Escobar
  */
 public class DatabaseInitializationOperation {
-   private static final String dbInitExtensionPointId = "org.eclipse.osee.framework.database.IDbInitializationTask";
+   private static final String dbInitExtensionPointId =
+         "org.eclipse.osee.framework.database.init.DatabaseInitializationTask";
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
    private final String preSelectedChoice;
@@ -86,13 +87,13 @@ public class DatabaseInitializationOperation {
          }
          if (line.equalsIgnoreCase("Y")) {
             isConfigured = true;
-            OseeLog.log(Activator.class, Level.INFO, "Configuring Database...");
+            OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
             long startTime = System.currentTimeMillis();
 
             try {
                processTask();
             } catch (Throwable ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
             } finally {
                System.out.println(String.format("Database Configurationg completed in [%s] ms",
                      Lib.getElapseString(startTime)));
@@ -111,14 +112,14 @@ public class DatabaseInitializationOperation {
       for (String pointId : getDbInitTasks()) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          if (extension == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
                try {
                   runDbInitTasks(extension);
                } catch (Throwable th) {
-                  OseeLog.log(Activator.class, Level.SEVERE, th);
+                  OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, th);
                }
             } else {
                OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE,
@@ -126,7 +127,7 @@ public class DatabaseInitializationOperation {
             }
          }
       }
-      OseeLog.log(Activator.class, Level.INFO, "Database Initialization Complete.");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
    /**
@@ -151,7 +152,8 @@ public class DatabaseInitializationOperation {
             selectedChoice = choices.get(selection);
          }
       }
-      OseeLog.log(Activator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", selectedChoice));
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]",
+            selectedChoice));
       return selector.getDbInitTasksByChoiceEntry(selectedChoice);
    }
 
@@ -193,10 +195,10 @@ public class DatabaseInitializationOperation {
       String bundleName = null;
       String initRuleClassName = null;
       for (IConfigurationElement el : elements) {
-         if (el.getName().equals("DatabaseTask")) {
+         if (el.getName().equals("DatabaseInitializationTask")) {
             classname = el.getAttribute("classname");
             bundleName = el.getContributor().getName();
-            initRuleClassName = el.getAttribute("DbInitRule");
+            initRuleClassName = el.getAttribute("rule");
          }
       }
       if (classname != null && bundleName != null) {
@@ -209,7 +211,7 @@ public class DatabaseInitializationOperation {
             isExecutionAllowed = rule.isAllowed();
          }
 
-         OseeLog.log(Activator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
+         OseeLog.log(DatabaseInitActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
                "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
                extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
          if (isExecutionAllowed) {
@@ -229,7 +231,7 @@ public class DatabaseInitializationOperation {
          try {
             line = stdin.readLine();
          } catch (IOException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
          }
       }
       return line;

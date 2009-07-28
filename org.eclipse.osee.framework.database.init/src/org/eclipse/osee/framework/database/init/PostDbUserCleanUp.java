@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -34,7 +34,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
     */
    @Override
    public void run() throws OseeCoreException {
-      OseeLog.log(Activator.class, Level.INFO, "Post Initialization User Clean-up");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Post Initialization User Clean-up");
 
       int authorArtId = 0;
       boolean isUserAuthenticationAllowed = false;
@@ -59,7 +59,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          authorArtId = user.getArtId();
       } else {
          // This is an initialization for base import -- users are not available
-         OseeLog.log(Activator.class, Level.INFO,
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO,
                "Post Initialization User Clean-up - Base Initialization - unable to set tx author id");
       }
 

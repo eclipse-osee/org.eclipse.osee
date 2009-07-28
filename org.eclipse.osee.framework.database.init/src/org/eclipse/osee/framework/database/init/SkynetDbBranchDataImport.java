@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -44,7 +44,7 @@ import org.osgi.framework.Bundle;
  */
 public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String ELEMENT_NAME = "OseeDbImportData";
-   private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + ELEMENT_NAME;
+   private static final String EXTENSION_POINT = DatabaseInitActivator.PLUGIN_ID + "." + ELEMENT_NAME;
    private static final String BRANCH_NAME = "branchName";
    private static final String BRANCH_DATA = "branchData";
    private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
@@ -64,13 +64,13 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
 
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
-            OseeLog.log(Activator.class, Level.INFO, String.format("Import Branch Data: [%s]", importData));
+            OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Import Branch Data: [%s]", importData));
             try {
                File importFile = importData.getExchangeFile();
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
                      importData), ex);
                throw ex;
             }

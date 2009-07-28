@@ -16,15 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.init.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.Bundle;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -33,78 +26,41 @@ public class GroupSelection {
    private static final GroupSelection instance = new GroupSelection();
    private final Map<String, List<String>> initGroups = new HashMap<String, List<String>>();
 
+   private boolean wasInitialized;
+
    /**
     * @param initGroups
     */
    private GroupSelection() {
       super();
-      populateDbInitChoices();
+      wasInitialized = false;
    }
 
    public static GroupSelection getInstance() {
+      instance.populateDbInitChoices();
       return instance;
    }
 
-   private List<IConfigurationElement> getExtensionElements(Bundle bundle, String extensionPointName, String elementName) {
-      return getExtensionElements(bundle.getSymbolicName() + "." + extensionPointName, elementName);
-   }
-
-   private List<IConfigurationElement> getExtensionElements(String extensionPointId, String elementName) {
-      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-      if (extensionRegistry == null) {
-         throw new IllegalStateException("The extension registry is unavailable");
-      }
-
-      IExtensionPoint point = extensionRegistry.getExtensionPoint(extensionPointId);
-      if (point == null) {
-         throw new IllegalArgumentException("The extension point " + extensionPointId + " does not exist");
-      }
-
-      IExtension[] extensions = point.getExtensions();
-      ArrayList<IConfigurationElement> elementsList = new ArrayList<IConfigurationElement>(extensions.length * 3);
-
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         for (IConfigurationElement element : elements) {
-            if (element.getName().equalsIgnoreCase(elementName)) {
-               elementsList.add(element);
-            }
+   private synchronized void populateDbInitChoices() {
+      if (!wasInitialized) {
+         wasInitialized = true;
+         ExtensionDefinedObjects<IAddDbInitChoice> contributions =
+               new ExtensionDefinedObjects<IAddDbInitChoice>(
+                     DatabaseInitActivator.getBundle().getSymbolicName() + ".DatabaseInitializationConfiguration",
+                     "DatabaseInitializationConfiguration", "classname");
+         for (IAddDbInitChoice dbInitChoice : contributions.getObjects()) {
+            dbInitChoice.addDbInitChoice(this);
          }
       }
-      return elementsList;
-   }
-
-   private void populateDbInitChoices() {
-      List<IConfigurationElement> elements =
-            getExtensionElements(Activator.getBundle(), "AddDbInitChoice", "dbInitChoice");
-
-      for (IConfigurationElement element : elements) {
-         String choiceClass = element.getAttribute("classname");
-         try {
-            IAddDbInitChoice choice =
-                  (IAddDbInitChoice) Platform.getBundle(element.getContributor().getName()).loadClass(choiceClass).newInstance();
-            choice.addDbInitChoice(this);
-         } catch (InstantiationException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         } catch (IllegalAccessException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         } catch (ClassNotFoundException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   private void addCommonChoices(List<String> dbInitTasks, boolean bareBones) {
-      List<String> initTasks = new ArrayList<String>();
-      initTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbInit");
-      dbInitTasks.addAll(0, initTasks);
-      dbInitTasks.add("org.eclipse.osee.framework.skynet.core.PostDbUserCleanUp");
-      dbInitTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbBranchDataImport");
-      dbInitTasks.add("org.eclipse.osee.framework.database.PostDbInitializationProcess");
    }
 
    public void addChoice(String listName, List<String> dbInitTasks, boolean bareBones) {
-      addCommonChoices(dbInitTasks, bareBones);
+      List<String> initTasks = new ArrayList<String>();
+      initTasks.add("org.eclipse.osee.framework.database.init.SkynetDbInit");
+      dbInitTasks.addAll(0, initTasks);
+      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
+      dbInitTasks.add("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
+      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDbInitializationProcess");
       initGroups.put(listName, dbInitTasks);
    }
 

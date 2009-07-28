@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.init.TableElement.TableTags;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -127,9 +127,9 @@ public class DatabaseDataImporter {
                document = builder.parse(file);
                processData(parseXMLDbDataFile(document));
             } catch (ParserConfigurationException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Unable to Parse File. ", ex);
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Unable to Parse File. ", ex);
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Exception: \n", ex);
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Exception: \n", ex);
             }
          }
       }
@@ -147,7 +147,7 @@ public class DatabaseDataImporter {
    private void processData(List<TableData> tables) throws OseeDataStoreException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
-            OseeLog.log(Activator.class, Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
+            OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
             List<List<ColumnDbData>> rows = tableData.getRows();
             if (!rows.isEmpty()) {
                for (List<ColumnDbData> rowData : rows) {

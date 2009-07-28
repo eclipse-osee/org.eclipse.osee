@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -124,9 +124,9 @@ public class DatabaseSchemaExtractor {
          try {
             Jaxp.writeXmlDocument(tableData.getXmlDocument(), xmlFile);
          } catch (TransformerException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
          } catch (ParserConfigurationException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
          }
       }
    }

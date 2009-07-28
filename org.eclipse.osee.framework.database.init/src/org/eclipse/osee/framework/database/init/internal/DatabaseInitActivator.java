@@ -4,7 +4,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class DatabaseInitActivator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
    private static BundleContext context;
 
@@ -13,7 +13,7 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      Activator.context = context;
+      DatabaseInitActivator.context = context;
    }
 
    /*

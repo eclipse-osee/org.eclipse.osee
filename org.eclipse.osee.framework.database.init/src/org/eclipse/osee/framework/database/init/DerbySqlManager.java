@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.init.internal.Activator;
+import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -82,14 +82,14 @@ public class DerbySqlManager extends SqlManagerImpl {
                }
 
                else {
-                  OseeLog.log(Activator.class, Level.WARNING,
+                  OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                         "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(DatabaseInitActivator.class, Level.WARNING,
                "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
