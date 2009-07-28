@@ -12,4 +12,5 @@ Import-Package: org.eclipse.osee.framework.jdk.core.type,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.messaging,
  org.eclipse.osee.framework.messaging.definitions,
+ org.eclipse.osee.framework.messaging.future,
  org.eclipse.osee.framework.messaging.id
