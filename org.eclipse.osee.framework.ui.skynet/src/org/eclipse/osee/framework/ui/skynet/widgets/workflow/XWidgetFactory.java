@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
@@ -98,8 +97,6 @@ public class XWidgetFactory {
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
             ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
          }
-      } else if (xWidgetName.equals("XMultiXWidgetTextDam")) {
-         xWidget = new XMultiXWidgetTextDam(name);
       } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
          XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
          int maxSelectionRequired = 1;
@@ -132,8 +129,6 @@ public class XWidgetFactory {
          xWidget = new XMembersCombo(name);
       } else if (xWidgetName.equals("XDate")) {
          xWidget = new XDate(name);
-      } else if (xWidgetName.equals("XMultiXWidgetTextDam")) {
-         xWidget = new XMultiXWidgetTextDam(name);
       } else if (xWidgetName.equals("XFileSelectionDialog")) {
          xWidget = new XFileTextWithSelectionDialog(name);
       } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
@@ -199,8 +194,6 @@ public class XWidgetFactory {
                      "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
             }
          }
-      } else if (xWidgetName.startsWith("XMultiXWidgetTextDam")) {
-         xWidget = new XMultiXWidgetTextDam(name);
       } else if (xWidgetName.startsWith("XStackedDam")) {
          xWidget = new XStackedDam(name);
       } else if (xWidgetName.startsWith("XFlatDam")) {
