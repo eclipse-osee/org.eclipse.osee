@@ -12,11 +12,6 @@ package org.eclipse.osee.framework.database.init;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.database.sql.datatype.DerbySqlDataType;
-import org.eclipse.osee.framework.database.sql.datatype.FoxProDataType;
-import org.eclipse.osee.framework.database.sql.datatype.MySqlDataType;
-import org.eclipse.osee.framework.database.sql.datatype.OracleSqlDataType;
-import org.eclipse.osee.framework.database.sql.datatype.PostgresqlDataType;
 
 /**
  * @author Roberto E. Escobar

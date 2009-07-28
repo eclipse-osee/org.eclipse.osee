@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.internal.Activator;
-import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
