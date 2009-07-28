@@ -2,6 +2,6 @@
 <component name="oracle.connection.driver.provider">
 	<implementation class="org.eclipse.osee.framework.oracle.OracleConnection"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.db.connection.IConnection"/>
+		<provide interface="org.eclipse.osee.framework.database.core.IConnection"/>
 	</service>	
 </component>

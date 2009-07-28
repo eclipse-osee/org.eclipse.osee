@@ -2,6 +2,6 @@
 <component name="demo.connection.contributor">
 	<implementation class="org.eclipse.osee.demo.db.connection.DemoDbConnectionInfo"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor"/>
+		<provide interface="org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor"/>
 	</service>	
 </component>

@@ -5,7 +5,7 @@
 		<provide interface="org.eclipse.osee.framework.database.internal.IApplicationDatabaseManager"/>
 	</service>
 	<reference name="application.database.provider"
-		interface="org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider"
+		interface="org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider"
 		bind="addDatabaseProvider"
 		unbind="removeDatabaseProvider"
 		cardinality="0..n"

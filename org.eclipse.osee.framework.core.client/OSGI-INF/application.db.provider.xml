@@ -2,6 +2,6 @@
 <component name="client.application.db.provider">
 	<implementation class="org.eclipse.osee.framework.core.client.internal.ClientDatabaseProvider"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider"/>
+		<provide interface="org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider"/>
 	</service>	
 </component>

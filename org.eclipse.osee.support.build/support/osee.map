@@ -15,7 +15,6 @@ plugin@org.eclipse.osee.framework.server.admin=SVN,url=https://dev.eclipse.org/s
 plugin@org.eclipse.osee.framework.server.lookup.servlet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.session.management.servlet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.core.server=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
-plugin@org.eclipse.osee.framework.db.connection=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.jdk.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.logging=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.osgi=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
@@ -33,7 +32,6 @@ plugin@org.eclipse.osee.framework.core=SVN,url=https://dev.eclipse.org/svnroot/t
 plugin@org.eclipse.osee.framework.core.client=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.core.server=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.database=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
-plugin@org.eclipse.osee.framework.db.connection=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.derby=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.jdbcodbc=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk
 plugin@org.eclipse.osee.framework.jdk.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk

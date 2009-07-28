@@ -2,6 +2,6 @@
 <component name="uri.connection.contributor">
 	<implementation class="org.eclipse.osee.framework.database.internal.UriDbConnectionInfo"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributor"/>
+		<provide interface="org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor"/>
 	</service>	
 </component>
