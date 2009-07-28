@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -27,6 +28,9 @@ import org.eclipse.swt.graphics.Image;
  * @author Donald G. Dunne
  */
 public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
+
+   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command";
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
     */
@@ -97,4 +101,17 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
+    */
+   @Override
+   public List<String> getCommandId(PresentationType presentationType) {
+      ArrayList<String> commandIds = new ArrayList<String>(1);
+      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         commandIds.add(COMMAND_ID);
+      }
+      return commandIds;
+   }
+
 }

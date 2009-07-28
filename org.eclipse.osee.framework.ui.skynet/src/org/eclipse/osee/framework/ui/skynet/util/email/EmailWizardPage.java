@@ -161,8 +161,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-               toList.add(obj);
-         }
+                  toList.add(obj);
+               }
             }
          }
       });
@@ -189,8 +189,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-               ccList.add(obj);
-         }
+                  ccList.add(obj);
+               }
             }
          }
       });
@@ -216,8 +216,8 @@ public class EmailWizardPage extends WizardPage {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
-               bccList.add(obj);
-         }
+                  bccList.add(obj);
+               }
             }
          }
       });
@@ -232,7 +232,7 @@ public class EmailWizardPage extends WizardPage {
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
          if (EmailUtil.isEmailValid(UserManager.getUser())) {
-         bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
+            bccList.setInput(new Object[] {UserManager.getUser().getEmail()});
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -256,8 +256,8 @@ public class EmailWizardPage extends WizardPage {
 
    private boolean isEmailObjectValid(Object obj) {
       try {
-         if (obj instanceof User && EmailUtil.isEmailValid(((User) obj).getEmail())) {
-            AWorkbench.popup(String.format("Email not configured for [%s]", obj));
+         if (obj instanceof User && !EmailUtil.isEmailValid(((User) obj).getEmail())) {
+            AWorkbench.popup(String.format("Email not valid for [%s]", obj));
             return false;
          } else if (obj instanceof EmailGroup && !((EmailGroup) obj).hasEmails()) {
             AWorkbench.popup(String.format("Email not configured for [%s]", obj));
@@ -327,11 +327,11 @@ public class EmailWizardPage extends WizardPage {
 
       public String getText(Object element) {
          try {
-         if (element instanceof User)
+            if (element instanceof User)
                return ((User) element).getName() + " (" + ((User) element).getEmail() + ")";
-         else if (element instanceof EmailGroup)
-            return ((EmailGroup) element).toString();
-         else if (element instanceof String) return ((String) element).toString();
+            else if (element instanceof EmailGroup)
+               return ((EmailGroup) element).toString();
+            else if (element instanceof String) return ((String) element).toString();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
          }

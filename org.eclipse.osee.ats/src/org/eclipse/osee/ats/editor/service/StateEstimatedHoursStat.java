@@ -68,9 +68,11 @@ public class StateEstimatedHoursStat {
                }
             });
          link.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         link.setToolTipText(TOOLTIP);
       } else {
          label = toolkit.createLabel(workGroup, "", SWT.NONE);
          label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         label.setToolTipText(TOOLTIP);
       }
       refresh();
    }
@@ -121,6 +123,13 @@ public class StateEstimatedHoursStat {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
+   public static String TOOLTIP = "Calculation: \n     Workflow Estimated Hours: amount entered for workflow\n" +
+   //
+   "     Task Estimated Hours: total estimated hours for tasks related to this state\n" +
+   //
+   "     Review Estimated Hours: total estimated hours of all reviews related to this state\n" +
+   //
+   "Total Estimated Hours: Sum of all these values.";
 
    private void setString(String str) {
       if (page != null && link != null && !link.isDisposed()) {
