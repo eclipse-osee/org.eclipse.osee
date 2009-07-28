@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.core.server.internal;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidAuthenticationProtocolException;
+import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 
 /**
  * @author Roberto E. Escobar
