@@ -17,23 +17,7 @@
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
    <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
    <extension-point id="OseeValidator" name="OseeValidator" schema="schema/OseeValidator.exsd"/>
-   
-      <extension
-            id="SkynetDbInit"
-            name="SkynetDbInit"
-            point="org.eclipse.osee.framework.database.IDbInitializationTask">
-         <DatabaseTask
-               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
-         </DatabaseTask>
-      </extension>
-      <extension
-            id="SkynetDbBranchDataImport"
-            name="SkynetDbBranchDataImport"
-            point="org.eclipse.osee.framework.database.IDbInitializationTask">
-         <DatabaseTask
-               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbBranchDataImport">
-         </DatabaseTask>
-      </extension>
+
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory
@@ -190,14 +174,6 @@
          <CharacterAttributeDataProvider
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
          </CharacterAttributeDataProvider>
-      </extension>
-      <extension
-            id="PostDbUserCleanUp"
-            name="PostDbUserCleanUp"
-            point="org.eclipse.osee.framework.database.IDbInitializationTask">
-         <DatabaseTask
-               classname="org.eclipse.osee.framework.skynet.core.dbinit.PostDbUserCleanUp">
-         </DatabaseTask>
       </extension>
         <extension
         point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">

@@ -140,13 +140,12 @@
    </view>
    </extension>
    <extension
-         id="AtsDatabaseConfig"
-         name="AtsDatabaseConfig"
-         point="org.eclipse.osee.framework.database.IDbInitializationTask">
-      <DatabaseTask
-            classname="org.eclipse.osee.ats.config.AtsDatabaseConfig">
-      </DatabaseTask>
-   </extension>
+   		id="AtsDatabaseConfig"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+      	   classname="org.eclipse.osee.ats.config.AtsDatabaseConfig">
+   	</DatabaseInitializationTask>
+	</extension>
    <extension
          point="org.eclipse.osee.ats.AtsStateItem">
       <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem"/>

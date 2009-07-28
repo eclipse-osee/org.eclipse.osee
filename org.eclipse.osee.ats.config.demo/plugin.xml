@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension
-         point="org.eclipse.osee.framework.database.AddDbInitChoice">
-      <dbInitChoice
-            classname="org.eclipse.osee.ats.config.demo.config.AddDbInitDemoChoice">
-      </dbInitChoice>
-   </extension>
-   <extension
-         id="AtsConfigDemoDatabaseConfig"
-         name="AtsConfigDemoDatabaseConfig"
-         point="org.eclipse.osee.framework.database.IDbInitializationTask">
-      <DatabaseTask
-            DbInitRule="org.eclipse.osee.framework.database.NotOnProductionDbInitializationRule"
-            classname="org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig">
-      </DatabaseTask>
-   </extension>
+    <extension
+       point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">
+    <DatabaseInitializationConfiguration
+          classname="org.eclipse.osee.ats.config.demo.config.AddDbInitDemoChoice">
+    </DatabaseInitializationConfiguration>
+ </extension>
+      <extension
+      	id="DemoDatabaseConfig"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+   			rule="org.eclipse.osee.framework.database.init.NotOnProductionDbInitializationRule"
+      	   classname="org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig">
+   	</DatabaseInitializationTask>
+	</extension>
    <extension
          point="org.eclipse.osee.ats.AtsAIandTeamConfig">
       <AtsAIandTeamConfig
@@ -28,13 +27,12 @@
             classname="org.eclipse.osee.ats.config.demo.navigate.DemoNavigateViewItems">
       </AtsNavigateItem>
    </extension>
-   <extension
-         id="AddCommonBranchForAtsDemo"
-         name="AddCommonBranchForAtsDemo"
-         point="org.eclipse.osee.framework.database.IDbInitializationTask">
-      <DatabaseTask
+      <extension
+      	id="AddCommonBranchForAtsDemo"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
             classname="org.eclipse.osee.ats.config.demo.config.AddCommonBranchForAtsDemo">
-      </DatabaseTask>
+      </DatabaseInitializationTask>
    </extension>
    <extension
          id="OseeTypes_DemoCommon"

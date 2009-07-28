@@ -265,10 +265,6 @@
 		<ArtifactAnnotation classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationHandler">
          </ArtifactAnnotation>
 	</extension>
-	<extension id="AddCommonBranch" name="AddCommonBranch" point="org.eclipse.osee.framework.database.IDbInitializationTask">
-		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">
-         </DatabaseTask>
-	</extension>
 	<extension
        point="org.eclipse.osee.framework.ui.skynet.TemplateProvider">
     <TemplateProvider
@@ -280,14 +276,6 @@
     <XWidgetProvider
           classname="org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetProvider">
     </XWidgetProvider>
- </extension>
- <extension
-       point="org.eclipse.osee.framework.database.IDbInitializationTask"
-       id="SimpleTemplateProviderTask"
-         name="SimpleTemplateProviderTask">
-    <DatabaseTask
-          classname="org.eclipse.osee.framework.ui.skynet.templates.SimpleTemplateProviderDbTask">
-    </DatabaseTask>
  </extension>
  <extension
        point="org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate">
