@@ -30,6 +30,15 @@ public class DeadlineManager {
       this.smaMgr = smaMgr;
    }
 
+   public Date getEcdDate() {
+      try {
+         return ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewEstimatedCompletionDate();
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return null;
+   }
+
    public Date getDeadlineDate() {
       try {
          return ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewDeadlineDate();
@@ -43,9 +52,23 @@ public class DeadlineManager {
       return getDeadlineDate() != null;
    }
 
+   public boolean isEcdDateSet() {
+      return getEcdDate() != null;
+   }
+
    public Result isDeadlineDateOverdue() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
       if ((new Date()).after(getDeadlineDate())) return new Result(true, "Deadline Date has passed.");
+      return Result.FalseResult;
+   }
+
+   public Result isEcdDateOverdue() throws OseeCoreException {
+      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
+      if (getEcdDate() == null) return Result.FalseResult;
+      if ((new Date()).after(getEcdDate())) return new Result(true, "Estimated Completion Date has passed.");
+      if (getDeadlineDate() == null) return Result.FalseResult;
+      if (getEcdDate().after(getDeadlineDate())) return new Result(true,
+            "Estimated Completion Date after Need By Date.");
       return Result.FalseResult;
    }
 
@@ -68,6 +91,13 @@ public class DeadlineManager {
       Result r = isDeadlineDateOverdue();
       if (r.isTrue()) return r;
       r = isDeadlinePastRelease();
+      if (r.isTrue()) return r;
+      return Result.FalseResult;
+   }
+
+   public Result isEcdDateAlerting() throws OseeCoreException {
+      if (!isEcdDateSet()) return Result.FalseResult;
+      Result r = isEcdDateOverdue();
       if (r.isTrue()) return r;
       return Result.FalseResult;
    }

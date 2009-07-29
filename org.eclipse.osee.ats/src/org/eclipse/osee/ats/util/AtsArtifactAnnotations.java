@@ -37,8 +37,13 @@ public class AtsArtifactAnnotations implements IArtifactAnnotation {
          if (artifact instanceof StateMachineArtifact) {
             SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
             Result result = smaMgr.getDeadlineMgr().isDeadlineDateAlerting();
-            if (result.isTrue()) annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline",
-                  result.getText()));
+            if (result.isTrue()) {
+               annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline", result.getText()));
+            }
+            result = smaMgr.getDeadlineMgr().isEcdDateAlerting();
+            if (result.isTrue()) {
+               annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.ecd", result.getText()));
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
