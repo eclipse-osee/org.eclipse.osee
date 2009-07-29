@@ -6,7 +6,8 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.derby.Activator
 Bundle-ActivationPolicy: lazy
 OseeEarlyStart: true
-Import-Package: org.eclipse.osee.framework.database.core,
+Import-Package: org.apache.derby.drda,
+ org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
@@ -16,4 +17,3 @@ Service-Component: OSGI-INF/derby.client.connection.driver.provider.xml,
  OSGI-INF/derby.embed.connection.driver.provider.xml
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: derby.driver
