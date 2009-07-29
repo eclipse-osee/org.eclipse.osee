@@ -51,8 +51,8 @@ public class ATSAttributes {
          new ATSAttributes(
                "User Community",
                "If working in one of these communities resulted in the creation of this Action, please select.  Otherwise, select Other.");
-   public static final ATSAttributes DEADLINE_ATTRIBUTE =
-         new ATSAttributes("Deadline", "ats.Need By", "Hard schedule date that workflow must be completed.");
+   public static final ATSAttributes NEED_BY_ATTRIBUTE =
+         new ATSAttributes("Need By", "ats.Need By", "Hard schedule date that workflow must be completed.");
    public static final ATSAttributes VALIDATION_REQUIRED_ATTRIBUTE =
          new ATSAttributes("Validation Required",
                "If selected, originator will be asked to validate the implementation.");

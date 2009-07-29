@@ -1009,7 +1009,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified = smaMgr.promptChangeDate(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            modified = smaMgr.promptChangeDate(ATSAttributes.DEADLINE_ATTRIBUTE, persist);
+            modified = smaMgr.promptChangeDate(ATSAttributes.NEED_BY_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = smaMgr.promptChangeAssignees(persist);
          } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {

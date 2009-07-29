@@ -504,7 +504,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     */
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      return getSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), null);
+      return getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null);
    }
 
    /*

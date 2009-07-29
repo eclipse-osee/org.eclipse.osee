@@ -166,7 +166,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
             "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE, "XDateDam",
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE, "XDateDam",
             XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE, "XCheckBoxDam",
             XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));

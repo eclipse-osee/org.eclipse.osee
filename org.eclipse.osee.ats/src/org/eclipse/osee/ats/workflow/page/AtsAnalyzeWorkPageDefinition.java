@@ -35,7 +35,7 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
    }
 

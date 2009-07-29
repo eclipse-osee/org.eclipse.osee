@@ -795,7 +795,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                   ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), "")), priType,
             fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
             fromAction.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false),
-            fromAction.getSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), null, Date.class));
+            fromAction.getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null, Date.class));
    }
 
    /**
@@ -810,7 +810,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
-      if (needByDate != null) art.setSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);
+      if (needByDate != null) art.setSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), needByDate);
       if (validationRequired) art.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(),
             true);
    }

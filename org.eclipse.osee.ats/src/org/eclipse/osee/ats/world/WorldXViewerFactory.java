@@ -70,7 +70,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Notes_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.SMA_NOTE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, true);
    public static final XViewerColumn Deadline_Col =
-         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline", ATSAttributes.DEADLINE_ATTRIBUTE, 75, SWT.LEFT,
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline", ATSAttributes.NEED_BY_ATTRIBUTE, 75, SWT.LEFT,
                true, SortDataType.String, true, null);
 
    // Aren't shown by default
