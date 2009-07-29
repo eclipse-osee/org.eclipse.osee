@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -112,7 +113,6 @@ public class XChangeWidget extends XWidget implements IActionable {
 
       xChangeViewer = new ChangeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xChangeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
       contentProvider = new XChangeContentProvider(xChangeViewer);
       xChangeViewer.setContentProvider(contentProvider);
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
@@ -303,18 +303,19 @@ public class XChangeWidget extends XWidget implements IActionable {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             final boolean hasBranch = branch != null;
+            // need to determine if the branch has been updated from parent
+            final boolean rebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
             final Collection<Change> changes = new ArrayList<Change>();
             SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
 
             try {
-               if (loadChangeReport) {
+               if (loadChangeReport && !rebaselined) {
                   changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, swtMonitor) : ChangeManager.getChangesPerTransaction(
                         transactionId, swtMonitor)));
                }
-
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     if (loadChangeReport) {
+                     if (loadChangeReport && !rebaselined) {
                         if (changes.size() == 0) {
                            extraInfoLabel.setText(NOT_CHANGES);
                            xChangeViewer.setInput(changes);
@@ -334,7 +335,12 @@ public class XChangeWidget extends XWidget implements IActionable {
                            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
                      } else {
-                        extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+                        if (rebaselined) {
+                           extraInfoLabel.setText(branch.getShortName() + "has been updated from parent and cannot be refreshed. Please close down and re-open this change report.");
+                           xChangeViewer.setEnabled(false);
+                        } else {
+                           extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+                        }
                      }
                   }
                });
