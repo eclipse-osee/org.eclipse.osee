@@ -1647,9 +1647,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return annotationMgr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
@@ -1660,9 +1657,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
    public int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
@@ -1684,22 +1678,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return diff;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
-   public int hashCode() {
+   public final int hashCode() {
       return (37 * guid.hashCode()) + branch.hashCode();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
+   /**
+    * @param obj the reference object with which to compare.
+    * @return <code>true</code> if this artifact has the same GUID and branch <code>false</code> otherwise.
     */
    @Override
-   public boolean equals(Object obj) {
+   public final boolean equals(Object obj) {
       if (obj instanceof Artifact) {
          Artifact otherArtifact = (Artifact) obj;
-         return guid == otherArtifact.guid && branch.equals(otherArtifact.branch);
+         return guid.equals(otherArtifact.guid) && branch.equals(otherArtifact.branch);
       }
       return false;
    }
