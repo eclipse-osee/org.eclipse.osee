@@ -49,7 +49,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col =
          new XViewerAtsAttributeColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems",
-               ATSAttributes.ACTIONABLE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, false);
+               ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false);
