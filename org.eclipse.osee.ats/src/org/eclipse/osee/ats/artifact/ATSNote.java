@@ -50,7 +50,8 @@ public class ATSNote {
    }
 
    public void addNote(NoteType type, String state, String msg, Date date, User user) {
-      if (!enabled) return;
+      if (!enabled)
+         return;
       NoteItem logItem = new NoteItem(type, state, date.getTime() + "", user, msg);
       List<NoteItem> logItems = getNoteItems();
       logItems.add(logItem);
@@ -117,10 +118,15 @@ public class ATSNote {
       }
 
       for (NoteItem li : noteItems) {
-         if ((state.equals("ALL")) || (state == null && li.getState().equals("")) || (state != null && li.getState().equals(
-               state))) showNotes.add(li);
+         if (state == null) {
+            if (li.getState().equals(""))
+               showNotes.add(li);
+         } else if ((state.equals("ALL")) || li.getState().equals(state)) {
+            showNotes.add(li);
+         }
       }
-      if (showNotes.size() == 0) return "";
+      if (showNotes.size() == 0)
+         return "";
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Type</TH><TH>State</TH>" + "<TH>Message</TH><TH>User</TH><TH>Date</TH></THEAD></TR>");
       for (NoteItem note : showNotes) {
@@ -136,10 +142,12 @@ public class ATSNote {
          builder.append("<TD>" + note.getType() + "</TD>");
          builder.append("<TD>" + (note.getState().equals("") ? "," : note.getState()) + "</TD>");
          builder.append("<TD>" + (note.getMsg().equals("") ? "," : note.getMsg()) + "</TD>");
-         if (user.isMe())
-            builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
-         else
-            builder.append("<TD>" + name + "</TD>");
+
+            if (user != null && user.isMe())
+               builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
+            else
+               builder.append("<TD>" + name + "</TD>");
+
          builder.append("<TD>" + (new SimpleDateFormat("MM/dd/yyyy h:mm a")).format(note.getDate()) + "</TD>");
          builder.append("</TR>");
       }

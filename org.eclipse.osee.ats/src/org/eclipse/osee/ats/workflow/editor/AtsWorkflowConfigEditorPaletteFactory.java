@@ -53,7 +53,6 @@ final class AtsWorkflowConfigEditorPaletteFactory {
    private static final String PALETTE_SIZE = "ShapesEditorPaletteFactory.Size";
    /** Preference ID used to persist the flyout palette's state. */
    private static final String PALETTE_STATE = "ShapesEditorPaletteFactory.State";
-   private static AtsWorkflowConfigEditor editor;
 
    /** Create the "States" drawer. */
    private static PaletteContainer createStatesDrawer() {

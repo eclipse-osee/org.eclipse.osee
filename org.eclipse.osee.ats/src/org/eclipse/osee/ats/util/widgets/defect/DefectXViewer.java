@@ -98,10 +98,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Severity_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Severity_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -113,10 +111,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Closed_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Closed_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -128,10 +124,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Created_Date_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Created_Date_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -143,10 +137,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Description_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Description_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -158,10 +150,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Disposition_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Disposition_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -173,10 +163,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Injection_Activity_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Injection_Activity_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -188,10 +176,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Location_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Location_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -203,10 +189,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.Resolution_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.Resolution_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -218,10 +202,8 @@ public class DefectXViewer extends XViewer {
          public void run() {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
-            ArrayList<DefectItem> defectItems = new ArrayList<DefectItem>();
-            defectItems = getSelectedDefectItems();
             try {
-               promptChangeData(DefectXViewerFactory.User_Col, defectItems, columnMultiEdit);
+               promptChangeData(DefectXViewerFactory.User_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -264,15 +246,18 @@ public class DefectXViewer extends XViewer {
    }
 
    public void add(Collection<DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).add(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null)
+         ((DefectContentProvider) getContentProvider()).add(defectItems);
    }
 
    public void set(Collection<? extends DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).set(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null)
+         ((DefectContentProvider) getContentProvider()).set(defectItems);
    }
 
    public void clear() {
-      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).clear();
+      if (((DefectContentProvider) getContentProvider()) != null)
+         ((DefectContentProvider) getContentProvider()).clear();
    }
 
    /**
@@ -288,8 +273,9 @@ public class DefectXViewer extends XViewer {
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> arts = new ArrayList<DefectItem>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((DefectItem) item.getData());
+      if (items.length > 0)
+         for (TreeItem item : items)
+            arts.add((DefectItem) item.getData());
       return arts;
    }
 
@@ -351,7 +337,8 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {
             defectItem.setInjectionActivity(newInjectionActivity);
             // at least one in the list has been changed.
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -363,7 +350,8 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getUser().equals(user)) {
             defectItem.setUser(user);
             // at least one in the list has been changed.
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -374,7 +362,8 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getLocation().equals(loc)) {
             defectItem.setLocation(loc);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -383,9 +372,10 @@ public class DefectXViewer extends XViewer {
    private boolean setDescription(Collection<DefectItem> defectItems, String desc) {
       boolean modified = false;
       for (DefectItem defectItem : defectItems) {
-         if (!defectItem.equals(desc)) {
+         if (!defectItem.toString().equals(desc)) {
             defectItem.setDescription(desc);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
 
       }
@@ -397,7 +387,8 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
             defectItem.setClosed(closed);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -408,7 +399,8 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getSeverity().equals(severity)) {
             defectItem.setSeverity(severity);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -419,7 +411,8 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDisposition().equals(disposition)) {
             defectItem.setDisposition(disposition);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -430,7 +423,8 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDate().equals(date)) {
             defectItem.setDate(date);
-            if (!modified) modified = true;
+            if (!modified)
+               modified = true;
          }
       }
       return modified;
@@ -440,7 +434,8 @@ public class DefectXViewer extends XViewer {
       boolean modified = false;
       for (DefectItem defectItem : defectItems) {
          defectItem.setResolution(resolution);
-         if (!modified) modified = true;
+         if (!modified)
+            modified = true;
       }
       return modified;
    }

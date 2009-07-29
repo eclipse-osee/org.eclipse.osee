@@ -16,7 +16,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -101,21 +100,19 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       super.dispose();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView#explore(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public void explore(Artifact artifact) {
-      if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact))) clear();
+      if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact)))
+         clear();
       try {
          getOptions().setArtifact(artifact);
          getOptions().setLayout(getOptions().getLayout(SkyWalkerOptions.SPRING_LAYOUT));
          if (artifact instanceof User)
             super.explore(artifact);
-         else
+         else if (artifact instanceof ATSArtifact)
             super.explore(getTopArtifact((ATSArtifact) artifact));
+         else
+            throw new OseeCoreException("Unexpected artifact subclass");
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          clear();
@@ -130,12 +127,10 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
       } else if (art instanceof TaskArtifact) {
          Artifact parentArtifact = ((TaskArtifact) art).getParentSMA();
-         if (parentArtifact instanceof StateMachineArtifact) {
-            if (parentArtifact instanceof TeamWorkFlowArtifact)
-               artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
-            else {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
-            }
+         if (parentArtifact instanceof TeamWorkFlowArtifact)
+            artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
+         else {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());
          }
       }
       return artifact;
@@ -143,14 +138,16 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    public boolean activeEditorIsActionEditor() {
       IWorkbenchPage page = getSite().getWorkbenchWindow().getActivePage();
-      if (page == null) return false;
+      if (page == null)
+         return false;
       IEditorPart editorPart = page.getActiveEditor();
       boolean result = (editorPart != null && (editorPart instanceof SMAEditor));
       return result;
    }
 
    public void processWindowActivated() {
-      if (!this.getSite().getPage().isPartVisible(this)) return;
+      if (!this.getSite().getPage().isPartVisible(this))
+         return;
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
@@ -190,9 +187,9 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public String getActionDescription() {
-      if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted()) return String.format(
-            "Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
-            getOptions().getArtifact().getName());
+      if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted())
+         return String.format("Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
+               getOptions().getArtifact().getName());
       return "";
    }
 
@@ -200,19 +197,16 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       System.out.println("clear viewer here");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
-      if (getOptions().getArtifact() == null) return;
+      if (sender.isRemote())
+         return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
+         return;
+      if (getOptions().getArtifact() == null)
+         return;
       if (transData.isDeleted(getOptions().getArtifact())) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                clear();
@@ -221,9 +215,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
       if (transData.isChanged(getOptions().getArtifact()) || transData.isRelAddedChangedDeleted(getOptions().getArtifact())) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                explore(getOptions().getArtifact());

@@ -50,7 +50,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
       }
    }
 
-   public class Report extends Job {
+   public static class Report extends Job {
 
       private final String hrid;
       private final boolean exportWasIs;

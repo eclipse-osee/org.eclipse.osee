@@ -72,7 +72,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private TeamWorkFlowArtifact teamArt;
-   private final int paddedTableHeightHint = 2;
+   private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
    public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName();
 
@@ -109,7 +109,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             Composite mainComp = new Composite(parent, SWT.BORDER);
             mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             mainComp.setLayout(ALayout.getZeroMarginLayout());
-            if (toolkit != null) toolkit.paintBordersFor(mainComp);
+            if (toolkit != null)
+               toolkit.paintBordersFor(mainComp);
 
             createTaskActionBar(mainComp);
 
@@ -156,8 +157,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
                }
             });
 
-            if (toolkit != null && xCommitManager.getStatusLabel() != null) toolkit.adapt(
-                  xCommitManager.getStatusLabel(), false, false);
+            if (toolkit != null && xCommitManager.getStatusLabel() != null)
+               toolkit.adapt(xCommitManager.getStatusLabel(), false, false);
 
             setXviewerTree();
 
@@ -234,7 +235,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    public void loadTable() {
       try {
-         if (xCommitManager != null && teamArt != null && (teamArt instanceof TeamWorkFlowArtifact) && xCommitManager.getContentProvider() != null) {
+         if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
             Collection<ICommitConfigArtifact> configArtSet =
                   teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
             xCommitManager.setInput(configArtSet);
@@ -248,8 +249,10 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xCommitManager == null) return items;
-      if (xCommitManager.getSelection().isEmpty()) return items;
+      if (xCommitManager == null)
+         return items;
+      if (xCommitManager.getSelection().isEmpty())
+         return items;
       Iterator i = ((IStructuredSelection) xCommitManager.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -260,24 +263,28 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public Control getControl() {
-      if (xCommitManager == null) return null;
+      if (xCommitManager == null)
+         return null;
       return xCommitManager.getTree();
    }
 
    @Override
    public void dispose() {
-      if (xCommitManager != null) xCommitManager.dispose();
+      if (xCommitManager != null)
+         xCommitManager.dispose();
       OseeEventManager.removeListener(this);
    }
 
    @Override
    public void setFocus() {
-      if (xCommitManager != null) xCommitManager.getTree().setFocus();
+      if (xCommitManager != null)
+         xCommitManager.getTree().setFocus();
    }
 
    @Override
    public void refresh() {
-      if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) return;
+      if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed())
+         return;
       xCommitManager.refresh();
       validate();
       refreshActionEnablement();

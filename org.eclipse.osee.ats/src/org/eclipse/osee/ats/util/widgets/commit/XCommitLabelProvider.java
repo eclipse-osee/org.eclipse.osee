@@ -23,11 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 public class XCommitLabelProvider extends XViewerLabelProvider {
-   Font font = null;
 
    private final CommitXManager commitXManager;
 
@@ -43,7 +41,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return ImageManager.getImage(FrameworkImage.ARROW_RIGHT_YELLOW);
       }
-      if (branch == null) return null;
+      if (branch == null)
+         return null;
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
@@ -120,15 +119,14 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
             return "Show Change Report";
          else if (commitStatus == CommitStatus.Committed_With_Merge)
             return "Show Change/Merge Report";
-         else if (commitStatus == CommitStatus.Working_Branch_Not_Created) return "Working Branch Not Created";
+         else if (commitStatus == CommitStatus.Working_Branch_Not_Created)
+            return "Working Branch Not Created";
          return "Error: Need to handle this";
       }
       return "unhandled column";
    }
 
    public void dispose() {
-      if (font != null) font.dispose();
-      font = null;
    }
 
    public boolean isLabelProperty(Object element, String property) {

@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
-import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -95,12 +94,10 @@ public class SMAWorkFlowSection extends SectionPart {
    private final boolean isEditable, isCurrentState, isGlobalEditable;
    private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
-   private TaskComposite xTask;
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
    private DynamicXWidgetLayout dynamicXWidgetLayout;
    private SMAReviewInfoComposite reviewInfoComposite;
-   private SMATaskInfoComposite taskInfoComposite;
    private SMATargetVersionInfoComposite targetVersionInfoComposite;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
@@ -241,7 +238,8 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null) return Result.TrueResult;
+      if (dynamicXWidgetLayout == null)
+         return Result.TrueResult;
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
             IStatus status = widget.isValid();
@@ -259,11 +257,13 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetDirty() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null) return Result.FalseResult;
+      if (dynamicXWidgetLayout == null)
+         return Result.FalseResult;
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
             Result result = ((IArtifactWidget) widget).isDirty();
-            if (result.isTrue()) return result;
+            if (result.isTrue())
+               return result;
          }
       }
       return Result.FalseResult;
@@ -292,7 +292,8 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
-            if (!item.getMsg().equals("")) sb.append(" - Reason: " + item.getMsg());
+            if (!item.getMsg().equals(""))
+               sb.append(" - Reason: " + item.getMsg());
          }
       }
       if (isCurrentState) {
@@ -330,16 +331,18 @@ public class SMAWorkFlowSection extends SectionPart {
    public void dispose() {
       super.dispose();
       atsWorkPage.dispose();
-      if (reviewInfoComposite != null) reviewInfoComposite.clearFormMessages();
-      if (taskInfoComposite != null) taskInfoComposite.clearFormMessages();
-      if (targetVersionInfoComposite != null) targetVersionInfoComposite.clearFormMessages();
+      if (reviewInfoComposite != null)
+         reviewInfoComposite.clearFormMessages();
+      if (targetVersionInfoComposite != null)
+         targetVersionInfoComposite.clearFormMessages();
       servicesArea.dispose();
    }
 
    final SMAWorkFlowSection fSection = this;
    final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget xWidget) {
-         if (smaMgr.getSma().isDeleted()) return;
+         if (smaMgr.getSma().isDeleted())
+            return;
          // Notify extensions of widget modified
          try {
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
@@ -465,7 +468,8 @@ public class SMAWorkFlowSection extends SectionPart {
       UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(smaMgr.getTransitionAssignees());
-      if (uld.open() != 0) return;
+      if (uld.open() != 0)
+         return;
       Collection<User> users = uld.getUsersSelected();
       if (users.size() == 0) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
@@ -563,7 +567,8 @@ public class SMAWorkFlowSection extends SectionPart {
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          assignees = item.getOverrideTransitionToAssignees(this);
-         if (assignees != null) break;
+         if (assignees != null)
+            break;
       }
       // If override set and isn't the same as already selected, update
       if (assignees != null && !smaMgr.getTransitionAssignees().equals(assignees)) {
@@ -578,11 +583,13 @@ public class SMAWorkFlowSection extends SectionPart {
       String transitionStateOverride = null;
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          transitionStateOverride = item.getOverrideTransitionToStateName(this);
-         if (transitionStateOverride != null) break;
+         if (transitionStateOverride != null)
+            break;
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) return;
+         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride))
+            return;
          // Find page corresponding to override state name
          for (WorkPageDefinition toWorkPageDefinition : smaMgr.getToWorkPages()) {
             if (toWorkPageDefinition.getPageName().equals(transitionStateOverride)) {
@@ -599,7 +606,8 @@ public class SMAWorkFlowSection extends SectionPart {
    public void setTransitionToStateSelection(String stateName) throws OseeCoreException {
       ArrayList<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
-         if (nextPage.getPageName().equals(stateName)) allPages.add(nextPage);
+         if (nextPage.getPageName().equals(stateName))
+            allPages.add(nextPage);
       }
       transitionToStateCombo.setSelected(allPages);
    }
@@ -652,7 +660,8 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-            if (cancelDialog.open() != 0) return;
+            if (cancelDialog.open() != 0)
+               return;
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             Result result =
                   smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
@@ -738,7 +747,8 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Ask for metrics for this page (store in state versus task?)
-            if (!handlePopulateStateMetrics()) return;
+            if (!handlePopulateStateMetrics())
+               return;
          }
 
          // Persist must be done prior and separate from transition 
@@ -763,7 +773,8 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public void refreshStateServices() {
-      if (servicesArea != null) servicesArea.refresh();
+      if (servicesArea != null)
+         servicesArea.refresh();
       smaMgr.getEditor().onDirtied();
    }
 
@@ -779,10 +790,11 @@ public class SMAWorkFlowSection extends SectionPart {
       // Page has the ability to override the autofill of the metrics
       if (!atsWorkPage.isRequireStateHoursSpentPrompt() && smaMgr.getStateMgr().getHoursSpent() == 0) {
          // First, try to autofill if it's only been < 5 min since creation
-         int minSinceCreation = getCreationToNowDateDeltaMinutes();
+         double minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
-         float hoursSinceCreation = minSinceCreation / 60;
-         if (hoursSinceCreation < 0.02) hoursSinceCreation = (new Float(0.02)).floatValue();
+         double hoursSinceCreation = minSinceCreation / 60.0;
+         if (hoursSinceCreation < 0.02)
+            hoursSinceCreation = 0.02;
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
             smaMgr.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
@@ -813,13 +825,6 @@ public class SMAWorkFlowSection extends SectionPart {
       Float min = diff / 60000;
       // System.out.println("min *" + min + "*");
       return min.intValue();
-   }
-
-   /**
-    * @return Returns the xTask.
-    */
-   public TaskComposite getXTask() {
-      return xTask;
    }
 
    /**

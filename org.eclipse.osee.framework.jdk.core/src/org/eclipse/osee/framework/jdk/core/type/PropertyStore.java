@@ -36,6 +36,24 @@ public class PropertyStore implements IPropertyStore, Serializable {
    private Properties storageData;
    private Properties storageArrays;
 
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof PropertyStore) {
+         PropertyStore castObj = (PropertyStore) obj;
+         return (castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && castObj.storageArrays.equals(storageArrays));
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + storeId.hashCode();
+      result = 31 * result + storageData.hashCode();
+      result = 31 * result + storageArrays.hashCode();
+      return result;
+   }
+
    public PropertyStore(String storeId) {
       this.storeId = storeId;
       this.storageData = new Properties();
@@ -157,35 +175,23 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.data.IPropertyStore#load(java.lang.String)
-    */
    public void load(String fileName) throws Exception {
       InputStream inputStream = new FileInputStream(fileName);
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.load(this, inputStream);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.data.IPropertyStore#save(java.lang.String)
-    */
    public void save(String fileName) throws Exception {
       OutputStream outputStream = new FileOutputStream(fileName);
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.save(this, outputStream);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.type.IPropertyStore#arrayKeySet()
-    */
    public Set<String> arrayKeySet() {
       List<String> items = Collections.castAll(this.storageArrays.keySet());
       return Collections.toSet(items);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.type.IPropertyStore#keySet()
-    */
    public Set<String> keySet() {
       List<String> items = Collections.castAll(this.storageData.keySet());
       return Collections.toSet(items);

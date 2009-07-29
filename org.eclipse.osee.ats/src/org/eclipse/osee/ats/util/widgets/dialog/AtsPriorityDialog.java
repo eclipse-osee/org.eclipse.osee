@@ -78,7 +78,8 @@ public class AtsPriorityDialog extends ListDialog {
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();
       }
-      AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID,
+            "org.eclipse.osee.ats.help.ui");
       return c;
    }
 
@@ -91,7 +92,7 @@ public class AtsPriorityDialog extends ListDialog {
       super.okPressed();
    }
 
-   public class PriorityLabelProvider implements ILabelProvider {
+   public static class PriorityLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
          return null;
@@ -99,7 +100,8 @@ public class AtsPriorityDialog extends ListDialog {
 
       public String getText(Object arg0) {
          PriorityType type = (PriorityType) arg0;
-         if (type == PriorityType.None) return type.name();
+         if (type == PriorityType.None)
+            return type.name();
          return type.getShortName();
       }
 

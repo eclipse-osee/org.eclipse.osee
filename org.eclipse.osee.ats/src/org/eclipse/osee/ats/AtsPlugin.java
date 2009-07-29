@@ -24,9 +24,6 @@ public class AtsPlugin extends OseeUiActivator {
    private static AtsPlugin pluginInstance;
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
-   /**
-    * The constructor.
-    */
    public AtsPlugin() {
       super();
       pluginInstance = this;
@@ -34,19 +31,11 @@ public class AtsPlugin extends OseeUiActivator {
       AtsNotifyUsers.getInstance();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.util.plugin.OseePlugin#getPluginName()
-    */
    @Override
    protected String getPluginName() {
       return PLUGIN_ID;
    }
 
-   /**
-    * Returns the shared instance.
-    */
    public static AtsPlugin getInstance() {
       return pluginInstance;
    }

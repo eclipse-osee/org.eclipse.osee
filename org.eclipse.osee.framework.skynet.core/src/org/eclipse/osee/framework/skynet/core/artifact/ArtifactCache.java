@@ -78,7 +78,7 @@ public class ArtifactCache {
    public synchronized static void deCacheStaticIds(Artifact artifact) throws OseeCoreException {
       Set<String> staticIds = new HashSet<String>();
       for (String staticId : instance.staticIdArtifactCache.keySet()) {
-         if (instance.staticIdArtifactCache.getValues(staticId).equals(artifact)) {
+         if (instance.staticIdArtifactCache.getValues(staticId).contains(artifact)) {
             staticIds.add(staticId);
          }
       }
@@ -98,9 +98,11 @@ public class ArtifactCache {
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
-      if (cachedArts == null) return artifacts;
+      if (cachedArts == null)
+         return artifacts;
       for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted()) artifacts.add(artifact);
+         if (!artifact.isDeleted())
+            artifacts.add(artifact);
       }
       return artifacts;
    }
@@ -108,9 +110,11 @@ public class ArtifactCache {
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
-      if (cachedArts == null) return artifacts;
+      if (cachedArts == null)
+         return artifacts;
       for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted() && artifact.getBranch().equals(branch)) artifacts.add(artifact);
+         if (!artifact.isDeleted() && artifact.getBranch().equals(branch))
+            artifacts.add(artifact);
       }
       return artifacts;
    }

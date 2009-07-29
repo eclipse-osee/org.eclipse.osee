@@ -165,23 +165,19 @@ public class ATSAttributes {
       return super.equals(obj);
    }
 
-   /**
-    * @return Returns the displayName.
-    */
+   @Override
+   public final int hashCode() {
+      return super.hashCode();
+   }
+
    public String getDisplayName() {
       return displayName;
    }
 
-   /**
-    * @return Returns the storeName.
-    */
    public String getStoreName() {
       return storeName;
    }
 
-   /**
-    * @return the description
-    */
    public String getDescription() {
       return description;
    }

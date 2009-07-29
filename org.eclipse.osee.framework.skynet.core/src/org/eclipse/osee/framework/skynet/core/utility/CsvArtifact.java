@@ -58,7 +58,7 @@ public class CsvArtifact {
       InputStream inputStream = artifact.getNativeContent();
       try {
          String data = Lib.inputStreamToString(inputStream);
-         data.replaceFirst("\n+$", "");
+         data = data.replaceFirst("\n+$", "");
          data = data + "\n" + csvData;
          setCsvData(data);
       } catch (IOException ex) {

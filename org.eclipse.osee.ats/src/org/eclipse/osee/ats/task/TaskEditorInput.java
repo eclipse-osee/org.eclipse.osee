@@ -23,11 +23,13 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class TaskEditorInput implements IEditorInput {
 
-   ITaskEditorProvider itaskEditorProvider;
+   private ITaskEditorProvider itaskEditorProvider;
 
-   /**
-    * @return the itaskEditorProvider
-    */
+   @Override
+   public int hashCode() {
+      return itaskEditorProvider.hashCode();
+   }
+
    public ITaskEditorProvider getItaskEditorProvider() {
       return itaskEditorProvider;
    }
@@ -38,33 +40,24 @@ public class TaskEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      return false;
+      if (!(obj instanceof TaskEditorInput))
+         return false;
+      TaskEditorInput castObj = (TaskEditorInput) obj;
+      return castObj.itaskEditorProvider.equals(this.itaskEditorProvider);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
    public boolean exists() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       try {
          return itaskEditorProvider.getName();
@@ -74,18 +67,12 @@ public class TaskEditorInput implements IEditorInput {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
    @Override
    public String getName() {
       try {

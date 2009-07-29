@@ -144,7 +144,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {
       for (IRelationEnumeration iRelationEnumeration : atsWorldRelations) {
-         if (getRelatedArtifactsCount(iRelationEnumeration) > 0) return true;
+         if (getRelatedArtifactsCount(iRelationEnumeration) > 0)
+            return true;
       }
       return false;
    }
@@ -270,7 +271,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          }
       }
       preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
-      if (newAssignees.size() == 0) return;
+      if (newAssignees.size() == 0)
+         return;
       try {
          // These will be processed upon save
          AtsNotifyUsers.notify(this, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
@@ -331,10 +333,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public boolean isUnCancellable() {
       try {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
-         if (item == null) throw new IllegalArgumentException("No Cancelled Event");
+         if (item == null)
+            throw new IllegalArgumentException("No Cancelled Event");
          for (WorkPageDefinition toWorkPageDefinition : smaMgr.getWorkFlowDefinition().getToPages(
                smaMgr.getWorkPageDefinition()))
-            if (toWorkPageDefinition.getPageName().equals(item.getState())) return true;
+            if (toWorkPageDefinition.getPageName().equals(item.getState()))
+               return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -342,7 +346,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public boolean isTaskable() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return false;
+      if (smaMgr.isCompleted() || smaMgr.isCancelled())
+         return false;
       return true;
    }
 
@@ -377,7 +382,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Image getAssigneeImage() throws OseeCoreException {
-      if (isDeleted()) return null;
+      if (isDeleted())
+         return null;
       return FrameworkArtifactImageProvider.getUserImage(smaMgr.getStateMgr().getAssignees());
    }
 
@@ -492,7 +498,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException {
-      if (getWorldViewCreatedDate() == null) return XViewerCells.getCellExceptionString("No creation date");
+      if (getWorldViewCreatedDate() == null)
+         return XViewerCells.getCellExceptionString("No creation date");
       return new XDate(getWorldViewCreatedDate()).getMMDDYYHHMM();
    }
 
@@ -541,13 +548,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public Date getWorldViewCompletedDate() throws OseeCoreException {
       LogItem item = smaMgr.getLog().getCompletedLogItem();
-      if (item != null) return item.getDate();
+      if (item != null)
+         return item.getDate();
       return null;
    }
 
    public Date getWorldViewCancelledDate() throws OseeCoreException {
       LogItem item = smaMgr.getLog().getCancelledLogItem();
-      if (item != null) return item.getDate();
+      if (item != null)
+         return item.getDate();
       return null;
    }
 
@@ -565,8 +574,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) return getSoleAttributeValue(
-            ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
+      if (isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName()))
+         return getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
       return 0;
    }
 
@@ -611,9 +620,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainHoursFromArtifact() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
+      if (smaMgr.isCompleted() || smaMgr.isCancelled())
+         return 0;
       double est = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
-      if (est == 0) return getEstimatedHoursFromArtifact();
+      if (est == 0)
+         return getEstimatedHoursFromArtifact();
       double remain = est - (est * (getPercentCompleteSMATotal() / 100.0));
       return remain;
    }
@@ -636,11 +647,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) return Result.TrueResult;
+      if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName()))
+         return Result.TrueResult;
       try {
          Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
-         if (getSmaMgr().isCancelled()) return Result.TrueResult;
-         if (value == null) return new Result("Estimated Hours not set.");
+         if (getSmaMgr().isCancelled())
+            return Result.TrueResult;
+         if (value == null)
+            return new Result("Estimated Hours not set.");
          return Result.TrueResult;
       } catch (Exception ex) {
          return new Result(
@@ -650,8 +664,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public Result isWorldViewManDaysNeededValid() throws OseeCoreException {
       Result result = isWorldViewRemainHoursValid();
-      if (result.isFalse()) return result;
-      if (getManHrsPerDayPreference() == 0) return new Result("Man Day Hours Preference is not set.");
+      if (result.isFalse())
+         return result;
+      if (getManHrsPerDayPreference() == 0)
+         return new Result("Man Day Hours Preference is not set.");
 
       return Result.TrueResult;
    }
@@ -664,7 +680,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public double getWorldViewManDaysNeeded() throws OseeCoreException {
       double hrsRemain = getWorldViewRemainHours();
       double manDaysNeeded = 0;
-      if (hrsRemain != 0) manDaysNeeded = hrsRemain / getManHrsPerDayPreference();
+      if (hrsRemain != 0)
+         manDaysNeeded = hrsRemain / getManHrsPerDayPreference();
       return manDaysNeeded;
    }
 
@@ -677,15 +694,19 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return Result.TrueResult;
+      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName()))
+         return Result.TrueResult;
       Result result = isWorldViewRemainHoursValid();
-      if (result.isFalse()) return result;
+      if (result.isFalse())
+         return result;
       String value = null;
       try {
          value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
-         if (value == null || value.equals("")) return new Result("Weekly Benefit Hours not set.");
+         if (value == null || value.equals(""))
+            return new Result("Weekly Benefit Hours not set.");
          double val = new Float(value).doubleValue();
-         if (val == 0) return new Result("Weekly Benefit Hours not set.");
+         if (val == 0)
+            return new Result("Weekly Benefit Hours not set.");
       } catch (NumberFormatException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + getHumanReadableId(), ex);
          return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
@@ -723,7 +744,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
       int num = getSmaMgr().getTaskMgr().getTaskArtifacts().size();
-      if (num == 0) return "";
+      if (num == 0)
+         return "";
       return String.valueOf(num);
    }
 
@@ -810,19 +832,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
-      if (getWorldViewEstimatedReleaseDate() == null) return "";
+      if (getWorldViewEstimatedReleaseDate() == null)
+         return "";
       return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
    }
 
    public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
-      if (getWorldViewEstimatedCompletionDate() == null) return "";
+      if (getWorldViewEstimatedCompletionDate() == null)
+         return "";
       return new XDate(getWorldViewEstimatedCompletionDate()).getMMDDYYHHMM();
    }
 
    public abstract Date getWorldViewReleaseDate() throws OseeCoreException;
 
    public String getWorldViewReleaseDateStr() throws OseeCoreException {
-      if (getWorldViewReleaseDate() == null) return "";
+      if (getWorldViewReleaseDate() == null)
+         return "";
       return new XDate(getWorldViewReleaseDate()).getMMDDYYHHMM();
    }
 
@@ -935,8 +960,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewValidationRequiredStr()
     */
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleAttributeValue(
-            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
+      if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()))
+         return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       return "";
    }
 
@@ -955,7 +980,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getWorldViewPercentReworkStr() throws OseeCoreException {
       int reWork = getWorldViewPercentRework();
-      if (reWork == 0) return "";
+      if (reWork == 0)
+         return "";
       return String.valueOf(reWork);
    }
 
@@ -1140,7 +1166,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @throws Exception
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
-      if (smaMgr.isCancelledOrCompleted()) return 100;
+      if (smaMgr.isCancelledOrCompleted())
+         return 100;
       Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
       if (stateToWeightMap.size() > 0) {
          // Calculate total percent using configured weighting
@@ -1164,7 +1191,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
                numStates++;
             }
          }
-         if (numStates == 0) return 0;
+         if (numStates == 0)
+            return 0;
          return percent / numStates;
       }
    }
@@ -1211,7 +1239,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return new StateMetricsData(percent, numObjects);
    }
 
-   private class StateMetricsData {
+   private static class StateMetricsData {
       public int numObjects = 0;
       public int percent = 0;
 
@@ -1333,19 +1361,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getParentActionArtifact().getWorldViewActionsIntiatingWorkflow();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDaysInCurrentState()
-    */
    @Override
    public String getWorldViewDaysInCurrentState() throws OseeCoreException {
-      long timeInCurrState = smaMgr.getStateMgr().getTimeInState();
-      if (timeInCurrState == 0) return "0.0";
-      return AtsUtil.doubleToStrString(timeInCurrState / XDate.MILLISECONDS_IN_A_DAY);
+      double timeInCurrState = (double) smaMgr.getStateMgr().getTimeInState();
+      if (timeInCurrState == 0)
+         return "0.0";
+      return AtsUtil.doubleToStrString(timeInCurrState / (double) XDate.MILLISECONDS_IN_A_DAY);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentState()
-    */
    @Override
    public String getWorldViewParentState() throws OseeCoreException {
       if (getParentSMA() != null) {

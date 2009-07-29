@@ -553,9 +553,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return false;
       }
-      if (attrName == null) {
-         return false;
-      }
       for (TreeItem item : treeItems) {
          if (item.getData() instanceof ActionArtifact) {
             return false;
@@ -668,7 +665,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
       // OTHER MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, favoritesAction);
-      favoritesAction.setEnabled(enableFavoritesAction());
+      favoritesAction.setEnabled(favoritesActionIsEnabled());
       if (getSelectedSMA() == null) {
          favoritesAction.setText(ADD_AS_FAVORITE);
       } else {
@@ -676,7 +673,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       }
 
       mm.insertBefore(MENU_GROUP_PRE, subscribedAction);
-      subscribedAction.setEnabled(enableSubscribedAction());
+      subscribedAction.setEnabled(subscribedActionIsEnabled());
       if (getSelectedSMA() == null) {
          subscribedAction.setText(SUBSCRIBE);
       } else {
@@ -695,27 +692,19 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    }
 
-   private boolean enableFavoritesAction() {
+   private boolean favoritesActionIsEnabled() {
       if (getSelectedSMAArtifacts().size() == 0) {
          return false;
       }
-      for (StateMachineArtifact sma : getSelectedSMAArtifacts()) {
-         if (!(sma instanceof IFavoriteableArtifact)) {
-            return false;
-         }
-      }
+
       return true;
    }
 
-   private boolean enableSubscribedAction() {
+   private boolean subscribedActionIsEnabled() {
       if (getSelectedSMAArtifacts().size() == 0) {
          return false;
       }
-      for (StateMachineArtifact sma : getSelectedSMAArtifacts()) {
-         if (!(sma instanceof ISubscribableArtifact)) {
-            return false;
-         }
-      }
+
       return true;
    }
 
@@ -927,47 +916,31 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       return arts;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#getStatusString()
-    */
    @Override
    public String getStatusString() {
       return extendedStatusString;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       return handleAltLeftClick(treeColumn, treeItem, true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          Artifact useArt = (Artifact) treeItem.getData();
-         if (useArt instanceof StateMachineArtifact) {
-            boolean modified = false;
-            if (useArt instanceof ActionArtifact) {
-               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-                  useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
-               } else {
-                  return false;
-               }
+         boolean modified = false;
+         if (useArt instanceof ActionArtifact) {
+            if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
+               useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
+            } else {
+               return false;
             }
-            if (modified) {
-               update(useArt, null);
-               return true;
-            }
+         }
+         if (modified) {
+            update(useArt, null);
+            return true;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

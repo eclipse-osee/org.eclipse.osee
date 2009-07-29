@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -46,7 +45,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class MultipleHridSearchItem extends WorldUISearchItem {
    private String enteredIds = "";
-   Pattern numberPattern = Pattern.compile("^[0-9]+$");
    private boolean includeArtIds = false;
    private Branch branch;
 
@@ -79,7 +77,8 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
 
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled())
+         return EMPTY_SET;
 
       Set<Artifact> resultAtsArts = new HashSet<Artifact>();
       Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
@@ -112,7 +111,8 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
 
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled())
+         return EMPTY_SET;
 
       if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,

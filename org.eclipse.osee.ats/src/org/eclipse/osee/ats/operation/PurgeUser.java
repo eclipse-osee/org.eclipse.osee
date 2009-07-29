@@ -47,7 +47,7 @@ public class PurgeUser extends AbstractBlam {
    private static int numOfUpdatedASideRelations = 0;
    private static int numOfUpdatedBSideRelations = 0;
 
-   private final int defaultUpdateValue = -1;
+   private static final int defaultUpdateValue = -1;
 
    private static final String GET_AUTHORED_TRANSACTIONS = "SELECT count(1) from osee_tx_details where author=?";
    private static final String GET_RELATIONS_ASIDE = "SELECT count(1) from osee_relation_link where a_art_id=?";

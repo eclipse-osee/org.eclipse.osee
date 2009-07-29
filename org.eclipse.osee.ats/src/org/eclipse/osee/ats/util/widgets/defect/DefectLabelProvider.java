@@ -20,12 +20,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 public class DefectLabelProvider extends XViewerLabelProvider {
-   Font font = null;
-
    private final DefectXViewer xViewer;
 
    public DefectLabelProvider(DefectXViewer xViewer) {
@@ -69,14 +66,13 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return defectItem.getSeverity().equals(Severity.None) ? "" : defectItem.getSeverity().name();
       else if (aCol.equals(DefectXViewerFactory.Disposition_Col))
          return defectItem.getDisposition().equals(Disposition.None) ? "" : defectItem.getDisposition().name();
-      else if (aCol.equals(DefectXViewerFactory.Injection_Activity_Col)) return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
+      else if (aCol.equals(DefectXViewerFactory.Injection_Activity_Col))
+         return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
 
       return "Unhandled Column";
    }
 
    public void dispose() {
-      if (font != null) font.dispose();
-      font = null;
    }
 
    public boolean isLabelProperty(Object element, String property) {

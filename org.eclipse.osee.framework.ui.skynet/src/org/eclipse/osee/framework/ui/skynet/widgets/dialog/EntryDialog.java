@@ -41,7 +41,7 @@ public class EntryDialog extends MessageDialog {
    XText text;
    Composite comp;
    String entryText = "";
-   String validationRegularExpression = null;
+   Pattern validationPattern = null;
    String validationErrorString = "";
    Button ok;
    MouseMoveListener listener;
@@ -88,9 +88,6 @@ public class EntryDialog extends MessageDialog {
          Button button = new Button(headerComp, SWT.PUSH);
          button.setText("Clear");
          button.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
@@ -101,9 +98,6 @@ public class EntryDialog extends MessageDialog {
          fontButton = new Button(headerComp, SWT.CHECK);
          fontButton.setText("Fixed Font");
          fontButton.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
@@ -208,16 +202,16 @@ public class EntryDialog extends MessageDialog {
     * @return true if entry is valid
     */
    public boolean isEntryValid() {
-      if (validationRegularExpression == null) {
+      if (validationPattern == null) {
          return true;
       }
       // verify title is alpha-numeric with spaces and dashes
-      Matcher m = Pattern.compile(validationRegularExpression).matcher(text.get());
+      Matcher m = validationPattern.matcher(text.get());
       return m.find();
    }
 
    public void setValidationRegularExpression(String regExp) {
-      validationRegularExpression = regExp;
+      validationPattern = Pattern.compile(regExp);
    }
 
    public void setValidationErrorString(String errorText) {
@@ -247,9 +241,6 @@ public class EntryDialog extends MessageDialog {
       this.fillVertically = fillVertically;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.MessageDialog#handleShellCloseEvent()
-    */
    @Override
    protected void handleShellCloseEvent() {
       super.handleShellCloseEvent();

@@ -63,7 +63,8 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    @Override
    protected IStatus isComplete() {
       TaskResOptionDefinition trd = getSelectedOptionDef();
-      if (trd == null) return Status.OK_STATUS;
+      if (trd == null)
+         return Status.OK_STATUS;
       int percentComp = percent.getInt();
       if (trd.isCompleteable() && (percentComp != 100)) {
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Completed resolution must have %Complete == 100");
@@ -122,7 +123,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          });
       }
    }
-   public class ResolutionLabelProvider implements ILabelProvider {
+   public static class ResolutionLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
          return null;

@@ -89,17 +89,6 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
    private static final AccessControlManager instance = new AccessControlManager();
 
-   /*   public static AccessControlManager getInstance() {
-         return instance;
-      }*/
-
-   public static void onManagerWebInit() throws Exception {
-
-      // This can result in a call to SkynetAuthentication, so it must be here (instead of in the
-      // constructor) to stop a cycle from occurring.
-
-   }
-
    private AccessControlManager() {
       accessControlListCache = new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
       objectToSubjectCache = new HashCollection<AccessObject, Integer>();
@@ -181,8 +170,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
-                  RelationTypeManager.getType("Users").getRelationTypeId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getRelationTypeId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
@@ -357,19 +345,14 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
-                        data.getPermission().getPermId(), data.getSubject().getArtId(),
-                        artifactAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(), data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), artifactAccessObject.getArtId(),
-                        artifactAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranchId());
                }
 
                if (recurse) {
                   Artifact artifact =
-                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              BranchManager.getBranch(artifactAccessObject.getBranchId()));
+                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(), BranchManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -395,15 +378,13 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), branchAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), branchAccessObject.getBranchId());
                }
             }
             cacheAccessControlData(data);
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
@@ -527,8 +508,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
          try {
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked,
-                  new LoadedArtifacts(object));
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked, new LoadedArtifacts(
+                  object));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -549,8 +530,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked,
-                  new LoadedArtifacts(object));
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked, new LoadedArtifacts(
+                  object));
          }
       }
    }

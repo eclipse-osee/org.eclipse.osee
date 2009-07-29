@@ -29,46 +29,28 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       this.tableLoadOptions = tableLoadOptions;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
-    */
    @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       return null;
    }
 
-   /**
-    * @return the tableLoadOptions
-    */
    public TableLoadOption[] getTableLoadOptions() {
       return tableLoadOptions;
    }
-   
-   /**
-    * @return the customizeData
-    */
+
    public CustomizeData getCustomizeData() {
       return customizeData;
    }
 
-   /**
-    * @param tableLoadOptions the tableLoadOptions to set
-    */
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
       this.tableLoadOptions = tableLoadOptions;
    }
 
-   /**
-    * @param customizeData the customizeData to set
-    */
    public void setCustomizeData(CustomizeData customizeData) {
       this.customizeData = customizeData;
    }

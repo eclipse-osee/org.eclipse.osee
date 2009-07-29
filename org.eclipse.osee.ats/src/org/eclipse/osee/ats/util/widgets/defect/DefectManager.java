@@ -46,7 +46,8 @@ public class DefectManager {
    }
 
    public String getHtml() throws OseeCoreException {
-      if (getDefectItems().size() == 0) return "";
+      if (getDefectItems().size() == 0)
+         return "";
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
       sb.append(getTable());
@@ -68,21 +69,24 @@ public class DefectManager {
    public int getNumMajor() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
-         if (dItem.getSeverity() == Severity.Major) x++;
+         if (dItem.getSeverity() == Severity.Major)
+            x++;
       return x;
    }
 
    public int getNumMinor() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
-         if (dItem.getSeverity() == Severity.Minor) x++;
+         if (dItem.getSeverity() == Severity.Minor)
+            x++;
       return x;
    }
 
    public int getNumIssues() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
-         if (dItem.getSeverity() == Severity.Issue) x++;
+         if (dItem.getSeverity() == Severity.Issue)
+            x++;
       return x;
    }
 
@@ -114,8 +118,9 @@ public class DefectManager {
             artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
                   newPromoteItem.toXml()));
          }
-         if (persist) artifact.persistAttributes(transaction);
-      } catch (Exception ex) {
+         if (persist)
+            artifact.persistAttributes(transaction);
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
       }
    }
@@ -129,7 +134,8 @@ public class DefectManager {
             found = true;
          }
       }
-      if (!found) defectItems.add(defectItem);
+      if (!found)
+         defectItems.add(defectItem);
       saveDefectItems(defectItems, persist, transaction);
    }
 
@@ -150,28 +156,22 @@ public class DefectManager {
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");
       for (DefectItem item : getDefectItems()) {
          User user = item.getUser();
-         String name = "";
-         if (user != null) {
-            name = user.getName();
-            if (name == null || name.equals("")) {
-               name = user.getName();
-            }
-         }
-         builder.append("<TR>");
-         builder.append("<TD>" + item.getSeverity() + "</TD>");
-         builder.append("<TD>" + item.getDisposition() + "</TD>");
-         builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user.equals(UserManager.getUser()))
-            builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
-         else
-            builder.append("<TD>" + name + "</TD>");
-         builder.append("<TD>" + item.getCreatedDate(XDate.MMDDYYHHMM) + "</TD>");
-         builder.append("<TD>" + item.getDescription() + "</TD>");
-         builder.append("<TD>" + item.getLocation() + "</TD>");
-         builder.append("<TD>" + item.getResolution() + "</TD>");
-         builder.append("<TD>" + item.getGuid() + "</TD>");
-         builder.append("<TD>" + item.isClosed() + "</TD>");
-         builder.append("</TR>");
+            builder.append("<TR>");
+            builder.append("<TD>" + item.getSeverity() + "</TD>");
+            builder.append("<TD>" + item.getDisposition() + "</TD>");
+            builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
+            if (user != null && user.equals(UserManager.getUser()))
+               builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
+            else
+               builder.append("<TD>" + user.getName() + "</TD>");
+            builder.append("<TD>" + item.getCreatedDate(XDate.MMDDYYHHMM) + "</TD>");
+            builder.append("<TD>" + item.getDescription() + "</TD>");
+            builder.append("<TD>" + item.getLocation() + "</TD>");
+            builder.append("<TD>" + item.getResolution() + "</TD>");
+            builder.append("<TD>" + item.getGuid() + "</TD>");
+            builder.append("<TD>" + item.isClosed() + "</TD>");
+            builder.append("</TR>");
+         
       }
       builder.append("</TABLE>");
       return builder.toString();

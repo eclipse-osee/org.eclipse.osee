@@ -73,21 +73,24 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
    }
 
    public void refresh() throws OseeCoreException {
-      if (isDisposed()) return;
-      if (percentComp != null) percentComp.refresh();
-      if (estHoursStat != null) estHoursStat.refresh();
-      if (hoursSpent != null) hoursSpent.refresh();
+      if (isDisposed())
+         return;
+      if (percentComp != null)
+         percentComp.refresh();
+      if (estHoursStat != null)
+         estHoursStat.refresh();
+      if (hoursSpent != null)
+         hoursSpent.refresh();
       smaMgr.getEditor().onDirtied();
       layout();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.isInTransition())
+         return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
+         return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -100,13 +103,9 @@ public class SMAStateMetricsHeader extends Composite implements IFrameworkTransa
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
       super.dispose();
    }
-
 }

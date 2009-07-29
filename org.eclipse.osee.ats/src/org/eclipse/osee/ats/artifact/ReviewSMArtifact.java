@@ -49,7 +49,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public ReviewSMArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -89,12 +89,10 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      if (!(this instanceof ReviewSMArtifact)) return Collections.emptyList();
       return (this).getUserRoleManager().getRoleUsersReviewComplete();
    }
 
    public void notifyReviewersComplete() throws OseeCoreException {
-      if (!(this instanceof ReviewSMArtifact)) return;
       UserRoleManager userRoleManager = (this).getUserRoleManager();
       if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete())) {
          //all reviewers are complete; send notification to author/moderator
@@ -173,7 +171,8 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      if (getParentTeamWorkflow() != null) teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
+      if (getParentTeamWorkflow() != null)
+         teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       if (getActionableItemsDam().getActionableItems().size() > 0) {
          teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
       }

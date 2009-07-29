@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -134,7 +135,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public boolean isAnnotation(ArtifactAnnotation.Type type) throws OseeCoreException {
       for (ArtifactAnnotation notify : getAnnotations()) {
-         if (notify.getType() == type) return true;
+         if (notify.getType() == type)
+            return true;
       }
       return false;
    }
@@ -152,7 +154,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          return ArtifactAnnotation.Type.Error;
       else if (isAnnotation(ArtifactAnnotation.Type.Warning))
          return ArtifactAnnotation.Type.Warning;
-      else if (isAnnotation(ArtifactAnnotation.Type.Info)) return ArtifactAnnotation.Type.Info;
+      else if (isAnnotation(ArtifactAnnotation.Type.Info))
+         return ArtifactAnnotation.Type.Info;
       return ArtifactAnnotation.Type.None;
    }
 
@@ -765,7 +768,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public void deleteAttribute(String attributeTypeName, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
-         if (attribute.getValue().equals(value)) attribute.delete();
+         if (attribute.getValue().equals(value))
+            attribute.delete();
       }
    }
 
@@ -1044,7 +1048,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @throws IllegalStateException if the artifact is deleted
     */
    public void reloadAttributesAndRelations() throws OseeCoreException {
-      if (!isInDb()) return;
+      if (!isInDb())
+         return;
 
       ArtifactQuery.reloadArtifactFromId(getArtId(), getBranch());
    }
@@ -1260,7 +1265,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
-      if (artifactsInNewOrder.size() == 0) return;
+      if (artifactsInNewOrder.size() == 0)
+         return;
       List<Artifact> currentOrder = getRelatedArtifacts(relationSide, Artifact.class);
       // Insert first artifact before first artifact in list
       Artifact previousArtifact = currentOrder.iterator().next();
@@ -1386,7 +1392,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
     */
    private static String generateHumanReadableId() throws OseeDataStoreException {
-      int seed = (int) (Math.random() * 34438396);
+      //      int seed = (int) (Math.random() * 34438396);
+      int seed = (new Random()).nextInt(34438396);
       char id[] = new char[charsIndexLookup.length];
 
       for (int i = 0; i < id.length; i++) {
@@ -1602,7 +1609,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    private Set<IArtifactAnnotation> artifactAnnotationExtensions;
 
    private Set<IArtifactAnnotation> getAnnotationExtensions() {
-      if (artifactAnnotationExtensions != null) return artifactAnnotationExtensions;
+      if (artifactAnnotationExtensions != null)
+         return artifactAnnotationExtensions;
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint(
@@ -1647,9 +1655,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return annotationMgr;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null)
+         throw new IllegalArgumentException("adapter can not be null");
 
       if (adapter.isInstance(this)) {
          return this;
@@ -1657,6 +1669,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
    public int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
@@ -1678,8 +1693,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return diff;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    @Override
-   public final int hashCode() {
+   public int hashCode() {
       return (37 * guid.hashCode()) + branch.hashCode();
    }
 
@@ -1688,7 +1706,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @return <code>true</code> if this artifact has the same GUID and branch <code>false</code> otherwise.
     */
    @Override
-   public final boolean equals(Object obj) {
+   public boolean equals(Object obj) {
       if (obj instanceof Artifact) {
          Artifact otherArtifact = (Artifact) obj;
          return guid.equals(otherArtifact.guid) && branch.equals(otherArtifact.branch);

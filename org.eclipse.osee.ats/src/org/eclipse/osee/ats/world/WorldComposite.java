@@ -93,7 +93,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
-   private TableLoadOption[] tableLoadOptions;
    private final ToolBar toolBar;
    private final IWorldEditor iWorldEditor;
    private final Composite mainComp;
@@ -256,7 +255,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       iWorldEditor.reflow();
    }
 
-   public class FilterLabelProvider implements ILabelProvider {
+   public static class FilterLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
          return null;
@@ -284,7 +283,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       }
    }
 
-   public class FilterContentProvider implements IStructuredContentProvider {
+   public static class FilterContentProvider implements IStructuredContentProvider {
       public Object[] getElements(Object arg0) {
          return ((ArrayList<?>) arg0).toArray();
       }
@@ -311,7 +310,8 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    }
 
    public void updateExtraInfoLine() throws OseeCoreException {
-      if (extraInfoLabel == null || extraInfoLabel.isDisposed()) return;
+      if (extraInfoLabel == null || extraInfoLabel.isDisposed())
+         return;
       String str = "";
       if (releaseMetricsAction.isChecked()) {
          VersionArtifact verArt = null;
@@ -367,7 +367,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             }
             try {
                WorldEditor.open(new WorldEditorSimpleProvider("ATS World", worldXViewer.getSelectedArtifacts(),
-                     worldXViewer.getCustomizeMgr().generateCustDataFromTable(), tableLoadOptions));
+                     worldXViewer.getCustomizeMgr().generateCustDataFromTable(), (TableLoadOption[]) null));
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -444,7 +444,8 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
          @Override
          public void run() {
-            if (releaseMetricsAction.isChecked()) selectionMetricsAction.setChecked(false);
+            if (releaseMetricsAction.isChecked())
+               selectionMetricsAction.setChecked(false);
             try {
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
@@ -458,7 +459,8 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
          @Override
          public void run() {
-            if (selectionMetricsAction.isChecked()) releaseMetricsAction.setChecked(false);
+            if (selectionMetricsAction.isChecked())
+               releaseMetricsAction.setChecked(false);
             try {
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {

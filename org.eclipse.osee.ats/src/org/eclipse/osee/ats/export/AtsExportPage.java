@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -40,12 +39,10 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  * @author Donald G. Dunne
  */
 public class AtsExportPage extends WizardDataTransferPage {
-   MouseMoveListener listener;
-   Label errorLabel;
-   List<XCheckBox> checkBoxes = new ArrayList<XCheckBox>();
-   XFileTextWithSelectionDialog xFileSel;
-   String fileLocation;
-   Collection<ExportOption> selectedExportOptions = new ArrayList<ExportOption>();
+   private List<XCheckBox> checkBoxes = new ArrayList<XCheckBox>();
+   private XFileTextWithSelectionDialog xFileSel;
+   private String fileLocation;
+   private Collection<ExportOption> selectedExportOptions = new ArrayList<ExportOption>();
    private final Collection<? extends Artifact> artifacts;
 
    public AtsExportPage(IStructuredSelection selection) throws OseeCoreException {
@@ -58,25 +55,16 @@ public class AtsExportPage extends WizardDataTransferPage {
       this.artifacts = artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.WizardDataTransferPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    @Override
    public void handleEvent(Event event) {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
@@ -99,9 +87,6 @@ public class AtsExportPage extends WizardDataTransferPage {
       label.setLayoutData(gridData);
 
       XModifiedListener modifyListener = new XModifiedListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-          */
          @Override
          public void widgetModified(XWidget widget) {
             handleModified();
@@ -166,16 +151,10 @@ public class AtsExportPage extends WizardDataTransferPage {
       fileLocation = xFileSel.get();
    }
 
-   /**
-    * @return the selectedExportOptions
-    */
    public Collection<ExportOption> getSelectedExportOptions() {
       return selectedExportOptions;
    }
 
-   /**
-    * @return the fileLocation
-    */
    public String getFileLocation() {
       return fileLocation;
    }

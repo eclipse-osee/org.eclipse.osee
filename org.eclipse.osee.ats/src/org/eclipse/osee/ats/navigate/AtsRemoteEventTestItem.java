@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
-   boolean isSourceClient = false;
    XResultData resultData;
 
    /**
@@ -60,11 +59,6 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       super(parent, "ATS Remote Event Test");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (AtsUtil.isProductionDb()) {
@@ -78,7 +72,6 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       int result = dialog.open();
       resultData = new XResultData();
       if (result == 0) {
-         isSourceClient = true;
          runClientTest();
       } else if (result == 1) {
          EntryDialog diag = new EntryDialog(getName(), "Enter tt number of Source Client created Action");
@@ -158,8 +151,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Support.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_3.getShortName());
-     teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
-    teamArt.persistAttributesAndRelations(transaction);
+      teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
+      teamArt.persistAttributesAndRelations(transaction);
       transaction.execute();
 
       // Make changes and persist
@@ -169,7 +162,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
-     teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
+      teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persistAttributesAndRelations(transaction);
       transaction.execute();
 

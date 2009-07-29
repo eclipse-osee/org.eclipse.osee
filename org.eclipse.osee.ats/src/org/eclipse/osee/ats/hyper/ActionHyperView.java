@@ -65,8 +65,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       super();
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(this);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
-      setNodeColor(whiteColor);
-      setCenterColor(whiteColor);
+      HyperView.setNodeColor(whiteColor);
+      HyperView.setCenterColor(whiteColor);
       setVerticalSelection(45);
    }
 
@@ -89,7 +89,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
          IViewReference ivr = page.findViewReference(ActionHyperView.VIEW_ID);
-         if (ivr != null && page.isPartVisible(ivr.getPart(false))) return (ActionHyperView) page.showView(ActionHyperView.VIEW_ID);
+         if (ivr != null && page.isPartVisible(ivr.getPart(false)))
+            return (ActionHyperView) page.showView(ActionHyperView.VIEW_ID);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
                "Couldn't Get OSEE Hyper View " + e1.getMessage());
@@ -138,7 +139,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          reviewsCreated = false;
          tasksReviewsCreated = false;
          ATSArtifact topArt = getTopArtifact(currentArtifact);
-         if (topArt == null || topArt.isDeleted()) return;
+         if (topArt == null || topArt.isDeleted())
+            return;
          topAHI = new ActionHyperItem(topArt);
          if (topArt instanceof ActionArtifact) {
             for (TeamWorkFlowArtifact team : ((ActionArtifact) topArt).getTeamWorkFlowArtifacts()) {
@@ -179,15 +181,17 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          else
             setVerticalSelection(45);
          create(topAHI);
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          clear();
       }
    }
 
    private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws OseeCoreException {
-      if (!(artifact instanceof StateMachineArtifact)) return;
+      if (!(artifact instanceof StateMachineArtifact))
+         return;
       if (((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts().size() > 0) {
-         if (artifact instanceof ReviewSMArtifact) tasksReviewsCreated = true;
+         if (artifact instanceof ReviewSMArtifact)
+            tasksReviewsCreated = true;
          parentAHI.addBottom(new TasksActionHyperItem(
                ((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts()));
       }
@@ -206,20 +210,23 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
             artifact = ((ReviewSMArtifact) artifact).getParentActionArtifact();
          }
       }
-      if (artifact == null) OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
+      if (artifact == null)
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
       return artifact;
    }
 
    public boolean activeEditorIsActionEditor() {
       IWorkbenchPage page = getSite().getWorkbenchWindow().getActivePage();
-      if (page == null) return false;
+      if (page == null)
+         return false;
       IEditorPart editorPart = page.getActiveEditor();
       boolean result = (editorPart != null && (editorPart instanceof SMAEditor));
       return result;
    }
 
    public void processWindowActivated() {
-      if (!this.getSite().getPage().isPartVisible(this)) return;
+      if (!this.getSite().getPage().isPartVisible(this))
+         return;
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
@@ -264,8 +271,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    }
 
    public String getActionDescription() {
-      if (currentArtifact != null && currentArtifact.isDeleted()) return String.format("Current Artifact - %s - %s",
-            currentArtifact.getGuid(), currentArtifact.getName());
+      if (currentArtifact != null && currentArtifact.isDeleted())
+         return String.format("Current Artifact - %s - %s", currentArtifact.getGuid(), currentArtifact.getName());
       return "";
    }
 
@@ -310,8 +317,10 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (currentArtifact == null) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (currentArtifact == null)
+         return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
+         return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)

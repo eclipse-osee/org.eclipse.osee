@@ -25,9 +25,11 @@ public class WorldEditorInput implements IEditorInput {
 
    IWorldEditorProvider iWorldEditorProvider;
 
-   /**
-    * @return the iWorldEditorProvider
-    */
+   @Override
+   public int hashCode() {
+      return iWorldEditorProvider.hashCode();
+   }
+
    public IWorldEditorProvider getIWorldEditorProvider() {
       return iWorldEditorProvider;
    }
@@ -38,33 +40,24 @@ public class WorldEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      return false;
+      if (!(obj instanceof WorldEditorInput))
+         return false;
+      WorldEditorInput castObj = (WorldEditorInput) obj;
+      return castObj.iWorldEditorProvider.equals(this.iWorldEditorProvider);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
    public boolean exists() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       try {
          return iWorldEditorProvider.getName();
@@ -74,18 +67,12 @@ public class WorldEditorInput implements IEditorInput {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
    @Override
    public String getName() {
       try {

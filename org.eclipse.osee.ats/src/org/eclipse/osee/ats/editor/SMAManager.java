@@ -133,7 +133,8 @@ public class SMAManager {
    }
 
    public WorkPageDefinition getWorkPageDefinition() throws OseeCoreException {
-      if (getStateMgr().getCurrentStateName() == null) return null;
+      if (getStateMgr().getCurrentStateName() == null)
+         return null;
       return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
    }
 
@@ -177,7 +178,8 @@ public class SMAManager {
     * @return true if this is a TeamWorkflow and it uses versions
     */
    public boolean isTeamUsesVersions() {
-      if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
+      if (!(getSma() instanceof TeamWorkFlowArtifact))
+         return false;
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isTeamUsesVersions();
       } catch (Exception ex) {
@@ -195,7 +197,8 @@ public class SMAManager {
     * @throws
     */
    public boolean teamDefHasWorkRule(String ruleId) throws OseeCoreException {
-      if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
+      if (!(getSma() instanceof TeamWorkFlowArtifact))
+         return false;
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().hasWorkRule(ruleId);
       } catch (Exception ex) {
@@ -210,7 +213,8 @@ public class SMAManager {
 
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (ruleId == null || ruleId.equals("")) return workRules;
+      if (ruleId == null || ruleId.equals(""))
+         return workRules;
       if (getSma() instanceof TeamWorkFlowArtifact) {
          // Get rules from team definition
          workRules.addAll(((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getWorkRulesStartsWith(ruleId));
@@ -236,7 +240,8 @@ public class SMAManager {
    public boolean isReleased() {
       try {
          VersionArtifact verArt = getTargetedForVersion();
-         if (verArt != null) return verArt.isReleased();
+         if (verArt != null)
+            return verArt.isReleased();
       } catch (Exception ex) {
          // Do Nothing
       }
@@ -270,7 +275,8 @@ public class SMAManager {
          SMAManager smaMgr = new SMAManager(smas.iterator().next());
          uld.setInitialSelections(smaMgr.getStateMgr().getAssignees());
       }
-      if (uld.open() != 0) return false;
+      if (uld.open() != 0)
+         return false;
       Collection<User> users = uld.getUsersSelected();
       if (users.size() == 0) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
@@ -324,7 +330,8 @@ public class SMAManager {
             if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                   "Change Version", error + "\n\nOverride?")) {
                return false;
-            } else if (!AtsUtil.isAtsAdmin()) AWorkbench.popup("ERROR", error);
+            } else if (!AtsUtil.isAtsAdmin())
+               AWorkbench.popup("ERROR", error);
          }
          if (teamDefHoldingVersions != null) {
             if (teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
@@ -332,8 +339,8 @@ public class SMAManager {
                return false;
             }
          }
-         if (teamDefHoldingVersions == null) teamDefHoldingVersions =
-               teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
+         if (teamDefHoldingVersions == null)
+            teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
       }
       if (teamDefHoldingVersions == null) {
          AWorkbench.popup("ERROR", "No versions configured for impacted team(s).");
@@ -368,8 +375,8 @@ public class SMAManager {
    }
 
    public boolean promptChangeType(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma),
-            persist);
+      if (sma instanceof TeamWorkFlowArtifact)
+         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       return false;
    }
 
@@ -407,8 +414,8 @@ public class SMAManager {
    }
 
    public boolean promptChangePriority(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma),
-            persist);
+      if (sma instanceof TeamWorkFlowArtifact)
+         return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       return false;
    }
 
@@ -534,7 +541,8 @@ public class SMAManager {
                         "Select Release Date Date",
                         "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getReleaseDate());
-            if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
+            if (verArt.getReleaseDate() != null)
+               diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
                verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
                verArt.persistAttributes();
@@ -544,7 +552,8 @@ public class SMAManager {
             // prompt that current release is (get from attribute) - want to change?
             DateSelectionDialog diag =
                   new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
-            if (getSma().getWorldViewReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewReleaseDate());
+            if (getSma().getWorldViewReleaseDate() != null)
+               diag.setSelectedDate(sma.getWorldViewReleaseDate());
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
                sma.persistAttributes();
@@ -568,7 +577,8 @@ public class SMAManager {
                         "Select Estimated Release Date Date",
                         "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getEstimatedReleaseDate());
-            if (verArt.getEstimatedReleaseDate() != null) diag.setSelectedDate(verArt.getEstimatedReleaseDate());
+            if (verArt.getEstimatedReleaseDate() != null)
+               diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             if (diag.open() == 0) {
                verArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
@@ -581,7 +591,8 @@ public class SMAManager {
             DateSelectionDialog diag =
                   new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
                         sma.getWorldViewEstimatedReleaseDate());
-            if (getSma().getWorldViewEstimatedReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
+            if (getSma().getWorldViewEstimatedReleaseDate() != null)
+               diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
@@ -637,7 +648,7 @@ public class SMAManager {
    public Collection<User> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
          if (transitionAssignees.size() > 0 && transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            transitionAssignees.remove(transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned)));
+            transitionAssignees.remove(UserManager.getUser(SystemUser.UnAssigned));
          }
          if (transitionAssignees.size() > 0) {
             return transitionAssignees;
@@ -713,7 +724,8 @@ public class SMAManager {
       // Validate toState name
       final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
       final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
-      if (toWorkPageDefinition == null) return new Result("Invalid toState \"" + toStateName + "\"");
+      if (toWorkPageDefinition == null)
+         return new Result("Invalid toState \"" + toStateName + "\"");
 
       // Validate transition from fromPage to toPage
       if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
@@ -724,34 +736,38 @@ public class SMAManager {
          return new Result(errStr);
       }
       // Don't transition with existing working branch
-      if (toStateName.equals(DefaultTeamState.Cancelled) && getBranchMgr().isWorkingBranchInWork()) return new Result(
-            "Working Branch exists.  Please delete working branch before cancelling.");
+      if (toStateName.equals(DefaultTeamState.Cancelled.name()) && getBranchMgr().isWorkingBranchInWork())
+         return new Result("Working Branch exists.  Please delete working branch before cancelling.");
 
       // Don't transition with uncommitted branch if this is a commit state
-      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranchInWork()) return new Result(
-            "Working Branch exists.  Please commit or delete working branch before transition.");
+      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranchInWork())
+         return new Result("Working Branch exists.  Please commit or delete working branch before transition.");
 
       // Check extension points for valid transition
       List<IAtsStateItem> atsStateItems = stateItems.getStateItems(fromWorkPageDefinition.getId());
       for (IAtsStateItem item : atsStateItems) {
          Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-         if (result.isFalse()) return result;
+         if (result.isFalse())
+            return result;
       }
       for (IAtsStateItem item : atsStateItems) {
          Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-         if (result.isFalse()) return result;
+         if (result.isFalse())
+            return result;
       }
       return Result.TrueResult;
    }
 
    public Result transition(String toStateName, User toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
       List<User> users = new ArrayList<User>();
-      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) users.add(toAssignee);
+      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name()))
+         users.add(toAssignee);
       return transition(toStateName, users, transaction, transitionOption);
    }
 
    public boolean isTargetedVersionable() throws OseeCoreException {
-      if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
+      if (!(getSma() instanceof TeamWorkFlowArtifact))
+         return false;
       return (((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions());
    }
 
@@ -764,7 +780,8 @@ public class SMAManager {
          final boolean persist = Collections.getAggregate(transitionOption).contains(TransitionOption.Persist);
 
          Result result = isTransitionValid(toStateName, toAssignees, transitionOption);
-         if (result.isFalse()) return result;
+         if (result.isFalse())
+            return result;
 
          final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
          final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);

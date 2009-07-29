@@ -37,19 +37,13 @@ public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
    public static final String userIdAttributeName = "User Id";
    public static final String favoriteBranchAttributeName = "Favorite Branch";
+   public static final String ARTIFACT_NAME = "User";
    public static enum Attributes {
       Phone, Email, Active, Policy
    };
 
-   public static final String ARTIFACT_NAME = "User";
-
    private PropertyStore userSettings;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#onBirth()
-    */
    @Override
    public void onBirth() throws OseeCoreException {
       super.onBirth();

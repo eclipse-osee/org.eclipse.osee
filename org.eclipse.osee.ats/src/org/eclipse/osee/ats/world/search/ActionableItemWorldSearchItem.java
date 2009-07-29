@@ -83,7 +83,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          return actionItemNames;
       else if (actionItems != null)
          return Artifacts.artNames(actionItems);
-      else if (selectedActionItems != null) return Artifacts.artNames(selectedActionItems);
+      else if (selectedActionItems != null)
+         return Artifacts.artNames(selectedActionItems);
       return new ArrayList<String>();
    }
 
@@ -94,6 +95,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    public void getActionableItems() throws OseeCoreException {
       if (actionItemNames != null && actionItems == null) {
+         actionItems = new HashSet<ActionableItemArtifact>();
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia =
                   AtsCacheManager.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
@@ -161,9 +163,12 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (actionItemNames != null) return;
-      if (actionItems != null) return;
-      if (searchType == SearchType.ReSearch && selectedActionItems != null) return;
+      if (actionItemNames != null)
+         return;
+      if (actionItems != null)
+         return;
+      if (searchType == SearchType.ReSearch && selectedActionItems != null)
+         return;
       ActionActionableItemListDialog diag = new ActionActionableItemListDialog(Active.Both);
       diag.setShowFinished(showFinished);
       diag.setRecurseChildren(recurseChildren);

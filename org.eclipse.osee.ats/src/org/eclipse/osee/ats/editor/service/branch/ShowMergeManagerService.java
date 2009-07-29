@@ -20,14 +20,11 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
 public class ShowMergeManagerService extends WorkPageService implements IBranchEventListener {
-
-   private Hyperlink link;
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
    // work
@@ -61,18 +58,8 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       return "Show Merge Manager";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
-    */
    @Override
    public void refresh() {
-      if (link != null && !link.isDisposed()) {
-         boolean enabled = isEnabled();
-         link.setEnabled(enabled);
-         link.setUnderlined(enabled);
-      }
       if (toolBarAction != null) {
          toolBarAction.setEnabled(isEnabled());
       }
@@ -88,11 +75,6 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       return enabled;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);

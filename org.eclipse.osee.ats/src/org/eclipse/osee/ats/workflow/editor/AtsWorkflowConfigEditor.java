@@ -208,7 +208,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class type) {
-      if (type == IContentOutlinePage.class) return new ShapesOutlinePage(new TreeViewer());
+      if (type == IContentOutlinePage.class)
+         return new ShapesOutlinePage(new TreeViewer());
       return super.getAdapter(type);
    }
 
@@ -221,7 +222,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
     */
    @Override
    protected PaletteRoot getPaletteRoot() {
-      if (PALETTE_MODEL == null) PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
+      if (PALETTE_MODEL == null)
+         PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
       return PALETTE_MODEL;
    }
 
@@ -275,7 +277,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             diagram = new WorkflowDiagram(workflowDef);
             int yLoc = 0;
             WorkPageDefinition startPage = workflowDef.getStartPage();
-            if (startPage == null || startPage.equals("")) {
+            if (startPage == null || startPage.getName().equals("")) {
                throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
             }
             // Create states
@@ -444,7 +446,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
+         return;
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
          if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (delArt.getName().equals(getPartName())) {

@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
-   private final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
+   private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
 
    public GenerateReviewParticipationReport(XNavigateItem parent) {
       super(parent, "Generate Review Participation Report", AtsImage.REPORT);
@@ -70,7 +70,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       }
    }
 
-   private class ParticipationReportJob extends Job {
+   private static class ParticipationReportJob extends Job {
 
       private final User user;
 
@@ -96,7 +96,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       }
    }
 
-   public class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
+   public static class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
       public ReviewParticipationXViewerFactory(User user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);

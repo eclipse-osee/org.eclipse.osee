@@ -100,7 +100,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+         return;
       Jobs.startJob(new Report(getName()), true);
    }
 
@@ -139,7 +140,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      if (monitor != null) monitor.beginTask(getName(), 20);
+      if (monitor != null)
+         monitor.beginTask(getName(), 20);
       loadAtsBranchArtifacts();
       testArtifactIds();
       testAtsAttributeValues();
@@ -155,7 +157,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testStateMachineAssignees();
       testAtsLogs();
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
-      if (monitor != null) xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
+      if (monitor != null)
+         xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
    }
 
    private void testArtifactIds() throws OseeCoreException {
@@ -262,11 +265,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void loadAtsBranchArtifacts() throws OseeCoreException {
-      xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
-      artifacts = ArtifactQuery.getArtifactListFromBranch(AtsUtil.getAtsBranch(), false);
       if (xResultData == null) {
          xResultData = new XResultData();
       }
+      xResultData.log(monitor, "testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
+      artifacts = ArtifactQuery.getArtifactListFromBranch(AtsUtil.getAtsBranch(), false);
+
       if (artifacts.size() == 0) {
          xResultData.logError("Artifact load returned 0 artifacts to check");
       }
@@ -298,7 +302,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
             for (SMAState state : stateDam.getStates()) {
                if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                     state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+                     DefaultTeamState.Cancelled.name())) {
                   if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
                      xResultData.logError("ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                      if (fixAttributeValues) {
@@ -317,7 +321,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
             SMAState state = currentStateDam.getState();
             if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                  state.getName().equals(DefaultTeamState.Cancelled.name()))) {
+                  DefaultTeamState.Cancelled.name())) {
                if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
                   xResultData.logError("ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                   if (fixAttributeValues) {
@@ -550,11 +554,23 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
-               if (art instanceof StateMachineArtifact) {
-                  List<Artifact> relationAssigned =
-                        art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
-                  if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
-                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
+               List<Artifact> relationAssigned =
+                     art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
+               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
+                  xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
+                  if (fixAssignees) {
+                     try {
+                        ((StateMachineArtifact) art).updateAssigneeRelations();
+                        art.persistAttributesAndRelations();
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
+                     xResultData.log(monitor, "Fixed");
+                  }
+               } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
+                  // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
+                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
+                     xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {
                            ((StateMachineArtifact) art).updateAssigneeRelations();
@@ -563,20 +579,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                         }
                         xResultData.log(monitor, "Fixed");
-                     }
-                  } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
-                     // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                     if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
-                        xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
-                        if (fixAssignees) {
-                           try {
-                              ((StateMachineArtifact) art).updateAssigneeRelations();
-                              art.persistAttributesAndRelations();
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                           }
-                           xResultData.log(monitor, "Fixed");
-                        }
                      }
                   }
                }

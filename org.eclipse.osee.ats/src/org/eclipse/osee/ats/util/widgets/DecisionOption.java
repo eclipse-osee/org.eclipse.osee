@@ -27,16 +27,26 @@ public class DecisionOption {
    private Collection<User> assignees = new HashSet<User>();
    private boolean followupRequired;
 
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + name.hashCode();
+
+      return result;
+   }
+
    public DecisionOption(String name, Collection<User> assignees, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
-      if (assignees != null) this.assignees = assignees;
+      if (assignees != null)
+         this.assignees = assignees;
    }
 
    public DecisionOption(String name, User assignee, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
-      if (assignee != null) this.assignees.add(assignee);
+      if (assignee != null)
+         this.assignees.add(assignee);
    }
 
    public DecisionOption(String name) {
@@ -52,16 +62,12 @@ public class DecisionOption {
       return name;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof DecisionOption) {
          DecisionOption state = (DecisionOption) obj;
-         if (!state.name.equals(name)) return false;
+         if (!state.name.equals(name))
+            return false;
          return true;
       }
       return super.equals(obj);
@@ -78,7 +84,8 @@ public class DecisionOption {
     */
    public void setAssignees(Collection<User> assignees) {
       this.assignees.clear();
-      if (assignees != null) this.assignees.addAll(assignees);
+      if (assignees != null)
+         this.assignees.addAll(assignees);
    }
 
    /**
@@ -88,14 +95,16 @@ public class DecisionOption {
     */
    public void setAssignee(User assignee) {
       this.assignees.clear();
-      if (assignee != null) this.assignees.add(assignee);
+      if (assignee != null)
+         this.assignees.add(assignee);
    }
 
    /**
     * @param assignee
     */
    public void addAssignee(User assignee) {
-      if (assignee != null) this.assignees.add(assignee);
+      if (assignee != null)
+         this.assignees.add(assignee);
    }
 
    /**
@@ -126,7 +135,8 @@ public class DecisionOption {
       Matcher m = Pattern.compile("^(.*?);(.*?);(.*)$").matcher(xml);
       if (m.find()) {
          name = m.group(1);
-         if (name.equals("")) return new Result("Invalid name");
+         if (name.equals(""))
+            return new Result("Invalid name");
          if (m.group(2).toLowerCase().equals("followup"))
             followupRequired = true;
          else if (m.group(2).toLowerCase().equals("completed"))
@@ -143,8 +153,8 @@ public class DecisionOption {
          }
          if (followupRequired && assignees.size() == 0)
             return new Result("If followup is specified, must set assignees.\nShould be: <userid><userid>");
-         else if (!followupRequired && assignees.size() > 0) return new Result(
-               "If completed is specified, don't specify assigness.  Leave blank.\n");
+         else if (!followupRequired && assignees.size() > 0)
+            return new Result("If completed is specified, don't specify assigness.  Leave blank.\n");
       } else
          return new Result(
                "Can't unpack decision option data => " + xml + "\n\n" + "must be in format: \"Name;(followup|completed);<userid1><userid2>\"" + "where true if followup is required; false if not.  If followup required, assignees will be userid1, userid2.");

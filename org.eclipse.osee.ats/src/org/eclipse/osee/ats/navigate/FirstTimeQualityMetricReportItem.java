@@ -92,7 +92,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
          } else
             return;
-      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+         return;
 
       ReportJob job = new ReportJob(getName(), useTeamDef);
       job.setUser(true);
@@ -100,7 +101,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   private class ReportJob extends Job {
+   private static class ReportJob extends Job {
 
       private final TeamDefinitionArtifact teamDef;
 
@@ -109,11 +110,6 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          this.teamDef = teamDef;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.ats.util.ReleaseReportJob#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
@@ -190,8 +186,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
                numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
                numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == 0 || numNonSupportReleased == null ? "N/A" : AtsUtil.doubleToStrString(new Double(
-                     numOrigDurningNextReleaseCycle) / numNonSupportReleased)}));
+               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToStrString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

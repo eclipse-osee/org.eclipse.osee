@@ -62,7 +62,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
       try {
          if (teamDef != null) {
-            name += (teamDef != null ? " - " + teamDef.getName() : "");
+            name += (" - " + teamDef.getName());
             selectedVersionArt = teamDef.getNextReleaseVersion();
             name += (selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "");
          }
@@ -74,7 +74,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    private TeamDefinitionArtifact getTeamDefinition(SearchType searchType) {
-      if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
+      if (teamDefHoldingVersions != null)
+         return teamDefHoldingVersions;
       return selectedTeamDef;
    }
 
@@ -85,7 +86,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
     */
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled())
+         return EMPTY_SET;
       if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
          return EMPTY_SET;
@@ -93,15 +95,18 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       List<Artifact> arts =
             getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
                   AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled())
+         return EMPTY_SET;
       return arts;
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (teamDefHoldingVersions != null) return;
-      if (searchType == SearchType.ReSearch && selectedTeamDef != null) return;
+      if (teamDefHoldingVersions != null)
+         return;
+      if (searchType == SearchType.ReSearch && selectedTeamDef != null)
+         return;
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));

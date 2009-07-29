@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 
@@ -39,7 +37,8 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void add(final Collection<? extends DefectItem> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             rootSet.addAll(items);
             xViewer.refresh();
          };
@@ -49,34 +48,10 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void set(final Collection<? extends DefectItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             clear();
             add(arts);
-         };
-      });
-   }
-
-   public void remove(final Artifact art) {
-      remove(Arrays.asList(art));
-   }
-
-   public void remove(final Collection<? extends Artifact> arts) {
-      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<DefectItem> delItems = new ArrayList<DefectItem>();
-      delItems.addAll(rootSet);
-      for (Artifact art : arts) {
-         for (DefectItem wai : rootSet)
-            if (wai.equals(art)) delItems.add(wai);
-      }
-      removeItems(delItems);
-   }
-
-   public void removeItems(final Collection<? extends DefectItem> arts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.remove(arts);
-            xViewer.refresh();
          };
       });
    }
@@ -84,7 +59,8 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void clear() {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             rootSet.clear();
             xViewer.refresh();
          };
@@ -114,7 +90,8 @@ public class DefectContentProvider implements ITreeContentProvider {
 
    public Object[] getElements(Object inputElement) {
       debug.report("getElements");
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String)
+         return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 

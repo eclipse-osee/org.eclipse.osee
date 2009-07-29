@@ -62,8 +62,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       super();
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(this);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
-      setNodeColor(whiteColor);
-      setCenterColor(whiteColor);
+      HyperView.setNodeColor(whiteColor);
+      HyperView.setCenterColor(whiteColor);
       defaultZoom.pcRadius += defaultZoom.pcRadiusFactor * 2;
       defaultZoom.uuRadius += defaultZoom.uuRadiusFactor * 2;
       defaultZoom.xSeparation += defaultZoom.xSeparationFactor;
@@ -102,7 +102,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       display();
    }
 
-   public void load(Artifact artifact) {
+   private void load(Artifact artifact) {
       currentArtifact = artifact;
       display();
    }
@@ -110,7 +110,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void display() {
       try {
-         if (currentArtifact == null) return;
+         if (currentArtifact == null)
+            return;
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
@@ -118,9 +119,11 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
 
             // Don't process link if onlyShowRel is populated and doesn't contain link name
             if (onlyShowRelations.size() > 0) {
-               if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) continue;
+               if (!onlyShowRelations.contains(link.getRelationType().getTypeName()))
+                  continue;
                x++;
-               if (x == 4) x = 0;
+               if (x == 4)
+                  x = 0;
             }
 
             Artifact otherArt = link.getArtifactB();
@@ -134,11 +137,13 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
             if (!otherArt.isDeleted()) {
                ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
                String tip = link.getRelationType().getTypeName();
-               if (!link.getRationale().equals("")) tip += "(" + link.getRationale() + ")";
+               if (!link.getRationale().equals(""))
+                  tip += "(" + link.getRationale() + ")";
                ahi.setRelationToolTip(tip);
                String label =
                      (isShowOrder() ? "(" + thisOrder + ") " : "") + link.getRelationType().getShortName() + (isShowOrder() ? "(" + otherOrder + ") " : "");
-               if (!link.getRationale().equals("")) label += "(" + link.getRationale() + ")";
+               if (!link.getRationale().equals(""))
+                  label += "(" + link.getRationale() + ")";
                ahi.setRelationLabel(label);
                ahi.setLink(link);
                ahi.setRelationDirty(link.isDirty());
@@ -160,7 +165,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
                }
             }
             x++;
-            if (x == 4) x = 0;
+            if (x == 4)
+               x = 0;
          }
          create(topAHI);
          center();
@@ -181,8 +187,10 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    }
 
    public void handleWindowChange() {
-      if (pinAction.isChecked()) return;
-      if (!this.getSite().getPage().isPartVisible(this)) return;
+      if (pinAction.isChecked())
+         return;
+      if (!this.getSite().getPage().isPartVisible(this))
+         return;
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
@@ -287,8 +295,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    }
 
    public String getActionDescription() {
-      if (currentArtifact != null && currentArtifact.isDeleted()) return String.format("Current Artifact - %s - %s",
-            currentArtifact.getGuid(), currentArtifact.getName());
+      if (currentArtifact != null && currentArtifact.isDeleted())
+         return String.format("Current Artifact - %s - %s", currentArtifact.getGuid(), currentArtifact.getName());
       return "";
    }
 
@@ -328,9 +336,12 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
-      if (currentArtifact == null) return;
+      if (sender.isRemote())
+         return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
+         return;
+      if (currentArtifact == null)
+         return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)

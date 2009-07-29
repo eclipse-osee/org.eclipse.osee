@@ -61,19 +61,11 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, SkynetTransaction transaction) {
       this.emailPOCs = emailPOCs;
       this.transaction = transaction;
-      if (!(artifact instanceof StateMachineArtifact)) {
-         throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
-      }
 
       sma = artifact;
       smaMgr = new SMAManager(sma);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processHeaderRow(java.lang.String[])
-    */
    public void processHeaderRow(String[] headerRow) {
       this.headerRow = headerRow.clone();
    }
@@ -111,8 +103,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   u = UserManager.getUser();
                else
                   u = UserManager.getUserByName(userName);
-               if (u == null) OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-                     "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
+               if (u == null)
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
+                        "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                taskArt.getSmaMgr().getLog().setOriginator(u);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
                Set<User> assignees = new HashSet<User>();
@@ -171,7 +164,8 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                if (str != null && !str.equals("")) {
                   try {
                      percent = new Double(str);
-                     if (percent < 1) percent = percent * 100;
+                     if (percent < 1)
+                        percent = percent * 100;
                   } catch (Exception ex) {
                      throw new IllegalArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
                            str, rowNum));
@@ -216,16 +210,11 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
-    */
    public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
@@ -237,43 +226,18 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processEmptyRow()
-    */
    public void processEmptyRow() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#detectedTotalRowCount(int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
    }
 
@@ -285,26 +249,15 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       this.monitor = monitor;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "Excel Ats Tasks";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return false;

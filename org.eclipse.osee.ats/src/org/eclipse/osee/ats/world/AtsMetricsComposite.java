@@ -295,7 +295,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (numCompleted == numTotal) {
                percentCompleteByNumber = 100;
             } else if (numCompleted != 0 && numTotal != 0) {
-               double percent = new Double(numCompleted) / numTotal * 100.0;
+               double percent = ((double) numCompleted / (double) numTotal) * 100.0;
                percentCompleteByNumber = (int) percent;
             }
             int percentCompleteByPercents = 0;
@@ -388,7 +388,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void adapt(Control control) {
-      if (control == null) return;
+      if (control == null)
+         return;
       control.setBackground(BACKGROUND_COLOR);
       control.setForeground(FOREGROUND_COLOR);
    }

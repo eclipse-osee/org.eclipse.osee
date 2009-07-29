@@ -27,6 +27,14 @@ public class DiagramNode {
    private DiagramNode defaultToPage;
    private String instructionStr;
 
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + id.hashCode();
+
+      return result;
+   }
+
    public static enum PageType {
       Team, ActionableItem
    };
@@ -38,7 +46,8 @@ public class DiagramNode {
    public DiagramNode(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super();
       this.name = name;
-      if (id != null && !id.equals("")) this.id = id;
+      if (id != null && !id.equals(""))
+         this.id = id;
    }
 
    public DiagramNode(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
@@ -77,21 +86,20 @@ public class DiagramNode {
       this.pageType = pageType;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof DiagramNode) return getId().equals(((DiagramNode) obj).getId());
+      if (obj instanceof DiagramNode)
+         return getId().equals(((DiagramNode) obj).getId());
       return false;
    }
 
    public String toString() {
       StringBuffer sb = new StringBuffer(name + (id != null ? " (" + id + ") " : "") + "\n");
       for (DiagramNode page : toPages) {
-         sb.append("-> " + page.name + (returnPages.contains(toPages) ? " (return)" : "") + "\n");
+         sb.append("-> ");
+         sb.append(page.name);
+         sb.append((returnPages.contains(page) ? " (return)" : ""));
+         sb.append("\n");
       }
       return sb.toString();
    }
@@ -102,7 +110,8 @@ public class DiagramNode {
 
    public void addToPage(DiagramNode page, boolean returnPage) {
       toPages.add(page);
-      if (returnPage) returnPages.add(page);
+      if (returnPage)
+         returnPages.add(page);
    }
 
    public String getName() {

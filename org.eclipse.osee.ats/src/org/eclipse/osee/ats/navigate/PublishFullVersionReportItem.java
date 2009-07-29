@@ -68,7 +68,8 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
          dialog.setFilterExtensions(new String[] {"*.html"});
          usePublishToFilename = dialog.open();
-         if (usePublishToFilename == null) return;
+         if (usePublishToFilename == null)
+            return;
       }
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
@@ -86,7 +87,8 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
          } else
             return;
-      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      } else if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+         return;
 
       String title = useTeamDef.getName() + " Version Report";
       PublishReportJob job = new PublishReportJob(title, teamDef, usePublishToFilename);
@@ -95,7 +97,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   private class PublishReportJob extends Job {
+   private static class PublishReportJob extends Job {
 
       private final TeamDefinitionArtifact teamDef;
       private final String filename;
@@ -106,11 +108,6 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          this.filename = filename;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.ats.util.ReleaseReportJob#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       public IStatus run(IProgressMonitor monitor) {
          try {

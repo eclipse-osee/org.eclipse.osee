@@ -19,12 +19,9 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 public class UserRoleLabelProvider extends XViewerLabelProvider {
-   Font font = null;
-
    private final UserRoleXViewer xViewer;
 
    public UserRoleLabelProvider(UserRoleXViewer xViewer) {
@@ -69,14 +66,12 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMajor(defectItem.getUser()) + "";
       else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col))
          return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMinor(defectItem.getUser()) + "";
-      else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumIssues(
-            defectItem.getUser()) + "";
+      else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col))
+         return xViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumIssues(defectItem.getUser()) + "";
       return "unhandled column";
    }
 
    public void dispose() {
-      if (font != null) font.dispose();
-      font = null;
    }
 
    public boolean isLabelProperty(Object element, String property) {

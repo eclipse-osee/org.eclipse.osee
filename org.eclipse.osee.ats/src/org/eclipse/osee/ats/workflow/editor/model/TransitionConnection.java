@@ -48,9 +48,6 @@ public class TransitionConnection extends Connection {
       return "Transition: " + getPropertyValue(TYPE_PROP);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
-    */
    @Override
    public Result validForSave() throws OseeCoreException {
       System.err.println("Add Connection validations.");
@@ -80,25 +77,16 @@ public class TransitionConnection extends Connection {
       return super.getPropertyValue(id);
    }
 
-   /**
-    * @return the label
-    */
    @Override
    public String getLabel() {
       return "Transition";
    }
 
-   /**
-    * @return the lineWidth
-    */
    @Override
    public int getLineWidth() {
       return 2;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

@@ -76,8 +76,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class XDefectViewer extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener {
 
    private DefectXViewer xViewer;
-   private final int defaultTableHeightHint = 100;
-   private final int paddedTableHeightHint = 2;
+   private static final int defaultTableHeightHint = 100;
+   private static final int paddedTableHeightHint = 2;
    private IDirtiableEditor editor;
    private IReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
@@ -117,7 +117,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null)
+         toolkit.paintBordersFor(mainComp);
 
       createTaskActionBar(mainComp);
 
@@ -135,7 +136,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
       });
 
-      if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      if (toolkit != null)
+         toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
       handleExpandCollapseDefectTableList();
 
@@ -310,8 +312,10 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public ScrolledForm getForm(Composite composite) {
       ScrolledForm form = null;
-      if (composite == null) return null;
-      if (composite instanceof ScrolledForm) return (ScrolledForm) composite;
+      if (composite == null)
+         return null;
+      if (composite instanceof ScrolledForm)
+         return (ScrolledForm) composite;
       if (!(composite instanceof ScrolledForm)) {
          form = getForm(composite.getParent());
       }
@@ -410,8 +414,10 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    @SuppressWarnings("unchecked")
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> items = new ArrayList<DefectItem>();
-      if (xViewer == null) return items;
-      if (xViewer.getSelection().isEmpty()) return items;
+      if (xViewer == null)
+         return items;
+      if (xViewer.getSelection().isEmpty())
+         return items;
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -438,7 +444,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public void refresh() {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed())
+         return;
       xViewer.refresh();
       validate();
       refreshActionEnablement();
@@ -484,7 +491,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) return "";
+      if (getXViewer().getTree().getItemCount() == 0)
+         return "";
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -541,7 +549,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public void setReviewArt(IReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      if (xViewer != null) loadTable();
+      if (xViewer != null)
+         loadTable();
    }
 
    /*
@@ -584,11 +593,13 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId())
+         return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed())
+               return;
             if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
                loadTable();
             } else

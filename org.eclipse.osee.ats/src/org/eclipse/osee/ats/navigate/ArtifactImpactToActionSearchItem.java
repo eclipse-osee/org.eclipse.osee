@@ -72,7 +72,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       }
    }
 
-   public class ActionToArtifactImpactJob extends Job {
+   public static class ActionToArtifactImpactJob extends Job {
       private IProgressMonitor monitor;
       private final String artifactName;
       private final XResultData rd = new XResultData();
@@ -101,7 +101,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          final Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
-         if (srchArts.size() == 0) return;
+         if (srchArts.size() == 0)
+            return;
          if (srchArts.size() > 1) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)

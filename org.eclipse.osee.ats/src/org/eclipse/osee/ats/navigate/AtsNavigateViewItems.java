@@ -102,8 +102,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-         if (AtsUtil.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
-               GoalSearchState.InWork)));
+         if (AtsUtil.isGoalEnabled())
+            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
@@ -233,6 +233,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNavigateItem");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNavigateItem extension point");
+         return;
       }
       IExtension[] extensions = point.getExtensions();
       Map<String, XNavigateItem> nameToNavItem = new HashMap<String, XNavigateItem>();

@@ -32,9 +32,6 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
    private TaskComposite taskComposite;
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
 
-   /**
-    * @param editor
-    */
    public TaskXWidgetActionPage(TaskEditor taskEditor) {
       super(taskEditor, "org.eclipse.osee.ats.actionPage", "Actions");
       this.taskEditor = taskEditor;
@@ -52,16 +49,10 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
       return resultsSection;
    }
 
-   /**
-    * @return the taskComposite
-    */
    public TaskComposite getTaskComposite() {
       return taskComposite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
@@ -73,15 +64,10 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#getDynamicWidgetLayoutListener()
-    */
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
-         if (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem() instanceof TaskEditorParameterSearchItem) {
-            return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem());
-         }
+         return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem());
       }
       return null;
    }
@@ -90,22 +76,14 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
       taskEditor.handleRefreshAction();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#getXWidgetsXml()
-    */
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
       if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
-         if (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem() instanceof TaskEditorParameterSearchItem) {
-            return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem()).getParameterXWidgetXml();
-         }
+         return (((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem()).getParameterXWidgetXml();
       }
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#handleSearchButtonPressed()
-    */
    @Override
    public void handleSearchButtonPressed() {
       try {

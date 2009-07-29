@@ -38,20 +38,10 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       return equals;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
    public boolean exists() {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(artifact);
    }
@@ -60,11 +50,6 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       return ImageManager.getImage(artifact);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
    public String getName() {
       if (artifact == null) {
          return "No Artifact Input Provided";
@@ -72,29 +57,14 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       return getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (Artifact.class.equals(adapter)) {
@@ -109,5 +79,10 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
 
    public boolean isReadOnly() {
       return artifact == null || artifact.isReadOnly();
+   }
+
+   @Override
+   public int hashCode() {
+      return this.artifact.hashCode();
    }
 }

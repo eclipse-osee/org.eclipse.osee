@@ -22,11 +22,16 @@ public class SMAEditorInput extends BaseArtifactEditorInput {
       super(artifact);
    }
 
+   @Override
    public boolean equals(Object obj) {
-      boolean equals = false;
       if (obj instanceof SMAEditorInput) {
          return (getArtifact() == ((SMAEditorInput) obj).getArtifact());
       }
-      return equals;
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      return getArtifact().hashCode();
    }
 }

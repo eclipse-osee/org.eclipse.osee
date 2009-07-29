@@ -65,8 +65,10 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
-      if (teamDef == null) return;
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (teamDef == null)
+         return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+         return;
       PublishReportJob job = new PublishReportJob(teamDef);
       job.setUser(true);
       job.setPriority(Job.LONG);
@@ -74,11 +76,14 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
-      if (teamDef != null) return teamDef;
+      if (teamDef != null)
+         return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
-            TeamDefinitionArtifact teamDef = AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
-            if (teamDef != null) return teamDef;
+            TeamDefinitionArtifact teamDef =
+                  AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            if (teamDef != null)
+               return teamDef;
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }
@@ -96,7 +101,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       return null;
    }
 
-   private class PublishReportJob extends Job {
+   private static class PublishReportJob extends Job {
 
       private final TeamDefinitionArtifact teamDef;
 

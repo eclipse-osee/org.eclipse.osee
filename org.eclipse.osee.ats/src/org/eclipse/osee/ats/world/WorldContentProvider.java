@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -24,6 +25,9 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
@@ -119,9 +123,6 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Artifact) {
          try {
             Artifact artifact = (Artifact) parentElement;
-            if (artifact == null) {
-               return new Object[] {};
-            }
             if (artifact.isDeleted()) return new Object[] {};
             if (artifact instanceof ActionArtifact) {
                return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
@@ -146,8 +147,8 @@ public class WorldContentProvider implements ITreeContentProvider {
                arts.addAll(reviewArt.getSmaMgr().getTaskMgr().getTaskArtifacts());
                return arts.toArray();
             }
-         } catch (Exception ex) {
-            // do nothing
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          }
       }
       return EMPTY_ARRAY;
@@ -157,9 +158,6 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof Artifact) {
          try {
             Artifact artifact = (Artifact) element;
-            if (artifact == null) {
-               return null;
-            }
             if (artifact.isDeleted()) return null;
             if (artifact instanceof TeamWorkFlowArtifact) {
                ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
@@ -168,7 +166,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                ((TaskArtifact) artifact).getParentSMA();
             }
             if (artifact instanceof ReviewSMArtifact) {
-               ((TeamWorkFlowArtifact) artifact).getParentSMA();
+               ((ReviewSMArtifact) artifact).getParentSMA();
             }
             if (artifact instanceof GoalArtifact) {
                ((GoalArtifact) artifact).getParentSMA();

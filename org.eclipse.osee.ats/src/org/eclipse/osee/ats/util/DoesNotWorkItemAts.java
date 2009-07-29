@@ -59,7 +59,8 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+         return;
 
       //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsUtil.getAtsBranch())) {
       //         int branchId = art.getSoleAttributeValue("ats.Branch Id");
@@ -205,7 +206,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //      newActionTx.execute();
    //   }
 
-   private final boolean fixIt = false;
+   private static final boolean fixIt = false;
 
    //   public void cleanXViewerCustomizations() throws OseeCoreException {
    //      for (User user : SkynetAuthentication.getUsers()) {

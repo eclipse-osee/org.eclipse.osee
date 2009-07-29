@@ -34,29 +34,19 @@ public class AtsWorkflowConfigEditorInput implements IEditorInput {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
+   @Override
+   public int hashCode() {
+      return workflow.getId().hashCode();
+   }
+
    public boolean exists() {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
    public String getName() {
       if (workflow == null) {
          return "No Artifact Input Provided";
@@ -64,29 +54,14 @@ public class AtsWorkflowConfigEditorInput implements IEditorInput {
       return workflow.getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       return getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;

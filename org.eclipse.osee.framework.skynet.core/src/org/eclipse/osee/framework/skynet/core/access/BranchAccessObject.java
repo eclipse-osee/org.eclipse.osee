@@ -24,6 +24,13 @@ public class BranchAccessObject extends AccessObject {
    private int branchId;
    private static final Map<Integer, BranchAccessObject> cache = new HashMap<Integer, BranchAccessObject>();
 
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + branchId;
+      return result;
+   }
+
    public BranchAccessObject(int branchId) {
       this.branchId = branchId;
    }

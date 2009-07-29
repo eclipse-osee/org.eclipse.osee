@@ -24,7 +24,6 @@ public class HyperViewItem {
    private String guid;
    private final String title;
    private Image image;
-   private Object data;
    private String toolTip;
    private String relationToolTip;
    private String relationLabel;
@@ -108,10 +107,6 @@ public class HyperViewItem {
     */
    public ArrayList<HyperViewItem> getRight() {
       return rights;
-   }
-
-   public Object getData() {
-      return data;
    }
 
    public Image getImage() throws OseeCoreException {

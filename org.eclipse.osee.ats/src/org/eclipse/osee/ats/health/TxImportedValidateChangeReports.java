@@ -238,7 +238,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       }
       return toReturn;
    }
-   private final class ImportedId {
+   private static final class ImportedId {
       private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
             "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
 

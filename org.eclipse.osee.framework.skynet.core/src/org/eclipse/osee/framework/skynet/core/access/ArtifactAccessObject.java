@@ -26,6 +26,14 @@ public class ArtifactAccessObject extends AccessObject {
    private static final DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject> cache =
          new DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject>();
 
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + artId;
+      result = 31 * result + branchId;
+      return result;
+   }
+
    public ArtifactAccessObject(Integer artId, Integer branchId) {
       super();
       this.artId = artId;

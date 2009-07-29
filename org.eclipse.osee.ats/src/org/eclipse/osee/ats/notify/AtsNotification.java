@@ -26,26 +26,16 @@ import org.osgi.framework.Bundle;
  */
 public class AtsNotification {
 
+   private static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
    private static AtsNotification instance = new AtsNotification();
-   private static Set<IAtsNotification> atsNotificationItems;
 
    private AtsNotification() {
       instance = this;
-   }
-
-   public static AtsNotification getInstance() {
-      return instance;
-   }
-
-   @SuppressWarnings( {"unchecked"})
-   public Set<IAtsNotification> getAtsNotifications() {
-      if (atsNotificationItems != null) return atsNotificationItems;
-      atsNotificationItems = new HashSet<IAtsNotification>();
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNotification");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNotification extension point");
-         return atsNotificationItems;
+         return;
       }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
@@ -59,7 +49,7 @@ public class AtsNotification {
                if (classname != null && bundleName != null) {
                   Bundle bundle = Platform.getBundle(bundleName);
                   try {
-                     Class taskClass = bundle.loadClass(classname);
+                     Class<?> taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      atsNotificationItems.add((IAtsNotification) obj);
                   } catch (Exception ex) {
@@ -69,6 +59,13 @@ public class AtsNotification {
             }
          }
       }
+   }
+
+   public static AtsNotification getInstance() {
+      return instance;
+   }
+
+   public Set<IAtsNotification> getAtsNotifications() {
       return atsNotificationItems;
    }
 

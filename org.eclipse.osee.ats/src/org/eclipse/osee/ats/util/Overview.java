@@ -48,7 +48,8 @@ public class Overview {
 
       public static boolean contains(PreviewStyle[] styles, PreviewStyle style) {
          for (PreviewStyle st : styles)
-            if (st.equals(style)) return true;
+            if (st.equals(style))
+               return true;
          return false;
       }
    };
@@ -178,18 +179,11 @@ public class Overview {
       addRelationTable("Is Supported By", AtsRelation.SupportingInfo_SupportingInfo, artifact);
    }
 
-   public void addNotes(StateMachineArtifact artifact, String state) {
-      if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = (artifact).getSmaMgr().getNotes().getTable(state);
-         if (notesHtml.equals("")) return;
-         this.html.append(notesHtml);
-      }
-   }
-
    public void addNotes(Artifact artifact) {
       if (artifact instanceof StateMachineArtifact) {
          String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(null);
-         if (notesHtml.equals("")) return;
+         if (notesHtml.equals(""))
+            return;
          this.html.append(notesHtml);
       }
    }
@@ -217,13 +211,15 @@ public class Overview {
    public void addRelationTable(String name, AtsRelation side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);
-         if (arts.size() == 0) return;
+         if (arts.size() == 0)
+            return;
          startBorderTable(false, name);
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Name", "Rationale"}));
          for (Artifact art : arts) {
             String rationale = "";
             RelationLink link = parent.getRelations(side, art).iterator().next();
-            if (!link.getRationale().equals("")) rationale = link.getRationale();
+            if (!link.getRationale().equals(""))
+               rationale = link.getRationale();
             String hyperStr = Overview.getOpenHyperlinkHtml(art);
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), hyperStr, rationale}));
          }
@@ -274,7 +270,8 @@ public class Overview {
 
    public void addLog(StateMachineArtifact artifact) throws OseeCoreException {
       ATSLog artifactLog = artifact.getSmaMgr().getLog();
-      if (artifactLog != null && artifactLog.getLogItems().size() > 0) addTable(artifact.getSmaMgr().getLog().getTable());
+      if (artifactLog != null && artifactLog.getLogItems().size() > 0)
+         addTable(artifact.getSmaMgr().getLog().getTable());
    }
 
    public void startStateBorderTable(SMAManager smaMgr, SMAState state) throws OseeCoreException {

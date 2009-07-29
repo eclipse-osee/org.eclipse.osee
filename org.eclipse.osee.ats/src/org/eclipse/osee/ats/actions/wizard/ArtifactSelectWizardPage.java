@@ -120,8 +120,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
             @SuppressWarnings("unchecked")
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-               return getComparator().compare(((Artifact) e1).getName(),
-                     ((Artifact) e2).getName());
+               return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
             }
          });
          gd = new GridData(GridData.FILL, GridData.FILL, true, true);
@@ -154,8 +153,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
       public String getText(Object arg0) {
          Artifact art = (Artifact) arg0;
          if (showArtData)
-            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(),
-                  art.getHumanReadableId(), art.getGuid());
+            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(), art.getGuid());
          else
             return art.getName();
       }
@@ -174,7 +172,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
       }
    }
 
-   public class ArtTypeLabelProvider implements ILabelProvider {
+   public static class ArtTypeLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
          return null;

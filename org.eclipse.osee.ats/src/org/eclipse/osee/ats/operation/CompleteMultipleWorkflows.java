@@ -28,22 +28,16 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class CompleteMultipleWorkflows implements IAtsWorldEditorMenuItem {
 
-   private final boolean enableEmail = false;
+   private static final boolean enableEmail = false;
 
    public CompleteMultipleWorkflows() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#getMenuItemName()
-    */
    @Override
    public String getMenuItemName() throws OseeCoreException {
       return "Complete Selected Workflows";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#runMenuItem(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
       Collection<StateMachineArtifact> smas = worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();

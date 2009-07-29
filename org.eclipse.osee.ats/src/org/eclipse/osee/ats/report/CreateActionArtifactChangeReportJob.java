@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
  * @author Donald G. Dunne
  */
 public class CreateActionArtifactChangeReportJob extends Job {
-   IProgressMonitor monitor;
    private final Set<TeamWorkFlowArtifact> teamArts;
    private final String byAttribute;
 
@@ -62,9 +61,11 @@ public class CreateActionArtifactChangeReportJob extends Job {
    public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute) {
       XResultData rd = new XResultData();
       try {
-         if (teamArts.size() == 0) throw new OseeStateException("No Actions/Workflows Specified");
+         if (teamArts.size() == 0)
+            throw new OseeStateException("No Actions/Workflows Specified");
          retrieveData(monitor, teamArts, byAttribute, rd);
-         if (rd.toString().equals("")) rd.log("No Problems Found");
+         if (rd.toString().equals(""))
+            rd.log("No Problems Found");
          final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
          final String title = jobName;
          Displays.ensureInDisplayThread(new Runnable() {
@@ -111,8 +112,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigArtifact commitConfigArt : teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
-            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt,
-                  rd);
+            processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt, rd);
          }
          x++;
 
@@ -128,14 +128,16 @@ public class CreateActionArtifactChangeReportJob extends Job {
       ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
-         if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         if (attrStrs.size() == 0)
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   modArt.getName(), attrStr, rpcrNum, "Content"}));
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
-         if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         if (attrStrs.size() == 0)
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getName(), attrStr, rpcrNum, "Deleted"}));
@@ -143,7 +145,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
             ModificationType.MODIFIED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
-         if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+         if (attrStrs.size() == 0)
+            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getName(), attrStr, rpcrNum, "Relation"}));

@@ -40,7 +40,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
     *      java.util.Collection)
     */
    public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
-      if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision)) {
+      if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare.name()) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
          XDecisionOptions decOptions = new XDecisionOptions(smaMgr.getSma());
          return decOptions.validateDecisionOptions();
       }

@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.role;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class UserRoleContentProvider implements ITreeContentProvider {
@@ -37,7 +35,8 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void add(final Collection<? extends UserRole> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             rootSet.addAll(items);
             xViewer.refresh();
          };
@@ -47,34 +46,10 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void set(final Collection<? extends UserRole> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             clear();
             add(arts);
-         };
-      });
-   }
-
-   public void remove(final Artifact art) {
-      remove(Arrays.asList(art));
-   }
-
-   public void remove(final Collection<? extends Artifact> arts) {
-      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<UserRole> delItems = new ArrayList<UserRole>();
-      delItems.addAll(rootSet);
-      for (Artifact art : arts) {
-         for (UserRole wai : rootSet)
-            if (wai.equals(art)) delItems.add(wai);
-      }
-      removeItems(delItems);
-   }
-
-   public void removeItems(final Collection<? extends UserRole> arts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.remove(arts);
-            xViewer.refresh();
          };
       });
    }
@@ -82,7 +57,8 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void clear() {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null)
+               xViewer.setInput(rootSet);
             rootSet.clear();
             xViewer.refresh();
          };
@@ -109,7 +85,8 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String)
+         return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 

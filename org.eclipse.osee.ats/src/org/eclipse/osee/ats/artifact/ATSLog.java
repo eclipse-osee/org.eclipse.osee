@@ -51,7 +51,8 @@ public class ATSLog {
 
       public static LogType getType(String type) throws OseeArgumentException {
          for (Enum<LogType> e : LogType.values()) {
-            if (e.name().equals(type)) return (LogType) e;
+            if (e.name().equals(type))
+               return (LogType) e;
          }
          throw new OseeArgumentException("Unhandled LogType: \"" + type + "\"");
       }
@@ -77,11 +78,13 @@ public class ATSLog {
    }
 
    public String getHtml(boolean showLog) throws OseeCoreException {
-      if (getLogItems().size() == 0) return "";
+      if (getLogItems().size() == 0)
+         return "";
       StringBuffer sb = new StringBuffer();
-      if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
-            AHTML.LABEL_FONT,
-            "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getName() + "\""));
+      if (showLog)
+         sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
+               AHTML.LABEL_FONT,
+               "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getName() + "\""));
       sb.append(getTable());
       return sb.toString();
    }
@@ -117,7 +120,8 @@ public class ATSLog {
 
    public Date getLastStatusedDate() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Metrics);
-      if (logItem == null) return null;
+      if (logItem == null)
+         return null;
       return logItem.getDate();
    }
 
@@ -165,7 +169,8 @@ public class ATSLog {
     */
    public Date getCreationDate() throws OseeCoreException {
       LogItem logItem = getEvent(LogType.Originated);
-      if (logItem == null) return null;
+      if (logItem == null)
+         return null;
       return logItem.getDate();
    }
 
@@ -176,7 +181,8 @@ public class ATSLog {
     */
    public User getOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
-      if (logItem == null) return null;
+      if (logItem == null)
+         return null;
       return logItem.getUser();
    }
 
@@ -255,7 +261,8 @@ public class ATSLog {
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
-      if (!enabled) return;
+      if (!enabled)
+         return;
       LogItem logItem = new LogItem(type, date, user, state, msg);
       List<LogItem> logItems = getLogItems();
       logItems.add(logItem);
@@ -272,23 +279,18 @@ public class ATSLog {
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Event</TH>" + "<TH>State</TH><TH>Message</TH><TH>User</TH><TH>Date</TH></THEAD></TR>");
       for (LogItem item : logItems) {
          User user = item.getUser();
-         String name = "";
          if (user != null) {
-            name = user.getName();
-            if (name == null || name.equals("")) {
-               name = user.getName();
-            }
+            builder.append("<TR>");
+            builder.append("<TD>" + item.getType() + "</TD>");
+            builder.append("<TD>" + (item.getState().equals("") ? "." : item.getState()) + "</TD>");
+            builder.append("<TD>" + (item.getMsg().equals("") ? "." : item.getMsg()) + "</TD>");
+            if (user.equals(UserManager.getUser()))
+               builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
+            else
+               builder.append("<TD>" + user.getName() + "</TD>");
+            builder.append("<TD>" + item.getDate(XDate.MMDDYYHHMM) + "</TD>");
+            builder.append("</TR>");
          }
-         builder.append("<TR>");
-         builder.append("<TD>" + item.getType() + "</TD>");
-         builder.append("<TD>" + (item.getState().equals("") ? "." : item.getState()) + "</TD>");
-         builder.append("<TD>" + (item.getMsg().equals("") ? "." : item.getMsg()) + "</TD>");
-         if (user.equals(UserManager.getUser()))
-            builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
-         else
-            builder.append("<TD>" + name + "</TD>");
-         builder.append("<TD>" + item.getDate(XDate.MMDDYYHHMM) + "</TD>");
-         builder.append("</TR>");
       }
       builder.append("</TABLE>");
       return builder.toString();
@@ -304,25 +306,29 @@ public class ATSLog {
 
    public LogItem getEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItems())
-         if (item.getType() == type) return item;
+         if (item.getType() == type)
+            return item;
       return null;
    }
 
    public LogItem getLastEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type) return item;
+         if (item.getType() == type)
+            return item;
       return null;
    }
 
    public LogItem getStateEvent(LogType type, String stateName) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type && item.getState().equals(stateName)) return item;
+         if (item.getType() == type && item.getState().equals(stateName))
+            return item;
       return null;
    }
 
    public LogItem getStateEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type) return item;
+         if (item.getType() == type)
+            return item;
       return null;
    }
 
