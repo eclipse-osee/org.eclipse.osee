@@ -7,7 +7,6 @@
 		<property name="releaseVersion" value="0.8.1RC" />
 		<property name="topLevelElementId" value="org.eclipse.osee.master.feature" />
 		<property name="filteredDependencyCheck" value="false" />
-		<echo message="http.proxyHost=${http.proxyHost}: http.proxyPort=${http.proxyPort}" />
 		<antcall target="PdeBuild" />
 	</target>
 
