@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -61,6 +63,16 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog {
                   selection =
                         (ArtifactType) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
                }
+            }
+         });
+         getTreeViewer().getViewer().getTree().addSelectionListener(new SelectionAdapter() {
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               updateStatusLabel();
             }
          });
          GridData gd = new GridData(GridData.FILL_BOTH);
