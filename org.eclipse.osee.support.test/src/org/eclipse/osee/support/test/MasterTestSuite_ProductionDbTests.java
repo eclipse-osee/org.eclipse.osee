@@ -22,8 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsTest_Config_Suite.class, FrameworkUi_Production_Suite.class,
-      FrameworkCore_Production_Suite.class})
+@Suite.SuiteClasses( {AtsTest_Config_Suite.class, FrameworkCore_Production_Suite.class,
+      FrameworkUi_Production_Suite.class})
 /**
  * This suite should contain any test that can be run against a deployed OSEE database.<br>
  * <br>
