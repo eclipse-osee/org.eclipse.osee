@@ -321,7 +321,7 @@ public abstract class Attribute<T> {
     */
    public boolean isDeleted() {
       try {
-      return modificationType.isDeleted();
+         return modificationType.isDeleted();
       } catch (NullPointerException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]",

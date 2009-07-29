@@ -131,7 +131,7 @@ public final class ArtifactLoader {
                int artId = chStmt.getInt("art_id");
                int branchId = chStmt.getInt("branch_id");
                // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
-               if ((previousArtId != artId || previousBranchId != branchId)) {
+               if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
                   if (!(historical && !allowDeleted && ModificationType.getMod(chStmt.getInt("mod_type")) == ModificationType.DELETED)) {
                      artifacts.add(retrieveShallowArtifact(chStmt, reload, historical));
@@ -449,11 +449,15 @@ public final class ArtifactLoader {
          int previousArtifactId = -1;
          int previousBranchId = -1;
          int previousAttrId = -1;
+         int previousGammaId = -1;
+         int previousModType = -1;
 
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
             int attrId = chStmt.getInt("attr_id");
+            int gammaId = chStmt.getInt("gamma_id");
+            int modType = chStmt.getInt("mod_type");
 
             // if a different artifact than the previous iteration
             if (branchId != previousBranchId || artifactId != previousArtifactId) {
@@ -479,18 +483,27 @@ public final class ArtifactLoader {
 
             // if we get more than one version from the same attribute on the same artifact on the same branch
             if (attrId == previousAttrId && branchId == previousBranchId && artifactId == previousArtifactId) {
-               OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
-                     "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d]", attrId, artifactId,
-                     branchId));
+               if (historical) {
+                  // Okay to skip on historical loading... because the most recent transaction is used first due to sorting on the query
+               } else {
+                  OseeLog.log(
+                        ArtifactLoader.class,
+                        Level.WARNING,
+                        String.format(
+                              "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] modType[%s]",
+                              attrId, artifactId, branchId, previousGammaId, gammaId, previousModType, modType));
+               }
             } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
                artifact.internalInitializeAttribute(AttributeTypeManager.getType(chStmt.getInt("attr_type_id")),
-                     attrId, chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")), false,
-                     chStmt.getString("value"), chStmt.getString("uri"));
+                     attrId, gammaId, ModificationType.getMod(modType), false, chStmt.getString("value"),
+                     chStmt.getString("uri"));
             }
 
             previousArtifactId = artifactId;
             previousBranchId = branchId;
             previousAttrId = attrId;
+            previousGammaId = gammaId;
+            previousModType = modType;
          }
       } finally {
          chStmt.close();

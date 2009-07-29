@@ -33,10 +33,11 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
    }
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
-      super(artifact, artifact.getName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      super(artifact, artifact.getName(), //
+            artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null),// 
+            artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), //
+            artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null)//
+      );
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
       setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
@@ -101,7 +102,9 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
    }
 
    private boolean isInstanceofRecurse(WorkPageDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
-      if (workPageDefinition.getId().equals(workPageDefinitionId)) return true;
+      if (workPageDefinition.getId().equals(workPageDefinitionId)) {
+         return true;
+      }
       if (workPageDefinition.getParent() != null) {
          return isInstanceofRecurse((WorkPageDefinition) workPageDefinition.getParent(), workPageDefinitionId);
       }

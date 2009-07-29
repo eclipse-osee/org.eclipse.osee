@@ -98,7 +98,9 @@ public class InterArtifactExplorerDropHandler {
          if (prompt) {
             boolean userConfirmed =
                   confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, transferObjects);
-            if (!userConfirmed) return;
+            if (!userConfirmed) {
+               return;
+            }
          }
          addArtifactsToNewTransaction(destinationParentArtifact, transferObjects, sourceBranch);
       } else {
@@ -109,7 +111,7 @@ public class InterArtifactExplorerDropHandler {
 
    private boolean confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<TransferObject> transferObjects) throws OseeCoreException {
       ReflectArtifactStatusDialog updateArtifactStatusDialog = new ReflectArtifactStatusDialog(transferObjects);
-      return (updateArtifactStatusDialog.open() == Window.OK);
+      return updateArtifactStatusDialog.open() == Window.OK;
    }
 
    private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException {
@@ -130,13 +132,11 @@ public class InterArtifactExplorerDropHandler {
          if (status == TransferStatus.INTRODUCE || status == TransferStatus.UPDATE) {
             Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact, status);
 
-            Artifact reflectedArtifact;
+            Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
             if (status == TransferStatus.INTRODUCE) {
-               reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
                reflectedArtifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
                      Collections.singleton(parentArtifact));
             } else {
-               reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
                reloadArtifacts.add(reflectedArtifact);
             }
             reflectedArtifact.persistAttributesAndRelations(transaction);
