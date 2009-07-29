@@ -29,7 +29,8 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -116,7 +117,8 @@ public abstract class ImageManagerTest {
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
       Artifact folder =
-            ArtifactQuery.getArtifactFromTypeAndName("Folder", "User Groups", BranchManager.getCommonBranch());
+            StaticIdManager.getOrCreateSingletonArtifact(Requirements.FOLDER, "user.groups",
+                  BranchManager.getCommonBranch());
       assertTrue("Image returned not a folder image.", ImageManager.getImage(folder).equals(
             ImageManager.getImage(FrameworkImage.FOLDER)));
    }
@@ -125,7 +127,8 @@ public abstract class ImageManagerTest {
    public void testSetArtifactTypeImageInDb() throws Exception {
 
       Artifact folder =
-            ArtifactQuery.getArtifactFromTypeAndName("Folder", "User Groups", BranchManager.getCommonBranch());
+            StaticIdManager.getOrCreateSingletonArtifact(Requirements.FOLDER, "user.groups",
+                  BranchManager.getCommonBranch());
 
       // Check folder image
       assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
