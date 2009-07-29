@@ -86,12 +86,16 @@ public final class InternalChangeManager {
       Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
       
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try{
       chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_GET_TRANSACTIONS_PER_ARTIFACT),
             branch.getBranchId(), artifact.getArtId());
 
       while (chStmt.next()) {
             transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
+      }finally{
+         chStmt.close();
+      }
       
       return transactionIds;
    }
