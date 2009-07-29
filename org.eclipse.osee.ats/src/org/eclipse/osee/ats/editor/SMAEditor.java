@@ -125,13 +125,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (editorInput instanceof SMAEditorInput) {
          SMAEditorInput aei = (SMAEditorInput) editorInput;
          if (aei.getArtifact() != null) {
-            if (aei.getArtifact() instanceof StateMachineArtifact)
+            if (aei.getArtifact() instanceof StateMachineArtifact) {
                sma = (StateMachineArtifact) aei.getArtifact();
-            else
+            } else {
                throw new IllegalArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
+            }
          }
-      } else
+      } else {
          throw new IllegalArgumentException("Editor Input not SMAEditorInput");
+      }
 
       if (sma == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
@@ -187,12 +189,16 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
       Label label = toolkit.createLabel(comp, labelStr + ": ");
-      if (tooltip != null && !tooltip.equals("")) label.setToolTipText(tooltip);
+      if (tooltip != null && !tooltip.equals("")) {
+         label.setToolTipText(tooltip);
+      }
       SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
       Text text = new Text(comp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
       text.setText(valueStr);
-      if (tooltip != null && !tooltip.equals("")) text.setToolTipText(tooltip);
+      if (tooltip != null && !tooltip.equals("")) {
+         text.setToolTipText(tooltip);
+      }
    }
 
    /*
@@ -237,7 +243,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public static void setLabelFonts(Control parent, Font font) {
       if (parent instanceof Label) {
-         Label label = ((Label) parent);
+         Label label = (Label) parent;
          label.setFont(font);
       }
       if (parent instanceof Composite) {
@@ -269,7 +275,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (taskComposite != null) {
          taskComposite.disposeTaskComposite();
       }
-      if (metricsComposite != null) metricsComposite.disposeComposite();
+      if (metricsComposite != null) {
+         metricsComposite.disposeComposite();
+      }
 
       super.dispose();
    }
@@ -285,12 +293,18 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public Result isDirtyResult() {
-      if (smaMgr.getSma().isDeleted()) return Result.FalseResult;
+      if (smaMgr.getSma().isDeleted()) {
+         return Result.FalseResult;
+      }
       try {
          Result result = workFlowTab.isXWidgetDirty();
-         if (result.isTrue()) return result;
+         if (result.isTrue()) {
+            return result;
+         }
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
-         if (result.isTrue()) return result;
+         if (result.isTrue()) {
+            return result;
+         }
 
          String rString = null;
          for (Attribute<?> attribute : smaMgr.getSma().internalGetAttributes()) {
@@ -361,7 +375,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private void createAttributesTab() {
       try {
-         if (!AtsUtil.isAtsAdmin()) return;
+         if (!AtsUtil.isAtsAdmin()) {
+            return;
+         }
 
          // Create Attributes tab
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
@@ -471,10 +487,18 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public void refreshPages() throws OseeCoreException {
-      if (getContainer() == null || getContainer().isDisposed()) return;
-      if (workFlowTab != null) workFlowTab.refresh();
-      if (historyComposite != null) historyComposite.refresh();
-      if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
+      if (getContainer() == null || getContainer().isDisposed()) {
+         return;
+      }
+      if (workFlowTab != null) {
+         workFlowTab.refresh();
+      }
+      if (historyComposite != null) {
+         historyComposite.refresh();
+      }
+      if (attributesComposite != null) {
+         attributesComposite.refreshArtifact(smaMgr.getSma());
+      }
       smaMgr.getEditor().onDirtied();
       updatePartName();
    }
@@ -484,10 +508,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
       }
-      if (artifact instanceof StateMachineArtifact)
+      if (artifact instanceof StateMachineArtifact) {
          editArtifact((StateMachineArtifact) artifact);
-      else
+      } else {
          ArtifactEditor.editArtifact(artifact);
+      }
    }
 
    public static void editArtifact(final StateMachineArtifact sma) {
@@ -547,7 +572,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          IEditorReference editor = editors[j];
          if (editor.getPart(false) instanceof SMAEditor) {
             if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
-               return ((SMAEditor) editor.getPart(false));
+               return (SMAEditor) editor.getPart(false);
             }
          }
       }
@@ -616,10 +641,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
     */
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
-      if (stateName == null || stateName.equals(""))
+      if (stateName == null || stateName.equals("")) {
          return smaMgr.getTaskMgr().getTaskArtifacts();
-      else
+      } else {
          return smaMgr.getTaskMgr().getTaskArtifacts(stateName);
+      }
    }
 
    /*
@@ -665,7 +691,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
-         if (smaMgr.isInTransition()) return;
+         if (smaMgr.isInTransition()) {
+            return;
+         }
          if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Committed) {
             if (smaMgr.getBranchMgr().getBranchId() == null || smaMgr.getBranchMgr().getBranchId() != branchId) {
                return;
@@ -673,7 +701,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  if (getContainer() == null || getContainer().isDisposed()) return;
+                  if (getContainer() == null || getContainer().isDisposed()) {
+                     return;
+                  }
                   try {
                      refreshPages();
                      onDirtied();
@@ -693,8 +723,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.isInTransition()) {
+         return;
+      }
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+         return;
+      }
       if (transData.isDeleted(smaMgr.getSma())) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -773,7 +807,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       try {
-         if (branch.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
+         if (branch.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) {
+            return;
+         }
          if (link.getArtifactA().equals(smaMgr.getSma()) || link.getArtifactB().equals(smaMgr.getSma())) {
             onDirtied();
          }
