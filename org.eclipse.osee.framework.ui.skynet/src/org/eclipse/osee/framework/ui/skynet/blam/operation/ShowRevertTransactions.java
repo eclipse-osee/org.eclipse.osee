@@ -39,16 +39,20 @@ public class ShowRevertTransactions extends AbstractBlam {
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Branch ID", "User", "Transaction_ID", "Date"}));
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      chStmt.runPreparedQuery(GET_REVERT_TRANSACTIONS);
-      while (chStmt.next()) {
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(chStmt.getInt("branch_id")),
-               chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
-               chStmt.getDate("time").toString()}));
+      try {
+         chStmt.runPreparedQuery(GET_REVERT_TRANSACTIONS);
+         while (chStmt.next()) {
+            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(chStmt.getInt("branch_id")),
+                  chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
+                  chStmt.getDate("time").toString()}));
+         }
+         sbFull.append(AHTML.endMultiColumnTable());
+         XResultData rd = new XResultData();
+         rd.addRaw(sbFull.toString());
+         rd.report("Revert Transactions", Manipulations.RAW_HTML);
+      } finally {
+         chStmt.close();
       }
-      sbFull.append(AHTML.endMultiColumnTable());
-      XResultData rd = new XResultData();
-      rd.addRaw(sbFull.toString());
-      rd.report("Revert Transactions", Manipulations.RAW_HTML);
    }
 
    @Override
