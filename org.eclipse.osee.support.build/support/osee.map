@@ -46,7 +46,7 @@ plugin@org.eclipse.osee.framework.skynet.core=SVN,url=https://dev.eclipse.org/sv
 plugin@org.eclipse.osee.framework.svn=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.svn
 plugin@org.eclipse.osee.framework.templates=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.templates
 plugin@org.eclipse.osee.framework.updater=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.updater
-plugin@org.eclipse.osee.framework.database.init=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee.framework.database.init,tag=trunk,path=org.eclipse.osee.framework.database.init
+plugin@org.eclipse.osee.framework.database.init=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.database.init
   
 feature@org.eclipse.osee.framework.ui.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.feature
 plugin@org.eclipse.nebula.widgets.xviewer=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.nebula.widgets.xviewer
