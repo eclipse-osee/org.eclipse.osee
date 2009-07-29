@@ -131,11 +131,6 @@
             className="org.eclipse.osee.define.blam.operation.ExperimentalBlam">
       </Operation>
    </extension>
-      <extension
-            id="ChangeArtifactTypeBlam"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam "/>
-      </extension>
  <extension
        id="SubsystemToLowLevelReqTraceReport"
        name="SubsystemToLowLevelReqTraceReport"
