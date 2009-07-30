@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -26,7 +27,7 @@ public class WordAttributeSmartTagsRemovedHealthOperation extends AbstractWordAt
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
     */
    @Override
-   protected void applyFix(AttrData attrData) {
+   protected void applyFix(AttrData attrData) throws OseeCoreException {
       String fixedData = WordUtil.removeWordMarkupSmartTags(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
@@ -35,7 +36,7 @@ public class WordAttributeSmartTagsRemovedHealthOperation extends AbstractWordAt
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
     */
    @Override
-   protected boolean isFixRequired(AttrData attrData, Resource resource) {
+   protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       boolean result = false;
       String wordMarkup = resource.getData();
       if (Strings.isValid(wordMarkup)) {

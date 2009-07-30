@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 
 /**
@@ -41,7 +42,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
     */
    @Override
-   protected void applyFix(AttrData attrData) {
+   protected void applyFix(AttrData attrData) throws OseeCoreException {
       String fixedData = WordAnnotationHandler.removeAnnotations(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
@@ -58,7 +59,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
     */
    @Override
-   protected boolean isFixRequired(AttrData attrData, Resource resource) {
+   protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       return WordAnnotationHandler.containsWordAnnotations(resource.getData());
    }
 }

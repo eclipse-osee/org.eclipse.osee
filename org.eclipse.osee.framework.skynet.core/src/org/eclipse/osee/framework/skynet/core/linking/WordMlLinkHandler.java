@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -113,20 +109,7 @@ public class WordMlLinkHandler {
     */
    public static String unlink(LinkType sourceLinkType, Artifact source, String content) throws OseeCoreException {
       String modified = content;
-      HashCollection<String, Match> matchMap = new HashCollection<String, Match>();
-
-      LinkParser linkParser = new LinkParser();
-      WORDML_LINK.reset(content);
-      while (WORDML_LINK.find()) {
-         String link = WORDML_LINK.group(1);
-         if (Strings.isValid(link)) {
-            linkParser.parse(link);
-            String guid = linkParser.getGuid();
-            if (Strings.isValid(guid)) {
-               matchMap.put(guid, new Match(WORDML_LINK.start(), WORDML_LINK.end()));
-            }
-         }
-      }
+      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(sourceLinkType, source, content, matchMap, true);
       }
@@ -143,28 +126,16 @@ public class WordMlLinkHandler {
     */
    public static String link(LinkType destLinkType, Artifact source, String content) throws OseeCoreException {
       String modified = content;
-      HashCollection<String, Match> matchMap = new HashCollection<String, Match>();
 
       // Detect legacy links
-      LinkParser linkParser = new LinkParser();
-      WORDML_LINK.reset(content);
-      while (WORDML_LINK.find()) {
-         String link = WORDML_LINK.group(1);
-         if (Strings.isValid(link)) {
-            linkParser.parse(link);
-            String guid = linkParser.getGuid();
-            if (Strings.isValid(guid)) {
-               matchMap.put(guid, new Match(WORDML_LINK.start(), WORDML_LINK.end()));
-            }
-         }
-      }
+      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
 
       // Detect new style link marker
       OSEE_LINK_PATTERN.reset(content);
       while (OSEE_LINK_PATTERN.find()) {
          String guid = OSEE_LINK_PATTERN.group(1);
          if (Strings.isValid(guid)) {
-            matchMap.put(guid, new Match(OSEE_LINK_PATTERN.start(), OSEE_LINK_PATTERN.end()));
+            matchMap.put(guid, new MatchRange(OSEE_LINK_PATTERN.start(), OSEE_LINK_PATTERN.end()));
          }
       }
 
@@ -177,6 +148,31 @@ public class WordMlLinkHandler {
          modified = getWordMlBookmark(source) + modified;
       }
       return modified;
+   }
+
+   /**
+    * Find WordML links locations in content grouped by GUID
+    * 
+    * @param content
+    * @return locations where WordMlLinks were found grouped by GUID
+    * @throws OseeWrappedException
+    */
+   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeWrappedException {
+      HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
+
+      OseeLinkParser linkParser = new OseeLinkParser();
+      WORDML_LINK.reset(content);
+      while (WORDML_LINK.find()) {
+         String link = WORDML_LINK.group(1);
+         if (Strings.isValid(link)) {
+            linkParser.parse(link);
+            String guid = linkParser.getGuid();
+            if (Strings.isValid(guid)) {
+               matchMap.put(guid, new MatchRange(WORDML_LINK.start(), WORDML_LINK.end()));
+            }
+         }
+      }
+      return matchMap;
    }
 
    private static List<Artifact> findArtifacts(TransactionId transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
@@ -197,7 +193,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, Match> matchMap, boolean isUnliking) throws OseeCoreException {
+   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
       Branch branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
@@ -220,40 +216,44 @@ public class WordMlLinkHandler {
          if (isUnliking) {
             // Ignore not found items and replace with osee marker
             for (String guid : unknownGuids) {
-               Collection<Match> matches = matchMap.getValues(guid);
-               for (Match match : matches) {
-                  String replaceWith = String.format(OSEE_LINK_MARKER, guid);
-                  changeSet.replace(match.start, match.end, replaceWith);
+               Collection<MatchRange> matches = matchMap.getValues(guid);
+               for (MatchRange match : matches) {
+                  String replaceWith = getOseeLinkMarker(guid);
+                  changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
          } else {
             // Items not found
             for (String guid : unknownGuids) {
-               for (Match match : matchMap.getValues(guid)) {
+               for (MatchRange match : matchMap.getValues(guid)) {
                   String internalLink =
                         String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
                   String link =
                         String.format(WORDML_LINK_FORMAT, internalLink, String.format(
                               "Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid,
                               branch.getBranchId()));
-                  changeSet.replace(match.start, match.end, link);
+                  changeSet.replace(match.start(), match.end(), link);
                }
             }
          }
       }
       // Items found in branch
       for (Artifact artifact : artifactsFromSearch) {
-         for (Match match : matchMap.getValues(artifact.getGuid())) {
+         for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
             String replaceWith = null;
             if (isUnliking) {
-               replaceWith = String.format(OSEE_LINK_MARKER, artifact.getGuid());
+               replaceWith = getOseeLinkMarker(artifact.getGuid());
             } else {
                replaceWith = getWordMlLink(destLinkType, artifact);
             }
-            changeSet.replace(match.start, match.end, replaceWith);
+            changeSet.replace(match.start(), match.end(), replaceWith);
          }
       }
       return changeSet.applyChangesToSelf().toString();
+   }
+
+   public static String getOseeLinkMarker(String guid) {
+      return String.format(OSEE_LINK_MARKER, guid);
    }
 
    private static String getWordMlBookmark(Artifact source) {
@@ -279,118 +279,24 @@ public class WordMlLinkHandler {
       }
       return toReturn;
    }
-   private static final class Match {
-      int start;
-      int end;
 
-      public Match(int start, int end) {
+   public static final class MatchRange {
+      private final int start;
+      private final int end;
+
+      public MatchRange(int start, int end) {
          super();
          this.end = end;
          this.start = start;
       }
-   }
 
-   private static final class LinkParser {
-
-      private static final Matcher LEGACY_MATCHER = Pattern.compile("/(.*?)/guid/(.*?)/(.*)").matcher("");
-      private static final Matcher LINK_CONTEXT_MATCHER = Pattern.compile("/(.*?)\\?(.*)").matcher("");
-      private static final Matcher PARAMETER_MATCHER = Pattern.compile("([^&]*?)=([^&]*)").matcher("");
-
-      private final Map<String, String> parameterMap;
-
-      public LinkParser() {
-         this.parameterMap = new HashMap<String, String>();
+      public int start() {
+         return start;
       }
 
-      public void parse(String link) {
-         parameterMap.clear();
-         link = link.replaceAll("&amp;", "&");
-         boolean wasHandled = parseOldSchoolStyleLinks(link);
-         if (!wasHandled) {
-            parseNewStyleRequests(link);
-         }
-      }
-
-      public int getBranchId() throws OseeWrappedException {
-         int branchId = -1;
-         if (parameterMap != null) {
-            String branchIdStr = parameterMap.get("branchId");
-            if (Strings.isValid(branchIdStr)) {
-               try {
-                  branchId = Integer.parseInt(branchIdStr);
-               } catch (Exception ex) {
-                  throw new OseeWrappedException(ex);
-               }
-            }
-         }
-         return branchId;
-      }
-
-      public String getGuid() throws OseeWrappedException {
-         String guidToReturn = null;
-         if (parameterMap != null) {
-            String guid = parameterMap.get("guid");
-            if (Strings.isValid(guid)) {
-               if (!GUID.isValid(guid)) {
-                  try {
-                     guid = URLDecoder.decode(guid, "UTF-8");
-                     if (GUID.isValid(guid)) {
-                        guidToReturn = guid;
-                     }
-                  } catch (Exception ex) {
-                     throw new OseeWrappedException(ex);
-                  }
-               } else {
-                  guidToReturn = guid;
-               }
-            }
-         }
-         return guidToReturn;
-      }
-
-      /**
-       * Process new style requests are of the following format:
-       * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
-       * 
-       * @param link
-       */
-      private void parseNewStyleRequests(String link) {
-         String noHostStr = link.replaceFirst("^http:\\/\\/(.*?)\\/", "/");
-         Matcher matcher = LINK_CONTEXT_MATCHER;
-         matcher.reset(noHostStr);
-         if (matcher.matches()) {
-            Matcher dataMatcher = PARAMETER_MATCHER;
-            dataMatcher.reset(matcher.group(2));
-            while (dataMatcher.find()) {
-               parameterMap.put(dataMatcher.group(1), dataMatcher.group(2));
-            }
-         }
-      }
-
-      /**
-       * Process old format: http://127.0.0.1:<port>/get/guid/<guid>/<ats,Define> old format should be removed once all
-       * legacy references are change to new format
-       * 
-       * @param entry
-       * @return
-       */
-      private boolean parseOldSchoolStyleLinks(String link) {
-         boolean wasHandled = false;
-         Matcher oldMatcher = LEGACY_MATCHER;
-         oldMatcher.reset(link);
-         if (oldMatcher.find()) {
-            wasHandled = true;
-            String guid = oldMatcher.group(2);
-            if (oldMatcher.groupCount() > 2) {
-               String processType = oldMatcher.group(3);
-               if (processType.equals("ats")) {
-                  parameterMap.put("guid", guid);
-               } else if (processType.equals("Define") || processType.equals("")) {
-                  parameterMap.put("guid", guid);
-               }
-            }
-         }
-         return wasHandled;
+      public int end() {
+         return end;
       }
    }
+
 }

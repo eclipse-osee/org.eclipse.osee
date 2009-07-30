@@ -58,10 +58,11 @@ public class HashCollectionPlus<K, V, O> {
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
 
-      if (isSynchronized)
+      if (isSynchronized) {
          map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity, loadFactor));
-      else
+      } else {
          map = new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity, loadFactor);
+      }
 
       this.isSynchronized = isSynchronized;
       this.collectionType = collectionType;
@@ -79,10 +80,11 @@ public class HashCollectionPlus<K, V, O> {
     */
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, IPlusProvider<O> plusProvider) {
-      if (isSynchronized)
+      if (isSynchronized) {
          map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity));
-      else
+      } else {
          map = new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity);
+      }
 
       this.isSynchronized = isSynchronized;
       this.collectionType = collectionType;
@@ -99,10 +101,11 @@ public class HashCollectionPlus<K, V, O> {
     */
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, IPlusProvider<O> plusProvider) {
-      if (isSynchronized)
+      if (isSynchronized) {
          map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>());
-      else
+      } else {
          map = new HashMap<K, ObjectPair<Collection<V>, O>>();
+      }
 
       this.isSynchronized = isSynchronized;
       this.collectionType = collectionType;
@@ -154,10 +157,11 @@ public class HashCollectionPlus<K, V, O> {
       if (objectPair == null) {
          try {
             Collection<V> items;
-            if (isSynchronized)
+            if (isSynchronized) {
                items = Collections.synchronizedCollection(collectionType.newInstance());
-            else
+            } else {
                items = collectionType.newInstance();
+            }
 
             objectPair = new ObjectPair(items, plusProvider.newObject());
             map.put(key, objectPair);
@@ -184,10 +188,11 @@ public class HashCollectionPlus<K, V, O> {
       Collection<V> items = null;
 
       for (V value : values) {
-         if (items == null)
+         if (items == null) {
             items = this.put(key, value);
-         else
+         } else {
             items.add(value);
+         }
       }
       return items;
    }
@@ -204,7 +209,9 @@ public class HashCollectionPlus<K, V, O> {
          Collection<V> items = objectPair.object1;
          if (items != null) {
             if (items.remove(value)) {
-               if (items.isEmpty()) map.remove(key);
+               if (items.isEmpty()) {
+                  map.remove(key);
+               }
                return true;
             }
          }
@@ -224,7 +231,9 @@ public class HashCollectionPlus<K, V, O> {
     */
    public Collection<V> getValues(K key) {
       ObjectPair<Collection<V>, O> objectPair = map.get(key);
-      if (objectPair != null) return map.get(key).object1;
+      if (objectPair != null) {
+         return map.get(key).object1;
+      }
       return null;
    }
 
@@ -252,7 +261,9 @@ public class HashCollectionPlus<K, V, O> {
     */
    public O getPlusObject(K key) {
       ObjectPair<Collection<V>, O> objectPair = map.get(key);
-      if (objectPair != null) return map.get(key).object2;
+      if (objectPair != null) {
+         return map.get(key).object2;
+      }
       return null;
    }
 
@@ -302,5 +313,10 @@ public class HashCollectionPlus<K, V, O> {
          }
       }
       return false;
+   }
+
+   @Override
+   public String toString() {
+      return map.toString();
    }
 }

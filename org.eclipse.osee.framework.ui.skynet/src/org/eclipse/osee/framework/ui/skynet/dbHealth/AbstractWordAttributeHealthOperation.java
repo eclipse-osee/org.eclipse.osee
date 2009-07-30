@@ -72,10 +72,11 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       setItemsToFix(attributesWithErrors.size());
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI", "ADDITIONAL DATA"}));
       for (AttrData attrData : attributesWithErrors) {
+         Object object = attrData.getAdditionalData();
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
-               attrData.getUri()}));
+               attrData.getUri(), object != null ? String.valueOf(object) : ""}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
@@ -103,9 +104,9 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    protected abstract String getBackUpPrefix();
 
-   protected abstract void applyFix(AttrData attrData);
+   protected abstract void applyFix(AttrData attrData) throws OseeCoreException;
 
-   protected abstract boolean isFixRequired(AttrData attrData, Resource resource);
+   protected abstract boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException;
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
@@ -301,12 +302,22 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       private final String hrid;
       private final String uri;
       private Resource resource;
+      private Object additionalData;
 
       public AttrData(String gammaId, String hrid, String uri) {
          super();
          this.gammaId = gammaId;
          this.hrid = hrid;
          this.uri = uri;
+         this.additionalData = null;
+      }
+
+      public void setAdditionalData(Object additionalData) {
+         this.additionalData = additionalData;
+      }
+
+      public Object getAdditionalData() {
+         return additionalData;
       }
 
       public void setResource(Resource resource) {
