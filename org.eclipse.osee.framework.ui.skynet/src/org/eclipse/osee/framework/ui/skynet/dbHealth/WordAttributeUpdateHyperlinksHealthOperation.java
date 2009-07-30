@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler.MatchRan
 public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAttributeHealthOperation {
 
    public WordAttributeUpdateHyperlinksHealthOperation() {
-      super("Word Attribute update old style hyperlinks");
+      super("Word Attribute Old style hyperlinks");
    }
 
    /* (non-Javadoc)
