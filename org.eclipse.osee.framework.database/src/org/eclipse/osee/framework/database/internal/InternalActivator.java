@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

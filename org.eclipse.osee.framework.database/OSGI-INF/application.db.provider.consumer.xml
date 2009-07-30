@@ -2,7 +2,7 @@
 <component name="application.database.manager">
 	<implementation class="org.eclipse.osee.framework.database.internal.ApplicationDatabaseManager"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.database.internal.IApplicationDatabaseManager"/>
+		<provide interface="org.eclipse.osee.framework.database.IApplicationDatabaseManager"/>
 	</service>
 	<reference name="application.database.provider"
 		interface="org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider"

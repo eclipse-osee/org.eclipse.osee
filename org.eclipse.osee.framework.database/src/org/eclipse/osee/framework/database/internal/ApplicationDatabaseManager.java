@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.internal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
 
 /**
