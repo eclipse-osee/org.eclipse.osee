@@ -136,7 +136,7 @@ final class HttpArtifactQuery {
                            ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
                                  confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
                      for (Artifact artifact : artifacts) {
-                        ArtifactMatch artMatch = new ArtifactMatch(artifact, allowDeleted);
+                        ArtifactMatch artMatch = new ArtifactMatch(artifact);
                         HashCollection<Long, MatchLocation> attributeMatches =
                               result.getAttributeMatches(artifact.getArtId());
                         if (attributeMatches != null) {
@@ -156,7 +156,7 @@ final class HttpArtifactQuery {
                            ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
                                  queryIdAndSize.object2, reload, historical, allowDeleted);
                      for (Artifact artifact : artifactList) {
-                        toReturn.add(new ArtifactMatch(artifact, allowDeleted));
+                        toReturn.add(new ArtifactMatch(artifact));
                      }
                   } finally {
                      JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());

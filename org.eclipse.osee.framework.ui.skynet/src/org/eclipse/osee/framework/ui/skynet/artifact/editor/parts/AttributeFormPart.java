@@ -72,6 +72,7 @@ public class AttributeFormPart extends AbstractFormPart {
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
          boolean isEditable = !artifact.isReadOnly();
+
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
@@ -114,7 +115,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
    private void setLabelFonts(Control parent, Font font) {
       if (parent instanceof Label) {
-         Label label = ((Label) parent);
+         Label label = (Label) parent;
          label.setFont(font);
       }
       if (parent instanceof Composite) {
@@ -210,7 +211,7 @@ public class AttributeFormPart extends AbstractFormPart {
       for (XWidget xWidget : widgets) {
          if (xWidget.isEditable()) {
             if (xWidget instanceof IArtifactWidget) {
-               IArtifactWidget aWidget = ((IArtifactWidget) xWidget);
+               IArtifactWidget aWidget = (IArtifactWidget) xWidget;
                try {
                   if (aWidget.isDirty().isTrue()) {
                      aWidget.saveToArtifact();

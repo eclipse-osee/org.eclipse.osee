@@ -40,6 +40,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       return "Purge Deleted Attributes";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       Collection<AttributeType> purgeAttributeTypes =
@@ -51,7 +52,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
 
       for (Artifact artifact : artifacts) {
          for (AttributeType attributeType : purgeAttributeTypes) {
-            for (Attribute<?> attribute : artifact.getAttributesIncludeDeleted(attributeType.getName())) {
+            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType.getName())) {
 
                strB.append(attribute.getAttributeType());
                strB.append(";");
@@ -80,6 +81,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       return "Purge all deleted attributes of specified type(s).";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

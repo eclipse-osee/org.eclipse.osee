@@ -130,7 +130,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       // Duplicate default workflow artifact w/ namespace changes
       Artifact defaultWorkflow = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow");
       Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsUtil.getAtsBranch());
-      for (Attribute<?> attr : newWorkflowArt.getAttributes(false)) {
+      for (Attribute<?> attr : newWorkflowArt.getAttributes()) {
          if (attr instanceof StringAttribute) {
             attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
          }
@@ -144,7 +144,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          Artifact defaultStateArt =
                WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.name());
          Artifact newStateArt = defaultStateArt.duplicate(AtsUtil.getAtsBranch());
-         for (Attribute<?> attr : newStateArt.getAttributes(false)) {
+         for (Attribute<?> attr : newStateArt.getAttributes()) {
             if (attr instanceof StringAttribute) {
                attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
             }

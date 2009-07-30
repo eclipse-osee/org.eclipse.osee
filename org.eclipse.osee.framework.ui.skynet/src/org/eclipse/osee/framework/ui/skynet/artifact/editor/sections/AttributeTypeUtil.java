@@ -25,13 +25,16 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
  */
 public class AttributeTypeUtil {
 
+   private final static String NAME_ATTRIBUTE_ID = "Name";
+
    private AttributeTypeUtil() {
    }
 
    public static AttributeType[] getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
-         if (!type.getName().equals("Name") && artifact.getAttributes(type.getName()).isEmpty()) {
+         String typeName = type.getName();
+         if (!NAME_ATTRIBUTE_ID.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
             items.add(type);
          }
       }
@@ -43,15 +46,15 @@ public class AttributeTypeUtil {
       List<AttributeType> items = new ArrayList<AttributeType>();
       AttributeType nameType = null;
       AttributeType annotations = null;
-      
+
       Set<AttributeType> typesInExistence = new HashSet<AttributeType>();
-      List<Attribute<?>> attributeInstances = artifact.getAttributes(false);
+      List<Attribute<?>> attributeInstances = artifact.getAttributes();
       for (Attribute<?> attribute : attributeInstances) {
          typesInExistence.add(attribute.getAttributeType());
       }
       typesInExistence.addAll(artifact.getAttributeTypes());
       for (AttributeType type : typesInExistence) {
-         if (type.getName().equals("Name")) {
+         if (type.getName().equals(NAME_ATTRIBUTE_ID)) {
             nameType = type;
          } else {
             if (!artifact.getAttributes(type.getName()).isEmpty()) {

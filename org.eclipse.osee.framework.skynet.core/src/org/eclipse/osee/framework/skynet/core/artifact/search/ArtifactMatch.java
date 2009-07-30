@@ -21,13 +21,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryRe
  * @author Roberto E. Escobar
  */
 public class ArtifactMatch {
-   private Artifact artifact;
-   private boolean allowDeleted;
+   private final Artifact artifact;
    private HashCollection<Long, MatchLocation> attributeMatches;
 
-   protected ArtifactMatch(Artifact artifact, boolean allowDeleted) {
+   protected ArtifactMatch(Artifact artifact) {
       this.artifact = artifact;
-      this.allowDeleted = allowDeleted;
       this.attributeMatches = null;
    }
 
@@ -46,7 +44,7 @@ public class ArtifactMatch {
    public HashCollection<Attribute<?>, MatchLocation> getMatchData() throws OseeCoreException {
       HashCollection<Attribute<?>, MatchLocation> matchData = new HashCollection<Attribute<?>, MatchLocation>();
 
-      for (Attribute<?> attribute : artifact.getAttributes(allowDeleted)) {
+      for (Attribute<?> attribute : artifact.getAttributes()) {
          Collection<MatchLocation> locations = attributeMatches.getValues((long) attribute.getGammaId());
          if (locations != null) {
             matchData.put(attribute, locations);

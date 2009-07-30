@@ -53,7 +53,7 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> sourceAttribute = null;
    private Attribute<?> destAttribute = null;
    private AttributeType attributeType;
-   private boolean isWordAttribute;
+   private final boolean isWordAttribute;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
    private boolean sourceEqualsDest;
@@ -96,7 +96,9 @@ public class AttributeConflict extends Conflict {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      if (attribute != null) return attribute;
+      if (attribute != null) {
+         return attribute;
+      }
       Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
@@ -111,8 +113,15 @@ public class AttributeConflict extends Conflict {
    }
 
    public Attribute<?> getSourceAttribute(boolean allowDeleted) throws OseeCoreException {
-      if (sourceAttribute != null) return sourceAttribute;
-      Collection<Attribute<?>> localAttributes = getSourceArtifact().getAttributes(allowDeleted);
+      if (sourceAttribute != null) {
+         return sourceAttribute;
+      }
+      Collection<Attribute<?>> localAttributes;
+      if (allowDeleted) {
+         localAttributes = getSourceArtifact().getAllAttributesIncludingHardDeleted();
+      } else {
+         localAttributes = getSourceArtifact().getAttributes();
+      }
       for (Attribute<?> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
             sourceAttribute = localAttribute;
@@ -126,7 +135,9 @@ public class AttributeConflict extends Conflict {
    }
 
    public Attribute<?> getDestAttribute() throws OseeCoreException {
-      if (destAttribute != null) return destAttribute;
+      if (destAttribute != null) {
+         return destAttribute;
+      }
       Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
          if (localAttribute.getAttrId() == attrId) {
@@ -167,7 +178,9 @@ public class AttributeConflict extends Conflict {
    }
 
    public Object getSourceObject() throws OseeCoreException {
-      if (sourceObject != null) return sourceObject;
+      if (sourceObject != null) {
+         return sourceObject;
+      }
       try {
          sourceObject = getSourceAttribute(false).getValue();
       } catch (AttributeDoesNotExist ex) {
@@ -177,7 +190,9 @@ public class AttributeConflict extends Conflict {
    }
 
    public Object getDestObject() throws OseeCoreException {
-      if (destObject != null) return destObject;
+      if (destObject != null) {
+         return destObject;
+      }
       try {
          destObject = getDestAttribute().getValue();
       } catch (AttributeDoesNotExist ex) {
@@ -193,7 +208,9 @@ public class AttributeConflict extends Conflict {
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter.isInstance(this)) {
          return this;
@@ -371,6 +388,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
+   @Override
    public void computeEqualsValues() throws OseeCoreException {
       if (getMergeObject() == null || getSourceObject() == null) {
          mergeEqualsSource = false;
@@ -392,9 +410,12 @@ public class AttributeConflict extends Conflict {
 
    public void markStatusToReflectEdit() throws OseeCoreException {
       computeEqualsValues();
-      if (status.equals(ConflictStatus.UNTOUCHED) || status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED) || status.equals(ConflictStatus.OUT_OF_DATE) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS)) setStatus(ConflictStatus.EDITED);
+      if (status.equals(ConflictStatus.UNTOUCHED) || status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED) || status.equals(ConflictStatus.OUT_OF_DATE) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION) || status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS)) {
+         setStatus(ConflictStatus.EDITED);
+      }
    }
 
+   @Override
    public ConflictStatus computeStatus() throws OseeCoreException {
       ConflictStatus passedStatus = ConflictStatus.UNTOUCHED;
       try {
@@ -410,13 +431,14 @@ public class AttributeConflict extends Conflict {
       return super.computeStatus(attrId, passedStatus);
    }
 
+   @Override
    public int getObjectId() throws OseeCoreException {
       return attrId;
    }
 
    @Override
    public String getMergeDisplayData() throws OseeCoreException {
-      if ((statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource())) || statusNotResolvable() || statusInformational()) {
+      if (statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || statusNotResolvable() || statusInformational()) {
          return NO_VALUE;
       }
       if (!isWordAttribute) {
@@ -435,6 +457,7 @@ public class AttributeConflict extends Conflict {
       return ConflictType.ATTRIBUTE;
    }
 
+   @Override
    public int getMergeGammaId() throws OseeCoreException {
       return getAttribute().getGammaId();
    }
@@ -443,6 +466,7 @@ public class AttributeConflict extends Conflict {
       return isWordAttribute;
    }
 
+   @Override
    public void setStatus(ConflictStatus status) throws OseeCoreException {
       if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);

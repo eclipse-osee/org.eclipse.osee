@@ -100,8 +100,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
          return;
+      }
       Jobs.startJob(new Report(getName()), true);
    }
 
@@ -140,8 +141,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       this.xResultData = xResultData;
-      if (monitor != null)
+      if (monitor != null) {
          monitor.beginTask(getName(), 20);
+      }
       loadAtsBranchArtifacts();
       testArtifactIds();
       testAtsAttributeValues();
@@ -157,8 +159,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       testStateMachineAssignees();
       testAtsLogs();
       this.xResultData.reportSevereLoggingMonitor(monitorLog);
-      if (monitor != null)
+      if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + artifacts.size() + " artifacts.");
+      }
    }
 
    private void testArtifactIds() throws OseeCoreException {
@@ -283,7 +286,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
 
          // Test for null attribute values 
-         for (Attribute<?> attr : artifact.getAttributes(false)) {
+         for (Attribute<?> attr : artifact.getAttributes()) {
             if (attr.getValue() == null) {
                xResultData.logError("Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
                if (fixAttributeValues) {
@@ -551,7 +554,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (smaMgr.getStateMgr().getAssignees().contains(oseeSystemUser)) {
                   xResultData.logError(art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
-               if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
+               if (!smaMgr.isCompleted() && !smaMgr.isCancelled() && smaMgr.getStateMgr().getAssignees().size() == 0) {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
                List<Artifact> relationAssigned =

@@ -154,7 +154,7 @@ public class AttributeChanged extends Change {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      for (Attribute<?> attribute : getArtifact().getAttributes(true)) {
+      for (Attribute<?> attribute : getArtifact().getAllAttributesIncludingHardDeleted()) {
          if (attribute.getAttrId() == attrId) {
             return attribute;
          }
@@ -167,16 +167,16 @@ public class AttributeChanged extends Change {
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       try {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
-         }
-         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
-         }
-         else if (adapter.isInstance(this)) {
+         } else if (adapter.isInstance(this)) {
             return this;
          }
          try {

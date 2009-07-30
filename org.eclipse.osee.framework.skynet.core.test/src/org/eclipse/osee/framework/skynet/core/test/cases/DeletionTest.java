@@ -108,7 +108,7 @@ public class DeletionTest {
          System.err.println("Initial Status artifacts");
          for (Artifact artifact : artifactsToCheck) {
             dumpArtifact(artifact);
-            for (Attribute<?> attribute : artifact.getAttributes(true)) {
+            for (Attribute<?> attribute : artifact.getAttributes()) {
                dumpAttribute(attribute);
             }
             for (RelationLink relation : artifact.getRelationsAll(true)) {
@@ -162,7 +162,7 @@ public class DeletionTest {
          }
 
          //Check that attributes are Artifact Deleted
-         for (Attribute<?> attribute : artifact.getAttributes(true)) {
+         for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted()) {
             if (DEBUG) {
                dumpAttribute(attribute);
             } else {
@@ -215,7 +215,7 @@ public class DeletionTest {
             }
 
             //Check that attributes are Artifact Deleted
-            for (Attribute<?> attribute : artifact.getAttributes(true)) {
+            for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted()) {
                if (DEBUG) {
                   dumpAttribute(attribute);
                } else {
@@ -281,7 +281,7 @@ public class DeletionTest {
                   ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_ATTRIBUTE_TEST_QUERY).get(0);
 
             if (artifactForDeletionCheck != null) {
-               Attribute<?> attribute = artifactForDeletionCheck.getAttributes(false).get(0);
+               Attribute<?> attribute = artifactForDeletionCheck.getAttributes().get(0);
                RelationLink relation =
                      artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
                attribute.delete();

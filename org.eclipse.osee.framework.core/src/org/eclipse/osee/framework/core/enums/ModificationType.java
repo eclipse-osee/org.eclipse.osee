@@ -12,6 +12,9 @@
 package org.eclipse.osee.framework.core.enums;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
@@ -41,6 +44,8 @@ public enum ModificationType implements Serializable {
    // Artifact, Attribute or Relation has been reflected from another branch
    INTRODUCED("Introduced", 6);
 
+   private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
+   private final static Set<ModificationType> ALL_STATES = new HashSet<ModificationType>();
    private int value;
    private String displayName;
 
@@ -66,12 +71,34 @@ public enum ModificationType implements Serializable {
     * @throws OseeArgumentException
     */
    public static ModificationType getMod(int value) throws OseeArgumentException {
-      for (ModificationType modtype : values())
-         if (modtype.value == value) return modtype;
+      for (ModificationType modtype : values()) {
+         if (modtype.value == value) {
+            return modtype;
+         }
+      }
       throw new OseeArgumentException(value + " does not correspond to any defined ModificationType enumerations");
    }
 
    public boolean isDeleted() {
       return this == DELETED || this == ARTIFACT_DELETED;
+   }
+
+   public static Set<ModificationType> getCurrentModTypes() {
+      if (ALL_NONE_HARD_DELETED.isEmpty()) {
+         synchronized (ALL_NONE_HARD_DELETED) {
+            ALL_NONE_HARD_DELETED.addAll(Arrays.asList(ModificationType.values()));
+            ALL_NONE_HARD_DELETED.remove(ModificationType.DELETED);
+         }
+      }
+      return ALL_NONE_HARD_DELETED;
+   }
+
+   public static Set<ModificationType> getAllStates() {
+      if (ALL_STATES.isEmpty()) {
+         synchronized (ALL_STATES) {
+            ALL_STATES.addAll(Arrays.asList(ModificationType.values()));
+         }
+      }
+      return ALL_STATES;
    }
 }

@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -158,10 +160,16 @@ public class ArtifactFormPage extends FormPage {
    }
 
    private String getArtifactShortInfo() {
-      Artifact artifact = getEditor().getEditorInput().getArtifact();
-      String description =
-            String.format("<form><p><b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
-                  artifact.getBranch().getShortName(), artifact.getArtifactTypeName(), artifact.getGuid());
+      String description;
+      try {
+         Artifact artifact = getEditor().getEditorInput().getArtifact();
+         description =
+               String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
+                     !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ", artifact.getBranch().getShortName(),
+                     artifact.getArtifactTypeName(), artifact.getGuid());
+      } catch (Exception ex) {
+         description = Lib.exceptionToString(ex);
+      }
       return description;
    }
 
@@ -172,7 +180,18 @@ public class ArtifactFormPage extends FormPage {
          infoArea.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
 
          Label label = toolkit.createLabel(infoArea, "", SWT.WRAP);
-         label.setImage(MessageDialog.getImage(MessageDialog.DLG_IMG_MESSAGE_INFO));
+         Image image;
+         try {
+            Artifact artifact = getEditor().getEditorInput().getArtifact();
+            if (artifact.isDeleted()) {
+               image = ImageManager.getImage(FrameworkImage.TRASH);
+            } else {
+               image = MessageDialog.getImage(MessageDialog.DLG_IMG_MESSAGE_INFO);
+            }
+         } catch (Exception ex) {
+            image = MessageDialog.getImage(MessageDialog.DLG_IMG_MESSAGE_ERROR);
+         }
+         label.setImage(image);
 
          infoText = toolkit.createFormText(infoArea, false);
          infoText.setText(getArtifactShortInfo(), true, false);

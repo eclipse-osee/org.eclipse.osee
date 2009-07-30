@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Ryan D. Brooks
  */
 public class AttributeContentProvider implements IStructuredContentProvider {
-   private Object[] dummyArray = new Object[0];
+   private final Object[] dummyArray = new Object[0];
 
    /**
     * 
@@ -36,7 +36,7 @@ public class AttributeContentProvider implements IStructuredContentProvider {
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof Artifact) {
          try {
-            return ((Artifact) inputElement).getAttributes(false).toArray();
+            return ((Artifact) inputElement).getAttributes().toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
