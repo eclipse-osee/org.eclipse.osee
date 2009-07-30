@@ -51,7 +51,7 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       boolean result = false;
-      String content = attrData.getResource().getData();
+      String content = resource.getData();
       if (Strings.isValid(content)) {
          HashCollection<String, MatchRange> matches = WordMlLinkHandler.parseOseeWordMLLinks(content);
          result = !matches.isEmpty();
