@@ -6,7 +6,8 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.derby.Activator
 Bundle-ActivationPolicy: lazy
 OseeEarlyStart: true
-Import-Package: org.apache.derby.drda,
+Import-Package: org.apache.derby.core,
+ org.apache.derby.drda,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
