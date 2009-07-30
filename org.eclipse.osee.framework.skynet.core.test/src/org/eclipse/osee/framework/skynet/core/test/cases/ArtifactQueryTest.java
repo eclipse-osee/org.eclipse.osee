@@ -65,7 +65,7 @@ public class ArtifactQueryTest {
 
       query = "[.PRE_RETRIES]";
       expected =
-            "[PRESET_DATABASE Local Data Definition, {MODEM_PARAMETER_SELECTION} Procedure, {RETRIES_0} Display Logic, {RETRIES_1} Display Logic, {RETRIES_2} Display Logic, {RETRIES} Display Logic, {UPDATE_LONGBOW_NET_PARAMETERS} Procedure]";
+            "[PRESET_DATABASE Local Data Definition, {MODEM_PARAMETER_SELECTION} Procedure, {RETRIES_0} Display Logic, {RETRIES_1} Display Logic, {RETRIES_2} Display Logic, {RETRIES} Display Logic]";
       checkSearch(branch, query, expected, true, isCaseSensitive, true);
 
       query = "edit_ale_net_sel";
