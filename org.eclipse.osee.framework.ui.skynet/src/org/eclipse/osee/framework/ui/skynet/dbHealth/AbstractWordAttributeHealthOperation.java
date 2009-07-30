@@ -162,8 +162,10 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
             chStmt.runPreparedQuery(GET_ATTRS, attributeType.getAttrTypeId());
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
-               attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
-                     chStmt.getString("uri")));
+               String uri = chStmt.getString("uri");
+               if (Strings.isValid(uri)) {
+                  attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"), uri));
+               }
             }
          } finally {
             chStmt.close();

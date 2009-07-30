@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 
 /**
@@ -60,6 +61,11 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
     */
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
-      return WordAnnotationHandler.containsWordAnnotations(resource.getData());
+      boolean result = false;
+      String data = resource.getData();
+      if (Strings.isValid(data)) {
+         result = WordAnnotationHandler.containsWordAnnotations(data);
+      }
+      return result;
    }
 }

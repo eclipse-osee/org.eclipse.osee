@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler.MatchRange;
 
@@ -49,10 +50,14 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
     */
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
+      boolean result = false;
       String content = attrData.getResource().getData();
-      HashCollection<String, MatchRange> matches = WordMlLinkHandler.parseOseeWordMLLinks(content);
-      attrData.setAdditionalData(matches);
-      return !matches.isEmpty();
+      if (Strings.isValid(content)) {
+         HashCollection<String, MatchRange> matches = WordMlLinkHandler.parseOseeWordMLLinks(content);
+         result = !matches.isEmpty();
+         attrData.setAdditionalData(matches);
+      }
+      return result;
    }
 
    private String convertWordMlLinks(String original, HashCollection<String, MatchRange> matches) {
