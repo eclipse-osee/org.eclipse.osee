@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -39,20 +38,24 @@ public class DatabaseIntegrityTest {
       this.operationId = operationId;
    }
 
-   @Test(timeout = 3000)
+   @Test
    public void testDatabaseIntegrity() {
-      DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
+      try {
+         DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
 
-      assertNotNull(operation);
+         assertNotNull(operation);
 
-      operation.setFixOperationEnabled(false);
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),
-            IStatus.OK, operation.getStatus().getSeverity());
+         operation.setFixOperationEnabled(false);
+         Operations.executeWork(operation, new NullProgressMonitor(), -1);
+         assertEquals(String.format("Error [%s]: [%s]", operation.getName(), operation.getStatus().getMessage()),
+               IStatus.OK, operation.getStatus().getSeverity());
 
-      int totalItemsToFix = operation.getItemsToFixCount();
-      assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
-            totalItemsToFix);
+         int totalItemsToFix = operation.getItemsToFixCount();
+         assertEquals(String.format("Error [%s]: found [%s] items", operation.getName(), totalItemsToFix), 0,
+               totalItemsToFix);
+      } catch (Exception ex) {
+         assertFalse(ex.getLocalizedMessage(), false);
+      }
 
    }
 
