@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -31,18 +30,12 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
     */
-   @SuppressWarnings("unchecked")
    @Override
    protected void applyFix(AttrData attrData) throws OseeCoreException {
-      Object additionalData = attrData.getAdditionalData();
-      if (additionalData instanceof HashCollection) {
-         String original = attrData.getResource().getData();
-         String converted = convertWordMlLinks(original, (HashCollection<String, MatchRange>) additionalData);
-         attrData.getResource().setData(converted);
-      } else {
-         throw new OseeArgumentException(String.format("AttrData: gamma_id [%s] had invalid AdditionalData object",
-               attrData.getGammaId()));
-      }
+      String original = attrData.getResource().getData();
+      HashCollection<String, MatchRange> matches = WordMlLinkHandler.parseOseeWordMLLinks(original);
+      String converted = convertWordMlLinks(original, matches);
+      attrData.getResource().setData(converted);
    }
 
    /* (non-Javadoc)
@@ -53,9 +46,7 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
       boolean result = false;
       String content = resource.getData();
       if (Strings.isValid(content)) {
-         HashCollection<String, MatchRange> matches = WordMlLinkHandler.parseOseeWordMLLinks(content);
-         result = !matches.isEmpty();
-         attrData.setAdditionalData(matches);
+         result = !WordMlLinkHandler.parseOseeWordMLLinks(content).isEmpty();
       }
       return result;
    }
