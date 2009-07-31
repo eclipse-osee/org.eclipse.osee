@@ -68,14 +68,21 @@ public class RelationManager {
 
    private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
       List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      Set<RelationLink> relations = new HashSet<RelationLink>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if ((includeDeleted || !relation.isDeleted()) && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
-               return relation;
+               relations.add(relation);
             }
          }
       }
-      return null;
+      if (relations.size() == 0) return null;
+      if (relations.size() > 1) {
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+               "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]", artifact.getArtId(),
+               relations.size(), relationType, bArtifactId));
+      }
+      return relations.iterator().next();
    }
 
    /**
@@ -116,6 +123,27 @@ public class RelationManager {
       return relation;
    }
 
+   public static RelationLink getLoadedRelation(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
+      Artifact artifactA = ArtifactCache.getActive(aArtifactId, aBranch);
+      Artifact artifactB = ArtifactCache.getActive(bArtifactId, bBranch);
+      RelationLink relation = null;
+      if (artifactA != null) {
+         for (RelationLink link : getRelationsAll(artifactA, true)) {
+            if (link.getRelationId() == relLinkId) {
+               relation = link;
+            }
+         }
+      }
+      if (artifactB != null && relation == null) {
+         for (RelationLink link : getRelationsAll(artifactB, true)) {
+            if (link.getRelationId() == relLinkId) {
+               relation = link;
+            }
+         }
+      }
+      return relation;
+   }
+
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     * 
@@ -133,6 +161,14 @@ public class RelationManager {
             artifactToRelations.put(artifact, artifactsRelations);
          }
          if (artifactsRelations.contains(relation)) {
+            // Log error cause this should never happen;  only one relation link object should be created 
+            for (RelationLink link : artifactsRelations) {
+               if (link.equals(relation) && link != relation) {
+                  OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                        "Artifact [%s] has multiple relation objects of same relation [%s]", artifact.getArtId(), link));
+               }
+            }
+            // Always want to return if relation link is already managed
             return;
          }
 
@@ -142,6 +178,9 @@ public class RelationManager {
          if (selectedRelations == null) {
             selectedRelations = new CopyOnWriteArrayList<RelationLink>();
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
+         }
+         if (selectedRelations.contains(relation)) {
+            System.out.println("here");
          }
          selectedRelations.add(relation);
       }
@@ -543,9 +582,8 @@ public class RelationManager {
 
       if (maxCount == 0) {
          throw new OseeArgumentException(String.format(
-               "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
-               artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
-               relationType.getTypeName()));
+               "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"", artifact.getName(),
+               artifact.getArtifactTypeName(), relationType.getSideName(relationSide), relationType.getTypeName()));
       } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
          throw new OseeArgumentException(
                String.format(

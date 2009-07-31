@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -416,15 +415,15 @@ public class RemoteEventManager {
                      }
                   } else if (event instanceof ISkynetArtifactEvent) {
                      try {
-                     updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
-                     lastArtifactRelationModChangeSender = sender;
+                        updateArtifacts(sender, (ISkynetArtifactEvent) event, xModifiedEvents);
+                        lastArtifactRelationModChangeSender = sender;
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof ISkynetRelationLinkEvent) {
                      try {
-                     updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
-                     lastArtifactRelationModChangeSender = sender;
+                        updateRelations(sender, (ISkynetRelationLinkEvent) event, xModifiedEvents);
+                        lastArtifactRelationModChangeSender = sender;
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
@@ -503,61 +502,51 @@ public class RemoteEventManager {
                   for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
                      if (!InternalEventManager.enableRemoteEventLoopback) {
                         try {
-                        boolean attributeNeedsCreation = true;
-                           AttributeType attributeType =
-                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId());
-                        for (Attribute<Object> attribute : artifact.getAttributes(attributeType.getName())) {
-                           if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+                           Attribute<?> attribute =
+                                 artifact.getAttributeById(skynetAttributeChange.getAttributeId(), true);
+                           // Attribute already exists (but may be deleted), process update
+                           // Process MODIFIED / DELETED attribute
+                           if (attribute != null) {
                               if (attribute.isDirty()) {
                                  dirtyAttributeName.add(attribute.getNameValueDescription());
                                  OseeLog.log(Activator.class, Level.INFO, String.format(
                                        "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
                                        attribute.getAttrId(), attribute.toString()));
                               }
-                                 try {
-                              ModificationType modificationType = skynetAttributeChange.getModificationType();
-                                    if (modificationType == null) {
-                                       modificationType =
-                                             AttributeTypeManager.internalGetModificationTypeFromDb(attribute);
-                                    }
-                                    if (modificationType == null) {
-                                       OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                             "Can't get mod type for %s's attribute %d [/n%s/n].",
-                                             artifact.getSafeName(), attribute.getAttrId(), attribute.toString()));
-                                       continue;
-                                    }
-                              if (modificationType.isDeleted()) {
-                                 attribute.internalSetModificationType(modificationType);
-                              } else {
-                                 attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                              }
-                              attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
-                              attributeNeedsCreation = false;
-                              attribute.setNotDirty();
-                              break;
-                                 } catch (OseeCoreException ex) {
-                                    OseeLog.log(Activator.class, Level.INFO, String.format(
-                                          "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
-                                          attribute.getAttrId(), attribute.toString()), ex);
+                              try {
+                                 ModificationType modificationType = skynetAttributeChange.getModificationType();
+                                 if (modificationType == null) {
+                                    OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                                          "MOD1: Can't get mod type for %s's attribute %d.",
+                                          artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
+                                    continue;
                                  }
-                           }
-                        }
-                        if (attributeNeedsCreation) {
-                              ModificationType modificationType = skynetAttributeChange.getModificationType();
-                              if (modificationType == null) {
-                                 modificationType =
-                                       AttributeTypeManager.internalGetModificationTypeFromDb(
-                                             artifact.getBranch().getBranchId(), skynetAttributeChange.getGammaId());
+                                 if (modificationType.isDeleted()) {
+                                    attribute.internalSetModificationType(modificationType);
+                                 } else {
+                                    attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                                 }
+                                 attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
+                                 attribute.setNotDirty();
+                              } catch (OseeCoreException ex) {
+                                 OseeLog.log(Activator.class, Level.INFO, String.format(
+                                       "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
+                                       attribute.getAttrId(), attribute.toString()), ex);
                               }
+                           }
+                           // Otherwise, attribute needs creation
+                           // Process NEW attribute
+                           else {
+                              ModificationType modificationType = skynetAttributeChange.getModificationType();
                               if (modificationType == null) {
                                  OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                       "Can't get mod type for %s's attribute %d.", artifact.getSafeName(),
-                                       skynetAttributeChange.getAttributeId()));
+                                       "MOD2: Can't get mod type for %s's attribute %d.",
+                                       artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
                                  continue;
                               }
-                           artifact.internalInitializeAttribute(
-                                 AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
-                                 skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                              artifact.internalInitializeAttribute(
+                                    AttributeTypeManager.getType(skynetAttributeChange.getTypeId()),
+                                    skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
                                     modificationType, false, skynetAttributeChange.getData());
                            }
                         } catch (OseeCoreException ex) {
@@ -649,9 +638,8 @@ public class RemoteEventManager {
                //TODO Maybe just send a link change refresh event
                if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                              event.getArtAId(), event.getArtBId(), branch, branch);
-
+                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                              branch, branch);
                   if (relation != null) {
                      RelationEventType relationEventType = null;
                      boolean aOrderChanged =
@@ -690,8 +678,8 @@ public class RemoteEventManager {
                   }
                } else if (event instanceof NetworkRelationLinkDeletedEvent) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                              event.getArtAId(), event.getArtBId(), branch, branch);
+                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                              branch, branch);
                   if (relation != null) {
                      relation.internalRemoteEventDelete();
 
@@ -700,8 +688,8 @@ public class RemoteEventManager {
                   }
                } else if (event instanceof NetworkNewRelationLinkEvent) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
-                              event.getArtAId(), event.getArtBId(), branch, branch);
+                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                              branch, branch);
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED) {
                      relation =
@@ -730,6 +718,5 @@ public class RemoteEventManager {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-
    }
 }

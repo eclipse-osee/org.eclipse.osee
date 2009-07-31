@@ -61,6 +61,7 @@ public class RelationLink {
 
    /**
     * This constructor creates new relations that does not already exist in the data store.
+    * 
     * @param modificationType TODO
     */
    public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
@@ -325,8 +326,9 @@ public class RelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s: A id[%d] order(%d) <--> B id[%s] order(%d) - %s", relationType.getTypeName(),
-            aArtifactId, aOrder, bArtifactId, bOrder, isDirty() ? "dirty" : "not dirty");
+      return String.format("%s(%d): %s A id[%d] order(%d) <--> B id[%s] order(%d) - %s", relationType.getTypeName(),
+            relationId, getModificationType(), aArtifactId, aOrder, bArtifactId, bOrder,
+            isDirty() ? "dirty" : "not dirty");
    }
 
    public boolean isExplorable() {
@@ -395,7 +397,7 @@ public class RelationLink {
 
       if (setDirty) {
          setDirty();
-      }else{
+      } else {
          setNotDirty();
       }
    }
@@ -410,4 +412,25 @@ public class RelationLink {
    public void setArtifactDeleted() {
       markedAsChanged(ModificationType.ARTIFACT_DELETED, SET_DIRTY);
    }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof RelationLink) {
+         RelationLink other = (RelationLink) obj;
+         return relationId == other.relationId && gammaId == other.gammaId && aBranch.equals(other.aBranch) && bBranch.equals(other.bBranch);
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + aBranch.hashCode();
+      result = prime * result + bBranch.hashCode();
+      result = prime * result + gammaId;
+      result = prime * result + relationId;
+      return result;
+   }
+
 }

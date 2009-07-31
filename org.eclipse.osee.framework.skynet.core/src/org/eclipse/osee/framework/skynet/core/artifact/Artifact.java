@@ -340,6 +340,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return null;
    }
 
+   public Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
+      for (Attribute<?> attribute : getAttributes()) {
+         if (attribute.getAttrId() == attrId) {
+            return attribute;
+         }
+      }
+      return null;
+   }
+
    /**
     * @return whether this artifact has exactly one parent artifact related by a relation of type default hierarchical
     * @throws OseeCoreException
