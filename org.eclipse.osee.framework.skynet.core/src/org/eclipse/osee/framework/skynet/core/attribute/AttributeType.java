@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -22,18 +24,18 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  */
 public class AttributeType implements Comparable<AttributeType> {
    public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
-   private Class<? extends Attribute<?>> baseAttributeClass;
-   private Class<? extends IAttributeDataProvider> providerAttributeClass;
-   private int attrTypeId;
-   private String namespace;
-   private String name;
-   private String defaultValue;
-   private int oseeEnumTypeId;
-   private int maxOccurrences;
-   private int minOccurrences;
-   private String tipText;
-   private String fileTypeExtension;
-   private String taggerId;
+   private final Class<? extends Attribute<?>> baseAttributeClass;
+   private final Class<? extends IAttributeDataProvider> providerAttributeClass;
+   private final int attrTypeId;
+   private final String namespace;
+   private final String name;
+   private final String defaultValue;
+   private final int oseeEnumTypeId;
+   private final int maxOccurrences;
+   private final int minOccurrences;
+   private final String tipText;
+   private final String fileTypeExtension;
+   private final String taggerId;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -125,13 +127,15 @@ public class AttributeType implements Comparable<AttributeType> {
       return tipText;
    }
 
-   /**
-    * @return Returns the validityXml.
-    */
    public int getOseeEnumTypeId() {
       return oseeEnumTypeId;
    }
 
+   public OseeEnumType getOseeEnumType() throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return OseeEnumTypeManager.getType(oseeEnumTypeId);
+   }
+
+   @Override
    public String toString() {
       return name;
    }
@@ -147,8 +151,8 @@ public class AttributeType implements Comparable<AttributeType> {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+      result = prime * result + (name == null ? 0 : name.hashCode());
+      result = prime * result + (namespace == null ? 0 : namespace.hashCode());
       return result;
    }
 
@@ -157,16 +161,30 @@ public class AttributeType implements Comparable<AttributeType> {
     */
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       final AttributeType other = (AttributeType) obj;
       if (name == null) {
-         if (other.name != null) return false;
-      } else if (!name.equals(other.name)) return false;
+         if (other.name != null) {
+            return false;
+         }
+      } else if (!name.equals(other.name)) {
+         return false;
+      }
       if (namespace == null) {
-         if (other.namespace != null) return false;
-      } else if (!namespace.equals(other.namespace)) return false;
+         if (other.namespace != null) {
+            return false;
+         }
+      } else if (!namespace.equals(other.namespace)) {
+         return false;
+      }
       return true;
    }
 

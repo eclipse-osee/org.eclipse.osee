@@ -214,8 +214,10 @@ public class AttributeTypeManager {
    }
 
    public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
-      if (minOccurrences > 0 && defaultValue == null) throw new OseeArgumentException(
-            "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
+      if (minOccurrences > 0 && defaultValue == null) {
+         throw new OseeArgumentException(
+               "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
+      }
       if (typeExists(namespace, name)) {
          return getType(namespace, name);
       }
@@ -285,9 +287,7 @@ public class AttributeTypeManager {
 
    public static Set<String> getEnumerationValues(AttributeType attributeType) {
       try {
-         int oseeEnumTypeId = attributeType.getOseeEnumTypeId();
-         OseeEnumType enumType = OseeEnumTypeManager.getType(oseeEnumTypeId);
-         return enumType.valuesAsOrderedStringSet();
+         return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return Collections.emptySet();

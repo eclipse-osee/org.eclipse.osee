@@ -44,8 +44,7 @@ public class OseeEnumerationValidation implements IOseeValidator {
    @Override
    public IStatus validate(Artifact artifact, AttributeType attributeType, Object proposedObject) throws OseeCoreException {
       String text = (String) proposedObject;
-      OseeEnumType oseeEnumType = OseeEnumTypeManager.getType(attributeType.getOseeEnumTypeId());
-      oseeEnumType.valueOf(text);
+      attributeType.getOseeEnumType().valueOf(text);
 
       return Status.OK_STATUS;
    }

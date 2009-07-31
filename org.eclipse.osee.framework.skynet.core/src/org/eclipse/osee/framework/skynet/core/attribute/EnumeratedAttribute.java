@@ -30,9 +30,6 @@ public class EnumeratedAttribute extends StringAttribute {
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
       if (!AttributeTypeManager.getEnumerationValues(getAttributeType()).contains(value)) {
