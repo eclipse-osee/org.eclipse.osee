@@ -165,7 +165,8 @@ public class RelationManager {
             for (RelationLink link : artifactsRelations) {
                if (link.equals(relation) && link != relation) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                        "Artifact [%s] has multiple relation objects of same relation [%s]", artifact.getArtId(), link));
+                        "Duplicate relation objects for same relation for Artifact [%s] Relation [%s]",
+                        artifact.getArtId(), link));
                }
             }
             // Always want to return if relation link is already managed
