@@ -12,6 +12,10 @@
 		<property name="buildDirectory" value="${workspaceLocation}/sandbox" />
 		<property name="pdeTarget" value="main" />
 
+		<delete>
+			<fileset dir="${buildDirectory}" includes="*" />
+		</delete>
+		
 		<delete dir="${buildDirectory}/features" />
 		<delete dir="${buildDirectory}/repository" />
 
