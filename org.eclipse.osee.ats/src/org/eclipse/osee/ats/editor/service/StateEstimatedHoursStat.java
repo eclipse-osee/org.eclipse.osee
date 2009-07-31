@@ -60,7 +60,7 @@ public class StateEstimatedHoursStat {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
+                     smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, true);
                      header.refresh();
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
