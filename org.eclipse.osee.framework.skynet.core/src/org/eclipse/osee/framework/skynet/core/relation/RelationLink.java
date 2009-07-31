@@ -326,9 +326,9 @@ public class RelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s(%d): %s A id[%d] order(%d) <--> B id[%s] order(%d) - %s", relationType.getTypeName(),
-            relationId, getModificationType(), aArtifactId, aOrder, bArtifactId, bOrder,
-            isDirty() ? "dirty" : "not dirty");
+      return String.format("%s id[%d] modType[%s] [%s]: aId[%d] aOrder[%d] <--> bId[%s] bOrder[%d]",
+            relationType.getTypeName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"),
+            aArtifactId, aOrder, bArtifactId, bOrder);
    }
 
    public boolean isExplorable() {
@@ -417,7 +417,14 @@ public class RelationLink {
    public boolean equals(Object obj) {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
-         return relationId == other.relationId && gammaId == other.gammaId && aBranch.equals(other.aBranch) && bBranch.equals(other.bBranch);
+         boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
+         //
+         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+         //
+         relationType.equals(other.relationType);
+
+         // This should eventually be removed once DB cleanup occurs
+         return result && relationId == other.relationId;
       }
       return false;
    }
@@ -426,10 +433,11 @@ public class RelationLink {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
+      result = prime * result + aArtifactId;
       result = prime * result + aBranch.hashCode();
+      result = prime * result + bArtifactId;
       result = prime * result + bBranch.hashCode();
-      result = prime * result + gammaId;
-      result = prime * result + relationId;
+      result = prime * result + relationType.hashCode();
       return result;
    }
 

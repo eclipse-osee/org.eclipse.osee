@@ -165,8 +165,8 @@ public class RelationManager {
             for (RelationLink link : artifactsRelations) {
                if (link.equals(relation) && link != relation) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                        "Duplicate relation objects for same relation for Artifact [%s] Relation [%s]",
-                        artifact.getArtId(), link));
+                        "Duplicate relation objects for same relation for Relation [%s] Artifact (%s)[%s]", link,
+                        artifact.getArtId(), artifact.getName()));
                }
             }
             // Always want to return if relation link is already managed
@@ -181,7 +181,9 @@ public class RelationManager {
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
          if (selectedRelations.contains(relation)) {
-            System.out.println("here");
+            OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                  "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", relation,
+                  artifact.getArtId(), artifact.getName()));
          }
          selectedRelations.add(relation);
       }

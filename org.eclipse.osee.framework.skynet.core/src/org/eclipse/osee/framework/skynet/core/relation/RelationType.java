@@ -16,15 +16,15 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  * @author Robert A. Fisher
  */
 public class RelationType implements Comparable<RelationType> {
-   private int relationTypeId;
-   private String namespace;
-   private String typeName;
-   private String sideAName;
-   private String sideBName;
-   private String aToBPhrasing;
-   private String bToAPhrasing;
-   private String shortName;
-   private String ordered;
+   private final int relationTypeId;
+   private final String namespace;
+   private final String typeName;
+   private final String sideAName;
+   private final String sideBName;
+   private final String aToBPhrasing;
+   private final String bToAPhrasing;
+   private final String shortName;
+   private final String ordered;
 
    public RelationType(int linkTypeId, String namespace, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName, String ordered) {
       super();
@@ -113,7 +113,9 @@ public class RelationType implements Comparable<RelationType> {
     */
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof RelationType) return typeName.equals(((RelationType) obj).typeName);
+      if (obj instanceof RelationType) {
+         return relationTypeId == ((RelationType) obj).relationTypeId;
+      }
       return false;
    }
 
@@ -122,9 +124,10 @@ public class RelationType implements Comparable<RelationType> {
     */
    @Override
    public int hashCode() {
-      return typeName.hashCode();
+      return 17 * relationTypeId;
    }
 
+   @Override
    public String toString() {
       return typeName + " " + sideAName + " <--> " + sideBName;
    }
