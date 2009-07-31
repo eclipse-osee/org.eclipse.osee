@@ -1,0 +1,65 @@
+<project name="build.all" default="run" basedir=".">
+	<property name="helper-scripts" value="${basedir}/scripts" />
+	<import file="${helper-scripts}/checkCodeQuality.xml" />
+
+	<target name="run">
+
+		<!-- load properties and set timestamp for the build -->
+		<property file="build.properties" />
+		<tstamp>
+			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
+		</tstamp>
+
+		<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
+		<property name="relengBuilderDir" value="${basedir}" />
+		<dirname file="${relengBuilderDir}" property="workspaceDir" />
+
+		<echo message="workspaceDir=${workspaceDir}" />
+
+		<property name="writableBuildRoot" value="${basedir}/${build-directory}" />
+		<property name="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}" />
+		<property name="oseeCodePreferences" value="${basedir}/org.eclipse.osee.support.config" />
+
+		<!-- Set Proxy -->
+		<antcall target="set-proxy" />
+
+		<!-- this is here in case we are part of the eclipse common build -->
+		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
+		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
+		<!-- -->
+
+		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
+		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
+
+		<!-- Download all required 3rd Party Jars if not found and thirdPartyDownloadLicenseAcceptanceOK="I accept" -->
+		<get-code-quality-libraries />
+
+		<set-code-quality-classpath classpath="${classpath}" />
+
+		<mkdir dir="${buildDir}" />
+
+		<for param="bundle" delimiter=", " list="${workspaceDir}/../lba.ats.config.common">
+			<sequential>
+				<if>
+					<isset property="@{bundle}" />
+					<then>
+						<echo message="Processing... ${bundle}" />
+					</then>
+				</if>
+				<echo message="Processing... @{bundle}" />
+				<property name="output" value="${buildDir}/lba.ats.config.common" />
+				<mkdir dir="${output}" />
+				<check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
+				<pmd-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-pmd-rules}" />
+				<pmd-copy-paste-check source.dir="@{bundle}" output.dir="${output}" min.token.count="100" />
+				
+				<!-- <findbugs-check source.dir="@{bundle}" output.dir="${output}"/> -->
+			</sequential>
+		</for>
+	</target>
+
+	<target name="set-proxy">
+		<echo message="Setting proxy to ${proxy_host}:${proxy_port}" />
+		<setproxy proxyhost="${proxy_host}" proxyport="${proxy_port}" />
+	</target>
+</project>

@@ -1,0 +1,295 @@
+<project default="noDefault" name="getDependencies - gets all dependencies">
+
+	<target name="noDefault">
+		<echo>Must specify a target such as 'getCodeStyleDependencies'.</echo>
+	</target>
+
+
+	<macrodef name="get-code-quality-libraries">
+		<sequential>
+			<mkdir dir="${downloadsDir}" />
+			<mkdir dir="${thirdPartyJarsDir}" />
+
+			<!-- ANT CONTRIB CHECKS -->
+			<condition property="antContribJarUnavailable">
+				<not>
+					<or>
+						<available file="${relengCommonBuilderDir}/lib/ant-contrib.jar" type="file" />
+						<available file="${relengBaseBuilderDir}/lib/ant-contrib.jar" type="file" />
+						<available file="${thirdPartyJarsDir}/ant-contrib.jar" type="file" />
+						<available file="/usr/share/java/ant-contrib.jar" type="file" />
+					</or>
+				</not>
+			</condition>
+			<antcall target="check.ant-contrib" />
+			<!-- This will fail if ant-contrib.jar cannot be found. You can install Ant-Contrib via RPM, or download it here:
+					  http://downloads.sourceforge.net/ant-contrib/ant-contrib-1.0b2-bin.zip
+					  -->
+
+
+			<!-- CHECK STYLE CHECKS -->
+			<condition property="checkStyleJarUnavailable">
+				<not>
+					<or>
+						<available file="${thirdPartyJarsDir}/checkstyle/checkstyle-all-5.0.jar" type="file" />
+					</or>
+				</not>
+			</condition>
+			<antcall target="check.check-style" />
+
+
+			<!-- PMD CHECKS -->
+			<condition property="pmdJarUnavailable">
+				<not>
+					<or>
+						<available file="${thirdPartyJarsDir}/pmd/pmd-4.2.5.jar" type="file" />
+					</or>
+				</not>
+			</condition>
+			<antcall target="check.pmd" />
+
+
+			<!-- FIND BUGS -->
+			<condition property="findBugsJarUnavailable">
+				<not>
+					<or>
+						<available file="${thirdPartyJarsDir}/findbugs/findbugs-ant.jar" type="file" />
+					</or>
+				</not>
+			</condition>
+			<antcall target="check.find-bugs" />
+
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="set-code-quality-classpath">
+		<attribute name="classpath" />
+		<sequential>
+			<!-- ANT CONTRIB -->
+			<taskdef resource="net/sf/antcontrib/antlib.xml">
+				<classpath>
+					<pathelement path="@{classpath}" />
+					<pathelement location="${relengCommonBuilderDir}/lib/ant-contrib.jar" />
+					<pathelement location="${relengBaseBuilderDir}/lib/ant-contrib.jar" />
+					<pathelement location="${thirdPartyJarsDir}/ant-contrib.jar" />
+					<pathelement location="/usr/share/java/ant-contrib.jar" />
+				</classpath>
+			</taskdef>
+
+			<!-- CHECK STYLE  -->
+			<taskdef resource="checkstyletask.properties">
+				<classpath>
+					<pathelement path="@{classpath}" />
+					<fileset dir="${thirdPartyJarsDir}/checkstyle" includes="*.jar" />
+				</classpath>
+			</taskdef>
+			<!-- PMD  -->
+			<path id="pmd.classpath">
+				<pathelement path="@{classpath}" />
+				<fileset dir="${thirdPartyJarsDir}/pmd" includes="*.jar" />
+			</path>
+			<taskdef name="pmd" classpathref="pmd.classpath" classname="net.sourceforge.pmd.ant.PMDTask" />
+			<taskdef name="cpd" classpathref="pmd.classpath" classname="net.sourceforge.pmd.cpd.CPDTask" />
+
+			<!-- FIND BUGS -->
+			<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+				<!-- resource="/edu/umd/cd/findbugs/anttask/tasks.properties">-->
+				<classpath>
+					<pathelement path="@{classpath}" />
+					<fileset dir="${thirdPartyJarsDir}/findbugs" includes="*.jar" />
+				</classpath>
+			</taskdef>
+		</sequential>
+	</macrodef>
+
+	<target name="get.ant-contrib" if="thirdPartyDownloadLicenseAcceptanceOK">
+		<get src="http://sourceforge.net/projects/ant-contrib/files/ant-contrib/ant-contrib-1.0b2/ant-contrib-1.0b2-bin.zip/download" dest="${downloadsDir}/ant-contrib-1.0b2-bin.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/ant-contrib-1.0b2-bin.zip" />
+		<mkdir dir="/tmp/ant-contrib-1.0b2-bin.zip_" />
+		<unzip src="${downloadsDir}/ant-contrib-1.0b2-bin.zip" dest="/tmp/ant-contrib-1.0b2-bin.zip_" overwrite="true" />
+		<copy file="/tmp/ant-contrib-1.0b2-bin.zip_/ant-contrib/lib/ant-contrib.jar" tofile="${thirdPartyJarsDir}/ant-contrib.jar" failonerror="true" />
+		<delete dir="/tmp/ant-contrib-1.0b2-bin.zip_" includeemptydirs="true" quiet="true" />
+	</target>
+
+	<target name="get.check-style" if="thirdPartyDownloadLicenseAcceptanceOK">
+		<get src="http://sourceforge.net/projects/checkstyle/files/checkstyle/5.0/checkstyle-5.0.zip/download" dest="${downloadsDir}/checkstyle-5.0.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/checkstyle-5.0.zip" />
+		<mkdir dir="/tmp/checkstyle-5.0.zip_" />
+		<unzip src="${downloadsDir}/checkstyle-5.0.zip" dest="/tmp/checkstyle-5.0.zip_" overwrite="true" />
+		<!-- transfer unzipped jars to 3rd party folder -->
+		<mkdir dir="${thirdPartyJarsDir}/checkstyle" />
+		<copy todir="${thirdPartyJarsDir}/checkstyle" failonerror="true">
+			<fileset dir="/tmp/checkstyle-5.0.zip_/checkstyle-5.0" includes="*.jar" />
+		</copy>
+		<delete dir="/tmp/checkstyle-5.0.zip_" includeemptydirs="true" quiet="true" />
+	</target>
+
+	<target name="get.pmd" if="thirdPartyDownloadLicenseAcceptanceOK">
+		<get src="http://sourceforge.net/projects/pmd/files/pmd/4.2.5/pmd-bin-4.2.5.zip/download" dest="${downloadsDir}/pmd-bin-4.2.5.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/pmd-bin-4.2.5.zip" />
+		<mkdir dir="/tmp/pmd-bin-4.2.5.zip_" />
+		<unzip src="${downloadsDir}/pmd-bin-4.2.5.zip" dest="/tmp/pmd-bin-4.2.5.zip_" overwrite="true" />
+		<!-- transfer unzipped jars to 3rd party folder -->
+		<mkdir dir="${thirdPartyJarsDir}/pmd" />
+		<copy todir="${thirdPartyJarsDir}/pmd" failonerror="true">
+			<fileset dir="/tmp/pmd-bin-4.2.5.zip_/pmd-4.2.5/lib" includes="*.jar" />
+		</copy>
+		<delete dir="/tmp/pmd-bin-4.2.5.zip_" includeemptydirs="true" quiet="true" />
+	</target>
+
+	<target name="get.find-bugs" if="thirdPartyDownloadLicenseAcceptanceOK">
+		<get src="http://sourceforge.net/projects/findbugs/files/findbugs/1.3.8/findbugs-1.3.8.zip/download" dest="${downloadsDir}/findbugs-1.3.8.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/findbugs-1.3.8.zip" />
+		<mkdir dir="/tmp/findbugs-1.3.8.zip_" />
+		<unzip src="${downloadsDir}/findbugs-1.3.8.zip" dest="/tmp/findbugs-1.3.8.zip_" overwrite="true" />
+		<!-- transfer unzipped jars to 3rd party folder -->
+		<mkdir dir="${thirdPartyJarsDir}/findbugs" />
+		<copy todir="${thirdPartyJarsDir}/findbugs" failonerror="true">
+			<fileset dir="/tmp/findbugs-1.3.8.zip_/findbugs-1.3.8/lib" includes="*.jar" />
+		</copy>
+		<delete dir="/tmp/findbugs-1.3.8.zip_" includeemptydirs="true" quiet="true" />
+	</target>
+
+	<target name="check.ant-contrib" if="antContribJarUnavailable">
+		<condition property="thirdPartyDownloadLicenseAcceptanceOK">
+			<and>
+				<isset property="thirdPartyDownloadLicenseAcceptance" />
+				<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="&quot;I accept&quot;" />
+			</and>
+		</condition>
+		<antcall target="get.ant-contrib" />
+		<available file="${thirdPartyJarsDir}/ant-contrib.jar" property="antContribJarAvailable" />
+		<fail unless="antContribJarAvailable">Error! 
+
+	Ant-Contrib 1.0b2 is required. Download it from http://downloads.sourceforge.net/ant-contrib/ant-contrib-1.0b2-bin.zip/download,
+	then place it in one of the following locations. You can also redefine these paths in your build.properties file:
+
+	$${thirdPartyJarsDir}/ant-contrib.jar          = ${thirdPartyJarsDir}/ant-contrib.jar
+				
+	Or, to download this automatically, set build.properties#thirdPartyDownloadLicenseAcceptance to "I Accept".
+	</fail>
+	</target>
+
+	<target name="check.check-style" if="checkStyleJarUnavailable">
+		<condition property="thirdPartyDownloadLicenseAcceptanceOK">
+			<and>
+				<isset property="thirdPartyDownloadLicenseAcceptance" />
+				<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="&quot;I accept&quot;" />
+			</and>
+		</condition>
+		<antcall target="get.check-style" />
+		<available file="${thirdPartyJarsDir}/checkstyle/checkstyle-all-5.0.jar" property="checkStyleJarUnavailable" />
+		<fail unless="checkStyleJarUnavailable">Error! 
+
+	Check Style 5.0 is required. Download it from http://sourceforge.net/projects/checkstyle/files/checkstyle/5.0/checkstyle-5.0.zip/download,
+	then place it in one of the following locations. You can also redefine these paths in your build.properties file:
+
+	$${thirdPartyJarsDir}/checkstyle/checkstyle-all-5.0.jar          = ${thirdPartyJarsDir}/checkstyle/checkstyle-all-5.0.jar
+				
+	Or, to download this automatically, set build.properties#thirdPartyDownloadLicenseAcceptance to "I Accept".
+	</fail>
+	</target>
+
+	<target name="check.pmd" if="pmdJarUnavailable">
+		<condition property="thirdPartyDownloadLicenseAcceptanceOK">
+			<and>
+				<isset property="thirdPartyDownloadLicenseAcceptance" />
+				<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="&quot;I accept&quot;" />
+			</and>
+		</condition>
+		<antcall target="get.pmd" />
+		<available file="${thirdPartyJarsDir}/pmd/pmd-4.2.5.jar" property="pmdJarUnavailable" />
+		<fail unless="pmdJarUnavailable">Error! 
+
+	PMD 4.2.5 is required. Download it from http://sourceforge.net/projects/pmd/files/pmd/4.2.5/pmd-bin-4.2.5.zip/download,
+	then place it in one of the following locations. You can also redefine these paths in your build.properties file:
+
+	$${thirdPartyJarsDir}/pmd/pmd-4.2.5.jar          = ${thirdPartyJarsDir}/pmd/pmd-4.2.5.jar
+				
+	Or, to download this automatically, set build.properties#thirdPartyDownloadLicenseAcceptance to "I Accept".
+	</fail>
+	</target>
+
+	<target name="check.find-bugs" if="findBugsJarUnavailable">
+		<condition property="thirdPartyDownloadLicenseAcceptanceOK">
+			<and>
+				<isset property="thirdPartyDownloadLicenseAcceptance" />
+				<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="&quot;I accept&quot;" />
+			</and>
+		</condition>
+		<antcall target="get.find-bugs" />
+		<available file="${thirdPartyJarsDir}/findbugs/findbugs-ant.jar" property="findBugsJarUnavailable" />
+		<fail unless="findBugsJarUnavailable">Error! 
+
+	FindBugs 1.3.8 is required. Download it from http://sourceforge.net/projects/findbugs/files/findbugs/1.3.8/findbugs-1.3.8.zip/download,
+	then place it in one of the following locations. You can also redefine these paths in your build.properties file:
+
+	$${thirdPartyJarsDir}/findbugs/findbugs-ant.jar          = ${thirdPartyJarsDir}/findbugs/findbugs-ant.jar
+				
+	Or, to download this automatically, set build.properties#thirdPartyDownloadLicenseAcceptance to "I Accept".
+	</fail>
+	</target>
+
+	<macrodef name="check-style-check">
+		<attribute name="rules" />
+		<attribute name="source.dir" />
+		<attribute name="output.dir" />
+		<sequential>
+			<echo message="Check Style - @{source.dir}" />
+			<checkstyle config="@{rules}" failureProperty="checkstyle.failure" failOnViolation="false">
+				<formatter type="xml" tofile="@{output.dir}/checkstyle_report.xml" />
+				<fileset dir="@{source.dir}" includes="**/*.java" />
+			</checkstyle>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="pmd-check">
+		<attribute name="rules" />
+		<attribute name="source.dir" />
+		<attribute name="output.dir" />
+		<sequential>
+			<echo message="PMD Check - @{source.dir}" />
+			<pmd shortfilenames="true" failonerror="true" failOnRuleViolation="false" targetjdk="1.6" rulesetfiles="@{rules}">
+				<formatter type="xml" toFile="@{output.dir}/pmd_report.xml" />
+				<!--<formatter type="html" toFile="${results-location}/pmd_report.html" linePrefix=".line" /> -->
+				<formatter type="summaryhtml" toFile="${results-location}/pmd_summary_report.html" />
+				<fileset dir="@{source.dir}" includes="**/*.java" />
+			</pmd>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="pmd-copy-paste-check">
+		<attribute name="min.token.count" />
+		<attribute name="source.dir" />
+		<attribute name="output.dir" />
+		<sequential>
+			<echo message="PMD-COPY-PASTE Check - @{source.dir}" />
+			<cpd minimumTokenCount="@{min.token.count}" ignoreLiterals="false" language="java" format="xml" outputfile="@{output.dir}/pmd_cpd_report.xml">
+				<fileset dir="@{source.dir}" includes="**/*.java" />
+			</cpd>
+			<!--<xslt in="${results-location}/pmd_cpd_report.xml" style="etc/xslt/cpdhtml.xslt" out="${results-location}/pmd_cpd_report.html" />-->
+		</sequential>
+	</macrodef>
+
+
+	<macrodef name="findbugs-check">
+		<attribute name="source.dir" />
+		<attribute name="output.dir" />
+		<attribute name="jar.to.analyze" />
+		<attribute name="dependecy.jars" />
+		<sequential>
+			<echo message="FIND-BUGS Check - @{source.dir}" />
+			<!-- pass the Jar file with the code and all the dependency jars -->
+			<!-- <jar basedir="@{source.dir}/bin/" destfile="@{output.dir}/temp.jar" includes="**/*.class" /> -->
+
+			<findbugs home="${thirdPartyJarsDir}/findbugs" output="xml" outputFile="@{output.dir}/findbugs_report.xml" effort="default" failOnError="false">
+				<auxClasspath path="@{dependecy.jars}" />
+				<sourcePath path="@{source.dir}/src/**/*.java" />
+				<class location="@{jar.to.analyze}" />
+			</findbugs>
+			<delete file="@{output.dir}/temp.jar" quiet="true" />
+			<!--<xslt in="@{output.dir}/findbugs_report.xml" style="fancy-hist.xsl" out="@{output.dir}/findbugs_report.html" />-->
+		</sequential>
+	</macrodef>
+</project>
