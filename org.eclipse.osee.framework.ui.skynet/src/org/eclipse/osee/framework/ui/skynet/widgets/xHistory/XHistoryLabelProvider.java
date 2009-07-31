@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
+import java.text.SimpleDateFormat;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -20,15 +21,12 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
  */
 public class XHistoryLabelProvider extends XViewerLabelProvider {
-
-   Font font = null;
    private final HistoryXViewer changeXViewer;
 
    public XHistoryLabelProvider(HistoryXViewer changeXViewer) {
@@ -41,7 +39,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       try {
          if (!(element instanceof Change)) return "";
          Change data = (Change) element;
-
+         
          if (cCol.equals(HistoryXViewerFactory.transaction)) {
             return String.valueOf(data.getToTransactionId().getTransactionNumber());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
@@ -59,7 +57,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return String.valueOf(data.getToTransactionId().getTime());
+            return  new SimpleDateFormat("MM/dd/yyyy hh:mm a").format((data.getToTransactionId().getTime()));
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
             return UserManager.getUserNameById(data.getToTransactionId().getAuthorArtId());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
@@ -72,8 +70,6 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    }
 
    public void dispose() {
-      if (font != null) font.dispose();
-      font = null;
    }
 
    public boolean isLabelProperty(Object element, String property) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -133,7 +134,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getTransactionNumber());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         columnText = String.valueOf(transaction.getTime());
+         columnText =  new SimpleDateFormat("MM/dd/yyyy hh:mm a").format((transaction.getTime()));
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
