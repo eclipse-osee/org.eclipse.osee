@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import org.apache.derby.drda.NetworkServerControl;
+import org.eclipse.osee.framework.derby.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

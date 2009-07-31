@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.derby;
+package org.eclipse.osee.framework.derby.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

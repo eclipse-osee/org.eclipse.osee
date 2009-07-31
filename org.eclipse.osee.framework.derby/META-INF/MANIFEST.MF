@@ -3,11 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Derby Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.derby;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.derby.Activator
+Bundle-Activator: org.eclipse.osee.framework.derby.internal.Activator
 Bundle-ActivationPolicy: lazy
 OseeEarlyStart: true
-Import-Package: org.apache.derby.core,
- org.apache.derby.drda,
+Import-Package: org.apache.derby.drda;version="10.5.1.1",
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
