@@ -12,12 +12,9 @@
 		<property name="buildDirectory" value="${workspaceLocation}/sandbox" />
 		<property name="pdeTarget" value="main" />
 
-		<delete>
-			<fileset dir="${buildDirectory}" includes="*" />
+		<delete verbose="true" quiet="true" includeEmptyDirs="true">
+			<fileset dir="${buildDirectory}" excludes="plugins/**/*" />
 		</delete>
-		
-		<delete dir="${buildDirectory}/features" />
-		<delete dir="${buildDirectory}/repository" />
 
 		<copy todir="${buildDirectory}/maps">
 			<fileset file="${basedir}/osee.map" />
