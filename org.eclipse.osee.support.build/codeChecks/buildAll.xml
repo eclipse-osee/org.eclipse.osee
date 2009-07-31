@@ -38,7 +38,12 @@
 
 		<mkdir dir="${buildDir}" />
 
-		<for param="bundle" delimiter=", " list="${workspaceDir}/../lba.ats.config.common">
+		<pathconvert property="osee.bundles" setonempty="false" pathsep=";">
+			<path>
+				<dirset dir="${workspaceDir}/../" includes="*osee*" />
+			</path>
+		</pathconvert>
+		<for param="bundle" delimiter=";" list="${osee.bundles}">
 			<sequential>
 				<if>
 					<isset property="@{bundle}" />
@@ -49,10 +54,10 @@
 				<echo message="Processing... @{bundle}" />
 				<property name="output" value="${buildDir}/lba.ats.config.common" />
 				<mkdir dir="${output}" />
-				<check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
+				<!-- <check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
 				<pmd-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-pmd-rules}" />
 				<pmd-copy-paste-check source.dir="@{bundle}" output.dir="${output}" min.token.count="100" />
-				
+				-->
 				<!-- <findbugs-check source.dir="@{bundle}" output.dir="${output}"/> -->
 			</sequential>
 		</for>

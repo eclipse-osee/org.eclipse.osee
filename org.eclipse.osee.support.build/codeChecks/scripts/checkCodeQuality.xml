@@ -134,6 +134,7 @@
 		<mkdir dir="${thirdPartyJarsDir}/pmd" />
 		<copy todir="${thirdPartyJarsDir}/pmd" failonerror="true">
 			<fileset dir="/tmp/pmd-bin-4.2.5.zip_/pmd-4.2.5/lib" includes="*.jar" />
+			<fileset dir="/tmp/pmd-bin-4.2.5.zip_/pmd-4.2.5/etc/xslt" exclude="*.txt" />
 		</copy>
 		<delete dir="/tmp/pmd-bin-4.2.5.zip_" includeemptydirs="true" quiet="true" />
 	</target>
