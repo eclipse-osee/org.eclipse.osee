@@ -7,6 +7,7 @@
 		<property name="releaseVersion" value="0.8.1RC" />
 		<property name="topLevelElementId" value="org.eclipse.osee.master.feature" />
 		<property name="filteredDependencyCheck" value="false" />
+		<setproxy proxyhost="www-slb-proxy.boeing.com" proxyport="31060" />
 		<antcall target="PdeBuild" />
 	</target>
 
