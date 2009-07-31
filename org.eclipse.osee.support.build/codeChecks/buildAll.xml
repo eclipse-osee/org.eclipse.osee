@@ -34,33 +34,16 @@
 		<!-- Download all required 3rd Party Jars if not found and thirdPartyDownloadLicenseAcceptanceOK="I accept" -->
 		<get-code-quality-libraries />
 
-		<set-code-quality-classpath classpath="${classpath}" />
-
-		<mkdir dir="${buildDir}" />
-
 		<pathconvert property="osee.bundles" setonempty="false" pathsep=";">
 			<path>
 				<dirset dir="${workspaceDir}/../" includes="*osee*" excludes=".osee.data,osee.doc,osee.install,osee.license,org.eclipse.osee.support.build,*releng,*.help,*runConfigs*,*.config,*.feature" />
 			</path>
 		</pathconvert>
-		<for param="bundle" delimiter=";" list="${osee.bundles}">
-			<sequential>
-				<if>
-					<isset property="@{bundle}" />
-					<then>
-						<echo message="Processing... ${bundle}" />
-					</then>
-				</if>
-				<echo message="Processing... @{bundle}" />
-				<property name="output" value="${buildDir}/lba.ats.config.common" />
-				<mkdir dir="${output}" />
-				<check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
-				<pmd-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-pmd-rules}" />
-				<pmd-copy-paste-check source.dir="@{bundle}" output.dir="${output}" min.token.count="100" />
-				
-				<!-- <findbugs-check source.dir="@{bundle}" output.dir="${output}"/> -->
-			</sequential>
-		</for>
+
+		<set-code-quality-classpath classpath="${classpath}" />
+
+		<all-code-quality-checks bundle.list="${osee.bundles}" />
+		<create-html-index bundle.list="${osee.bundles}" output="${buildDir}/index.html" />
 	</target>
 
 	<target name="set-proxy">

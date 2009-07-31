@@ -293,4 +293,70 @@
 			<!--<xslt in="@{output.dir}/findbugs_report.xml" style="fancy-hist.xsl" out="@{output.dir}/findbugs_report.html" />-->
 		</sequential>
 	</macrodef>
+
+	<macrodef name="all-code-quality-checks">
+		<attribute name="bundle.list" />
+		<sequential>
+			<mkdir dir="${buildDir}" />
+			<for param="bundle" delimiter=";" list="@{bundle.list}">
+				<sequential>
+					<if>
+						<isset property="@{bundle}" />
+						<then>
+							<echo message="Processing... ${bundle}" />
+						</then>
+					</if>
+
+
+					<propertyregex property="output" override="true" input="@{bundle}" regexp="[^\\]+$" select="\0" casesensitive="false" />
+
+					<echo message="Processing... @{bundle} to ${output}" />
+					<mkdir dir="${buildDir}/${output}" />
+					<check-style-check source.dir="@{bundle}" output.dir="${buildDir}/${output}" rules="${osee-checkstyle-rules}" />
+					<pmd-check source.dir="@{bundle}" output.dir="${buildDir}/${output}" rules="${osee-pmd-rules}" />
+					<pmd-copy-paste-check source.dir="@{bundle}" output.dir="${buildDir}/${output}" min.token.count="100" />
+
+					<!-- <findbugs-check source.dir="@{bundle}" output.dir="${output}"/> -->
+				</sequential>
+			</for>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="create-html-index">
+		<attribute name="bundle.list" />
+		<attribute name="output" />
+		<sequential>
+			<echo message="&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;
+				&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot; &gt;
+				&lt;html&gt;&lt;head&gt;" file="@{output}" />
+			<echo message="&lt;style type=&quot;text/css&quot;&gt;" file="@{output}" append="true" />
+			<echo message="table.oseeTable { border-width: 1px 1px 1px 1px; border-spacing: 2px; border-style: solid solid solid solid; border-color: blue blue blue blue; border-collapse: separate; background-color: rgb(255, 250, 250); } table.oseeTable th { border-width: 1px 1px 1px 1px; padding: 4px 4px 4px 4px; border-style: solid solid solid solid; border-color: black black black black; background-color: white; -moz-border-radius: 0px 0px 0px 0px; } table.oseeTable td { border-width: 1px 1px 1px 1px; padding: 4px 4px 4px 4px; border-style: solid solid solid solid; border-color: black black black black; background-color: white; -moz-border-radius: 0px 0px 0px 0px; }" file="@{output}" append="true" />
+			<echo message="&lt;/style&gt;" file="@{output}" append="true" />
+			<echo message="&lt;/head&gt;&lt;body&gt;" file="@{output}" append="true" />
+			<echo message="&lt;div id=&quot;content&quot;&gt;" file="@{output}" append="true" />
+
+			<echo message="&lt;table class=&quot;oseeTable&quot; width=&quot;95%&quot; &gt;
+				&lt;th&gt;Name&lt;/th&gt;
+				&lt;th&gt;Format&lt;/th&gt;
+				&lt;th&gt;PMD&lt;/th&gt;
+				&lt;th&gt;Copy/Paste&lt;/th&gt;
+				&lt;th&gt;BUGS&lt;/th&gt;" file="@{output}" append="true" />
+			<for param="bundle" delimiter=";" list="@{bundle.list}">
+				<sequential>
+					<propertyregex property="folder" override="true" input="@{bundle}" regexp="[^\\]+$" select="\0" casesensitive="false" />
+
+					<echo message="&lt;tr&gt;" file="@{output}" append="true" />
+					<echo message="&lt;td&gt;${folder}&lt;/td&gt;" file="@{output}" append="true" />
+					<echo message="&lt;td&gt;&lt;a href=&quot;${folder}/checkstyle_report.xml&quot; &gt;Style&lt;/a&gt;&lt;/td&gt;" file="@{output}" append="true" />
+					<echo message="&lt;td&gt;&lt;a href=&quot;${folder}/pmd_report.xml&quot; &gt;PMD&lt;/a&gt;&lt;/td&gt;" file="@{output}" append="true" />
+					<echo message="&lt;td&gt;&lt;a href=&quot;${folder}/pmd_cpd_report.xml&quot; &gt;CP&lt;/a&gt;&lt;/td&gt;" file="@{output}" append="true" />
+					<echo message="&lt;td&gt;&lt;a href=&quot;${folder}/findbugs_report.xml&quot; &gt;BUGS&lt;/a&gt;&lt;/td&gt;" file="@{output}" append="true" />
+					<echo message="&lt;/tr&gt;" file="@{output}" append="true" />
+				</sequential>
+			</for>
+			<echo message="&lt;/table&gt;" file="@{output}" append="true" />
+			<echo message="&lt;/div&gt;" file="@{output}" append="true" />
+			<echo message="&lt;/body&gt;&lt;/html&gt;" file="@{output}" append="true" />
+		</sequential>
+	</macrodef>
 </project>
