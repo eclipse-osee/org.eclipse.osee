@@ -254,7 +254,7 @@
 			<pmd shortfilenames="true" failonerror="true" failOnRuleViolation="false" targetjdk="1.6" rulesetfiles="@{rules}">
 				<formatter type="xml" toFile="@{output.dir}/pmd_report.xml" />
 				<!--<formatter type="html" toFile="${results-location}/pmd_report.html" linePrefix=".line" /> -->
-				<formatter type="summaryhtml" toFile="${results-location}/pmd_summary_report.html" />
+				<!-- <formatter type="summaryhtml" toFile="${results-location}/pmd_summary_report.html" /> -->
 				<fileset dir="@{source.dir}" includes="**/*.java" />
 			</pmd>
 		</sequential>

@@ -40,7 +40,7 @@
 
 		<pathconvert property="osee.bundles" setonempty="false" pathsep=";">
 			<path>
-				<dirset dir="${workspaceDir}/../" includes="*osee*" />
+				<dirset dir="${workspaceDir}/../" includes="*osee*" excludes=".osee.data,osee.doc,osee.install,osee.license,org.eclipse.osee.support.build,*releng,*.help,*runConfigs*,*.config,*.feature" />
 			</path>
 		</pathconvert>
 		<for param="bundle" delimiter=";" list="${osee.bundles}">
@@ -54,10 +54,10 @@
 				<echo message="Processing... @{bundle}" />
 				<property name="output" value="${buildDir}/lba.ats.config.common" />
 				<mkdir dir="${output}" />
-				<!-- <check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
+				<check-style-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-checkstyle-rules}" />
 				<pmd-check source.dir="@{bundle}" output.dir="${output}" rules="${osee-pmd-rules}" />
 				<pmd-copy-paste-check source.dir="@{bundle}" output.dir="${output}" min.token.count="100" />
-				-->
+				
 				<!-- <findbugs-check source.dir="@{bundle}" output.dir="${output}"/> -->
 			</sequential>
 		</for>
