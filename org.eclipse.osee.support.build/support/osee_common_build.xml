@@ -11,6 +11,7 @@
 		<dirname property="workspaceLocation" file="${workspaceLocationSub}" />
 		<property name="buildDirectory" value="${workspaceLocation}/sandbox" />
 		<property name="pdeTarget" value="main" />
+		<property name="p2.category.definition" value="file:${basedir}/category.xml" />
 
 		<delete verbose="true" quiet="true" includeEmptyDirs="true">
 			<fileset dir="${buildDirectory}" excludes="plugins/**/*" />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.ats_0.4.0.qualifier.jar" id="org.eclipse.osee.ats" version="0.4.0.qualifier">
+      <category name="osee"/>
+   </feature>
+   <feature url="features/org.eclipse.birt.chart_2.5.0.v20090608-7d9J0FQCnuydxB_nZtmS1.jar" id="org.eclipse.birt.chart" version="2.5.0.v20090608-7d9J0FQCnuydxB_nZtmS1">
+      <category name="osee"/>
+   </feature>
+   <category-def name="osee" label="Open System Engineering Environment"/>
+</site>
