@@ -37,9 +37,6 @@ public class OseeEnumerationValidationTest {
    private Artifact mockArtifact;
    private AttributeType enumeratedAttributeType;
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
    @Before
    public void setUp() throws Exception {
       Branch branch = BranchManager.getCommonBranch();
@@ -49,9 +46,6 @@ public class OseeEnumerationValidationTest {
       mockArtifact = ArtifactTypeManager.addArtifact("Component", branch);
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
    @After
    public void tearDown() throws Exception {
       mockArtifact.deleteAndPersist();

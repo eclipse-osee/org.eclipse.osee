@@ -82,9 +82,6 @@ public class DeletionTest {
    public DeletionTest(String name) {
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
    @Before
    protected void setUp() throws Exception {
       assertFalse(ClientSessionManager.isProductionDataStore());

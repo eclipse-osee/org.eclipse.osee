@@ -71,9 +71,6 @@ public enum DemoUsers implements IOseeUserInfo {
       return active;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeUserInfo#isCreationRequired()
-    */
    @Override
    public boolean isCreationRequired() {
       return false;
