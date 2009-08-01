@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -70,7 +71,7 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
          return getExpectedArtifacts(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
                searchStr, false, false, false));
       } catch (Exception ex) {
-         OseeLog.log("AtsNavigateQuickSearch.performSearch", Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
    }

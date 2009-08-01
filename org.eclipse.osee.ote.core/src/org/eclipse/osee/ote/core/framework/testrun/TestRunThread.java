@@ -25,6 +25,7 @@ import org.eclipse.osee.ote.core.framework.IMethodResult;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ResultBuilder;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
+import org.eclipse.osee.ote.core.internal.Activator;
 
 public class TestRunThread extends OseeTestThread {
 
@@ -33,8 +34,8 @@ public class TestRunThread extends OseeTestThread {
    private final ITestRunListenerDataProvider dataProvider;
    private final IPropertyStore propertyStore;
    private volatile boolean abort = false;
-   private ReentrantLock lock = new ReentrantLock();
-   private ResultBuilder rb = new ResultBuilder(false);
+   private final ReentrantLock lock = new ReentrantLock();
+   private final ResultBuilder rb = new ResultBuilder(false);
 
    /**
     * @param propertyStore
@@ -69,7 +70,9 @@ public class TestRunThread extends OseeTestThread {
                lock.lock();
                try {
                   testCase.baseDoTestCase(getEnvironment());
-                  if (Thread.interrupted()) throw new InterruptedException("Thread probably aborted");
+                  if (Thread.interrupted()) {
+                     throw new InterruptedException("Thread probably aborted");
+                  }
 
                } catch (Throwable ex) {
                   if (abort) {
@@ -82,8 +85,7 @@ public class TestRunThread extends OseeTestThread {
                      methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
                      rb.append(methodresult);
                      OseeLog.log(
-                           this.getClass().getName(),
-                           "org.eclipse.osee.ote.core",
+                           Activator.class,
                            Level.SEVERE,
                            "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
                            ex);
@@ -144,7 +146,9 @@ public class TestRunThread extends OseeTestThread {
    }
 
    public boolean abort(Throwable th, boolean wait) {
-      if (abort) return true;
+      if (abort) {
+         return true;
+      }
       abort = true;
       this.test.setAborted(true);
       addAbortResult(th);

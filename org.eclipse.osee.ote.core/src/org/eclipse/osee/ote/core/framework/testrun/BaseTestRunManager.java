@@ -19,6 +19,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.framework.IMethodResult;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
+import org.eclipse.osee.ote.core.internal.Activator;
 
 public class BaseTestRunManager implements ITestRunManager {
 
@@ -37,7 +38,7 @@ public class BaseTestRunManager implements ITestRunManager {
    }
 
    public boolean abort() {
-      if(test != null){
+      if (test != null) {
          test.abort();
       }
       aborted = true;
@@ -47,33 +48,32 @@ public class BaseTestRunManager implements ITestRunManager {
       return true;
    }
 
-   public IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment)  {
-	   IMethodResult result = MethodResultImpl.OK;
-	   if( aborted )
-	   {
-		   aborted = false;
-		   MethodResultImpl methodresult = new MethodResultImpl();
-		   methodresult.setReturnCode(ReturnCode.ABORTED);
-		   methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "USER ABORTED"));
-		   result = methodresult;
-		   return result;
-	   }
-	   try {
-		   testRunThread = new TestRunThread(propertyStore, test, environment, listenerProvider, dataProvider);
-		   testRunThread.start();
-		   testRunThread.join();
-		   result = testRunThread.getResult();
-	   } catch (Exception e) {
-		   MethodResultImpl methodresult = new MethodResultImpl();
-		   methodresult.setReturnCode(ReturnCode.ERROR);
-		   methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, e));
-		   result = methodresult;
-		   logException(e, "Exception setting up run thread:");
-	   } finally {
-		   aborted = false;
-		   testRunThread = null;
-	   }
-	   return result;
+   public IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment) {
+      IMethodResult result = MethodResultImpl.OK;
+      if (aborted) {
+         aborted = false;
+         MethodResultImpl methodresult = new MethodResultImpl();
+         methodresult.setReturnCode(ReturnCode.ABORTED);
+         methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "USER ABORTED"));
+         result = methodresult;
+         return result;
+      }
+      try {
+         testRunThread = new TestRunThread(propertyStore, test, environment, listenerProvider, dataProvider);
+         testRunThread.start();
+         testRunThread.join();
+         result = testRunThread.getResult();
+      } catch (Exception ex) {
+         MethodResultImpl methodresult = new MethodResultImpl();
+         methodresult.setReturnCode(ReturnCode.ERROR);
+         methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
+         result = methodresult;
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      } finally {
+         aborted = false;
+         testRunThread = null;
+      }
+      return result;
    }
 
    public TestScript getTest() {
@@ -81,50 +81,41 @@ public class BaseTestRunManager implements ITestRunManager {
    }
 
    public IMethodResult dispose() {
-	   MethodResultImpl result = MethodResultImpl.OK;
-	  try{
-	      this.test.disposeTest();
-	      this.dataProvider = null;
-	      this.listenerProvider.clear();
-	      this.listenerProvider = null;
-	      this.test = null;
-	  } catch (Exception e){
-		  result = new MethodResultImpl();
-    	  result.setReturnCode(ReturnCode.ERROR);
-    	  result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, e));
-    	  logException(e, "Exception in dispose:");
-	  }
-	  return result;
+      MethodResultImpl result = MethodResultImpl.OK;
+      try {
+         this.test.disposeTest();
+         this.dataProvider = null;
+         this.listenerProvider.clear();
+         this.listenerProvider = null;
+         this.test = null;
+      } catch (Exception ex) {
+         result = new MethodResultImpl();
+         result.setReturnCode(ReturnCode.ERROR);
+         result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return result;
    }
 
    public IMethodResult initialize(TestEnvironment env, IPropertyStore propertyStore) {
-	   MethodResultImpl result = MethodResultImpl.OK;
-	   try{
-		   aborted = false;
-		   this.dataProvider = testRunListenerProviderFactory.createListenerDataProvider();
-		   this.listenerProvider = testRunListenerProviderFactory.createRunListenerProvider();
-		   this.test = testFactory.createInstance(env, propertyStore);
-		   this.test.setListenerProvider(listenerProvider);
-	   } catch (Exception e){
-		   result = new MethodResultImpl();
-		   result.setReturnCode(ReturnCode.ERROR);
-		   result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, e));
-		   logException(e, "Exception initializing script:");
-	   }
-	   return result;
-   }
-
-   /**
-    * @param e
-    */
-   private void logException(Exception e, String message) {
-      OseeLog.log(this.getClass().getName(), 
-            "org.eclipse.osee.ote.core", 
-            Level.SEVERE, message, e);
+      MethodResultImpl result = MethodResultImpl.OK;
+      try {
+         aborted = false;
+         this.dataProvider = testRunListenerProviderFactory.createListenerDataProvider();
+         this.listenerProvider = testRunListenerProviderFactory.createRunListenerProvider();
+         this.test = testFactory.createInstance(env, propertyStore);
+         this.test.setListenerProvider(listenerProvider);
+      } catch (Exception ex) {
+         result = new MethodResultImpl();
+         result.setReturnCode(ReturnCode.ERROR);
+         result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return result;
    }
 
    public boolean abort(Throwable th, boolean wait) {
-      if(test != null){
+      if (test != null) {
          test.abort();
       }
       aborted = true;
@@ -133,8 +124,8 @@ public class BaseTestRunManager implements ITestRunManager {
       }
       return true;
    }
-   
-   public boolean isAborted(){
-     return aborted; 
+
+   public boolean isAborted() {
+      return aborted;
    }
 }

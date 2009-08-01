@@ -57,10 +57,8 @@ public class OseeLog {
       getLog().log(activatorClass.getName(), level, message, th);
    }
 
-   public static void log(String loggerName, Level level, String message, Throwable th) {
-      getLog().log(loggerName, level, message, th);
-   }
-
+   // use log(Class<?> activatorClass, Level level, String message, Throwable th) instead (name2 is not used anyway)
+   @Deprecated
    public static void log(String loggerName, String name2, Level level, String message, Throwable th) {
       getLog().log(loggerName, level, message, th);
    }

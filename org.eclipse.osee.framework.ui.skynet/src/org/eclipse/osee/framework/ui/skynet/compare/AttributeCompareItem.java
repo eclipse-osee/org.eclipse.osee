@@ -26,7 +26,7 @@ public class AttributeCompareItem extends CompareItem {
       try {
          attributeConflict.setAttributeValue(getStringContent());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AttributeCompareItem.class.getCanonicalName(), Level.SEVERE, ex);
+         OseeLog.log(AttributeCompareItem.class, Level.SEVERE, ex);
       }
    }
 }
