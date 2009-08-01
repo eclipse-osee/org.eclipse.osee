@@ -72,11 +72,6 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       return groupOptions;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser(), groupType);

@@ -134,9 +134,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             return;
          }
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                try {
@@ -157,9 +154,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (getContentProvider() == null) {

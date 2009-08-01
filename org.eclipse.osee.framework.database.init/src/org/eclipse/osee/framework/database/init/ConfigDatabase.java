@@ -19,11 +19,6 @@ public class ConfigDatabase implements IApplication {
    private static String[] bundlesToStart =
          new String[] {"org.eclipse.osee.framework.db.connection", "org.eclipse.equinox.ds"};
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-    */
    public Object start(IApplicationContext context) throws Exception {
       for (String symbolicName : bundlesToStart) {
          Platform.getBundle(symbolicName).start();
@@ -32,11 +27,6 @@ public class ConfigDatabase implements IApplication {
       return EXIT_OK;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#stop()
-    */
    public void stop() {
    }
 

@@ -64,11 +64,6 @@ public class XCombo extends XWidget {
       return isDefaultSelectionAllowed;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return dataCombo;

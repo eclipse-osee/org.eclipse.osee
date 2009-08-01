@@ -31,22 +31,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    @Override
    public String getId() {
       return AtsStateItem.ALL_STATE_IDS;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.AtsStateItem#transitioned(org.eclipse.osee.ats.editor.SMAManager,
-    *      java.lang.String, java.lang.String, java.util.Collection)
-    */
    @Override
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
@@ -75,9 +64,6 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsHandleAddReviewRuleStateItem - If AddDecisionReviewRule or AddPeerToPeerReviewRule exists for this state, create review.";
    }

@@ -25,9 +25,6 @@ public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider#getText(java.lang.Object)
-    */
    @Override
    public String getText(Object element) {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) element;

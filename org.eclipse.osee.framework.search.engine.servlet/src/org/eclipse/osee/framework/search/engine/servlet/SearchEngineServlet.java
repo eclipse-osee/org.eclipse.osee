@@ -35,18 +35,12 @@ public class SearchEngineServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 3722992788943330970L;
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       HttpSearchInfo searchInfo = HttpSearchInfo.loadFromGet(request);
       executeSearch(searchInfo, response, true);
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {

@@ -85,24 +85,15 @@ public class OutfileImportPage extends WizardDataTransferPage {
       this.startingResourceSelection = selection;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.WizardDataTransferPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    public void handleEvent(Event event) {
       updateWidgetEnablements();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
 

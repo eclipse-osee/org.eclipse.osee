@@ -27,11 +27,6 @@ public class DateValue extends UniversalCellEditorValue {
       super();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.swt.universalCellEditor.UniversalCellEditorValue#selectControl(org.eclipse.swt.widgets.Control[])
-    */
    @Override
    public Control prepareControl(UniversalCellEditor universalEditor) {
       CalendarCombo datePicker = universalEditor.getDateControl();

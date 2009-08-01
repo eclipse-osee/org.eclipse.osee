@@ -98,9 +98,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
    public void reflow() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             getManagedForm().reflow(true);
@@ -124,9 +121,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
       runButton.setLayoutData(gridData);
       runButton.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             handleSearchButtonPressed();

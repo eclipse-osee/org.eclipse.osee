@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public abstract class BaseCredentialProvider implements ICredentialProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.ICredentialProvider#getCredential()
-    */
    @Override
    public OseeCredential getCredential() throws OseeCoreException {
       OseeCredential credential = new OseeCredential();

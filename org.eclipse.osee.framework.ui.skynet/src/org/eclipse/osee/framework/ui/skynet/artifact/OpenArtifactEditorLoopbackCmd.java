@@ -33,17 +33,11 @@ import org.eclipse.ui.IEditorPart;
  */
 public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.httpRequests.BaseArtifactLoopbackCmd#isApplicable(java.lang.String)
-    */
    @Override
    public boolean isApplicable(String cmd) {
       return cmd != null && cmd.equalsIgnoreCase("open.artifact");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.httpRequests.BaseArtifactLoopbackCmd#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.Map, org.eclipse.osee.framework.core.client.server.HttpResponse)
-    */
    @Override
    public void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse) {
       if (artifact != null) {

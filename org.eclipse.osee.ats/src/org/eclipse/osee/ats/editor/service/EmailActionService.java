@@ -38,9 +38,6 @@ public class EmailActionService extends WorkPageService {
       dialog.open();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
@@ -57,9 +54,6 @@ public class EmailActionService extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Email " + smaMgr.getSma().getArtifactSuperTypeName();

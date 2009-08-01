@@ -13,56 +13,26 @@ package org.eclipse.osee.framework.svn.entry;
 
 public class NullRepositoryEntry implements IRepositoryEntry {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getVersion()
-    */
    public String getVersion() {
       return "-";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getURL()
-    */
    public String getURL() {
       return "-";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getVersionControlSystem()
-    */
    public String getVersionControlSystem() {
       return "-";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getModifiedFlag()
-    */
    public String getModifiedFlag() {
       return "-";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastAuthor()
-    */
    public String getLastAuthor() {
       return "-";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastModificationDate()
-    */
    public String getLastModificationDate() {
       return "-";
    }

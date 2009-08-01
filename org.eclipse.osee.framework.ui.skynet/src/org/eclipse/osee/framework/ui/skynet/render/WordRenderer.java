@@ -23,9 +23,6 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public abstract class WordRenderer extends FileRenderer {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
 
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
@@ -46,33 +43,21 @@ public abstract class WordRenderer extends FileRenderer {
       return ImageManager.getProgramImageDescriptor("doc");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
-    */
    @Override
    public String getName() {
       return "MS Word Edit";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return "xml";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#getAssociatedProgram(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       if (wordApp == null) {
@@ -81,9 +66,6 @@ public abstract class WordRenderer extends FileRenderer {
       return wordApp;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#supportsCompare()
-    */
    @Override
    public boolean supportsCompare() {
       return true;

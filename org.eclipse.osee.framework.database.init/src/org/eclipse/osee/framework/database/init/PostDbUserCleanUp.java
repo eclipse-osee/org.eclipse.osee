@@ -29,9 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class PostDbUserCleanUp implements IDbInitializationTask {
    private static final String UPDATE_BOOTSTRAP_USER_ID = "UPDATE osee_tx_details SET author = ? where author = 0";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.IDbInitializationTask#run(org.eclipse.osee.framework.db.connection.OseeConnection)
-    */
    @Override
    public void run() throws OseeCoreException {
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Post Initialization User Clean-up");

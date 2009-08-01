@@ -53,11 +53,6 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();

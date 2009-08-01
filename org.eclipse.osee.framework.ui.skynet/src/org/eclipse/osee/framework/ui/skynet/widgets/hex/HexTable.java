@@ -83,9 +83,6 @@ public abstract class HexTable extends Composite {
       return new Highlighter((HexTableContentProvider) v.getContentProvider(), index, length, color);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
    @Override
    public void dispose() {
       super.dispose();

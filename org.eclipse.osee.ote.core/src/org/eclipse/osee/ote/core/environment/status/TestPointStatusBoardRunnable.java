@@ -30,9 +30,6 @@ public class TestPointStatusBoardRunnable extends StatusBoardRunnable {
       this.statusBoard = statusBoard;
    }
    
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    public void run() {
       int size = statusBoard.getListeners().size();
       for (int i = 0; i < size; i++) {

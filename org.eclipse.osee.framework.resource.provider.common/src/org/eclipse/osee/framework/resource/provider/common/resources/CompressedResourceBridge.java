@@ -30,34 +30,22 @@ public class CompressedResourceBridge implements IResource {
       this.uri = uri;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getContent()
-    */
    @Override
    public InputStream getContent() throws IOException {
       return new ByteArrayInputStream(backing);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getLocation()
-    */
    @Override
    public URI getLocation() {
       return uri;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getName()
-    */
    @Override
    public String getName() {
       String value = uri.toASCIIString();
       return value.substring(value.lastIndexOf("/") + 1, value.length());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#isCompressed()
-    */
    @Override
    public boolean isCompressed() {
       return isCompressed;

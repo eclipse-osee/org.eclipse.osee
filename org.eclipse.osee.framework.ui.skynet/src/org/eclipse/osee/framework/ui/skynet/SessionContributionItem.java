@@ -113,9 +113,6 @@ public final class SessionContributionItem extends OseeContributionItem implemen
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifactss) {
       if (accessControlEventType == AccessControlEventType.UserAuthenticated) {
@@ -128,33 +125,21 @@ public final class SessionContributionItem extends OseeContributionItem implemen
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
-    */
    @Override
    protected Image getDisabledImage() {
       return DISABLED_IMAGE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
-    */
    @Override
    protected String getDisabledToolTip() {
       return DISABLED_TOOLTIP;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
-    */
    @Override
    protected Image getEnabledImage() {
       return ImageManager.getImage(FrameworkImage.USER);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
-    */
    @Override
    protected String getEnabledToolTip() {
       if (ClientSessionManager.isSessionValid()) {

@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
  */
 public class AtsWidgetProvider implements IXWidgetProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider#createXWidget(java.lang.String, java.lang.String, boolean, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData)
-    */
    @Override
    public XWidget createXWidget(String widgetName, String name, DynamicXWidgetLayoutData widgetLayoutData) {
       XWidget toReturn = null;

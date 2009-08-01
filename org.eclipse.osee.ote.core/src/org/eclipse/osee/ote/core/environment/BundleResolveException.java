@@ -31,9 +31,6 @@ public class BundleResolveException extends Exception {
       this.bundleExceptions = bundleExceptions;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Throwable#toString()
-    */
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();

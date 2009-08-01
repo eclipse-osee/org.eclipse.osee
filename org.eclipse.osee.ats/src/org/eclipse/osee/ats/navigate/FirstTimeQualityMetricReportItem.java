@@ -61,9 +61,6 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       this(parent, "First Time Quality Metric Report", null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#getDescription()
-    */
    @Override
    public String getDescription() {
       return "This report will genereate a metric comprised of:\n\n# of priority 1 and 2 OSEE problem actions orginated between release\n__________________________________\n# of non-support actions in that released";

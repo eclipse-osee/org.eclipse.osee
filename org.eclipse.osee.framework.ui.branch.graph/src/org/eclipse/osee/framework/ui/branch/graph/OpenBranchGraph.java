@@ -31,13 +31,6 @@ public class OpenBranchGraph extends AbstractSelectionChangedHandler {
       super();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
-    * ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
@@ -55,11 +48,6 @@ public class OpenBranchGraph extends AbstractSelectionChangedHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       return true;

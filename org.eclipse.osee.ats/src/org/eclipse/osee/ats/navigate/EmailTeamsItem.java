@@ -54,11 +54,6 @@ public class EmailTeamsItem extends XNavigateItemAction {
       this.teamDef = teamDef;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();

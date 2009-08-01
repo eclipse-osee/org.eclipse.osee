@@ -30,9 +30,6 @@ public class BranchDefinitionsSaxHandler extends BaseDbSaxHandler {
       return new BranchDefinitionsSaxHandler(false, cacheLimit);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#processData(java.util.Map)
-    */
    private BranchDefinitionsSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.allowedBranches = new HashSet<Integer>();

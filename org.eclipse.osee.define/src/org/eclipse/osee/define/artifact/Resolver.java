@@ -27,11 +27,6 @@ public class Resolver implements URIResolver {
    private static final CharBuffer xslPageLayout = plugin.getCharBuffer("support/xslt/pageLayout.xsl");
    private static final CharBuffer xslProfile = plugin.getCharBuffer("support/xslt/profile.xsl");
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see javax.xml.transform.URIResolver#resolve(java.lang.String, java.lang.String)
-    */
    public Source resolve(String href, String base) throws TransformerException {
       CharBuffer rightOne = null;
       if (href.equals("auxiliary.xsl")) {

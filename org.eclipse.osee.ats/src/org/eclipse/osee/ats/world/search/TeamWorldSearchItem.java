@@ -215,9 +215,6 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.showFinished = showFinished;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new TeamWorldSearchItem(this);

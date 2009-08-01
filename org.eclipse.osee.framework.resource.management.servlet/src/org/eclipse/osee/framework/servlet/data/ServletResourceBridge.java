@@ -30,25 +30,16 @@ public class ServletResourceBridge implements IResource {
       this.locator = locator;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getContent()
-    */
    @Override
    public InputStream getContent() throws IOException {
       return request.getInputStream();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getLocation()
-    */
    @Override
    public URI getLocation() {
       return locator.getLocation();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getName()
-    */
    @Override
    public String getName() {
       String path = locator.getLocation().toASCIIString();
@@ -59,9 +50,6 @@ public class ServletResourceBridge implements IResource {
       return path;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#isCompressed()
-    */
    @Override
    public boolean isCompressed() {
       return HttpRequestDecoder.isDataCompressed(request);

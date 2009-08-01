@@ -60,9 +60,7 @@ public class ActionImportPage extends WizardDataTransferPage {
       }
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -117,11 +115,13 @@ public class ActionImportPage extends WizardDataTransferPage {
    private void createSourceGroup(Composite parent) {
       fileSelector = new FileSelector(parent, SWT.NONE, "Import Source (Excel saved as .xml", this);
 
-      if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
+      if (currentResourceSelection != null) {
+         fileSelector.setText(currentResourceSelection.getLocation().toString());
+      }
       setPageComplete(determinePageCompletion());
    } /*
-                                 * @see WizardPage#becomesVisible
-                                 */
+                                   * @see WizardPage#becomesVisible
+                                   */
 
    @Override
    public void setVisible(boolean visible) {
@@ -144,7 +144,9 @@ public class ActionImportPage extends WizardDataTransferPage {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
          extractor.discoverArtifactAndRelationData(file, AtsUtil.getAtsBranch());
-         if (extractor.dataIsValid()) extractor.createArtifactsAndNotify(transaction);
+         if (extractor.dataIsValid()) {
+            extractor.createArtifactsAndNotify(transaction);
+         }
          WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          transaction.execute();
       } catch (Exception ex) {
@@ -153,11 +155,6 @@ public class ActionImportPage extends WizardDataTransferPage {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return true;

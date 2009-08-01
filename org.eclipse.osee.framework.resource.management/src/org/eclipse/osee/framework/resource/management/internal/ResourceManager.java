@@ -33,20 +33,10 @@ public class ResourceManager implements IResourceManager {
       this.resourceProviders = new CopyOnWriteArrayList<IResourceProvider>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.resource.management.IResourceManagementService#addResourceListener(org.eclipse.osee.framework.resource.management.IResourceListener)
-    */
    public void addResourceListener(IResourceListener listener) {
       this.listeners.add(listener);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.resource.management.IResourceManagementService#removeResourceListener(org.eclipse.osee.framework.resource.management.IResourceListener)
-    */
    public void removeResourceListener(IResourceListener listener) {
       this.listeners.remove(listener);
    }
@@ -142,9 +132,6 @@ public class ResourceManager implements IResourceManager {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceManager#exists(org.eclipse.osee.framework.resource.management.IResourceLocator)
-    */
    @Override
    public boolean exists(IResourceLocator locator) throws Exception {
       IResourceProvider provider = getProvider(locator);

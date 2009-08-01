@@ -33,9 +33,6 @@ public class AuthenticationManager implements IAuthenticationManager {
       this.authenticationProviders = Collections.synchronizedMap(new HashMap<String, IAuthenticationProvider>());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#addAuthenticationProvider(org.eclipse.osee.framework.core.server.IAuthenticationProvider)
-    */
    @Override
    public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       synchronized (authenticationProviders) {
@@ -46,9 +43,6 @@ public class AuthenticationManager implements IAuthenticationManager {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#authenticate(org.eclipse.osee.framework.core.data.OseeCredential)
-    */
    @Override
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
       if (isSafeUser(credential)) {
@@ -63,9 +57,6 @@ public class AuthenticationManager implements IAuthenticationManager {
             credential.getAuthenticationProtocol()));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#removeAuthenticationProvider(org.eclipse.osee.framework.core.server.IAuthenticationProvider)
-    */
    @Override
    public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       synchronized (authenticationProviders) {
@@ -73,18 +64,12 @@ public class AuthenticationManager implements IAuthenticationManager {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#getProtocols()
-    */
    @Override
    public String[] getProtocols() {
       Set<String> keys = authenticationProviders.keySet();
       return keys.toArray(new String[keys.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationManager#asOseeUser(org.eclipse.osee.framework.core.data.OseeCredential)
-    */
    @Override
    public IOseeUserInfo asOseeUser(OseeCredential credential) throws OseeAuthenticationException {
       if (isGuestLogin(credential)) {

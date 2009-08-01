@@ -85,11 +85,6 @@ public class XDate extends XWidget {
       return get(MMDDYYHHMM);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return dateCombo;
@@ -149,9 +144,6 @@ public class XDate extends XWidget {
       gd.widthHint = 100;
       if (date != null) dateCombo.setDate(date);
       dateCombo.addCalendarListener(new CalendarListenerAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter#dateChanged(java.util.Calendar)
-          */
          @Override
          public void dateChanged(Calendar newDate) {
             super.dateChanged(newDate);
@@ -314,9 +306,6 @@ public class XDate extends XWidget {
       this.requireFutureDate = requireFutureDate;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return getDate();

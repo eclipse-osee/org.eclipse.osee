@@ -47,27 +47,16 @@ public class BlamEditorInput extends BaseArtifactEditorInput {
       return getArtifact().getName() + " BLAM";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getImage()
-    */
    @Override
    public Image getImage() {
       return ImageManager.getImage(FrameworkImage.BLAM);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getImageDescriptor()
-    */
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(FrameworkImage.BLAM);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
@@ -77,9 +66,6 @@ public class BlamEditorInput extends BaseArtifactEditorInput {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput#getArtifact()
-    */
    @Override
    public BlamWorkflow getArtifact() {
       return (BlamWorkflow) super.getArtifact();

@@ -35,38 +35,16 @@ public class ActivateState extends AbstractSubscriptionState {
 		this.msgDb = msgDb;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #getMessage()
-	 */
 	@Override
 	public Message getMessage() {
 		return instance.getMessage();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #getMsgClassName()
-	 */
 	@Override
 	public String getMsgClassName() {
 		return instance.getMessage().getClass().getName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onMessageDbClosing
-	 * (org.eclipse.osee.ote.client.msg.core.internal.db.MessageDB)
-	 */
 	@Override
 	public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
 		getSubscription().notifyUnresolved();
@@ -78,40 +56,16 @@ public class ActivateState extends AbstractSubscriptionState {
 		return new UnresolvedState(instance.getMessage().getName(), this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onMessageDbFound
-	 * (org.eclipse.osee.ote.client.msg.core.internal.db.MessageDB)
-	 */
 	@Override
 	public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
 		throw new Error("Unexpected input for this state");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onServiceAttached
-	 * (org.eclipse.osee.ote.message.interfaces.IRemoteMessageService)
-	 */
 	@Override
 	public ISubscriptionState onActivated() {
 		throw new Error("Unexpected input for this state");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onServiceDetached
-	 * (org.eclipse.osee.ote.message.interfaces.IRemoteMessageService)
-	 */
 	@Override
 	public ISubscriptionState onDeactivated() {
 		return new InactiveState(instance, msgDb, this);
@@ -132,25 +86,11 @@ public class ActivateState extends AbstractSubscriptionState {
 		return instance.getAvailableTypes();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isActive()
-	 */
 	@Override
 	public boolean isActive() {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isResolved()
-	 */
 	@Override
 	public boolean isResolved() {
 		return true;

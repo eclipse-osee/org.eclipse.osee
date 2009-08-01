@@ -79,9 +79,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       return sb.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       try {
@@ -99,9 +96,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);

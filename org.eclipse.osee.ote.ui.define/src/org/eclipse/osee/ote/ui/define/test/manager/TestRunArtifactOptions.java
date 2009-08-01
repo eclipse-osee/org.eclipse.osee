@@ -32,9 +32,6 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       return this.panel;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.IAdvancedPageOptionsWidget#load(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public void load(IPropertyStore propertyStore) {
       boolean widgetEnabled = propertyStore.getBoolean(TestRunStorageKey.STORAGE_ENABLED);
       String lastBranchSelected = propertyStore.get(TestRunStorageKey.SELECTED_BRANCH_ID);
@@ -43,9 +40,6 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       this.panel.restoreWidgetValues(widgetEnabled, branchIds, lastBranchSelected);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.IAdvancedPageOptionsWidget#save(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public void save(IPropertyStore propertyStore) {
       propertyStore.put(TestRunStorageKey.STORAGE_ENABLED, this.panel.isBranchSelectEnabled());
 
@@ -59,9 +53,6 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branchId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#areSettingsValidForRun()
-    */
    @Override
    public boolean areSettingsValidForRun() {
       boolean result = true;
@@ -71,9 +62,6 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#getErrorMessage()
-    */
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();
@@ -83,9 +71,6 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#getPriority()
-    */
    public int getPriority() {
       return 2;
    }

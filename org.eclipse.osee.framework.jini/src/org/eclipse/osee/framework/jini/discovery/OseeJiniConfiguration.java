@@ -30,35 +30,17 @@ public class OseeJiniConfiguration implements Configuration {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.config.Configuration#getEntry(java.lang.String, java.lang.String,
-    *      java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2) throws ConfigurationException {
       return config.getEntry(arg0, arg1, arg2);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.config.Configuration#getEntry(java.lang.String, java.lang.String,
-    *      java.lang.Class, java.lang.Object)
-    */
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2, Object arg3) throws ConfigurationException {
       Object o = config.getEntry(arg0, arg1, arg2, arg3);
       return o;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.config.Configuration#getEntry(java.lang.String, java.lang.String,
-    *      java.lang.Class, java.lang.Object, java.lang.Object)
-    */
    @SuppressWarnings("unchecked")
    public Object getEntry(String arg0, String arg1, Class arg2, Object arg3, Object arg4) throws ConfigurationException {
       return config.getEntry(arg0, arg1, arg2, arg3, arg4);

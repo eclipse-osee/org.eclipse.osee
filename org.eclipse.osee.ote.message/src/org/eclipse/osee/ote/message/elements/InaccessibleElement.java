@@ -35,9 +35,6 @@ public class InaccessibleElement extends Element {
       return (InaccessibleElement) super.switchMessages(messages);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-    */
    @Override
    protected Element getNonMappingElement() {
       return null;

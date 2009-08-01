@@ -36,16 +36,10 @@ public class AttributeProvider implements IResourceProvider {
       BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceProvider#isValid(org.eclipse.osee.framework.resource.management.IResourceLocator)
-    */
    public boolean isValid(IResourceLocator locator) {
       return locator != null && locator.getProtocol().equals(SUPPORTED_PROTOCOL);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceProvider#delete(org.eclipse.osee.framework.resource.management.IResourceLocator)
-    */
    public int delete(IResourceLocator locator) throws Exception {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
@@ -66,9 +60,6 @@ public class AttributeProvider implements IResourceProvider {
       return new File(builder.toString()).toURI();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceProvider#acquire(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.Options)
-    */
    @Override
    public IResource acquire(IResourceLocator locator, Options options) throws Exception {
       IResource toReturn = null;
@@ -77,9 +68,6 @@ public class AttributeProvider implements IResourceProvider {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceProvider#save(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.IResource, org.eclipse.osee.framework.resource.management.Options)
-    */
    @Override
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
       IResourceLocator toReturn = null;
@@ -108,9 +96,6 @@ public class AttributeProvider implements IResourceProvider {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceProvider#exists(org.eclipse.osee.framework.resource.management.IResourceLocator)
-    */
    @Override
    public boolean exists(IResourceLocator locator) throws Exception {
       URI uri = resolve(locator);

@@ -27,68 +27,44 @@ public class LogProgressMonitor implements IProgressMonitor {
       this.taskName = "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int)
-    */
    @Override
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
       OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Starting: %s", taskName));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#done()
-    */
    @Override
    public void done() {
       OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Finished: %s", taskName));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
-    */
    @Override
    public void internalWorked(double work) {
       // TODO Auto-generated method stub
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#isCanceled()
-    */
    @Override
    public boolean isCanceled() {
       return isCancelled;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#setCanceled(boolean)
-    */
    @Override
    public void setCanceled(boolean value) {
       this.isCancelled = value;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
-    */
    @Override
    public void setTaskName(String name) {
       this.taskName = name;
       OseeLog.log(PluginCoreActivator.class, Level.INFO, name);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String)
-    */
    @Override
    public void subTask(String name) {
       OseeLog.log(PluginCoreActivator.class, Level.FINER, name);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IProgressMonitor#worked(int)
-    */
    @Override
    public void worked(int work) {
       // TODO Auto-generated method stub

@@ -116,11 +116,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       pageManager.getScriptPage().addFile(fullPath);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#dispose()
-    */
    public void dispose() {
       super.dispose();
       TestManagerPlugin.getInstance().getOteClientService().removeConnectionListener(this);
@@ -463,13 +458,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       return extensionContributions;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.framework.jdk.core.ats.IActionable#getActionDescription
-    * ()
-    */
    public String getActionDescription() {
       String version =
             (String) Platform.getBundle("org.eclipse.osee.ote.ui.test.manager").getHeaders().get("Bundle-Version");

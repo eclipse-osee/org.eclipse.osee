@@ -51,17 +51,11 @@ public class DifferenceCondition<T extends Number & Comparable<T>> extends Abstr
    }
 
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.condition.IDiscreteElementCondition#getLastCheckValue()
-    */
    @Override
    public T getLastCheckValue() {
       return lastValue;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.condition.ICondition#check(int)
-    */
    @Override
    public boolean check() {
       T value = element.getValue();

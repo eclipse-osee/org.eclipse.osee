@@ -35,17 +35,11 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
       this.idsToSearch.addAll(Arrays.asList(searchString.split("[\\s,]+")));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getArtifacts()
-    */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
       return ArtifactQuery.getArtifactListFromIds(idsToSearch, branchToSearch, allowDeleted);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getCriteriaLabel()
-    */
    @Override
    public String getCriteriaLabel() {
       return String.format("%s%s", idsToSearch.toString(), allowDeleted ? " - Options:[Include Deleted]" : "");

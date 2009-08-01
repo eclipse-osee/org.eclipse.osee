@@ -49,25 +49,16 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       this.backingFile = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#getData()
-    */
    @Override
    public Object[] getData() throws OseeDataStoreException {
       return new Object[] {"", remoteUri};
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() {
       return isFromLocalWorkspace() ? this.localUri : "Remote Content";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#loadData(java.lang.Object[])
-    */
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
@@ -90,9 +81,6 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#persist()
-    */
    @Override
    public void persist(int storageId) throws OseeCoreException {
       try {
@@ -121,9 +109,6 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
-    */
    @Override
    public void purge() throws OseeCoreException {
       try {
@@ -142,17 +127,11 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#setDisplayableString(java.lang.String)
-    */
    @Override
    public void setDisplayableString(String toDisplay) {
       // Do Nothing
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#getValueAsString()
-    */
    @Override
    public String getValueAsString() throws OseeCoreException {
       if (isRemoteUriValid() && isBackingFileValid() != true) {

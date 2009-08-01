@@ -34,11 +34,6 @@ import org.eclipse.search.ui.text.Match;
  * @author Ryan D. Brooks
  */
 public class ArtifactDoubleClick implements IDoubleClickListener {
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-    */
    public void doubleClick(DoubleClickEvent event) {
       openArtifact(event.getSelection());
    }

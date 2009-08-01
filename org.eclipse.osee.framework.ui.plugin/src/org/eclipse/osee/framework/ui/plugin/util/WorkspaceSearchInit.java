@@ -26,9 +26,6 @@ public class WorkspaceSearchInit extends Job {
       this.obj = obj;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       AWorkspace.initWorkspaceSearch();

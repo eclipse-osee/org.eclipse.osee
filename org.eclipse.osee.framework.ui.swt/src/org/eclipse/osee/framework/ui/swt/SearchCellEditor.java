@@ -117,10 +117,11 @@ public class SearchCellEditor extends CellEditor {
     * Sets the number of choices displayed up to maxDisplayed
     */
    public void setVisibleItemCount() {
-      if (comboBox.getItemCount() > maxDisplayed)
+      if (comboBox.getItemCount() > maxDisplayed) {
          this.setVisibleItemCount(maxDisplayed);
-      else
+      } else {
          this.setVisibleItemCount(comboBox.getItemCount());
+      }
       comboBox.redraw();
    }
 
@@ -143,9 +144,7 @@ public class SearchCellEditor extends CellEditor {
       return maxDisplayed;
    }
 
-   /* (non-Javadoc)
-    * Method declared on CellEditor.
-    */
+   @Override
    protected Control createControl(Composite parent) {
 
       comboBox = new SearchCCombo(parent, getStyle());
@@ -153,20 +152,24 @@ public class SearchCellEditor extends CellEditor {
 
       comboBox.addKeyListener(new KeyAdapter() {
          // hook key pressed - see PR 14201  
+         @Override
          public void keyPressed(KeyEvent e) {
             keyReleaseOccured(e);
          }
 
+         @Override
          public void keyReleased(KeyEvent e) {
             comboBox.setSelection(0, searchControl.getLength());
          }
       });
 
       comboBox.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent event) {
             applyEditorValueAndDeactivate();
          }
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             selection = comboBox.getSelectionIndex();
          }
@@ -181,6 +184,7 @@ public class SearchCellEditor extends CellEditor {
       });
 
       comboBox.addFocusListener(new FocusAdapter() {
+         @Override
          public void focusLost(FocusEvent e) {
             SearchCellEditor.this.focusLost();
          }
@@ -195,34 +199,35 @@ public class SearchCellEditor extends CellEditor {
     * 
     * @return the zero-based index of the current selection wrapped as an <code>Integer</code>
     */
+   @Override
    protected Object doGetValue() {
-      if (searchControl.getFirstIndex() == -1)
+      if (searchControl.getFirstIndex() == -1) {
          return new Integer(selection);
-      else
+      } else {
          return new Integer(selection + searchControl.getFirstIndex());
+      }
    }
 
-   /* (non-Javadoc)
-    * Method declared on CellEditor.
-    */
+   @Override
    protected void doSetFocus() {
       comboBox.setFocus();
    }
 
    /**
-    * The <code>SearchCellEditor</code> implementation of this <code>CellEditor</code> framework method sets the
-    * minimum width of the cell. The minimum width is 10 characters if <code>comboBox</code> is not <code>null</code>
-    * or <code>disposed</code> eles it is 60 pixels to make sure the arrow button and some text is visible. The list
-    * of CCombo will be wide enough to show its longest item.
+    * The <code>SearchCellEditor</code> implementation of this <code>CellEditor</code> framework method sets the minimum
+    * width of the cell. The minimum width is 10 characters if <code>comboBox</code> is not <code>null</code> or
+    * <code>disposed</code> eles it is 60 pixels to make sure the arrow button and some text is visible. The list of
+    * CCombo will be wide enough to show its longest item.
     */
+   @Override
    public LayoutData getLayoutData() {
       LayoutData layoutData = super.getLayoutData();
-      if ((comboBox == null) || comboBox.isDisposed())
+      if (comboBox == null || comboBox.isDisposed()) {
          layoutData.minimumWidth = 60;
-      else {
+      } else {
          // make the comboBox 10 characters wide
          GC gc = new GC(comboBox);
-         layoutData.minimumWidth = (gc.getFontMetrics().getAverageCharWidth() * 10) + 10;
+         layoutData.minimumWidth = gc.getFontMetrics().getAverageCharWidth() * 10 + 10;
          gc.dispose();
       }
       return layoutData;
@@ -234,8 +239,9 @@ public class SearchCellEditor extends CellEditor {
     * 
     * @param value the zero-based index of the selection wrapped as an <code>Integer</code>
     */
+   @Override
    protected void doSetValue(Object value) {
-      Assert.isTrue(comboBox != null && ((value instanceof Integer) || (value instanceof String)));
+      Assert.isTrue(comboBox != null && (value instanceof Integer || value instanceof String));
       if (value instanceof Integer) {
          selection = ((Integer) value).intValue();
          comboBox.select(selection);
@@ -250,12 +256,15 @@ public class SearchCellEditor extends CellEditor {
    private void populateComboBoxItems(String[] items, boolean reset) {
       if (comboBox != null && items != null) {
          comboBox.removeAll();
-         for (int i = 0; i < items.length; i++)
+         for (int i = 0; i < items.length; i++) {
             comboBox.add(items[i], i);
+         }
 
          setValueValid(true);
          this.setVisibleItemCount();
-         if (reset) selection = 0;
+         if (reset) {
+            selection = 0;
+         }
       }
    }
 
@@ -277,10 +286,7 @@ public class SearchCellEditor extends CellEditor {
       deactivate();
    }
 
-   /*
-    *  (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#focusLost()
-    */
+   @Override
    protected void focusLost() {
       if (isActivated()) {
          applyEditorValueAndDeactivate();
@@ -290,10 +296,7 @@ public class SearchCellEditor extends CellEditor {
       setItems(searchControl.getItems(), false);
    }
 
-   /*
-    *  (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#keyReleaseOccured(org.eclipse.swt.events.KeyEvent)
-    */
+   @Override
    protected void keyReleaseOccured(KeyEvent keyEvent) {
       if (keyEvent.character == '\u001b') { // Escape character
          fireCancelEditor();

@@ -43,19 +43,11 @@ public class FavoriteOperation extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Add as Favorite";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
    @Override
    public void refresh() {
       if (action != null) action.setToolTipText(((IFavoriteableArtifact) smaMgr.getSma()).amIFavorite() ? "Remove Favorite" : "Add Favorite");

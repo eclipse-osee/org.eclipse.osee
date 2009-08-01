@@ -48,9 +48,6 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
@@ -109,9 +106,6 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       int result = HttpServletResponse.SC_BAD_REQUEST;
@@ -146,9 +140,6 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       int result = HttpServletResponse.SC_BAD_REQUEST;

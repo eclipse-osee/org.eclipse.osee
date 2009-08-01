@@ -77,9 +77,6 @@ public class ODMExportOutputPage extends WizardPage {
       return isExportToSingleXmlFileSelected() ? xmlSingleOption.getSelectedResource() : xmlMultiOption.getSelectedResource();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);

@@ -41,11 +41,6 @@ public class WordChangesToParentHandler extends AbstractHandler {
    public WordChangesToParentHandler() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (mySelectedArtifactChangeList.size() > 0) {

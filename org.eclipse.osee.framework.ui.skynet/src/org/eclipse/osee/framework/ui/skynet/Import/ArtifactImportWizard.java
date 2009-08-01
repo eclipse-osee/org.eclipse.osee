@@ -56,11 +56,6 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       this.reuseRootArtifact = reuseRootArtifact;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       File file = mainPage.getImportFile();
@@ -91,12 +86,6 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       if (importFile != null && reuseRootArtifact != null) {
          this.mainPage = new ArtifactImportPage(importFile, reuseRootArtifact);
@@ -113,9 +102,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       handlerPage.setDescription("Handler to use for getting Artifacts from the outline");
    }
 
-   /**
-    * (non-Javadoc) Method declared on Wizard.
-    */
+   @Override
    public void addPages() {
       addPage(mainPage);
       addPage(attributeTypePage);
@@ -160,7 +147,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public IWizardPage getPreviousPage(IWizardPage page) {
-      if (page == attributeTypePage || (page == handlerPage && mainPage.getReuseArtifactRoot() == null)) {
+      if (page == attributeTypePage || page == handlerPage && mainPage.getReuseArtifactRoot() == null) {
          return mainPage;
       } else if (page == handlerPage) {
          return attributeTypePage;

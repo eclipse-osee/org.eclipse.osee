@@ -42,17 +42,11 @@ public class BaseStatus implements IHealthStatus, Serializable {
       this(sourceName, level, th, th.getMessage(), (Object[]) null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IStatus#getException()
-    */
    @Override
    public Throwable getException() {
       return th;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IStatus#getMessage()
-    */
    @Override
    public String getMessage() {
       String toReturn = null;
@@ -66,25 +60,16 @@ public class BaseStatus implements IHealthStatus, Serializable {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.logging.IOSEEStatus#getLevel()
-    */
    @Override
    public Level getLevel() {
       return this.level;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.logging.IHealthStatus#getSourceName()
-    */
    @Override
    public String getSourceName() {
       return sourceName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.logging.IHealthStatus#isOk()
-    */
    @Override
    public boolean isOk() {
       return Level.INFO.intValue() >= getLevel().intValue();

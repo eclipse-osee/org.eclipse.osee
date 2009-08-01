@@ -201,11 +201,6 @@ public class AttributeConflict extends Conflict {
       return destObject;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -488,9 +483,6 @@ public class AttributeConflict extends Conflict {
       getSourceAttribute(true).revert();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
-    */
    @Override
    public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
       if (DEBUG) {

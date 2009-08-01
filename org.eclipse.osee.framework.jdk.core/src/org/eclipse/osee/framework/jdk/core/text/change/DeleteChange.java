@@ -49,23 +49,14 @@ public class DeleteChange implements CharacterChanger {
       this.srcEndIndex = changeB.srcEndIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getStartIndex()
-    */
    public int getStartIndex() {
       return srcStartIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getEndIndex()
-    */
    public int getEndIndex() {
       return srcEndIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#applyChange(char[], int)
-    */
    public int applyChange(char[] dest, int destPos) {
       return destPos;
    }
@@ -74,16 +65,10 @@ public class DeleteChange implements CharacterChanger {
       return;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#next()
-    */
    public CharacterChanger next() {
       return next;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#setNext(text.change.CharacterChanger)
-    */
    public void setNext(CharacterChanger next) {
       this.next = next;
    }

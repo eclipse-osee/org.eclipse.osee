@@ -86,9 +86,6 @@ public class NavigateView extends ViewPart implements IActionable {
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-    */
    @Override
    public void dispose() {
       try {
@@ -148,9 +145,6 @@ public class NavigateView extends ViewPart implements IActionable {
       Label searchLabel = new Label(comp, SWT.NONE);
       searchLabel.setText("Search:");
       searchLabel.addMouseListener(new MouseListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
-          */
          @Override
          public void mouseUp(MouseEvent mouseEvent) {
          }
@@ -340,11 +334,6 @@ public class NavigateView extends ViewPart implements IActionable {
    private static final String INPUT = "filter";
    private static final String FILTER_STR = "filterStr";
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
-    */
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);

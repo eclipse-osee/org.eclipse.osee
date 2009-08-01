@@ -143,26 +143,17 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       validationErrorString = errorText;
    }
 
-   /*
-    * (non-Javadoc) Method declared on Dialog.
-    */
    protected void buttonPressed(int buttonId) {
       setReturnCode(buttonId);
       close();
    }
 
-   /*
-    * (non-Javadoc) Method declared in Window.
-    */
    protected void configureShell(Shell shell) {
       super.configureShell(shell);
       if (title != null) shell.setText(title);
       if (titleImage != null) shell.setImage(titleImage);
    }
 
-   /*
-    * (non-Javadoc) Method declared on Dialog.
-    */
    protected void createButtonsForButtonBar(Composite parent) {
       buttons = new Button[buttonLabels.length];
       for (int i = 0; i < buttonLabels.length; i++) {
@@ -284,10 +275,6 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       return convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
    }
 
-   /*
-    * (non-Javadoc) Method declared on Dialog. Sets a return code of -1 since none of the dialog
-    * buttons were pressed to close the dialog.
-    */
    protected void handleShellCloseEvent() {
       super.handleShellCloseEvent();
       setReturnCode(-1);

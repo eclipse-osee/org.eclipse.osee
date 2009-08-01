@@ -33,9 +33,6 @@ public class OteServerSideEndpointSender implements EndpointSend {
       this.testEnvironment = testEnvironment;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointSend#send(org.eclipse.osee.framework.messaging.Message, org.eclipse.osee.framework.messaging.ExceptionHandler)
-    */
    public void send(Message message, ExceptionHandler exceptionHandler) {
       try{
          for(IUserSession session : testEnvironment.getUserSessions()){
@@ -46,9 +43,6 @@ public class OteServerSideEndpointSender implements EndpointSend {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointSend#start(java.util.Properties)
-    */
    public void start(Properties properties) {
    }
 

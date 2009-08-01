@@ -60,9 +60,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       OseeEventManager.addListener(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getData()
-    */
    @Override
    public Artifact getData() {
       return artifact;
@@ -94,9 +91,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       return operator;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.IXViewerItem#getLabel(int)
-    */
    public String getLabel(int index) {
       String toReturn = "";
       Artifact artifact = getData();
@@ -181,9 +175,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
             getOperator().getChecksum());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.IXViewerItem#getImage()
-    */
    public Image getImage() {
       Image toReturn = null;
       try {
@@ -265,9 +256,6 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       if (artifact.isDeleted()) return;
       if (transData.isDeleted(artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                if (!xViewer.getTree().isDisposed()) xViewer.remove(this);

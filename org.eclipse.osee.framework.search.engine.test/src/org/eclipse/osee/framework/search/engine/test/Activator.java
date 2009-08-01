@@ -24,10 +24,6 @@ public class Activator implements BundleActivator {
    private ServiceTracker searchServiceTracker;
    private ServiceTracker taggerServiceTracker;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
       this.bundleContext = context;
@@ -38,10 +34,6 @@ public class Activator implements BundleActivator {
       taggerServiceTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       searchServiceTracker.close();
       searchServiceTracker = null;

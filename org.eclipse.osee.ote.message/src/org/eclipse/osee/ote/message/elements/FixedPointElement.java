@@ -195,20 +195,10 @@ public class FixedPointElement extends RealElement {
 	return toFixed(getRaw(mem), signed, resolution, minVal);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see osee.test.core.message.RealElement#toDouble(long)
-     */
     protected double toDouble(long value) {
 	return toFixed(value, signed, resolution, minVal);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see osee.test.core.message.RealElement#toLong(double)
-     */
     protected long toLong(double value) {
 	return toFixedLong(value, signed, resolution, minVal);
     }
@@ -233,17 +223,11 @@ public class FixedPointElement extends RealElement {
 	return signed;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.osee.ote.message.elements.RealElement#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-     */
     @Override
     public void visit(IElementVisitor visitor) {
 	visitor.asFixedPointElement(this);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-     */
     @Override
     protected NonMappingFixedPointElement getNonMappingElement() {
 	return new NonMappingFixedPointElement(this);

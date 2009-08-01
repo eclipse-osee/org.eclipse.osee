@@ -23,9 +23,6 @@ import org.osgi.framework.BundleContext;
  */
 public class EarlyStartup implements IStartup {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IStartup#earlyStartup()
-    */
    @Override
    public void earlyStartup() {
       Display.getDefault().asyncExec(new Runnable() {

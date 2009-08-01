@@ -30,9 +30,6 @@ import org.eclipse.ui.PlatformUI;
 public class OpenMassArtifactEditorHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       MassArtifactEditor.editArtifacts("", artifacts);

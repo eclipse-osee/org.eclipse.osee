@@ -407,9 +407,6 @@ public class TaskXViewer extends WorldXViewer {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                try {
@@ -439,9 +436,6 @@ public class TaskXViewer extends WorldXViewer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.WorldXViewer#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
@@ -452,9 +446,6 @@ public class TaskXViewer extends WorldXViewer {
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (xTaskViewer.getTaskXViewer().getContentProvider() == null) return;

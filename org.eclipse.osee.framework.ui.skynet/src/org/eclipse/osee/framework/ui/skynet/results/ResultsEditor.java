@@ -46,11 +46,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
 
@@ -102,9 +97,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
    public void setEditorTitle(final String str) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             setPartName(str);
@@ -122,11 +114,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       return worldEditorInput.getIWorldEditorProvider();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
    }
@@ -145,19 +132,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       super.dispose();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       return null;
@@ -203,9 +182,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
    public static void open(final IResultsEditorProvider provider, boolean forcePend) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          public void run() {
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
@@ -220,9 +196,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    public void closeEditor() {
       final MultiPageEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             AWorkbench.getActivePage().closeEditor(editor, false);
@@ -233,9 +206,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
    public static Collection<ResultsEditor> getEditors() {
       final List<ResultsEditor> editors = new ArrayList<ResultsEditor>();
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
@@ -248,9 +218,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
 
    public static void closeAll() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {

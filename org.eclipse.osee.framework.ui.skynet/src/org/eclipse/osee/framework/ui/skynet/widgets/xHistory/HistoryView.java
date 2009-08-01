@@ -250,11 +250,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    private static final String ART_GUID = "artifactGuid";
    private static final String BRANCH_ID = "branchId";
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
-    */
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
@@ -288,9 +283,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branchModType == BranchEventType.Deleted) {
@@ -314,9 +306,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
@@ -325,9 +314,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuildMenu()
-    */
    @Override
    public void rebuildMenu() {
       setupMenus();

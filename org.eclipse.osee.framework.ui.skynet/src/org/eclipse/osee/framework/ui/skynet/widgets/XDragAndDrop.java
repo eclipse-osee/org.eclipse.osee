@@ -27,17 +27,11 @@ public class XDragAndDrop extends SkynetDragAndDrop {
       super(control, viewId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop#getArtifacts()
-    */
    @Override
    public Artifact[] getArtifacts() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop#performArtifactDrop(org.eclipse.osee.framework.skynet.core.artifact.Artifact[])
-    */
    @Override
    public void performArtifactDrop(Artifact[] dropArtifacts) {
 

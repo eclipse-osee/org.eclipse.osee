@@ -24,9 +24,6 @@ public class AddServerVersionWorker extends BaseServerCommand {
       super("Add Version");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String versionToAdd = getCommandInterpreter().nextArgument();

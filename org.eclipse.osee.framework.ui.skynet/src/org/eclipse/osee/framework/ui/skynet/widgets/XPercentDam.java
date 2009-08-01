@@ -20,9 +20,6 @@ public class XPercentDam extends XIntegerDam {
       super(displayLabel);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XInteger#isValid()
-    */
    @Override
    public IStatus isValid() {
       if (isRequiredEntry()) {

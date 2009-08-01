@@ -63,18 +63,12 @@ public class BranchSelectionDialog extends MessageDialog {
       gd.widthHint = 800;
       branchWidget.getXViewer().getTree().setLayoutData(gd);
       branchWidget.getXViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             handleDoubleClick();
          }
       });
       branchWidget.getXViewer().getTree().addSelectionListener(new SelectionListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             getButton(IDialogConstants.OK_ID).setEnabled(true);

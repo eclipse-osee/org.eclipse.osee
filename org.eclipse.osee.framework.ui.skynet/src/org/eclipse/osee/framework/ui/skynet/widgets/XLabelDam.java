@@ -94,63 +94,39 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
-    */
    @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setFocus()
-    */
    @Override
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#toHTML(java.lang.String)
-    */
    @Override
    public String toHTML(String labelFont) {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return valueTextWidget.getText();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() {
       // Do nothing cause labelDam is read-only

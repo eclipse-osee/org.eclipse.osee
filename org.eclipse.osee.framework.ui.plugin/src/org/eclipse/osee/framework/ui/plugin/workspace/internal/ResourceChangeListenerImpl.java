@@ -26,9 +26,6 @@ public class ResourceChangeListenerImpl implements IResourceChangeListener {
       this.listener = listener;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-    */
    @Override
    public void resourceChanged(IResourceChangeEvent event) {
       listener.resourceChanged(event);

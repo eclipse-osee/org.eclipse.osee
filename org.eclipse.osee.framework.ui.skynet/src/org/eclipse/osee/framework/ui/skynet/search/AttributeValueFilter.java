@@ -31,9 +31,6 @@ public class AttributeValueFilter extends SearchFilter {
       this.attributeValue = attributeValue;
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.search.SearchFilter#addFilterTo(osee.define.artifact.search.filter.FilterTableViewer)
-    */
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       String type = attributeTypeList.getCombo().getText();
@@ -45,17 +42,11 @@ public class AttributeValueFilter extends SearchFilter {
       filterViewer.addItem(primitive, getFilterName(), type, result.value);
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.search.SearchFilter#isValid()
-    */
    @Override
    public boolean isValid() {
       return !attributeValue.getText().equals("");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
-    */
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = AttributeValueSearch.getPrimitive(storageString);

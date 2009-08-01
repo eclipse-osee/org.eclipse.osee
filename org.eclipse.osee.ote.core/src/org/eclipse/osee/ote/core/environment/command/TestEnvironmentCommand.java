@@ -41,9 +41,6 @@ public abstract class TestEnvironmentCommand implements Serializable, IServiceCo
       execute(environment);
    }
 
-   /* (non-Javadoc)
-    * @see net.jini.service.interfaces.IServiceCommand#execute(net.jini.service.interfaces.IService)
-    */
    public abstract void execute(TestEnvironment environment) throws TestException;
 
    /**

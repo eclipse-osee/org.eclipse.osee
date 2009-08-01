@@ -50,11 +50,6 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
@@ -101,11 +96,6 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
-    */
    private void createNewVersionItemTx(SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, String newVer) throws OseeCoreException {
       VersionArtifact ver =
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),

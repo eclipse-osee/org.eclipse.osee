@@ -59,9 +59,6 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Remove Trace Marks from Resource";
@@ -73,17 +70,11 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return Arrays.asList("Define.Trace");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Removes trace marks from files selected.\n*** WARNING_OVERLAY: When \"Persist Changes\" is selected, files will be modified in place.\n There is no way to undo this operation - make sure you know what you are doing. ***\n ";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getXWidgetsXml()
-    */
    @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
@@ -225,9 +216,6 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
          this.reportCreator = reportCreator;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.utility.IResourceHandler#onResourceFound(java.net.URI, java.lang.String, java.nio.CharBuffer)
-       */
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          String traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);

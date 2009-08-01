@@ -61,9 +61,6 @@ public class SessionManager implements ISessionManager {
       updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionByClientAddress(java.lang.String)
-    */
    @Override
    public List<SessionData> getSessionByClientAddress(String clientAddress) {
       List<SessionData> toReturn = new ArrayList<SessionData>();
@@ -97,9 +94,6 @@ public class SessionManager implements ISessionManager {
       return wasAlive;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessions(java.lang.String, boolean includeNonServerManagedSessions)
-    */
    @Override
    public List<SessionData> getAllSessions(boolean includeNonServerManagedSessions) throws OseeDataStoreException {
       List<SessionData> toReturn = null;
@@ -113,9 +107,6 @@ public class SessionManager implements ISessionManager {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionsByUserId(java.lang.String, boolean)
-    */
    @Override
    public List<SessionData> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException {
       Collection<SessionData> sessions = null;
@@ -135,17 +126,11 @@ public class SessionManager implements ISessionManager {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#getSessionById(java.lang.String)
-    */
    @Override
    public SessionData getSessionById(String sessionId) {
       return sessionCache.get(sessionId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#createSession(org.eclipse.osee.framework.core.data.OseeCredential)
-    */
    @Override
    public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
       OseeSessionGrant sessionGrant = null;
@@ -176,9 +161,6 @@ public class SessionManager implements ISessionManager {
       return sessionGrant;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#releaseSession(java.lang.String)
-    */
    @Override
    public void releaseSession(String sessionId) {
       SessionData sessionData = getSessionById(sessionId);
@@ -187,9 +169,6 @@ public class SessionManager implements ISessionManager {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.ISessionManager#updateSessionActivity(java.lang.String, java.lang.String)
-    */
    @Override
    public void updateSessionActivity(String sessionId, String interactionName) throws OseeInvalidSessionException {
       SessionData sessionData = getSessionById(sessionId);

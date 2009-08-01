@@ -50,11 +50,6 @@ public class XNavigateUrlItem extends XNavigateItemAction {
       this.external = external;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       if (external)

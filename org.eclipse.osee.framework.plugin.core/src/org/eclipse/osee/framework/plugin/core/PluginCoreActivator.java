@@ -34,9 +34,6 @@ public class PluginCoreActivator extends OseeActivator {
       pluginInstance = this;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-    */
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
@@ -54,9 +51,6 @@ public class PluginCoreActivator extends OseeActivator {
       return (PackageAdmin) packageAdminTracker.getService();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.plugin.core.OseeActivator#start(org.osgi.framework.BundleContext)
-    */
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);

@@ -30,9 +30,6 @@ public class CommandDistributerImpl implements CommandDistributer {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.CommandDistributer#distribute(org.eclipse.osee.ote.core.cmd.Command)
-    */
    public void distribute(final Command command) {
       executor.submit(new Runnable() {
 
@@ -50,23 +47,14 @@ public class CommandDistributerImpl implements CommandDistributer {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.CommandDistributer#registerHandler(org.eclipse.osee.ote.core.cmd.CommandHandler)
-    */
    public void registerHandler(CommandHandler commandHandler) {
       handlers.add(commandHandler);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.CommandDistributer#unregisterHandler(org.eclipse.osee.ote.core.cmd.CommandHandler)
-    */
    public void unregisterHandler(CommandHandler commandHandler) {
       handlers.remove(commandHandler);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.CommandDistributer#shutdown()
-    */
    public void shutdown() {
       OseeLog.log(CommandDistributerImpl.class, Level.INFO, "Command distributor shutting down...");
       handlers.clear();

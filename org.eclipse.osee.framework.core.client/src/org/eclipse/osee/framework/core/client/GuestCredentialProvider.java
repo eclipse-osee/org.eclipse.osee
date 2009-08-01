@@ -19,9 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class GuestCredentialProvider extends BaseCredentialProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.BaseCredentialProvider#getCredential()
-    */
    @Override
    public OseeCredential getCredential() throws OseeCoreException {
       OseeCredential credential = super.getCredential();

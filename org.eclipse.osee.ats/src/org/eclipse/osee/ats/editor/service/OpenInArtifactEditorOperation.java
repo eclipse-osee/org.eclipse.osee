@@ -30,9 +30,6 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
       ArtifactEditor.editArtifact(smaMgr.getSma());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       if (!AtsUtil.isAtsAdmin()) return null;
@@ -47,9 +44,6 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Open Artifact Editor";

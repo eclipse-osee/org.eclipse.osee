@@ -107,11 +107,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    DragSourceAdapter hiddenTableDragListener = new DragSourceAdapter() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
-       */
       @Override
       public void dragStart(DragSourceEvent event) {
          if (hiddenColTable.getViewer().getSelection().isEmpty()) {
@@ -193,11 +188,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    DragSourceAdapter visibleTableDragListener = new DragSourceAdapter() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
-       */
       @Override
       public void dragStart(DragSourceEvent event) {
          if (visibleColTable.getViewer().getSelection().isEmpty()) {

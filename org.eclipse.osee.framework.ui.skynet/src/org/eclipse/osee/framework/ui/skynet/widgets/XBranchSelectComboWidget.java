@@ -46,9 +46,6 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       this.defaultBranch = -1;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       composite = null;
@@ -82,9 +79,6 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       selectComposite.addListener(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#dispose()
-    */
    @Override
    public void dispose() {
       if (selectComposite != null) {
@@ -93,43 +87,28 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return composite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Branch getData() {
       return selectComposite.getSelectedBranch();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       Branch branch = selectComposite.getSelectedBranch();
       return branch != null ? branch.getName() : "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       System.out.println("Get XML Data Called: ");
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
-    */
    @Override
    public IStatus isValid() {
       if (selectComposite.getSelectedBranch() == null) {
@@ -138,41 +117,26 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       return Status.OK_STATUS;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#refresh()
-    */
    @Override
    public void refresh() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setFocus()
-    */
    @Override
    public void setFocus() {
       selectComposite.setFocus();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
       System.out.println("Set XML Data Called: " + str);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#toHTML(java.lang.String)
-    */
    @Override
    public String toHTML(String labelFont) {
       System.out.println("Set to Html Called: " + labelFont);
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setDisplayLabel(java.lang.String)
-    */
    @Override
    public void setDisplayLabel(final String displayLabel) {
       Display.getCurrent().asyncExec(new Runnable() {
@@ -183,9 +147,6 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setToolTip(java.lang.String)
-    */
    @Override
    public void setToolTip(final String toolTip) {
       Display.getCurrent().asyncExec(new Runnable() {
@@ -203,9 +164,6 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    @Override
    public void handleEvent(Event event) {
       super.validate();

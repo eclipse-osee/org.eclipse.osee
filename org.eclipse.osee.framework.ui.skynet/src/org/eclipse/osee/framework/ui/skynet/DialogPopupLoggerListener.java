@@ -26,9 +26,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class DialogPopupLoggerListener implements ILoggerListener {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.logging.ILoggerListener#log(java.lang.String, java.lang.String, java.util.logging.Level, java.lang.String, java.lang.Throwable)
-    */
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
       if (level == OseeLevel.SEVERE_POPUP) {

@@ -49,9 +49,6 @@ import org.eclipse.swt.program.Program;
 public class UiToTestBlam extends AbstractBlam {
    private static final String EMPTY_STRING = "";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "UI To Test Report";
@@ -62,9 +59,6 @@ public class UiToTestBlam extends AbstractBlam {
       return Arrays.asList("Define.Trace");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Usage Info here";

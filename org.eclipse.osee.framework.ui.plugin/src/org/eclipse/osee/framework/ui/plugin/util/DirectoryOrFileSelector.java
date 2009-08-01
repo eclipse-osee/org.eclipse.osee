@@ -69,9 +69,6 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       btnDirectory.setText("&Browse...");
       btnDirectory.addSelectionListener(new SelectionAdapter() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             File directory = selectDirectory();
@@ -92,9 +89,6 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       btnSingleFile.setText("&Browse...");
       btnSingleFile.addSelectionListener(new SelectionAdapter() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             File file = selectFile();

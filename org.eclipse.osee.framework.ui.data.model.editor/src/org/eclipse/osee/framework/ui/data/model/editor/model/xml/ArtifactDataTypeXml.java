@@ -29,17 +29,11 @@ public class ArtifactDataTypeXml extends BaseXmlDataType<ArtifactDataType> {
 
    private final String IMAGE_DATA = "imageData";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#getElementName()
-    */
    @Override
    public String getElementName() {
       return ARTIFACT_TAG;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#writeBody(org.eclipse.osee.framework.ui.data.model.editor.model.DataType)
-    */
    @Override
    protected void writeBody(XMLStreamWriter writer, ArtifactDataType dataType) throws XMLStreamException {
       if (dataType.getSuperType() != null) {
@@ -72,18 +66,12 @@ public class ArtifactDataTypeXml extends BaseXmlDataType<ArtifactDataType> {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#populateFromCDataElement(org.eclipse.osee.framework.ui.data.model.editor.model.DataType, java.lang.String, java.lang.String)
-    */
    @Override
    protected void populateFromCDataElement(ArtifactDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromCDataElement(dataType, tag, text);
       if (IMAGE_DATA.equals(tag)) dataType.setImage(stringToImage(text));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#newDataTypeInstance()
-    */
    @Override
    protected ArtifactDataType newDataTypeInstance() {
       return new ArtifactDataType();

@@ -69,9 +69,6 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       super(id);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.actions.CompoundContributionItem#getContributionItems()
-    */
    @Override
    protected IContributionItem[] getContributionItems() {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
@@ -128,9 +125,6 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       return contributionItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.ContributionItem#fill(org.eclipse.swt.widgets.ToolBar, int)
-    */
    @Override
    public void fill(final ToolBar parent, int index) {
       final ToolItem toolItem = new ToolItem(parent, SWT.DROP_DOWN);
@@ -142,9 +136,6 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       toolItem.setEnabled(listener.isPreviewMenuEnabled());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.actions.CompoundContributionItem#fill(org.eclipse.swt.widgets.Menu, int)
-    */
    @Override
    public void fill(Menu parent, int index) {
       final MenuItem item = new MenuItem(parent, SWT.CASCADE);

@@ -44,10 +44,6 @@ public class IntegerData implements Data {
 		this.theInt = theInt;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see osee.messaging.dds.Data#toByteArray()
-	 */
 	public byte[] toByteArray() {
 		int x = theInt;
 
@@ -57,10 +53,6 @@ public class IntegerData implements Data {
 	private byte byteOf(int x, int index) {
 		return (byte)(x>>(index*4) & 0xff);
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see osee.messaging.dds.Data#setFromByteArray(byte[])
-	 */
 	public void setFromByteArray(byte[] input) {
 
 		int value=0;
@@ -75,10 +67,6 @@ public class IntegerData implements Data {
 		theInt = value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see osee.messaging.dds.Data#getKeyValue()
-	 */
 	public Object getKeyValue() {
 		return new Integer(theInt);
 	}

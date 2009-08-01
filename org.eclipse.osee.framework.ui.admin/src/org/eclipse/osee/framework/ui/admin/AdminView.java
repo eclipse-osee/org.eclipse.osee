@@ -227,11 +227,6 @@ public class AdminView extends ViewPart implements IActionable {
          saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVED));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    public String getActionDescription() {
       String desc = "";
       TabItem items[] = tabFolder.getSelection();

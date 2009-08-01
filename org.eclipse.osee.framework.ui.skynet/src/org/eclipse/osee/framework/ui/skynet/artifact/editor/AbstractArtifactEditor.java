@@ -32,11 +32,6 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
 
    private final static Object[] EMPTY_ARRAY = new Object[0];
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#createToolkit(org.eclipse.swt.widgets.Display)
-    */
    @Override
    protected XFormToolkit createToolkit(Display display) {
       // Create a toolkit that shares colors between editors.
@@ -44,45 +39,22 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
       return new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(display));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-    */
    @Override
    public void doSaveAs() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
-    */
    @Override
    public boolean isSaveAsAllowed() {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.swt.IDirtiableEditor#onDirtied()
-    */
    public void onDirtied() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#getToolkit()
-    */
    @Override
    public XFormToolkit getToolkit() {
       return (XFormToolkit) super.getToolkit();
@@ -92,9 +64,6 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
       return (Artifact) getEditorInput().getAdapter(Artifact.class);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
-    */
    @Override
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);

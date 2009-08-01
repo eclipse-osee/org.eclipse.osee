@@ -32,23 +32,14 @@ public class CharChange implements CharacterChanger {
       this.newChar = newChar;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getStartIndex()
-    */
    public int getStartIndex() {
       return srcStartIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getEndIndex()
-    */
    public int getEndIndex() {
       return srcEndIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#applyChange(char[], int)
-    */
    public int applyChange(char[] dest, int destPos) {
       dest[destPos] = newChar;
       return destPos + 1;
@@ -58,16 +49,10 @@ public class CharChange implements CharacterChanger {
       writer.write(newChar);
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#next()
-    */
    public CharacterChanger next() {
       return next;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#setNext(text.change.CharacterChanger)
-    */
    public void setNext(CharacterChanger next) {
       this.next = next;
    }

@@ -28,9 +28,6 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class StringElement extends DiscreteElement<String> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-    */
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asStringElement(this);
@@ -53,21 +50,11 @@ public class StringElement extends DiscreteElement<String> {
       return (StringElement) super.switchMessages(messages);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#valueOf(java.lang.Object)
-    */
    @Override
    public String toString(String obj) {
       return obj;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue()
-    */
    @Override
    public void setValue(String value) {
       getMsgData().getMem().setASCIIString(value, byteOffset, msb, lsb);
@@ -78,11 +65,6 @@ public class StringElement extends DiscreteElement<String> {
       set(accessor, value);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public String getValue() {
       return getMsgData().getMem().getASCIIString(byteOffset, msb, lsb);
@@ -154,9 +136,6 @@ public class StringElement extends DiscreteElement<String> {
       super.sendMessage();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-    */
    @Override
    protected NonMappingStringElement getNonMappingElement() {
       return new NonMappingStringElement(this);

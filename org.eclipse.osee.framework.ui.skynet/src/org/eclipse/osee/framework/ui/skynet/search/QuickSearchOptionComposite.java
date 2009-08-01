@@ -451,9 +451,6 @@ public class QuickSearchOptionComposite extends Composite {
          this.configuration.add(getDefault());
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#configure()
-       */
       @Override
       public void configure() {
          try {
@@ -496,17 +493,11 @@ public class QuickSearchOptionComposite extends Composite {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#getConfigToolTip()
-       */
       @Override
       public String getConfigToolTip() {
          return "Select to configure attribute type filter.";
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#getConfiguration()
-       */
       @Override
       public String[] getConfiguration() {
          if (configuration.isEmpty()) {
@@ -519,9 +510,6 @@ public class QuickSearchOptionComposite extends Composite {
          return "Name";
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.panels.SearchComposite.IOptionConfigurationHandler#setConfiguration(java.lang.String[])
-       */
       @Override
       public void setConfiguration(String[] items) {
          if (items != null) {

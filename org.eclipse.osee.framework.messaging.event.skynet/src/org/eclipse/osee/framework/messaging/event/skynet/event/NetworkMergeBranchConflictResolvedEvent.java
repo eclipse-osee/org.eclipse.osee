@@ -28,9 +28,6 @@ public class NetworkMergeBranchConflictResolvedEvent extends SkynetEventBase {
       return branchId;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(T)
-    */
    @Override
    public int compareTo(Object o) {
       return 0;

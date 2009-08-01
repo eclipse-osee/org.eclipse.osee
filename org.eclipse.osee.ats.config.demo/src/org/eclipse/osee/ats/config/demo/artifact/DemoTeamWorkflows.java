@@ -34,12 +34,6 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    public DemoTeamWorkflows() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#getTeamWorkflowArtifactName(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
-    *      java.util.Collection, java.util.Collection)
-    */
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       if (teamDef.getName().contains("Code"))
          return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
@@ -51,30 +45,14 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       return TeamWorkFlowArtifact.ARTIFACT_NAME;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#isResponsibleForTeamWorkflowCreation(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
-    *      java.util.Collection, java.util.Collection)
-    */
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       return (teamDef.getName().contains("SAW") || teamDef.getName().contains("CIS"));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#teamWorkflowCreated(org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact)
-    */
    public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt) {
       return;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow#getTeamWorkflowArtifactNames()
-    */
    public Collection<String> getTeamWorkflowArtifactNames() throws OseeCoreException {
       if (workflowArtifactNames == null) {
          if (TestUtil.isDemoDb()) {
@@ -87,9 +65,6 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       return workflowArtifactNames;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow#teamWorkflowCreated(org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact, org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact)
-    */
    @Override
    public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException {
    }

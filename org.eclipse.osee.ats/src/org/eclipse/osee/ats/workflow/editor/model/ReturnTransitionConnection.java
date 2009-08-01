@@ -25,17 +25,11 @@ public class ReturnTransitionConnection extends TransitionConnection {
       super(source, target);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Connection#getLineStyle()
-    */
    @Override
    public int getLineStyle() {
       return Graphics.LINE_DASH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Connection#getLabel()
-    */
    @Override
    public String getLabel() {
       return "Return Transition";

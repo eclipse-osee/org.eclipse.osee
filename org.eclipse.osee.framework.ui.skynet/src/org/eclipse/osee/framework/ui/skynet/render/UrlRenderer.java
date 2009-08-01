@@ -34,9 +34,6 @@ public class UrlRenderer extends DefaultArtifactRenderer {
       contentUrlType = AttributeTypeManager.getType("Content URL");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-    */
    @Override
    public UrlRenderer newInstance() throws OseeCoreException {
       return new UrlRenderer();

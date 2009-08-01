@@ -41,9 +41,6 @@ public class BlamOverviewPage extends FormPage {
       super(editor, "overview", "BLAM Workflow");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
-    */
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
@@ -105,17 +102,11 @@ public class BlamOverviewPage extends FormPage {
       form.reflow(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#getEditor()
-    */
    @Override
    public BlamEditor getEditor() {
       return (BlamEditor) super.getEditor();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#getEditorInput()
-    */
    @Override
    public BlamEditorInput getEditorInput() {
       return (BlamEditorInput) super.getEditorInput();

@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class BranchExchange implements IBranchExchange {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#exportBranch(java.lang.String, org.eclipse.osee.framework.resource.management.Options, int[])
-    */
    @Override
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
       ExportController controller = new ExportController(exportName, options, branchIds);
@@ -33,9 +30,6 @@ public class BranchExchange implements IBranchExchange {
             ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#exportBranch(java.lang.String, org.eclipse.osee.framework.resource.management.Options, java.util.List)
-    */
    @Override
    public IResourceLocator exportBranch(String exportName, Options options, List<Integer> branchIds) throws Exception {
       int[] branchIdsArray = new int[branchIds.size()];
@@ -45,18 +39,12 @@ public class BranchExchange implements IBranchExchange {
       return exportBranch(exportName, options, branchIdsArray);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#importBranch(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.Options, int[])
-    */
    @Override
    public void importBranch(IResourceLocator fileToImport, Options options, int... branchIds) throws Exception {
       ImportController importController = new ImportController(fileToImport, options, branchIds);
       importController.execute();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#importBranch(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.Options, java.util.List)
-    */
    @Override
    public void importBranch(IResourceLocator fileToImport, Options options, List<Integer> branchIds) throws Exception {
       int[] branchIdsArray = new int[branchIds.size()];
@@ -66,9 +54,6 @@ public class BranchExchange implements IBranchExchange {
       importBranch(fileToImport, options, branchIdsArray);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.IBranchExchange#checkIntegrity(org.eclipse.osee.framework.resource.management.IResourceLocator)
-    */
    @Override
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
       ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(fileToCheck);

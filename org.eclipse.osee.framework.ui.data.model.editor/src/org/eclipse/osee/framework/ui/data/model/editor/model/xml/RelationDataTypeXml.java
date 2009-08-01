@@ -31,17 +31,11 @@ public class RelationDataTypeXml extends BaseXmlDataType<RelationDataType> {
    public RelationDataTypeXml() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#getElementName()
-    */
    @Override
    public String getElementName() {
       return RELATION_TAG;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#writeBody(org.eclipse.osee.framework.ui.data.model.editor.model.DataType)
-    */
    @Override
    protected void writeBody(XMLStreamWriter writer, RelationDataType dataType) throws XMLStreamException {
       writeTextElement(writer, ORDER, String.valueOf(dataType.getOrdered()));
@@ -52,9 +46,6 @@ public class RelationDataTypeXml extends BaseXmlDataType<RelationDataType> {
       writeTextElement(writer, B_TO_A_PHRASE, dataType.getBToAPhrase());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#populateFromTextElement(org.eclipse.osee.framework.ui.data.model.editor.model.DataType, java.lang.String, java.lang.String)
-    */
    @Override
    protected void populateFromTextElement(RelationDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromTextElement(dataType, tag, text);
@@ -66,9 +57,6 @@ public class RelationDataTypeXml extends BaseXmlDataType<RelationDataType> {
       if (B_TO_A_PHRASE.equals(tag)) dataType.setBToAPhrase(text);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#newDataTypeInstance()
-    */
    @Override
    protected RelationDataType newDataTypeInstance() {
       return new RelationDataType();

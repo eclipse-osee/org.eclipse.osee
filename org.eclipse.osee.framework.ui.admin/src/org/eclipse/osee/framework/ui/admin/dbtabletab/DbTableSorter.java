@@ -43,9 +43,6 @@ public class DbTableSorter extends ViewerSorter {
       this.criteria = criteria;
    }
 
-   /*
-    * (non-Javadoc) Method declared on ViewerSorter.
-    */
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       Object obj1 = ((DbModel) o1).getColumn(criteria);

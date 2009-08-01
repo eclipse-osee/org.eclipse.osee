@@ -27,9 +27,6 @@ public class ProgressMonitorTask extends ScheduledTask {
       this.statement = statement;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.task.ScheduledTask#innerRun()
-    */
    @Override
    protected void innerRun() throws Exception {
       if (monitor != null) {

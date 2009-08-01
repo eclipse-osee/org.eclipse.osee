@@ -42,9 +42,6 @@ public class ExportClassLoader extends ClassLoader {
       this(PluginCoreActivator.getInstance().getPackageAdmin());
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.ClassLoader#findClass(java.lang.String)
-    */
    @Override
    protected Class<?> findClass(String name) throws ClassNotFoundException {
       try {

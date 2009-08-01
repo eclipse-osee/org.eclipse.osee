@@ -40,9 +40,6 @@ public class BlamUsageSection extends BaseBlamSection {
       super(editor, parent, toolkit, style);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -94,9 +91,6 @@ public class BlamUsageSection extends BaseBlamSection {
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (Widgets.isAccessible(formText)) {
@@ -105,9 +99,6 @@ public class BlamUsageSection extends BaseBlamSection {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();

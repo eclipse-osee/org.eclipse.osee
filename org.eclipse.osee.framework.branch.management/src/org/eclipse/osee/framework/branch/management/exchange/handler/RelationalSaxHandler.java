@@ -165,9 +165,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#reset()
-    */
    @Override
    public void reset() {
       transferredBinaryContent.clear();
@@ -193,9 +190,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#clearDataTable()
-    */
    @Override
    public void clearDataTable() throws OseeDataStoreException {
       if (!getMetaData().getTableName().equals("osee_tx_details")) {

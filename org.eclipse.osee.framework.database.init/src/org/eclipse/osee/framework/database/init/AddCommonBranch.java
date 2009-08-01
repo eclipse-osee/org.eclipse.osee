@@ -38,11 +38,6 @@ public class AddCommonBranch implements IDbInitializationTask {
       this.initializeRootArtifacts = initializeRootArtifacts;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
-    */
    public void run() throws OseeCoreException {
       Branch systemBranch = BranchManager.createSystemRootBranch();
       OseeTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
@@ -62,11 +57,6 @@ public class AddCommonBranch implements IDbInitializationTask {
             "org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon", "org.eclipse.osee.ats.OseeTypes_ATS");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#canRun()
-    */
    public boolean canRun() {
       return true;
    }

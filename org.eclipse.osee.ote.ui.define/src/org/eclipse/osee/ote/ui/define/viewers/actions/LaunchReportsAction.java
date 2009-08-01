@@ -47,9 +47,6 @@ public class LaunchReportsAction extends AbstractActionHandler {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.actions.AbstractActionHandler#updateState()
-    */
    @Override
    public void updateState() {
       if (getViewer() != null) {

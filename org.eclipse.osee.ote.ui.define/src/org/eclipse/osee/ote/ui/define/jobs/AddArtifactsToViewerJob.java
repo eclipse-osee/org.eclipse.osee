@@ -37,9 +37,6 @@ public class AddArtifactsToViewerJob extends Job {
       setPriority(Job.LONG);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;

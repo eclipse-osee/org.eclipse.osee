@@ -66,9 +66,6 @@ public class ArtifactFormPage extends FormPage {
       this.sectionParts = new LinkedHashMap<SectionEnum, SectionPart>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    protected void createFormContent(IManagedForm managedForm) {
       super.createFormContent(managedForm);
@@ -109,9 +106,6 @@ public class ArtifactFormPage extends FormPage {
       form.layout();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#getEditor()
-    */
    @Override
    public ArtifactEditor getEditor() {
       return (ArtifactEditor) super.getEditor();
@@ -226,9 +220,6 @@ public class ArtifactFormPage extends FormPage {
       form.redraw();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#dispose()
-    */
    @Override
    public void dispose() {
       for (SectionPart part : sectionParts.values()) {
@@ -258,9 +249,6 @@ public class ArtifactFormPage extends FormPage {
       getManagedForm().refresh();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
-    */
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);

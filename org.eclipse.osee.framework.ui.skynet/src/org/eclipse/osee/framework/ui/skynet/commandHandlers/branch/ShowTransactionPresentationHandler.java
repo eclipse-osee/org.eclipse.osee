@@ -47,9 +47,6 @@ public class ShowTransactionPresentationHandler extends AbstractHandler implemen
       element.setChecked(itemChk);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       service.refreshElements(COMMAND_ID, null);

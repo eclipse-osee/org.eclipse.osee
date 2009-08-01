@@ -78,9 +78,6 @@ public class DataStoreBackupApplication implements IApplication {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-    */
    @Override
    public Object start(IApplicationContext context) throws Exception {
       try {
@@ -127,9 +124,6 @@ public class DataStoreBackupApplication implements IApplication {
       return IApplication.EXIT_OK;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.equinox.app.IApplication#stop()
-    */
    @Override
    public void stop() {
    }

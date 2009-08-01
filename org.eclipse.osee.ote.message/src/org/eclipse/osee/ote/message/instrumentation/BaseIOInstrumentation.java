@@ -38,15 +38,9 @@ public class BaseIOInstrumentation implements IOInstrumentation {
       
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.instrumentation.IOInstrumentation#command(byte[])
-    */
    public void command(byte[] cmd) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.instrumentation.IOInstrumentation#register(java.net.InetSocketAddress)
-    */
    public void register(InetSocketAddress address) {
       if (address == null) {
          throw new IllegalArgumentException("address cannot be null");

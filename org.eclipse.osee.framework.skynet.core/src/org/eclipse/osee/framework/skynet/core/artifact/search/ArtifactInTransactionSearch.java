@@ -43,18 +43,10 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
       this.toTransactionNumber = toTransactionId.getTransactionNumber();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    @Override
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String whereConditions =

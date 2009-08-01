@@ -44,9 +44,6 @@ public class SearchNavigateItem extends XNavigateItem {
       return wsi;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#getImage()
-    */
    @Override
    public Image getImage() {
       Image image = wsi.getImage();

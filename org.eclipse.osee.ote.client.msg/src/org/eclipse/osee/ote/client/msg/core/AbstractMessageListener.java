@@ -25,9 +25,6 @@ public abstract class AbstractMessageListener implements ISubscriptionListener, 
 		this.subscription = subscription;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.client.msg.core.ISubscriptionListener#subscriptionCanceled(org.eclipse.osee.ote.client.msg.core.IMessageSubscription)
-	 */
 	@Override
 	public void subscriptionCanceled(IMessageSubscription subscription) {
 		if (subscription.isResolved()) {
@@ -35,9 +32,6 @@ public abstract class AbstractMessageListener implements ISubscriptionListener, 
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.client.msg.core.ISubscriptionListener#subscriptionResolved(org.eclipse.osee.ote.client.msg.core.IMessageSubscription)
-	 */
 	@Override
 	public void subscriptionResolved(IMessageSubscription subscription) {
 		if (subscription.isResolved()) {
@@ -45,16 +39,10 @@ public abstract class AbstractMessageListener implements ISubscriptionListener, 
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.client.msg.core.ISubscriptionListener#subscriptionUnresolved(org.eclipse.osee.ote.client.msg.core.IMessageSubscription)
-	 */
 	@Override
 	public void subscriptionUnresolved(IMessageSubscription subscription) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.message.listener.IOSEEMessageListener#onInitListener()
-	 */
 	@Override
 	public void onInitListener() throws MessageSystemException {
 	}

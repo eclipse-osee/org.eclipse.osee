@@ -77,9 +77,6 @@ public class RequirementData extends BaseTraceDataCache {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.traceability.data.BaseTraceDataCache#asTraceMapKey(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    protected String asTraceMapKey(Artifact artifact) {
       return traceExtractor.getCanonicalRequirementName(artifact.getName());

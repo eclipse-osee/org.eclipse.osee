@@ -34,11 +34,6 @@ class DeleteBranchJob extends Job {
       this.branch = branch;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       IStatus status = Status.OK_STATUS;

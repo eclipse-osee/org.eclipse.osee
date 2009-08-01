@@ -53,9 +53,6 @@ public class ArtifactImportOperation extends AbstractOperation {
       this.rootRoughArtifact = new RoughArtifact(importRoot);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       IOperation subOperation = new FindRoughArtifactsOperation("Convert File(s) to Rough Artifact");
@@ -83,9 +80,6 @@ public class ArtifactImportOperation extends AbstractOperation {
          this.transaction = transaction;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          monitor.setTaskName("Creating Artifacts");
@@ -115,9 +109,6 @@ public class ArtifactImportOperation extends AbstractOperation {
          super(operationName, SkynetGuiPlugin.PLUGIN_ID);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          File[] files = file.isDirectory() ? file.listFiles(extractor.getFileFilter()) : new File[] {file};

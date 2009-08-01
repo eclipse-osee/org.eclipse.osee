@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  */
 public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#doesArtifactSuperTypeExist(java.lang.String)
-    */
    @Override
    public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException {
       boolean result = false;
@@ -39,26 +36,17 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onArtifactType(java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public void onArtifactType(String namespace, String artifactTypeName) throws OseeCoreException {
       ArtifactTypeManager.createType(namespace, artifactTypeName, artifactTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onAttributeType(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String, java.lang.String)
-    */
    @Override
    public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String attributeName, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String tipText, String taggerId) throws OseeCoreException {
       AttributeTypeManager.createType(attributeBaseType, attributeProviderTypeName, fileTypeExtension, namespace,
             attributeName, defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onAttributeValidity(java.lang.String, java.lang.String, java.util.Collection)
-    */
    @Override
    public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteArtifactTypes) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(attributeName);
@@ -70,18 +58,12 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onRelationType(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
       RelationTypeManager.createRelationType(namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
             shortName, ordered);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.data.model.editor.input.OseeDataTypeProcessor#onRelationValidity(java.lang.String, java.lang.String, int, int)
-    */
    @Override
    public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);

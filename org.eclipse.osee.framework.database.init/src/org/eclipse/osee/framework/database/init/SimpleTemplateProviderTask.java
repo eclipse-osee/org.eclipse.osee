@@ -29,9 +29,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
-    */
    public void run() throws OseeCoreException {
       try {
          processTemplatesForDBInit();

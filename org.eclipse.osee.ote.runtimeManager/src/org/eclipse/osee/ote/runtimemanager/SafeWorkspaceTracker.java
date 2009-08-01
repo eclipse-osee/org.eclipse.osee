@@ -63,9 +63,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
       this.context = context;
    }
 
-   /* (non-Javadoc)
-    * @see org.osgi.util.tracker.ServiceTracker#addingService(org.osgi.framework.ServiceReference)
-    */
    @Override
    public Object addingService(ServiceReference reference) {
       this.systemLibListener = new LibJarListener<OteSystemLibsNature>();

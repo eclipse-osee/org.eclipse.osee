@@ -48,9 +48,6 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       super("Artifact Id Without osee_artifact_version Table Entry");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       Set<Integer> allInvalidArtIds = new HashSet<Integer>();
@@ -139,17 +136,11 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact_version table.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Removes invalid data from the corresponding tables, however does not clean up any addressing that might be left behind.";

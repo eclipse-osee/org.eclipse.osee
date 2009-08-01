@@ -67,9 +67,6 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private Map<String, ImportedId> translatorMap;
    private String currentDbGuid;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Tx Imported Validate Change Reports";

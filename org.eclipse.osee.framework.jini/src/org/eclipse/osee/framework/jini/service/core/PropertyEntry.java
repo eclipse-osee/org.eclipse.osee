@@ -54,9 +54,6 @@ public class PropertyEntry extends AbstractEntry {
       props.putAll(map);
    }
 
-   /* (non-Javadoc)
-    * @see net.jini.entry.AbstractEntry#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object other) {
       if (other instanceof PropertyEntry) {

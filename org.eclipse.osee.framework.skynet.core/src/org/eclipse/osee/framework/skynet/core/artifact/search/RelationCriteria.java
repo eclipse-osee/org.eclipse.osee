@@ -49,9 +49,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       this.relationSide = relationSide;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToTableSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
       relAlias = builder.appendAliasedTable("osee_relation_link");
@@ -59,9 +56,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToWhereSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addToWhereSql(ArtifactQueryBuilder builder) {
       if (artifactId > 0) {
@@ -84,9 +78,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       builder.addTxSql(txsAlias, txdAlias, false);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addJoinArtId(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
       boolean useArtA = (relationSide == RelationSide.SIDE_A) ^ left;

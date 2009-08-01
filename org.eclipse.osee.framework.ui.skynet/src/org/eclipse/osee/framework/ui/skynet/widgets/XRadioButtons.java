@@ -56,11 +56,6 @@ public class XRadioButtons extends XWidget {
    public void setFocus() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return null;
@@ -219,11 +214,6 @@ public class XRadioButtons extends XWidget {
          // Since each button has it's own listeners, pass the notification on to anyone listening
          // to XRadioButtons:w
          button.addXModifiedListener(new XModifiedListener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-             */
             public void widgetModified(XWidget widget) {
                notifyXModifiedListeners();
             }

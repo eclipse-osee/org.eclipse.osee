@@ -29,16 +29,10 @@ public class EmptyEnumEntry implements IElementEntry {
       nameAsBytes = element.getName().getBytes();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.tool.rec.entry.IElementEntry#getElement()
-    */
    public Element getElement() {
       return element;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.tool.rec.entry.IElementEntry#write(java.nio.ByteBuffer, org.eclipse.osee.ote.message.data.MemoryResource)
-    */
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
       mem.setOffset(element.getMsgData().getMem().getOffset());
       buffer.put(nameAsBytes).put(COMMA).put(element.valueOf(mem).toString().getBytes()).put(COMMA);

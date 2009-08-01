@@ -39,11 +39,6 @@ public class StateListAndTitleDialog extends StateListDialog {
       super(title, message, values);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.ListDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createDialogArea(Composite container) {
       Composite comp = new Composite(container, SWT.NONE);
@@ -54,9 +49,6 @@ public class StateListAndTitleDialog extends StateListDialog {
       if (reviewTitle != null) titleText.set(reviewTitle);
       titleText.getStyledText().setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false));
       titleText.addXModifiedListener(new XModifiedListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-          */
          @Override
          public void widgetModified(XWidget widget) {
             reviewTitle = titleText.get();

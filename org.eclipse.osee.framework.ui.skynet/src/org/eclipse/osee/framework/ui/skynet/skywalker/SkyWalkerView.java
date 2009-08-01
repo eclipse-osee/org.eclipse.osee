@@ -75,11 +75,6 @@ public class SkyWalkerView extends ViewPart {
    private Composite viewerComp;
    protected SashForm sashForm;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
 
@@ -116,11 +111,6 @@ public class SkyWalkerView extends ViewPart {
       new SkyWalkerTabOptions(child1, SWT.NONE, options);
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptionsChangeListener#modified(org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptionsChangeListener.ModType)
-          */
          public void modified(ModType... modTypes) {
             List<ModType> modList = Arrays.asList(modTypes);
             // Don't redraw if artifact has been changed; else get in infinite loop
@@ -287,21 +277,11 @@ public class SkyWalkerView extends ViewPart {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-    */
    @Override
    public void setFocus() {
       viewer.getControl().setFocus();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.ats.IActionable#getActionDescription()
-    */
    public String getActionDescription() {
       return "";
    }
@@ -357,11 +337,6 @@ public class SkyWalkerView extends ViewPart {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
-    */
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);

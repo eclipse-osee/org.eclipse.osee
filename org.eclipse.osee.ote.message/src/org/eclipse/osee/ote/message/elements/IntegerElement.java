@@ -25,9 +25,6 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class IntegerElement extends NumericElement<Integer> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-    */
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asIntegerElement(this);
@@ -50,32 +47,17 @@ public class IntegerElement extends NumericElement<Integer> {
       return (IntegerElement) super.switchMessages(messages);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#valueOf(java.lang.Object)
-    */
    @Override
    public String toString(Integer obj) {
       int value = elementMask(obj);
       return value + "(0x" + Integer.toHexString(value).toUpperCase() + ")";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue()
-    */
    @Override
    public void setValue(Integer value) {
       getMsgData().getMem().setInt(value, byteOffset, msb, lsb);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public Integer getValue() {
       return new Integer(getMsgData().getMem().getInt(byteOffset, msb, lsb));
@@ -231,17 +213,11 @@ public class IntegerElement extends NumericElement<Integer> {
             maxInclusive, milliseconds);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#set(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, java.lang.String)
-    */
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       this.set(accessor, Integer.parseInt(value));
    }
 
-   /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-       */
    @Override
    protected Element getNonMappingElement() {
       return (NonMappingIntegerElement) new NonMappingIntegerElement(this);
@@ -264,9 +240,6 @@ public class IntegerElement extends NumericElement<Integer> {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.NumericElement#getNumericBitValue()
-    */
    @Override
    public long getNumericBitValue() {
       return getValue() & 0xFFFFFFFFL;

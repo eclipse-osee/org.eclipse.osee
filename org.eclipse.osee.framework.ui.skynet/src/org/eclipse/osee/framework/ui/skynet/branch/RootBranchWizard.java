@@ -20,17 +20,11 @@ import org.eclipse.ui.IWorkbench;
  */
 public class RootBranchWizard extends Wizard implements INewWizard {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }
 

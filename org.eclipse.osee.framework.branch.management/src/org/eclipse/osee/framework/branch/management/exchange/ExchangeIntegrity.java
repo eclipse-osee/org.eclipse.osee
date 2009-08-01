@@ -120,9 +120,6 @@ public class ExchangeIntegrity {
          System.out.println(String.format("Verifying: [%s]", fileBeingProcessed));
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler#processData(java.util.Map)
-       */
       @Override
       protected void processData(Map<String, String> fieldMap) throws Exception {
          String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
@@ -155,9 +152,6 @@ public class ExchangeIntegrity {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#finishData()
-       */
       @Override
       protected void finishData() {
          for (IndexCollector integrityCheck : checkList) {

@@ -34,11 +34,6 @@ public class DomainId {
       return id;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    public boolean equals(Object obj) {
      
       if (obj instanceof DomainId) {
@@ -49,11 +44,6 @@ public class DomainId {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#hashCode()
-    */
    public int hashCode() {
       int result = 17;
       result = 1313723*result + (int)(id^(id>>>32));

@@ -88,9 +88,6 @@ public class AttributeLineElement implements IAdaptable {
       return attribute;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == Artifact.class) {

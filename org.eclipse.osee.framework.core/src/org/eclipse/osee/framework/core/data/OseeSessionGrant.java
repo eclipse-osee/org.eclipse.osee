@@ -113,33 +113,21 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    private final class GrantedOseeUserInfo implements IOseeUser {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getEmail()
-       */
       @Override
       public String getEmail() {
          return getString(OSEE_USER_EMAIL);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getName()
-       */
       @Override
       public String getName() {
          return getString(OSEE_USER_NAME);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#getUserID()
-       */
       @Override
       public String getUserID() {
          return getString(OSEE_USER_ID);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUser#isActive()
-       */
       @Override
       public boolean isActive() {
          return backingData.getBoolean(OSEE_IS_USER_ACTIVE);
@@ -148,57 +136,36 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    private final class GrantedDatabaseInfo implements IDatabaseInfo {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionProperties()
-       */
       @Override
       public Properties getConnectionProperties() {
          return getPropertyString(DB_CONNECT_PROPERTIES);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionUrl()
-       */
       @Override
       public String getConnectionUrl() {
          return getString(DB_CONNECTION_URL);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseLoginName()
-       */
       @Override
       public String getDatabaseLoginName() {
          return getString(DB_LOGIN_NAME);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseName()
-       */
       @Override
       public String getDatabaseName() {
          return getString(DB_DATABASE_NAME);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDriver()
-       */
       @Override
       public String getDriver() {
          return getString(DB_DRIVER);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getId()
-       */
       @Override
       public String getId() {
          return getString(DB_ID);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#isProduction()
-       */
       @Override
       public boolean isProduction() {
          return Boolean.valueOf(getString(DB_IS_PRODUCTION));

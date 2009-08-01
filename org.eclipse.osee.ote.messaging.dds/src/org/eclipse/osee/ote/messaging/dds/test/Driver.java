@@ -110,114 +110,54 @@ public class Driver implements DomainParticipantListener{
       System.out.println("Driver finished");
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.TopicListener#onInconsistentTopic(osee.messaging.dds.entity.Topic, osee.messaging.dds.status.InconsistentTopicStatus)
-    */
    public void onInconsistentTopic(Topic theTopic, InconsistentTopicStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.SubscriberListener#onDataOnReaders(osee.messaging.dds.entity.Subscriber)
-    */
    public void onDataOnReaders(Subscriber theSubscriber) {
       System.out.println ("++onDataOnReaders was called");
       //theSubscriber.getDataReaders();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onDataAvailable(osee.messaging.dds.entity.DataReader)
-    */
    public void onDataAvailable(DataReader theReader) {
       System.out.println("**Data available from system: " + theReader.getTopicDescription().getName());
       
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onSampleRejected(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.SampleRejectedStatus)
-    */
    public void onSampleRejected(DataReader theReader, SampleRejectedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onLivelinessChanged(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.LivelinessChangedStatus)
-    */
    public void onLivelinessChanged(DataReader theReader, LivelinessChangedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onRequestedDeadlineMissed(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.RequestedDeadlineMissedStatus)
-    */
    public void onRequestedDeadlineMissed(DataReader theReader, RequestedDeadlineMissedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onRequestedIncompatibleQos(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.RequestedIncompatibleQosStatus)
-    */
    public void onRequestedIncompatibleQos(DataReader theReader, RequestedIncompatibleQosStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onSubscriptionMatch(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.SubscriptionMatchStatus)
-    */
    public void onSubscriptionMatch(DataReader theReader, SubscriptionMatchStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataReaderListener#onSampleLost(osee.messaging.dds.entity.DataReader, osee.messaging.dds.status.SampleLostStatus)
-    */
    public void onSampleLost(DataReader theReader, SampleLostStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataWriterListener#onLivelinessLost(osee.messaging.dds.entity.DataWriter, osee.messaging.dds.status.LivelinessLostStatus)
-    */
    public void onLivelinessLost(DataWriter theWriter, LivelinessLostStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataWriterListener#onOfferedDeadlineMissed(osee.messaging.dds.entity.DataWriter, osee.messaging.dds.status.OfferedDeadlineMissedStatus)
-    */
    public void onOfferedDeadlineMissed(DataWriter theWriter, OfferedDeadlineMissedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataWriterListener#onOfferedIncompatibleQos(osee.messaging.dds.entity.DataWriter, osee.messaging.dds.status.OfferedIncompatibleQosStatus)
-    */
    public void onOfferedIncompatibleQos(DataWriter theWriter, OfferedIncompatibleQosStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataWriterListener#onPublicationMatch(osee.messaging.dds.entity.DataWriter, osee.messaging.dds.status.PublicationMatchStatus)
-    */
    public void onPublicationMatch(DataWriter theWriter, PublicationMatchStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DataWriterListener#onDataTaken()
-    */
    public void onDataSentToMiddleware(DataWriter theWriter) {
       System.out.println("@@onDataTaken called");
       
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.listener.DomainParticipantListener#onPublishNotifyMiddleware(osee.messaging.dds.DataStoreItem)
-    */
    public void onPublishNotifyMiddleware(IDestination destination, ISource source, DataStoreItem dataStoreItem) {
       System.out.println("--Middleware notified on publish of: " + dataStoreItem.getTheTopicDescription().getName() + "-" + dataStoreItem.getTheTopicDescription().getTypeName());
       

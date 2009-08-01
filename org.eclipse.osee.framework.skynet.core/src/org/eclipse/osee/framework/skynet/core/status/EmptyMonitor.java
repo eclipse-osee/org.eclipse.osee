@@ -15,30 +15,18 @@ package org.eclipse.osee.framework.skynet.core.status;
  */
 public class EmptyMonitor implements IStatusMonitor {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.status.IStatusMonitor#done()
-    */
    @Override
    public void done() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.status.IStatusMonitor#startJob(java.lang.String, int)
-    */
    @Override
    public void startJob(String name, int totalWork) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.status.IStatusMonitor#updateWork(int)
-    */
    @Override
    public void updateWork(int workCompleted) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.status.IStatusMonitor#setSubtaskName()
-    */
    @Override
    public void setSubtaskName(String name) {
    }

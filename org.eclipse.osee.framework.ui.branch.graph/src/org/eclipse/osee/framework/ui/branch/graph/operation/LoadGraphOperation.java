@@ -60,9 +60,6 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       return "Loading graph information";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor monitor) throws Exception {
       boolean error = false;

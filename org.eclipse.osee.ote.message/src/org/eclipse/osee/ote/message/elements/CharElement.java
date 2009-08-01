@@ -503,21 +503,11 @@ public class CharElement extends DiscreteElement<Character> {
       return currentValue;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue(java.lang.Object)
-    */
    @Override
    public void setValue(Character value) {
       getMsgData().getMem().setInt(value, byteOffset, msb, lsb);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public Character getValue() {
       return (char) getMsgData().getMem().getInt(byteOffset, msb, lsb);
@@ -528,11 +518,6 @@ public class CharElement extends DiscreteElement<Character> {
       return new Character((char) otherMem.getInt(byteOffset, msb, lsb));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#valueOf(java.lang.Object)
-    */
    @Override
    public String toString(Character obj) {
       return obj.toString();
@@ -546,17 +531,11 @@ public class CharElement extends DiscreteElement<Character> {
       getMsgData().getMem().setASCIIString(value, byteOffset);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-    */
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asCharElement(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement(org.eclipse.osee.ote.message.elements.Element)
-    */
    @Override
    protected NonMappingCharElement getNonMappingElement() {
       return new NonMappingCharElement(this);

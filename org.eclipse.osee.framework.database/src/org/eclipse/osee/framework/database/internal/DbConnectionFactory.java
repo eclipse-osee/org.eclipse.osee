@@ -30,9 +30,6 @@ public class DbConnectionFactory implements IDbConnectionFactory {
       myWait = new Object();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionFactory#get(java.lang.String)
-    */
    @Override
    public IConnection get(String driver) throws OseeCoreException {
       IConnection selectedDriver = getInternal(driver);
@@ -66,9 +63,6 @@ public class DbConnectionFactory implements IDbConnectionFactory {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IBind#bind(java.lang.Object)
-    */
    @Override
    public void bind(IConnection obj) {
       connectionProviders.add((IConnection) obj);
@@ -77,9 +71,6 @@ public class DbConnectionFactory implements IDbConnectionFactory {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IBind#unbind(java.lang.Object)
-    */
    @Override
    public void unbind(IConnection obj) {
       connectionProviders.remove((IConnection) obj);

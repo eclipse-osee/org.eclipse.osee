@@ -23,25 +23,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TrustAllAuthenticationProvider implements IAuthenticationProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.session.management.IAuthenticationProvider#authenticate(org.eclipse.osee.framework.core.data.OseeCredential)
-    */
    @Override
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.session.management.IAuthenticationProvider#getId()
-    */
    @Override
    public String getProtocol() {
       return "trustAll";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#asOseeUserId(org.eclipse.osee.framework.core.data.OseeCredential)
-    */
    @Override
    public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
       IOseeUserInfo oseeUserId = SystemUser.Guest;

@@ -440,9 +440,6 @@ public final class Lib {
 				return len;
 			}
 
-			/* (non-Javadoc)
-			 * @see java.io.InputStream#reset()
-			 */
 			@Override
 			public synchronized void reset() throws IOException {
 				byteBuffer.rewind();

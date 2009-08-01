@@ -52,11 +52,6 @@ public class SkyWalkerRelTypeTabItem {
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new RelTypeContentProvider());
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             storeSelected();
          }
@@ -104,9 +99,6 @@ public class SkyWalkerRelTypeTabItem {
       });
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener#modified(org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType[])
-          */
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }

@@ -31,9 +31,6 @@ public class EllipticalShape extends Shape {
       return ImageManager.getImage(AtsImage.ELLIPSE_ICON);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
-    */
    @Override
    public Result validForSave() throws OseeCoreException {
       return Result.TrueResult;
@@ -44,25 +41,16 @@ public class EllipticalShape extends Shape {
       return "Ellipse " + hashCode();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Shape#getName()
-    */
    @Override
    protected String getName() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Shape#getToolTip()
-    */
    @Override
    protected String getToolTip() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

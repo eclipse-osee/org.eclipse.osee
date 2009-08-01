@@ -33,9 +33,6 @@ public class TraceMark {
       return rawTraceMark;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof CompositeKey) {
@@ -56,9 +53,6 @@ public class TraceMark {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       final int prime = 37;

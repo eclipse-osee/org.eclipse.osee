@@ -578,11 +578,6 @@ public class BranchManager {
             transactionId.getTransactionNumber());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.plugin.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
    public boolean runOnEventInDisplayThread() {
       return true;
    }

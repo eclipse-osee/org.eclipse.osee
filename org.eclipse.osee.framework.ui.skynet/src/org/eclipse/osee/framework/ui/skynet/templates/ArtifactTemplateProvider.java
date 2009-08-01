@@ -70,9 +70,6 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getTemplate(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
-    */
    @Override
    public Artifact getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
       ensureTemplateCachePopulated();
@@ -111,9 +108,6 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       return list;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getApplicabilityRating(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
-    */
    public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
       return ITemplateProvider.DEFAULT_MATCH;
    }

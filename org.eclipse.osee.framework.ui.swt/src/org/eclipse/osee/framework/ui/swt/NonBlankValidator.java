@@ -25,9 +25,6 @@ public class NonBlankValidator implements IInputValidator {
       this.blankErrorMessage = blankErrorMessage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IInputValidator#isValid(java.lang.String)
-    */
    public String isValid(String newText) {
       if (newText == null || newText.length() == 0) {
          return blankErrorMessage;

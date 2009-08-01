@@ -55,8 +55,12 @@ public class BranchImportPage extends WizardDataTransferPage {
     */
    public BranchImportPage(File importResource, Branch destinationBranch) {
       super(PAGE_NAME);
-      if (importResource == null) throw new IllegalArgumentException("importResource can not be null");
-      if (destinationBranch == null) throw new IllegalArgumentException("destinationBranch can not be null");
+      if (importResource == null) {
+         throw new IllegalArgumentException("importResource can not be null");
+      }
+      if (destinationBranch == null) {
+         throw new IllegalArgumentException("destinationBranch can not be null");
+      }
 
       //      Assert.isNotNull(importResource, "importResource");
       //      Assert.isNotNull(reuseRootArtifact, "reuseRootArtifact");
@@ -93,9 +97,7 @@ public class BranchImportPage extends WizardDataTransferPage {
       this.destinationBranch = selectedBranch;
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -166,6 +168,7 @@ public class BranchImportPage extends WizardDataTransferPage {
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -179,6 +182,7 @@ public class BranchImportPage extends WizardDataTransferPage {
       return fileSelector.validate(this) && (chkIncludeDescendantBranches.getSelection() || chkIncludeMainLevelBranch.getSelection());
    }
 
+   @Override
    protected void createOptionsGroup(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Destination");
@@ -196,28 +200,23 @@ public class BranchImportPage extends WizardDataTransferPage {
 
       if (destinationBranch != null) {
 
-      try {
-         int defaultBranchIndex = 0;
-         for (Branch branch : BranchManager.getNormalBranches()) {
-            branchList.add(branch.getName());
-            branchList.setData(branch.getName(), branch);
-            if (branch.equals(destinationBranch)) {
-               branchList.select(defaultBranchIndex);
-            } else {
-               defaultBranchIndex++;
+         try {
+            int defaultBranchIndex = 0;
+            for (Branch branch : BranchManager.getNormalBranches()) {
+               branchList.add(branch.getName());
+               branchList.setData(branch.getName(), branch);
+               if (branch.equals(destinationBranch)) {
+                  branchList.select(defaultBranchIndex);
+               } else {
+                  defaultBranchIndex++;
+               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return true;

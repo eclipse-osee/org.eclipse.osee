@@ -100,12 +100,6 @@ public class PurgeTransactionJob extends Job {
       this(true, txIdsToDelete);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @seeorg.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.
-    * IProgressMonitor)
-    */
    @Override
    protected IStatus run(final IProgressMonitor monitor) {
       IStatus returnStatus = Status.CANCEL_STATUS;
@@ -131,12 +125,6 @@ public class PurgeTransactionJob extends Job {
          this.monitor = monitor;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @seeorg.eclipse.osee.framework.db.connection.core.transaction.
-       * AbstractDbTxTemplate#handleTxWork()
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          TransactionJoinQuery txsToDeleteQuery = JoinUtility.createTransactionJoinQuery();

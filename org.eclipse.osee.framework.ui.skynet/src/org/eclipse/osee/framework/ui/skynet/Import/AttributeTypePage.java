@@ -42,9 +42,7 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
       hasDescriptors = false;
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NULL);
       composite.setLayout(new GridLayout(1, false));
@@ -60,8 +58,8 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -74,6 +72,7 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -82,6 +81,7 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
       }
    }
 
+   @Override
    protected void createOptionsGroup(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Attribute Types");
@@ -100,8 +100,7 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
     * @param descriptors the descriptors to set
     */
    public void setDescriptors(Collection<AttributeType> descriptors) {
-      java.util.List<AttributeType> sortedDescriptors =
-            new ArrayList<AttributeType>(descriptors);
+      java.util.List<AttributeType> sortedDescriptors = new ArrayList<AttributeType>(descriptors);
       Collections.sort(sortedDescriptors, new Comparator<AttributeType>() {
          public int compare(AttributeType o1, AttributeType o2) {
             return o1.getName().compareToIgnoreCase(o2.getName());

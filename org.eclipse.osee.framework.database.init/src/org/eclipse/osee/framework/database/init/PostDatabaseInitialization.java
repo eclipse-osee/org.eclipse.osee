@@ -25,9 +25,6 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
    private static final String ORACLE_GATHER_STATS =
          "begin DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE); end;";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
-    */
    @Override
    public void run() throws OseeCoreException {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");

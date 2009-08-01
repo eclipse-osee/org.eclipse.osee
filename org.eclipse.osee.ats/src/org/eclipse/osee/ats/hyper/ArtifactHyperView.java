@@ -300,40 +300,18 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener#perspectiveActivated(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor)
-    */
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       handleWindowChange();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener#perspectiveChanged(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor, java.lang.String)
-    */
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
       handleWindowChange();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener2#perspectiveChanged(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor, org.eclipse.ui.IWorkbenchPartReference,
-    *      java.lang.String)
-    */
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       handleWindowChange();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (sender.isRemote())
@@ -344,9 +322,6 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                clear();
@@ -355,9 +330,6 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       }
       if (transData.isRelAddedChangedDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                display();

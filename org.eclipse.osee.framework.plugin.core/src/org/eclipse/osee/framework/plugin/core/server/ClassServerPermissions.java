@@ -27,20 +27,10 @@ public class ClassServerPermissions extends PermissionCollection {
       list = new ArrayList<Permission>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.security.PermissionCollection#add(java.security.Permission)
-    */
    public void add(Permission permission) {
       list.add(permission);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.security.PermissionCollection#implies(java.security.Permission)
-    */
    public boolean implies(Permission permission) {
       for (int i = 0; i < list.size(); i++) {
          if (list.get(i).implies(permission)) return true;
@@ -48,11 +38,6 @@ public class ClassServerPermissions extends PermissionCollection {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.security.PermissionCollection#elements()
-    */
    public Enumeration<Permission> elements() {
       return null;
    }

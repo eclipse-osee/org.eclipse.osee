@@ -76,9 +76,6 @@ public class TestRunXViewerFactory extends SkynetXViewerFactory {
       registerColumns(DISPOSITION);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getDefaultTableCustomizeData()
-    */
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();

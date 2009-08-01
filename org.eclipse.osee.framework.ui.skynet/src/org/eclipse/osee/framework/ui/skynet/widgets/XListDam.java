@@ -46,9 +46,6 @@ public class XListDam extends XList implements IArtifactWidget {
       return artifact.getAttributesToStringList(attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       try {
@@ -63,9 +60,6 @@ public class XListDam extends XList implements IArtifactWidget {
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);

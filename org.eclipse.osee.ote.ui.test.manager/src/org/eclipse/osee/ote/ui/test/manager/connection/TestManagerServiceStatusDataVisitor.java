@@ -56,14 +56,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asCommandAdded
-    * (org.eclipse.osee.ote.core.environment.status.CommandAdded)
-    */
    public void asCommandAdded(final CommandAdded commandAdded) {
       executor.submit(new StatusBoardRecieveEvent<CommandAdded>(commandAdded) {
          @Override
@@ -80,14 +72,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asCommandRemoved
-    * (org.eclipse.osee.ote.core.environment.status.CommandRemoved)
-    */
    public void asCommandRemoved(final CommandRemoved commandRemoved) {
       executor.submit(new StatusBoardRecieveEvent<CommandRemoved>(commandRemoved) {
          @Override
@@ -111,14 +95,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asEnvironementError
-    * (org.eclipse.osee.ote.core.environment.status.EnvironmentError)
-    */
    public void asEnvironmentError(final EnvironmentError environmentError) {
       executor.submit(new StatusBoardRecieveEvent<EnvironmentError>(environmentError) {
          @Override
@@ -136,14 +112,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asSequentialCommandBegan
-    * (org.eclipse.osee.ote.core.environment.status.SequentialCommandBegan)
-    */
    public void asSequentialCommandBegan(final SequentialCommandBegan sequentialCommandBegan) {
       executor.submit(new StatusBoardRecieveEvent<SequentialCommandBegan>(sequentialCommandBegan) {
          @Override
@@ -163,14 +131,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asSequentialCommandEnded
-    * (org.eclipse.osee.ote.core.environment.status.SequentialCommandEnded)
-    */
    public void asSequentialCommandEnded(final SequentialCommandEnded sequentialCommandEnded) {
 
       executor.submit(new StatusBoardRecieveEvent<SequentialCommandEnded>(sequentialCommandEnded) {
@@ -216,14 +176,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asTestPointUpdate
-    * (org.eclipse.osee.ote.core.environment.status.TestPointUpdate)
-    */
    public void asTestPointUpdate(final TestPointUpdate testPointUpdate) {
       executor.submit(new StatusBoardRecieveEvent<TestPointUpdate>(testPointUpdate) {
          @Override
@@ -289,14 +241,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       // }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asTestServerCommandComplete
-    * (org.eclipse.osee.ote.core.environment.status.TestServerCommandComplete)
-    */
    public void asTestServerCommandComplete(final TestServerCommandComplete end) {
 
       executor.submit(new StatusBoardRecieveEvent<TestServerCommandComplete>(end) {
@@ -322,14 +266,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asTestComplete
-    * (org.eclipse.osee.ote.core.environment.status.TestComplete)
-    */
    public void asTestComplete(final TestComplete testComplete) {
       executor.submit(new StatusBoardRecieveEvent<TestComplete>(testComplete) {
          @Override
@@ -396,13 +332,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       logExecutorSize();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor
-    * #asTestStart(org.eclipse.osee.ote.core.environment.status.TestStart)
-    */
    public void asTestStart(final TestStart testStart) {
       executor.submit(new StatusBoardRecieveEvent<TestStart>(testStart) {
          @Override

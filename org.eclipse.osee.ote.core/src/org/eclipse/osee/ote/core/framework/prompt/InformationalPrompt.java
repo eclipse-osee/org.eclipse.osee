@@ -51,9 +51,6 @@ public class InformationalPrompt extends AbstractRemotePrompt {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.AbstractRemotePrompt#close()
-    */
    @Override
    public void close() {
       

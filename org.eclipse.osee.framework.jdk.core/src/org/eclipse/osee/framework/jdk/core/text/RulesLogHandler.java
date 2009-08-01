@@ -66,11 +66,6 @@ public class RulesLogHandler extends Handler {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
-    */
    public void publish(LogRecord logRecord) {
       if (!isLoggable(logRecord)) {
          return;
@@ -84,20 +79,10 @@ public class RulesLogHandler extends Handler {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.util.logging.Handler#close()
-    */
    public void close() throws SecurityException {
       writeOutFile();
    }
 
-   /*
-    * (non-Javadoc) don't call this method
-    * 
-    * @see java.util.logging.Handler#flush()
-    */
    public void flush() {
       throw new UnsupportedOperationException();
    }

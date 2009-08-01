@@ -36,11 +36,6 @@ public class OseeMainDictionary implements IOseeDictionary {
       return sortedDict;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary#isWord(java.lang.String)
-    */
    public boolean isWord(String word) {
       if (dict == null) loadDictionary();
       boolean contains = dict.contains(word);

@@ -23,9 +23,6 @@ public class XBranchTextFilter extends XViewerTextFilter {
       super(viewer);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerTextFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-    */
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       if (element instanceof TransactionId) {

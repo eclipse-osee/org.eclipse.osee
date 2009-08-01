@@ -90,9 +90,6 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
       return EMPTY_ARR;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.search.ui.text.AbstractTextSearchResult#getFileMatchAdapter()
-    */
    @Override
    public IFileMatchAdapter getFileMatchAdapter() {
       return null;

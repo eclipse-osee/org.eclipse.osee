@@ -73,11 +73,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
       super("History");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
@@ -222,11 +217,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
       return xHistoryViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return xHistoryViewer.getInput();
@@ -275,25 +265,16 @@ public class XHistoryWidget extends XWidget implements IActionable {
       Jobs.startJob(job);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
@@ -329,9 +310,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();

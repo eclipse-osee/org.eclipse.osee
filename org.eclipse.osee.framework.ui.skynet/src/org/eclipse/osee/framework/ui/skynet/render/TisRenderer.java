@@ -40,9 +40,6 @@ public class TisRenderer extends WordTemplateRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-    */
    @Override
    public TisRenderer newInstance() throws OseeCoreException {
       return new TisRenderer();
@@ -55,9 +52,6 @@ public class TisRenderer extends WordTemplateRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -69,21 +63,11 @@ public class TisRenderer extends WordTemplateRenderer {
       return commandIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.WordRenderer#getName()
-    */
    @Override
    public String getName() {
       return "MS Word TIS Preview";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String,
-    *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
-    */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       if (PresentationType.GENERALIZED_EDIT == presentationType) {

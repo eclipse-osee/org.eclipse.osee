@@ -37,9 +37,6 @@ public class OpenArtifactExplorerHandler extends AbstractHandler {
       return Collections.emptyList();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       List<Branch> branches = getSelectedBranches();

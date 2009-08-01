@@ -64,9 +64,6 @@ public class SMATaskInfoComposite extends Composite {
       // If ATS Admin, allow right-click to auto-complete tasks
       if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
-            /* (non-Javadoc)
-                         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                         */
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {

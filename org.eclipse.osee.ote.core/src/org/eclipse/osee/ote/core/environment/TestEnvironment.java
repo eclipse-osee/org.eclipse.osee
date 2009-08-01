@@ -296,11 +296,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return factory.getScriptControl();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.environment.jini.TestEnvironment#getScriptOutfile(java.lang.String)
-    */
    public byte[] getScriptOutfile(String filepath) throws RemoteException {
       try {
          File file = new File(filepath);

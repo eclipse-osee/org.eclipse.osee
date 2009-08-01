@@ -72,19 +72,11 @@ public class PasteHandler extends AbstractHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isHandled()
-    */
    @Override
    public boolean isHandled() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       return true;

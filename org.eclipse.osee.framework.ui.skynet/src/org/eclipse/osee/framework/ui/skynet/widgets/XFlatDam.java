@@ -74,9 +74,6 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
       setPageRange(minOccurrence, maxOccurrence);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XStackedWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
@@ -131,9 +128,6 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
       return artifact.getAttributesToStringList(attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       try {
@@ -148,17 +142,11 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
-    */
    @Override
    public void saveToArtifact() throws OseeCoreException {
       artifact.setAttributeValues(attributeTypeName, getInput());
@@ -181,9 +169,6 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
       xWidgets.remove(id);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
-    */
    @Override
    public IStatus isValid() {
       for (XWidget widget : xWidgets.values()) {
@@ -195,9 +180,6 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
       return Status.OK_STATUS;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#validate()
-    */
    @Override
    public void validate() {
       for (String id : getPageIds()) {
@@ -292,9 +274,6 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
          return styleBase | (fillVertically ? SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
-       */
       @Override
       public void createControls(Composite parent, int horizontalSpan, boolean fillText) {
          super.createControls(parent, horizontalSpan, fillText);

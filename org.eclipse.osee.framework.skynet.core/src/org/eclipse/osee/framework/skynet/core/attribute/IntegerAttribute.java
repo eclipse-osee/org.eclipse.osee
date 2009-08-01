@@ -17,26 +17,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Ryan D. Brooks
  */
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
    @Override
    public Integer getValue() throws NumberFormatException, OseeCoreException {
       String integerString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(integerString) ? Integer.valueOf(integerString) : null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(Integer value) throws OseeCoreException {
       return getAttributeDataProvider().setValue(Integer.toString(value));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected Integer convertStringToValue(String value) throws OseeCoreException {
       if (value == null || value.equals("")) {

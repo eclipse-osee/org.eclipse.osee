@@ -122,11 +122,6 @@ public class XList extends XWidget {
       listMenu = null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return listList;
@@ -478,9 +473,6 @@ public class XList extends XWidget {
       if (listList != null) listList.removeAll();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return getSelected();

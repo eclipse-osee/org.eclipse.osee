@@ -49,9 +49,6 @@ public class EntryCheckDialog extends EntryDialog {
       this.checkBoxMessage = checkBoxMessage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected void createExtendedArea(Composite parent) {
 

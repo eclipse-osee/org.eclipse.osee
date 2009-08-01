@@ -42,11 +42,6 @@ public class RevertArtifactHandler extends AbstractHandler {
    public RevertArtifactHandler() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       // This is serious stuff, make sure the user understands the impact.

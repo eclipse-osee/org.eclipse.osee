@@ -29,9 +29,6 @@ public class XmlStraightener extends Rule {
       super(outExtension);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.text.Rule#computeChanges(java.lang.CharSequence)
-    */
    @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);

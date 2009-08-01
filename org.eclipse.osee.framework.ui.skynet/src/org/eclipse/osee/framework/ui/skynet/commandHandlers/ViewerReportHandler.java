@@ -28,11 +28,6 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ViewerReportHandler extends AbstractHandler {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (HandlerUtil.getActivePartChecked(event) instanceof ViewPart) {

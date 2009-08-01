@@ -83,9 +83,6 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       cancelled = false;
       if (performUi) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             public void run() {
                try {
                   performUI(searchType);

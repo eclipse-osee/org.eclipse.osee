@@ -46,11 +46,6 @@ public class RevertWizard extends Wizard {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#getStartingPage()
-    */
    @Override
    public IWizardPage getStartingPage() {
       return getPage(revertWizardPage.TITLE);
@@ -61,11 +56,6 @@ public class RevertWizard extends Wizard {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performCancel()
-    */
    @Override
    public boolean performCancel() {
       return super.performCancel();

@@ -40,9 +40,6 @@ public class RelationPropertySource extends ModelPropertySource {
       idOrdered = new PropertyId(categoryName, "Is Ordered");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.views.property.AbstractPropertySource#addPropertyDescriptors(java.util.List)
-    */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new StringPropertyDescriptor(idSideAName));
@@ -57,17 +54,11 @@ public class RelationPropertySource extends ModelPropertySource {
       return (RelationDataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertyResettable(java.lang.Object)
-    */
    @Override
    public boolean isPropertyResettable(Object id) {
       return id == idSideAName || id == idSideBName || id == idAToBPhrase || id == idBToAPhrase || id == idShortName || id == idOrdered;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertySet(java.lang.Object)
-    */
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idSideAName) return getDataTypeElement().getSideAName() != null;
@@ -81,9 +72,6 @@ public class RelationPropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-    */
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idSideAName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getSideAName());
@@ -95,9 +83,6 @@ public class RelationPropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-    */
    @Override
    public void resetPropertyValue(Object id) {
       if (id == idSideAName) getDataTypeElement().setSideAName(null);
@@ -108,9 +93,6 @@ public class RelationPropertySource extends ModelPropertySource {
       if (id == idOrdered) getDataTypeElement().setOrdered(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-    */
    @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idSideAName) getDataTypeElement().setSideAName(StringPropertyDescriptor.toModel(value));

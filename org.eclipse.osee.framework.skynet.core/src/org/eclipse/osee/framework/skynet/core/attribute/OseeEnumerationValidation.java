@@ -21,26 +21,17 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
  */
 public class OseeEnumerationValidation implements IOseeValidator {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.validation.IOseeValidator#getQualityOfService()
-    */
    @Override
    public int getQualityOfService() {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.validation.IOseeValidator#isApplicable(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.skynet.core.attribute.AttributeType)
-    */
    @Override
    public boolean isApplicable(Artifact artifact, AttributeType attributeType) {
       Class<?> baseClass = attributeType.getBaseAttributeClass();
       return EnumeratedAttribute.class.isAssignableFrom(baseClass);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.validation.IOseeValidator#validate(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.Object)
-    */
    @Override
    public IStatus validate(Artifact artifact, AttributeType attributeType, Object proposedObject) throws OseeCoreException {
       String text = (String) proposedObject;

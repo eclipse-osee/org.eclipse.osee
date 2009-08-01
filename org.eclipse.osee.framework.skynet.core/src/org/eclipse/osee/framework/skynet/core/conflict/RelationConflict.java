@@ -39,17 +39,11 @@ public class RelationConflict extends Conflict {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#clearAttributeValue()
-    */
    @Override
    public boolean clearValue() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
-    */
    public ConflictStatus computeStatus() {
       return null;
    }
@@ -58,96 +52,60 @@ public class RelationConflict extends Conflict {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getChangeItem()
-    */
    @Override
    public String getChangeItem() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getConflictType()
-    */
    @Override
    public ConflictType getConflictType() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getDestDisplayData()
-    */
    @Override
    public String getDestDisplayData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeDisplayData()
-    */
    @Override
    public String getMergeDisplayData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeValue()
-    */
    public String getMergeValue() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getSourceDisplayData()
-    */
    @Override
    public String getSourceDisplayData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsDestination()
-    */
    @Override
    public boolean mergeEqualsDestination() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsSource()
-    */
    @Override
    public boolean mergeEqualsSource() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setAttributeToDest()
-    */
    @Override
    public boolean setToDest() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setAttributeToSource()
-    */
    @Override
    public boolean setToSource() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#sourceEqualsDestination()
-    */
    @Override
    public boolean sourceEqualsDestination() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class adapter) {
       return null;
@@ -157,9 +115,6 @@ public class RelationConflict extends Conflict {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
-    */
    @Override
    public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
       return false;

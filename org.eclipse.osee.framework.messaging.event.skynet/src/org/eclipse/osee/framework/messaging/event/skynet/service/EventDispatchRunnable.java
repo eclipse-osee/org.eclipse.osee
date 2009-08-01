@@ -34,9 +34,6 @@ public class EventDispatchRunnable implements Runnable {
       this.toSend = toSend;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    @Override
    public void run() {
       for (ISkynetEventListener listener : toSend.keySet()) {

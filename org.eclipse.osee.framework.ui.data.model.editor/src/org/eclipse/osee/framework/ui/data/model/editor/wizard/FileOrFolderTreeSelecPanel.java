@@ -253,11 +253,6 @@ public class FileOrFolderTreeSelecPanel extends Composite {
          return EMPTY;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-       */
       public Object getParent(Object element) {
          if (element instanceof IFileStore) {
             return ((IFileStore) element).getParent();
@@ -288,11 +283,6 @@ public class FileOrFolderTreeSelecPanel extends Composite {
       private static final Image IMG_FILE =
             PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-       */
       public Image getImage(Object element) {
          if (element instanceof IFileStore) {
             IFileStore curr = (IFileStore) element;
@@ -304,11 +294,6 @@ public class FileOrFolderTreeSelecPanel extends Composite {
          return null;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-       */
       public String getText(Object element) {
          if (element instanceof IFileStore) {
             return ((IFileStore) element).getName();

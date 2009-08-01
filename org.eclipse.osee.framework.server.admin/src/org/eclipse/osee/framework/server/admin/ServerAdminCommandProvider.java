@@ -70,11 +70,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       adminCommands.stopAttributeURItoGuidChange(ci);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osgi.framework.console.CommandProvider#getHelp()
-    */
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();

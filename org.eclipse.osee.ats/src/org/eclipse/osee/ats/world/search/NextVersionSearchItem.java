@@ -79,11 +79,6 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       return selectedTeamDef;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#performSearch()
-    */
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled())
@@ -129,9 +124,6 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       this.selectedTeamDef = selectedTeamDef;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new NextVersionSearchItem(this);

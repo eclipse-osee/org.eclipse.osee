@@ -46,9 +46,6 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       return targetMetadataMap.get(source);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#startElementFound(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       try {
@@ -73,9 +70,6 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#endElementFound(java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
       try {

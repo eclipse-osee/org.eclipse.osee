@@ -82,11 +82,6 @@ public class XListViewer extends XWidget {
       listMenu = null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return listViewer.getControl();

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2005 Donald G. Dunne and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* All rights reserved. This program and the accompanying materials
+ï¿½* are made available under the terms of the Eclipse Public License v1.0
+ï¿½* which accompanies this distribution, and is available at
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.model.commands;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -50,9 +50,6 @@ public class ShapeSetConstraintCommand extends Command {
       setLabel("move / resize");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#canExecute()
-    */
    @Override
    public boolean canExecute() {
       Object type = request.getType();
@@ -60,27 +57,18 @@ public class ShapeSetConstraintCommand extends Command {
       return (RequestConstants.REQ_MOVE.equals(type) || RequestConstants.REQ_MOVE_CHILDREN.equals(type) || RequestConstants.REQ_RESIZE.equals(type) || RequestConstants.REQ_RESIZE_CHILDREN.equals(type));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#execute()
-    */
    @Override
    public void execute() {
       oldBounds = new Rectangle(shape.getLocation(), shape.getSize());
       redo();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#redo()
-    */
    @Override
    public void redo() {
       shape.setSize(newBounds.getSize());
       shape.setLocation(newBounds.getLocation());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.commands.Command#undo()
-    */
    @Override
    public void undo() {
       shape.setSize(oldBounds.getSize());

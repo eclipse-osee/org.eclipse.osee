@@ -61,9 +61,6 @@ public class WorkPageShape extends RectangleShape {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.Shape#setWorkflowDiagram(org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram)
-    */
    @Override
    public void setWorkflowDiagram(WorkflowDiagram workflowDiagram) {
       super.setWorkflowDiagram(workflowDiagram);
@@ -126,9 +123,6 @@ public class WorkPageShape extends RectangleShape {
       return workPageDefinition;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
-    */
    @Override
    public Result validForSave() throws OseeCoreException {
       try {
@@ -188,9 +182,6 @@ public class WorkPageShape extends RectangleShape {
       return (String) getPropertyValue(WorkItemAttributes.WORK_ID.getAttributeTypeName());
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof WorkPageShape) {
@@ -199,17 +190,11 @@ public class WorkPageShape extends RectangleShape {
       return super.equals(obj);
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return getId().hashCode();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Shape#setPropertyValue(java.lang.Object, java.lang.Object)
-    */
    @Override
    public void setPropertyValue(Object propertyId, Object value) {
       try {
@@ -236,9 +221,6 @@ public class WorkPageShape extends RectangleShape {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       String name = (String) getPropertyValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName());

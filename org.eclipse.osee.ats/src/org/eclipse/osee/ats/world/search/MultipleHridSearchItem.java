@@ -124,9 +124,6 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       return resultAtsArts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#getName()
-    */
    @Override
    public String getName() throws OseeCoreException {
       return super.getName() + (includeArtIds ? " (include ArtIds)" : "");
@@ -177,9 +174,6 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       return enteredIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new MultipleHridSearchItem(this);

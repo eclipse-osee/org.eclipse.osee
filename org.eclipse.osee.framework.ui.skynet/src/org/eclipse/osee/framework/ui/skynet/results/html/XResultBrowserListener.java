@@ -40,11 +40,6 @@ public class XResultBrowserListener implements LocationListener {
       super();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.swt.browser.LocationListener#changing(org.eclipse.swt.browser.LocationEvent)
-    */
    public void changing(LocationEvent event) {
       try {
          String location = event.location;
@@ -95,11 +90,6 @@ public class XResultBrowserListener implements LocationListener {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.swt.browser.LocationListener#changed(org.eclipse.swt.browser.LocationEvent)
-    */
    public void changed(LocationEvent event) {
    }
 

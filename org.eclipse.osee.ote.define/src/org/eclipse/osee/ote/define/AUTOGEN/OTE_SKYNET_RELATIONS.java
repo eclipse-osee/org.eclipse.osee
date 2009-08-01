@@ -56,9 +56,6 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
       return link.getRelationType().getTypeName().equals(typeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSide()
-    */
    @Override
    public RelationSide getSide() {
       return relationSide;

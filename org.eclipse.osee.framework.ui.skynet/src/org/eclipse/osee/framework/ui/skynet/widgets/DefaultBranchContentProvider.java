@@ -62,16 +62,10 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
       return provider.getElements(branch);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }

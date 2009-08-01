@@ -110,9 +110,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       this.built = false;
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -273,9 +271,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       final ArtifactImportPage page = this;
       branchSelectComposite.addListener(new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             populateTypeList(branchSelectComposite.getSelectedBranch());
@@ -284,9 +279,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
-    */
    @Override
    public boolean canFlipToNextPage() {
       return super.canFlipToNextPage() && branchSelectComposite.getSelectedBranch() != null;
@@ -345,11 +337,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return true;

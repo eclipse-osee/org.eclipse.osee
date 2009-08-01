@@ -46,9 +46,6 @@ public class BundleResourceFinder extends ResourceFinder {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.plugin.core.server.ResourceFinder#dispose()
-    */
    public void dispose() {
       bundles.clear();
    }

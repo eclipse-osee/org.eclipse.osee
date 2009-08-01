@@ -69,11 +69,6 @@ public class SimulatedTime extends TimerControl {
       cycleCount = 0;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.environment.TestEnvironment#getEnvTime()
-    */
    public long getEnvTime() {
       return (long) (cycleCount * (1000.0 / EnvironmentTask.cycleResolution));
    }

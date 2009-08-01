@@ -40,11 +40,6 @@ import org.eclipse.ui.PlatformUI;
 public class PurgeArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (MessageDialog.openConfirm(

@@ -69,11 +69,6 @@ public class CreateActionArtifactChangeReportJob extends Job {
          final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
          final String title = jobName;
          Displays.ensureInDisplayThread(new Runnable() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.lang.Runnable#run()
-             */
             public void run() {
                Result result = (new HtmlExportTable(title, html, true, false)).exportCsv();
                if (result.isFalse()) {

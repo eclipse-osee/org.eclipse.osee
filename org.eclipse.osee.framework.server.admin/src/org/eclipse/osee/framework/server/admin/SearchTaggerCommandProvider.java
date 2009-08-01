@@ -65,11 +65,6 @@ public class SearchTaggerCommandProvider implements CommandProvider {
       searchTaggerCommands.stopTagItem(ci);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osgi.framework.console.CommandProvider#getHelp()
-    */
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();

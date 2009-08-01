@@ -62,9 +62,6 @@ public class OteOutfileParser extends BaseOutfileParser {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.define.parser.BaseOutfileParser#doParse(org.eclipse.core.runtime.IProgressMonitor, java.lang.String, java.io.InputStream)
-    */
    @Override
    protected void doParse(IProgressMonitor monitor, String fileName, InputStream inputStream) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
@@ -73,9 +70,6 @@ public class OteOutfileParser extends BaseOutfileParser {
       xmlReader.parse(new InputSource(inputStream));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.define.parser.BaseOutfileParser#isValidParser(java.net.URL)
-    */
    @Override
    public boolean isValidParser(URL fileToParse) {
       boolean result = false;

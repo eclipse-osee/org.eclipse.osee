@@ -22,30 +22,18 @@ public class BaseTestRunListenerDataProvider implements ITestRunListenerDataProv
       return new BaseEvent(properties, test, testCase);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerDataProvider#createOnPostRun(org.eclipse.osee.ote.core.framework.data.IPropertyStore, org.eclipse.osee.ote.core.TestScript)
-    */
    public IEventData createOnPostRun(IPropertyStore propertyStore, TestScript test) {
       return new BaseEvent(propertyStore, test);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerDataProvider#createOnPostTestCase(org.eclipse.osee.ote.core.framework.data.IPropertyStore, org.eclipse.osee.ote.core.TestScript, org.eclipse.osee.ote.core.TestCase)
-    */
    public IEventData createOnPostTestCase(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
       return new BaseEvent(propertyStore, test, testCase);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerDataProvider#createOnPreRun(org.eclipse.osee.ote.core.framework.data.IPropertyStore, org.eclipse.osee.ote.core.TestScript)
-    */
    public IEventData createOnPreRun(IPropertyStore propertyStore, TestScript test) {
       return new BaseEvent(propertyStore, test);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerDataProvider#createOnPreTestCase(org.eclipse.osee.ote.core.framework.data.IPropertyStore, org.eclipse.osee.ote.core.TestScript, org.eclipse.osee.ote.core.TestCase)
-    */
    public IEventData createOnPreTestCase(IPropertyStore propertyStore, TestScript test, TestCase testCase) {
       return new BaseEvent(propertyStore, test, testCase);
    }

@@ -30,10 +30,6 @@ public class CoreServerActivator implements BundleActivator {
    private static List<ServiceRegistration> services;
    private static CoreServerActivator instance;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
       services = new ArrayList<ServiceRegistration>();
@@ -57,10 +53,6 @@ public class CoreServerActivator implements BundleActivator {
       scheduledServerTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
 
       if (applicationManagerTracker != null) {

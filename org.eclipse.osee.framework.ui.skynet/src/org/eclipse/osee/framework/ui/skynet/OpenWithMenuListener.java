@@ -57,16 +57,10 @@ public class OpenWithMenuListener implements MenuListener {
       this.rebuildMenuListener = rebuildMenuListener;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.events.MenuListener#menuHidden(org.eclipse.swt.events.MenuEvent)
-    */
    @Override
    public void menuHidden(MenuEvent e) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.events.MenuListener#menuShown(org.eclipse.swt.events.MenuEvent)
-    */
    @Override
    public void menuShown(MenuEvent e) {
       try {

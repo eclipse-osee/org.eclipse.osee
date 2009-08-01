@@ -57,9 +57,6 @@ public class TaskMetrics extends AbstractBlam {
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Task Metrics";

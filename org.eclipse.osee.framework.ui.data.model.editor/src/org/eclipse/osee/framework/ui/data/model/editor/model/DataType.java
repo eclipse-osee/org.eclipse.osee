@@ -85,9 +85,6 @@ public class DataType extends NodeModel {
       this.uniqueId = typeId;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof DataType) {
@@ -106,9 +103,6 @@ public class DataType extends NodeModel {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return super.hashCode();

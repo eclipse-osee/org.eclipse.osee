@@ -28,17 +28,11 @@ public class PassFailPromptImpl extends AbstractInteractivePrompt<PassFailPrompt
       super(connector, script, id, message);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.BasicRemotePrompt#doPrompt(org.eclipse.osee.ote.core.IUserSession, org.eclipse.osee.ote.core.TestScript)
-    */
    @Override
    public void doPrompt() throws Exception {
       getScript().getUserSession().initiatePassFailPrompt(createRemoteReference(IPassFailPromptResponse.class));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse#respond(boolean)
-    */
    public void respond(boolean pass, String text) throws RemoteException {
       endPrompt(new PassFailPromptResult(pass, text), null);
    }

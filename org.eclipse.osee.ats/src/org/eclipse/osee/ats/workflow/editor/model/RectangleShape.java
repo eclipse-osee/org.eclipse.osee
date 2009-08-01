@@ -30,9 +30,6 @@ public class RectangleShape extends Shape {
       setSize(new Dimension(100, 50));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
-    */
    @Override
    public Result validForSave() throws OseeCoreException {
       return Result.TrueResult;
@@ -43,25 +40,16 @@ public class RectangleShape extends Shape {
       return ImageManager.getImage(FrameworkImage.RECTANGLE_16);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Shape#getName()
-    */
    @Override
    protected String getName() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Shape#getToolTip()
-    */
    @Override
    protected String getToolTip() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

@@ -61,11 +61,6 @@ public class XMembersCombo extends XWidget {
       this(displayLabel, xmlRoot, "");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return dataCombo;

@@ -58,11 +58,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
@@ -71,11 +66,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       OseeEventManager.addListener(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView#createActions()
-    */
    @Override
    protected void createActions() {
       IActionBars bars = getViewSite().getActionBars();
@@ -223,33 +213,14 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener#perspectiveActivated(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor)
-    */
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       processWindowActivated();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener#perspectiveChanged(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor, java.lang.String)
-    */
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
       processWindowActivated();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IPerspectiveListener2#perspectiveChanged(org.eclipse.ui.IWorkbenchPage,
-    *      org.eclipse.ui.IPerspectiveDescriptor, org.eclipse.ui.IWorkbenchPartReference,
-    *      java.lang.String)
-    */
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
    }

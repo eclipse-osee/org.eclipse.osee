@@ -56,11 +56,6 @@ public class XNavigateItemAction extends XNavigateItem {
       if (action != null) {
          if (promptFirst) {
             Displays.ensureInDisplayThread(new Runnable() {
-               /*
-                * (non-Javadoc)
-                * 
-                * @see java.lang.Runnable#run()
-                */
                public void run() {
                   if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
                      action.run();

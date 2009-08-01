@@ -15,9 +15,6 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class DemoArtifactImageProvider extends ArtifactImageProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#init()
-    */
    @Override
    public void init() throws OseeCoreException {
       ImageManager.registerBaseImage("Demo Code Team Workflow", DemoImage.DEMO_WORKFLOW);

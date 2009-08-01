@@ -101,9 +101,6 @@ public class AtsMetricsComposite extends ScrolledComposite {
       refresh.setText("Display/Refresh Metrics");
       refresh.setToolTipText("Recalculate and Update Metrics");
       refresh.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {

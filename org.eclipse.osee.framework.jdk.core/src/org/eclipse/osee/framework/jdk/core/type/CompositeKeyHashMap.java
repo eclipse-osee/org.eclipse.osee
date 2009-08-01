@@ -57,9 +57,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
       signleKeyMap.clear();
    }
 
-   /* (non-Javadoc)
-    * @see java.util.Map#containsKey(java.lang.Object)
-    */
    /**
     * Use this method to determine if any puts(keyOne, anything) have occurred
     * 
@@ -139,9 +136,6 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
       }
    }
 
-   /* (non-Javadoc)
-    * @see java.util.Map#remove(java.lang.Object)
-    */
    public Value remove(Object key) {
       throw new UnsupportedOperationException("use removeValues() instead");
    }

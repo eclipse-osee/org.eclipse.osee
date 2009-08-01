@@ -58,9 +58,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       return resultsSection;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormPage#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
@@ -78,9 +75,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#getDynamicWidgetLayoutListener()
-    */
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
@@ -100,9 +94,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#getXWidgetsXml()
-    */
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
@@ -111,9 +102,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.AtsXWidgetActionFormPage#handleSearchButtonPressed()
-    */
    @Override
    public void handleSearchButtonPressed() {
       try {

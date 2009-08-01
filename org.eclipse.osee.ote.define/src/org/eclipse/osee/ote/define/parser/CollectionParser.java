@@ -28,12 +28,6 @@ public class CollectionParser extends AbstractSaxHandler implements ICollectionS
       collectors = new ArrayList<SaxChunkCollector>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.util.io.xml.AbstractSaxHandler#endElementFound(java.lang.String,
-    *      java.lang.String, java.lang.String)
-    */
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
       for (SaxChunkCollector collector : collectors) {
@@ -41,12 +35,6 @@ public class CollectionParser extends AbstractSaxHandler implements ICollectionS
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.util.io.xml.AbstractSaxHandler#startElementFound(java.lang.String,
-    *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       for (SaxChunkCollector collector : collectors) {

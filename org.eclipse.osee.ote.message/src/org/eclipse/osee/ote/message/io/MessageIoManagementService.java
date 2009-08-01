@@ -21,9 +21,6 @@ public class MessageIoManagementService implements IMessageIoManagementService{
    private final Lock lock = new ReentrantLock();
    private boolean ioStarted = false;
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.io.IMessageIoManagementService#install(org.eclipse.osee.ote.message.io.IMessageIoDriver)
-    */
    @Override
    public void install(IMessageIoDriver ioDriver) {
       lock.lock();
@@ -41,9 +38,6 @@ public class MessageIoManagementService implements IMessageIoManagementService{
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.io.IMessageIoManagementService#startIO()
-    */
    @Override
    public void startIO() {
       lock.lock();
@@ -57,9 +51,6 @@ public class MessageIoManagementService implements IMessageIoManagementService{
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.io.IMessageIoManagementService#stopIO()
-    */
    @Override
    public void stopIO() {
       lock.lock();
@@ -71,9 +62,6 @@ public class MessageIoManagementService implements IMessageIoManagementService{
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.io.IMessageIoManagementService#uninstall(org.eclipse.osee.ote.message.io.IMessageIoDriver)
-    */
    @Override
    public void uninstall(IMessageIoDriver ioDriver) {
       lock.lock();

@@ -60,9 +60,6 @@ class TaggerAllWorker extends BaseServerCommand {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       long startTime = System.currentTimeMillis();
@@ -94,11 +91,6 @@ class TaggerAllWorker extends BaseServerCommand {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#setExecutionAllowed(boolean)
-    */
    @Override
    public void setExecutionAllowed(boolean value) {
       super.setExecutionAllowed(value);
@@ -164,12 +156,6 @@ class TaggerAllWorker extends BaseServerCommand {
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onItemTagged(int,
-       *      long, int, long)
-       */
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
          if (queryIdMap.containsKey(queryId)) {
@@ -180,12 +166,6 @@ class TaggerAllWorker extends BaseServerCommand {
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagWorkerEnd(int,
-       *      long)
-       */
       @Override
       synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
          TagQueueJoinQuery joinQuery = this.queryIdMap.get(queryId);

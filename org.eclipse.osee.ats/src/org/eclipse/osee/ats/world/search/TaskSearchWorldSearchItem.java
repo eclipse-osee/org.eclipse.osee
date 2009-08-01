@@ -76,9 +76,6 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       super("Task Search");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.TaskEditorParameterSearchItem#getParameterXWidgetXml()
-    */
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
@@ -96,9 +93,6 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       "</xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.TaskEditorParameterSearchItem#getTaskEditorTaskArtifacts()
-    */
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
       List<Artifact> workflows = new ArrayList<Artifact>();
@@ -186,9 +180,6 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return tasks;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.TaskEditorParameterSearchItem#isParameterSelectionValid()
-    */
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
       if (getSelectedUser() != null && isIncludeCompletedCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0) {
@@ -208,17 +199,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return Result.TrueResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#getTableLoadOptions()
-    */
    @Override
    public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
@@ -241,23 +226,14 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return "Tasks" + sb.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#createXWidgetLayoutData(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData, org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#widgetCreating(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       if (widget.getLabel().equals("Group(s)")) {
@@ -375,32 +351,20 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (groupWidget != null) groupWidget.handleClear();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
    @Override
    public TaskSearchWorldSearchItem copy() {
       return new TaskSearchWorldSearchItem(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#copyProvider()
-    */
    @Override
    public ITaskEditorProvider copyProvider() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#setCustomizeData(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData)
-    */
    @Override
    public void setCustomizeData(CustomizeData customizeData) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#setTableLoadOptions(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
-    */
    @Override
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
    }

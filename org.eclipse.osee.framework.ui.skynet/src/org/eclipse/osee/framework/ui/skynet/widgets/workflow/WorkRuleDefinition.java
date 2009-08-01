@@ -56,18 +56,12 @@ public class WorkRuleDefinition extends WorkItemDefinition {
       loadWorkDataKeyValueMap(artifact);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition#toArtifact()
-    */
    @Override
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact ruleArt = super.toArtifact(writeType);
       return ruleArt;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition#getArtifactTypeName()
-    */
    @Override
    public String getArtifactTypeName() {
       return ARTIFACT_NAME;

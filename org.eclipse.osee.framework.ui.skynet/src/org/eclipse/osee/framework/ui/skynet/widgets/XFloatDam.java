@@ -63,9 +63,6 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       Double enteredValue = getFloat();
@@ -76,9 +73,6 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);

@@ -32,16 +32,10 @@ public class AbstractRemotePrompt implements IPromptHandle {
       this.message = message;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IPromptHandle#getPromptId()
-    */
    public String getPromptId() throws RemoteException {
       return id;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IPromptHandle#getPromptMessage()
-    */
    public String getPromptMessage() throws RemoteException {
       return message;
    }

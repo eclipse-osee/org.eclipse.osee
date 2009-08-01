@@ -49,16 +49,10 @@ public class MethodResultImpl implements IMethodResult {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.framework.IMethodResult#getReturnCode()
-	 */
 	public ReturnCode getReturnCode() {
 		return returnCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.framework.IMethodResult#getStatus()
-	 */
 	public List<IHealthStatus> getStatus() {
 		return statuses;
 	}

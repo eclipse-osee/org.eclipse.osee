@@ -44,9 +44,6 @@ public class HistoricalTestRunData implements ITestRunReport {
       this.runsByName = new TreeSet<String>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#gatherData(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.ote.define.artifacts.TestRunOperator[])
-    */
    public void gatherData(IProgressMonitor monitor, TestRunOperator... artifacts) throws Exception {
       clear();
       for (TestRunOperator operator : artifacts) {
@@ -66,9 +63,6 @@ public class HistoricalTestRunData implements ITestRunReport {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getBody()
-    */
    public String[][] getBody() {
       String[][] toReturn = new String[runByCollection.size() + 1][getHeader().length];
       int index = 0;
@@ -119,16 +113,10 @@ public class HistoricalTestRunData implements ITestRunReport {
       return header.toArray(new String[header.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getDescription()
-    */
    public String getDescription() {
       return "Creates a table of run results by date.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getHeader()
-    */
    public String[] getHeader() {
       List<String> header = new ArrayList<String>();
       header.add(DATE_HEADER);
@@ -141,16 +129,10 @@ public class HistoricalTestRunData implements ITestRunReport {
       return header.toArray(new String[header.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getTitle()
-    */
    public String getTitle() {
       return "Test Run Historical Trend";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#clear()
-    */
    @Override
    public void clear() {
       this.runByCollection.clear();

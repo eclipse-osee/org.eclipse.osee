@@ -65,9 +65,6 @@ public class ByteColumnLabelProvider extends ColumnLabelProvider {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ColumnLabelProvider#getFont(java.lang.Object)
-    */
    @Override
    public Font getFont(Object element) {
       return font;

@@ -26,17 +26,11 @@ public class ChangesCondition<T extends Comparable<T>> extends AbstractCondition
       this.element = element;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.condition.IDiscreteElementCondition#getLastCheckValue()
-    */
    @Override
    public T getLastCheckValue() {
       return lastValue;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.condition.ICondition#check(int)
-    */
    @Override
    public boolean check() {
       T currentValue = element.getValue();

@@ -132,9 +132,6 @@ public class GroupExplorerItem implements IAdaptable {
       return parentItem;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof GroupExplorerItem) {
@@ -151,17 +148,11 @@ public class GroupExplorerItem implements IAdaptable {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return artifact.getGuid().hashCode() + (getParentItem() != null ? getParentItem().getArtifact().getGuid().hashCode() : 0);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");

@@ -219,9 +219,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
-    */
    public String getWorldViewBranchStatus() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -356,11 +353,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCompletedDate();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCancelledDateStr()
-    */
    public String getWorldViewCancelledDateStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -381,11 +373,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewRemainHours()
-    */
    public double getWorldViewRemainHours() throws OseeCoreException {
       double hours = 0;
       // Add up hours for all children
@@ -395,11 +382,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewManDaysNeeded()
-    */
    public double getWorldViewManDaysNeeded() throws OseeCoreException {
       double hours = 0;
       // Add up hours for all children
@@ -409,11 +391,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedHours()
-    */
    public double getWorldViewEstimatedHours() throws OseeCoreException {
       double hours = 0;
       // Add up hours for all children
@@ -423,11 +400,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewStatePercentComplete()
-    */
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
       if (getTeamWorkFlowArtifacts().size() == 1)
          return getTeamWorkFlowArtifacts().iterator().next().getWorldViewStatePercentComplete();
@@ -449,20 +421,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return 0;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewRelatedToState()
-    */
    public String getWorldViewRelatedToState() throws OseeCoreException {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewNotes()
-    */
    @Override
    public String getWorldViewNotes() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
@@ -472,9 +434,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewGroups()
-    */
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
       Set<Artifact> groups = new HashSet<Artifact>();
@@ -486,11 +445,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Artifacts.toString("; ", groups);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCategory()
-    */
    public String getWorldViewCategory() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -523,11 +477,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
-    */
    public String getWorldViewTargetedVersionStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -536,20 +485,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
-    */
    public String getHyperName() {
       return getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperType()
-    */
    public String getHyperType() {
       try {
          return getArtifactTypeName();
@@ -558,11 +497,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperState()
-    */
    public String getHyperState() {
       try {
          if (getTeamWorkFlowArtifacts().size() == 1) {
@@ -574,19 +508,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssignee()
-    */
    public String getHyperAssignee() {
       try {
          if (getTeamWorkFlowArtifacts().size() == 1) {
@@ -598,11 +524,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
-    */
    public Image getHyperAssigneeImage() throws OseeCoreException {
       if (getTeamWorkFlowArtifacts().size() == 1) {
          return getTeamWorkFlowArtifacts().iterator().next().getHyperAssigneeImage();
@@ -610,11 +531,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperArtifact()
-    */
    public Artifact getHyperArtifact() {
       return this;
    }
@@ -815,29 +731,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             true);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
-    */
    public String getWorldViewDecision() throws OseeCoreException {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact#getParentSMArt()
-    */
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
-    */
    public String getWorldViewDescription() throws OseeCoreException {
       try {
          return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
@@ -846,11 +747,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewValidationRequired()
-    */
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
       try {
          return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
@@ -864,11 +760,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedReleaseDate();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedCompletionDateStr()
-    */
    public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -895,11 +786,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewReleaseDate();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedReleaseDateStr()
-    */
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -908,11 +794,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewRemainHoursValid()
-    */
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (team.isWorldViewRemainHoursValid().isFalse()) {
@@ -922,11 +803,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Result.TrueResult;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewManDaysNeededValid()
-    */
    public Result isWorldViewManDaysNeededValid() {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
@@ -937,11 +813,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Result.TrueResult;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewChangeTypeStr()
-    */
    public String getWorldViewChangeTypeStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -950,11 +821,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    public String getWorldViewImplementer() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -963,20 +829,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
-    */
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewDeadlineDate();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
-    */
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -985,11 +841,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
-    */
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       double hours = 0;
       // Add up hours for all children
@@ -1002,11 +853,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewAnnualCostAvoidance()
-    */
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       double hours = 0;
       // Add up hours for all children
@@ -1019,11 +865,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewAnnualCostAvoidanceValid()
-    */
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Result result = team.isWorldViewAnnualCostAvoidanceValid();
@@ -1041,11 +882,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return notifications;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewDeadlineAlerting()
-    */
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Result result = team.isWorldViewDeadlineAlerting();
@@ -1054,11 +890,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Result.FalseResult;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewLegacyPCR()
-    */
    public String getWorldViewLegacyPCR() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -1067,11 +898,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentReworkStr()
-    */
    public String getWorldViewPercentReworkStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -1080,46 +906,26 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentRework()
-    */
    public int getWorldViewPercentRework() throws OseeCoreException {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
-    */
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
-    */
    public String getWorldViewReviewDecider() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
-    */
    public String getWorldViewReviewModerator() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
-    */
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentState()
-    */
    @Override
    public double getWorldViewHoursSpentState() throws OseeCoreException {
       double hours = 0;
@@ -1131,9 +937,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateReview()
-    */
    @Override
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
       double hours = 0;
@@ -1145,9 +948,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateTask()
-    */
    @Override
    public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
       double hours = 0;
@@ -1170,9 +970,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentTotal()
-    */
    @Override
    public double getWorldViewHoursSpentTotal() throws OseeCoreException {
       double hours = 0;
@@ -1184,9 +981,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteState()
-    */
    @Override
    public int getWorldViewPercentCompleteState() throws OseeCoreException {
       double percent = 0;
@@ -1200,9 +994,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return rollPercent.intValue();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateReview()
-    */
    @Override
    public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
       double percent = 0;
@@ -1216,9 +1007,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return rollPercent.intValue();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateTask()
-    */
    @Override
    public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
       double percent = 0;
@@ -1232,9 +1020,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return rollPercent.intValue();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteTotal()
-    */
    @Override
    public int getWorldViewPercentCompleteTotal() throws OseeCoreException {
       double percent = 0;
@@ -1256,9 +1041,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "(see children)";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTargetedVersion()
-    */
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       return null;
@@ -1293,17 +1075,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString("; ", teamNames);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
-    */
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentState()
-    */
    @Override
    public String getWorldViewParentState() throws OseeCoreException {
       return null;

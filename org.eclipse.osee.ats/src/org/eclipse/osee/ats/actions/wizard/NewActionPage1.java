@@ -120,9 +120,6 @@ public class NewActionPage1 extends WizardPage {
          Button deselectAll = new Button(aiComp, SWT.PUSH);
          deselectAll.setText("De-Select All");
          deselectAll.addSelectionListener(new SelectionListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
             }

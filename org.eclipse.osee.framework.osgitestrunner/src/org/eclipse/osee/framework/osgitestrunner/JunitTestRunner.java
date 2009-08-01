@@ -100,9 +100,6 @@ public class JunitTestRunner implements CommandProvider {
       return testsToRun;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osgi.framework.console.CommandProvider#getHelp()
-    */
    @Override
    public String getHelp() {
       return "\ttest <MatchString>... - run any TestSuite classes registered as services.\n\n";

@@ -242,9 +242,6 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
          if (areOnlyWorkingBranchesAllowed() != false) {

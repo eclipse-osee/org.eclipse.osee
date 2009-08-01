@@ -19,9 +19,6 @@ public class MessageWatchActivator extends ServiceTracker{
       super(context, IMessageManager.class.getName(), null);
    }
 
-   /* (non-Javadoc)
-    * @see org.osgi.util.tracker.ServiceTracker#addingService(org.osgi.framework.ServiceReference)
-    */
    @Override
    public IMessageManager addingService(ServiceReference reference) {
       IMessageManager manager = (IMessageManager) super.addingService(reference);
@@ -34,9 +31,6 @@ public class MessageWatchActivator extends ServiceTracker{
       return manager;
    }
 
-   /* (non-Javadoc)
-    * @see org.osgi.util.tracker.ServiceTracker#removedService(org.osgi.framework.ServiceReference, java.lang.Object)
-    */
    @Override
    public synchronized void removedService(ServiceReference reference, Object service) {
       disposeToolService();
@@ -53,9 +47,6 @@ public class MessageWatchActivator extends ServiceTracker{
       }
    }
    
-   /* (non-Javadoc)
-    * @see org.osgi.util.tracker.ServiceTracker#close()
-    */
    @Override
    public synchronized void close() {
       if (registration != null){

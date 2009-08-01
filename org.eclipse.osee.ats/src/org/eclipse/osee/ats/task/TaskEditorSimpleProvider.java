@@ -35,33 +35,21 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
       this.artifacts = artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
       return name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTaskEditorTaskArtifacts()
-    */
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
       return artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#getName()
-    */
    @Override
    public String getName() throws OseeCoreException {
       return name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.task.ITaskEditorProvider#copyProvider()
-    */
    @Override
    public ITaskEditorProvider copyProvider() {
       return new TaskEditorSimpleProvider(name, artifacts, customizeData, tableLoadOptions);

@@ -26,9 +26,6 @@ public class SafeWorkspaceAccessImpl implements SafeWorkspaceAccess {
       return ResourcesPlugin.getWorkspace();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess#addResourceChangeListener(org.eclipse.osee.framework.ui.plugin.workspace.WrapResourceChangeListener)
-    */
    @Override
    public void addResourceChangeListener(WrapResourceChangeListener workspaceListener) {
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new ResourceChangeListenerImpl(workspaceListener));

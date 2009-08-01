@@ -53,9 +53,6 @@ public class FindCommitableJob extends Job {
       return nonCommitableItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.progress.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;

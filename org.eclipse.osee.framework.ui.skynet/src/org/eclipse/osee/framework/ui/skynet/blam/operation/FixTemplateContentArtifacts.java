@@ -77,9 +77,6 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       return rootDirectory;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Fix Template Content Artifacts";

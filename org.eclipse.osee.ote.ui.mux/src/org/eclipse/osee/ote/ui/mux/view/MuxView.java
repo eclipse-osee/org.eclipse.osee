@@ -697,13 +697,6 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 		// msgViewer1.getControl().setFocus();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.ui.test.manager.data.plugin.TestToolViewPart#dispose
-	 * ()
-	 */
 	@Override
 	public void dispose() {
 		MuxToolPlugin.getDefault().getOteClientService().removeConnectionListener(this);
@@ -886,9 +879,6 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 		dataViewer5.getTable().setBackground(connected ? WHITE : GRAY);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.message.IInstrumentationRegistrationListener#onDeregistered(java.lang.String)
-	 */
 	@Override
 	public void onDeregistered(String name) throws RemoteException{
 		if (muxProbe != null && name.equals("MUXIO")) {
@@ -897,9 +887,6 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.message.IInstrumentationRegistrationListener#onRegistered(java.lang.String, org.eclipse.osee.ote.message.instrumentation.IOInstrumentation)
-	 */
 	@Override
 	public void onRegistered(String name, IOInstrumentation instrumentation) throws RemoteException{
 		try {

@@ -289,9 +289,6 @@ final class ImportController {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          // Import Branches
@@ -333,9 +330,6 @@ final class ImportController {
          super();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {

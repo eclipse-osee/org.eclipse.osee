@@ -61,9 +61,6 @@ public class PatternFilter extends ViewerFilter {
 
    private static Object[] EMPTY = new Object[0];
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerFilter#filter(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object[])
-    */
    @SuppressWarnings("unchecked")
    @Override
    public final Object[] filter(Viewer viewer, Object parent, Object[] elements) {
@@ -138,9 +135,6 @@ public class PatternFilter extends ViewerFilter {
       return elementFound;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-    */
    @Override
    public final boolean select(Viewer viewer, Object parentElement, Object element) {
       return isElementVisible(viewer, element);

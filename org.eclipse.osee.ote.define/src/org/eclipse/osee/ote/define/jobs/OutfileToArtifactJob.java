@@ -42,11 +42,6 @@ public class OutfileToArtifactJob extends Job {
       this.filesWithErrors = new URI[0];
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.OK_STATUS;

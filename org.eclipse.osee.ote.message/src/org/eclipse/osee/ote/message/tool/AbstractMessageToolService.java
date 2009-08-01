@@ -305,9 +305,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       public void onInitListener() {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener#onRateChanged(double)
-       */
       public void onRateChanged(Message<?, ?, ?> message, double old, double rate) {
          try {
             for (ClientInfo client : clients)
@@ -320,9 +317,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
                msg.getName() + " has a rate change to " + rate + " hz!!!!!");
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener#isScheduledChanged(boolean)
-       */
       public void isScheduledChanged(boolean isScheduled) {
          try {
             for (ClientInfo client : clients)
@@ -670,9 +664,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.interfaces.IRemoteMessageService#startRecording(org.eclipse.osee.ote.message.commands.RecordCommand)
-    */
    public synchronized boolean startRecording(RecordCommand cmd) throws RemoteException {
       if (terminated) {
          throw new IllegalStateException("tool service has been terminated");
@@ -891,9 +882,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       return available;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.interfaces.IRemoteMessageService#setReaderWriterMode(org.eclipse.osee.ote.message.tool.MessageMode)
-    */
    public synchronized SubscriptionDetails setReaderWriterMode(SetMessageModeCmd cmd) throws RemoteException {
       final String name = cmd.getName();
 

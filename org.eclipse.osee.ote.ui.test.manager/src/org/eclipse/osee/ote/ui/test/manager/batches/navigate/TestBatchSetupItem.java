@@ -38,11 +38,6 @@ final class TestBatchSetupItem extends XNavigateItem implements Runnable {
       this.testBatchFile = testBatchFile;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Runnable#run()
-    */
    public void run() {
       Job job = new UIJob(jobName) {
          @Override

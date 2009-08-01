@@ -60,13 +60,6 @@ public abstract class XViewerStyledTextLabelProvider extends StyledCellLabelProv
       this.viewer = viewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.
-    * jface.viewers.ViewerCell)
-    */
    @Override
    public void update(ViewerCell cell) {
       Object element = cell.getElement();

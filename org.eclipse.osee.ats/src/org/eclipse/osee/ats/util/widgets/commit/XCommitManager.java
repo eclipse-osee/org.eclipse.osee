@@ -84,11 +84,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       OseeEventManager.addListener(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
@@ -117,9 +112,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
             if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
-                  /* (non-Javadoc)
-                               * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                               */
                   @Override
                   public void handleEvent(Event event) {
                      if (event.button == 3) {
@@ -147,11 +139,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             xCommitManager.setContentProvider(new XCommitContentProvider(xCommitManager));
             xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
             xCommitManager.addSelectionChangedListener(new ISelectionChangedListener() {
-               /*
-                * (non-Javadoc)
-                * 
-                * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-                */
                public void selectionChanged(SelectionChangedEvent event) {
                   refreshActionEnablement();
                }
@@ -341,11 +328,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       return xCommitManager;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return xCommitManager.getInput();
@@ -359,9 +341,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
-    */
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException {
       if (!(artifact instanceof TeamWorkFlowArtifact)) {
          throw new IllegalStateException("Must be TeamWorkflowArtifact, set was a " + artifact.getArtifactTypeName());
@@ -370,9 +349,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       loadTable();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       return Result.FalseResult;
@@ -382,16 +358,10 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       return ((IBranchArtifact) teamArt).getWorkingBranch();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
-    */
    @Override
    public void saveToArtifact() throws OseeCoreException {
    }
@@ -403,9 +373,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       return teamArt;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -416,16 +383,10 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener#handleMergeBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType, int)
-    */
    @Override
    public void handleMergeBranchEvent(Sender sender, MergeBranchEventType branchModType, int branchId) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -436,9 +397,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getErrorMessageControl()
-    */
    @Override
    public Control getErrorMessageControl() {
       return labelWidget;

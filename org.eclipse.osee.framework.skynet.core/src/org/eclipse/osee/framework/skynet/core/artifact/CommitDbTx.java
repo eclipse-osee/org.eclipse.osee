@@ -145,11 +145,6 @@ public class CommitDbTx extends DbTransaction {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       branchesInCommit.add(this.sourceBranch);
@@ -355,9 +350,6 @@ public class CommitDbTx extends DbTransaction {
       success = true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
-    */
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       if (success) {
@@ -393,11 +385,6 @@ public class CommitDbTx extends DbTransaction {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxException(java.lang.Exception)
-    */
    @Override
    protected void handleTxException(Exception ex) {
       success = false;

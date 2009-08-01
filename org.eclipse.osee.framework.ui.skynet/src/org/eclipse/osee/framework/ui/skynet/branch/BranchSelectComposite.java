@@ -73,9 +73,6 @@ public class BranchSelectComposite extends Composite implements Listener {
       branchSelectButton.addListener(SWT.Selection, this);
       branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
       branchSelectButton.addListener(SWT.MouseUp, new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             if (event.button == 3) {
@@ -98,9 +95,6 @@ public class BranchSelectComposite extends Composite implements Listener {
       return allowOnlyWorkingBranches;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
          if (areOnlyWorkingBranchesAllowed()) {

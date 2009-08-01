@@ -35,9 +35,6 @@ public class ImageCaptureBlam extends AbstractBlam {
    public Point botRightPoint;
    public boolean listenerAdded = false;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Image Capture";
@@ -46,9 +43,6 @@ public class ImageCaptureBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             System.out.println("Starting Image Capture...");

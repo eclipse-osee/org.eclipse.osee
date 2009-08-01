@@ -45,9 +45,6 @@ public class HttpReportRequest implements IHttpServerRequest {
    private static final String REPORT_SOURCE = "source";
    private static final String PREVIEW_SIZE = "preview";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest#getRequestType()
-    */
    public String getRequestType() {
       return REQUEST_TYPE;
    }
@@ -67,9 +64,6 @@ public class HttpReportRequest implements IHttpServerRequest {
       return HttpUrlBuilder.getInstance().getUrlForLocalSkynetHttpServer(HttpReportRequest.REQUEST_TYPE, parameters);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest#processRequest(org.eclipse.osee.framework.skynet.core.linking.HttpRequest, org.eclipse.osee.framework.skynet.core.linking.HttpResponse)
-    */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       if (httpRequest.getOriginatingAddress().isLoopbackAddress()) {
          String reportId = httpRequest.getParameter(REPORT_ID);

@@ -16,18 +16,10 @@ import org.osgi.framework.BundleContext;
 public class SessionManagementTestsActivator implements BundleActivator {
    private static SessionManagementTestsActivator instance = null;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
    }
 

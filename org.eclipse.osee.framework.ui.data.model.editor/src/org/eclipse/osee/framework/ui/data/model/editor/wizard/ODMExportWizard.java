@@ -50,18 +50,12 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
       selectTypesPage.setInput(dataTypeCache);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#canFinish()
-    */
    @Override
    public boolean canFinish() {
       ArtifactDataType[] selectedTypes = selectTypesPage.getSelected();
       return selectedTypes != null && selectedTypes.length > 0 && Strings.isValid(exportOutputPage.getExportToXmlPath());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       ArtifactDataType[] selectedTypes = selectTypesPage.getSelected();

@@ -61,9 +61,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       createControl(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlModType, LoadedArtifacts loadedArtifactss) {
       if (accessControlModType == AccessControlEventType.UserAuthenticated) {
@@ -167,9 +164,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       return featureEnabled;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Control#setEnabled(boolean)
-    */
    @Override
    public void setEnabled(boolean enabled) {
       super.setEnabled(enabled);
@@ -201,9 +195,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
@@ -212,9 +203,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
 
    private void handleUserAuthenticated() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (branchSelectEnabled != null && branchSelectEnabled.isDisposed() != true && isFeatureEnabled() != false) {

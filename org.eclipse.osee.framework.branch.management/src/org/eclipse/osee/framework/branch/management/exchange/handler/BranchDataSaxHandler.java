@@ -40,9 +40,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return new BranchDataSaxHandler(false, cacheLimit);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#processData(java.util.Map)
-    */
    private BranchDataSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.idToImportFileBranchData = new HashMap<Integer, BranchData>();
@@ -185,9 +182,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return guidToImportFileBranchData.values();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#clearDataTable()
-    */
    @Override
    public void clearDataTable() throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(getConnection(),

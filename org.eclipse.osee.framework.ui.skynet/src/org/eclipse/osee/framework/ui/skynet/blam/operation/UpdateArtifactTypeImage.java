@@ -38,9 +38,6 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
    public static String ARTIFACT_TYPE_NAME = "Select Artifact Type";
    public static String SELECT_IMAGE = "Select Image GIF";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Update ArtifactType Image";
@@ -58,9 +55,6 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
                Lib.inputStreamToBytes(new FileInputStream(imageFile))));
       } else {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                try {

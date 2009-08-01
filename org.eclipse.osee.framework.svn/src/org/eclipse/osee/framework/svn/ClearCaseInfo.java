@@ -53,16 +53,10 @@ public class ClearCaseInfo implements IRepositoryEntry {
       return " ";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastAuthor()
-    */
    public String getLastAuthor() {
       return " ";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastModificationDate()
-    */
    public String getLastModificationDate() {
       return " ";
    }

@@ -33,9 +33,6 @@ public class OpenVersionArtifact extends WorkPageService {
       super(smaMgr);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Open Targeted for Version";
@@ -49,9 +46,6 @@ public class OpenVersionArtifact extends WorkPageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return null;
@@ -65,9 +59,6 @@ public class OpenVersionArtifact extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#refresh()
-    */
    @Override
    public void refresh() {
       if (action == null) return;

@@ -315,9 +315,6 @@ public class AtsBranchManager {
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TransactionIdLabelProvider());
       ld.setSorter(new ViewerSorter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-          */
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (e1 == null || e2 == null) {
@@ -767,9 +764,6 @@ public class AtsBranchManager {
 
       private boolean adminOverride;
 
-      /* (non-Javadoc)
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
@@ -797,9 +791,6 @@ public class AtsBranchManager {
                      // Allow Admin to override state validation
                      if (AtsUtil.isAtsAdmin()) {
                         Displays.ensureInDisplayThread(new Runnable() {
-                           /* (non-Javadoc)
-                            * @see java.lang.Runnable#run()
-                            */
                            @Override
                            public void run() {
                               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),

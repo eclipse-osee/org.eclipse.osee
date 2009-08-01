@@ -29,9 +29,6 @@ public class TestRunViewNavigateItem implements IOteNavigateItem {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.navigate.IOteNavigateItem#getSearchNavigateItems()
-    */
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 

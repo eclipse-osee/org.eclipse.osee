@@ -176,9 +176,6 @@ public class BranchCreator {
          this.mergeBranch = mergeBranch;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
 

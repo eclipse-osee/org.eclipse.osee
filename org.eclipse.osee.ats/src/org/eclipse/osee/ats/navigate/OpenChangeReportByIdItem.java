@@ -51,11 +51,6 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
       super(parent, "Open Change Report by ID", AtsImage.OPEN_BY_ID);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       try {
@@ -80,9 +75,6 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                   }
                   if (addedArts.size() > 0) {
                      Displays.ensureInDisplayThread(new Runnable() {
-                        /* (non-Javadoc)
-                         * @see java.lang.Runnable#run()
-                         */
                         @Override
                         public void run() {
                            if (addedArts.size() < 3 || MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),

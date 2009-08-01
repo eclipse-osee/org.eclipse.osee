@@ -133,18 +133,12 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
-    */
    @Override
    public void commandStackChanged(EventObject event) {
       firePropertyChange(IEditorPart.PROP_DIRTY);
       super.commandStackChanged(event);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
-    */
    @Override
    protected PaletteViewerProvider createPaletteViewerProvider() {
       return new PaletteViewerProvider(getEditDomain()) {
@@ -176,9 +170,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
@@ -197,9 +188,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.ISaveablePart#doSaveAs()
-    */
    @Override
    public void doSaveAs() {
       AWorkbench.popup("ERROR", "Not implemented yet");
@@ -217,9 +205,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       return diagram;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
-    */
    @Override
    protected PaletteRoot getPaletteRoot() {
       if (PALETTE_MODEL == null)
@@ -255,17 +240,11 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       getStackActions().add(action.getId());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
-    */
    @Override
    public boolean isSaveAsAllowed() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
-    */
    @Override
    protected void setInput(IEditorInput input) {
       super.setInput(input);
@@ -369,9 +348,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          super(viewer);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
-       */
       @Override
       public void createControl(Composite parent) {
          // create outline viewer page
@@ -392,9 +368,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          // show outline viewer
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.ui.part.IPage#dispose()
-       */
       @Override
       public void dispose() {
          // unhook outline viewer
@@ -403,9 +376,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          super.dispose();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.ui.part.IPage#getControl()
-       */
       @Override
       public Control getControl() {
          return getViewer().getControl();
@@ -431,9 +401,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    public void closeEditor() {
       final IEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             AWorkbench.getActivePage().closeEditor(editor, false);
@@ -441,9 +408,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())

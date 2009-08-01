@@ -43,9 +43,6 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
             isMultiColumnEditable(), getDescription());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
@@ -54,9 +51,6 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
       return super.getColumnText(element, column, columnIndex);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {

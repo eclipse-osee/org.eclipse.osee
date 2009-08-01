@@ -144,9 +144,6 @@ public class AttributeType implements Comparable<AttributeType> {
       return fileTypeExtension;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       final int prime = 31;
@@ -156,9 +153,6 @@ public class AttributeType implements Comparable<AttributeType> {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (this == obj) {
@@ -188,11 +182,6 @@ public class AttributeType implements Comparable<AttributeType> {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Comparable#compareTo(T)
-    */
    public int compareTo(AttributeType attributeType) {
       if (attributeType == null) {
          return -1;

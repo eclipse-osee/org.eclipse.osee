@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ExportBranchWizard extends Wizard implements IExportWizard {
    private ExportBranchPage mainPage;
-   private Branch defaultBranch;
+   private final Branch defaultBranch;
 
    public ExportBranchWizard() {
       this(null);
@@ -34,28 +34,15 @@ public class ExportBranchWizard extends Wizard implements IExportWizard {
       setWindowTitle("Skynet Branch Export Wizard");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       return mainPage.finish();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }
 
-   /**
-    * (non-Javadoc) Method declared on Wizard.
-    */
+   @Override
    public void addPages() {
       mainPage = new ExportBranchPage("Export Branch", defaultBranch);
       addPage(mainPage);

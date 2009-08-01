@@ -31,17 +31,11 @@ public class BaseImage implements OseeImage {
       this.imageData = imageData;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#createImageDescriptor()
-    */
    @Override
    public ImageDescriptor createImageDescriptor() {
       return ImageDescriptor.createFromImageData(new ImageData(new ByteArrayInputStream(imageData)));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-    */
    @Override
    public String getImageKey() {
       return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();

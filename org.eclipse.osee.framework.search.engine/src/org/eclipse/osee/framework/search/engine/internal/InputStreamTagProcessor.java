@@ -34,9 +34,6 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
       this.inputStream = inputStream;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.OseeConnection)
-    */
    @Override
    protected void convertInput(OseeConnection connection) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
@@ -51,16 +48,10 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
          this.connection = connection;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#endElementFound(java.lang.String, java.lang.String, java.lang.String)
-       */
       @Override
       public void endElementFound(String uri, String localName, String name) throws SAXException {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#startElementFound(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-       */
       @Override
       public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
          if (name.equalsIgnoreCase("entry")) {

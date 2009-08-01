@@ -63,23 +63,14 @@ public class StandardShell extends ConsoleShell {
       };
    }
    
-   /* (non-Javadoc)
-    * @see lba.ote.server.console.shell.ICommandShell#println(java.lang.String)
-    */
    public void println(String string) {
         System.out.println(string);
    }
 
-   /* (non-Javadoc)
-    * @see lba.ote.server.console.shell.ICommandShell#print(java.lang.String)
-    */
    public void print(String string) {
         System.out.print(string);
    }
 
-   /* (non-Javadoc)
-    * @see lba.ote.server.console.shell.ICommandShell#println()
-    */
    public void println() {
       System.out.println();
    }

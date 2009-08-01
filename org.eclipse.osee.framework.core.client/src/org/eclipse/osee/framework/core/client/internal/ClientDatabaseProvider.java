@@ -24,9 +24,6 @@ public class ClientDatabaseProvider implements IApplicationDatabaseInfoProvider 
 
    private static final String NAME = "Client Data Source";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getDatabaseInfo()
-    */
    @Override
    public IDatabaseInfo getDatabaseInfo() throws OseeAuthenticationRequiredException {
       IDatabaseInfo databaseInfo = null;
@@ -41,9 +38,6 @@ public class ClientDatabaseProvider implements IApplicationDatabaseInfoProvider 
       return databaseInfo;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getPriority()
-    */
    @Override
    public int getPriority() {
       return -1;

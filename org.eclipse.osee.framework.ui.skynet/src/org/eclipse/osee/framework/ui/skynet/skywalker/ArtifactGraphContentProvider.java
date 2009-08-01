@@ -42,11 +42,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       this.options = options;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.mylar.zest.core.viewers.IGraphEntityContentProvider#getConnectedTo(java.lang.Object)
-    */
    public Object[] getConnectedTo(Object entity) {
       List<Artifact> otherItems = new LinkedList<Artifact>();
 
@@ -94,11 +89,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
    }
    private final Set<Artifact> displayArtifacts = new HashSet<Artifact>();
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.mylar.zest.core.viewers.IGraphEntityContentProvider#getElements(java.lang.Object)
-    */
    public Object[] getElements(Object inputElement) {
       // Only perform this method for top level artifact
       if (inputElement.equals(options.getArtifact())) {
@@ -158,30 +148,13 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.mylar.zest.core.viewers.IGraphEntityContentProvider#getWeight(java.lang.Object,
-    *      java.lang.Object)
-    */
    public double getWeight(Object entity1, Object entity2) {
       return 0;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-    */
    public void dispose() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-    *      java.lang.Object, java.lang.Object)
-    */
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 

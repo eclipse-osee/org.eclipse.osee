@@ -62,9 +62,6 @@ public class BlockingMessagePrompt extends AbstractRemotePrompt implements IResu
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IResumeResponse#resume()
-    */
    public void resume() throws RemoteException {
       lock.lock();
       try {

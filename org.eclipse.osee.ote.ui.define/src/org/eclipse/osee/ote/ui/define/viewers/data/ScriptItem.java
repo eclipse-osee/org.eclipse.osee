@@ -71,9 +71,6 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       this.revision = DEFAULT_REVISION;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getData()
-    */
    @Override
    public String getData() {
       return String.format("[%s][%s]", scriptUrl, revision);
@@ -83,9 +80,6 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.IXViewerItem#getLabel(int)
-    */
    public String getLabel(int index) {
       String toReturn = "";
       if (index == 0) {
@@ -130,9 +124,6 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       return String.format("%s [%s]", url, revision);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.data.DataItem#getKey()
-    */
    @Override
    public Object getKey() {
       return key;

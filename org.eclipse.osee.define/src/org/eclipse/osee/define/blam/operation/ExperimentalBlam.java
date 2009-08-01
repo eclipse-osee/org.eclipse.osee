@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class ExperimentalBlam extends AbstractBlam {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Experimental Blam";

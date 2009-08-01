@@ -72,9 +72,6 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
       sendNotificationsButton = new Button(container, SWT.CHECK);
       sendNotificationsButton.setText("Send Notifications (Otherwise, only report will display)");
       sendNotificationsButton.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             sendNotifications = sendNotificationsButton.getSelection();

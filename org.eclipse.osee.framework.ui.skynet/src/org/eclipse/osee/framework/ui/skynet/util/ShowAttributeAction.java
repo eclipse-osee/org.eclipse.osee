@@ -45,9 +45,6 @@ public class ShowAttributeAction extends Action {
       this.viewer = viewer;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       if (branchProvider != null && branchProvider.getBranch() != null) {

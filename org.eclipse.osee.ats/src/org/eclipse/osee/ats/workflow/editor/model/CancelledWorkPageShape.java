@@ -33,9 +33,6 @@ public class CancelledWorkPageShape extends WorkPageShape {
       super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID));
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof WorkPageShape) {

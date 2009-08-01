@@ -55,11 +55,6 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       super(parent, TITLE, FrameworkImage.FLASHLIGHT);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       EntryDialogWithBranchSelect ed =
@@ -105,9 +100,6 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             return;
          if (srchArts.size() > 1) {
             Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
                @Override
                public void run() {
                   ArtifactCheckTreeDialog dialog = new ArtifactCheckTreeDialog(srchArts);

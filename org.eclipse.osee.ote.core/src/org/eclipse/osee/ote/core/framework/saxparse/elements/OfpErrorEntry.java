@@ -26,9 +26,6 @@ public class OfpErrorEntry extends ElementHandlers{
       super("OfpErrorEntry");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.saxparse.ElementHandlers#createStartElementFoundObject(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
       return new OfpErrorEntryData(attributes.getValue("NODE_ID"), attributes.getValue("count"), attributes.getValue("severity"), attributes.getValue("version"));

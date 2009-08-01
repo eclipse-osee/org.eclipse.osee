@@ -236,29 +236,14 @@ public class RelationTableViewer {
          return artifactList.getArtifactModel().toArray();
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IArtifactListViewer#addArtifact(ArtifactModel)
-       */
       public void addArtifact(ArtifactModel artifact) {
          tableViewer.add(artifact);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IArtifactListViewer#removeArtifact(ArtifactModel)
-       */
       public void removeArtifact(ArtifactModel artifact) {
          tableViewer.remove(artifact);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IArtifactListViewer#updateArtifact(ArtifactModel)
-       */
       public void updateArtifact(ArtifactModel artifact) {
          tableViewer.update(artifact, null);
       }

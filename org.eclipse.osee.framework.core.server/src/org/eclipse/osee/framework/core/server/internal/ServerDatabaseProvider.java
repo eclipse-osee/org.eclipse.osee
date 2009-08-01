@@ -25,9 +25,6 @@ public class ServerDatabaseProvider implements IApplicationDatabaseInfoProvider 
 
    private static final String NAME = "Server Data Source";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getDatabaseInfo()
-    */
    @Override
    public IDatabaseInfo getDatabaseInfo() throws OseeDataStoreException {
       IDatabaseInfo databaseInfo = null;
@@ -37,9 +34,6 @@ public class ServerDatabaseProvider implements IApplicationDatabaseInfoProvider 
       return databaseInfo;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IApplicationDatabaseInfoProvider#getPriority()
-    */
    @Override
    public int getPriority() {
       return Integer.MAX_VALUE;

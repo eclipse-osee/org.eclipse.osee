@@ -159,9 +159,6 @@ public class BranchModel extends Node implements Serializable {
       return txs.isEmpty() ? null : txs.get(txs.size() - 1);
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BranchModel) {
@@ -171,17 +168,11 @@ public class BranchModel extends Node implements Serializable {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return branch.hashCode();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getName(),

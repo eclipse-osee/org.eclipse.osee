@@ -34,12 +34,6 @@ public class MergeXViewerSorter extends XViewerSorter {
       this.labelProvider = labelProvider;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter#compare(org.eclipse.jface.viewers.Viewer,
-    *      java.lang.Object, java.lang.Object, int)
-    */
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       try {

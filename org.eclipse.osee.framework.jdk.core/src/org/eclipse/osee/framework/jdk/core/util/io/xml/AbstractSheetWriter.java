@@ -38,16 +38,10 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.util.Collection)
-    */
    public void writeRow(Collection<String> row) throws IOException {
       writeRow(row.toArray(new String[row.size()]));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.lang.String)
-    */
    public void writeRow(String... row) throws IOException {
       for (int i = 0; i < row.length; i++) {
          writeCell(row[i]);
@@ -69,9 +63,6 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
       writeEndRow();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter#writeCell(java.lang.String)
-    */
    public void writeCell(String cellData) throws IOException {
       writeCell(cellData, defaultCellIndex);
    }

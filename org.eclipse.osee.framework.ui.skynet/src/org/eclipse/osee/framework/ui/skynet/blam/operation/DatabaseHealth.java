@@ -39,17 +39,11 @@ public class DatabaseHealth extends AbstractBlam {
    public DatabaseHealth() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Database Health";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Runs Database Health Checks/Fixes.  Cursor over label to see descriptions.";

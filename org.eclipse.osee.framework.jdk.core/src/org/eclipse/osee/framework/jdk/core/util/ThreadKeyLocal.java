@@ -21,11 +21,6 @@ public class ThreadKeyLocal<K, T> {
 
    private ThreadLocal<Map<K, T>> keyToValueMaps = new ThreadLocal<Map<K, T>>() {
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see java.lang.ThreadLocal#initialValue()
-       */
       @Override
       protected Map<K, T> initialValue() {
          return new HashMap<K, T>();

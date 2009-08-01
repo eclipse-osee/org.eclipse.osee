@@ -42,9 +42,6 @@ public class AtsLogWorkPage extends AtsWorkPage {
       super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.AtsWorkPage#isDisplayService(org.eclipse.osee.ats.editor.service.WorkPageService)
-    */
    @Override
    public boolean isDisplayService(WorkPageService service) {
       return false;

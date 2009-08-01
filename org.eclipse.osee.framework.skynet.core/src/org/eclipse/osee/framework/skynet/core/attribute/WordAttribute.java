@@ -30,9 +30,6 @@ public class WordAttribute extends StringAttribute {
    public static boolean noPopUps = false;
    public static String displayTrackedChangesErrorMessage = "";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
       // Do not allow save on tracked changes except on three way merges
@@ -50,9 +47,6 @@ public class WordAttribute extends StringAttribute {
       return WordAnnotationHandler.containsWordAnnotations(temp);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() throws OseeCoreException {
       InputStream inputStream = null;

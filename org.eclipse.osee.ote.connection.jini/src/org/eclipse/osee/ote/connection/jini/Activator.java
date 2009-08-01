@@ -48,12 +48,6 @@ public class Activator extends Plugin {
     public Activator() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-     */
     public void start(BundleContext context) throws Exception {
 	System.setSecurityManager(new RelaxedSecurity());
 	super.start(context);
@@ -91,12 +85,6 @@ public class Activator extends Plugin {
 		registrar, null);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-     */
     public void stop(BundleContext context) throws Exception {
 	registrar.shutdown();
 	registration.unregister();

@@ -46,9 +46,6 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       this.currentJoinQuery = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       try {
@@ -63,9 +60,6 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       this.isOkToDispatch = true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
-    */
    @Override
    protected void handleTxException(Exception ex) {
       this.isOkToDispatch = false;
@@ -80,9 +74,6 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxFinally()
-    */
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       super.handleTxFinally();

@@ -96,9 +96,6 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       loadData(COMMITTED_NEW_AND_DELETED_RELATIONS, txChange, modificationType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean verify = !isFixOperationEnabled();
@@ -170,17 +167,11 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       builder.append(" Relation Links that were Introduced as Deleted\n");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Detects items from txs table with tx_current of (deleted or artifact deleted) having no other entries in the txs not equal to mod type (deleted or artifact deleted), respectively.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Remove addressing with delete errors.";

@@ -64,9 +64,6 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
       return this.searchStr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#performSearch(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       try {
@@ -96,9 +93,6 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
       return allArtifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
    @Override
    public WorldSearchItem copy() {
       return new AtsNavigateQuickSearch(this);

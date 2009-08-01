@@ -23,9 +23,6 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
 public class ExchangeLocatorProvider implements IResourceLocatorProvider {
    public static final String PROTOCOL = "exchange";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorProvider#generateResourceLocator(java.lang.String, java.lang.String)
-    */
    @Override
    public IResourceLocator generateResourceLocator(String seed, String name) throws MalformedLocatorException {
       URI uri = null;
@@ -37,9 +34,6 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
       return new ResourceLocator(uri);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorProvider#getResourceLocator(java.lang.String)
-    */
    @Override
    public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
       URI uri = null;
@@ -55,9 +49,6 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
       return new ResourceLocator(uri);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorProvider#isValid(java.lang.String)
-    */
    @Override
    public boolean isValid(String protocol) {
       return Strings.isValid(protocol) != false && protocol.startsWith(PROTOCOL) != false;

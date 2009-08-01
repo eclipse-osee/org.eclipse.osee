@@ -31,17 +31,11 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
 
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
-    */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
-    */
    @Override
    public String getName() {
       return "ATS Workflow Config Editor";
@@ -67,17 +61,11 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-   */
    @Override
    public AtsWorkflowConfigRenderer newInstance() throws OseeCoreException {
       return new AtsWorkflowConfigRenderer();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
@@ -86,25 +74,16 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);

@@ -44,39 +44,21 @@ public class ExtractReqPriority implements RowProcessor {
       return reqPriorities;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#detectedRowAndColumnCounts(int, int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#processEmptyRow()
-    */
    public void processEmptyRow() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#processHeaderRow(java.lang.String[])
-    */
    public void processHeaderRow(String[] row) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#processRow(java.lang.String[])
-    */
    public void processRow(String[] row) {
       // pick the highest priority specified in the workbook (in case there are multiple priorities for the same item)
       if (row[1] != null) {
@@ -90,9 +72,6 @@ public class ExtractReqPriority implements RowProcessor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
    }
 }

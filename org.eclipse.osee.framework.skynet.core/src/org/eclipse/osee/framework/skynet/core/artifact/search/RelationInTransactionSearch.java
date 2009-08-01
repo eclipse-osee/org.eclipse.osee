@@ -44,18 +44,10 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
       this.branchId = fromTransactionId.getBranchId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "t1.art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return sql;
    }

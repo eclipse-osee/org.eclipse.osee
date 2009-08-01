@@ -17,9 +17,6 @@ public class ResultRunnable implements Runnable {
 
    protected Result runnableResult = Result.TrueResult;
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    public void run() {
    }
 

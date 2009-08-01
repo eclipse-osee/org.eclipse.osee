@@ -75,21 +75,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       registerAtsWorldRelation(AtsRelation.TeamWorkflowToReview_Review);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getArtifactSuperTypeName()
-    */
    @Override
    public String getArtifactSuperTypeName() {
       return "Team Workflow";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#saveSMA()
-    */
    @Override
    public void saveSMA(SkynetTransaction transaction) {
       super.saveSMA(transaction);
@@ -109,11 +99,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isValidationRequired()
-    */
    @Override
    public boolean isValidationRequired() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false);
@@ -185,9 +170,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       initializeSMA();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initializeSMA()
-    */
    @Override
    protected void initializeSMA() {
       super.initializeSMA();
@@ -325,9 +307,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return getTeamName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       try {
@@ -412,29 +391,16 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return toReturn;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentSMA()
-    */
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentAtsArtifact()
-    */
    @Override
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return getParentActionArtifact();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
-    */
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
@@ -483,11 +449,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return getImplementersByState(DefaultTeamState.Implement.name());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
-    */
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       Date date = getWorldViewDeadlineDate();
@@ -497,21 +458,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
-    */
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
-    */
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return 0;
@@ -520,11 +471,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return new Float(value).doubleValue();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewAnnualCostAvoidance()
-    */
    @Override
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       double benefit = getWorldViewWeeklyBenefit();
@@ -532,11 +478,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return (benefit * 52) - remainHrs;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentTeamWorkflow()
-    */
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return this;
@@ -554,9 +495,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return workResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
-    */
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       try {
@@ -574,16 +512,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
-    */
    public Artifact getArtifact() {
       return this;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getCommitManagerBranch()
-    */
    public Branch getWorkingBranch() throws OseeCoreException {
       if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) {
          return getSmaMgr().getBranchMgr().getWorkingBranch();
@@ -591,9 +523,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
-    */
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentActionArtifact().getHumanReadableId();

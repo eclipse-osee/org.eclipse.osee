@@ -31,9 +31,6 @@ public abstract class AbstractSelectionChangedHandler extends AbstractHandler {
 	   addlistener();
    }
    private class ViewerMenuDetectListener implements MenuDetectListener {
-      /* (non-Javadoc)
-       * @see org.eclipse.swt.events.MenuDetectListener#menuDetected(org.eclipse.swt.events.MenuDetectEvent)
-       */
       public void menuDetected(MenuDetectEvent e) {
          fireHandlerChanged(enabledChangedEvent);
       }

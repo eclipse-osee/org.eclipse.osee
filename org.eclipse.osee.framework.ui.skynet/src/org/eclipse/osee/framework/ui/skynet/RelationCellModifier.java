@@ -31,11 +31,6 @@ public class RelationCellModifier implements ICellModifier {
       //      pList.addPermission(Permission.PermPermissionEnum.EDITREQUIREMENT);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
-    */
    public boolean canModify(Object element, String property) {
 	   boolean isModifiable = true;
 	   
@@ -45,22 +40,11 @@ public class RelationCellModifier implements ICellModifier {
 	   return isModifiable;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
-    */
    public Object getValue(Object element, String property) {
       RelationLink relLink = (RelationLink) element;
       return relLink.getRationale();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String,
-    *      java.lang.Object)
-    */
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
       if (element instanceof Item) {

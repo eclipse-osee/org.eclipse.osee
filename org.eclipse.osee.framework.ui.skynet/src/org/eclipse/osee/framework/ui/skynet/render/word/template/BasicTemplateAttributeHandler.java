@@ -34,12 +34,6 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
       this.ignoreAttributeExtensions = new HashSet<String>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(templateAttribute.getName());
@@ -86,12 +80,6 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeNameHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       return true;

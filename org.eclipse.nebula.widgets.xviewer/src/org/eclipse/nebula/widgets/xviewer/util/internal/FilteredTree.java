@@ -270,11 +270,6 @@ public class FilteredTree extends Composite {
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
       treeViewer.getControl().setLayoutData(data);
       treeViewer.getControl().addDisposeListener(new DisposeListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
-          */
          public void widgetDisposed(DisposeEvent e) {
             refreshJob.cancel();
          }
@@ -459,11 +454,6 @@ public class FilteredTree extends Composite {
    protected void createFilterText(Composite parent) {
       filterText = doCreateFilterText(parent);
       filterText.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.accessibility.AccessibleListener#getName(org.eclipse.swt.accessibility.AccessibleEvent)
-          */
          @Override
          public void getName(AccessibleEvent e) {
             String filterTextString = filterText.getText();
@@ -509,11 +499,6 @@ public class FilteredTree extends Composite {
       });
 
       filterText.addFocusListener(new FocusAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
-          */
          @Override
          public void focusGained(FocusEvent e) {
             /*
@@ -534,11 +519,6 @@ public class FilteredTree extends Composite {
       });
 
       filterText.addKeyListener(new KeyAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
          @Override
          public void keyPressed(KeyEvent e) {
             // on a CR we want to transfer focus to the list
@@ -577,11 +557,6 @@ public class FilteredTree extends Composite {
       });
 
       filterText.addModifyListener(new ModifyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-          */
          public void modifyText(ModifyEvent e) {
             textChanged();
          }
@@ -592,11 +567,6 @@ public class FilteredTree extends Composite {
       // pressed)
       if ((filterText.getStyle() & SWT.CANCEL) != 0) {
          filterText.addSelectionListener(new SelectionAdapter() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                if (e.detail == SWT.CANCEL) clearText();
@@ -666,11 +636,6 @@ public class FilteredTree extends Composite {
          filterToolBar.createControl(parent);
 
          IAction clearTextAction = new Action("", IAction.AS_PUSH_BUTTON) {//$NON-NLS-1$
-                  /*
-                   * (non-Javadoc)
-                   * 
-                   * @see org.eclipse.jface.action.Action#run()
-                   */
                   @Override
                   public void run() {
                      clearText();

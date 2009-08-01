@@ -29,9 +29,6 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
    public ArtifactExportWizard() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       try {
@@ -43,17 +40,11 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       mainPage = new ArtifactExportPage(selection);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#addPages()
-    */
    @Override
    public void addPages() {
       addPage(mainPage);

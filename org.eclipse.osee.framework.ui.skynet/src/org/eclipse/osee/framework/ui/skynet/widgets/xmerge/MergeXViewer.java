@@ -140,12 +140,6 @@ public class MergeXViewer extends XViewer {
       return conflicts;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       Conflict conflict = (Conflict) treeItem.getData();
@@ -225,7 +219,6 @@ public class MergeXViewer extends XViewer {
       return super.handleLeftClickInIconArea(treeColumn, treeItem);
    }
 
-   /* (non-Javadoc) Method declared on StructuredViewer. */
    @Override
    protected void doUpdateItem(Widget widget, Object element, boolean fullMap) {
       super.doUpdateItem(widget, element, fullMap);

@@ -35,9 +35,6 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -6334080268467740905L;
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
@@ -125,9 +122,6 @@ public class ArtifactFileServlet extends OseeHttpServlet {
       response.getWriter().write(Lib.exceptionToString(ex));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet#checkAccessControl()
-    */
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
       // Open to all

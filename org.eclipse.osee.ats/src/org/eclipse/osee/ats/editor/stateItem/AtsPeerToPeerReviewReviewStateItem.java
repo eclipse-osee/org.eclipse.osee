@@ -26,21 +26,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    public String getId() {
       return "osee.ats.peerToPeerReview.Review";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.AtsStateItem#transitioned(org.eclipse.osee.ats.editor.SMAManager,
-    *      java.lang.String, java.lang.String, java.util.Collection)
-    */
    @Override
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees,  SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
@@ -56,9 +45,6 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       smaMgr.getSma().persistAttributes(transaction);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsPeerToPeerReviewReviewStateItem - assign review state to all members of review as per role in prepare state.";
    }

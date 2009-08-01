@@ -33,11 +33,6 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
       instance = this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver#getWidgetOptions(java.lang.String)
-    */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
 

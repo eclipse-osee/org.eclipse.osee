@@ -66,33 +66,21 @@ public class DbResource implements IResource {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getContent()
-    */
    @Override
    public InputStream getContent() throws IOException {
       return inputStream;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getLocation()
-    */
    @Override
    public URI getLocation() {
       return uri;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getName()
-    */
    @Override
    public String getName() {
       return generateFileName(artName, hrid, fileTypeExtension);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#isCompressed()
-    */
    @Override
    public boolean isCompressed() {
       return isCompressed;

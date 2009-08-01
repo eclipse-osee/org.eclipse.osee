@@ -156,9 +156,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return namespace;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
    public int compareTo(ArtifactType artifactType) {
       if (artifactType == null) {
          return -1;
@@ -166,9 +163,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return name.compareTo(artifactType.name);
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       final int prime = 31;
@@ -178,9 +172,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (this == obj) return true;

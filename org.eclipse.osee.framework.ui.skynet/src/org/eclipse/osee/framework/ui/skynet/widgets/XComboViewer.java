@@ -77,11 +77,6 @@ public class XComboViewer extends XWidget {
       labelProvider = new ArtifactLabelProvider();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return comboViewer.getControl();
@@ -294,9 +289,6 @@ public class XComboViewer extends XWidget {
       this.grabHorizontal = grabHorizontal;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return getSelected();

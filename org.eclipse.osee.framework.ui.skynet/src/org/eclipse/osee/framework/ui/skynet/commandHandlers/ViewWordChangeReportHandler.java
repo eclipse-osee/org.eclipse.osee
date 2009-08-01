@@ -42,11 +42,6 @@ import org.eclipse.ui.PlatformUI;
 public class ViewWordChangeReportHandler extends AbstractHandler {
    private List<Change> changes;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) {
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(changes.size());

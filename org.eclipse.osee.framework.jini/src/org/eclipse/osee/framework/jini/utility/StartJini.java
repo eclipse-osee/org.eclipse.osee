@@ -232,11 +232,6 @@ public class StartJini extends JiniService {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.service.interfaces.IService#kill()
-    */
    public void kill() throws RemoteException {
       OseeLog.log(StartJini.class, Level.INFO, "De-registering Core Jini Service...");
       deregisterService();

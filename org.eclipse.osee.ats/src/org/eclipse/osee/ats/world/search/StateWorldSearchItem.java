@@ -92,9 +92,6 @@ public class StateWorldSearchItem extends WorldUISearchItem {
       this.selectedStateClass = selectedStateClass;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new StateWorldSearchItem(this);

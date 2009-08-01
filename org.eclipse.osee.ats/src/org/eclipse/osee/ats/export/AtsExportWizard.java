@@ -53,9 +53,6 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
       return mainPage.getSelectedExportOptions();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
 
@@ -73,9 +70,6 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       try {
@@ -85,9 +79,6 @@ public class AtsExportWizard extends Wizard implements IExportWizard {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#addPages()
-    */
    @Override
    public void addPages() {
       if (mainPage == null) {

@@ -108,9 +108,6 @@ public class ElementEntryFactory {
          entry = new ArrayElementEntry(element);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.elements.IElementVisitor#asUnsignedIntegerElement(org.eclipse.osee.ote.message.elements.UnsignedIntegerElement)
-       */
 		public void asLongIntegerElement(LongIntegerElement element) {
 			entry = new LongIntegerElementEntry(element);
 		}

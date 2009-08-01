@@ -61,9 +61,6 @@ public class DateSelectionDialog extends MessageDialog {
       final CalendarCombo dp = new CalendarCombo(filterComp, SWT.SINGLE | SWT.FLAT);
       if (selectedDate != null) dp.setDate(selectedDate);
       dp.addCalendarListener(new CalendarListenerAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.nebula.widgets.calendarcombo.ICalendarListener#dateChanged(java.util.Calendar)
-          */
          @Override
          public void dateChanged(Calendar date) {
             if (date == null) {

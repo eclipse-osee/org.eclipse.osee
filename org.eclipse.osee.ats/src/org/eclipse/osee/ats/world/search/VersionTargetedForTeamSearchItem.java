@@ -120,9 +120,6 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       this.selectedVersionArt = selectedVersionArt;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new VersionTargetedForTeamSearchItem(this);

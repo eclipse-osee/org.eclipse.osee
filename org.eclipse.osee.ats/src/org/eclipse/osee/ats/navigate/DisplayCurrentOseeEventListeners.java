@@ -35,11 +35,6 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
       super(parent, "Display Current OSEE Event Listeners", FrameworkImage.ADMIN);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       String str = OseeEventManager.getListenerReport();

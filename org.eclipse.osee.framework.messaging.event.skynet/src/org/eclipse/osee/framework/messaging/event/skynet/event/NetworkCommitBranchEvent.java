@@ -33,9 +33,6 @@ public class NetworkCommitBranchEvent extends SkynetEventBase {
       return branchId;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(T)
-    */
    public int compareTo(Object o) {
       return 0;
    }

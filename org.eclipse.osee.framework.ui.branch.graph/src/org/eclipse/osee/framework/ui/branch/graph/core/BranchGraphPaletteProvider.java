@@ -90,9 +90,6 @@ public class BranchGraphPaletteProvider {
 
       toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.palette.ToolEntry#createTool()
-          */
          @Override
          public Tool createTool() {
             return new AbstractTool() {
@@ -102,9 +99,6 @@ public class BranchGraphPaletteProvider {
                   return action.getText();
                }
 
-               /* (non-Javadoc)
-                * @see org.eclipse.gef.tools.AbstractTool#activate()
-                */
                @Override
                public void activate() {
                   super.activate();

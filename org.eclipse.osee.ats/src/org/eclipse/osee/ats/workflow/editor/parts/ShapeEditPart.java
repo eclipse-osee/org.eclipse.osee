@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Donald G. Dunne - initial API and implementation
+ *ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.parts;
 
@@ -63,9 +63,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
-    */
    @Override
    protected void createEditPolicies() {
       // allow removal of the associated model element
@@ -73,9 +70,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       // allow the creation of connections and 
       // and the reconnection of connections between Shape instances
       installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new GraphicalNodeEditPolicy() {
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCompleteCommand(org.eclipse.gef.requests.CreateConnectionRequest)
-          */
          @Override
          protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
             ConnectionCreateCommand cmd = (ConnectionCreateCommand) request.getStartCommand();
@@ -83,9 +77,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
             return cmd;
          }
 
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getConnectionCreateCommand(org.eclipse.gef.requests.CreateConnectionRequest)
-          */
          @Override
          protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
             Shape source = (Shape) getHost().getModel();
@@ -95,9 +86,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
             return cmd;
          }
 
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectSourceCommand(org.eclipse.gef.requests.ReconnectRequest)
-          */
          @Override
          protected Command getReconnectSourceCommand(ReconnectRequest request) {
             Connection conn = (Connection) request.getConnectionEditPart().getModel();
@@ -107,9 +95,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
             return cmd;
          }
 
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy#getReconnectTargetCommand(org.eclipse.gef.requests.ReconnectRequest)
-          */
          @Override
          protected Command getReconnectTargetCommand(ReconnectRequest request) {
             Connection conn = (Connection) request.getConnectionEditPart().getModel();
@@ -121,9 +106,6 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       });
    }
 
-   /*(non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
-    */
    @Override
    protected IFigure createFigure() {
       IFigure f = createFigureForModel();
@@ -165,70 +147,44 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
    protected ConnectionAnchor getConnectionAnchor() {
       if (anchor == null) {
-         if (getModel() instanceof EllipticalShape)
+         if (getModel() instanceof EllipticalShape) {
             anchor = new EllipseAnchor(getFigure());
-         else if (getModel() instanceof RectangleShape)
+         } else if (getModel() instanceof RectangleShape) {
             anchor = new ChopboxAnchor(getFigure());
-         else
+         } else {
             // if Shapes gets extended the conditions above must be updated
             throw new IllegalArgumentException("unexpected model");
+         }
       }
       return anchor;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
-    */
    @Override
    protected List getModelSourceConnections() {
       return getCastedModel().getSourceConnections();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelTargetConnections()
-    */
    @Override
    protected List getModelTargetConnections() {
       return getCastedModel().getTargetConnections();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
-    */
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
       return getConnectionAnchor();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
-    */
    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
       return getConnectionAnchor();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
-    */
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
       return getConnectionAnchor();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
-    */
    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
       return getConnectionAnchor();
    }
 
-   /* (non-Javadoc)
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-    */
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       if (Shape.SIZE_PROP.equals(prop) || Shape.LOCATION_PROP.equals(prop)) {

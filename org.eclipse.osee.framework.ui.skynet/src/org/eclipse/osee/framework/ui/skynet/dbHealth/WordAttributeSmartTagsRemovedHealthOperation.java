@@ -23,18 +23,12 @@ public class WordAttributeSmartTagsRemovedHealthOperation extends AbstractWordAt
       super("Word Attribute with Smart Tags");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
-    */
    @Override
    protected void applyFix(AttrData attrData) throws OseeCoreException {
       String fixedData = WordUtil.removeWordMarkupSmartTags(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
-    */
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       boolean result = false;
@@ -46,25 +40,16 @@ public class WordAttributeSmartTagsRemovedHealthOperation extends AbstractWordAt
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Checks Word Attribute data to detect Smart Tags";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Removes smart tags from word attributes";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#getBackUpPrefix()
-    */
    @Override
    protected String getBackUpPrefix() {
       return "SmartTagsFix_";

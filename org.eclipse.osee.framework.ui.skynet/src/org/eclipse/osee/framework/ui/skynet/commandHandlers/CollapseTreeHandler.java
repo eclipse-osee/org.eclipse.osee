@@ -25,20 +25,12 @@ import org.eclipse.ui.PlatformUI;
 public class CollapseTreeHandler extends AbstractHandler {
    private TreeViewer treeViewer;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       treeViewer.collapseAll();
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       if (PlatformUI.getWorkbench().isClosing()) {

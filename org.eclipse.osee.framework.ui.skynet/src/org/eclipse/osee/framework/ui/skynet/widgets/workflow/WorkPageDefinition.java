@@ -111,9 +111,6 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition#getArtifactTypeName()
-    */
    @Override
    public String getArtifactTypeName() {
       return ARTIFACT_NAME;

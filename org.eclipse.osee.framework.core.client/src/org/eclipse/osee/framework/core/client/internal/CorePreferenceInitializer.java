@@ -26,11 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-    */
    public void initializeDefaultPreferences() {
       Preferences store = CoreClientActivator.getInstance().getPluginPreferences();
       try {

@@ -14,9 +14,6 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class OteArtifactImageProvider extends ArtifactImageProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#init()
-    */
    @Override
    public void init() throws OseeCoreException {
       ImageManager.registerBaseImage("Test Procedure", OteImage.TEST_PROCEDURE);

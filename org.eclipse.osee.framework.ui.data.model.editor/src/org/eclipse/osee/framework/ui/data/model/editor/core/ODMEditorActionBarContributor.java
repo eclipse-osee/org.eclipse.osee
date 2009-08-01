@@ -68,10 +68,6 @@ public class ODMEditorActionBarContributor extends ActionBarContributor {
       toolBarManager.add(new Separator());
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
-    */
    @Override
    protected void declareGlobalActionKeys() {
       addGlobalActionKey(ActionFactory.PRINT.getId());

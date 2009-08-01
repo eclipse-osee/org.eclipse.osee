@@ -27,9 +27,6 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
       super("Word Attribute Old style hyperlinks");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
-    */
    @Override
    protected void applyFix(AttrData attrData) throws OseeCoreException {
       String original = attrData.getResource().getData();
@@ -38,9 +35,6 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
       attrData.getResource().setData(converted);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
-    */
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       boolean result = false;
@@ -65,25 +59,16 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
       return changeSet.applyChangesToSelf().toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Checks Word Attribute data to detect old style hyperlinks";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Converts old style hyperlinks to new style";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#getBackUpPrefix()
-    */
    @Override
    protected String getBackUpPrefix() {
       return "HyperlinkFix_";

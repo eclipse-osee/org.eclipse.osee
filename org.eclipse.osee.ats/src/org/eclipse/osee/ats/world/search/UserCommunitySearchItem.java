@@ -100,9 +100,6 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
       this.selectedUserComm = selectedUserComm;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new UserCommunitySearchItem(this);

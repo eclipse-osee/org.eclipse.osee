@@ -203,11 +203,6 @@ public class JavaFileBuilder {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       StringBuilder string = new StringBuilder();

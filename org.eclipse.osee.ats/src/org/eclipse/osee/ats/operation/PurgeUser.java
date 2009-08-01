@@ -57,9 +57,6 @@ public class PurgeUser extends AbstractBlam {
    private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
    private static final String DELETE_ARTIFACT = "delete from osee_artifact where art_id=?";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Purge User";
@@ -183,9 +180,6 @@ public class PurgeUser extends AbstractBlam {
       return buffer.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Purge the specified User.  You will be prompted to choose which user to re-assign existing transactions and relations.";

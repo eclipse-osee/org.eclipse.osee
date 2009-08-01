@@ -45,9 +45,6 @@ public class WordMlTableWriter extends AbstractSheetWriter {
       str.append(TABLE_END);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSheetWriter#startRow()
-    */
    @Override
    protected void startRow() throws IOException {
       // column size is set when the first row is created.

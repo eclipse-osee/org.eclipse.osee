@@ -99,9 +99,6 @@ public class AdvancedPage extends TestManagerPage {
       parent.setLayoutData(data);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#saveData()
-    */
    @Override
    public void saveData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
@@ -112,9 +109,6 @@ public class AdvancedPage extends TestManagerPage {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#restoreData()
-    */
    @Override
    public void restoreData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
@@ -125,9 +119,6 @@ public class AdvancedPage extends TestManagerPage {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#areSettingsValidForRun()
-    */
    @Override
    public boolean areSettingsValidForRun() {
       boolean result = true;
@@ -139,9 +130,6 @@ public class AdvancedPage extends TestManagerPage {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#getErrorMessage()
-    */
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();
@@ -170,9 +158,6 @@ public class AdvancedPage extends TestManagerPage {
 	return false;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#onConnectionLost(org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment)
-	 */
 	@Override
 	public boolean onConnectionLost(IHostTestEnvironment testHost) {
 		return false;

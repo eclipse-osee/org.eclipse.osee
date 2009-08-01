@@ -34,9 +34,6 @@ public class XScriptTable extends XViewer {
       super(parent, style, new XScriptTableFactory(), false, false);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#handleDoubleClick()
-    */
    @Override
    public void handleDoubleClick(TreeColumn col, TreeItem item) {
       XViewerColumn xcol = (XViewerColumn) col.getData();
@@ -50,9 +47,6 @@ public class XScriptTable extends XViewer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#handleLeftClick(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
@@ -64,9 +58,6 @@ public class XScriptTable extends XViewer {
       return super.handleLeftClick(treeColumn, treeItem);
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn aCol = (XViewerColumn) treeColumn.getData();

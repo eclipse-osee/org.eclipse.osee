@@ -75,17 +75,11 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       return getAttributeDataProvider().setValue(toSet);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() throws OseeCoreException {
       return getAsFormattedString(DateAttribute.MMDDYYHHMM);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected Date convertStringToValue(String value) {
       if (value == null || value.equals("")) {

@@ -31,9 +31,6 @@ class TaggerStats extends BaseServerCommand {
             task.getProcessingTime());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       ISearchEngineTagger tagger = Activator.getInstance().getSearchTagger();

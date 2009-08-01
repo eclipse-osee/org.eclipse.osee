@@ -47,9 +47,6 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor#getStorageName()
-    */
    @Override
    public String createStorageName() throws OseeDataStoreException {
       return BinaryContentUtils.getStorageName(attribute);

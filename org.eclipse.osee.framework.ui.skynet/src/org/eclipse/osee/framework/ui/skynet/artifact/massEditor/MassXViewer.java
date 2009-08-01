@@ -118,11 +118,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#createSupportWidgets(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
@@ -272,9 +267,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (getTree() == null || getTree().isDisposed()) {
@@ -297,9 +289,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             try {
@@ -316,9 +305,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    @Override
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             try {

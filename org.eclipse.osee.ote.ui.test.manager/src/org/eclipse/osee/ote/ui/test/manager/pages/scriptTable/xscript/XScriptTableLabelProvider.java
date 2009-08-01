@@ -73,9 +73,6 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
       return (Image) statusImage.get(status);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.nebula.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
       if (XScriptTableFactory.OUPUT_FILE.equals(col)) {
@@ -90,9 +87,6 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider#getColumnText(java.lang.Object, org.eclipse.nebula.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws Exception {
       ScriptTask task = (ScriptTask) element;
@@ -109,31 +103,19 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    @Override
    public void addListener(ILabelProviderListener listener) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    @Override
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-    */
    @Override
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    @Override
    public void removeListener(ILabelProviderListener listener) {
    }

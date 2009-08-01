@@ -198,9 +198,6 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    protected void initializeGraphicalViewer() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
-    */
    @Override
    protected PaletteRoot getPaletteRoot() {
       if (paletteProvider == null) {
@@ -209,9 +206,6 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       return paletteProvider.getPaletteRoot();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
-    */
    @Override
    protected PaletteViewerProvider createPaletteViewerProvider() {
       return new PaletteViewerProvider(getEditDomain()) {
@@ -229,9 +223,6 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPalettePage()
-    */
    @Override
    protected CustomPalettePage createPalettePage() {
       return new CustomPalettePage(getPaletteViewerProvider()) {

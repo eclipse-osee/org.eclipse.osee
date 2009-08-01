@@ -42,9 +42,6 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
       return ArtifactQuery.getArtifactListFromTypes(artifactTypeNames, AtsUtil.getAtsBranch(), false);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new ArtifactTypesSearchItem(this);

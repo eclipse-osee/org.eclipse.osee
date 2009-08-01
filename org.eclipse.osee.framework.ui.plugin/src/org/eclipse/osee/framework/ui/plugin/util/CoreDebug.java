@@ -15,9 +15,6 @@ package org.eclipse.osee.framework.ui.plugin.util;
  */
 public class CoreDebug extends Debug {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.Debug#getPluginName()
-    */
    @Override
    protected String getPluginName() {
       return "org.eclipse.osee.framework.ui.plugin";

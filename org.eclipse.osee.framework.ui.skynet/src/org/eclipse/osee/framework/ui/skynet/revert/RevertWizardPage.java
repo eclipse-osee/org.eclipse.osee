@@ -106,11 +106,6 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
       this.artifacts = artifacts;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       setTitle("The Revert Wizard");
@@ -234,9 +229,6 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String)
-    */
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       // Since this is always a local event, artifact will always be in cache

@@ -37,9 +37,6 @@ public class BasicHexTable extends HexTable{
 		super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, array, bytesPerRow);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.widgets.hex.HexTable#createAndConfigureColumns(org.eclipse.jface.viewers.TableViewer)
-	 */
 	@Override
 	protected void createAndConfigureColumns(TableViewer v, TableColumnLayout layout, int bytesPerRow) {
 		ColumnViewerToolTipSupport.enableFor(v, ToolTip.NO_RECREATE);

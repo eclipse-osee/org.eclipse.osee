@@ -33,9 +33,6 @@ import org.eclipse.ui.PlatformUI;
 public class ShowArtifactInResourceHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       for (Artifact artifact : artifacts) {

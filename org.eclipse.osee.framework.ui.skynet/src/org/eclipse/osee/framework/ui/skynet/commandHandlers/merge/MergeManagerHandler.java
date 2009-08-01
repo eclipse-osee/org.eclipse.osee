@@ -38,9 +38,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class MergeManagerHandler extends CommandHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection =
@@ -65,11 +62,6 @@ public class MergeManagerHandler extends CommandHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       if (PlatformUI.getWorkbench().isClosing()) {

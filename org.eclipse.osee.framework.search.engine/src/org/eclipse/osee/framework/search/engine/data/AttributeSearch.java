@@ -57,12 +57,6 @@ public final class AttributeSearch implements ITagCollector {
       return toReturn;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String,
-    *      java.lang.Long)
-    */
    @Override
    public void addTag(String word, Long codedTag) {
       this.tagStore.add(codedTag);

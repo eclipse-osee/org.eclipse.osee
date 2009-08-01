@@ -41,45 +41,27 @@ public class ResultsEditorInput implements IEditorInput {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
    public boolean exists() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class adapter) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getName()
-    */
    @Override
    public String getName() {
       try {

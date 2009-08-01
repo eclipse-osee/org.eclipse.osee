@@ -29,9 +29,6 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    private List<ISearchPrimitive> criteria;
    private boolean all;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
@@ -51,11 +48,6 @@ public class FromArtifactsSearch implements ISearchPrimitive {
       this.all = true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return "art_id in (" + ArtifactPersistenceManager.getIdSql(criteria, all, dataList, branch) + ")";
    }

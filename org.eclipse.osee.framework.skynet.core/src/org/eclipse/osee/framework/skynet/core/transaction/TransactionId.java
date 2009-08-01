@@ -74,11 +74,6 @@ public class TransactionId implements Serializable, IAdaptable {
       return transactionNumber;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return branch + ": " + transactionNumber;
@@ -121,11 +116,6 @@ public class TransactionId implements Serializable, IAdaptable {
       return TransactionIdManager.getTransactionId(transactionNumber);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof TransactionId) {
@@ -136,11 +126,6 @@ public class TransactionId implements Serializable, IAdaptable {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       int result = 17;
@@ -176,9 +161,6 @@ public class TransactionId implements Serializable, IAdaptable {
       return txType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");

@@ -34,12 +34,6 @@ public class OutfileDataCollector implements IDataListener {
       this.collectedData = new HashMap<String, String>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.ui.define.parser.IDataListener#notifyDataEvent(java.lang.String,
-    *      java.lang.String)
-    */
    public void notifyDataEvent(String name, String value) {
       collectedData.put(name, value);
    }

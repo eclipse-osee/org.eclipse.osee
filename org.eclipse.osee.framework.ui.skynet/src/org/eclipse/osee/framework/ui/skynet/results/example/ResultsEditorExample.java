@@ -187,9 +187,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
       return cwaLine;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction#run(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       final String html = AHTML.simplePage(getStatusReport());

@@ -34,9 +34,6 @@ public class SearchEngine implements ISearchEngine {
       this.statistics = new SearchStatistics();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngine#search(java.lang.String, org.eclipse.osee.framework.search.engine.Options)
-    */
    @Override
    public SearchResult search(String searchString, int branchId, SearchOptions options, String... attributeTypes) throws Exception {
       SearchResult results = new SearchResult();
@@ -80,17 +77,11 @@ public class SearchEngine implements ISearchEngine {
       return results;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngine#clearStatistics()
-    */
    @Override
    public void clearStatistics() {
       this.statistics.clear();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngine#getStatistics()
-    */
    @Override
    public SearchStatistics getStatistics() {
       try {

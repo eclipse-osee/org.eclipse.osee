@@ -49,9 +49,6 @@ public class BranchManagementCommandProvider implements CommandProvider {
       branchCmds.stopBranchIntegrityCheck(ci);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osgi.framework.console.CommandProvider#getHelp()
-    */
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();

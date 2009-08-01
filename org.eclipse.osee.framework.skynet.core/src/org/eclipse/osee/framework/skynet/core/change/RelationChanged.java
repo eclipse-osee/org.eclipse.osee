@@ -67,9 +67,6 @@ public class RelationChanged extends Change {
       this.relationType = relationType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
@@ -170,57 +167,36 @@ public class RelationChanged extends Change {
       return bLinkOrder;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
-    */
    @Override
    public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactName() + " <-> " + getBArtifact().getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
-    */
    @Override
    public String getItemTypeName() {
       return relationType.getTypeName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
-    */
    @Override
    public String getIsValue() {
       return getRationale();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemKind()
-    */
    @Override
    public String getItemKind() {
       return "Relation";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getWasValue()
-    */
    @Override
    public String getWasValue() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemTypeId()
-    */
    @Override
    public int getItemTypeId() {
       return relationType.getRelationTypeId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemId()
-    */
    @Override
    public int getItemId() {
       return relLinkId;

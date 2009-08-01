@@ -38,9 +38,6 @@ public class XmlTextInputStream extends BufferedInputStream {
       this(new ByteArrayInputStream(input.getBytes("UTF-8")));
    }
 
-   /* (non-Javadoc)
-    * @see java.io.BufferedInputStream#read()
-    */
    @Override
    public synchronized int read() throws IOException {
       if (readHelper == null) {
@@ -84,9 +81,6 @@ public class XmlTextInputStream extends BufferedInputStream {
       return value;
    }
 
-   /* (non-Javadoc)
-    * @see java.io.BufferedInputStream#read(byte[], int, int)
-    */
    @Override
    public synchronized int read(byte[] b, int off, int len) throws IOException {
       if (b == null) {

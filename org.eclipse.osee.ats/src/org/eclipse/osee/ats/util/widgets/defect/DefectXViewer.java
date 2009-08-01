@@ -294,9 +294,6 @@ public class DefectXViewer extends XViewer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
@@ -306,12 +303,6 @@ public class DefectXViewer extends XViewer {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       if (!xDefectViewer.isEditable()) {

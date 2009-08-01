@@ -177,9 +177,6 @@ public class ResourceToTraceUnit {
          this.traceUnitToTraceMarks = new HashMap<String, Map<String, TraceUnit>>();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.IResourceHandler#onResourceFound(java.net.URI, java.lang.String, java.nio.CharBuffer)
-       */
       @Override
       public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          String traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);

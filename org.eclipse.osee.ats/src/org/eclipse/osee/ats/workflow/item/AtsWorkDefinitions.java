@@ -179,9 +179,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return workItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getDynamicWorkItemDefinitionsForPage()
-    */
    @Override
    public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
@@ -203,9 +200,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return new ArrayList<WorkItemDefinition>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getWorkFlowDefinition(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
       if (artifact instanceof TeamWorkFlowArtifact) {

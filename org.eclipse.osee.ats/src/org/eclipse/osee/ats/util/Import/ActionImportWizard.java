@@ -29,29 +29,16 @@ public class ActionImportWizard extends Wizard implements IImportWizard {
       setWindowTitle("Action Import Wizard");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       return mainPage.finish();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }
 
-   /**
-    * (non-Javadoc) Method declared on Wizard.
-    */
+   @Override
    public void addPages() {
       mainPage = new ActionImportPage("Import Actions into OSEE ATS", selection);
       addPage(mainPage);

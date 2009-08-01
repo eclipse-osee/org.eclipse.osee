@@ -26,9 +26,6 @@ public class CompositeOperation extends AbstractOperation {
       this.operations = operations;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (operations == null || operations.isEmpty()) {

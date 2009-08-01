@@ -50,17 +50,11 @@ public class ArtifactProcessing implements ITemplateTask {
       extractInformation(artifactSection, elementType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#isTypeNameWildcard()
-    */
    @Override
    public boolean isTypeNameWildcard() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) {
 

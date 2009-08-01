@@ -53,9 +53,6 @@ public class BlamInputSection extends BaseBlamSection {
       this.dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -124,17 +121,11 @@ public class BlamInputSection extends BaseBlamSection {
       return itemsToReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();

@@ -52,9 +52,6 @@ public class EditDispositionAction extends AbstractActionHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.actions.AbstractActionHandler#updateState()
-    */
    @Override
    public void updateState() throws OseeCoreException {
       TestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());

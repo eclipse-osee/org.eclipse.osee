@@ -108,9 +108,6 @@ public class SkynetUserArtifactCustomizeDefaults {
       return sb.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults#isSaveDefaultsEnabled()
-    */
    public boolean isSaveDefaultsEnabled() {
       return user != null;
    }

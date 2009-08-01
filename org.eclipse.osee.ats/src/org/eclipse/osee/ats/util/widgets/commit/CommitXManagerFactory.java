@@ -45,33 +45,21 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
       registerColumns(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Version_Col, Configuring_Object_Col);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isFilterUiAvailable()
-    */
    @Override
    public boolean isFilterUiAvailable() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isHeaderBarAvailable()
-    */
    @Override
    public boolean isHeaderBarAvailable() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isLoadedStatusLabelAvailable()
-    */
    @Override
    public boolean isLoadedStatusLabelAvailable() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isSearchUiAvailable()
-    */
    @Override
    public boolean isSearchUiAvailable() {
       return false;

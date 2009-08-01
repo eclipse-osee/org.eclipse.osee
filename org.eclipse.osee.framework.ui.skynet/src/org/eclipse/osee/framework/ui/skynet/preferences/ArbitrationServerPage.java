@@ -42,9 +42,6 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createContents(Composite parent) {
       Composite content = new Composite(parent, SWT.NONE);
@@ -102,9 +99,6 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       return content;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-    */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
       setDescription("See default Arbitration Server below.");

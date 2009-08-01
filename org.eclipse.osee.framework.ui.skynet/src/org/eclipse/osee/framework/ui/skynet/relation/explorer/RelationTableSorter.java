@@ -37,9 +37,6 @@ public class RelationTableSorter extends ViewerSorter {
       this.criteria = criteria;
    }
 
-   /* (non-Javadoc)
-    * Method declared on ViewerSorter.
-    */
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       ArtifactModel model1 = (ArtifactModel) o1;

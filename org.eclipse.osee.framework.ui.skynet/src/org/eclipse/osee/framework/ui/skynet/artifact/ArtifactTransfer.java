@@ -83,23 +83,14 @@ public class ArtifactTransfer extends ByteArrayTransfer {
       return instance;
    }
 
-   /*
-    * (non-Javadoc) Method declared on Transfer.
-    */
    protected int[] getTypeIds() {
       return new int[] {TYPEID};
    }
 
-   /*
-    * (non-Javadoc) Returns the type names. @return the list of type names
-    */
    protected String[] getTypeNames() {
       return new String[] {TYPE_NAME};
    }
 
-   /*
-    * (non-Javadoc) Method declared on Transfer.
-    */
    protected void javaToNative(Object data, TransferData transferData) {
       if (!(data instanceof ArtifactData)) {
          return;
@@ -136,9 +127,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
       }
    }
 
-   /*
-    * (non-Javadoc) Method declared on Transfer.
-    */
    public ArtifactData nativeToJava(TransferData transferData) {
       /**
        * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (int)

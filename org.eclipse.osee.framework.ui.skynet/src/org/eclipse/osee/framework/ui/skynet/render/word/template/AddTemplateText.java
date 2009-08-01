@@ -36,17 +36,11 @@ public class AddTemplateText implements ITemplateTask {
       this.begin = begin;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(java.lang.StringBuilder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeWrappedException {
       wordMl.addWordMl(template.subSequence(begin, end));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#isTypeNameWildcard()
-    */
    @Override
    public boolean isTypeNameWildcard() {
       return false;

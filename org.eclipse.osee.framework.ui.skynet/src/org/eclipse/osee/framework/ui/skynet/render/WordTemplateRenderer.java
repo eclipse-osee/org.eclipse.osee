@@ -95,9 +95,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#commandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(2);
@@ -112,9 +109,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return commandIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-    */
    @Override
    public WordTemplateRenderer newInstance() throws OseeCoreException {
       return new WordTemplateRenderer();
@@ -372,11 +366,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return data.toByteArray();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
@@ -393,13 +382,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return NO_MATCH;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String,
-    *      org.eclipse.osee.framework.ui.skynet.render.PresentationType)
-    */
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
@@ -409,9 +391,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return getRenderInputStream(artifacts, presentationType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.WordRenderer#renderAttribute(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
@@ -449,13 +428,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String,
-    *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
-    */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();

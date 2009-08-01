@@ -46,9 +46,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
    private ArtifactEditor editor;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       super.createControl(parent);
@@ -69,9 +66,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       getSite().getActionBars().getToolBarManager().update(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-    */
    @Override
    public void selectionChanged(SelectionChangedEvent event) {
       ISelection selection = event.getSelection();
@@ -107,9 +101,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          this.containers = new ArrayList<AttributeTypeContainer>();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-       */
       @Override
       public String getText(Object element) {
          if (element instanceof BaseArtifactEditorInput) {
@@ -120,9 +111,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return String.valueOf(element);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-       */
       @Override
       public Image getImage(Object element) {
          if (element instanceof BaseArtifactEditorInput) {
@@ -146,23 +134,14 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
    private final class InternalContentProvider implements ITreeContentProvider {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-       */
       @Override
       public void dispose() {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-       */
       @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-       */
       @Override
       public Object[] getChildren(Object element) {
          List<Object> items = new ArrayList<Object>();
@@ -189,9 +168,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return items.toArray(new Object[items.size()]);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-       */
       @Override
       public Object getParent(Object element) {
          if (element instanceof BaseArtifactEditorInput) {
@@ -203,9 +179,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return null;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-       */
       @Override
       public boolean hasChildren(Object element) {
          if (element instanceof String) {
@@ -225,9 +198,6 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return false;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-       */
       @Override
       public Object[] getElements(Object inputElement) {
          return getChildren(inputElement);

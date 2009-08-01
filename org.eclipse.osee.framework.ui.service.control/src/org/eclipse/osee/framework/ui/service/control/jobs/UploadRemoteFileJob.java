@@ -181,9 +181,6 @@ public class UploadRemoteFileJob extends Job {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.OK_STATUS;

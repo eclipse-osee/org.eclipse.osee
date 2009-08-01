@@ -44,9 +44,6 @@ public class ExportArtifacts extends AbstractBlam {
    private AttributeType nameAttributeType;
    private static final int NUM_FIXED_COLUMNS = 4;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Export Artifacts";

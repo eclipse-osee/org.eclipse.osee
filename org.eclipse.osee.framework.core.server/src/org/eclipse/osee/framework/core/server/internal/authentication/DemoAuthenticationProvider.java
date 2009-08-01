@@ -24,26 +24,17 @@ public class DemoAuthenticationProvider implements IAuthenticationProvider {
    private final boolean autoAuthenticate = true;
    private final String DEMO_USER = "Joe Smith";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#asOseeUserId(org.eclipse.osee.framework.core.server.OseeCredential)
-    */
    @Override
    public IOseeUserInfo asOseeUserId(OseeCredential credential) throws OseeAuthenticationException {
       IOseeUserInfo oseeUserInfo = UserDataStore.getOseeUserFromOseeDb(DEMO_USER);
       return oseeUserInfo != null ? oseeUserInfo : UserDataStore.createUser(true, DEMO_USER, DEMO_USER, "", true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#authenticate(org.eclipse.osee.framework.core.server.OseeCredential)
-    */
    @Override
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException {
       return autoAuthenticate;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IAuthenticationProvider#getProtocol()
-    */
    @Override
    public String getProtocol() {
       return "demo";

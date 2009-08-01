@@ -85,9 +85,6 @@ public class DialogWithEntry extends MessageDialog {
          Button button = new Button(headerComp, SWT.PUSH);
          button.setText("Clear");
          button.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
@@ -98,9 +95,6 @@ public class DialogWithEntry extends MessageDialog {
          fontButton = new Button(headerComp, SWT.CHECK);
          fontButton.setText("Fixed Font");
          fontButton.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);

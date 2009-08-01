@@ -31,17 +31,11 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
    private final String ENUM_TYPE_ID = "enumTypeId";
    private final String TOOL_TIP = "toolTip";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#getElementName()
-    */
    @Override
    public String getElementName() {
       return ATTRIBUTE_TAG;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.utility.ODMXmlWriter.DataTypeWriter#writeBody(org.eclipse.osee.framework.ui.data.model.editor.model.DataType)
-    */
    @Override
    protected void writeBody(XMLStreamWriter writer, AttributeDataType dataType) throws XMLStreamException {
       writer.writeStartElement(MULTIPLICITY);
@@ -57,9 +51,6 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
       writeTextElement(writer, TOOL_TIP, dataType.getToolTipText());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#populateFromTextElement(org.eclipse.osee.framework.ui.data.model.editor.model.DataType, java.lang.String, java.lang.String)
-    */
    @Override
    protected void populateFromTextElement(AttributeDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromTextElement(dataType, tag, text);
@@ -70,9 +61,6 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
       if (TOOL_TIP.equals(tag)) dataType.setToolTipText(text);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#populateFromCDataElement(org.eclipse.osee.framework.ui.data.model.editor.model.DataType, java.lang.String, java.lang.String)
-    */
    @Override
    protected void populateFromCDataElement(AttributeDataType dataType, String tag, String text) throws XMLStreamException {
       super.populateFromCDataElement(dataType, tag, text);
@@ -80,9 +68,6 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
       if (ENUM_TYPE_ID.equals(tag)) dataType.setEnumTypeId(Integer.parseInt(text));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#populateFromAttributes(org.eclipse.osee.framework.ui.data.model.editor.model.DataType, java.util.String, java.util.Map)
-    */
    @Override
    protected void populateFromAttributes(AttributeDataType dataType, String tag, Map<String, String> attributes) throws XMLStreamException {
       super.populateFromAttributes(dataType, tag, attributes);
@@ -98,9 +83,6 @@ public class AttributeDataTypeXml extends BaseXmlDataType<AttributeDataType> {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#newDataTypeInstance()
-    */
    @Override
    protected AttributeDataType newDataTypeInstance() {
       return new AttributeDataType();

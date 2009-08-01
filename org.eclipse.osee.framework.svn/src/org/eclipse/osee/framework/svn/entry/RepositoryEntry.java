@@ -73,20 +73,10 @@ public class RepositoryEntry implements IRepositoryEntry {
       return modifiedFlag;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastAuthor()
-    */
    public String getLastAuthor() {
       return getField(EntryFields.lastAuthor);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getLastModificationDate()
-    */
    public String getLastModificationDate() {
       return getField(EntryFields.dateCommitted);
    }
@@ -95,11 +85,6 @@ public class RepositoryEntry implements IRepositoryEntry {
       return fileType;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.svn.entry.IRepositoryEntry#getVersionControlSystem()
-    */
    public String getVersionControlSystem() {
       return controlSystem;
    }

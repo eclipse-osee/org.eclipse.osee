@@ -91,38 +91,17 @@ public class InactiveState extends AbstractSubscriptionState {
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #getAvailableTypes()
-	 */
 	@Override
 	public Set<MemType> getAvailableTypes() {
 		return EnumSet.noneOf(MemType.class);
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isActive()
-	 */
 	@Override
 	public boolean isActive() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isResolved()
-	 */
 	@Override
 	public boolean isResolved() {
 		return true;

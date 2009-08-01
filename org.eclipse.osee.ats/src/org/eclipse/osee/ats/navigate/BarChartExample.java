@@ -57,9 +57,6 @@ public class BarChartExample extends XNavigateItemAction {
       super(parent, "Bar Chart Example", AtsImage.REPORT);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction#run(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       ResultsEditor.open(new IResultsEditorProvider() {

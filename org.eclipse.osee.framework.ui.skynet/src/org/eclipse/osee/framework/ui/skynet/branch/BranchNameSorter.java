@@ -26,9 +26,6 @@ public class BranchNameSorter extends ViewerSorter {
       super();
    }
 
-   /*
-    * (non-Javadoc) Method declared on ViewerSorter.
-    */
    @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {

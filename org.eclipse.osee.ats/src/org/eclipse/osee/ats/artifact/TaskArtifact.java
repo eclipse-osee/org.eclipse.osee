@@ -62,11 +62,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getWorldViewRelatedToState().equals(getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#onInitializationComplete()
-    */
    @Override
    public void onInitializationComplete() {
       super.onInitializationComplete();
@@ -104,11 +99,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isTaskable()
-    */
    @Override
    public boolean isTaskable() {
       return false;
@@ -187,9 +177,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getParentSMA().getWorldViewWorkPackage();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewEstimatedCompletionDate()
-    */
    @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
       Date value = super.getWorldViewEstimatedCompletionDate();
@@ -197,9 +184,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getParentSMA().getWorldViewEstimatedCompletionDate();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewEstimatedReleaseDate()
-    */
    @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
       Date value = super.getWorldViewEstimatedReleaseDate();
@@ -282,11 +266,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
-    */
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
@@ -324,11 +303,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return remain;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentActionArtifact()
-    */
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       StateMachineArtifact sma = getParentSMA();
@@ -338,11 +312,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
          return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentTeamWorkflow()
-    */
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       StateMachineArtifact sma = getParentSMA();
@@ -357,49 +326,26 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getImplementersByState(TaskStates.InWork.name());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
-    */
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
-    */
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
-    */
    @Override
    public double getWorldViewWeeklyBenefit() {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isWorldViewAnnualCostAvoidanceValid()
-    */
    @Override
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
       return Result.TrueResult;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewLegacyPCR()
-    */
    @Override
    public String getWorldViewLegacyPCR() throws OseeCoreException {
       StateMachineArtifact sma = getParentSMA();
@@ -407,9 +353,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       return null;
@@ -422,9 +365,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
-    */
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentTeamWorkflow().getHumanReadableId();

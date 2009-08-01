@@ -30,17 +30,11 @@ public class OfpDebugPrompt extends ScriptPausePromptImpl {
       super(connector, script, id, message);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.ScriptPausePromptImpl#resume()
-    */
    @Override
    public void resume() throws RemoteException {
       super.resume();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.AbstractInteractivePrompt#waitForResponse(org.eclipse.osee.ote.core.TestScript, boolean)
-    */
    @Override
    protected String waitForResponse(TestScript script, boolean executionUnitPause) throws InterruptedException, Exception {
       synchronized (script) {

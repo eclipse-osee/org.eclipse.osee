@@ -50,9 +50,6 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
       return PROVIDES_ACCEPTABLE_INPUT;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.operation.WorkflowStep#perform(java.util.List)
-    */
    public List<Artifact> perform(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception {
       return applyToArtifacts(artifacts, monitor);
    }

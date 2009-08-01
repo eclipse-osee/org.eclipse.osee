@@ -78,9 +78,6 @@ public class XViewerTest extends XViewer {
       Label label = new Label(Shell_1, SWT.None);
       label.setText("Refresh");
       label.addListener(SWT.MouseUp, new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             List<Object> tasks = new ArrayList<Object>();

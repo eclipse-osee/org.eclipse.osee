@@ -59,9 +59,6 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       super(editTeamWorkflowSearchItem, AtsImage.TEAM_WORKFLOW);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
    @Override
    public TeamWorkflowSearchWorkflowSearchItem copy() throws OseeArgumentException {
       return new TeamWorkflowSearchWorkflowSearchItem(this);
@@ -71,9 +68,6 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return new TeamWorkflowSearchWorkflowSearchItem(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getParameterXWidgetXml()
-    */
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
@@ -91,18 +85,12 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       "</xWidgets>";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#performSearchGetResults(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
             false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getWorldEditorLabel(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
@@ -126,9 +114,6 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return "Team Workflows" + sb.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       if (widget.getLabel().equals("Assignee")) {
@@ -246,23 +231,14 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (releasedCombo != null) releasedCombo.set(option.toString());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#createXWidgetLayoutData(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData, org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget widget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#widgetCreating(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.WorldParameterSearchItem#isParameterSelectionValid()
-    */
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
@@ -296,17 +272,11 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getDynamicWidgetLayoutListener()
-    */
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
-    */
    @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) return null;

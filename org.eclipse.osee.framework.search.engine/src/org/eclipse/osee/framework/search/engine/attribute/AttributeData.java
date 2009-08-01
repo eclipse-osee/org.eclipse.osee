@@ -85,9 +85,6 @@ public class AttributeData implements IAttributeLocator {
             getGammaId(), getUri(), getTaggerId());
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
@@ -96,9 +93,6 @@ public class AttributeData implements IAttributeLocator {
       return other.getGammaId() == this.getGammaId();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return (int) (gammaId * 37);

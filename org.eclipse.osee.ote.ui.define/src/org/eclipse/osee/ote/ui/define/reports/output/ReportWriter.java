@@ -34,16 +34,10 @@ public class ReportWriter implements IReportWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#getReport()
-    */
    public String getReport() throws IOException {
       return outputStream.toString(TableWriterAdaptor.ENCODING);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#length()
-    */
    public int length() throws Exception {
       if (!tableWriterAdapter.isCompleted()) {
          try {
@@ -56,9 +50,6 @@ public class ReportWriter implements IReportWriter {
       return outputStream.toByteArray().length;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeHeader(java.lang.String[])
-    */
    public void writeHeader(String[] headers) {
       try {
          tableWriterAdapter.writeHeader(headers);
@@ -67,23 +58,14 @@ public class ReportWriter implements IReportWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeRow(java.lang.String[])
-    */
    public void writeRow(String... cellData) {
       tableWriterAdapter.writeRow(cellData);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeTitle(java.lang.String)
-    */
    public void writeTitle(String title) {
       tableWriterAdapter.writeTitle(title);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeToOutput(java.io.OutputStream)
-    */
    public void writeToOutput(OutputStream outputStream) throws IOException {
       outputStream.write(this.outputStream.toByteArray());
    }

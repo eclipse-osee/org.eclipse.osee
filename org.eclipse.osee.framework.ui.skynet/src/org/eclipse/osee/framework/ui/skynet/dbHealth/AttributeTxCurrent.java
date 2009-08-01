@@ -27,9 +27,6 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       super("TX_Current Attribute Errors");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       String[] columnHeaders = new String[] {"Count", "Attr id", "Branch id"};
@@ -90,17 +87,11 @@ public class AttributeTxCurrent extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.05));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Enter Check Description Here";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Enter Fix Description Here";

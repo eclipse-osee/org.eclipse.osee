@@ -148,33 +148,21 @@ public class OverviewPage extends TestManagerPage implements IActionable {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#areSettingsValidForRun()
-    */
    @Override
    public boolean areSettingsValidForRun() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#restoreData()
-    */
    @Override
    public void restoreData() {
       // Do Nothing
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#saveData()
-    */
    @Override
    public void saveData() {
       // Do Nothing
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#getErrorMessage()
-    */
    @Override
    public String getErrorMessage() {
       return "";
@@ -191,9 +179,6 @@ public class OverviewPage extends TestManagerPage implements IActionable {
 
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#onConnectionLost(org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment)
-	 */
 	@Override
 	public boolean onConnectionLost(IHostTestEnvironment testHost) {
 		return false;

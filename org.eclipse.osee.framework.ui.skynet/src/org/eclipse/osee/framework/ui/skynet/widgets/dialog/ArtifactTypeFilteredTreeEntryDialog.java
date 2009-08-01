@@ -32,9 +32,6 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
       this.entryName = entryName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog#createPreCustomArea(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected void createPreCustomArea(Composite parent) {
       super.createPreCustomArea(parent);
@@ -66,9 +63,6 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
       this.entryValue = entryValue;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog#isComplete()
-    */
    @Override
    protected Result isComplete() {
       if (entryValue == null || entryValue.equals("")) {

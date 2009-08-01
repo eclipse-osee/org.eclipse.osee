@@ -42,25 +42,16 @@ public class ResultsEditorChartTab implements IResultsEditorChartTab {
       this.chart = chart;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorChartTab#getChart()
-    */
    @Override
    public Chart getChart() throws OseeCoreException {
       return chart;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab#getTabName()
-    */
    @Override
    public String getTabName() {
       return tabName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab#createTab(org.eclipse.swt.widgets.Composite, org.eclipse.osee.framework.ui.skynet.results.ResultsEditor)
-    */
    @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
       Chart chart = getChart();

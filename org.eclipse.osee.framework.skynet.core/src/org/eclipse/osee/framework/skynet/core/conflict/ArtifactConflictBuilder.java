@@ -41,9 +41,6 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
       this.destModType = destModType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder#getConflict(org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    @Override
    public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
       return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, mergeBranch, sourceBranch,

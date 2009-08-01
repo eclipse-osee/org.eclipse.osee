@@ -116,13 +116,6 @@ public class TestLogger extends Logger implements ITestLogger {
       throwing(source.getClass().getName(), null, thrown);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.environment.interfaces.ITestLogger#testpoint(osee.test.core.environment.interfaces.ITestEnvironmentAccessor,
-    *      osee.test.core.TestScript, osee.test.core.TestCase, boolean, java.lang.String,
-    *      java.lang.String, java.lang.String)
-    */
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, boolean passed,
          String testPointName, String exp, String act) {
       log(new TestPointRecord(env, script, testCase, testPointName, exp, act, passed));
@@ -132,9 +125,6 @@ public class TestLogger extends Logger implements ITestLogger {
       log(record);
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.environment.interfaces.ITestLogger#testpoint(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, osee.test.core.TestScript, osee.test.core.TestCase, osee.test.core.environment.interfaces.ITestPoint)
-    */
    public void testpoint(ITestEnvironmentAccessor env, TestScript script, TestCase testCase, ITestPoint testPoint) {
       log(new TestPointRecord(env, script, testCase, testPoint));
    }

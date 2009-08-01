@@ -42,11 +42,6 @@ public class NewAction extends Action {
       setToolTipText("Create New Action");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       super.run();

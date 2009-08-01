@@ -84,9 +84,6 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       return itemToFixCount;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
       detailedReport.delete(0, detailedReport.length());

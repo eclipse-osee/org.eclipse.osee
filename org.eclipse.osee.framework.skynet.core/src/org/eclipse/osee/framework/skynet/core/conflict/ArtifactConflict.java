@@ -53,11 +53,6 @@ public class ArtifactConflict extends Conflict {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
@@ -69,17 +64,11 @@ public class ArtifactConflict extends Conflict {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#clearValue()
-    */
    @Override
    public boolean clearValue() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
-    */
    public ConflictStatus computeStatus() throws OseeCoreException {
       if (!sourceDeleted)
          return super.computeStatus(getObjectId(), ConflictStatus.NOT_RESOLVABLE);
@@ -92,25 +81,16 @@ public class ArtifactConflict extends Conflict {
       return getArtifact().getArtId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getChangeItem()
-    */
    @Override
    public String getChangeItem() {
       return CHANGE_ITEM;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getConflictType()
-    */
    @Override
    public ConflictType getConflictType() {
       return ConflictType.ARTIFACT;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getDestDisplayData()
-    */
    @Override
    public String getDestDisplayData() {
       if (sourceDeleted) {
@@ -120,24 +100,15 @@ public class ArtifactConflict extends Conflict {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeDisplayData()
-    */
    @Override
    public String getMergeDisplayData() {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeValue()
-    */
    protected Object getMergeValue() throws OseeCoreException {
       return getArtifact();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getSourceDisplayData()
-    */
    @Override
    public String getSourceDisplayData() {
       if (sourceDeleted) {
@@ -147,41 +118,26 @@ public class ArtifactConflict extends Conflict {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsDestination()
-    */
    @Override
    public boolean mergeEqualsDestination() throws OseeCoreException {
       return getDestArtifact().equals(getMergeValue());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsSource()
-    */
    @Override
    public boolean mergeEqualsSource() throws OseeCoreException {
       return getSourceArtifact().equals(getMergeValue());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setToDest()
-    */
    @Override
    public boolean setToDest() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setToSource()
-    */
    @Override
    public boolean setToSource() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#sourceEqualsDestination()
-    */
    @Override
    public boolean sourceEqualsDestination() {
       return false;
@@ -195,9 +151,6 @@ public class ArtifactConflict extends Conflict {
       throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#applyPreviousMerge(int)
-    */
    @Override
    public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
       return false;

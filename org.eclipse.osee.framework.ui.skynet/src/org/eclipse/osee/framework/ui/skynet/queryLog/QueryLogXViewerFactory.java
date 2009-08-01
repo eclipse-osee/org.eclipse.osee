@@ -46,11 +46,6 @@ public class QueryLogXViewerFactory extends SkynetXViewerFactory {
       return custData;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
       for (XViewerColumn xCol : getDefaultTableCustomizeData().getColumnData().getColumns()) {

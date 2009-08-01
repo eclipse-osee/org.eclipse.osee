@@ -60,9 +60,6 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.traceability.report.AbstractReport#process(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void process(IProgressMonitor monitor) throws OseeCoreException {
       notifyOnTableHeader(getHeader());

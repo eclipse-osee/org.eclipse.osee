@@ -31,12 +31,6 @@ public class WorldXViewerSorter extends XViewerSorter {
       this.xViewer = xViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter#compare(org.eclipse.jface.viewers.Viewer,
-    *      java.lang.Object, java.lang.Object, int)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {

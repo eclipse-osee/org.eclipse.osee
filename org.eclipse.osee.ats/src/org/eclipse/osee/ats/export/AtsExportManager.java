@@ -166,17 +166,11 @@ public class AtsExportManager implements IAtsWorldEditorMenuItem {
       return Result.TrueResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#getMenuItemName()
-    */
    @Override
    public String getMenuItemName() throws OseeCoreException {
       return "Export Selected ATS Artifacts";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#runMenuItem(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
       try {

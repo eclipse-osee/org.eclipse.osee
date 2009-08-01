@@ -39,9 +39,6 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
       OseeLog.register(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.ContributionItem#dispose()
-    */
    @Override
    public void dispose() {
       OseeLog.deregister(this);
@@ -61,41 +58,26 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
-    */
    @Override
    protected Image getDisabledImage() {
       return DISABLED_IMAGE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
-    */
    @Override
    protected String getDisabledToolTip() {
       return errorMessage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
-    */
    @Override
    protected Image getEnabledImage() {
       return ImageManager.getImage(FrameworkImage.APPLICATION_SERVER);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
-    */
    @Override
    protected String getEnabledToolTip() {
       return okMessage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.logging.IStatusListener#onStatus(org.eclipse.osee.framework.logging.IHealthStatus)
-    */
    @Override
    public void onStatus(final IHealthStatus status) {
       Display.getDefault().asyncExec(new Runnable() {

@@ -88,9 +88,6 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          final ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          Job job = new Job("Loading WorldView...") {
-            /* (non-Javadoc)
-             * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-             */
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                try {

@@ -28,9 +28,6 @@ public class MinMaxOSEECheckedFilteredTreeDialog extends OSEECheckedFilteredTree
       this.maxSelectionRequired = maxSelectionRequired;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog#isComplete()
-    */
    @Override
    protected Result isComplete() {
       int numberSelected = getResult().length;

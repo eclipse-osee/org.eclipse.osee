@@ -65,9 +65,6 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
       }
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#clone()
-    */
    @Override
    protected SearchStatistics clone() throws CloneNotSupportedException {
       SearchStatistics other = (SearchStatistics) super.clone();

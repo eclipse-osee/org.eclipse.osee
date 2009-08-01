@@ -42,17 +42,11 @@ public class TasksActionHyperItem extends ActionHyperItem {
       WorldEditor.open(new WorldEditorSimpleProvider("Tasks", taskArtifacts));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.ActionHyperItem#calculateCurrent(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public void calculateCurrent(Artifact currentArtifact) {
       setCurrent(taskArtifacts.contains(currentArtifact));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.ActionHyperItem#getImage()
-    */
    @Override
    public Image getImage() throws OseeCoreException {
       return ImageManager.getImage(ArtifactTypeManager.getType(TaskArtifact.ARTIFACT_NAME));

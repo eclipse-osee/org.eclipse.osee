@@ -84,11 +84,6 @@ public class XChangeWidget extends XWidget implements IActionable {
       super("Change Report");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
@@ -282,11 +277,6 @@ public class XChangeWidget extends XWidget implements IActionable {
       return xChangeViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return xChangeViewer.getInput();
@@ -353,25 +343,16 @@ public class XChangeWidget extends XWidget implements IActionable {
       Jobs.startJob(job);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
@@ -407,9 +388,6 @@ public class XChangeWidget extends XWidget implements IActionable {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();

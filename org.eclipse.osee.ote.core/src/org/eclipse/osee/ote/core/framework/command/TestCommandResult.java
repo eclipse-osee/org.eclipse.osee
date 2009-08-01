@@ -38,9 +38,6 @@ public class TestCommandResult implements ITestCommandResult {
       return status;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.command.ITestCommandResult#getException()
-    */
    public Throwable getThrowable() {
       return th;
    }

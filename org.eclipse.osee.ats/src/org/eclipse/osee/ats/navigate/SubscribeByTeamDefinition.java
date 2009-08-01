@@ -37,11 +37,6 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
       super(parent, "Subscribe by Team Definition", FrameworkImage.EMAIL);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       final TeamDefinitionCheckTreeDialog diag =

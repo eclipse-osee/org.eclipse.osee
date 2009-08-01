@@ -23,9 +23,6 @@ class SequenceHandle implements ISequenceHandle {
    private final Condition endSequenceCondition = lock.newCondition();
    private boolean endSequence = false;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.test.ISequenceHandle#waitForEndSequence()
-    */
    @Override
    public boolean waitForEndSequence(long timeout, TimeUnit timeUnit) throws InterruptedException {
       lock.lock();

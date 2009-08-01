@@ -27,11 +27,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class AtsArtifactAnnotations implements IArtifactAnnotation {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactAnnotation#getAnnotations(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact instanceof StateMachineArtifact) {

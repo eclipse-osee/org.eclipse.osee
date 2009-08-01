@@ -35,9 +35,6 @@ class OseeServerThreadFactory implements ThreadFactory {
       this(name, Thread.NORM_PRIORITY);
    }
 
-   /* (non-Javadoc)
-    * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
-    */
    public Thread newThread(Runnable runnable) {
       OseeServerThread thread = new OseeServerThread(runnable, threadName + ":" + threads.size());
       thread.setPriority(priority);

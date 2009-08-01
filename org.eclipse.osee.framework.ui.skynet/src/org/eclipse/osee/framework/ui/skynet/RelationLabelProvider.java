@@ -32,11 +32,6 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       this.artifact = artifact;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-    */
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof RelationType && columnIndex == 0) {
          return ImageManager.getImage(FrameworkImage.RELATION);
@@ -51,11 +46,6 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-    */
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
          RelationTypeSide side = (RelationTypeSide) element;
@@ -79,37 +69,16 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void addListener(ILabelProviderListener listener) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    public void dispose() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
-    *      java.lang.String)
-    */
    public boolean isLabelProperty(Object element, String property) {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void removeListener(ILabelProviderListener listener) {
    }
 

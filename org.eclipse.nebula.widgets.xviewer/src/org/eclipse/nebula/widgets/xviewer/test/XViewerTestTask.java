@@ -103,9 +103,6 @@ public class XViewerTestTask implements IXViewerTestTask {
       return lastRunDate;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.test.IXViewerTestTask#getLastRunDateStr()
-    */
    @Override
    public String getLastRunDateStr() {
       return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(getLastRunDate());

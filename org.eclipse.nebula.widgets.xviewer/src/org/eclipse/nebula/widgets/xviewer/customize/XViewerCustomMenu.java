@@ -133,9 +133,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Table Customization");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().handleTableCustomization();
@@ -147,9 +144,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("View Table Report");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             performViewTableReport();
@@ -167,9 +161,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Filter By Column");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             performFilterByColumn();
@@ -181,9 +172,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Clear All Filters");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().clearFilters();
@@ -195,9 +183,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Clear All Sorting");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().clearSorter();
@@ -215,9 +200,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Copy Selected Row(s)- Ctrl-C");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             performCopy();
@@ -229,9 +211,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("Copy Selected Column - Ctrl-Shift-C");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             performCopyCell();
@@ -243,9 +222,6 @@ public class XViewerCustomMenu {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("View Selected Cell Data");
       item.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             performViewCell();
@@ -424,11 +400,6 @@ public class XViewerCustomMenu {
          return;
       }
       ListDialog ld = new ListDialog(xViewer.getTree().getShell()) {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.ui.dialogs.ListDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-          */
          @Override
          protected Control createDialogArea(Composite container) {
             Control control = super.createDialogArea(container);
@@ -465,11 +436,6 @@ public class XViewerCustomMenu {
          return;
       }
       ListDialog ld = new ListDialog(xViewer.getTree().getShell()) {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.ui.dialogs.ListDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-          */
          @Override
          protected Control createDialogArea(Composite container) {
             Control control = super.createDialogArea(container);
@@ -537,12 +503,6 @@ public class XViewerCustomMenu {
    };
 
    static ViewerSorter treeColumnSorter = new ViewerSorter() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer,
-       *      java.lang.Object, java.lang.Object)
-       */
       @SuppressWarnings("unchecked")
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {

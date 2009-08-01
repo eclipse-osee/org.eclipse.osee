@@ -35,9 +35,6 @@ public class CancelWatcher extends Thread {
       setDaemon(true);
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Thread#run()
-    */
    @Override
    public void run() {
       while (!done) {

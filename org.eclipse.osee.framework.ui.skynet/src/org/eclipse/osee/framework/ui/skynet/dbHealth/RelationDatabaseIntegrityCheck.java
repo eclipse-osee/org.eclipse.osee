@@ -91,9 +91,6 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       super("Relation Integrity Errors");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
@@ -235,17 +232,11 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Enter Check Description Here";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Enter Fix Description Here";

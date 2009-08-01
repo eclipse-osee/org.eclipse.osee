@@ -50,9 +50,6 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       return toolBarAction;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Show Merge Manager";
@@ -80,15 +77,9 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       OseeEventManager.removeListener(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             refresh();
@@ -97,15 +88,9 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             refresh();

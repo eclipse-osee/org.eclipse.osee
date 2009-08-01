@@ -27,9 +27,6 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
                ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
                ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider#getDynamicXWidgetLayoutData(org.eclipse.osee.framework.skynet.core.attribute.AttributeType)
-    */
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
       DynamicXWidgetLayoutData layoutData = super.getDynamicXWidgetLayoutData(attributeType).iterator().next();

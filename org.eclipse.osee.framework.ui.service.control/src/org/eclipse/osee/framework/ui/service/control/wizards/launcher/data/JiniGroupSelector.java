@@ -129,29 +129,14 @@ public class JiniGroupSelector implements IRegistrarListener {
       this.reggieCache.removeListener(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IRegistrarListener#reggieAdded(java.util.List)
-    */
    public void reggieAdded(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IRegistrarListener#reggieChanged(java.util.List)
-    */
    public void reggieChanged(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.discovery.IRegistrarListener#reggieRemoved(java.util.List)
-    */
    public void reggieRemoved(List<ServiceRegistrar> serviceRegistrars) {
       populateGroups();
    }

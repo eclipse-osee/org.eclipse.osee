@@ -26,33 +26,21 @@ public class OseeUser implements IOseeUser {
       this.isActive = isActive;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeUser#getEmail()
-    */
    @Override
    public String getEmail() {
       return userEmail;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeUser#getName()
-    */
    @Override
    public String getName() {
       return userName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeUser#getUserID()
-    */
    @Override
    public String getUserID() {
       return userId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeUser#isActive()
-    */
    @Override
    public boolean isActive() {
       return isActive;

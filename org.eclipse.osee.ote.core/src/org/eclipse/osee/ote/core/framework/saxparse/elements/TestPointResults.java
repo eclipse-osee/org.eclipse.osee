@@ -26,9 +26,6 @@ public class TestPointResults extends ElementHandlers{
       super("TestPointResults");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.saxparse.ElementHandlers#createStartElementFoundObject(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
       TestPointResultsData data = new TestPointResultsData(attributes.getValue("aborted"), attributes.getValue("fail"), attributes.getValue("pass"), attributes.getValue("total"));

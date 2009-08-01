@@ -28,9 +28,6 @@ final class StartUpRunnable extends TimerTask {
       this.tagger = tagger;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    @Override
    public void run() {
       try {

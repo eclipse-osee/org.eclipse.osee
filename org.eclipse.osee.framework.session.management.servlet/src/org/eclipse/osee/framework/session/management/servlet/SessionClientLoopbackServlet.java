@@ -41,17 +41,11 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 6402608843937837246L;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.OseeHttpServlet#checkAccessControl(javax.servlet.http.HttpServletRequest)
-    */
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
       // Open to All;
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {

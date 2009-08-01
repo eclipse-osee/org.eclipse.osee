@@ -32,9 +32,6 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public class PurgeDeletedAttributes extends AbstractBlam {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Purge Deleted Attributes";

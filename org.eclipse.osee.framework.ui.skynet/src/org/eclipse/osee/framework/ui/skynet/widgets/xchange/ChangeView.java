@@ -181,11 +181,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    private static final String BRANCH_ID = "branchId";
    private static final String TRANSACTION_NUMBER = "transactionNumber";
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
-    */
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
@@ -230,9 +225,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branch == null || branchId != branch.getBranchId()) {
@@ -260,9 +252,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
@@ -272,9 +261,6 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
-    */
    @Override
    public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       if (transactionId == null) {

@@ -33,18 +33,12 @@ public class XViewerTestCustomizations extends XViewerCustomizations {
    public XViewerTestCustomizations() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#deleteCustomization(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData)
-    */
    @Override
    public void deleteCustomization(CustomizeData custData) throws Exception {
       File file = new File(getFilename(custData));
       if (file.exists()) file.delete();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getSavedCustDatas()
-    */
    @Override
    public List<CustomizeData> getSavedCustDatas() {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
@@ -55,9 +49,6 @@ public class XViewerTestCustomizations extends XViewerCustomizations {
       return custDatas;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getUserDefaultCustData()
-    */
    @Override
    public CustomizeData getUserDefaultCustData() {
       File file = new File(getDefaultFilename());
@@ -73,17 +64,11 @@ public class XViewerTestCustomizations extends XViewerCustomizations {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#isCustomizationPersistAvailable()
-    */
    @Override
    public boolean isCustomizationPersistAvailable() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#isCustomizationUserDefault(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData)
-    */
    @Override
    public boolean isCustomizationUserDefault(CustomizeData custData) {
       File file = new File(getDefaultFilename());
@@ -92,9 +77,6 @@ public class XViewerTestCustomizations extends XViewerCustomizations {
       return custData.getGuid().equals(defaultGuid);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#saveCustomization(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData)
-    */
    @Override
    public void saveCustomization(CustomizeData custData) throws Exception {
       XViewerLib.writeStringToFile(custData.getXml(true), new File(getFilename(custData)));
@@ -109,9 +91,6 @@ public class XViewerTestCustomizations extends XViewerCustomizations {
       return "C:/UserData/CustDataUserDefault.txt";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#setUserDefaultCustData(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData, boolean)
-    */
    @Override
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
       if (set) {

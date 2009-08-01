@@ -61,9 +61,6 @@ public class NativeArtifact extends Artifact {
       setSoleAttributeValue(CONTENT_NAME, inputStream);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#getSoleAttributeValueAsString(java.lang.String, java.lang.String)
-    */
    @Override
    public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
       String toReturn = null;

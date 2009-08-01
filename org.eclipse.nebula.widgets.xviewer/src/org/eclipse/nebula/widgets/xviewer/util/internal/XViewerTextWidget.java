@@ -81,11 +81,6 @@ public class XViewerTextWidget extends XViewerWidget {
       return label + ": *" + text + "*";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return sText;
@@ -474,11 +469,6 @@ public class XViewerTextWidget extends XViewerWidget {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return sText.getText();

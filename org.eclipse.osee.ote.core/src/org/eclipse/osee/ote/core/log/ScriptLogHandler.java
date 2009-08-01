@@ -107,11 +107,6 @@ public class ScriptLogHandler extends Handler {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
-    */
 
    public synchronized void publish(LogRecord logRecord) {
       if (isLoggable(logRecord)) {
@@ -191,20 +186,10 @@ public class ScriptLogHandler extends Handler {
       records.clear();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.util.logging.Handler#close()
-    */
    public void close() throws SecurityException {
       writeOutFile();
    }
 
-   /*
-    * (non-Javadoc) don't call this method
-    * 
-    * @see java.util.logging.Handler#flush()
-    */
    public void flush() {
       // don't call this method
 

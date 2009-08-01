@@ -42,9 +42,6 @@ public class TestBatchSetupViewItems implements IOteNavigateItem {
       return instance;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.navigate.IOteNavigateItem#getNavigateItems()
-    */
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
       items.add(parentFolder);

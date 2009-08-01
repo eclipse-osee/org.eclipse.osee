@@ -27,9 +27,6 @@ public class Namespace implements INamespace{
       return namespace;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       Namespace ns = (Namespace)obj;
@@ -37,9 +34,6 @@ public class Namespace implements INamespace{
    }
 
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return namespace.hashCode();

@@ -95,28 +95,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget,
-    *      org.eclipse.ui.forms.widgets.FormToolkit,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
-    *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener#widgetCreating(org.eclipse.osee.framework.ui.skynet.widgets.XWidget,
-    *      org.eclipse.ui.forms.widgets.FormToolkit,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
-    *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
@@ -127,11 +109,6 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof WorkPage) return getId().equals(((WorkPage) obj).getId());

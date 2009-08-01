@@ -94,11 +94,6 @@ public class WorkspaceSetupViewItems implements IOteNavigateItem {
          this.projectSetFile = projectSetFile;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see java.lang.Runnable#run()
-       */
       public void run(TableLoadOption... tableLoadOptions) {
          Job job = new CheckoutProjectSetJob(jobName, getName(), projectSetFile);
          job.setUser(true);

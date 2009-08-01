@@ -52,11 +52,6 @@ public class XRadioButton extends XWidget {
       this.xmlRoot = xmlRoot;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return button;
@@ -196,21 +191,11 @@ public class XRadioButton extends XWidget {
       this.labelAfter = labelAfter;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return selected;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setFocus()
-    */
    @Override
    public void setFocus() {
       button.setFocus();

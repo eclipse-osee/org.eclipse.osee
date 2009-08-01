@@ -59,10 +59,6 @@ public class IntMessageReader extends DataReader {
       public void onSampleLost(DataReader theReader, SampleLostStatus status) {      }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.entity.DataReader#takeNextSample(osee.messaging.dds.DataSample)
-    */
    public IntegerData takeNextSample() {
       ReturnCode code = super.takeNextSample(dataSample);
       

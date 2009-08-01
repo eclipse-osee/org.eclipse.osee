@@ -24,9 +24,6 @@ class SearchStats extends BaseServerCommand {
       super("Search Engine Stats");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       ISearchStatistics stats = Activator.getInstance().getSearchEngine().getStatistics();

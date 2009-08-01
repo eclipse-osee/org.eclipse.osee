@@ -19,11 +19,6 @@ import org.w3c.dom.Element;
  */
 public class VersionInformationHandler extends AbstractParseHandler {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.ui.define.parser.handlers.AbstractParseHandler#processSaxChunk(org.w3c.dom.Element)
-    */
    @Override
    protected void processSaxChunk(Element element) {
       List<Element> versions = Jaxp.getChildDirects(element, "Version");

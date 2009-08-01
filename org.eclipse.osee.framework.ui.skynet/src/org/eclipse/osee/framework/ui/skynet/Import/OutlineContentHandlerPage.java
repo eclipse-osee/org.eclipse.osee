@@ -47,9 +47,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
       hasHandlers = false;
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NULL);
       composite.setLayout(new GridLayout(1, false));
@@ -79,6 +77,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
    /*
     * @see WizardPage#becomesVisible
     */
+   @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       // policy: wizards are not allowed to come up with an error message
@@ -87,6 +86,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
       }
    }
 
+   @Override
    protected void createOptionsGroup(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Outline Handlers");

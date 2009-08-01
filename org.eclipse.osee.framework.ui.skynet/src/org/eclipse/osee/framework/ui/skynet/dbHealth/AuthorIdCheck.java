@@ -30,9 +30,6 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
       super("Author Id Check");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       monitor.subTask("Querying for AuthorIds");
@@ -113,17 +110,11 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
             author);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Verifies that all author art ids match an un-deleted artifact on Common branch (usually a User artifact)";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Sets all invalid authors to the \"OSEE System\" user artifact's art_id.";

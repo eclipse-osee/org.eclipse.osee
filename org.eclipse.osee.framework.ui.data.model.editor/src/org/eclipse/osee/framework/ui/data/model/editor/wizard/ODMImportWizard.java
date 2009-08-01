@@ -37,17 +37,11 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
       setWindowTitle("Osee Data Model Import Wizard");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#addPages()
-    */
    @Override
    public void addPages() {
       addPage(importPage = new ODMImportPage("Osee Data Type Source", "Select Osee Data Type Sources."));
@@ -55,17 +49,11 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
       selectTypesPage.setInput(dataTypeCache);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.Wizard#canFinish()
-    */
    @Override
    public boolean canFinish() {
       return super.canFinish();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }

@@ -45,11 +45,6 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getCustDatas()
-    */
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {
       loadCustomizationData();
       return custDatas;
@@ -187,9 +182,6 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       return custDatas;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#isCustomizationPersistAvailable()
-    */
    public boolean isCustomizationPersistAvailable() {
       return true;
    }

@@ -219,9 +219,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
    public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, TableLoadOption... tableLoadOption) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          public void run() {
             worldArts.clear();
             otherArts.clear();
@@ -605,9 +602,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    public void redisplayAsAction() {
       final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
       Job job = new Job("Re-display as Actions") {
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-          */
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -640,9 +634,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    public void redisplayAsWorkFlow() {
       final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
       Job job = new Job("Re-display as Workflows") {
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-          */
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -675,9 +666,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    public void redisplayAsTask() {
       final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
       Job job = new Job("Re-display as Tasks") {
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-          */
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -709,9 +697,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    public void redisplayAsReviews() {
       final ArrayList<Artifact> artifacts = worldXViewer.getLoadedArtifacts();
       Job job = new Job("Re-display as Reviews") {
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-          */
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -754,9 +739,6 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       return worldXViewer;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId == AtsUtil.getAtsBranch().getBranchId()) {

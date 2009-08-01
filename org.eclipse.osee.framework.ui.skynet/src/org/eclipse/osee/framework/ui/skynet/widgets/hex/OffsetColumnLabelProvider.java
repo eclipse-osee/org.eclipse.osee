@@ -38,17 +38,11 @@ public class OffsetColumnLabelProvider extends ColumnLabelProvider {
       return Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ColumnLabelProvider#getFont(java.lang.Object)
-    */
    @Override
    public Font getFont(Object element) {
       return FontManager.getCourierNew8();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.BaseLabelProvider#dispose()
-    */
    @Override
    public void dispose() {
       super.dispose();

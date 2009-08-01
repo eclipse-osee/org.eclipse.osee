@@ -28,9 +28,6 @@ import org.eclipse.osee.framework.core.server.OseeServerProperties;
 public class TestResourceManagerServlet extends TestCase {
    private String httpServiceURL;
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
    @Override
    public void setUp() throws Exception {
       super.setUp();
@@ -38,9 +35,6 @@ public class TestResourceManagerServlet extends TestCase {
       httpServiceURL = String.format("http://localhost:%s/%s", port, OseeServerContext.RESOURCE_CONTEXT);
    }
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#tearDown()
-    */
    @Override
    public void tearDown() throws Exception {
       super.tearDown();

@@ -41,9 +41,6 @@ public class BranchExportWorker extends BaseServerCommand {
             includeArchivedBranches ? "" : " and ob2.archived <> 1");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       Options options = new Options();

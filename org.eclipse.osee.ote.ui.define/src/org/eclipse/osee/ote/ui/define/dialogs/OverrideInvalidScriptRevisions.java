@@ -22,23 +22,14 @@ import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;
  */
 public class OverrideInvalidScriptRevisions implements IOverrideHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.panels.IOverrideHandler#getText()
-    */
    public String getText() {
       return "Allow Invalid Script Revisions.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.panels.IOverrideHandler#getToolTipText()
-    */
    public String getToolTipText() {
       return "Allows invalid script revisions to be committed.\nWARNING: Duplicate commits are not overridable.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.panels.IOverrideHandler#handleEvent(java.util.HashSet)
-    */
    public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) throws OseeCoreException {
       Set<Object> toReturn = new HashSet<Object>();
       for (Object object : unselectable) {

@@ -69,9 +69,6 @@ class Highlighter implements IHexTblHighlighter {
       highlight();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.message.internal.util.IHexTblHighlighter#setDisplayAsAscii(boolean)
-    */
    @Override
    public void setDisplayAsAscii(boolean displayAsAscii) {
       this.displayAsAscii = displayAsAscii;

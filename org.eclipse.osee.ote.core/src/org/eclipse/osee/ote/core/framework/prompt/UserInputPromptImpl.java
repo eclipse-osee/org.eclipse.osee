@@ -28,17 +28,11 @@ public class UserInputPromptImpl extends AbstractInteractivePrompt<String> imple
       super(connector, script, id, message);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.BasicRemotePrompt#doPrompt(org.eclipse.osee.ote.core.IUserSession, org.eclipse.osee.ote.core.TestScript)
-    */
    @Override
    public void doPrompt() throws Exception {
       getScript().getUserSession().initiateUserInputPrompt(createRemoteReference(IUserInputPromptResponse.class));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse#respond(java.lang.String)
-    */
    public void respond(String text) throws RemoteException {
       endPrompt(text, null);
    }

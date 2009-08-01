@@ -57,17 +57,11 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
       org.eclipse.core.runtime.Assert.isNotNull(html);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorHtmlTab#getReportHtml()
-    */
    @Override
    public String getReportHtml() throws OseeCoreException {
       return xResultPage.getManipulatedHtml();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab#getTabName()
-    */
    @Override
    public String getTabName() {
       return tabName;

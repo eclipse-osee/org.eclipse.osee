@@ -25,9 +25,6 @@ public class TestStart implements IServiceStatusData, Serializable {
 		this.testClassName = testClassName;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.environment.status.IServiceStatusData#accept(org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor)
-	 */
 	public void accept(IServiceStatusDataVisitor visitor) {
 		visitor.asTestStart(this);
 	}

@@ -39,9 +39,6 @@ public class CleanJoinTablesServerTask implements IServerTask {
       return NAME;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    @Override
    public void run() {
       try {
@@ -60,33 +57,21 @@ public class CleanJoinTablesServerTask implements IServerTask {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IServerTask#getInitialDelay()
-    */
    @Override
    public long getInitialDelay() {
       return getPeriod();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IServerTask#getPeriod()
-    */
    @Override
    public long getPeriod() {
       return TEN_MINUTES;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IServerTask#getSchedulingScheme()
-    */
    @Override
    public SchedulingScheme getSchedulingScheme() {
       return SchedulingScheme.FIXED_RATE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IServerTask#getTimeUnit()
-    */
    @Override
    public TimeUnit getTimeUnit() {
       return TimeUnit.MINUTES;

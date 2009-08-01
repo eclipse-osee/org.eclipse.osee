@@ -62,9 +62,6 @@ public class CommitDialog extends TitleAreaDialog {
       this.overrideHandler = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.Dialog#createButtonBar(org.eclipse.swt.widgets.Composite)
-    */
    protected Control createButtonBar(Composite parent) {
       Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));

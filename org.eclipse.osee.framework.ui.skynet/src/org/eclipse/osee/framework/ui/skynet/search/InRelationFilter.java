@@ -35,11 +35,6 @@ public class InRelationFilter extends SearchFilter {
       this.relationSideList = relationSideList;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.search.SearchFilter#addFilterTo(osee.define.artifact.search.filter.FilterTableViewer)
-    */
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       String type = relationTypeList.getCombo().getText();
@@ -56,19 +51,11 @@ public class InRelationFilter extends SearchFilter {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.search.SearchFilter#isValid()
-    */
    @Override
    public boolean isValid() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
-    */
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString);

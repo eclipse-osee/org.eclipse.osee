@@ -40,9 +40,6 @@ public class OpenTeamDefinition extends WorkPageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
@@ -56,9 +53,6 @@ public class OpenTeamDefinition extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Open Team Definition";

@@ -24,21 +24,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    public String getId() {
       return "osee.ats.decisionReview.Prepare";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(java.lang.String, java.lang.String,
-    *      java.util.Collection)
-    */
    public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare.name()) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
          XDecisionOptions decOptions = new XDecisionOptions(smaMgr.getSma());
@@ -47,9 +36,6 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
       return Result.TrueResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsDecisionReviewPrepareStateItem - Add validation of decision options prior to transitioning.";
    }

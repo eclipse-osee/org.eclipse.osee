@@ -54,9 +54,6 @@ public class UpdateMergeBranch extends DbTransaction {
       this.sourceBranch = sourceBranch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxWork(java.sql.Connection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);

@@ -46,9 +46,6 @@ public class HierarchicalPresentationHandler extends AbstractHandler implements 
       element.setChecked(!Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       service.refreshElements(COMMAND_ID, null);

@@ -44,57 +44,36 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
       properties.setProperty("user", databaseLoginName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionProperties()
-    */
    @Override
    public Properties getConnectionProperties() {
       return properties;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionUrl()
-    */
    @Override
    public String getConnectionUrl() {
       return connectionPrefix + ":" + databaseName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseLoginName()
-    */
    @Override
    public String getDatabaseLoginName() {
       return databaseLoginName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseName()
-    */
    @Override
    public String getDatabaseName() {
       return databaseName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDriver()
-    */
    @Override
    public String getDriver() {
       return driver;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getId()
-    */
    @Override
    public String getId() {
       return id;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#isProduction()
-    */
    @Override
    public boolean isProduction() {
       return isProduction;

@@ -30,9 +30,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ChangeReportHandler extends AbstractHandler {
    
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       IStructuredSelection selection = (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
@@ -51,11 +48,6 @@ public class ChangeReportHandler extends AbstractHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       if (PlatformUI.getWorkbench().isClosing()) {

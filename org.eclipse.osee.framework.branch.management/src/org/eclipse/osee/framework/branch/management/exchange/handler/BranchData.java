@@ -83,17 +83,11 @@ public final class BranchData implements Cloneable {
       return clone;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public String toString() {
       return String.format("(name[%s] id[%s])", getBranchName(), getBranchId());
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj == this) {

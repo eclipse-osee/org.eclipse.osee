@@ -220,11 +220,6 @@ public class PathResourceFinder extends ResourceFinder {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.plugin.core.server.ResourceFinder#dispose()
-    */
    public void dispose() {
       synchronized (jars) {
          OseeLog.log(PluginCoreActivator.class, Level.INFO, "disposing path resource finder's cached JAR files");

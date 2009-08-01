@@ -113,9 +113,6 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       return user;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof UserSearchItem) {
@@ -135,9 +132,6 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       try {
@@ -147,17 +141,11 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
    @Override
    public WorldSearchItem copy() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#getImage()
-    */
    @Override
    public Image getImage() {
       Image image = super.getImage();

@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public class TISAttributeHandler implements ITemplateAttributeHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationEnumeration.Verification__Requirement)) {
@@ -34,9 +31,6 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       return attribute.getName().equals("TIS Traceability");

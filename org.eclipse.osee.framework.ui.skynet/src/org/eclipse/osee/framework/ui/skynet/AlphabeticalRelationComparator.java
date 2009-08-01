@@ -31,9 +31,6 @@ public class AlphabeticalRelationComparator implements Comparator<RelationLink> 
       this.relationSide = relationSide;
    }
 
-   /* (non-Javadoc)
-    * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-    */
    @Override
    public int compare(RelationLink relationLink1, RelationLink relationLink2) {
       try {

@@ -58,9 +58,6 @@ public class RenameBranchHandler extends CommandHandler {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ISelectionProvider selectionProvider =
@@ -132,9 +129,6 @@ public class RenameBranchHandler extends CommandHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       if (AWorkbench.getActivePage() == null) {

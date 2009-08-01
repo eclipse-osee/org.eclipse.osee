@@ -40,9 +40,6 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
       super(parent, treeStyle, filter);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.FilteredTree#createTreeControl(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected Control createTreeControl(Composite parent, int style) {
       Control control = super.createTreeControl(parent, style);
@@ -52,9 +49,6 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
          }
       });
       getFilterControl().addModifyListener(new ModifyListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-          */
          @Override
          public void modifyText(ModifyEvent e) {
             restoreChecked(treeViewer.getTree().getItems());

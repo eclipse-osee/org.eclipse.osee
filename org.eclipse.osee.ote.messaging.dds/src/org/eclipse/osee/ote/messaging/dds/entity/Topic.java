@@ -198,11 +198,6 @@ public class Topic extends DomainEntity implements TopicDescription {
       dataWriters.remove(writer);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    public boolean equals(Object obj) {
       if (obj instanceof Topic) {
          Topic topic = (Topic) obj;
@@ -211,19 +206,11 @@ public class Topic extends DomainEntity implements TopicDescription {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return name.hashCode() ^ namespace.hashCode();
    }
 
-   /* (non-Javadoc)
-    * @see osee.messaging.dds.service.TopicDescription#getNamespace()
-    */
    public String getNamespace() {
       return this.namespace;
    }

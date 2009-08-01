@@ -18,26 +18,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
    @Override
    public Double getValue() throws OseeCoreException {
       String doubleString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(doubleString) ? Double.valueOf(doubleString) : null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(Double value) throws OseeCoreException {
       return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected Double convertStringToValue(String value) {
       if (value == null || value.equals("")) {

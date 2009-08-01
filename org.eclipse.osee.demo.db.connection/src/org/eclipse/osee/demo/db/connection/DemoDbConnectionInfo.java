@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.database.core.IDbConnectionInformationContribu
  */
 public class DemoDbConnectionInfo implements IDbConnectionInformationContributor {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer#getDbInformation()
-    */
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
       URL url = Activator.getEntry("/support/osee.demo.db.connection.xml");

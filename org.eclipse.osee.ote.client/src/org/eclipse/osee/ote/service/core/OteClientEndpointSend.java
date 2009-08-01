@@ -31,9 +31,6 @@ public class OteClientEndpointSend implements EndpointSend {
                "OteClientEndpointSend"));
    private IOteClientService clientService;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointSend#send(org.eclipse.osee.framework.messaging.Message, org.eclipse.osee.framework.messaging.ExceptionHandler)
-    */
    @Override
    public void send(Message message, ExceptionHandler exceptionHandler) {
       if (clientService == null) {
@@ -55,9 +52,6 @@ public class OteClientEndpointSend implements EndpointSend {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointSend#start(java.util.Properties)
-    */
    @Override
    public void start(Properties properties) {
    }

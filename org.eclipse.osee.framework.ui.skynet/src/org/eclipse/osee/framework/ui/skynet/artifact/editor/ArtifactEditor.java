@@ -59,17 +59,11 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return actionBarContributor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#getEditorInput()
-    */
    @Override
    public BaseArtifactEditorInput getEditorInput() {
       return (BaseArtifactEditorInput) super.getEditorInput();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#onDirtied()
-    */
    @Override
    public void onDirtied() {
       Display.getDefault().asyncExec(new Runnable() {
@@ -79,9 +73,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
-    */
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
@@ -91,9 +82,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
@@ -107,9 +95,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#dispose()
-    */
    @Override
    public void dispose() {
       try {
@@ -129,9 +114,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#checkEnabledTooltems()
-    */
    @Override
    protected void checkEnabledTooltems() {
       //      if (!attributeComposite.isDisposed()) {
@@ -154,15 +136,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       //      }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#closeEditor()
-    */
    @Override
    protected void closeEditor() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             AWorkbench.getActivePage().closeEditor(ArtifactEditor.this, false);
@@ -170,25 +146,16 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#refreshDirtyArtifact()
-    */
    @Override
    protected void refreshDirtyArtifact() {
       Jobs.startJob(new RefreshDirtyArtifactJob());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractEventArtifactEditor#refreshRelationsComposite()
-    */
    @Override
    protected void refreshRelations() {
       Jobs.startJob(new RefreshRelations());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
       OseeContributionItem.addTo(this, true);
@@ -207,9 +174,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return formPage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {

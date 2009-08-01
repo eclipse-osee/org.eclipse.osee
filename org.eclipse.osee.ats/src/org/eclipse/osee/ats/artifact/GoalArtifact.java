@@ -41,17 +41,11 @@ public class GoalArtifact extends StateMachineArtifact {
       registerAtsWorldRelation(AtsRelation.Goal_Member);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentActionArtifact()
-    */
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentSMA()
-    */
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       List<Artifact> parents = getRelatedArtifacts(AtsRelation.Goal_Goal);
@@ -61,57 +55,36 @@ public class GoalArtifact extends StateMachineArtifact {
       return (StateMachineArtifact) parents.iterator().next();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentTeamWorkflow()
-    */
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getPrivilegedUsers()
-    */
    @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isTaskable()
-    */
    @Override
    public boolean isTaskable() throws OseeCoreException {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewReleaseDate()
-    */
    @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getWorldViewTargetedVersion()
-    */
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
-    */
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       return null;

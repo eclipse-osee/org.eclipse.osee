@@ -37,9 +37,6 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       dataList.add(aritfactType.getArtTypeId());
       dataList.add(branch.getBranchId());
@@ -48,16 +45,10 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       return sql;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getTables(java.util.List)
-    */
    public String getTableSql(List<Object> dataList, Branch branch) {
       return tables;
    }
@@ -82,9 +73,6 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       return search;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
-    */
    public String getStorageString() {
       return LABEL + aritfactType.getName() + ";";
    }

@@ -32,16 +32,10 @@ public class PropertyStoreCommand implements Command, Serializable {
       store = new PropertyStore("org.eclipse.osee.ote.core.cmd.PropertyStoreCommand");
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.Command#getId()
-    */
    public CommandId getId() {
       return commandId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.cmd.Command#getSource()
-    */
    public Source getSource() {
       return source;
    }

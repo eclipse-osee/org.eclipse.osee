@@ -30,24 +30,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    @Override
    public String getId() {
       return "osee.ats.peerToPeerReview.Prepare";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.AtsStateItem#xWidgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget,
-    *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void xWidgetCreated(XWidget widget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
@@ -68,9 +55,6 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsPeerToPeerReviewPrepareStateItem - If stand-alone review, remove blocking review enablement and required entry.";
    }

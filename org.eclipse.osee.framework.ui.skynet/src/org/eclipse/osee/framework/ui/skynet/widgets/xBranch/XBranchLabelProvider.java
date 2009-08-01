@@ -201,9 +201,6 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return returnImage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    @Override
    public void dispose() {
    }

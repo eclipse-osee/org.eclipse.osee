@@ -98,9 +98,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
       return (EmptyEnum) getValue();
    }
 
-   /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-       */
    @Override
    protected Element getNonMappingElement() {
       return new NonMappingEmptyEnumElement(this);

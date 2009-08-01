@@ -30,11 +30,6 @@ public class ShowPreviewHandler extends AbstractHandler {
    public ShowPreviewHandler() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ISelectionProvider selectionProvider =

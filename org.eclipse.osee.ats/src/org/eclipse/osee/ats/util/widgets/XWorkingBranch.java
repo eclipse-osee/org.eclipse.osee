@@ -187,58 +187,37 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return labelWidget;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#isValid()
-    */
    @Override
    public IStatus isValid() {
       // Need this cause it removes all error items of this namespace
       return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#refresh()
-    */
    @Override
    public void refresh() {
       if (labelWidget == null || labelWidget.isDisposed()) {
@@ -275,54 +254,33 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#toHTML(java.lang.String)
-    */
    @Override
    public String toHTML(String labelFont) {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
-    */
    @Override
    public void saveToArtifact() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
-    */
    @Override
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -333,16 +291,10 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {

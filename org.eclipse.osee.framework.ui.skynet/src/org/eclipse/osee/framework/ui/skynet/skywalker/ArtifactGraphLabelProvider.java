@@ -39,11 +39,6 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-    */
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
          return ImageManager.getImage((Artifact) element);
@@ -51,11 +46,6 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-    */
    public String getText(Object element) {
       try {
          if (element instanceof Artifact) {
@@ -107,37 +97,16 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void addListener(ILabelProviderListener listener) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    public void dispose() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
-    *      java.lang.String)
-    */
    public boolean isLabelProperty(Object element, String property) {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    */
    public void removeListener(ILabelProviderListener listener) {
    }
 

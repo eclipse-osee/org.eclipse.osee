@@ -120,9 +120,6 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             Executors.newFixedThreadPool(2, CoreServerActivator.createNewThreadFactory("branch.export.worker"));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
@@ -168,25 +165,16 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             branchTotal != 1 ? "es" : "", Lib.getElapseString(startTime)));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onException(java.lang.String, java.lang.Throwable)
-    */
    @Override
    synchronized public void onException(String name, Throwable ex) {
       errorList.add(Lib.exceptionToString(ex));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onExportItemCompleted(java.lang.String, long)
-    */
    @Override
    synchronized public void onExportItemCompleted(String name, long timeToProcess) {
       System.out.println(String.format("Exported: [%s] in [%s] ms", name, timeToProcess));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onExportItemStarted(java.lang.String)
-    */
    @Override
    public void onExportItemStarted(String name) {
    }

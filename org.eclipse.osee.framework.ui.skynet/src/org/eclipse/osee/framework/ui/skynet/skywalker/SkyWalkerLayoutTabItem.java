@@ -67,11 +67,6 @@ public class SkyWalkerLayoutTabItem {
       levelSpinner.setPageIncrement(1);
       levelSpinner.pack();
       levelSpinner.addModifyListener(new ModifyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-          */
          public void modifyText(ModifyEvent e) {
             options.setLevels(levelSpinner.getSelection());
          }
@@ -119,11 +114,6 @@ public class SkyWalkerLayoutTabItem {
       });
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptionsChangeListener#modified(org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptionsChangeListener.ModType)
-          */
          public void modified(ModType... modTypes) {
             handleOptionModified(modTypes);
          }

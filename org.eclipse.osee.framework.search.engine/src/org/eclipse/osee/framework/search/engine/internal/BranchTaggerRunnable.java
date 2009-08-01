@@ -33,9 +33,6 @@ public class BranchTaggerRunnable implements Runnable {
       this.branchId = branchId;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    @Override
    public void run() {
       try {
@@ -50,9 +47,6 @@ public class BranchTaggerRunnable implements Runnable {
          super(tagger, listener, isCacheAll, cacheLimit);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
-       */
       @Override
       protected void convertInput(OseeConnection connection) throws OseeDataStoreException, Exception {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);

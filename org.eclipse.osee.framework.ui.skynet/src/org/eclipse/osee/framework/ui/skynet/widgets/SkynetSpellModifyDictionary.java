@@ -34,11 +34,6 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
    private static Set<String> dictionary;
    private final boolean debug = false;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextSpellModifyDictionary#addToGlobalDictionary(java.lang.String)
-    */
    public boolean addToGlobalDictionary(String word) {
       try {
          return updateArtifact("Global", word, GlobalPreferences.get());
@@ -48,11 +43,6 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextSpellModifyDictionary#addToLocalDictionary(java.lang.String)
-    */
    public boolean addToLocalDictionary(String word) {
       try {
          return updateArtifact("Local", word, UserManager.getUser());
@@ -81,11 +71,6 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.util.IOseeDictionary#isWord(java.lang.String)
-    */
    public boolean isWord(String word) {
       loadDictionary(false);
       boolean contains = dictionary.contains(word);

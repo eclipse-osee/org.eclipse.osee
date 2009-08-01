@@ -63,18 +63,10 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
       this.childHeadTransactionNumber = childHeadTransactionNumber;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return "";
    }

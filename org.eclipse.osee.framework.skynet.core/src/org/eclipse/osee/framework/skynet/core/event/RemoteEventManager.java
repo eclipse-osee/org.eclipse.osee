@@ -165,9 +165,6 @@ public class RemoteEventManager {
       if (InternalEventManager.enableRemoteEventLoopback) {
          OseeLog.log(Activator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
-            /* (non-Javadoc)
-             * @see java.lang.Thread#run()
-             */
             @Override
             public void run() {
                try {
@@ -266,11 +263,6 @@ public class RemoteEventManager {
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceAdded(net.jini.core.lookup.ServiceItem)
-       */
       public void serviceAdded(ServiceItem serviceItem) {
          if (serviceItem.service instanceof ISkynetEventService) {
             ISkynetEventService service = (ISkynetEventService) serviceItem.service;
@@ -289,20 +281,10 @@ public class RemoteEventManager {
          }
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceChanged(net.jini.core.lookup.ServiceItem)
-       */
       public void serviceChanged(ServiceItem serviceItem) {
          serviceAdded(serviceItem);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.jini.discovery.IServiceLookupListener#serviceRemoved(net.jini.core.lookup.ServiceItem)
-       */
       public void serviceRemoved(ServiceItem serviceItem) {
       }
    }

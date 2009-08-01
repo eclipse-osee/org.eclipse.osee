@@ -24,9 +24,6 @@ public class ArtifactsWithoutRelations extends AbstractArtifactRelationReport {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.traceability.report.AbstractReport#process(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void process(IProgressMonitor monitor) throws OseeCoreException {
       notifyOnTableHeader("Item Name", "Type");

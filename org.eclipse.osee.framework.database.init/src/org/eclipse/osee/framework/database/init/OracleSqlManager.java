@@ -58,9 +58,6 @@ public class OracleSqlManager extends SqlManager {
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.sql.SqlManager#createIndexPostProcess(java.lang.String)
-    */
    @Override
    protected String createIndexPostProcess(IndexElement indexElement, String original) {
       StringBuilder buffer = new StringBuilder(original);

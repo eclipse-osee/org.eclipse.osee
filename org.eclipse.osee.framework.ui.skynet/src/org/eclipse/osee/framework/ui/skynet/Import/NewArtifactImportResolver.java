@@ -28,9 +28,6 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
-    */
    public Artifact resolve(final RoughArtifact roughArtifact) throws OseeCoreException {
       ArtifactType artifactType = null;
       if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.PRIMARY) {

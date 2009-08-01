@@ -81,11 +81,6 @@ public abstract class RecordElement extends Element {
       return this.elementMap;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-    */
    @Override
    protected NonMappingRecordElement getNonMappingElement() {
       return (NonMappingRecordElement) new NonMappingRecordElement(this);

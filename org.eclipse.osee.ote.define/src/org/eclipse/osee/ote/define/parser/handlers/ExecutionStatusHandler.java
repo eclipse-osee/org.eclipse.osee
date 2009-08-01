@@ -19,11 +19,6 @@ import org.w3c.dom.Element;
  */
 public class ExecutionStatusHandler extends AbstractParseHandler {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.ui.define.parser.handlers.AbstractParseHandler#processSaxChunk(org.w3c.dom.Element)
-    */
    @Override
    protected void processSaxChunk(Element element) {
       notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_TIME.toString(), Jaxp.getChildText(element, "Time"));

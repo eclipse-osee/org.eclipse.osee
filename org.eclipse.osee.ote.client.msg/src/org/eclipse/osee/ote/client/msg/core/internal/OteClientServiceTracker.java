@@ -24,9 +24,6 @@ public class OteClientServiceTracker extends ServiceTracker{
 		this.messageSubscriptionService = messageSubscriptionService;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.util.tracker.ServiceTracker#addingService(org.osgi.framework.ServiceReference)
-	 */
 	@Override
 	public Object addingService(ServiceReference reference) {
 		IOteClientService service = (IOteClientService) super.addingService(reference);
@@ -34,9 +31,6 @@ public class OteClientServiceTracker extends ServiceTracker{
 		return service;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.util.tracker.ServiceTracker#removedService(org.osgi.framework.ServiceReference, java.lang.Object)
-	 */
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
 		messageSubscriptionService.oteClientServiceLost();

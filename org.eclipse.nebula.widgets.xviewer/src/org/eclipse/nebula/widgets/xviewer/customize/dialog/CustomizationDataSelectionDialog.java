@@ -92,11 +92,6 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       custText.setFocus();
       custText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       custText.addModifyListener(new ModifyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-          */
          public void modifyText(ModifyEvent e) {
             enteredName = custText.getText();
          }
@@ -112,9 +107,6 @@ public class CustomizationDataSelectionDialog extends ListDialog {
 
          saveGlobalCheck = new Button(comp, SWT.CHECK);
          saveGlobalCheck.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                saveGlobal = saveGlobalCheck.getSelection();
@@ -123,11 +115,6 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       }
 
       getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             selectedCustData = getSelectedCustomizeData();
             if (saveGlobalCheck != null) {

@@ -50,12 +50,6 @@ public abstract class AbstractParseHandler implements ISaxElementHandler {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.ui.define.parser.ISaxElementHandler#processSaxChunkCollectorData(java.lang.String,
-    *      java.lang.String)
-    */
    public void processSaxChunkCollectorData(String currentLocalName, String xmlData) {
       try {
          Document doc = Jaxp.readXmlDocument(xmlData);

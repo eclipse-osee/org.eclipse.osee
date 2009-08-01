@@ -112,11 +112,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       super();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
 
@@ -201,11 +196,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
@@ -282,11 +272,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       super.dispose();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       return isDirtyResult().isTrue();
@@ -419,9 +404,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                CoreRelationEnumeration.Users_Artifact.getTypeName());
 
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-       */
       @Override
       public boolean select(Viewer viewer, Object parentElement, Object element) {
          if (element instanceof RelationType) {
@@ -525,9 +507,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-                   * @see java.lang.Runnable#run()
-                   */
          @Override
          public void run() {
             IWorkbenchPage page = AWorkbench.getActivePage();
@@ -582,9 +561,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    public void closeEditor() {
       final MultiPageEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             AWorkbench.getActivePage().closeEditor(editor, false);
@@ -599,47 +575,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return smaMgr;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
-    */
    public String getCurrentStateName() throws OseeCoreException {
       return smaMgr.getStateMgr().getCurrentStateName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
-    */
    public IDirtiableEditor getEditor() throws OseeCoreException {
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
-    */
    public SMAManager getParentSmaMgr() throws OseeCoreException {
       return smaMgr;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
-    */
    public String getTabName() throws OseeCoreException {
       return "Tasks";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
-    */
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       if (stateName == null || stateName.equals("")) {
          return smaMgr.getTaskMgr().getTaskArtifacts();
@@ -648,20 +599,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
-    */
    public boolean isTaskable() throws OseeCoreException {
       return smaMgr.isTaskable();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isEditable()
-    */
    public boolean isTasksEditable() throws OseeCoreException {
       return smaMgr.getSma().isTaskable();
    }
@@ -718,9 +659,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.TransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) {
@@ -775,16 +713,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       onDirtied();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, java.util.Collection, java.util.Collection)
-    */
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       try {
@@ -801,9 +733,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String)
-    */
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       try {
@@ -818,48 +747,30 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
-    */
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return Arrays.asList(smaMgr.getSma());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
-    */
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       return smaMgr.getSma().getWorldViewTargetedVersion();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#handleRefreshAction()
-    */
    @Override
    public void handleRefreshAction() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isRefreshActionHandled()
-    */
    @Override
    public boolean isRefreshActionHandled() throws OseeCoreException {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManDaysPerHour()
-    */
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return smaMgr.getSma().getManHrsPerDayPreference();

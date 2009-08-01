@@ -47,9 +47,6 @@ import org.eclipse.ui.PlatformUI;
 public class SingleNativeDiffHandler extends CommandHandler {
    private ArrayList<Change> changes;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
@@ -78,9 +75,6 @@ public class SingleNativeDiffHandler extends CommandHandler {
       return enabled;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       Change change = changes.iterator().next();

@@ -79,9 +79,6 @@ public class ReportErrorsJob extends UIJob {
          this.errorMessage = errorMessage;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
-       */
       @Override
       protected Control createCustomArea(Composite parent) {
          Composite composite = new Composite(parent, SWT.NONE);

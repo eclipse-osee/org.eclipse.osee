@@ -28,9 +28,6 @@ public class ExpandTreeHandler extends AbstractHandler {
    private TreeViewer treeViewer;
    private IStructuredSelection structuredSelection;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       Iterator<?> iter = structuredSelection.iterator();
@@ -40,11 +37,6 @@ public class ExpandTreeHandler extends AbstractHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       if (PlatformUI.getWorkbench().isClosing()) {

@@ -28,20 +28,12 @@ import org.eclipse.ui.PlatformUI;
 public class RevealInArtifactExplorer extends AbstractHandler {
    private Artifact artifact;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       ArtifactExplorer.revealArtifact(artifact);
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       boolean isEnabled = false;

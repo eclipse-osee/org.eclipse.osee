@@ -143,16 +143,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
-    */
    @Override
    public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       Displays.ensureInDisplayThread(new Runnable() {

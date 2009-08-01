@@ -97,20 +97,10 @@ public class RelationType implements Comparable<RelationType> {
       return sideAName.equals(sideName);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Comparable#compareTo(T)
-    */
    public int compareTo(RelationType descriptor) {
       return typeName.compareTo(descriptor.getTypeName());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof RelationType) {
@@ -119,9 +109,6 @@ public class RelationType implements Comparable<RelationType> {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return 17 * relationTypeId;
@@ -132,9 +119,6 @@ public class RelationType implements Comparable<RelationType> {
       return typeName + " " + sideAName + " <--> " + sideBName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.RelationType#getRelationTypeId()
-    */
    public int getRelationTypeId() {
       return relationTypeId;
    }

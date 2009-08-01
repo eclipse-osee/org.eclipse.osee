@@ -56,9 +56,6 @@ public class PublishRequirements extends AbstractBlam {
    private Date date;
    private Branch branch;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Publish Requirements";

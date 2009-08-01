@@ -207,36 +207,24 @@ public class TestResourceManager extends TestCase {
          this.locator = locator;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResourceListener#onPostDelete(org.eclipse.osee.framework.resource.management.IResourceLocator)
-       */
       @Override
       public void onPostDelete(IResourceLocator locator) {
          postDelete = true;
          this.locator = locator;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResourceListener#onPostSave(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.IResource, org.eclipse.osee.framework.resource.management.Options)
-       */
       @Override
       public void onPostSave(IResourceLocator locator, IResource resource, Options options) {
          postSave = true;
          this.resource = resource;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResourceListener#onPreDelete(org.eclipse.osee.framework.resource.management.IResourceLocator)
-       */
       @Override
       public void onPreDelete(IResourceLocator locator) {
          preDelete = true;
          this.locator = locator;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResourceListener#onPreSave(org.eclipse.osee.framework.resource.management.IResourceLocator, org.eclipse.osee.framework.resource.management.IResource, org.eclipse.osee.framework.resource.management.Options)
-       */
       @Override
       public void onPreSave(IResourceLocator locator, IResource resource, Options options) {
          preSave = true;

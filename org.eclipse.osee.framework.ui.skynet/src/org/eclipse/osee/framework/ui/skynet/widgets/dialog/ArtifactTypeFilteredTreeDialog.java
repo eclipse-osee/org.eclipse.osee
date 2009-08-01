@@ -66,9 +66,6 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog {
             }
          });
          getTreeViewer().getViewer().getTree().addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);

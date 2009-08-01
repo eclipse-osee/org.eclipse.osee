@@ -21,9 +21,6 @@ public class EnumeratedAttribute extends StringAttribute {
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() throws OseeCoreException {
       String toDisplay = getAttributeDataProvider().getDisplayableString();

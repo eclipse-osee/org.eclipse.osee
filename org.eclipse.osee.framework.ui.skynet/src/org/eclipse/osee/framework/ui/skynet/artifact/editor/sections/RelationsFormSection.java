@@ -35,9 +35,6 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       super(editor, parent, toolkit, style);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -78,9 +75,6 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       return relationComposite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -93,9 +87,6 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (relationComposite != null && !relationComposite.isDisposed()) {

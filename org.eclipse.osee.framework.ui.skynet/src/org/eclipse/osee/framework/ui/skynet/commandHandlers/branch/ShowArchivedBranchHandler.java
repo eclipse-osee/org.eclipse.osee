@@ -52,9 +52,6 @@ public class ShowArchivedBranchHandler extends AbstractHandler implements IEleme
       element.setChecked(itemChk);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       boolean isValid = false;

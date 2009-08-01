@@ -193,9 +193,6 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard{
 		listeners = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentListener#onTestServerCommandFinished(org.eclipse.osee.ote.core.environment.TestEnvironment, org.eclipse.osee.ote.core.framework.command.ICommandHandle)
-	 */
 	public void onTestServerCommandFinished(TestEnvironment env,
 			ICommandHandle handle) {
 		notifyListeners(new TestServerCommandComplete(handle));
@@ -205,9 +202,6 @@ public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard{
 		notifyListeners(new TestComplete(className, serverOutfilePath, clientOutfilePath, status, healthStatus));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentListener#onTestStart(java.lang.String)
-	 */
 	public void onTestStart(String className) {
 		notifyListeners(new TestStart(className));
 	}

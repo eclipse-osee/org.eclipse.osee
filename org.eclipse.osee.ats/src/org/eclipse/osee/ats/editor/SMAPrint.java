@@ -40,11 +40,6 @@ public class SMAPrint extends Action {
       this.taskComposite = taskComposite;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       try {

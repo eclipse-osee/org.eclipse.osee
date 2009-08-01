@@ -185,11 +185,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       return Jaxp.createElement(doc, "Name", name);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.TestAccessor#getTestCase()
-    */
    public TestCase getTestCase() {
       return this;
    }
@@ -201,11 +196,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       return testCaseNumber;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.TestAccessor#getTestEnvironment()
-    */
    public ITestEnvironmentAccessor getTestEnvironment() {
       return environment.get();
    }
@@ -337,11 +327,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       return environment.get().getAssociatedObject(c);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.environment.interfaces.ITestEnvironmentAccessor#getAssociatedObjects()
-    */
    public Set<Class<?>> getAssociatedObjects() {
       return environment.get().getAssociatedObjects();
    }

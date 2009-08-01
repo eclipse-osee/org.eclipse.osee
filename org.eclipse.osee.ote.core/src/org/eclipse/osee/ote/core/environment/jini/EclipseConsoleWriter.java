@@ -29,19 +29,11 @@ public class EclipseConsoleWriter extends Writer {
       masterBuffer = new StringBuffer(256);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#write(char[], int, int)
-    */
    public void write(char[] cbuf, int off, int len) {
       buffer.append(cbuf, off, len);
       masterBuffer.append(cbuf, off, len);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#flush()
-    */
    public void flush() throws IOException {
       if (buffer.length() > 0 && buffer.charAt(buffer.length() - 1) == '\n') {
          buffer.deleteCharAt(buffer.length() - 1);
@@ -54,10 +46,6 @@ public class EclipseConsoleWriter extends Writer {
       buffer.delete(0, buffer.length());
    }
 
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#close()
-    */
    public void close() throws IOException {
       flush();
    }

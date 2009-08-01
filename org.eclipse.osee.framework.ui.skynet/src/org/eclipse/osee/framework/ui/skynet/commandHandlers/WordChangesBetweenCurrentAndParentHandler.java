@@ -39,11 +39,6 @@ import org.eclipse.ui.PlatformUI;
 public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    private Change change;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {

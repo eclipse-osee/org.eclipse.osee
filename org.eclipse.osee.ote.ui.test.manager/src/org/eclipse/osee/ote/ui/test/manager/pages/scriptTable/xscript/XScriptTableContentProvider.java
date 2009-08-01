@@ -22,59 +22,35 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTaskList;
  */
 public class XScriptTableContentProvider implements IStructuredContentProvider, ITaskListViewer, ITreeContentProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-    */
    @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-    */
    @Override
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-    */
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ITaskListViewer#addTask(org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask)
-    */
    @Override
    public void addTask(ScriptTask task) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ITaskListViewer#addTasks(org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask[])
-    */
    @Override
    public void addTasks(ScriptTask[] tasks) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ITaskListViewer#removeTask(org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask)
-    */
    @Override
    public void removeTask(ScriptTask task) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ITaskListViewer#updateTask(org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask)
-    */
    @Override
    public void updateTask(ScriptTask task) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-    */
    @Override
    public Object[] getChildren(Object parentElement) {
       if(parentElement instanceof ScriptTaskList){
@@ -83,17 +59,11 @@ public class XScriptTableContentProvider implements IStructuredContentProvider, 
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-    */
    @Override
    public Object getParent(Object element) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-    */
    @Override
    public boolean hasChildren(Object element) {
       Object[] children = getChildren(element);

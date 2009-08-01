@@ -26,9 +26,6 @@ public abstract class StatusBoardRecieveEvent<V> implements Callable<V> {
       this.data = data;
    }
 
-   /* (non-Javadoc)
-    * @see java.util.concurrent.Callable#call()
-    */
    @Override
    public V call() throws Exception {
       run();

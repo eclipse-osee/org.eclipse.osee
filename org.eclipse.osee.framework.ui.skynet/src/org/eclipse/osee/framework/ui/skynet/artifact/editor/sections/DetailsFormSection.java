@@ -37,9 +37,6 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       super(editor, parent, toolkit, style);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -77,9 +74,6 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (formText != null && !formText.isDisposed()) {
@@ -88,9 +82,6 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();

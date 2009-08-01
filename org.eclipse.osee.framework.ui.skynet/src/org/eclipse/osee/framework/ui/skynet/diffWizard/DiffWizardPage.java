@@ -147,11 +147,6 @@ public class DiffWizardPage extends WizardPage {
       this.conflict = conflict;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       setTitle("Select a Difference Report to Generate");

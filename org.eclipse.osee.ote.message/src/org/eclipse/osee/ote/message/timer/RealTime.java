@@ -128,9 +128,6 @@ public class RealTime extends TimerControl {
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.environment.interfaces.ITimerControl#cancelAllTasks()
-    */
    public void cancelAllTasks() {
       for (ScheduledFuture<?> handle : handleMap.values()) {
          handle.cancel(false);
@@ -138,9 +135,6 @@ public class RealTime extends TimerControl {
       handleMap.clear();
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.environment.interfaces.ITimerControl#step()
-    */
    public void step() {
    }
 }

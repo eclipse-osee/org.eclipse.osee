@@ -21,9 +21,6 @@ public class DefinePlugin extends OseeUiActivator {
       pluginInstance = this;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.plugin.OseePlugin#getPluginName()
-    */
    @Override
    protected String getPluginName() {
       return PLUGIN_ID;

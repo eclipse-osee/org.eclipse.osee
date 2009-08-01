@@ -61,13 +61,6 @@ public class AtsWorkPage extends WorkPage {
       return isCancelledPage() || isCompletePage();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.workflow.WorkPage#widgetCreated(osee.skynet.gui.widgets.XWidget,
-    *      org.eclipse.ui.forms.widgets.FormToolkit, osee.skynet.gui.widgets.workflow.WorkPage,
-    *      osee.skynet.gui.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, page, xModListener, isEditable);
@@ -79,14 +72,6 @@ public class AtsWorkPage extends WorkPage {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.workflow.WorkPage#workAttrCreated(osee.skynet.gui.widgets.workflow.WorkAttribute,
-    *      osee.skynet.gui.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit,
-    *      osee.skynet.artifact.Artifact, osee.skynet.gui.widgets.workflow.WorkPage,
-    *      osee.skynet.gui.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
@@ -102,13 +87,6 @@ public class AtsWorkPage extends WorkPage {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.workflow.WorkPage#widgetCreating(osee.skynet.gui.widgets.XWidget,
-    *      org.eclipse.ui.forms.widgets.FormToolkit, osee.skynet.gui.widgets.workflow.WorkPage,
-    *      osee.skynet.gui.widgets.XModifiedListener, boolean)
-    */
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreating(xWidget, toolkit, art, page, xModListener, isEditable);

@@ -32,13 +32,6 @@ public class Activator implements BundleActivator {
 	private MessagingGatewayBindTracker messagingGatewayTracker;
 	
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
-	 * )
-	 */
 	public void start(BundleContext context) throws Exception {
 
       connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
@@ -67,12 +60,6 @@ public class Activator implements BundleActivator {
       registration = context.registerService(IOteClientService.class.getName(), service, new Hashtable());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
 	public void stop(BundleContext context) throws Exception {
 		IConnectionService connectionService = (IConnectionService) connectionServiceTracker.getService();
 		connectionService.removeListener(service);

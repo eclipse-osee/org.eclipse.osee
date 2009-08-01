@@ -26,10 +26,6 @@ public class SessionManagementServletActivator implements BundleActivator {
    private ServiceTracker serviceTracker;
    private ServiceTracker authenticationServiceTracker;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
 
@@ -49,10 +45,6 @@ public class SessionManagementServletActivator implements BundleActivator {
       httpServiceTracker1.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       if (httpServiceTracker != null) {
          httpServiceTracker.close();

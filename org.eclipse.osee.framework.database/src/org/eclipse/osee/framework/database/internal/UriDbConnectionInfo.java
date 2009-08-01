@@ -25,9 +25,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class UriDbConnectionInfo implements IDbConnectionInformationContributor {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer#getDbInformation()
-    */
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
       String uri = OseeProperties.getOseeConnectionInfoUri();

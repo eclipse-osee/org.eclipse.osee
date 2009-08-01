@@ -18,34 +18,18 @@ import org.eclipse.osee.ote.messaging.dds.service.TypeSupport;
  */
 public class IntMessageTypeSupport extends TypeSupport {
    
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.TypeSupport#getTypeDataSize()
-    */
    protected int getTypeDataSize() {
       return Integer.SIZE/8;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.TypeSupport#getKey()
-    */
    protected Key getKey() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.TypeSupport#getReaderName()
-    */
    protected String getReaderName() {
       return IntMessageReader.class.getCanonicalName();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.TypeSupport#getWriterName()
-    */
    protected String getWriterName() {
       return IntMessageWriter.class.getCanonicalName();
    }

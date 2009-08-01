@@ -36,9 +36,6 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
    private LoggingPanel loggingPanel;
    private ScriptExecutionOptionsPanel optionsPanel;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#createControl(org.eclipse.swt.widgets.Composite)
-    */
    public Control createControl(Composite parent) {
       Group group = new Group(parent, SWT.NONE);
       group.setLayout(new GridLayout());
@@ -71,9 +68,6 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
       return group;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#load(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public void load(IPropertyStore propertyStore) {
       this.scriptDirectoryPanel.setSelected(propertyStore.get(TestManagerStorageKeys.SCRIPT_OUTPUT_DIRECTORY_KEY));
 
@@ -83,9 +77,6 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
       this.loggingPanel.setSelected(propertyStore.get(TestManagerStorageKeys.LOGGING_LEVEL_KEY));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#save(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public void save(IPropertyStore propertyStore) {
       propertyStore.put(TestManagerStorageKeys.SCRIPT_OUTPUT_DIRECTORY_KEY, this.scriptDirectoryPanel.getSelected());
 
@@ -96,17 +87,11 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
       propertyStore.put(TestManagerStorageKeys.BATCH_MODE_ENABLED_KEY, this.optionsPanel.isBatchModeEnabled());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#areSettingsValidForRun()
-    */
    @Override
    public boolean areSettingsValidForRun() {
       return scriptDirectoryPanel.isValid();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#getErrorMessage()
-    */
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();
@@ -117,9 +102,6 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution#getPriority()
-    */
    public int getPriority() {
       return 0;
    }

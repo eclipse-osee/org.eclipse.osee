@@ -72,11 +72,6 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       return supportClear;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
@@ -96,11 +91,6 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       selectHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
       selectHyperLinkLabel.setToolTipText("Select to Modify");
       selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          public void handleEvent(Event event) {
             if (handleSelection()) {
                refresh();
@@ -112,11 +102,6 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
          clearHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
          clearHyperLinkLabel.setToolTipText("Select to Clear");
          clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
                if (handleClear()) {
                   refresh();
@@ -132,11 +117,6 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       refresh();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#refresh()
-    */
    @Override
    public void refresh() {
       selectHyperLinkLabel.refresh();
@@ -151,19 +131,11 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return valueLabel;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#adaptControls(org.eclipse.ui.forms.widgets.FormToolkit)
-    */
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
@@ -175,65 +147,39 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#toHTML(java.lang.String)
-    */
    @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getHyperlinkLabelString(), getCurrentValue());
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#dispose()
-    */
    @Override
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#isValid()
-    */
    @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#setFocus()
-    */
    @Override
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }

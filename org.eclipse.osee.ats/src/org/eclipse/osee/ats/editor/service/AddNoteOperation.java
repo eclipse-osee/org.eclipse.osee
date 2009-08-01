@@ -37,9 +37,6 @@ public class AddNoteOperation extends WorkPageService {
       super(smaMgr);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
@@ -53,9 +50,6 @@ public class AddNoteOperation extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Add Note";
@@ -85,9 +79,6 @@ public class AddNoteOperation extends WorkPageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#refresh()
-    */
    @Override
    public void refresh() {
       if (action != null) action.setEnabled(smaMgr.getSma().isReadOnly());

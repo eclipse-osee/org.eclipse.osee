@@ -72,11 +72,6 @@ public class ArrayElement extends Element {
       visitor.asArrayElement(this);
    }
    
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#switchMessages(org.eclipse.osee.ote.message.Message[])
-    */
    @Override
    public ArrayElement switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       return (ArrayElement) super.switchMessages(messages);

@@ -46,17 +46,11 @@ public class WholeDocumentRenderer extends WordRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-    */
    @Override
    public WholeDocumentRenderer newInstance() throws OseeCoreException {
       return new WholeDocumentRenderer();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#commandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -81,9 +75,6 @@ public class WholeDocumentRenderer extends WordRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
-    */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       return getRenderInputStream(artifacts.iterator().next(), presentationType);

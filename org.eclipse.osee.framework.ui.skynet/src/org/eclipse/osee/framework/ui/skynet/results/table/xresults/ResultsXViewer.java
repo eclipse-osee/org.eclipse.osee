@@ -36,9 +36,6 @@ public class ResultsXViewer extends XViewer {
       super(parent, style, new ResultsXViewerFactory(xColumns));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#handleDoubleClick()
-    */
    @Override
    public void handleDoubleClick() {
       if (getSelectedRows().size() > 0) {

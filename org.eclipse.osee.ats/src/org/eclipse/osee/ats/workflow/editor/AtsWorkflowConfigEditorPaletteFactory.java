@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2008 Donald G. Dunne and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* All rights reserved. This program and the accompanying materials
+ï¿½* are made available under the terms of the Eclipse Public License v1.0
+ï¿½* which accompanies this distribution, and is available at
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
 import org.eclipse.gef.Tool;
@@ -162,9 +162,6 @@ final class AtsWorkflowConfigEditorPaletteFactory {
 
       toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.gef.palette.ToolEntry#createTool()
-          */
          @Override
          public Tool createTool() {
             return new AbstractTool() {
@@ -174,9 +171,6 @@ final class AtsWorkflowConfigEditorPaletteFactory {
                   return action.getText();
                }
 
-               /* (non-Javadoc)
-                * @see org.eclipse.gef.tools.AbstractTool#activate()
-                */
                @Override
                public void activate() {
                   super.activate();

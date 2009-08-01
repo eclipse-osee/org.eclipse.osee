@@ -28,22 +28,12 @@ public class PlatformRunnableAvailableInitTasks implements IApplication {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-    */
    public Object start(IApplicationContext context) throws Exception {
       printExtensionPoints("org.eclipse.osee.framework.database.IDbInitializationTask");
       printExtensionPoints("org.eclipse.osee.framework.database.SkynetDbTypes");
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#stop()
-    */
    public void stop() {
    }
 }

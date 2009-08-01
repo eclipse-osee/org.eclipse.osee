@@ -41,25 +41,16 @@ public final class ZipBinaryResource implements IResource {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getContent()
-    */
    @Override
    public InputStream getContent() throws IOException {
       return new BufferedInputStream(new FileInputStream(entry));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getLocation()
-    */
    @Override
    public URI getLocation() {
       return locator.getLocation();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#getName()
-    */
    @Override
    public String getName() {
       String path = locator.getLocation().toASCIIString();
@@ -70,9 +61,6 @@ public final class ZipBinaryResource implements IResource {
       return path;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResource#isCompressed()
-    */
    @Override
    public boolean isCompressed() {
       return Lib.getExtension(entry.toString()).equals("zip");

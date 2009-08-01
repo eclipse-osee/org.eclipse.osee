@@ -185,9 +185,6 @@ public class FileOrFolderSelectPanel extends Composite {
 
    private final class ListenerRelay implements Listener {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-       */
       @Override
       public void handleEvent(Event event) {
          synchronized (listeners) {

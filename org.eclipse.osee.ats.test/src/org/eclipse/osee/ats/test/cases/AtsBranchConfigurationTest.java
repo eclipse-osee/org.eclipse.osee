@@ -152,9 +152,6 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             SMAEditor.editArtifact(teamWf, true);
@@ -257,9 +254,6 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             SMAEditor.editArtifact(teamWf, true);

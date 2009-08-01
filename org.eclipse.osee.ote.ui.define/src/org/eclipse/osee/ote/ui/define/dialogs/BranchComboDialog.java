@@ -70,9 +70,6 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       return branchSelectComposite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.TrayDialog#createButtonBar(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createButtonBar(Composite parent) {
       Control toReturn = super.createButtonBar(parent);
@@ -97,18 +94,12 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-    */
    @Override
    protected void okPressed() {
       saveWidgetValues();
       super.okPressed();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    public void handleEvent(Event event) {
       checkState();
    }

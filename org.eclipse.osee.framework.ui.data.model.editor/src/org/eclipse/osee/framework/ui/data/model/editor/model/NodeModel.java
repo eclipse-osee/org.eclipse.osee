@@ -108,9 +108,6 @@ public abstract class NodeModel extends Model {
       setSize(dimension);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.Model#fireModelEvent()
-    */
    @Override
    protected void fireModelEvent() {
       super.fireModelEvent();

@@ -52,9 +52,6 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       setRequiredEntry(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog#createDialog()
-    */
    @Override
    public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
       SimpleCheckFilteredTreeDialog dialog =
@@ -68,9 +65,6 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       return artifact.getAttributesToStringList(attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       try {
@@ -85,25 +79,16 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
-    */
    @Override
    public void saveToArtifact() throws OseeCoreException {
       artifact.setAttributeValues(attributeTypeName, getSelected());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
-    */
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();

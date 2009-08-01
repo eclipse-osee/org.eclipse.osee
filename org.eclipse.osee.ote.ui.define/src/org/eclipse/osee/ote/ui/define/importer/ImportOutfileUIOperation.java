@@ -109,9 +109,6 @@ public class ImportOutfileUIOperation {
 
       JobChangeAdapter listener = new JobChangeAdapter() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-          */
          @Override
          public void done(IJobChangeEvent event) {
             launchFindCommitableJob(artifacts);

@@ -149,9 +149,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.common.IApplicationServerManager#getCurrentProcesses()
-    */
    @Override
    public List<String> getCurrentProcesses() {
       List<String> processList = new ArrayList<String>();
@@ -172,9 +169,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return processList;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.common.IApplicationServerManager#getNumberOfActiveThreads()
-    */
    @Override
    public int getNumberOfActiveThreads() {
       int totalProcesses = 0;
@@ -196,33 +190,21 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return totalProcesses;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#getId()
-    */
    @Override
    public String getId() {
       return getApplicationServerInfo().getServerId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#getSupportedVersions()
-    */
    @Override
    public String[] getSupportedVersions() {
       return getApplicationServerInfo().getVersion();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#addSupportedVersion(java.lang.String)
-    */
    @Override
    public void addSupportedVersion(String version) throws OseeCoreException {
       getApplicationServerInfo().addVersion(version);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.IApplicationServerManager#removeSupportedVersion(java.lang.String)
-    */
    @Override
    public void removeSupportedVersion(String version) throws OseeCoreException {
       getApplicationServerInfo().removeVersion(version);

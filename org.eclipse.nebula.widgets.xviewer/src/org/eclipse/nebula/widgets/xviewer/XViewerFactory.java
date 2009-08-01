@@ -59,17 +59,11 @@ public abstract class XViewerFactory implements IXViewerFactory {
       idToColumn.clear();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#createNewXSorter(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
    @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
@@ -78,9 +72,6 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return custData;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn(java.lang.String)
-    */
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
       // Return a copy so don't corrupt original definition of column
@@ -89,17 +80,11 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return col.copy();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizations(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
    @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       return new XViewerCustomizations();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomMenu()
-    */
    @Override
    public XViewerCustomMenu getXViewerCustomMenu() {
       return new XViewerCustomMenu();
@@ -118,41 +103,26 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return columnCopy;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.IXViewerFactory#getXViewerTreeReport(org.eclipse.nebula.widgets.xviewer.XViewer)
-    */
    @Override
    public XViewerTreeReport getXViewerTreeReport(XViewer viewer) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isFilterUiAvailable()
-    */
    @Override
    public boolean isFilterUiAvailable() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isHeaderBarAvailable()
-    */
    @Override
    public boolean isHeaderBarAvailable() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isLoadedStatusLabelAvailable()
-    */
    @Override
    public boolean isLoadedStatusLabelAvailable() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.customize.IXViewerFactory#isSearchUiAvailable()
-    */
    @Override
    public boolean isSearchUiAvailable() {
       return true;

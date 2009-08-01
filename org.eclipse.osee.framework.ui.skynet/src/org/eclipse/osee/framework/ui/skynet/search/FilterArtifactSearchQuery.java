@@ -39,9 +39,6 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
       this.branch = branch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getArtifacts()
-    */
    @Override
    public Collection<Artifact> getArtifacts() throws OseeCoreException {
       boolean firstTime = true;

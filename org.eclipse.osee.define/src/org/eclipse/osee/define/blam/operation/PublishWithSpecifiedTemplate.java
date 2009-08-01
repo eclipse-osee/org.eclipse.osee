@@ -37,9 +37,6 @@ import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Publish With Specified Template";

@@ -104,9 +104,6 @@ public class AttributeFormPart extends AbstractFormPart {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       Widgets.disposeWidget(composite);
@@ -201,9 +198,6 @@ public class AttributeFormPart extends AbstractFormPart {
       toolkit.paintBordersFor(expandable);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#commit(boolean)
-    */
    @Override
    public void commit(boolean onSave) {
       int saveCount = 0;
@@ -237,9 +231,6 @@ public class AttributeFormPart extends AbstractFormPart {
 
    private final class XWidgetValidationListener implements XModifiedListener {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
       @Override
       public void widgetModified(XWidget xWidget) {
          if (xWidget != null && xWidget instanceof IArtifactWidget) {

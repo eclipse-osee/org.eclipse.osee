@@ -39,12 +39,6 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
       this(rowProcessor, hasHeaderRow, false);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#startElementFound(java.lang.String,
-    *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       if (localName.equalsIgnoreCase("Row")) {
@@ -92,12 +86,6 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler#endElementWithClearContents(java.lang.String,
-    *      java.lang.String, java.lang.String)
-    */
    @Override
    public void endElementFound(String uri, String localName, String qName) throws SAXException {
       if (localName.equalsIgnoreCase("Data")) {

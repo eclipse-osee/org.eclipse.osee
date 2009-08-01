@@ -32,10 +32,6 @@ public class InternalBranchServletActivator implements BundleActivator {
    private ServiceTracker branchExchangeTracker;
    private static InternalBranchServletActivator instance;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
 
@@ -61,10 +57,6 @@ public class InternalBranchServletActivator implements BundleActivator {
 
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       httpBranchManagementTracker.close();
       httpBranchManagementTracker = null;

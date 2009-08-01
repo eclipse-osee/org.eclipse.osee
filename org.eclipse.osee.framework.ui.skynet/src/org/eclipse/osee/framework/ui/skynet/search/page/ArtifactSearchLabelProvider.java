@@ -59,9 +59,6 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-    */
    @Override
    public String getText(Object object) {
       return getStyledText(object).getString();
@@ -230,9 +227,6 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       return coloredName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-    */
    @Override
    public Image getImage(Object element) {
       Image toReturn = null;

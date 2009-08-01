@@ -71,9 +71,6 @@ public class NonMappingRecordElement extends RecordElement {
    }
 
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#isNonMappingElement()
-    */
    @Override
    public boolean isNonMappingElement() {
       return true;

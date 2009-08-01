@@ -34,11 +34,6 @@ public class StateListDialog extends ListDialog {
       setLabelProvider(new StringLabelProvider());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.ListDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createDialogArea(Composite container) {
       Control control = super.createDialogArea(container);

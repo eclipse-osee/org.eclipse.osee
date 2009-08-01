@@ -47,9 +47,6 @@ public class PurgeTransactionHandler extends CommandHandler {
             "Are you sure you want to purge the transaction: " + selectedTransaction.getTransactionNumber())) {
          BranchManager.purgeTransactions(new JobChangeAdapter() {
 
-            /* (non-Javadoc)
-             * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-             */
             @Override
             public void done(IJobChangeEvent event) {
                if (event.getResult().getSeverity() == IStatus.OK) {

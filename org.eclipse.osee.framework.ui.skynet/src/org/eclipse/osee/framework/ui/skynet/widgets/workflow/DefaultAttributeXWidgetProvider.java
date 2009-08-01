@@ -43,9 +43,6 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       return defaultData;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider#getDynamicXWidgetLayoutData(org.eclipse.osee.framework.skynet.core.attribute.Attribute)
-    */
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
       int minOccurrence = attributeType.getMinOccurrences();

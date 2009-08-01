@@ -41,9 +41,6 @@ public class TagItemWorker extends BaseServerCommand {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#setExecutionAllowed(boolean)
-    */
    @Override
    public void setExecutionAllowed(boolean value) {
       super.setExecutionAllowed(value);
@@ -54,9 +51,6 @@ public class TagItemWorker extends BaseServerCommand {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       tagListener = null;
@@ -95,9 +89,6 @@ public class TagItemWorker extends BaseServerCommand {
          this.joinQuery = -1;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagQueryIdSubmit(int)
-       */
       @Override
       public void onTagQueryIdSubmit(int queryId) {
          joinQuery = queryId;
@@ -107,9 +98,6 @@ public class TagItemWorker extends BaseServerCommand {
          return isProcessing;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeTagComplete(int, long, int, long)
-       */
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
          if (queryId == joinQuery) {
@@ -117,9 +105,6 @@ public class TagItemWorker extends BaseServerCommand {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long, long)
-       */
       @Override
       synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
          if (queryId == joinQuery) {
@@ -128,9 +113,6 @@ public class TagItemWorker extends BaseServerCommand {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
-       */
       @Override
       public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
          if (queryId == joinQuery && isVerbose()) {

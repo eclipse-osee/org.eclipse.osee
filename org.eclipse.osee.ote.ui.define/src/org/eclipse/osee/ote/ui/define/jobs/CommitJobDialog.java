@@ -121,9 +121,6 @@ class CommitJobDialog extends UIJob {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-       */
       public Image getColumnImage(Object element, int columnIndex) {
          Image toReturn = null;
          if (columnIndex >= DUMMY_COLUMNS) {
@@ -139,9 +136,6 @@ class CommitJobDialog extends UIJob {
          return toReturn;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-       */
       public String getColumnText(Object element, int columnIndex) {
          String toReturn = "";
          if (columnIndex >= DUMMY_COLUMNS) {

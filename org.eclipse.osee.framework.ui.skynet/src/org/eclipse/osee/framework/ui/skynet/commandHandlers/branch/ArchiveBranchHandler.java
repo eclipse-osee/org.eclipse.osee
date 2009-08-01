@@ -33,9 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
  */
 public class ArchiveBranchHandler extends CommandHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       if (AWorkbench.getActivePage() == null) return false;
@@ -46,9 +43,6 @@ public class ArchiveBranchHandler extends CommandHandler {
       return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
 

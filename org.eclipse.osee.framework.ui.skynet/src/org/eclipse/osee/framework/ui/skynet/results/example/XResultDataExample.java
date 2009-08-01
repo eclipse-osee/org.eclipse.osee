@@ -30,9 +30,6 @@ public class XResultDataExample extends XNavigateItemAction {
       super(parent, TITLE, FrameworkImage.ADMIN);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction#run(org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption[])
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData.runExample();

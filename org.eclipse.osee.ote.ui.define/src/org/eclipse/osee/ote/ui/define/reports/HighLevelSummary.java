@@ -35,9 +35,6 @@ public class HighLevelSummary implements ITestRunReport {
       this.dataMap = new HashMap<String, CollectedData>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#generate()
-    */
    public void gatherData(IProgressMonitor monitor, TestRunOperator... items) throws Exception {
       clear();
       for (int index = 0; index < items.length; index++) {
@@ -62,9 +59,6 @@ public class HighLevelSummary implements ITestRunReport {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getBody()
-    */
    public String[][] getBody() {
       int numRows = dataMap.size();
       List<String> keys = new ArrayList<String>(dataMap.keySet());
@@ -88,16 +82,10 @@ public class HighLevelSummary implements ITestRunReport {
       return values.toArray(new String[values.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getHeader()
-    */
    public String[] getHeader() {
       return HEADER;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getReportTitle()
-    */
    public String getTitle() {
       return "High Level Test Run Summary";
    }
@@ -179,16 +167,10 @@ public class HighLevelSummary implements ITestRunReport {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#getDescription()
-    */
    public String getDescription() {
       return "Generates a summary report of all test runs.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.ITestRunReport#reset()
-    */
    @Override
    public void clear() {
       this.dataMap.clear();

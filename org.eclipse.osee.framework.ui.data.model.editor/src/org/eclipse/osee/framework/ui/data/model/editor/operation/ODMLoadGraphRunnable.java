@@ -45,9 +45,6 @@ public class ODMLoadGraphRunnable implements IExceptionableRunnable {
       return "Loading Osee Data Type Graph";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor monitor) throws Exception {
       monitor.beginTask(getName(), ODMConstants.TOTAL_STEPS);

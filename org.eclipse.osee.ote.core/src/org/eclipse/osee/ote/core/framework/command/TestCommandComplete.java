@@ -42,9 +42,6 @@ public class TestCommandComplete implements Callable<ITestCommandResult> {
       this.handle = handle;
    }
 
-   /* (non-Javadoc)
-    * @see java.util.concurrent.Callable#call()
-    */
    public ITestCommandResult call() throws Exception {
       ITestCommandResult result;
       try {

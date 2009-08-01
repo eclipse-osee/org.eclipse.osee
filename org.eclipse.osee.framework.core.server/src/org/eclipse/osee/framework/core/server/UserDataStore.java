@@ -57,9 +57,6 @@ public class UserDataStore {
          this.isCreationRequired = isCreationRequired;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.data.IOseeUserInfo#isCreationRequired()
-       */
       @Override
       public boolean isCreationRequired() {
          return isCreationRequired;

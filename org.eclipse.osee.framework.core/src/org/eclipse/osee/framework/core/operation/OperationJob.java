@@ -28,9 +28,6 @@ class OperationJob extends Job {
       this.operation = operation;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       return operation.run(monitor).getStatus();

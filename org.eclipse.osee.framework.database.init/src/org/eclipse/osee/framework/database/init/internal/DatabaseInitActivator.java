@@ -8,18 +8,10 @@ public class DatabaseInitActivator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database.init";
    private static BundleContext context;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       DatabaseInitActivator.context = context;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
    }
 

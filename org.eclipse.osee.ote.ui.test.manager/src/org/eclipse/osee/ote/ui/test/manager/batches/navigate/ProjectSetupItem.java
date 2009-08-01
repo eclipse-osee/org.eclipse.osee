@@ -34,11 +34,6 @@ final class ProjectSetupItem extends XNavigateItem implements Runnable {
       this.projectSetFile = projectSetFile;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Runnable#run()
-    */
    public void run() {
       try {
          URL url = projectSetFile.toURL();

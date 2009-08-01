@@ -26,18 +26,12 @@ public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<Branch> {
       super(displayLabel);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog#createControls(org.eclipse.swt.widgets.Composite, int, boolean)
-    */
    @Override
    public void createControls(Composite parent, int horizontalSpan, boolean fillText) {
       super.createControls(parent, horizontalSpan, fillText);
       getStyledText().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog#createDialog()
-    */
    @Override
    public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
       return new BranchCheckTreeDialog(getLabel(), "Select from the items below", 1, Integer.MAX_VALUE);

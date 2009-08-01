@@ -30,33 +30,21 @@ public class DDSTypeSupport extends TypeSupport{
       this.size = size;
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.messaging.dds.service.TypeSupport#getKey()
-    */
    @Override
    protected Key getKey() {
       return key;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.messaging.dds.service.TypeSupport#getReaderName()
-    */
    @Override
    protected String getReaderName() {
       return this.readerName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.messaging.dds.service.TypeSupport#getTypeDataSize()
-    */
    @Override
    protected int getTypeDataSize() {
       return this.size;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.messaging.dds.service.TypeSupport#getWriterName()
-    */
    @Override
    protected String getWriterName() {
       return this.writerName;

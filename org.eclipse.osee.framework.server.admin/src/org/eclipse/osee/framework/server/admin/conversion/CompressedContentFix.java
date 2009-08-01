@@ -87,11 +87,6 @@ public class CompressedContentFix {
          nameMap = null;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see java.lang.Runnable#run()
-       */
       @Override
       public void run() {
          long time = System.currentTimeMillis();

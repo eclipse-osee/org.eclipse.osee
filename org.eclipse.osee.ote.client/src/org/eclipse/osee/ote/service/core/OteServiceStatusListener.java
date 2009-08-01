@@ -21,9 +21,6 @@ import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
  */
 public class OteServiceStatusListener implements IServiceStatusListener {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.environment.status.IServiceStatusListener#statusBoardUpdated(org.eclipse.osee.ote.core.environment.status.IServiceStatusData)
-    */
    public void statusBoardUpdated(IServiceStatusData statusData) throws RemoteException {
    }
 

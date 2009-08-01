@@ -64,24 +64,11 @@ public class MessageSubscription implements IMessageSubscription {
 		return currentState != null ? currentState.isResolved() : false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.IMessageSubscription#getMemType()
-	 */
 	@Override
 	public synchronized MemType getMemType() {
 		return currentState.getMemType();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.IMessageSubscription#getMessageMode
-	 * ()
-	 */
 	@Override
 	public synchronized MessageMode getMessageMode() {
 		return currentState.getMode();
@@ -152,13 +139,6 @@ public class MessageSubscription implements IMessageSubscription {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.IMessageSubscription#changeMemType
-	 * (org.eclipse.osee.ote.message.enums.MemType)
-	 */
 	@Override
 	public synchronized void changeMemType(MemType type) {
 		if (type == getMemType()) {
@@ -180,13 +160,6 @@ public class MessageSubscription implements IMessageSubscription {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.IMessageSubscription#setElementValue
-	 * (java.util.List, java.lang.String)
-	 */
 	@Override
 	public void setElementValue(List<Object> path, String value) throws Exception {
 		final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value);
@@ -236,13 +209,6 @@ public class MessageSubscription implements IMessageSubscription {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.osee.ote.client.msg.core.IMessageSubscription#
-	 * addSubscriptionListener
-	 * (org.eclipse.osee.ote.client.msg.core.ISubscriptionListener)
-	 */
 	@Override
 	public boolean addSubscriptionListener(ISubscriptionListener listener) {
 		boolean result = listeners.add(listener);
@@ -266,13 +232,6 @@ public class MessageSubscription implements IMessageSubscription {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.osee.ote.client.msg.core.IMessageSubscription#
-	 * removeSubscriptionListener
-	 * (org.eclipse.osee.ote.client.msg.core.ISubscriptionListener)
-	 */
 	@Override
 	public boolean removeSubscriptionListener(ISubscriptionListener listener) {
 		return listeners.remove(listener);

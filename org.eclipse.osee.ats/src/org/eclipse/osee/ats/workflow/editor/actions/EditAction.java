@@ -39,17 +39,11 @@ public class EditAction extends Action {
       super("Edit");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#getId()
-    */
    @Override
    public String getId() {
       return ID;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       ISelectionProvider selectionProvider =

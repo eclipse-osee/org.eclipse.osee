@@ -121,9 +121,6 @@ public class AtsConfigWizardPage1 extends WizardPage {
          Button populateExampleButton = new Button(comp, SWT.PUSH);
          populateExampleButton.setText("Populate with example entries");
          populateExampleButton.addSelectionListener(new SelectionAdapter() {
-            /* (non-Javadoc)
-                         * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                         */
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);

@@ -27,17 +27,11 @@ public enum DemoImage implements OseeImage {
       this.fileName = fileName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#createImageDescriptor()
-    */
    @Override
    public ImageDescriptor createImageDescriptor() {
       return ImageManager.createImageDescriptor(OseeAtsConfigDemoActivator.PLUGIN_ID, "images", fileName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-    */
    @Override
    public String getImageKey() {
       return OseeAtsConfigDemoActivator.PLUGIN_ID + "." + fileName;

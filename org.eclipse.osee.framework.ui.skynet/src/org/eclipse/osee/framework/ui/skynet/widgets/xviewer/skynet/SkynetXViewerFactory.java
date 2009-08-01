@@ -49,11 +49,6 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    private IXViewerCustomizations xViewerCustomizations;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizations()
-    */
    @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       try {
@@ -129,17 +124,11 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return columns;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.IXViewerFactory#isAdmin()
-    */
    @Override
    public boolean isAdmin() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerFactory#getXViewerTreeReport(org.eclipse.nebula.widgets.xviewer.XViewer)
-    */
    @Override
    public XViewerTreeReport getXViewerTreeReport(XViewer viewer) {
       return new OseeXViewerTreeReport(viewer);

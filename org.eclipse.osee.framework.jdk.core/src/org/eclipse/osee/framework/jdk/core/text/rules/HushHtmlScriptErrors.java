@@ -68,10 +68,6 @@ public class HushHtmlScriptErrors extends Rule {
       System.out.println("Finished");
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.text.Rule#process(java.io.File, java.io.File)
-    */
    public void process(File inFile, File outFile) throws IOException {
       //Filter files being processed by this to only be of type .html
       if (inFile.getName().endsWith(".html")) super.process(inFile, outFile);

@@ -21,17 +21,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class LabelSorter extends ViewerSorter {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerSorter#category(java.lang.Object)
-    */
    @Override
    public int category(Object element) {
       return super.category(element);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
@@ -80,17 +74,11 @@ public class LabelSorter extends ViewerSorter {
       return getComparator().compare(name1, name2);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerSorter#isSorterProperty(java.lang.Object, java.lang.String)
-    */
    @Override
    public boolean isSorterProperty(Object element, String property) {
       return super.isSorterProperty(element, property);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ViewerSorter#sort(org.eclipse.jface.viewers.Viewer, java.lang.Object[])
-    */
    @SuppressWarnings("unchecked")
    @Override
    public void sort(final Viewer viewer, Object[] elements) {

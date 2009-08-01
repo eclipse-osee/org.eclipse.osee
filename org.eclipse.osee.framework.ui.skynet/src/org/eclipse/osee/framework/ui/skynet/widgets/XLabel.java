@@ -58,70 +58,43 @@ public class XLabel extends XWidget {
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#dispose()
-    */
    @Override
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return labelWidget;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getReportData()
-    */
    @Override
    public String getReportData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#getXmlData()
-    */
    @Override
    public String getXmlData() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#isValid()
-    */
    @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#refresh()
-    */
    @Override
    public void refresh() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#toHTML(java.lang.String)
-    */
    @Override
    public String toHTML(String labelFont) {
       return "";

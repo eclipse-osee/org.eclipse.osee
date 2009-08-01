@@ -37,49 +37,31 @@ public class RelationTypeSide implements IRelationEnumeration {
       this.artifact = artifact;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getRelationType()
-    */
    @Override
    public RelationType getRelationType() {
       return type;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSide()
-    */
    @Override
    public RelationSide getSide() {
       return side;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSideName(org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    @Override
    public String getSideName() {
       return type.getSideName(side);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getTypeName()
-    */
    @Override
    public String getTypeName() {
       return type.getTypeName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#isSideA()
-    */
    @Override
    public boolean isSideA() {
       return side == RelationSide.SIDE_A;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#isThisType(org.eclipse.osee.framework.skynet.core.relation.RelationLink)
-    */
    @Override
    public boolean isThisType(RelationLink link) {
       return link.getRelationType() == type;
@@ -92,9 +74,6 @@ public class RelationTypeSide implements IRelationEnumeration {
       return artifact;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object arg0) {
       if (arg0 instanceof RelationTypeSide) {
@@ -111,9 +90,6 @@ public class RelationTypeSide implements IRelationEnumeration {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       int hashCode = 11;

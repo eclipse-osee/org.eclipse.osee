@@ -36,9 +36,6 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerColumns(new XViewerArtifactTypeColumn("Artifact Type"));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getDefaultTableCustomizeData()
-    */
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();

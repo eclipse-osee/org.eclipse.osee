@@ -42,9 +42,6 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionIt
    public ToggleFavoriteBranchContributionItem() {
       this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.actions.CompoundContributionItem#getContributionItems()
-    */
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =

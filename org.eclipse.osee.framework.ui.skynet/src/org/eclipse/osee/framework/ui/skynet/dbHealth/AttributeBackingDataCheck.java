@@ -45,17 +45,11 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
       super("Attribute Binary Data Availability");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixTaskName()
-    */
    @Override
    public String getFixTaskName() {
       return Strings.emptyString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       List<AttrData> errors = getInvalidAttributeData(monitor);
@@ -124,17 +118,11 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getCheckDescription()
-    */
    @Override
    public String getCheckDescription() {
       return DESCRIPTION;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return FIX_DETAILS;

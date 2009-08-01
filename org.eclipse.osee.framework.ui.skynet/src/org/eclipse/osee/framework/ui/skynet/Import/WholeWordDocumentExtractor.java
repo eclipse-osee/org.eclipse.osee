@@ -21,9 +21,6 @@ public class WholeWordDocumentExtractor extends WordExtractor {
       return "Extract all the content of each Word XML document as one artifact";
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
-    */
    public void discoverArtifactAndRelationData(File importFile, Branch branch) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
       RoughArtifact roughArtifact =
@@ -32,9 +29,6 @@ public class WholeWordDocumentExtractor extends WordExtractor {
       roughArtifact.addFileAttribute(WordAttribute.WHOLE_WORD_CONTENT, importFile);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
@@ -43,17 +37,11 @@ public class WholeWordDocumentExtractor extends WordExtractor {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "Whole Word Document";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return true;

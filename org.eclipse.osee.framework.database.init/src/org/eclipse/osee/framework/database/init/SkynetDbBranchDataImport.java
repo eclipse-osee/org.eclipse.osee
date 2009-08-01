@@ -49,9 +49,6 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String BRANCH_DATA = "branchData";
    private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
-    */
    @Override
    public void run() throws OseeCoreException {
       if (OseeClientProperties.isOseeImportAllowed()) {

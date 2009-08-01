@@ -93,9 +93,6 @@ public class StackedViewer extends Composite {
       stackComposite.layout();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
    @Override
    public void dispose() {
       for (Control control : compositeMap.values()) {

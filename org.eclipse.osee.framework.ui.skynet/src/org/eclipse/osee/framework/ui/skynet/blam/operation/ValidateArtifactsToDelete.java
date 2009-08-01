@@ -37,9 +37,6 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       processChange(variableMap.getArtifacts("artifact"));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Validate Artifacts To Delete";

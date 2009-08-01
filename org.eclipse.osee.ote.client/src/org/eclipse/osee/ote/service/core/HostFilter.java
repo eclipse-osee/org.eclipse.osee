@@ -22,9 +22,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
  */
 public class HostFilter implements IConnectorFilter {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectorFilter#accept(org.eclipse.osee.connection.service.IServiceConnector)
-    */
    @Override
    public boolean accept(IServiceConnector connector) {
       return connector.getService() instanceof IHostTestEnvironment;

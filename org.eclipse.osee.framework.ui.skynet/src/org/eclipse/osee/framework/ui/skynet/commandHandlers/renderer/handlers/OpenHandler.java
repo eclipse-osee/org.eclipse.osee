@@ -26,11 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * @author Jeff C. Phillips
  */
 public class OpenHandler extends AbstractEditorHandler {
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       if (!artifacts.isEmpty()) {
@@ -51,9 +46,6 @@ public class OpenHandler extends AbstractEditorHandler {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler#isEnabledWithException()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       // TODO Auto-generated method stub

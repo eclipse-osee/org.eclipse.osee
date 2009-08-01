@@ -76,21 +76,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue()
-    */
    @Override
    public void setValue(Long value) {
       throwNoMappingElementException();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public Long getValue() {
       throwNoMappingElementException();
@@ -966,17 +956,11 @@ public class NonMappingLongIntegerElement extends LongIntegerElement {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#set(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, java.lang.String)
-    */
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       throwNoMappingElementException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#isNonMappingElement()
-    */
    @Override
    public boolean isNonMappingElement() {
       return true;

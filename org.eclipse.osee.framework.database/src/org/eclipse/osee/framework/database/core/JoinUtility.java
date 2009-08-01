@@ -222,9 +222,6 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), gammaId, transactionId};
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -233,9 +230,6 @@ public class JoinUtility {
             return other.gammaId == this.gammaId && other.transactionId == this.transactionId;
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return 37 * gammaId * transactionId;
@@ -274,9 +268,6 @@ public class JoinUtility {
             return String.format("art_id=%d, branch_id=%d", artId, branchId);
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -285,9 +276,6 @@ public class JoinUtility {
             return other.artId == this.artId && other.branchId == this.branchId;
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return 37 * artId * branchId;
@@ -316,9 +304,6 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), value != null ? value : SQL3DataType.VARCHAR};
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -327,9 +312,6 @@ public class JoinUtility {
             return other.value == null && this.value == null || (other.value != null && this.value != null && this.value.equals(other.value));
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return 37 * (value != null ? value.hashCode() : -1);
@@ -362,9 +344,6 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), value};
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -373,9 +352,6 @@ public class JoinUtility {
             return this.value == other.value;
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return (int) (37 * value);
@@ -408,9 +384,6 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), gammaId};
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -419,9 +392,6 @@ public class JoinUtility {
             return this.gammaId == other.gammaId;
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return (int) (37 * gammaId);
@@ -456,9 +426,6 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), id1, id2};
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#equals(java.lang.Object)
-          */
          @Override
          public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -467,9 +434,6 @@ public class JoinUtility {
             return this.id1 == other.id1 && this.id2 == other.id2;
          }
 
-         /* (non-Javadoc)
-          * @see java.lang.Object#hashCode()
-          */
          @Override
          public int hashCode() {
             return (int) (37 * id1 * id2);

@@ -69,9 +69,6 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(XViewerTestFactory.Run_Col)) {
@@ -83,9 +80,6 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
-    */
    @Override
    public Color getBackground(Object element, int columnIndex) {
       return super.getBackground(element, columnIndex);

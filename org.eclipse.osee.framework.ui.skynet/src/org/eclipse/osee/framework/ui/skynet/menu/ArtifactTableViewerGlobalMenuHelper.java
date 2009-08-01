@@ -31,11 +31,6 @@ public class ArtifactTableViewerGlobalMenuHelper implements IGlobalMenuHelper {
       this.tableViewer = tableViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper#getSelectedArtifacts()
-    */
    public Collection<Artifact> getArtifacts() {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       if (tableViewer == null || tableViewer.getTable().isDisposed()) return artifacts;
@@ -50,9 +45,6 @@ public class ArtifactTableViewerGlobalMenuHelper implements IGlobalMenuHelper {
       return artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper#getValidMenuItems()
-    */
    public Collection<GlobalMenuItem> getValidMenuItems() {
       return GlobalMenuItem.ALL;
    }

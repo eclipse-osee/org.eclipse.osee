@@ -26,9 +26,6 @@ public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
       this.smaMgr = smaMgr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
-    */
    @Override
    public void linkActivated(HyperlinkEvent e) {
       if (smaMgr.isHistoricalVersion())
@@ -41,16 +38,10 @@ public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
                "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkEntered(org.eclipse.ui.forms.events.HyperlinkEvent)
-    */
    @Override
    public void linkEntered(HyperlinkEvent e) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkExited(org.eclipse.ui.forms.events.HyperlinkEvent)
-    */
    @Override
    public void linkExited(HyperlinkEvent e) {
    }

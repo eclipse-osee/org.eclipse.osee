@@ -38,17 +38,11 @@ public class RelationTransactionData extends BaseTransactionData {
       this.relation = relation;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getSelectTxNotCurrentSql()
-    */
    @Override
    public OseeSql getSelectTxNotCurrentSql() {
       return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#addInsertToBatch(org.eclipse.osee.framework.jdk.core.type.HashCollection)
-    */
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
@@ -59,32 +53,20 @@ public class RelationTransactionData extends BaseTransactionData {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalUpdate()
-    */
    @Override
    protected void internalUpdate(TransactionId transactionId) throws OseeCoreException {
       relation.internalSetGammaId(getGammaId());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalClearDirtyState()
-    */
    @Override
    protected void internalClearDirtyState() {
       relation.setNotDirty();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalOnRollBack()
-    */
    @Override
    protected void internalOnRollBack() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#createGammaId()
-    */
    @Override
    protected int createGammaId() throws OseeCoreException {
       int newGammaId = 0;
@@ -96,9 +78,6 @@ public class RelationTransactionData extends BaseTransactionData {
       return newGammaId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalUpdateEvents(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
       RelationEventType relationEventType =

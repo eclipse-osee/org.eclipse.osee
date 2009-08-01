@@ -53,9 +53,6 @@ public class XViewerTestStyledStringLabelProvider extends XViewerStyledTextLabel
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(XViewerTestFactory.Run_Col)) {
@@ -67,33 +64,21 @@ public class XViewerTestStyledStringLabelProvider extends XViewerStyledTextLabel
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerStyledTextLabelProvider#getBackground(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public Color getBackground(Object element, XViewerColumn viewerColumn, int columnIndex) throws XViewerException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerStyledTextLabelProvider#getFont(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public Font getFont(Object element, XViewerColumn viewerColumn, int columnIndex) throws XViewerException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerStyledTextLabelProvider#getForeground(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public Color getForeground(Object element, XViewerColumn viewerColumn, int columnIndex) throws XViewerException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerStyledTextLabelProvider#getStyledText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public StyledString getStyledText(Object element, XViewerColumn xCol, int columnIndex) throws XViewerException {
       if (element instanceof String) {

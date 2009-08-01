@@ -327,11 +327,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       return defaultDataByteSize;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onDataAvailable(org.eclipse.osee.ote.messaging.dds.entity.DataReader)
-    */
    public synchronized void onDataAvailable(DataReader theReader) {
       // System.out.println(String.format("data available %s %s", this.getName(),
       // this.getNamespace()));
@@ -346,120 +341,45 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onLivelinessChanged(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.LivelinessChangedStatus)
-    */
    public void onLivelinessChanged(DataReader theReader, LivelinessChangedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onRequestedDeadlineMissed(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.RequestedDeadlineMissedStatus)
-    */
    public void onRequestedDeadlineMissed(DataReader theReader, RequestedDeadlineMissedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onRequestedIncompatibleQos(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.RequestedIncompatibleQosStatus)
-    */
    public void onRequestedIncompatibleQos(DataReader theReader, RequestedIncompatibleQosStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onSampleLost(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.SampleLostStatus)
-    */
    public void onSampleLost(DataReader theReader, SampleLostStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onSampleRejected(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.SampleRejectedStatus)
-    */
    public void onSampleRejected(DataReader theReader, SampleRejectedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataReaderListener#onSubscriptionMatch(org.eclipse.osee.ote.messaging.dds.entity.DataReader,
-    *      org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus)
-    */
    public void onSubscriptionMatch(DataReader theReader, SubscriptionMatchStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener#onDataSentToMiddleware(org.eclipse.osee.ote.messaging.dds.entity.DataWriter)
-    */
    public synchronized void onDataSentToMiddleware(DataWriter theWriter) {
       // header.setSequenceNumber(header.getSequenceNumber() + 1);
       notifyListeners();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener#onLivelinessLost(org.eclipse.osee.ote.messaging.dds.entity.DataWriter,
-    *      org.eclipse.osee.ote.messaging.dds.status.LivelinessLostStatus)
-    */
    public void onLivelinessLost(DataWriter theWriter, LivelinessLostStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener#onOfferedDeadlineMissed(org.eclipse.osee.ote.messaging.dds.entity.DataWriter,
-    *      org.eclipse.osee.ote.messaging.dds.status.OfferedDeadlineMissedStatus)
-    */
    public void onOfferedDeadlineMissed(DataWriter theWriter, OfferedDeadlineMissedStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener#onOfferedIncompatibleQos(org.eclipse.osee.ote.messaging.dds.entity.DataWriter,
-    *      org.eclipse.osee.ote.messaging.dds.status.OfferedIncompatibleQosStatus)
-    */
    public void onOfferedIncompatibleQos(DataWriter theWriter, OfferedIncompatibleQosStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.listener.DataWriterListener#onPublicationMatch(org.eclipse.osee.ote.messaging.dds.entity.DataWriter,
-    *      org.eclipse.osee.ote.messaging.dds.status.PublicationMatchStatus)
-    */
    public void onPublicationMatch(DataWriter theWriter, PublicationMatchStatus status) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.Data#getKeyValue()
-    */
    public Object getKeyValue() {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.messaging.dds.Data#setFromByteArray(byte[])
-    */
    public void setFromByteArray(byte[] input) {
       try {
          copyData(0, input, 0, input.length);
@@ -636,9 +556,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       copyData(data.getOffset(), buffer, buffer.remaining());
    }
 
-   /* (non-Javadoc)
-       * @see java.lang.Object#toString()
-       */
    @Override
    public String toString() {
       return getClass().getName() + ": name=" + getName();

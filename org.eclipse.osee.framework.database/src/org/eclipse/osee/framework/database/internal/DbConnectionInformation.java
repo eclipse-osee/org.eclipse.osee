@@ -28,17 +28,11 @@ public class DbConnectionInformation implements IDbConnectionInformation {
    private IDatabaseInfo selectedDbInfo;
    private final Object myWait = new Object();
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getDatabaseInfo(java.lang.String)
-    */
    @Override
    public IDatabaseInfo getDatabaseInfo(String servicesId) {
       return dbInfo.get(servicesId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getSelectedDatabaseInfo()
-    */
    @Override
    public IDatabaseInfo getSelectedDatabaseInfo() {
       if (selectedDbInfo == null) {
@@ -71,9 +65,6 @@ public class DbConnectionInformation implements IDbConnectionInformation {
       return selectedDbInfo;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IBind#bind(java.lang.Object)
-    */
    @Override
    public void bind(IDbConnectionInformationContributor obj) {
       IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;
@@ -89,9 +80,6 @@ public class DbConnectionInformation implements IDbConnectionInformation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IBind#unbind(java.lang.Object)
-    */
    @Override
    public void unbind(IDbConnectionInformationContributor obj) {
       IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;

@@ -42,9 +42,6 @@ public abstract class AbstractDbExportItem extends AbstractExportItem {
       return this.joinQueryId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.AbstractExportItem#cleanUp()
-    */
    @Override
    public void cleanUp() {
       this.joinQueryId = -1;

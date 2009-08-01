@@ -75,10 +75,6 @@ public class ImportTraceabilityJob extends Job {
       this.writeOutResults = writeOutResults;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    public IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {

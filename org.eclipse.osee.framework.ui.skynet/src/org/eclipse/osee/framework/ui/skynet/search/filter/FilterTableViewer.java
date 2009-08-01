@@ -152,29 +152,14 @@ public class FilterTableViewer {
          return filterList.getFilters().toArray();
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IFilterListViewer#addFilter(FilterModel)
-       */
       public void addFilter(FilterModel filter) {
          tableViewer.add(filter);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IFilterListViewer#removeFilter(FilterModel)
-       */
       public void removeFilter(FilterModel filter) {
          tableViewer.remove(filter);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see IFilterListViewer#updateFilter(FilterModel)
-       */
       public void updateFilter(FilterModel filter) {
          tableViewer.update(filter, null);
       }

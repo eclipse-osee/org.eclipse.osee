@@ -99,9 +99,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       initializeSMA();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#reloadAttributesAndRelations()
-    */
    @Override
    public void reloadAttributesAndRelations() throws OseeCoreException {
       super.reloadAttributesAndRelations();
@@ -158,33 +155,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getArtifactTypeName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
-    */
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
-    */
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
-    */
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
-    */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException {
       return Artifacts.toString("; ", getImplementers());
@@ -206,33 +191,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Collections.emptyList();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
-    */
    @Override
    public String getWorldViewTeam() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewGroups()
-    */
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
       return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
-    */
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persistAttributes()
-    */
    @Override
    public void onAttributePersist() throws OseeCoreException {
       // Since multiple ways exist to change the assignees, notification is performed on the persist
@@ -464,11 +437,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.ATSArtifact#atsDelete(java.util.Set, java.util.Map)
-    */
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       SMAEditor.close(this, true);
@@ -672,11 +640,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return Result.TrueResult;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewManDaysNeeded()
-    */
    public double getWorldViewManDaysNeeded() throws OseeCoreException {
       double hrsRemain = getWorldViewRemainHours();
       double manDaysNeeded = 0;
@@ -868,20 +831,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
-    */
    public String getHyperName() {
       return getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperType()
-    */
    public String getHyperType() {
       try {
          return getArtifactTypeName();
@@ -890,11 +843,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperState()
-    */
    public String getHyperState() {
       try {
          return smaMgr.getStateMgr().getCurrentStateName();
@@ -904,11 +852,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssignee()
-    */
    public String getHyperAssignee() {
       try {
          return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
@@ -918,58 +861,28 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
-    */
    public Image getHyperAssigneeImage() throws OseeCoreException {
       return smaMgr.getAssigneeImage();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperArtifact()
-    */
    public Artifact getHyperArtifact() {
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
-    */
    public String getWorldViewDecision() throws OseeCoreException {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact#getParentSMArt()
-    */
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return getParentSMA();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewValidationRequiredStr()
-    */
    public String getWorldViewValidationRequiredStr() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()))
          return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewDeadlineAlerting()
-    */
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
       return Result.FalseResult;
    }
@@ -1009,9 +922,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
-    */
    public String getWorldViewBranchStatus() throws OseeCoreException {
       return "";
    }
@@ -1023,30 +933,18 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return smaMgr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
-    */
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
-    */
    public String getWorldViewReviewDecider() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
-    */
    public String getWorldViewReviewModerator() throws OseeCoreException {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
-    */
    public String getWorldViewReviewReviewer() throws OseeCoreException {
       return "";
    }
@@ -1258,65 +1156,41 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentState()
-    */
    @Override
    public double getWorldViewHoursSpentState() throws OseeCoreException {
       return getHoursSpentSMAState(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateReview()
-    */
    @Override
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
       return getHoursSpentSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateTask()
-    */
    @Override
    public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
       return getHoursSpentSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentTotal()
-    */
    @Override
    public double getWorldViewHoursSpentTotal() throws OseeCoreException {
       return getHoursSpentSMATotal();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteState()
-    */
    @Override
    public int getWorldViewPercentCompleteState() throws OseeCoreException {
       return getPercentCompleteSMAState(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateReview()
-    */
    @Override
    public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
       return getPercentCompleteSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateTask()
-    */
    @Override
    public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
       return getPercentCompleteSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteTotal()
-    */
    @Override
    public int getWorldViewPercentCompleteTotal() throws OseeCoreException {
       return getPercentCompleteSMATotal();

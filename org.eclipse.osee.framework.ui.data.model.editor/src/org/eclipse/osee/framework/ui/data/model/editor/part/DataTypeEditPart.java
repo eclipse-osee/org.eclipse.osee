@@ -84,9 +84,6 @@ public abstract class DataTypeEditPart extends NodeModelEditPart {
       return (DataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.part.BaseEditPart#handleModelChanged(java.lang.Object)
-    */
    @Override
    protected void handleModelEvent(Object msg) {
       refreshVisuals();

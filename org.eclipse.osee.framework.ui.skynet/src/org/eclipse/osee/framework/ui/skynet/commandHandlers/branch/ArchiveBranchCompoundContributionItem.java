@@ -48,9 +48,6 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
       super(id);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.actions.CompoundContributionItem#getContributionItems()
-    */
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =

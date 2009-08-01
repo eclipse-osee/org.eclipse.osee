@@ -47,9 +47,6 @@ public class BaseTestRunManager implements ITestRunManager {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunManager#run(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment)  {
 	   IMethodResult result = MethodResultImpl.OK;
 	   if( aborted )
@@ -83,9 +80,6 @@ public class BaseTestRunManager implements ITestRunManager {
       return test;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunManager#dispose()
-    */
    public IMethodResult dispose() {
 	   MethodResultImpl result = MethodResultImpl.OK;
 	  try{
@@ -103,9 +97,6 @@ public class BaseTestRunManager implements ITestRunManager {
 	  return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.testrun.ITestRunManager#initialize(org.eclipse.osee.ote.core.framework.data.IPropertyStore)
-    */
    public IMethodResult initialize(TestEnvironment env, IPropertyStore propertyStore) {
 	   MethodResultImpl result = MethodResultImpl.OK;
 	   try{

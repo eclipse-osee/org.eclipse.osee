@@ -50,9 +50,6 @@ public class HtmlDialog extends MessageDialog {
       this.listener = listener;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.Dialog#isResizable()
-    */
    @Override
    protected boolean isResizable() {
       return true;

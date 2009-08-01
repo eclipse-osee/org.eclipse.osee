@@ -36,9 +36,6 @@ public class ManifestExportItem extends AbstractExportItem {
       ExportImportXml.closePartialXmlNode(appendable);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.export.AbstractExportItem#doWork(java.io.File, java.io.Writer, int)
-    */
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);

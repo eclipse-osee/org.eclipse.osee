@@ -66,11 +66,6 @@ public class IndexElement implements Xmlizable {
       return toReturn.toString();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.persistence.Xmlizable#toXml()
-    */
    public Element toXml(Document doc) {
       Element element = doc.createElement(TableElement.TableSections.Index.name());
       element.setAttribute(IndexFields.id.name(), id);

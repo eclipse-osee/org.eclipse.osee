@@ -43,9 +43,6 @@ public class MySubscribedSearchItem extends UserSearchItem {
       return user.getRelatedArtifacts(AtsRelation.SubscribedUser_Artifact);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new MySubscribedSearchItem(this);

@@ -63,30 +63,18 @@ public class EclipseConsolePrintStream extends PrintStream {
    
    
    
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#write(char[], int, int)
-    */
 //   public void write(byte[] cbuf, int off, int len) {
 //	  super.write(cbuf, off, len);
 //      buffer.append(cbuf, off, len);     
 //      masterBuffer.append(cbuf, off, len);
 //   }
 
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#flush()
-    */
    public void flush() {
 	  if(builder.length() == 0) return;
 	  AsynchRemoteJobs.getInstance(this).addJob(new ConsoleOutputJob(callback, builder.toString()));
       builder.delete(0, builder.length());
    }
 
-   /*
-    * (non-Javadoc)
-    * @see java.io.Writer#close()
-    */
    public void close() {
       flush();
    }

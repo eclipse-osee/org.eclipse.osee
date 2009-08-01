@@ -262,9 +262,6 @@ public class WordOutlineExtractor extends WordExtractor {
       return id.replaceAll("\\)", ".");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
@@ -273,17 +270,11 @@ public class WordOutlineExtractor extends WordExtractor {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "Word Outline";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return true;

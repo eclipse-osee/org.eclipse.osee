@@ -44,9 +44,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       this.sourceDatabaseId = "UNKNOWN";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#startElementFound(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       try {
@@ -141,9 +138,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          return source;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#equals(java.lang.Object)
-       */
       @Override
       public boolean equals(Object obj) {
          if (obj == this) return true;
@@ -152,17 +146,11 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          return this.priority == other.priority && this.fileName.equals(other.fileName);
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
       @Override
       public int hashCode() {
          return (int) (37 * priority);
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Comparable#compareTo(java.lang.Object)
-       */
       @Override
       public int compareTo(ImportFile other) {
          return this.priority.compareTo(other.priority);

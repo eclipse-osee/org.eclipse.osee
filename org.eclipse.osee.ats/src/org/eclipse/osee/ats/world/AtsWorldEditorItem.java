@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorItem#getWorldEditorMenuItems(org.eclipse.osee.ats.world.IWorldEditorProvider, org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public List<? extends IAtsWorldEditorMenuItem> getWorldEditorMenuItems(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
       try {

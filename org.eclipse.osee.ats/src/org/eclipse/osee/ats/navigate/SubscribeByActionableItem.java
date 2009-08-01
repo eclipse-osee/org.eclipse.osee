@@ -37,11 +37,6 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
       super(parent, "Subscribe by Actionable Item", FrameworkImage.EMAIL);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       final AICheckTreeDialog diag =

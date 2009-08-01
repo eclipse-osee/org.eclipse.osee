@@ -3,11 +3,11 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
 import org.eclipse.gef.ui.actions.ActionBarContributor;
@@ -46,10 +46,6 @@ public class AtsWorkflowConfigEditorActionBarContributor extends ActionBarContri
       toolBarManager.add(getAction(ActionFactory.REDO.getId()));
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
-    */
    protected void declareGlobalActionKeys() {
       // currently none
    }

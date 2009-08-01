@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
  */
 public abstract class CommandHandler extends AbstractHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-    */
    @Override
    public boolean isEnabled() {
       try {

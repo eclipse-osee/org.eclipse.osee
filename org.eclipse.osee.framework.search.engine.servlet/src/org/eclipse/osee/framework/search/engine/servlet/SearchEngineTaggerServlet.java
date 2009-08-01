@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class SearchEngineTaggerServlet extends OseeHttpServlet {
    private static final long serialVersionUID = 5104108752343302320L;
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       long start = System.currentTimeMillis();
@@ -64,9 +61,6 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
       response.getWriter().close();
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
@@ -102,9 +96,6 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {

@@ -551,11 +551,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceAdded(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       try {
          if (!findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) {
@@ -577,11 +572,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceRemoved(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public void serviceRemoved(ServiceDiscoveryEvent event) {
       if (findServiceId(serviceItemList, event.getPreEventServiceItem().serviceID, true)) {
          notifyServiceRemoved(event.getPreEventServiceItem());
@@ -596,11 +586,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceChanged(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public void serviceChanged(ServiceDiscoveryEvent event) {
       if (findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) notifyServiceChanged(event.getPostEventServiceItem());
    }

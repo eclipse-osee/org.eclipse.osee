@@ -90,17 +90,11 @@ public abstract class XFlatWidget<T> extends XLabel {
       this.maxPage = maxPage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabel#getControl()
-    */
    @Override
    public Control getControl() {
       return flatControl.flatComposite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setToolTip(java.lang.String)
-    */
    @Override
    public void setToolTip(String toolTip) {
       if (Strings.isValid(toolTip)) {
@@ -108,9 +102,6 @@ public abstract class XFlatWidget<T> extends XLabel {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.skynet.gui.widgets.XWidget#refresh()
-    */
    @Override
    public void refresh() {
       updateCurrentPageLabel();

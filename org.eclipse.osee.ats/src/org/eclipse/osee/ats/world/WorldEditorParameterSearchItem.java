@@ -62,16 +62,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    public abstract Result isParameterSelectionValid() throws OseeCoreException;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor, org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType, boolean)
-    */
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getWidgetOptions(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData)
-    */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
       return null;

@@ -30,25 +30,16 @@ public class JiniClientSideConnector extends JiniConnector {
       link = (IJiniConnectorLink) getProperties().getProperty(LINK_PROPERTY);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#getService()
-    */
    @Override
    public Object getService() {
          return serviceItem.service;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#getType()
-    */
    @Override
    public String getConnectorType() {
       return TYPE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.File)
-    */
    @Override
    public URI upload(File file) throws Exception {
       return null;

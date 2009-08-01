@@ -37,9 +37,6 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
       super("TXS Entries with no Backing Data");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean fix = isFixOperationEnabled();
@@ -92,17 +89,11 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.05));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Enter Check Description Here";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Enter Fix Description Here";

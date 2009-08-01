@@ -106,9 +106,6 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
       layout();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition())
@@ -127,9 +124,6 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Widget#dispose()
-    */
    @Override
    public void dispose() {
       super.dispose();

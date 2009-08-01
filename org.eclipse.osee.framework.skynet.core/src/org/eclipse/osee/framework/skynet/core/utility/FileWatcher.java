@@ -89,9 +89,6 @@ public class FileWatcher extends TimerTask {
       listeners.remove(listener);
    }
 
-   /* (non-Javadoc)
-    * @see java.util.TimerTask#run()
-    */
    @Override
    public synchronized void run() {
       try {

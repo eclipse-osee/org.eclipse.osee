@@ -102,11 +102,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
@@ -251,11 +246,6 @@ public class XBranchWidget extends XWidget implements IActionable {
       return branchXViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return branchXViewer.getInput();
@@ -302,16 +292,10 @@ public class XBranchWidget extends XWidget implements IActionable {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
-    */
    @Override
    public void setXmlData(String str) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       return null;

@@ -41,32 +41,20 @@ public class DefaultArtifactRenderer implements IRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getName()
-    */
    public String getName() {
       return "Artifact Editor";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
-    */
    public void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          print(artifact, monitor);
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compare(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
       throw new UnsupportedOperationException();
@@ -77,9 +65,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compareArtifacts(java.util.List, java.util.List, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
-    */
    @Override
    public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifacts, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException {
       for (int i = 0; i < baseArtifacts.size(); i++) {
@@ -87,40 +72,25 @@ public class DefaultArtifactRenderer implements IRenderer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#supportsCompare()
-    */
    public boolean supportsCompare() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setRendererOptions(java.lang.String[])
-    */
    @Override
    public void setOptions(VariableMap options) throws OseeArgumentException {
       this.options = options;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getOptions()
-    */
    @Override
    public VariableMap getOptions() {
       return options;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getStringOption(java.lang.String)
-    */
    @Override
    public String getStringOption(String key) throws OseeArgumentException {
       return options == null ? null : options.getString(key);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getBooleanOption(java.lang.String)
-    */
    @Override
    public boolean getBooleanOption(String key) throws OseeArgumentException {
       if (options != null) {
@@ -132,17 +102,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       return false;
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-   */
    @Override
    public DefaultArtifactRenderer newInstance() throws OseeCoreException {
       return new DefaultArtifactRenderer();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (presentationType == PresentationType.GENERALIZED_EDIT) {
          return PRESENTATION_TYPE;
@@ -151,9 +115,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       return DEFAULT_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
@@ -164,17 +125,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       ArtifactEditor.editArtifacts(artifacts);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#renderAttribute(java.lang.String)
-    */
    @Override
    public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
@@ -199,17 +154,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       wordMl.endParagraph();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getImage()
-    */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getImage(artifact);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#rendererId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(2);

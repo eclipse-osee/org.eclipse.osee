@@ -35,9 +35,6 @@ public class EnumPropertySource extends ModelPropertySource {
       idEnumTypeList = new PropertyId(categoryName, "Enum Type");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.views.property.AbstractPropertySource#addPropertyDescriptors(java.util.List)
-    */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new StringPropertyDescriptor(idEnumTypeList));
@@ -47,26 +44,17 @@ public class EnumPropertySource extends ModelPropertySource {
       return (AttributeDataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertyResettable(java.lang.Object)
-    */
    @Override
    public boolean isPropertyResettable(Object id) {
       return id == idEnumTypeList;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertySet(java.lang.Object)
-    */
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idEnumTypeList) return false;
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-    */
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idEnumTypeList) {
@@ -82,18 +70,12 @@ public class EnumPropertySource extends ModelPropertySource {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-    */
    @Override
    public void resetPropertyValue(Object id) {
       // Here
       System.out.println("resetPropertyValue");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-    */
    @Override
    public void setPropertyValue(Object id, Object value) {
       // Here

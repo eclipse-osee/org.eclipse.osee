@@ -87,11 +87,6 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       return lookupDiscoveryManager.getGroups();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceAdded(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       try {
          ServiceItem item = event.getPostEventServiceItem();
@@ -120,11 +115,6 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceRemoved(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public void serviceRemoved(ServiceDiscoveryEvent event) {
       ServiceItem item = event.getPreEventServiceItem();
       System.out.println("service removed:\n\tid = " + item.serviceID);
@@ -149,11 +139,6 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceChanged(net.jini.lookup.ServiceDiscoveryEvent)
-    */
    public void serviceChanged(ServiceDiscoveryEvent event) {
 
    }

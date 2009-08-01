@@ -52,9 +52,6 @@ public class TestBatchProjectNature implements IProjectNature {
       this.worker = new FindResourceWorker(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#configure()
-    */
    @Override
    public void configure() throws CoreException {
       IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -64,9 +61,6 @@ public class TestBatchProjectNature implements IProjectNature {
       ResourcesPlugin.getWorkspace().getRoot().getWorkspace().run(worker, new NullProgressMonitor());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-    */
    @Override
    public void deconfigure() throws CoreException {
       TestBatchRegistry registry = TestBatchSetupViewItems.getInstance().getRegistry();
@@ -80,17 +74,11 @@ public class TestBatchProjectNature implements IProjectNature {
       workspace.removeResourceChangeListener(projectDeletedListener);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#getProject()
-    */
    @Override
    public IProject getProject() {
       return this.project;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-    */
    @Override
    public void setProject(IProject project) {
       this.project = project;
@@ -126,9 +114,6 @@ public class TestBatchProjectNature implements IProjectNature {
 
    private final class TestBatchProjectDeletedListener implements IResourceChangeListener {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-       */
       @Override
       public void resourceChanged(IResourceChangeEvent event) {
          try {
@@ -158,9 +143,6 @@ public class TestBatchProjectNature implements IProjectNature {
    }
 
    private final class TestBatchProjectClosedListener implements IResourceChangeListener {
-      /* (non-Javadoc)
-       * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-       */
       @Override
       public void resourceChanged(IResourceChangeEvent event) {
          try {
@@ -189,9 +171,6 @@ public class TestBatchProjectNature implements IProjectNature {
    }
 
    private final class TestBatchResourceChangeListener implements IResourceChangeListener {
-      /* (non-Javadoc)
-       * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-       */
       @Override
       public void resourceChanged(IResourceChangeEvent event) {
          try {

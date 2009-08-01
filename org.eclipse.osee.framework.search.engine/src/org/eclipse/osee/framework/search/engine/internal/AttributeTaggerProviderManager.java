@@ -33,9 +33,6 @@ public class AttributeTaggerProviderManager implements IAttributeTaggerProviderM
       this.attributeTaggerProviders = Collections.synchronizedMap(new HashMap<String, IAttributeTaggerProvider>());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager#addAttributeTaggerProvider(org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider)
-    */
    @Override
    public void addAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider) {
       synchronized (this.attributeTaggerProviders) {
@@ -43,9 +40,6 @@ public class AttributeTaggerProviderManager implements IAttributeTaggerProviderM
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager#removeAttributeTaggerProvider(org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider)
-    */
    @Override
    public void removeAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider) {
       synchronized (this.attributeTaggerProviders) {

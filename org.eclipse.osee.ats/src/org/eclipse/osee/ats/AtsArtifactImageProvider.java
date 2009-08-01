@@ -33,9 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#init()
-    */
    @Override
    public void init() throws OseeCoreException {
       ImageManager.registerBaseImage(DecisionReviewArtifact.ARTIFACT_NAME, AtsImage.REVIEW);
@@ -63,9 +60,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public String setupImage(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(VersionArtifact.ARTIFACT_NAME)) {

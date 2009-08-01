@@ -75,9 +75,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       setEditDomain(new DefaultEditDomain(this));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
-    */
    @Override
    protected PaletteRoot getPaletteRoot() {
       if (editorPalette == null) {
@@ -90,32 +87,20 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       editorPalette.updatePaletteRoot();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditor#isSaveAsAllowed()
-    */
    @Override
    public boolean isSaveAsAllowed() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
@@ -215,16 +200,10 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       return shareKeyHandler;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
-    */
    @Override
    protected void initializeGraphicalViewer() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.ui.parts.GraphicalEditor#commandStackChanged(java.util.EventObject)
-    */
    @Override
    public void commandStackChanged(EventObject event) {
       firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -260,9 +239,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       Jobs.runInJob(runnable.getName(), runnable, ODMEditorActivator.class, ODMEditorActivator.PLUGIN_ID, true);
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
-   */
    @Override
    protected PaletteViewerProvider createPaletteViewerProvider() {
       return new PaletteViewerProvider(getEditDomain()) {
@@ -280,9 +256,6 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#getEditorInput()
-    */
    @Override
    public ODMEditorInput getEditorInput() {
       return (ODMEditorInput) super.getEditorInput();

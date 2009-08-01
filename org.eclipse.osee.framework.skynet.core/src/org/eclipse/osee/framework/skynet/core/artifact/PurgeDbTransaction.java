@@ -66,9 +66,6 @@ public class PurgeDbTransaction extends DbTransaction {
       this.artifactsToPurge = artifactsToPurge;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxWork(java.sql.Connection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       //first determine if the purge is legal.

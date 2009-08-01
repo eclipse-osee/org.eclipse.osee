@@ -34,11 +34,6 @@ public class JiniPlugin implements BundleActivator {
 		return serviceGroups;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
@@ -46,11 +41,6 @@ public class JiniPlugin implements BundleActivator {
 		serviceGroups = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext arg0) throws Exception {
 		plugin = null;

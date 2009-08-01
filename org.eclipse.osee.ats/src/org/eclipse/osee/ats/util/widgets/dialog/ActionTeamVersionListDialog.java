@@ -54,11 +54,6 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
 
       super.createDialogArea(container);
       getTableViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             try {
                Collection<Object> objs = new HashSet<Object>();

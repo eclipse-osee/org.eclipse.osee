@@ -48,9 +48,6 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
             isMultiColumnEditable(), getDescription());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {

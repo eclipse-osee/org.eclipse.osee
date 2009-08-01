@@ -39,9 +39,6 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       super(editor, parent, toolkit, style);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -111,9 +108,6 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       form.getForm().getBody().layout(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -130,9 +124,6 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       getToolBarManager().update(true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       formPart.dispose();

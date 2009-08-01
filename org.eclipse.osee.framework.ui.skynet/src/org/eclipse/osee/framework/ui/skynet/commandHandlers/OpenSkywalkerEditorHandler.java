@@ -24,9 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
  * @author Jeff C. Phillips
  */
 public class OpenSkywalkerEditorHandler extends AbstractHandler {
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
       ISelectionProvider selectionProvider =

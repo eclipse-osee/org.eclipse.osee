@@ -29,9 +29,6 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    private List<Attribute<?>> attributesToPurge;
    private List<RelationLink> relationsToDelete;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Change Artifact Type";

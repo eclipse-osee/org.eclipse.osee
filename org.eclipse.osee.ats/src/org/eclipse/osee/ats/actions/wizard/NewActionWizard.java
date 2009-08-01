@@ -54,11 +54,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
       super();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       try {
@@ -81,18 +76,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
    }
 
-   /**
-    * (non-Javadoc) Method declared on Wizard.
-    */
    @Override
    public void addPages() {
       page1 = new NewActionPage1(this);
@@ -103,7 +89,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
 
    @Override
    public boolean canFinish() {
-      return (page3 == null) ? page2.isPageComplete() : page3.isPageComplete();
+      return page3 == null ? page2.isPageComplete() : page3.isPageComplete();
    }
 
    public void createPage3IfNecessary() {
@@ -132,8 +118,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
    public Set<String> getUserCommunities() {
       Set<String> items = new HashSet<String>();
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      for (XListItem item : ((XList) page2.getXWidget("ats.User Community")).getSelected())
+      for (XListItem item : ((XList) page2.getXWidget("ats.User Community")).getSelected()) {
          items.add(item.getName());
+      }
       return items;
    }
 
@@ -162,12 +149,16 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public XWidget getExtendedXWidget(String attrName) {
-      if (page3 == null) return null;
+      if (page3 == null) {
+         return null;
+      }
       return page3.getXWidget(attrName);
    }
 
    public Result isActionValid() {
-      if (page3 == null) return Result.TrueResult;
+      if (page3 == null) {
+         return Result.TrueResult;
+      }
       return page3.isActionValid();
    }
 

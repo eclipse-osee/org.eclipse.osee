@@ -64,19 +64,9 @@ public class SearchDataUI {
       searchText.setLayoutData(gd);
 
       searchText.addKeyListener(new KeyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyPressed(KeyEvent e) {
          }
 
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || searchRealTime) {
@@ -111,11 +101,6 @@ public class SearchDataUI {
       regularExpression.setToolTipText("Enable Regular Expression Search");
       regularExpression.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       searchLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
          public void handleEvent(Event event) {
             searchText.setText("");
             search = false;

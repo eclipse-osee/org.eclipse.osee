@@ -46,33 +46,21 @@ public class AdminContributionItem extends OseeContributionItem {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
-    */
    @Override
    protected Image getDisabledImage() {
       return ImageManager.getImage(FrameworkImage.EXCLAIM_RED);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
-    */
    @Override
    protected String getDisabledToolTip() {
       return DISABLED_TOOLTIP;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
-    */
    @Override
    protected Image getEnabledImage() {
       return ImageManager.getImage(FrameworkImage.EXCLAIM_RED);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
-    */
    @Override
    protected String getEnabledToolTip() {
       return ENABLED_TOOLTIP;

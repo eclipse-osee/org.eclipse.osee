@@ -57,9 +57,6 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       this.baseName = name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       List<AttrData> attributesWithErrors = new ArrayList<AttrData>();
@@ -119,9 +116,6 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          this.attributesWithErrors = attributesWithErrors;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          String[] attributeTypeNames =

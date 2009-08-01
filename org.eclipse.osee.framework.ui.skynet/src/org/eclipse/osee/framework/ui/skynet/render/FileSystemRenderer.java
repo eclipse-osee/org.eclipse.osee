@@ -44,9 +44,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static IFolder diffFolder;
    private static IFolder previewFolder;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#open(java.util.List)
-    */
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       internalOpen(artifacts, PresentationType.SPECIALIZED_EDIT);
@@ -65,9 +62,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       internalOpen(artifacts, PresentationType.PREVIEW);

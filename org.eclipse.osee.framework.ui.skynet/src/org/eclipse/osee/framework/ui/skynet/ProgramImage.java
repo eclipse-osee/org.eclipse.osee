@@ -26,9 +26,6 @@ public class ProgramImage implements OseeImage {
       this.extension = extension;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#createImageDescriptor()
-    */
    @Override
    public ImageDescriptor createImageDescriptor() {
       Program program = Program.findProgram(extension);
@@ -38,9 +35,6 @@ public class ProgramImage implements OseeImage {
       return ImageDescriptor.createFromImageData(program.getImageData());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-    */
    @Override
    public String getImageKey() {
       return SkynetGuiPlugin.PLUGIN_ID + ".program." + extension;

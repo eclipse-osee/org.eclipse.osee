@@ -50,9 +50,6 @@ public class SMARelationsSection extends SectionPart {
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
@@ -104,9 +101,6 @@ public class SMARelationsSection extends SectionPart {
       return relationComposite;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -119,9 +113,6 @@ public class SMARelationsSection extends SectionPart {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (relationComposite != null && !relationComposite.isDisposed()) {
@@ -131,9 +122,6 @@ public class SMARelationsSection extends SectionPart {
    }
 
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-       */
       @Override
       public boolean select(Viewer viewer, Object parentElement, Object element) {
          if (element instanceof RelationType) {

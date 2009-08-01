@@ -75,9 +75,6 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       return ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 200, criteria);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new LegacyPCRActionsWorldSearchItem(this);

@@ -72,9 +72,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.branch = branch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractDbTxOperation#handleTxWork(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.db.connection.OseeConnection)
-    */
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       int numberOfChildren =
@@ -102,9 +99,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeHelper(monitor, connection, "Branch", DELETE_FROM_BRANCH_TABLE, 0.10, branch.getBranchId());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doFinally(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doFinally(IProgressMonitor monitor) {
       super.doFinally(monitor);
@@ -114,9 +108,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
-    */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       IStatus status = super.createErrorStatus(error);

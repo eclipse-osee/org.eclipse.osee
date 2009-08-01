@@ -60,15 +60,9 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IRemoteEventManagerEventListener#handleRemoteEventManagerEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType)
-    */
    @Override
    public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Connected);
@@ -76,33 +70,21 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledImage()
-    */
    @Override
    protected Image getDisabledImage() {
       return DISABLED_IMAGE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getDisabledToolTip()
-    */
    @Override
    protected String getDisabledToolTip() {
       return DISABLED_TOOLTIP;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledImage()
-    */
    @Override
    protected Image getEnabledImage() {
       return ENABLED_IMAGE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.OseeContributionItem#getEnabledToolTip()
-    */
    @Override
    protected String getEnabledToolTip() {
       return ENABLED_TOOLTIP;

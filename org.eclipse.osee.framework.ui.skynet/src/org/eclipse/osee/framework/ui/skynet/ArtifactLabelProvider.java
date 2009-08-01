@@ -18,47 +18,7 @@ import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 
 public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProvider {
-//   /* (non-Javadoc)
-//    * @see org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-//    */
-//   @Override
-//   public void update(ViewerCell cell) {
-//      Object element = cell.getElement();
-//      if (element instanceof Match) {
-//         element = ((Match) element).getElement();
-//      }
-//
-//      if (element instanceof Artifact) {
-//         Artifact artifact = (Artifact) element;
-//
-//         String name = artifact.getDescriptiveName();
-//         if (artifact.isDeleted()) {
-//            name += " <Deleted>";
-//         }
-//         if (artifactExplorer != null) {
-//            if (artifactExplorer.showArtVersion()) {
-//               name += " -" + artifact.getGammaId() + "- ";
-//            }
-//
-//            if (artifactExplorer.showArtIds()) {
-//               name += " (" + artifact.getArtId() + ") ";
-//            }
-//            try {
-//               if (artifactExplorer.showArtType()) {
-//                  name += " <" + artifact.getArtifactTypeName() + "> ";
-//               }
-//
-//               name += artifactExplorer.getSelectedAttributeData(artifact);
-//            } catch (Exception ex) {
-//               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-//               name += ex.getLocalizedMessage();
-//            }
-//         }
-//         cell.setText(name);
-//      } else {
-//         cell.setText(element.toString());
-//      }
-//   }
+
    private final ArtifactDecorator artifactDecorator;
 
    public ArtifactLabelProvider(ArtifactDecorator artifactDecorator) {
@@ -73,6 +33,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
    /*
     * @see ILabelProvider#getImage(Object)
     */
+   @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
          return ImageManager.getImage((Artifact) element);
@@ -85,6 +46,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
    /*
     * @see ILabelProvider#getText(Object)
     */
+   @Override
    public String getText(Object element) {
       if (element instanceof Match) {
          element = ((Match) element).getElement();

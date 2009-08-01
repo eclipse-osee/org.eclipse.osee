@@ -82,9 +82,6 @@ public class Scheduler {
 
    private static final class SchedulerThreadFactory implements ThreadFactory {
 
-      /* (non-Javadoc)
-       * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
-       */
       @Override
       public Thread newThread(Runnable runnable) {
          return new Thread(((ScheduledTask) runnable).getName());

@@ -75,9 +75,6 @@ public abstract class XSelectFromDialog<T> extends XText {
       return SWT.READ_ONLY | SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setToolTip(java.lang.String)
-    */
    @Override
    public void setToolTip(String toolTip) {
       if (Strings.isValid(toolTip)) {
@@ -85,17 +82,11 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#getData()
-    */
    @Override
    public Object getData() {
       return getSelected();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#setEditable(boolean)
-    */
    @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
@@ -104,9 +95,6 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
-    */
    @Override
    public void createControls(final Composite parent, int horizontalSpan, boolean fillText) {
       Composite composite = new Composite(parent, SWT.NONE);

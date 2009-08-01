@@ -31,17 +31,11 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
       this.dataTypeSource = new DataTypeSource(sourceId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#doesArtifactSuperTypeExist(java.lang.String)
-    */
    @Override
    public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onArtifactType(java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public void onArtifactType(String namespace, String name) throws OseeCoreException {
       ArtifactDataType artifactDataType = new ArtifactDataType(namespace, name, null);
@@ -49,9 +43,6 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
       this.dataTypeSource.add(artifactDataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onAttributeType(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, int, java.lang.String, java.lang.String)
-    */
    @Override
    public void onAttributeType(String baseAttributeClass, String providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
       OseeEnumType enumType = OseeEnumTypeManager.getUniqueType(namespace + name);
@@ -65,16 +56,10 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
       this.dataTypeSource.add(attributeDataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onAttributeValidity(java.lang.String, java.lang.String, java.util.Collection)
-    */
    @Override
    public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onRelationType(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
       RelationDataType relationDataType =
@@ -84,9 +69,6 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
       this.dataTypeSource.add(relationDataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor#onRelationValidity(java.lang.String, java.lang.String, int, int)
-    */
    @Override
    public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException {
    }

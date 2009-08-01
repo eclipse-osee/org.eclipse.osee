@@ -76,9 +76,6 @@ public final class CompositeKey<A, B> {
       return hashCode;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return "key1: \"" + key1 + "\" + key2: \"" + key2 + "\"";

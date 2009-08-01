@@ -47,9 +47,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       this.worldUISearchItem = worldUISearchItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
-    */
    @Override
    public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
@@ -63,25 +60,16 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       return worldUISearchItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getName()
-    */
    @Override
    public String getName() throws OseeCoreException {
       return worldUISearchItem.getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return worldUISearchItem.getSelectedName(searchType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
 
@@ -122,11 +110,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
          this.searchType = searchType;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          String selectedName = "";
@@ -161,9 +144,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getTargetedVersionArtifact()
-    */
    @Override
    public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
       if (worldUISearchItem instanceof VersionTargetedForTeamSearchItem) {

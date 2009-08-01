@@ -45,9 +45,6 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       return String.format("%s - moved by update on - %s", storeName, Lib.getDateTimeString());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       monitor.setTaskName("Merging updates");
@@ -71,9 +68,6 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       monitor.worked(calculateWork(0.20));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
-    */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",

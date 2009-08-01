@@ -279,11 +279,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return branch;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.core.Unique#getGUID()
-    */
    public String getGuid() {
       return guid;
    }
@@ -1684,9 +1679,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return annotationMgr;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -1699,9 +1691,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
    public int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
@@ -1723,9 +1712,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return diff;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return 37 * guid.hashCode() + branch.hashCode();

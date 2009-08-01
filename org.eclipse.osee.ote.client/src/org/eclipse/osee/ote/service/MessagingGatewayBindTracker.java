@@ -51,9 +51,6 @@ public class MessagingGatewayBindTracker extends ServiceTracker {
       return super.addingService(reference);
    }
 
-   /* (non-Javadoc)
-    * @see org.osgi.util.tracker.ServiceTracker#removedService(org.osgi.framework.ServiceReference, java.lang.Object)
-    */
    @Override
    public void removedService(ServiceReference reference, Object service) {
       Object obj = context.getService(reference);

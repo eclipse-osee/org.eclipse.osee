@@ -16,25 +16,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public class StringAttribute extends CharacterBackedAttribute<String> {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
    @Override
    public String getValue() throws OseeCoreException {
       return getAttributeDataProvider().getValueAsString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
       return getAttributeDataProvider().setValue(value);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected String convertStringToValue(String value) throws OseeCoreException {
       return value;

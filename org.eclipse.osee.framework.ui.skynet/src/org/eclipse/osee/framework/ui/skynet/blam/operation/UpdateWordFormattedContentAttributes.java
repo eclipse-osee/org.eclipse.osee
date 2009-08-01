@@ -30,9 +30,6 @@ public class UpdateWordFormattedContentAttributes extends AbstractBlam {
    private static final String UPDATE_ATTR_VAL_WORD_TEMP =
          "update osee_valid_attributes set attr_type_id = 962 where attr_type_id = 19";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Update WordFormattedContent Attributes";

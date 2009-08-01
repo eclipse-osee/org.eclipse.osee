@@ -93,13 +93,6 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.framework.jdk.core.util.plugin.OseePlugin#getPluginName
-    * ()
-    */
    @Override
    protected String getPluginName() {
       return PLUGIN_ID;

@@ -171,17 +171,11 @@ public abstract class ImageManagerTest {
          this.fileName = fileName;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageDescriptor()
-       */
       @Override
       public ImageDescriptor createImageDescriptor() {
          return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.OseeImage#getImageKey()
-       */
       @Override
       public String getImageKey() {
          return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;

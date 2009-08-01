@@ -184,11 +184,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       managedForm.refresh();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    protected void createFormContent(IManagedForm managedForm) {
       super.createFormContent(managedForm);
@@ -197,11 +192,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       try {
          scrolledForm = managedForm.getForm();
          scrolledForm.addDisposeListener(new DisposeListener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
-             */
             public void widgetDisposed(DisposeEvent e) {
                storeScrollLocation();
             }
@@ -483,11 +473,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
          label.setToolTipText("click to view all");
          label.addListener(SWT.MouseUp, new Listener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
                new HtmlDialog("Note", null, str).open();
             }

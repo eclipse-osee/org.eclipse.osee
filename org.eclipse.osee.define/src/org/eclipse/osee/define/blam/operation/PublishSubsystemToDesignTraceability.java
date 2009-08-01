@@ -38,9 +38,6 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Publish Subsystem To Design Traceability";
@@ -115,9 +112,6 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Publish Subsystem To Design Traceability Tables";

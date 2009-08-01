@@ -53,9 +53,6 @@ public class AttributePropertySource extends ModelPropertySource {
       idProviderAttributeClass = new PropertyId(categoryName, "Base Provider Attribute Class");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.views.property.AbstractPropertySource#addPropertyDescriptors(java.util.List)
-    */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new StringPropertyDescriptor(idDefaultValue));
@@ -75,17 +72,11 @@ public class AttributePropertySource extends ModelPropertySource {
       return (AttributeDataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertyResettable(java.lang.Object)
-    */
    @Override
    public boolean isPropertyResettable(Object id) {
       return id == idDefaultValue || id == idEnumType || id == idToolTipText || id == idFileTypeExtension || id == idTaggerId || id == idMinOccurrence || id == idMaxOccurrence || id == idBaseAttributeClass || id == idProviderAttributeClass;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertySet(java.lang.Object)
-    */
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idDefaultValue) return getDataTypeElement().getDefaultValue() != null;
@@ -100,9 +91,6 @@ public class AttributePropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-    */
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idDefaultValue) return StringPropertyDescriptor.fromModel(getDataTypeElement().getDefaultValue());
@@ -124,9 +112,6 @@ public class AttributePropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-    */
    @Override
    public void resetPropertyValue(Object id) {
       if (id == idDefaultValue) getDataTypeElement().setDefaultValue(null);
@@ -140,9 +125,6 @@ public class AttributePropertySource extends ModelPropertySource {
       if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-    */
    @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idDefaultValue) getDataTypeElement().setDefaultValue(StringPropertyDescriptor.toModel(value));

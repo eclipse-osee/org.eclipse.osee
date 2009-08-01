@@ -273,9 +273,6 @@ public class XViewer extends TreeViewer {
          Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
          Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
          Display.getCurrent().addFilter(SWT.FocusOut, new Listener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             @Override
             public void handleEvent(Event event) {
                // Clear when focus is lost
@@ -338,11 +335,6 @@ public class XViewer extends TreeViewer {
       return cnt;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh()
-    */
    @Override
    public void refresh() {
       if (getTree() == null || getTree().isDisposed()) return;
@@ -354,33 +346,18 @@ public class XViewer extends TreeViewer {
       return getFilters().length > 0;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh(boolean)
-    */
    @Override
    public void refresh(boolean updateLabels) {
       super.refresh(updateLabels);
       updateStatusLabel();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh(java.lang.Object, boolean)
-    */
    @Override
    public void refresh(Object element, boolean updateLabels) {
       super.refresh(element, updateLabels);
       updateStatusLabel();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh(java.lang.Object)
-    */
    @Override
    public void refresh(Object element) {
       super.refresh(element);

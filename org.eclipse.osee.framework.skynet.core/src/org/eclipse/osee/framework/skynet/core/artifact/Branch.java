@@ -155,11 +155,6 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       associatedArtifactId = artifact.getArtId();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return getName();
@@ -290,11 +285,6 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return creationDate;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Comparable#compareTo(T)
-    */
    public int compareTo(Branch branch) {
       return getName().compareToIgnoreCase(branch.getName());
    }
@@ -383,11 +373,6 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return Integer.parseInt(Lib.getExtension(folderName));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

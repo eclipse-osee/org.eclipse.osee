@@ -77,9 +77,6 @@ public class BranchGraphEditorInput implements IEditorInput {
       return super.equals(obj);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {

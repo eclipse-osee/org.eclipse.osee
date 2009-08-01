@@ -100,9 +100,6 @@ public class LoggingPanel extends Composite {
          button.setText(level.name());
          button.addSelectionListener(new SelectionAdapter() {
 
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                Object object = e.getSource();

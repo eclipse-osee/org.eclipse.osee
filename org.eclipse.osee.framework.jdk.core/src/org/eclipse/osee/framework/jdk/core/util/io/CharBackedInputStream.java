@@ -46,24 +46,15 @@ public class CharBackedInputStream extends InputStream implements Appendable {
          super(lock);
       }
 
-      /* (non-Javadoc)
-       * @see java.io.Writer#write(char[], int, int)
-       */
       @Override
       public void write(char[] cbuf, int off, int len) throws IOException {
          addBackingSource(cbuf, off, len);
       }
 
-      /* (non-Javadoc)
-       * @see java.io.Flushable#flush()
-       */
       @Override
       public void flush() throws IOException {
       }
 
-      /* (non-Javadoc)
-       * @see java.io.Closeable#close()
-       */
       @Override
       public void close() throws IOException {
       }
@@ -135,11 +126,6 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.io.InputStream#read()
-    */
    @Override
    public int read() throws IOException {
       if (currentBacker == null) {
@@ -163,33 +149,21 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       return writer;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Appendable#append(java.lang.CharSequence)
-    */
    public Appendable append(CharSequence csq) throws IOException {
       addBackingSource(csq);
       return this;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Appendable#append(java.lang.CharSequence, int, int)
-    */
    public Appendable append(CharSequence csq, int start, int end) throws IOException {
       addBackingSource(csq, start, end - start);
       return this;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Appendable#append(char)
-    */
    public Appendable append(char c) throws IOException {
       throw new UnsupportedOperationException(
             "doing this one character at a time would be so inefficient it would defeat the whole purpose of this class");
    }
 
-   /* (non-Javadoc)
-    * @see java.io.InputStream#available()
-    */
    @Override
    public int available() throws IOException {
       int count = 0;

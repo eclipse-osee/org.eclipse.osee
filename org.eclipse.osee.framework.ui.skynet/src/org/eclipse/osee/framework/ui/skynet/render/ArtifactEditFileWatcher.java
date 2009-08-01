@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class ArtifactEditFileWatcher implements IFileWatcherListener {
    UpdateArtifactJob updateJob;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.IFileWatcherListener#filesModified(java.util.Collection)
-    */
    @Override
    public void filesModified(Collection<FileChangeEvent> fileChangeEvents) {
       for (FileChangeEvent event : fileChangeEvents) {

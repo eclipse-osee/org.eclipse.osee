@@ -68,17 +68,11 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
       return ITypedElement.TEXT_TYPE;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.IEditableContent#replace(org.eclipse.compare.ITypedElement, org.eclipse.compare.ITypedElement)
-    */
    @Override
    public ITypedElement replace(ITypedElement dest, ITypedElement src) {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.IEditableContent#setContent(byte[])
-    */
    @Override
    public void setContent(byte[] newContent) {
       try {

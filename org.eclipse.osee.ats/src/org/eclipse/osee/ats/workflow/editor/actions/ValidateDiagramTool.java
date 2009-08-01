@@ -34,9 +34,6 @@ public class ValidateDiagramTool extends SelectionTool {
       setDefaultCursor(SharedCursors.ARROW);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.tools.SelectionTool#mouseDown(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
-    */
    @Override
    public void mouseDown(MouseEvent e, EditPartViewer viewer) {
       super.mouseDown(e, viewer);

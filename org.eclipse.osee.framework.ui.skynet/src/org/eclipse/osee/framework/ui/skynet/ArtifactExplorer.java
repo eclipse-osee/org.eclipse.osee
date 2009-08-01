@@ -252,11 +252,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       stackComposite.getParent().layout();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
 
    @Override
    public void createPartControl(Composite parent) {
@@ -567,9 +562,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       needProjectListener.add(createMenuItem);
       createMenuItem.setText("&New Child");
       createMenuItem.addSelectionListener(new SelectionAdapter() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
@@ -987,11 +979,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-    */
    @Override
    public void setFocus() {
       if (treeViewer != null) {
@@ -1200,11 +1187,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
@@ -1275,9 +1257,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             treeViewer.refresh();
@@ -1295,9 +1274,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             try {
@@ -1317,9 +1293,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       if (branch == null || transData.branchId != branch.getBranchId()) {
@@ -1327,9 +1300,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
 
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (treeViewer != null && Widgets.isAccessible(treeViewer.getTree())) {
@@ -1359,9 +1329,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String, java.lang.String)
-    */
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, final RelationLink link, Branch branch, String relationType) {
       try {
@@ -1370,9 +1337,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
          if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
             Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
                @Override
                public void run() {
                   try {
@@ -1396,9 +1360,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactModifiedEventListener#handleArtifactModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
       try {
@@ -1409,9 +1370,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             try {
@@ -1435,9 +1393,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branchModType == BranchEventType.Committed && branch != null && branch.getBranchId() == branchId) {
@@ -1445,16 +1400,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
@@ -1463,9 +1412,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
          if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsUnlocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
                @Override
                public void run() {
                   treeViewer.refresh();
@@ -1477,9 +1423,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuild()
-    */
    @Override
    public void rebuildMenu() {
       setupPopupMenu();

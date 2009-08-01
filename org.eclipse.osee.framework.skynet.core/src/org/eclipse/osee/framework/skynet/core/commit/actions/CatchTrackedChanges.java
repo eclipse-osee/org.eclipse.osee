@@ -33,9 +33,6 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
  */
 public class CatchTrackedChanges implements CommitAction {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction#runCommitAction(org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    /**
     * Check that none of the artifacts that will be commited contain tracked changes Use the change report to get
     * attributeChanges and check their content for trackedChanges

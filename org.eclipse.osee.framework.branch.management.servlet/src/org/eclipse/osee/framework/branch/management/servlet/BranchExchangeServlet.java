@@ -31,9 +31,6 @@ public class BranchExchangeServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -1642995618810911260L;
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
       try {
@@ -129,9 +126,6 @@ public class BranchExchangeServlet extends OseeHttpServlet {
       response.getWriter().write(String.format("Successfully imported: [%s]", exchangeInfo.getPath()));
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       super.doGet(req, resp);

@@ -67,11 +67,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return xViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
@@ -167,9 +162,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    public static void editArtifacts(final MassArtifactEditorInput input) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             IWorkbenchPage page = AWorkbench.getActivePage();
@@ -204,11 +196,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return xViewer.getLoadedArtifacts();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       for (Artifact taskArt : artifacts) {
@@ -224,11 +211,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return "MassArtifactEditor";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
 
@@ -291,29 +273,14 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       });
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
-    */
    public String getCurrentStateName() {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.util.widgets.task.IXTaskViewer#getEditor()
-    */
    public IDirtiableEditor getEditor() {
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.util.widgets.task.IXTaskViewer#isTasksEditable()
-    */
    public boolean isArtifactsEditable() {
       return true;
    }
@@ -325,9 +292,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    public String getActionDescription() {
       return "";
    }

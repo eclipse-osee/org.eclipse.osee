@@ -85,9 +85,6 @@ public class BranchXViewer extends XViewer {
       return xBranchViewer;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#getXViewerTextFilter()
-    */
    @Override
    public XViewerTextFilter getXViewerTextFilter() {
       return new XBranchTextFilter(this);

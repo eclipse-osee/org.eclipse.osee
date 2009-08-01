@@ -28,10 +28,6 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
    private LogService logservice;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       ServiceTracker logServiceTracker = new ServiceTracker(context, LogService.class.getName(), null);
       logServiceTracker.open();
@@ -63,10 +59,6 @@ public class Activator implements BundleActivator {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
    }
 }

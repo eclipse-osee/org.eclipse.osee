@@ -39,9 +39,6 @@ public class OpenAssociatedOutfile extends AbstractActionHandler {
       super(viewer, text, image);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.actions.AbstractActionHandler#updateState()
-    */
    @Override
    public void updateState() {
       TestRunOperator artifact = SelectionHelper.getInstance().getSelection(getViewer());

@@ -41,11 +41,6 @@ public class XCheckBox extends XWidget {
       this(displayLabel, "");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return checkButton;
@@ -173,11 +168,6 @@ public class XCheckBox extends XWidget {
       return selected;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return Boolean.valueOf(isSelected());

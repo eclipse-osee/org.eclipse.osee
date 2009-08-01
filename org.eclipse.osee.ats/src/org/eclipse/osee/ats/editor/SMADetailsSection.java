@@ -40,9 +40,6 @@ public class SMADetailsSection extends SectionPart {
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -80,9 +77,6 @@ public class SMADetailsSection extends SectionPart {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (formText != null && !formText.isDisposed()) {
@@ -91,9 +85,6 @@ public class SMADetailsSection extends SectionPart {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();

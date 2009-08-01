@@ -245,43 +245,18 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processEmptyRow()
-    */
    public void processEmptyRow() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#detectedTotalRowCount(int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
    }
 
@@ -292,24 +267,15 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       return actionArts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "Excel Ats Actions";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return false;

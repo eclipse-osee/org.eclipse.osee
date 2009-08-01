@@ -93,11 +93,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    public GroupExplorer() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
 
@@ -163,9 +158,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       refresh();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuild()
-    */
    @Override
    public void rebuildMenu() {
       setupPopupMenu();
@@ -458,11 +450,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-    */
    @Override
    public void setFocus() {
    }
@@ -496,11 +483,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.part.WorkbenchPart#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
@@ -511,9 +493,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) {

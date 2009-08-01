@@ -75,13 +75,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.ClientService#addEnvironmentAvailibiltyListener
-    * ()
-    */
    @Override
    public synchronized void addEnvironmentAvailibiltyListener(ITestEnvironmentAvailibilityListener listener) {
       checkState();
@@ -136,11 +129,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       return testHosts.get(host);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.service.IOteClientService#disconnect()
-    */
    @Override
    public synchronized void disconnect() throws TestSessionException {
       checkState();
@@ -200,13 +188,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       environmentFilters.clear();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.ClientService#addConnectionListener(org.
-    * eclipse.osee.ote.service.ITestConnectionListener)
-    */
    @Override
    public synchronized void addConnectionListener(ITestConnectionListener listener) {
       checkState();
@@ -226,25 +207,11 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.ClientService#removeConnectionListener(org
-    * .eclipse.osee.ote.service.ITestConnectionListener)
-    */
    @Override
    public void removeConnectionListener(ITestConnectionListener listener) {
       listenerNotifier.removeTestConnectionListener(listener);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @seeorg.eclipse.osee.ote.service.ClientService#
-    * removeEnvironmentAvailibiltyListener
-    * (org.eclipse.osee.ote.service.TestEnvironmentAvailibilityListener)
-    */
    @Override
    public synchronized void removeEnvironmentAvailibiltyListener(ITestEnvironmentAvailibilityListener listener) {
       checkState();
@@ -257,13 +224,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.ClientService#setUser(org.eclipse.osee.ote
-    * .core.OSEEPerson1_4)
-    */
    @Override
    public synchronized void setUser(OSEEPerson1_4 user, InetAddress address) throws TestSessionException {
       checkState();
@@ -290,13 +250,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#setPromptHandler(org.eclipse
-    * .osee.ote.service.IPromptHandler)
-    */
    @Override
    public synchronized void setSessionDelegate(SessionDelegate sessionDelegate) {
       checkState();
@@ -306,12 +259,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       session.setSessionDelegate(sessionDelegate);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#addConnectionFilters()
-    */
    @Override
    public synchronized void addConnectionFilters(ITestEnvironmentFilter filter) {
       checkState();
@@ -328,13 +275,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#removeConnectionFilters
-    * (org.eclipse.osee.ote.service.ITestEnvironmentFilter)
-    */
    @Override
    public synchronized void removeConnectionFilters(ITestEnvironmentFilter filter) {
       checkState();
@@ -406,12 +346,6 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#getConnectedEnvironment()
-    */
    @Override
    public synchronized ITestEnvironment getConnectedEnvironment() throws IllegalStateException {
       checkState();
@@ -425,22 +359,12 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.service.IOteClientService#getConnector()
-    */
    @Override
    public IServiceConnector getConnector() {
 	   checkState();
 	   return testConnection == null ? null : testConnection.getServiceConnector();
    }
 
-/*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#addDictionaryListener(
-    * org.eclipse.osee.ote.service.IMessageDictionaryListener)
-    */
    @Override
    public void addDictionaryListener(IMessageDictionaryListener listener) {
       if (listenerNotifier.addDictionaryListener(listener) && dictionary != null) {
@@ -448,24 +372,11 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#removeDictionaryListener
-    * (org.eclipse.osee.ote.service.IMessageDictionaryListener)
-    */
    @Override
    public void removeDictionaryListener(IMessageDictionaryListener listener) {
       listenerNotifier.removeDictionaryListener(listener);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.ote.service.IOteClientService#getAvailableTestHosts()
-    */
    @Override
    public synchronized Collection<IHostTestEnvironment> getAvailableTestHosts() {
       return testHosts.keySet();

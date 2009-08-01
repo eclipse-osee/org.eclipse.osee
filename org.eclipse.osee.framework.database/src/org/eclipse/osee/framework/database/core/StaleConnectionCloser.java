@@ -30,9 +30,6 @@ public class StaleConnectionCloser extends TimerTask {
       this.connectionPool = connectionPool;
    }
 
-   /* (non-Javadoc)
-    * @see java.util.TimerTask#run()
-    */
    @Override
    public void run() {
       try {

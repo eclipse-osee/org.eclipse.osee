@@ -36,11 +36,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    @Override
    public String getId() {
       return "osee.ats.decisionReview.Decision";
@@ -78,11 +73,6 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          return DecisionReviewArtifact.DecisionReviewState.Completed.name();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToAssignees(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
-    */
    @Override
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
@@ -102,9 +92,6 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return decisionOption;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsDecisionReviewDecisionStateItem - Add decision options to review state based on prepare state's entries.";
    }

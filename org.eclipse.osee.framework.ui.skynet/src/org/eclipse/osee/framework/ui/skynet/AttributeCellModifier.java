@@ -56,11 +56,6 @@ public class AttributeCellModifier implements ICellModifier {
       // pList.addPermission(Permission.PermissionEnum.EDITREQUIREMENT);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
-    */
    public boolean canModify(Object element, String property) {
       attrComp.updateLabel("");
       if (element != null) {
@@ -80,11 +75,6 @@ public class AttributeCellModifier implements ICellModifier {
       return property.equals("value");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
-    */
    public Object getValue(Object element, String property) {
       try {
          Attribute<?> attribute = (Attribute<?>) element;
@@ -113,12 +103,6 @@ public class AttributeCellModifier implements ICellModifier {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object, java.lang.String,
-    *      java.lang.Object)
-    */
    public void modify(Object element, String property, Object value) {
       if (element != null) {
          // Note that it is possible for an SWT Item to be passed instead of the model element.

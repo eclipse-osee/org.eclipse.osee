@@ -28,27 +28,18 @@ public class RelationalExportItemWithType extends RelationalExportItem {
       this.typeExportItem = new RelationalExportItem(priority * -1, name + ".type", getSource() + "_type", typeQuery);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.AbstractExportItem#setOptions(org.eclipse.osee.framework.resource.management.Options)
-    */
    @Override
    public void setOptions(Options options) {
       super.setOptions(options);
       this.typeExportItem.setOptions(options);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.AbstractExportItem#setWriteLocation(java.io.File)
-    */
    @Override
    public void setWriteLocation(File writeLocation) {
       super.setWriteLocation(writeLocation);
       this.typeExportItem.setWriteLocation(writeLocation);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.RelationalExportItem#cleanUp()
-    */
    @Override
    public void cleanUp() {
       this.typeExportItem.cleanUp();
@@ -64,12 +55,6 @@ public class RelationalExportItemWithType extends RelationalExportItem {
       return typeExportItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.AbstractExportItem#run()
-    */
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.RelationalExportItem#doWork(java.io.Writer)
-    */
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       this.typeCollector.initialize();

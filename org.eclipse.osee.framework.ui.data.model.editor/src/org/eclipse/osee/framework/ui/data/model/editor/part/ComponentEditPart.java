@@ -27,9 +27,6 @@ public abstract class ComponentEditPart extends BaseEditPart {
       super(dataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.part.BaseEditPart#createDirectEditPolicy()
-    */
    @Override
    protected DirectEditPolicy createDirectEditPolicy() {
       return new DirectEditPolicy() {
@@ -53,9 +50,6 @@ public abstract class ComponentEditPart extends BaseEditPart {
       return (DataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.part.BaseEditPart#handleModelEvent(java.lang.Object)
-    */
    @Override
    protected void handleModelEvent(Object object) {
       refreshVisuals();

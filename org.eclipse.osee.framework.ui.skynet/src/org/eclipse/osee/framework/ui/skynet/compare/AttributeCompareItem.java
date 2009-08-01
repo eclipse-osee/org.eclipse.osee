@@ -21,9 +21,6 @@ public class AttributeCompareItem extends CompareItem {
       this.attributeConflict = attributeConflict;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.compare.CompareItem#persistContent()
-    */
    @Override
    public void persistContent() {
       try {

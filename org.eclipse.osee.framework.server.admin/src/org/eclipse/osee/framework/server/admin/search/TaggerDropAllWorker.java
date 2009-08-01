@@ -26,9 +26,6 @@ class TaggerDropAllWorker extends BaseServerCommand {
       super("Drop All Search Tags");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String deleteSql = null;

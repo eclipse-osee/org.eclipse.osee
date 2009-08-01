@@ -24,17 +24,11 @@ class ConnectionServiceImpl implements IConnectionService {
    
    private boolean isStopped = false;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#addConnector(org.eclipse.osee.connection.service.IServiceConnector)
-    */
    @Override
    public void addConnector(IServiceConnector connector) {
       addConnectors(Collections.singletonList(connector));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#addConnectors(java.util.Collection)
-    */
    @Override
    public synchronized void addConnectors(Collection<IServiceConnector> connectors) {
       checkState();
@@ -42,9 +36,6 @@ class ConnectionServiceImpl implements IConnectionService {
       eventNotifier.notifyConnectorsAdded(connectors);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#addListener(org.eclipse.osee.connection.service.IConnectorListener)
-    */
    @Override
    public synchronized void addListener(IConnectorListener listener) {
       checkState();
@@ -52,9 +43,6 @@ class ConnectionServiceImpl implements IConnectionService {
       listener.onConnectorsAdded(connectors);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#findConnectors(java.lang.String)
-    */
    @Override
    public synchronized List<IServiceConnector> findConnectors(IConnectorFilter[] filterChain) {
       checkState();
@@ -74,18 +62,12 @@ class ConnectionServiceImpl implements IConnectionService {
       return matchingConnectors;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#getAllConnectors()
-    */
    @Override
    public synchronized Collection<IServiceConnector> getAllConnectors() {
       checkState();
       return connectors;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#removeConnector(org.eclipse.osee.connection.service.IServiceConnector)
-    */
    @Override
    public synchronized void removeConnector(IServiceConnector connector) throws Exception {
       checkState();
@@ -96,9 +78,6 @@ class ConnectionServiceImpl implements IConnectionService {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#removeListener(org.eclipse.osee.connection.service.IConnectorListener)
-    */
    @Override
    public synchronized void removeListener(IConnectorListener listener) {
       checkState();
@@ -125,9 +104,6 @@ class ConnectionServiceImpl implements IConnectionService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectionService#isStopped()
-    */
    @Override
    public boolean isStopped() {
       return isStopped;

@@ -39,17 +39,11 @@ public class ArtifactTransactionData extends BaseTransactionData {
       this.artifact = artifact;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#getSelectTxNotCurrentSql()
-    */
    @Override
    public OseeSql getSelectTxNotCurrentSql() {
       return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#addInsertToBatch(org.eclipse.osee.framework.jdk.core.type.HashCollection)
-    */
    @Override
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
@@ -62,31 +56,19 @@ public class ArtifactTransactionData extends BaseTransactionData {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalUpdate(org.eclipse.osee.framework.skynet.core.transaction.TransactionId)
-    */
    @Override
    protected void internalUpdate(TransactionId transactionId) throws OseeCoreException {
       artifact.internalSetPersistenceData(getGammaId(), transactionId, getModificationType(), false);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalClearDirtyState()
-    */
    @Override
    protected void internalClearDirtyState() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalOnRollBack()
-    */
    @Override
    protected void internalOnRollBack() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#createGammaId()
-    */
    @Override
    protected int createGammaId() throws OseeCoreException {
       if (useExistingBackingData()) {
@@ -95,9 +77,6 @@ public class ArtifactTransactionData extends BaseTransactionData {
       return SequenceManager.getNextGammaId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData#internalAsModifiedEvent()
-    */
    @Override
    protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException {
       ArtifactModType artifactModType;

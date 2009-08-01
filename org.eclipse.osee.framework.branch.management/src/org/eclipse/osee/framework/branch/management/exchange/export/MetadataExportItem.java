@@ -34,9 +34,6 @@ public class MetadataExportItem extends AbstractDbExportItem {
       this.exportItems = exportItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.branch.management.export.AbstractExportItem#doWork(java.lang.Appendable)
-    */
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);

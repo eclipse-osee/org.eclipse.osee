@@ -20,25 +20,16 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
    @Override
    public InputStream getValue() throws OseeCoreException {
       return Lib.byteBufferToInputStream(getAttributeDataProvider().getValueAsBytes());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(InputStream value) throws OseeCoreException {
       return setValueFromInputStream(value);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
-    */
    @Override
    public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       boolean response = false;
@@ -58,9 +49,6 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       return response;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected InputStream convertStringToValue(String value) throws OseeCoreException {
       try {
@@ -70,9 +58,6 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Attribute#uponInitialize()
-    */
    @Override
    protected void uponInitialize() throws OseeCoreException {
       getAttributeDataProvider().setDisplayableString(getAttributeType().getName());

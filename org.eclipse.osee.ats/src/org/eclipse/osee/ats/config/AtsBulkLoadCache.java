@@ -60,9 +60,6 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       OseeLog.log(AtsPlugin.class, Level.INFO, getName());

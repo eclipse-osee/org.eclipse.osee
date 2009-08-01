@@ -28,9 +28,6 @@ import org.eclipse.swt.widgets.Combo;
  */
 public class RevertContentProvider extends ArtifactContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider#getChildren(java.lang.Object)
-    */
    private Combo artifactSelectionBox = null;
    private List<List<Artifact>> artifacts = null;
 
@@ -70,9 +67,6 @@ public class RevertContentProvider extends ArtifactContentProvider {
       return EMPTY_ARRAY;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider#hasChildren(java.lang.Object)
-    */
    @Override
    public boolean hasChildren(Object element) {
       return getChildren(element).length > 0;

@@ -32,10 +32,6 @@ public class InternalBranchActivator implements BundleActivator {
    private ServiceTracker applicationServerManagerTracker;
    private BundleContext context;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       InternalBranchActivator.instance = this;
       this.context = context;
@@ -57,10 +53,6 @@ public class InternalBranchActivator implements BundleActivator {
       applicationServerManagerTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       exchangeServiceRegistration.unregister();
       exchangeServiceRegistration = null;

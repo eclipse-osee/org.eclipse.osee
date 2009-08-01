@@ -52,9 +52,6 @@ public class ResultsXViewerLabelProvider extends XViewerLabelProvider {
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.nebula.widgets.xviewer.XViewerColumn, int)
-    */
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
       return null;

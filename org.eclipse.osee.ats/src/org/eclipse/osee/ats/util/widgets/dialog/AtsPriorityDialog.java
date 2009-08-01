@@ -51,11 +51,6 @@ public class AtsPriorityDialog extends ListDialog {
       return (AtsPriority.PriorityType) getResult()[0];
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.SelectionDialog#createMessageArea(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Label createMessageArea(Composite composite) {
       Label label = super.createMessageArea(composite);

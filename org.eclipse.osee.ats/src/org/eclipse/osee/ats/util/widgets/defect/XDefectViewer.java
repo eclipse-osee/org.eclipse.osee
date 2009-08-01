@@ -96,11 +96,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       OseeEventManager.addListener(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
@@ -126,11 +121,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       xViewer.setContentProvider(new DefectContentProvider(xViewer));
       xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             refreshActionEnablement();
          }
@@ -525,11 +515,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       return xViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return xViewer.getInput();
@@ -553,44 +538,26 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          loadTable();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact,
-    *      java.lang.String)
-    */
    public void setArtifact(Artifact artifact, String attrName) {
       setReviewArt((IReviewArtifact) artifact);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
-    */
    @Override
    public void saveToArtifact() throws OseeCoreException {
       // DefectViewer uses artifact as storage mechanism; nothing to do here
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       // DefectViewer uses artifact as storage mechanism which already determines dirty
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       // Nothing to revert cause artifact will be reverted
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId())
@@ -608,9 +575,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getErrorMessageControl()
-    */
    @Override
    public Control getErrorMessageControl() {
       return labelWidget;

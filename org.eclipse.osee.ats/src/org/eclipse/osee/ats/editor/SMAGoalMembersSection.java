@@ -50,9 +50,6 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
@@ -82,9 +79,6 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -97,9 +91,6 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (worldComposite != null && !worldComposite.isDisposed()) {
@@ -108,54 +99,33 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#createToolBarPulldown(org.eclipse.swt.widgets.Menu)
-    */
    @Override
    public void createToolBarPulldown(Menu menu) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#getCurrentTitleLabel()
-    */
    @Override
    public String getCurrentTitleLabel() {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#getIActionable()
-    */
    @Override
    public IActionable getIActionable() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#getWorldEditorProvider()
-    */
    @Override
    public IWorldEditorProvider getWorldEditorProvider() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#reSearch()
-    */
    @Override
    public void reSearch() throws OseeCoreException {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#reflow()
-    */
    @Override
    public void reflow() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#setTableTitle(java.lang.String, boolean)
-    */
    @Override
    public void setTableTitle(String title, boolean warning) {
    }

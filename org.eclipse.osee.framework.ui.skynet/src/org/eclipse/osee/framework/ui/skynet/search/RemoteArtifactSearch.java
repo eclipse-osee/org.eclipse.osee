@@ -60,9 +60,6 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       this.isCaseSensitive = isCaseSensitive;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getCriteriaLabel()
-    */
    @Override
    public String getCriteriaLabel() {
       List<String> optionsList = new ArrayList<String>();
@@ -91,9 +88,6 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor pm) {
       setIsDoneRunning(false);

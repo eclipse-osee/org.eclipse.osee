@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 public class ODMPaletteFactory {
 
    private final static String DATA_TYPE_TIP_FORMAT = "Add [%s] %s type to %s";
-   private ODMEditor editor;
+   private final ODMEditor editor;
    private PaletteRoot paletteRoot;
 
    private enum DrawerEnum {
@@ -55,7 +55,7 @@ public class ODMPaletteFactory {
       }
    }
 
-   private Map<DrawerEnum, PaletteContainer> containers;
+   private final Map<DrawerEnum, PaletteContainer> containers;
 
    public ODMPaletteFactory(ODMEditor editor) {
       this.containers = new LinkedHashMap<DrawerEnum, PaletteContainer>();
@@ -157,9 +157,6 @@ public class ODMPaletteFactory {
       //
       //      toolbar.add(new ToolEntry("", action.getText(), img, img, null) {
       //
-      //         /* (non-Javadoc)
-      //          * @see org.eclipse.gef.palette.ToolEntry#createTool()
-      //          */
       //         @Override
       //         public Tool createTool() {
       //            return new AbstractTool() {
@@ -169,9 +166,6 @@ public class ODMPaletteFactory {
       //                  return action.getText();
       //               }
       //
-      //               /* (non-Javadoc)
-      //                * @see org.eclipse.gef.tools.AbstractTool#activate()
-      //                */
       //               @Override
       //               public void activate() {
       //                  super.activate();

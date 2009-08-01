@@ -149,11 +149,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       return description;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processHeaderRow(java.lang.String[])
-    */
    public void processHeaderRow(String[] headerRow) {
       if (done) return;
       if (tableIterator.hasNext()) {
@@ -249,44 +244,19 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       artifacts.add(nonJavaCharP.matcher(artifactTypeName).replaceAll("_").toUpperCase() + "(\"" + artifactTypeName + "\")");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processEmptyRow(java.lang.String[])
-    */
    public void processEmptyRow() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
       done = true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#detectedTotalRowCount(int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
       this.sheetName = nonJavaCharP.matcher(sheetName).replaceAll("_").toUpperCase();
    }

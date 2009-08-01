@@ -34,9 +34,6 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
 
    private Action toolBarAction;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
-    */
    @Override
    public Action createToolbarService() {
       toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
@@ -58,19 +55,11 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Show Change Report";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
-    */
    @Override
    public void refresh() {
       if (toolBarAction != null) {
@@ -92,15 +81,9 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
       return enabled;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
-    */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             refresh();
@@ -109,15 +92,9 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-    */
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             refresh();

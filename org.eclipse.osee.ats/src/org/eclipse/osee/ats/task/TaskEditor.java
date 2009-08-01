@@ -58,11 +58,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
@@ -89,9 +84,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public static Collection<TaskEditor> getEditors() {
       final List<TaskEditor> editors = new ArrayList<TaskEditor>();
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
@@ -104,9 +96,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    public static void closeAll() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
@@ -133,11 +122,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       super.dispose();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       for (TaskArtifact taskArt : tasks) {
@@ -161,11 +145,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return taskActionPage;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
 
@@ -276,11 +255,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          this.itaskEditorProvider = itaskEditorProvider;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
@@ -293,9 +267,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
             taskEditor.tasks.clear();
             taskEditor.tasks.addAll(taskArts);
             Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
                @Override
                public void run() {
                   try {
@@ -321,17 +292,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsArtifacts()
-    */
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return tasks;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
-    */
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       if (tasks.size() > 0) {
@@ -340,86 +305,44 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
-    */
    public String getCurrentStateName() throws OseeCoreException {
       return "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
-    */
    public IDirtiableEditor getEditor() throws OseeCoreException {
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
-    */
    public SMAManager getParentSmaMgr() throws OseeCoreException {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
-    */
    public String getTabName() throws OseeCoreException {
       return "Tasks";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
-    */
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       return tasks;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
-    */
    public boolean isTaskable() throws OseeCoreException {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTasksEditable()
-    */
    public boolean isTasksEditable() throws OseeCoreException {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isRefreshHandled()
-    */
    @Override
    public boolean isRefreshActionHandled() throws OseeCoreException {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#refresh()
-    */
    @Override
    public void handleRefreshAction() throws OseeCoreException {
       loadTable();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManDaysPerHour()
-    */
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       if (tasks.size() == 0)

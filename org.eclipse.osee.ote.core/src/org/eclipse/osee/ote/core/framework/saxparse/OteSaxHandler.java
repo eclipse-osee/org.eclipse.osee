@@ -148,12 +148,6 @@ public class OteSaxHandler extends AbstractSaxHandler {
       addHandlers(new Witnesses());
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.util.io.xml.AbstractSaxHandler#endElementFound(java.lang.String,
-    *      java.lang.String, java.lang.String)
-    */
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
       ElementHandlers handler = handlers.get(name);
@@ -171,12 +165,6 @@ public class OteSaxHandler extends AbstractSaxHandler {
          
    }
    
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.util.io.xml.AbstractSaxHandler#startElementFound(java.lang.String,
-    *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
       ElementHandlers handler = handlers.get(name);

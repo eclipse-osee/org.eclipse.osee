@@ -18,17 +18,11 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
  */
 public class CurrentNodeEditPart extends AbstractGraphicalEditPart {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
-    */
    @Override
    protected IFigure createFigure() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
-    */
    @Override
    protected void createEditPolicies() {
    }

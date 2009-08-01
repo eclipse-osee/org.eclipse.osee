@@ -221,9 +221,6 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       this.selectedActionItems = selectedActionItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new ActionableItemWorldSearchItem(this);

@@ -67,21 +67,11 @@ public class JiniServiceSideConnector extends JiniConnector implements
 		serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.connection.service.IServiceConnector#getService()
-	 */
 	@Override
 	public Remote getService() {
 		return service;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.connection.service.IServiceConnector#stop()
-	 */
 	@Override
 	public synchronized void stop() throws Exception {
 		if (stopped) {
@@ -140,36 +130,17 @@ public class JiniServiceSideConnector extends JiniConnector implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.connection.service.IServiceConnector#getType()
-	 */
 	@Override
 	public String getConnectorType() {
 		return TYPE;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.connection.jini.JiniConnector#setProperty(java.lang
-	 * .String, java.lang.String)
-	 */
 	@Override
 	public void setProperty(String key, Serializable value) {
 		super.setProperty(key, value);
 		setAttributes(createEntries());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.
-	 * File)
-	 */
 	@Override
 	public URI upload(File file) throws Exception {
 		return null;

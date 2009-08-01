@@ -478,9 +478,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return teamDefs;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact#getFullDisplayName()
-    */
    @Override
    public String getFullDisplayName() throws OseeCoreException {
       return getName();

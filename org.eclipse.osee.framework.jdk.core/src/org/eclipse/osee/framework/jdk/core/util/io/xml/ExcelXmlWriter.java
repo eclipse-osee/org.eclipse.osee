@@ -61,9 +61,6 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
       startTable = true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#endSheet()
-    */
    public void endSheet() throws IOException {
       startTableIfNecessary();
 

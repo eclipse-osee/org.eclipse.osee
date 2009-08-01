@@ -69,9 +69,6 @@ public class UniversalCellEditor extends CellEditor {
     * Since UniveralCellEditor is managing its own controls and the CellEditor's mechanisms for managing the control
     * have been completly overridden, return null back to CellEditor when it calls this method
     */
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createControl(Composite parent) {
       return null;
@@ -119,9 +116,6 @@ public class UniversalCellEditor extends CellEditor {
       control = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#doGetValue()
-    */
    @Override
    protected Object doGetValue() {
       if ((control instanceof Combo) && personCombo) {
@@ -139,9 +133,6 @@ public class UniversalCellEditor extends CellEditor {
       throw new IllegalArgumentException("Control was of an unexpected type: " + control.getClass().getName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#doSetFocus()
-    */
    @Override
    protected void doSetFocus() {
       control.setFocus();
@@ -149,9 +140,6 @@ public class UniversalCellEditor extends CellEditor {
 
    /**
     * called just before a cell is to be edited
-    */
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.CellEditor#doSetValue(java.lang.Object)
     */
    @Override
    protected void doSetValue(Object value) {

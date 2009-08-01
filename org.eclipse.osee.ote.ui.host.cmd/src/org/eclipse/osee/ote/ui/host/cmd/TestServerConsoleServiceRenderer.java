@@ -61,11 +61,6 @@ public class TestServerConsoleServiceRenderer implements IServiceRenderer {
       this.inputManager = new InputManager<TreeParent>();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.service.control.renderer.IServiceRenderer#refresh()
-    */
    public void refresh() {
       Display.getCurrent().asyncExec(new Runnable() {
 
@@ -96,11 +91,6 @@ public class TestServerConsoleServiceRenderer implements IServiceRenderer {
       });
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.service.control.renderer.IServiceRenderer#setService(net.jini.core.lookup.ServiceItem)
-    */
    public void setService(ServiceItem serviceItem) {
       OseeLog.log(UiPlugin.class, Level.INFO, "setting test environment service");
       testService = (IHostTestEnvironment) serviceItem.service;
@@ -109,30 +99,15 @@ public class TestServerConsoleServiceRenderer implements IServiceRenderer {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.service.control.renderer.IServiceRenderer#disconnect()
-    */
    public void disconnect() {
       consoles.clear();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.service.control.renderer.IServiceRenderer#dispose()
-    */
    public void dispose() {
       cleanupService();
       Widgets.disposeWidgets(composite, outputTxt, inputTxt, sendCmdBtn);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.service.control.renderer.IRenderer#renderInComposite(org.eclipse.swt.widgets.Composite)
-    */
    public Control renderInComposite(Composite parent) {
       composite = new Group(parent, SWT.NONE);
       composite.setLayout(new GridLayout());
@@ -148,9 +123,6 @@ public class TestServerConsoleServiceRenderer implements IServiceRenderer {
       envViewer = new EnvironmentViewer(sashForm, SWT.NONE);
       envViewer.getViewer().addDoubleClickListener(new IDoubleClickListener() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-          */
          public void doubleClick(DoubleClickEvent event) {
             Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
             if (element != null && element instanceof ConsoleNode) {

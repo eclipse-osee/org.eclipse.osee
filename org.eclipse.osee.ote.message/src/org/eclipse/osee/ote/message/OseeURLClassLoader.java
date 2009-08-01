@@ -13,16 +13,14 @@ package org.eclipse.osee.ote.message;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
-
 import org.eclipse.osee.ote.core.GCHelper;
-
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class OseeURLClassLoader extends URLClassLoader {
 
-   private String name;
+   private final String name;
 
    /**
     * @param urls
@@ -32,7 +30,7 @@ public class OseeURLClassLoader extends URLClassLoader {
       super(urls, parent);
       this.name = name;
       GCHelper.getGCHelper().addRefWatch(this);
-      
+
    }
 
    /**
@@ -55,16 +53,8 @@ public class OseeURLClassLoader extends URLClassLoader {
       this.name = name;
    }
 
-//   /* (non-Javadoc)
-//    * @see java.net.URLClassLoader#findClass(java.lang.String)
-//    */
-//   @Override
-//   protected Class<?> findClass(String name) throws ClassNotFoundException {
-//      Class myClass = super.findClass(name);
-//      System.out.println("we loaded: " + myClass.getCanonicalName() + " [" + name + "]");
-//      return myClass;
-//   }
-   public String toString(){
+   @Override
+   public String toString() {
       return this.getClass().getName() + " [ " + name + " ] ";
    }
 }

@@ -199,9 +199,6 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
       this.fillVertically = fillVertically;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.MessageDialog#handleShellCloseEvent()
-    */
    @Override
    protected void handleShellCloseEvent() {
       super.handleShellCloseEvent();

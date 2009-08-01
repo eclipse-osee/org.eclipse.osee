@@ -32,11 +32,6 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
       super(parent, "Import Actions Via Spreadsheet", FrameworkImage.IMPORT);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       ActionImportWizard actionWizard = new ActionImportWizard();

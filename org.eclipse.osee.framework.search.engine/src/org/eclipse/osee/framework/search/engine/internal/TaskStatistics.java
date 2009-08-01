@@ -39,9 +39,6 @@ public class TaskStatistics implements Cloneable, ITagItemStatistics {
       return processingTime;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#clone()
-    */
    @Override
    protected TaskStatistics clone() throws CloneNotSupportedException {
       TaskStatistics other = (TaskStatistics) super.clone();

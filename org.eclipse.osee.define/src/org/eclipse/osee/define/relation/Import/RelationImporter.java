@@ -58,9 +58,6 @@ public class RelationImporter implements RowProcessor {
       xmlReader.parse(new InputSource(importStream));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#processRow(java.lang.String[])
-    */
    public void processRow(String[] row) {
       if (done) return;
       try {
@@ -115,9 +112,6 @@ public class RelationImporter implements RowProcessor {
       return artifactResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#processHeaderRow(java.lang.String[])
-    */
    public void processHeaderRow(String[] row) {
       monitor.setTaskName("Aquire Column Artifacts");
       columnArtifacts = new Artifact[row.length - leadingColumnCount];
@@ -137,36 +131,21 @@ public class RelationImporter implements RowProcessor {
       monitor.setTaskName("Relate Row Artifacts");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#processEmptyRow()
-    */
    public void processEmptyRow() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
       monitor.done();
       done = true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#detectedTotalRowCount(int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
       monitor.beginTask("Importing Relations", rowCount + columnCount - leadingColumnCount);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
    }
 }

@@ -55,9 +55,6 @@ public class CompareInput extends CompareEditorInput {
       setTitle("Compare (" + nameLeft + " - " + nameRight + ")");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.compare.CompareEditorInput#saveChanges(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void saveChanges(IProgressMonitor monitor) throws CoreException {
       super.saveChanges(monitor);

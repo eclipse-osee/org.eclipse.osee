@@ -50,9 +50,6 @@ public class AttributeConflictBuilder extends ConflictBuilder {
       this.attrTypeId = attrTypeId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder#getConflict()
-    */
    @Override
    public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
       for (Integer integer : artIdSet) {

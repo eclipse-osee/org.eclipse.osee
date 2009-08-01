@@ -43,16 +43,10 @@ public abstract class AbstractOperation implements IOperation {
       this.name = name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#getName()
-    */
    public String getName() {
       return name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#getStatus()
-    */
    public IStatus getStatus() {
       return status;
    }
@@ -68,16 +62,10 @@ public abstract class AbstractOperation implements IOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#wasExecuted()
-    */
    public boolean wasExecuted() {
       return wasExecuted;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    public final IOperation run(IProgressMonitor monitor) {
       wasExecuted = true;
       try {
@@ -217,9 +205,6 @@ public abstract class AbstractOperation implements IOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.IOperation#getTotalWorkUnits()
-    */
    @Override
    public int getTotalWorkUnits() {
       return IOperation.TOTAL_WORK;

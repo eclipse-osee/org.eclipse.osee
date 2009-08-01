@@ -56,33 +56,21 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       this.rows = rows;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTableTab#getTableColumns()
-    */
    @Override
    public List<XViewerColumn> getTableColumns() throws OseeCoreException {
       return columns;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTableTab#getTableRows()
-    */
    @Override
    public Collection<IResultsXViewerRow> getTableRows() throws OseeCoreException {
       return rows;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab#getTabName()
-    */
    @Override
    public String getTabName() {
       return tabName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab#createTab(org.eclipse.swt.widgets.Composite, org.eclipse.osee.framework.ui.skynet.results.ResultsEditor)
-    */
    @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) throws OseeCoreException {
       Composite comp = ALayout.createCommonPageComposite(parent);

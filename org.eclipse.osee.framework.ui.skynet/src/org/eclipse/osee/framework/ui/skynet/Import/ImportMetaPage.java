@@ -52,9 +52,7 @@ public class ImportMetaPage extends WizardDataTransferPage {
       }
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
 
       initializeDialogUnits(parent);
@@ -131,11 +129,6 @@ public class ImportMetaPage extends WizardDataTransferPage {
       return branchSelectComposite.getSelectedBranch();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;

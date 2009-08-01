@@ -293,9 +293,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
       attributeTypeList.getCombo().select(lastAttributeTypeListSelected);
       attributeTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          @Override
          public void selectionChanged(SelectionChangedEvent event) {
             lastAttributeTypeListSelected = attributeTypeList.getCombo().getSelectionIndex();
@@ -352,9 +349,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       searchTypeList.getCombo().setVisibleItemCount(7);
       searchTypeList.getCombo().select(lastSearchTypeListSelected);
       searchTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          @Override
          public void selectionChanged(SelectionChangedEvent event) {
             lastSearchTypeListSelected = searchTypeList.getCombo().getSelectionIndex();
@@ -403,9 +397,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       HyperLinkLabel clearAllLabel = new HyperLinkLabel(filterComposite, SWT.NONE);
       clearAllLabel.setText("clear all");
       clearAllLabel.addListener(SWT.MouseUp, new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             for (FilterModel filterModel : new CopyOnWriteArrayList<FilterModel>(

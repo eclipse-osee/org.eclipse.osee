@@ -221,11 +221,6 @@ public abstract class JiniService implements IService {
       if (messageClassServer != null) messageClassServer.terminate();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.service.interfaces.IService#getServiceID()
-    */
    public ServiceID getServiceID() throws RemoteException {
       return serviceID;
    }

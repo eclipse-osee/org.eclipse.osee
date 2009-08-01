@@ -74,9 +74,6 @@ public class Connection extends ModelElement {
       return lineStyle;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#validForSave()
-    */
    @Override
    public Result validForSave() throws OseeCoreException {
       System.err.println("Add Connection validations.");
@@ -159,9 +156,6 @@ public class Connection extends ModelElement {
       return 2;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.model.ModelElement#doSave(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)
-    */
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

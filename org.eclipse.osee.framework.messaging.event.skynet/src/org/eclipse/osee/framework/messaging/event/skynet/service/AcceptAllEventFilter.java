@@ -20,9 +20,6 @@ public class AcceptAllEventFilter implements IEventFilter {
 
    private static final long serialVersionUID = -7624321113355047868L;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.event.skynet.filter.IEventFilter#accepts(org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent)
-    */
    @Override
    public boolean accepts(ISkynetEvent event) {
       return true;

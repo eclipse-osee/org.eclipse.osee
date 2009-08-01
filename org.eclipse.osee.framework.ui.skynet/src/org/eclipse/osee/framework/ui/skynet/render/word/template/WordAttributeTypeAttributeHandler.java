@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
  */
 public final class WordAttributeTypeAttributeHandler implements ITemplateAttributeHandler {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException {
       Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
@@ -53,9 +50,6 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeNameHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
-    */
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       boolean goodAttributeType = attribute.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT);

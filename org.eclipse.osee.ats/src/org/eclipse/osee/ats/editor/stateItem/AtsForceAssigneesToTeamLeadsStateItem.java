@@ -27,22 +27,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
-    */
    @Override
    public String getId() {
       return AtsStateItem.ALL_STATE_IDS;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.AtsStateItem#transitioned(org.eclipse.osee.ats.editor.SMAManager,
-    *      java.lang.String, java.lang.String, java.util.Collection)
-    */
    @Override
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
@@ -58,9 +47,6 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
-    */
    public String getDescription() throws OseeCoreException {
       return "AtsForceAssigneesToTeamLeadsStateItem";
    }

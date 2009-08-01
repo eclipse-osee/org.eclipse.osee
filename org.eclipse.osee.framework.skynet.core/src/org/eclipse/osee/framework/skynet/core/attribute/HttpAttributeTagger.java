@@ -129,23 +129,14 @@ public class HttpAttributeTagger {
    }
 
    private final class EventRelay implements IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionsDeletedEventListener {
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.BranchEventType, int)
-       */
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.skynet.core.event.Sender)
-       */
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-       */
       @Override
       public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
          //         if (sender.isRemote()) {
@@ -167,23 +158,14 @@ public class HttpAttributeTagger {
          //         }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-       */
       @Override
       public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
-       */
       @Override
       public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-       */
       @Override
       public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData txData) throws OseeCoreException {
          if (sender.isRemote()) {

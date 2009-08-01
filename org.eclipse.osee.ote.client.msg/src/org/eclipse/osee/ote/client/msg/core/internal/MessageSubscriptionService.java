@@ -138,14 +138,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.service.ITestConnectionListener#onConnectionLost
-	 * (org.eclipse.osee.connection.service.IServiceConnector,
-	 * org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment)
-	 */
 	@Override
 	public synchronized void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
 		OseeLog.log(Activator.class, Level.INFO, "connection lost: ote client message service halted");
@@ -158,13 +150,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 		service = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.service.ITestConnectionListener#onPostConnect(org
-	 * .eclipse.osee.ote.service.ConnectionEvent)
-	 */
 	@Override
 	public synchronized void onPostConnect(ConnectionEvent event) {
 		assert msgDatabase != null;
@@ -262,13 +247,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.service.ITestConnectionListener#onPreDisconnect(
-	 * org.eclipse.osee.ote.service.ConnectionEvent)
-	 */
 	@Override
 	public synchronized void onPreDisconnect(ConnectionEvent event) {
 		msgDatabase.detachService(service);
@@ -286,35 +264,16 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient#
-	 * changeIsScheduled(java.lang.String, boolean)
-	 */
 	@Override
 	public void changeIsScheduled(String msgName, boolean isScheduled) throws RemoteException {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient#changeRate
-	 * (java.lang.String, double)
-	 */
 	@Override
 	public void changeRate(String msgName, double rate) throws RemoteException {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient#
-	 * getAddressByType(java.lang.String, int)
-	 */
 	@Override
 	public InetSocketAddress getAddressByType(String messageName, int memType) throws RemoteException {
 		final DatagramChannel channel = dispatcher.getChannel(MemType.values()[memType]);
@@ -324,24 +283,11 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 		return new InetSocketAddress(localAddress, channel.socket().getLocalPort());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient#
-	 * getTestSessionKey()
-	 */
 	@Override
 	public UserTestSessionKey getTestSessionKey() throws RemoteException {
 		return clientService.getSessionKey();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.service.IMessageDictionaryListener#onDictionaryLoaded
-	 * (org.eclipse.osee.ote.service.IMessageDictionary)
-	 */
 	@Override
 	public void onDictionaryLoaded(IMessageDictionary dictionary) {
 		msgDatabase = messageDbFactory.createMessageDataBase(dictionary);
@@ -350,13 +296,6 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.service.IMessageDictionaryListener#onDictionaryUnloaded
-	 * (org.eclipse.osee.ote.service.IMessageDictionary)
-	 */
 	@Override
 	public void onDictionaryUnloaded(IMessageDictionary dictionary) {
 		for (MessageSubscription subscription : subscriptions) {

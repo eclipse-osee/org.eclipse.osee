@@ -54,17 +54,11 @@ public class ClientSession extends AbstractRemoteSession {
             address.toString()));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.AbstractRemoteSession#getAddress()
-    */
    @Override
    public String getAddress() throws RemoteException {
       return address.getHostAddress();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.AbstractRemoteSession#getFile(java.lang.String)
-    */
    @Override
    public byte[] getFile(String workspacePath) throws RemoteException {
       if (sessionDelegate != null) {
@@ -77,9 +71,6 @@ public class ClientSession extends AbstractRemoteSession {
       throw new IllegalStateException("session delegate not set");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.AbstractRemoteSession#getFileDate(java.lang.String)
-    */
    @Override
    public long getFileDate(String workspacePath) throws RemoteException {
       if (sessionDelegate != null) {
@@ -92,9 +83,6 @@ public class ClientSession extends AbstractRemoteSession {
       throw new IllegalStateException("session delegate not set");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.AbstractRemoteSession#getFileVersion(java.lang.String)
-    */
    @Override
    public String getFileVersion(String workspacePath) throws RemoteException {
       if (sessionDelegate != null) {
@@ -107,9 +95,6 @@ public class ClientSession extends AbstractRemoteSession {
       throw new IllegalStateException("session delegate not set");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.AbstractRemoteSession#isAlive()
-    */
    @Override
    public boolean isAlive() throws RemoteException {
       try {
@@ -126,9 +111,6 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.IRemoteUserSession#initiateInformationalPrompt(java.lang.String)
-    */
    public void initiateInformationalPrompt(String message) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -138,9 +120,6 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.IRemoteUserSession#initiatePassFailPrompt(org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse)
-    */
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -150,9 +129,6 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.IRemoteUserSession#initiateResumePrompt(org.eclipse.osee.ote.core.framework.prompt.IResumeResponse)
-    */
    public void initiateResumePrompt(IResumeResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {
@@ -162,9 +138,6 @@ public class ClientSession extends AbstractRemoteSession {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.IRemoteUserSession#initiateUserInputPrompt(org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse)
-    */
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws RemoteException {
       assert sessionDelegate != null : "delegate is null";
       try {

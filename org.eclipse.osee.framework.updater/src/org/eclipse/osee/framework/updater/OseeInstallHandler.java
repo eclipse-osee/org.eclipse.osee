@@ -139,9 +139,6 @@ public class OseeInstallHandler extends BaseInstallHandler {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.update.core.BaseInstallHandler#completeInstall(org.eclipse.update.core.IFeatureContentConsumer)
-    */
    @Override
    public void completeInstall(IFeatureContentConsumer consumer) throws CoreException {
       super.completeInstall(consumer);

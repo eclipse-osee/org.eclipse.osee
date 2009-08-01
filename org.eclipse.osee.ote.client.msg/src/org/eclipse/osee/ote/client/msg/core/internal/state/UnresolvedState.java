@@ -43,37 +43,16 @@ public class UnresolvedState extends AbstractSubscriptionState {
 		super(previousState);
 		this.msgClassName = msgClassName;
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #getMessage()
-	 */
 	@Override
 	public Message getMessage() {
 		return instance != null ? instance.getMessage() : null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #getMsgClassName()
-	 */
 	@Override
 	public String getMsgClassName() {
 		return msgClassName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onLibraryLoaded()
-	 */
 	@Override
 	public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
 		try {
@@ -94,37 +73,16 @@ public class UnresolvedState extends AbstractSubscriptionState {
 		return type;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onLibraryUnloaded()
-	 */
 	@Override
 	public ISubscriptionState onMessageDbClosing(AbstractMessageDataBase msgDb) {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onServiceAttached()
-	 */
 	@Override
 	public ISubscriptionState onActivated() {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #onServiceDetached()
-	 */
 	@Override
 	public ISubscriptionState onDeactivated() {
 		return this;
@@ -135,25 +93,11 @@ public class UnresolvedState extends AbstractSubscriptionState {
 		return EnumSet.noneOf(MemType.class);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isActive()
-	 */
 	@Override
 	public boolean isActive() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.client.msg.core.internal.state.ISubscriptionState
-	 * #isResolved()
-	 */
 	@Override
 	public boolean isResolved() {
 		return instance != null;

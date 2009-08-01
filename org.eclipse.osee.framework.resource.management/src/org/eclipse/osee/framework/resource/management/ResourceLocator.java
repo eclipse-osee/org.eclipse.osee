@@ -38,9 +38,6 @@ public class ResourceLocator implements IResourceLocator {
       return uri.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocator#getRawPath()
-    */
    @Override
    public String getRawPath() {
       String toReturn = uri.getSchemeSpecificPart();

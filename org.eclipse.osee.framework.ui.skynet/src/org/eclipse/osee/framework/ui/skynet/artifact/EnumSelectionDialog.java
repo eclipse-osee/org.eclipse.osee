@@ -73,11 +73,6 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       addSelectedRadioButton.createWidgets(comp, 2);
       addSelectedRadioButton.setSelected(true);
       addSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
@@ -87,11 +82,6 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
 
       replaceAllRadioButton.createWidgets(comp, 2);
       replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
@@ -101,11 +91,6 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
 
       deleteSelectedRadioButton.createWidgets(comp, 2);
       deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);

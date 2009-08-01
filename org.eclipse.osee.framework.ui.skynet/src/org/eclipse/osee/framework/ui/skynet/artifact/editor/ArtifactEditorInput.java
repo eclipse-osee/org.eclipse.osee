@@ -21,9 +21,6 @@ public class ArtifactEditorInput extends BaseArtifactEditorInput {
       super(artifact);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof ArtifactEditorInput) {

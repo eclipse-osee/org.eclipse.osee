@@ -34,16 +34,10 @@ public class RecordMapEntry implements IElementEntry {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.tool.rec.entry.IElementEntry#getElement()
-    */
    public Element getElement() {
       return element;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.tool.rec.entry.IElementEntry#write(java.nio.ByteBuffer, org.eclipse.osee.ote.message.data.MemoryResource)
-    */
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
 //      for (int i = 0; i < element.length(); i++) {
 //    	  if (entries[i].getElement().getByteOffset() < limit) {

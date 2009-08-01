@@ -46,81 +46,41 @@ public class BootStrapUser extends User {
     */
    private static final long serialVersionUID = 1L;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#getEmail()
-    */
    @Override
    public String getEmail() {
       return SystemUser.BootStrap.getEmail();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#getName()
-    */
    @Override
    public String getName() {
       return SystemUser.BootStrap.getName();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#getPhone()
-    */
    @Override
    public String getPhone() {
       return "phone home";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#getUserId()
-    */
    @Override
    public String getUserId() {
       return SystemUser.BootStrap.getUserID();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#isActive()
-    */
    @Override
    public Boolean isActive() {
       return SystemUser.BootStrap.isActive();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#setActive(boolean)
-    */
    @Override
    public void setActive(boolean required) {
       throw new UnsupportedOperationException();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#setEmail(java.lang.String)
-    */
    @Override
    public void setEmail(String email) {
       throw new UnsupportedOperationException();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.User#setPhone(java.lang.String)
-    */
    @Override
    public void setPhone(String phone) {
       throw new UnsupportedOperationException();

@@ -27,9 +27,6 @@ import org.eclipse.swt.program.Program;
 public class NativeRenderer extends FileRenderer {
    public static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.render.NativeRenderer";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -49,17 +46,11 @@ public class NativeRenderer extends FileRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
-    */
    @Override
    public String getName() {
       return "Native Editor";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-    */
    @Override
    public NativeRenderer newInstance() throws OseeCoreException {
       return new NativeRenderer();
@@ -76,17 +67,11 @@ public class NativeRenderer extends FileRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension()
-    */
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "xml");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedProgram()
-    */
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       String extension = getAssociatedExtension(artifact);
@@ -98,9 +83,6 @@ public class NativeRenderer extends FileRenderer {
       return program;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
-    */
    @Override
    public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       return getRenderInputStream(artifacts.iterator().next(), presentationType);
@@ -111,9 +93,6 @@ public class NativeRenderer extends FileRenderer {
       return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;

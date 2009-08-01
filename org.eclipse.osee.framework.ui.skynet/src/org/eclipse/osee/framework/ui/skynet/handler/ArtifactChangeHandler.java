@@ -22,9 +22,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Ryan D. Brooks
  */
 public class ArtifactChangeHandler implements IStatusHandler {
-   /* (non-Javadoc)
-    * @see org.eclipse.debug.core.IStatusHandler#handleStatus(org.eclipse.core.runtime.IStatus, java.lang.Object)
-    */
    @Override
    public Object handleStatus(IStatus status, Object source) throws CoreException {
       final MutableInteger result = new MutableInteger(0);

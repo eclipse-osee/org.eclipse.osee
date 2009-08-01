@@ -247,11 +247,6 @@ public abstract class TestScript implements ITimeout {
       return startTime;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.TestAccessor#getTestCase()
-    */
    public TestCase getTestCase() {
       return currentTestCase;
    }
@@ -277,11 +272,6 @@ public abstract class TestScript implements ITimeout {
       return userSession;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.test.core.TestAccessor#getTestScript()
-    */
    public TestScript getTestScript() {
       return this;
    }

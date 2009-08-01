@@ -48,9 +48,6 @@ public class XFileTextWithSelectionDialog extends XText {
       this(displayLabel, Type.File);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
-    */
    @Override
    public void createControls(final Composite parent, int horizontalSpan, boolean fillText) {
       super.createControls(parent, horizontalSpan, fillText);

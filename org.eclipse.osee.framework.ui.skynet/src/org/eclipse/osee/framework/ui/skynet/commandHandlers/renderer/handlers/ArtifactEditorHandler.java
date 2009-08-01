@@ -20,11 +20,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
  * @author Jeff C. Phillips
  */
 public class ArtifactEditorHandler extends AbstractEditorHandler {
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent myExecutionEvent) throws ExecutionException {
       ArtifactEditor.editArtifacts(artifacts);

@@ -31,17 +31,11 @@ public class CancelMultipleWorkflows implements IAtsWorldEditorMenuItem {
    public CancelMultipleWorkflows() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#getMenuItemName()
-    */
    @Override
    public String getMenuItemName() throws OseeCoreException {
       return "Cancel Selected Workflows";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem#runMenuItem(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
       Collection<StateMachineArtifact> smas = worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();

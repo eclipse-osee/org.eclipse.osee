@@ -39,17 +39,11 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       this.displayable = "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() throws OseeDataStoreException {
       return displayable;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setDisplayableString(java.lang.String)
-    */
    @Override
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
       this.displayable = toDisplay;
@@ -59,9 +53,6 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(ByteBuffer)
-    */
    @Override
    public boolean setValue(ByteBuffer data) throws OseeCoreException {
       boolean response = false;
@@ -84,9 +75,6 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       return response;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getValueAsBytes()
-    */
    @Override
    public ByteBuffer getValueAsBytes() throws OseeCoreException {
       ByteBuffer decompressed = null;
@@ -102,9 +90,6 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       return decompressed;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#getValueAsString()
-    */
    @Override
    public String getValueAsString() throws OseeCoreException {
       String toReturn = null;
@@ -121,9 +106,6 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#setValue(java.lang.String)
-    */
    @Override
    public boolean setValue(String value) throws OseeCoreException {
       ByteBuffer toSet = null;
@@ -138,17 +120,11 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#getData()
-    */
    @Override
    public Object[] getData() throws OseeDataStoreException {
       return new Object[] {"", dataStore.getLocator()};
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
-    */
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
@@ -156,17 +132,11 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
-    */
    @Override
    public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       dataStore.persist(storageId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
-    */
    @Override
    public void purge() throws OseeCoreException {
       dataStore.purge();

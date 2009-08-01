@@ -28,9 +28,6 @@ public class HistoricalArtifactSearchQuery extends AbstractLegacyArtifactSearchQ
       this.branch = branch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getArtifacts()
-    */
    @Override
    public Collection<Artifact> getArtifacts() throws OseeCoreException {
       return ArtifactQuery.getArtifactListFromHistoricalAttributeValue(attributePattern, branch);

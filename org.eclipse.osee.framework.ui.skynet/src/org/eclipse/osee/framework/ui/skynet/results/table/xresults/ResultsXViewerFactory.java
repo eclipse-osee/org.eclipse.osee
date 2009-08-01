@@ -37,9 +37,6 @@ public class ResultsXViewerFactory extends XViewerFactory {
       return new XViewerCustomizations();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.IXViewerFactory#isAdmin()
-    */
    @Override
    public boolean isAdmin() {
       return true;

@@ -60,7 +60,7 @@ public class EnumBaseBuilder extends JavaFileBuilder {
    }
 
    private String getInitialValue(int enumNumber, String additionalValues) {
-      return "new " + className + "(" + enumNumber + ((additionalValues != null) ? "," + additionalValues : "") + ")";
+      return "new " + className + "(" + enumNumber + (additionalValues != null ? "," + additionalValues : "") + ")";
    }
 
    private String getGetEnum() {
@@ -75,11 +75,10 @@ public class EnumBaseBuilder extends JavaFileBuilder {
       return "\tpublic static " + className + " toEnum(EnumBase otherEnum) {\n" + "\t\treturn toEnum(otherEnum.getValue());\n" + "\t}";
    }
 
-   /*
-    * Add the fields from the parent, along with fields that have to be generated dynamically
-    * based on what enums have been added over the lifetime of this builder.
+   /**
+    * Add the fields from the parent, along with fields that have to be generated dynamically based on what enums have
+    * been added over the lifetime of this builder.
     * 
-    * (non-Javadoc)
     * @see org.eclipse.osee.framework.jdk.core.util.io.JavaFileBuilder#getFields(java.lang.StringBuilder)
     */
    @Override
@@ -104,7 +103,7 @@ public class EnumBaseBuilder extends JavaFileBuilder {
       while ((record = records.poll()) != null) {
 
          // Fill skipped values in the enum listing with null references
-         for (int x = lastEnumVal; x < (record.number - 1); x++) {
+         for (int x = lastEnumVal; x < record.number - 1; x++) {
             stringTable.append("null, ");
             enumValueTable.append("null, ");
          }
@@ -129,8 +128,8 @@ public class EnumBaseBuilder extends JavaFileBuilder {
    }
 
    private class EnumRecord {
-      private int number;
-      private String name;
+      private final int number;
+      private final String name;
 
       /**
        * @param number The ordinal value of the enumeration

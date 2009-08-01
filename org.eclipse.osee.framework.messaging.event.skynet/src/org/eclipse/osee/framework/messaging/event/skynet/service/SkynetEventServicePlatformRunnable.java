@@ -30,11 +30,6 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
       skynetEventService = null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-    */
    public Object start(IApplicationContext context) throws Exception {
       CmdLineArgs commandArgs = new CmdLineArgs(Platform.getApplicationArgs());
 
@@ -43,11 +38,6 @@ public class SkynetEventServicePlatformRunnable implements IApplication {
       return EXIT_OK;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.equinox.app.IApplication#stop()
-    */
    public void stop() {
       try {
          skynetEventService.kill();

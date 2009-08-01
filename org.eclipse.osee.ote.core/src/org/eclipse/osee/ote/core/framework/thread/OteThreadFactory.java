@@ -29,9 +29,6 @@ public class OteThreadFactory implements ThreadFactory {
       this.threads = new CopyOnWriteArrayList<WeakReference<OteThread>>();
    }
 
-   /* (non-Javadoc)
-    * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
-    */
    public Thread newThread(Runnable runnable) {
       OteThread thread = new OteThread(runnable, threadName + ":" + threads.size());
       this.threads.add(new WeakReference<OteThread>(thread));

@@ -52,19 +52,11 @@ public class HistoryOperation extends WorkPageService {
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "History";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
    @Override
    public void refresh() {
    }

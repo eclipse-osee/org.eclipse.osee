@@ -46,9 +46,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       timer.schedule(new StartUpRunnable(this), 3000);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#deleteTags(int)
-    */
    @Override
    public int deleteTags(int joinQueryId) throws Exception {
       DeleteTagsTx deleteTransaction = new DeleteTagsTx(joinQueryId);
@@ -56,17 +53,11 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       return deleteTransaction.rowsDeleted();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByQueueQueryId(int)
-    */
    @Override
    public void tagByQueueQueryId(int queryId) {
       tagByQueueQueryId(null, queryId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByQueueQueryId(org.eclipse.osee.framework.search.engine.ITagListener, int)
-    */
    @Override
    public void tagByQueueQueryId(ITagListener listener, int queryId) {
       TaggerRunnable runnable = new TaggerRunnable(queryId, false, CACHE_LIMIT);
@@ -80,25 +71,16 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.executor.submit(futureTask);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(org.eclipse.osee.framework.search.engine.ITagListener, int)
-    */
    @Override
    public void tagByBranchId(ITagListener listener, int branchId) throws OseeCoreException {
       this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(int)
-    */
    @Override
    public void tagByBranchId(int branchId) throws OseeCoreException {
       tagByBranchId(null, branchId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(org.eclipse.osee.framework.search.engine.ITagListener, java.io.InputStream)
-    */
    @Override
    public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception {
       InputStreamTagProcessor inputStreamTagProcessor =
@@ -106,33 +88,21 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       inputStreamTagProcessor.execute();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(java.io.InputStream)
-    */
    @Override
    public void tagFromXmlStream(InputStream inputStream) throws Exception {
       tagFromXmlStream(null, inputStream);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#getWorkersInQueue()
-    */
    @Override
    public int getWorkersInQueue() {
       return futureTasks.size();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#clearStatistics()
-    */
    @Override
    public void clearStatistics() {
       this.statistics.clear();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#getStatistics()
-    */
    @Override
    public ITaggerStatistics getStatistics() {
       try {
@@ -142,9 +112,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#stopTaggingQueryId(int...)
-    */
    @Override
    public int stopTaggingByQueueQueryId(int... queryId) {
       int toReturn = 0;
@@ -163,9 +130,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       return toReturn;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#stopAllTagging()
-    */
    @Override
    public int stopAllTagging() {
       int index = 0;
@@ -186,9 +150,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
          this.runnable = runnable;
       }
 
-      /* (non-Javadoc)
-       * @see java.util.concurrent.FutureTask#done()
-       */
       @Override
       protected void done() {
          futureTasks.remove(runnable.getTagQueueQueryId());

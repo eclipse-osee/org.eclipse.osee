@@ -47,17 +47,11 @@ public class BlamEditor extends AbstractArtifactEditor {
       return actionBarContributor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#getEditorInput()
-    */
    @Override
    public BlamEditorInput getEditorInput() {
       return (BlamEditorInput) super.getEditorInput();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#showBusy(boolean)
-    */
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
@@ -66,9 +60,6 @@ public class BlamEditor extends AbstractArtifactEditor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
       OseeContributionItem.addTo(this, true);
@@ -83,9 +74,6 @@ public class BlamEditor extends AbstractArtifactEditor {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.MultiPageEditorPart#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
@@ -138,9 +126,6 @@ public class BlamEditor extends AbstractArtifactEditor {
    private final class BlamEditorExecutionAdapter extends JobChangeAdapter {
       private long startTime = 0;
 
-      /* (non-Javadoc)
-       * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#scheduled(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-       */
       @Override
       public void scheduled(IJobChangeEvent event) {
          super.scheduled(event);
@@ -148,9 +133,6 @@ public class BlamEditor extends AbstractArtifactEditor {
          showBusy(true);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#aboutToRun(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-       */
       @Override
       public void aboutToRun(IJobChangeEvent event) {
          super.aboutToRun(event);
@@ -158,9 +140,6 @@ public class BlamEditor extends AbstractArtifactEditor {
          overviewPage.setOuputText(String.format("Starting BLAM at [%s]\n", Lib.getElapseString(startTime)));
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-       */
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);

@@ -57,17 +57,11 @@ public class TagListener extends TagListenerAdapter {
       return tagErrors;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagExpectedQueryIdSubmits(int)
-    */
    @Override
    public void onTagExpectedQueryIdSubmits(int totalQueries) {
       this.expectedTotal = totalQueries;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagError(int, java.lang.Throwable)
-    */
    @Override
    synchronized public void onTagError(int queryId, Throwable throwable) {
       tagErrors.put(queryId, throwable);
@@ -75,18 +69,12 @@ public class TagListener extends TagListenerAdapter {
       this.notify();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagQueryIdSubmit(int)
-    */
    @Override
    synchronized public void onTagQueryIdSubmit(int queryId) {
       queryCount++;
       queryIds.add(queryId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onAttributeTagComplete(int, long, int, long)
-    */
    @Override
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       if (this.queryIds.contains(queryId)) {
@@ -94,9 +82,6 @@ public class TagListener extends TagListenerAdapter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long, long)
-    */
    @Override
    synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
       if (this.queryIds.contains(queryId)) {

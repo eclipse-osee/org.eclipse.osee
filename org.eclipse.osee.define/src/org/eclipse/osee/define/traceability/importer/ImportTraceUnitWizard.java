@@ -36,11 +36,6 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
       setWindowTitle("Import Trace Units Wizard");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       try {
@@ -62,19 +57,10 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-    *      org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       this.selection = selection;
    }
 
-   /**
-    * (non-Javadoc) Method declared on Wizard.
-    */
    @Override
    public void addPages() {
       page = new ImportTraceUnitPage(selection);

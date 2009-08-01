@@ -53,9 +53,6 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection
       notifyXModifiedListeners();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection#handleClear()
-    */
    @Override
    public boolean handleClear() {
       selectedTeamDefs.clear();

@@ -18,19 +18,11 @@ public class Activator implements BundleActivator {
 
    private OseeHttpServiceTracker httpTracker = null;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       httpTracker = new OseeHttpServiceTracker(context, "osee/install/info", ClientInstallInfoServlet.class);
       httpTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       httpTracker.close();
       httpTracker = null;

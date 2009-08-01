@@ -131,9 +131,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this.historical = historical;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToTableSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_attribute");
@@ -141,9 +138,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToWhereSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeDataStoreException {
       if (attributeType != null) {
@@ -190,18 +184,12 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       builder.addTxSql(txsAlias, txdAlias, historical);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addJoinArtId(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
-    */
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
       builder.append(attrAlias);
       builder.append(".art_id");
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       StringBuilder strB = new StringBuilder();

@@ -28,9 +28,6 @@ import org.eclipse.swt.graphics.Image;
 public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#open(java.util.List)
-    */
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       if (OseeAts.getAtsLib() != null) {
@@ -38,9 +35,6 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
@@ -51,17 +45,11 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
       return ImageManager.getImage(AtsImage.TASK);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getName()
-    */
    @Override
    public String getName() {
       return "ATS Task Editor";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getApplicabilityRating(org.eclipse.osee.framework.ui.skynet.render.PresentationType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if (artifact instanceof TaskArtifact && (!artifact.isHistorical())) {

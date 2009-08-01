@@ -35,25 +35,16 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
       this.artifacts = artifacts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
-    */
    @Override
    public IWorldEditorProvider copyProvider() {
       return new WorldEditorSimpleProvider(name, artifacts, customizeData, tableLoadOptions);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
-    */
    @Override
    public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) throws OseeCoreException {
       worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getName()
-    */
    @Override
    public String getName() throws OseeCoreException {
       return name;

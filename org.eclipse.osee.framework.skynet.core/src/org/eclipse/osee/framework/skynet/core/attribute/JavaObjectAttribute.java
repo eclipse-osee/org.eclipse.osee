@@ -23,9 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
    @Override
    public Object getValue() throws OseeCoreException {
       return getObjectFromBytes(getAttributeDataProvider().getValueAsBytes());
@@ -60,9 +57,6 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
       return obj;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
-    */
    @Override
    public boolean subClassSetValue(Object value) {
       try {
@@ -79,9 +73,6 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected Object convertStringToValue(String value) throws OseeCoreException {
       if (value == null) {

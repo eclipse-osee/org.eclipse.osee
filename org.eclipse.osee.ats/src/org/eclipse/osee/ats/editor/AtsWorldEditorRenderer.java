@@ -35,9 +35,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getApplicabilityRating(org.eclipse.osee.framework.ui.skynet.render.PresentationType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       if ((artifact instanceof IATSArtifact || artifact.getArtifactTypeName().equals("Universal Group")) && (!artifact.isHistorical())) {
@@ -46,9 +43,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -60,17 +54,11 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       return commandIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getName()
-    */
    @Override
    public String getName() {
       return "ATS World Editor";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#newInstance()
-    */
    @Override
    public AtsWorldEditorRenderer newInstance() throws OseeCoreException {
       return new AtsWorldEditorRenderer();
@@ -81,9 +69,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       return ImageManager.getImage(AtsImage.GLOBE);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#open(java.util.List)
-    */
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       if (OseeAts.getAtsLib() != null) {
@@ -91,9 +76,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);

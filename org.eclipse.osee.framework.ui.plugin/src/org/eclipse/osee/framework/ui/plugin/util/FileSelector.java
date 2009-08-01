@@ -59,9 +59,6 @@ public class FileSelector extends Composite {
       btnSingleFile.setText("&Browse...");
       btnSingleFile.addSelectionListener(new SelectionAdapter() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-          */
          @Override
          public void widgetSelected(SelectionEvent e) {
             File file = selectFile();

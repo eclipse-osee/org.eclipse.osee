@@ -27,25 +27,16 @@ public class DefaultTransitionConnection extends TransitionConnection {
       super(source, target);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Connection#getForegroundColor()
-    */
    @Override
    public Color getForegroundColor() {
       return Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Connection#getLineWidth()
-    */
    @Override
    public int getLineWidth() {
       return 3;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.model.Connection#getLabel()
-    */
    @Override
    public String getLabel() {
       return "Default Transition";

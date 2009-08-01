@@ -49,9 +49,6 @@ public class MyFavoritesSearchItem extends UserSearchItem {
       super.performUI(searchType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new MyFavoritesSearchItem(this);

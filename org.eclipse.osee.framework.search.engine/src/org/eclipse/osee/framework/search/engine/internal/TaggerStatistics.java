@@ -109,9 +109,6 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
       return SearchTagDataStore.getTotalQueryIdsInQueue();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#clone()
-    */
    @Override
    protected ITaggerStatistics clone() throws CloneNotSupportedException {
       TaggerStatistics other = (TaggerStatistics) super.clone();
@@ -131,9 +128,6 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
       return other;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeTagComplete(int, long, int, long)
-    */
    @Override
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       this.totalTags += totalTags;
@@ -150,9 +144,6 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long)
-    */
    @Override
    public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
       this.totalQueryIdsProcessed++;

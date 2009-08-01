@@ -78,9 +78,6 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
    }
 
    public static class BranchLabelProvider extends LabelProvider {
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-       */
       @Override
       public Image getImage(Object element) {
          if (element instanceof Branch) {

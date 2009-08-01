@@ -27,9 +27,6 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       super(operationName, pluginId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
       Transaction transaction = new Transaction(monitor);
@@ -51,9 +48,6 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
          return AbstractDbTxOperation.this.getName();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxWork(org.eclipse.osee.framework.db.connection.OseeConnection)
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          AbstractDbTxOperation.this.doTxWork(monitor, connection);

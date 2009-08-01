@@ -78,9 +78,6 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
       return getRevision().compareTo(other.getRevision());
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof TxModel) {
@@ -90,9 +87,6 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return txData.hashCode();

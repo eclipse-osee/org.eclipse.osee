@@ -27,73 +27,46 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
       this.taskArts = taskArts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getGuid()
-    */
    @Override
    public String getGuid() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperArtifact()
-    */
    @Override
    public Artifact getHyperArtifact() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssignee()
-    */
    @Override
    public String getHyperAssignee() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
-    */
    @Override
    public Image getHyperAssigneeImage() throws OseeCoreException {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperName()
-    */
    @Override
    public String getHyperName() {
       return taskArts.size() + " Tasks";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperState()
-    */
    @Override
    public String getHyperState() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperType()
-    */
    @Override
    public String getHyperType() {
       return TaskArtifact.ARTIFACT_NAME;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#isDeleted()
-    */
    @Override
    public boolean isDeleted() {
       return false;

@@ -69,9 +69,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       modelListenerMap = new HashMap<ModelKey, List<IModelListener>>();
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#getModel(osee.test.core.message.ModelKey)
-    */
    public <CLASSTYPE extends IModel> CLASSTYPE getModel(ModelKey<CLASSTYPE> key) {
       if (models.containsKey(key)) {
          referenceCountOfModels.put(key, referenceCountOfModels.get(key).intValue() + 1);
@@ -148,9 +145,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#addModelActivityManager(osee.test.core.message.IModelListener)
-    */
    public void addModelActivityListener(IModelListener listener) {
       if(listener  == null){
          OseeLog.log(ModelManager.class, Level.SEVERE, "null listener was being added to model managerl");
@@ -197,9 +191,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#removeModelActivityListener(osee.test.core.model.IModelListener)
-    */
    public void removeModelActivityListener(IModelListener listener) {
       try {
          Iterator<IModelListener> iter = modelListeners.iterator();
@@ -212,9 +203,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#removeModelActivityListener(osee.test.core.model.IModelListener)
-    */
    public void removeModelActivityListener(IModelListener listener, ModelKey key) {
       try {
          if (modelListenerMap.containsKey(key)) {
@@ -230,9 +218,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#disposeModel(osee.test.core.message.ModelKey)
-    */
    public <CLASSTYPE extends IModel> void disposeModel(ModelKey key) {
       IModel localModel = findModel(key);
       //      referenceCountOfModels.remove(findModelKey(referenceCountOfModels.keySet(),key));
@@ -247,16 +232,10 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#getRegisteredModels()
-    */
    public List<ModelKey> getRegisteredModels() {
       return registeredModels;
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#releaseReference(osee.test.core.message.IModel)
-    */
    public void releaseReference(IModel model) {
       try {
          if (models.containsKey(model.getKey())) {
@@ -271,9 +250,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#releaseAllReferences(osee.test.core.model.ModelKey)
-    */
    public void releaseAllReferences(ModelKey key) {
       if (!models.containsKey(key)) return;
 
@@ -286,9 +262,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       if (models.containsKey(key)) this.releaseReference(models.get(key));
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.message.IModelManager#registerModel(osee.test.core.message.ModelKey)
-    */
    public <CLASSTYPE extends IModel> void registerModel(ModelKey key) {
       ModelKey cleanKey = new ModelKey(key);
       if (!registeredModels.contains(cleanKey)) {
@@ -323,9 +296,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#updateModelActivityListener(osee.test.core.model.ModelKey, boolean)
-    */
    public void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException {
       ModelKey cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
@@ -350,9 +320,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#changeModelTaskState(osee.test.core.model.ModelKey, boolean)
-    */
    public void changeModelState(ModelKey key, ModelState state) {
       try {
          if (state == ModelState.PAUSED) {
@@ -367,9 +334,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see osee.test.core.model.IModelManager#getModelState(osee.test.core.model.ModelKey)
-    */
    public ModelState getModelState(ModelKey key) throws RemoteException {
       if (models.containsKey(key))
          return models.get(key).getState();

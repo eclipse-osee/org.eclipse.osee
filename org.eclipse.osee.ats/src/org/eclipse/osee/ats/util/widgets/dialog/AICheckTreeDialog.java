@@ -61,9 +61,6 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
       try {
          getTreeViewer().getViewer().setInput(ActionableItemArtifact.getTopLevelActionableItems(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-             */
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {

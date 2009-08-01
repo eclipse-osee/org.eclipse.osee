@@ -29,9 +29,6 @@ public class ODMExportAction extends Action {
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#getId()
-    */
    @Override
    public String getId() {
       return ActionFactory.EXPORT.getId();

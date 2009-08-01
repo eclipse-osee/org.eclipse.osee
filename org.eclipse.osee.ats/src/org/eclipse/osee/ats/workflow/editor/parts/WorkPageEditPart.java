@@ -41,9 +41,6 @@ public class WorkPageEditPart extends ShapeEditPart {
       this.workPageShape = workPageShape;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.parts.ShapeEditPart#createFigure()
-    */
    @Override
    protected IFigure createFigure() {
       IFigure f = super.createFigure();
@@ -71,9 +68,6 @@ public class WorkPageEditPart extends ShapeEditPart {
       label.setText(workPageShape.getName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
-    */
    @Override
    public void performRequest(Request req) {
       super.performRequest(req);
@@ -83,9 +77,6 @@ public class WorkPageEditPart extends ShapeEditPart {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.workflow.editor.parts.ShapeEditPart#propertyChange(java.beans.PropertyChangeEvent)
-    */
    @Override
    public void propertyChange(PropertyChangeEvent evt) {
       super.propertyChange(evt);
@@ -102,18 +93,12 @@ public class WorkPageEditPart extends ShapeEditPart {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.parts.ShapeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
-    */
    @Override
    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
       // TODO implement sending back returnAnchor if appropriate
       return super.getTargetConnectionAnchor(request);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.parts.ShapeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
-    */
    @Override
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
       if (connection.getModel() instanceof ReturnTransitionConnection) {
@@ -125,9 +110,6 @@ public class WorkPageEditPart extends ShapeEditPart {
       return super.getTargetConnectionAnchor(connection);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.parts.ShapeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
-    */
    @Override
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
       if (connection.getModel() instanceof ReturnTransitionConnection) {
@@ -139,9 +121,6 @@ public class WorkPageEditPart extends ShapeEditPart {
       return super.getTargetConnectionAnchor(connection);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.config.editor.parts.ShapeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
-    */
    @Override
    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
       // TODO implement sending back returnAnchor if appropriate

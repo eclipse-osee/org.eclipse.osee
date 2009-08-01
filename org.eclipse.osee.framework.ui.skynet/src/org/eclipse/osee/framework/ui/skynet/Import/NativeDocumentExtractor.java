@@ -22,9 +22,6 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       return "Extract the content of each native document as one artifact";
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
-    */
    public void discoverArtifactAndRelationData(File importFile, Branch branch) throws Exception {
       RoughArtifact roughArtifact =
             new RoughArtifact(RoughArtifactKind.PRIMARY, branch, Lib.removeExtension(importFile.getName()));
@@ -33,9 +30,6 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       roughArtifact.addFileAttribute(NativeArtifact.CONTENT_NAME, importFile);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
@@ -44,17 +38,11 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "General Documents (Any Format)";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return true;

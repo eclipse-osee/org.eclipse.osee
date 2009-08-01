@@ -82,17 +82,11 @@ public class DbInformation implements IDatabaseInfo {
       return getFormattedURL() + " : user=" + getDatabaseLoginName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionUrl()
-    */
    @Override
    public String getConnectionUrl() {
       return getFormattedURL() + getConnectionData().getAttributes();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getConnectionProperties()
-    */
    @Override
    public Properties getConnectionProperties() {
       Properties properties = getConnectionData().getProperties();
@@ -101,41 +95,26 @@ public class DbInformation implements IDatabaseInfo {
       return properties;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseLoginName()
-    */
    @Override
    public String getDatabaseLoginName() {
       return getDatabaseDetails().getFieldValue(ConfigField.UserName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDatabaseName()
-    */
    @Override
    public String getDatabaseName() {
       return getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getDriver()
-    */
    @Override
    public String getDriver() {
       return getConnectionData().getDBDriver();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#getId()
-    */
    @Override
    public String getId() {
       return getDatabaseSetupDetails().getId();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDatabaseInfo#isProduction()
-    */
    @Override
    public boolean isProduction() {
       return Boolean.valueOf(getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.isProduction));

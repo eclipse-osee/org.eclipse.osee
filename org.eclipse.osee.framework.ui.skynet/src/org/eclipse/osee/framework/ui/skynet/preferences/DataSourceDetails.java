@@ -51,17 +51,11 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
       this.browser = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-    */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetGuiPlugin.getInstance().getPreferenceStore());
       setDescription("See below for OSEE Data Source Details.");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected Control createContents(Composite parent) {
       Composite content = new Composite(parent, SWT.NONE);

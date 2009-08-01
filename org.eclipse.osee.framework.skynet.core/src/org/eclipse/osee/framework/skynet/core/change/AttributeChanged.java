@@ -106,33 +106,21 @@ public class AttributeChanged extends Change {
       return dynamicAttributeDescriptor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
-    */
    @Override
    public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
-    */
    @Override
    public String getItemTypeName() throws Exception {
       return getDynamicAttributeDescriptor().getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemKind()
-    */
    @Override
    public String getItemKind() {
       return "Attribute";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
-    */
    @Override
    public String getIsValue() {
       return isValue != null ? isValue : "";
@@ -162,9 +150,6 @@ public class AttributeChanged extends Change {
       throw new AttributeDoesNotExist(String.format("Could not find Attribute %d on Artifact %d", attrId, getArtId()));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -199,17 +184,11 @@ public class AttributeChanged extends Change {
       return artModType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemTypeId()
-    */
    @Override
    public int getItemTypeId() {
       return attrTypeId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemId()
-    */
    @Override
    public int getItemId() {
       return attrId;

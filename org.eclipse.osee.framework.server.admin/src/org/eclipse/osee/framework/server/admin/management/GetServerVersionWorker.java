@@ -24,9 +24,6 @@ public class GetServerVersionWorker extends BaseServerCommand {
       super("Get Version");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       StringBuffer buffer = new StringBuffer();

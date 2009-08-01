@@ -46,9 +46,6 @@ public class LeaseRenewTask extends TimerTask {
       }
    }
 
-   /* (non-Javadoc)
-    * @see java.util.TimerTask#cancel()
-    */
    @Override
    public boolean cancel() {
 	   canceled = true;

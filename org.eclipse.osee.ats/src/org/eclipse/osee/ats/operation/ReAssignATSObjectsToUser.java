@@ -41,9 +41,6 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    public static String FROM_ASSIGNEE = "From Assignee";
    public static String TO_ASSIGNEE = "To Assignee";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Re-Assign ATS Objects To User";
@@ -116,9 +113,6 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
       return buffer.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Re-Assign ATS Workflows, Tasks and Reviews to another user.  Enter to and from User and select play.  You will be promted to select the ATS Objects to reassign.";

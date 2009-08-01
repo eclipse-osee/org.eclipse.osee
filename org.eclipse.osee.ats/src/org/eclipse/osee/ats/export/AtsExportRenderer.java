@@ -28,9 +28,6 @@ import org.eclipse.swt.graphics.Image;
 public class AtsExportRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsexport.command";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -42,17 +39,11 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
       return commandIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
-    */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getImage(FrameworkImage.EXPORT_DATA);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
-    */
    @Override
    public String getName() {
       return "ATS Artifact Export";
@@ -70,17 +61,11 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
       AtsExportManager.export(artifacts, ExportOption.POPUP_DIALOG);
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-   */
    @Override
    public AtsExportRenderer newInstance() throws OseeCoreException {
       return new AtsExportRenderer();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
@@ -89,17 +74,11 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;

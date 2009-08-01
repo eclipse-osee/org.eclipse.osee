@@ -40,9 +40,6 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
       artifact.setSoleAttributeValue(attributeTypeName, checkButton.getSelection());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
-    */
    @Override
    public Result isDirty() throws OseeCoreException {
       if (checkButton != null && !checkButton.isDisposed()) {
@@ -55,17 +52,11 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
       return Result.FalseResult;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
-    */
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();

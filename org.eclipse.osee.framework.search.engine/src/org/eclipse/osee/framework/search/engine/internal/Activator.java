@@ -27,10 +27,6 @@ public class Activator implements BundleActivator {
    private ServiceTracker resourceLocatorManagerTracker;
    private BundleContext context;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
       this.context = context;
@@ -46,10 +42,6 @@ public class Activator implements BundleActivator {
       attributeTaggerProviderTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       attributeTaggerProviderTracker.close();
       attributeTaggerProviderTracker = null;

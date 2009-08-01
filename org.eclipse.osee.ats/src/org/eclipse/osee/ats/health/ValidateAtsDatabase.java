@@ -93,11 +93,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       super(parent, name, FrameworkImage.ADMIN);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
@@ -112,11 +107,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          super(name);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {

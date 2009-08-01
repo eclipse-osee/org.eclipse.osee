@@ -42,9 +42,6 @@ public class ModelessDialog extends MessageDialog {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.MessageDialog#handleShellCloseEvent()
-    */
    @Override
    protected void handleShellCloseEvent() {
       super.handleShellCloseEvent();

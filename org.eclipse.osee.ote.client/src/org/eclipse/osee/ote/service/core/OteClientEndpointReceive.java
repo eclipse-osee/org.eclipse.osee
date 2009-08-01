@@ -20,16 +20,10 @@ import org.eclipse.osee.framework.messaging.Message;
  */
 public class OteClientEndpointReceive extends EndpointReceive {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointReceive#dispose()
-    */
    @Override
    public void dispose() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointReceive#start(java.util.Properties)
-    */
    @Override
    public void start(Properties properties) {
    }

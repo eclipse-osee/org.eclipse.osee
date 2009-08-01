@@ -361,11 +361,6 @@ public abstract class ScriptPage extends TestManagerPage {
 
    private class EnabledAbortsTimer extends TimerTask {
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see java.util.TimerTask#run()
-       */
       @Override
       public void run() {
          Display.getDefault().asyncExec(new Runnable() {
@@ -385,17 +380,11 @@ public abstract class ScriptPage extends TestManagerPage {
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#areSettingsValidForRun()
-    */
    @Override
    public boolean areSettingsValidForRun() {
       return getScriptTableViewer().getRunTasks().size() > 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage#getErrorMessage()
-    */
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();

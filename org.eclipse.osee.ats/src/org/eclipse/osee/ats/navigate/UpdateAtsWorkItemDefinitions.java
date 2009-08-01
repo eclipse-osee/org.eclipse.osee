@@ -34,11 +34,6 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
       super(parent, "Update Ats WorkItemDefinitions", FrameworkImage.ADMIN);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;

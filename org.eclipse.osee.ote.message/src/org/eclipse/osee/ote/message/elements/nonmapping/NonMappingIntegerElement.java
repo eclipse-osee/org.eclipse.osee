@@ -75,32 +75,17 @@ public class NonMappingIntegerElement extends IntegerElement {
       super(message, elementName, messageData, byteOffset, msb, lsb, originalLsb, originalMsb);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#valueOf(java.lang.Object)
-    */
    @Override
    public String toString(Integer obj) {
       throwNoMappingElementException();
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue()
-    */
    @Override
    public void setValue(Integer value) {
       throwNoMappingElementException();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public Integer getValue() {
       throwNoMappingElementException();
@@ -975,17 +960,11 @@ public class NonMappingIntegerElement extends IntegerElement {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#set(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, java.lang.String)
-    */
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       throwNoMappingElementException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#isNonMappingElement()
-    */
    @Override
    public boolean isNonMappingElement() {
       return true;

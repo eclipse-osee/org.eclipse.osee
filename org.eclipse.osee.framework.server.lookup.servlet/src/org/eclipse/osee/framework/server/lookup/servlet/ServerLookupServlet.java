@@ -32,17 +32,11 @@ public class ServerLookupServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -7055381632202456561L;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.OseeHttpServlet#checkAccessControl(javax.servlet.http.HttpServletRequest)
-    */
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
       // Allow access to all 
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
@@ -83,9 +77,6 @@ public class ServerLookupServlet extends OseeHttpServlet {
       }
    }
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {

@@ -21,9 +21,6 @@ public class OseeHttpServlet extends InternalOseeHttpServlet {
 
    private static final long serialVersionUID = -4747761442607851113L;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet#checkAccessControl()
-    */
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
       String sessionId = request.getParameter("sessionId");

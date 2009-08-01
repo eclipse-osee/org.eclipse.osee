@@ -26,18 +26,12 @@ public class ObjectList<A> extends List {
       items = new ArrayList<A>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#add(java.lang.String, int)
-    */
    @Override
    @Deprecated
    public void add(String string, int index) {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#add(java.lang.String)
-    */
    @Override
    @Deprecated
    public void add(String string) {
@@ -77,9 +71,6 @@ public class ObjectList<A> extends List {
       return selectedItems;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#remove(int, int)
-    */
    @Override
    public void remove(int start, int end) {
       for (int i = 0; i <= (end - start); i++)
@@ -87,36 +78,24 @@ public class ObjectList<A> extends List {
       super.remove(start, end);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#remove(int)
-    */
    @Override
    public void remove(int index) {
       items.remove(index);
       super.remove(index);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#remove(int[])
-    */
    @Override
    @Deprecated
    public void remove(int[] indices) {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#remove(java.lang.String)
-    */
    @Override
    @Deprecated
    public void remove(String string) {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.List#removeAll()
-    */
    @Override
    public void removeAll() {
       items.clear();

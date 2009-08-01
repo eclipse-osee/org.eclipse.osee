@@ -25,9 +25,6 @@ public class AttributeVersion implements IAttributeLocator {
       return gammaId;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
@@ -36,9 +33,6 @@ public class AttributeVersion implements IAttributeLocator {
       return other.getGammaId() == this.getGammaId();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return (int) (37 * getGammaId());

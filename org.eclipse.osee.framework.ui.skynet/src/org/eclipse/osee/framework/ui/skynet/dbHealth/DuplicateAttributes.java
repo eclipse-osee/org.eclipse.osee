@@ -56,9 +56,6 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       return ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, attrId) != -1;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#doHealthCheck(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       List<DuplicateAttributeData> sameValues = new LinkedList<DuplicateAttributeData>();
@@ -185,17 +182,11 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Find duplicate attributes which are current and are used in the same branches.";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Deletes attributes that have been identified as duplicates by attr id.";

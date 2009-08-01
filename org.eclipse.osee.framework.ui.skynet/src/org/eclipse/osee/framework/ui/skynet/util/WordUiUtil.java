@@ -24,9 +24,6 @@ public class WordUiUtil {
 
    public static void displayErrorMessageDialog(final String title, final String message) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             MessageDialog.openError(Display.getCurrent().getActiveShell(), title, message);
@@ -36,9 +33,6 @@ public class WordUiUtil {
 
    public static void displayWarningMessageDialog(final String title, final String message) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             MessageDialog.openWarning(Display.getCurrent().getActiveShell(), title, message);

@@ -55,9 +55,6 @@ public class SMAWorkFlowDebugSection extends SectionPart {
       this.toolkit = toolkit;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);

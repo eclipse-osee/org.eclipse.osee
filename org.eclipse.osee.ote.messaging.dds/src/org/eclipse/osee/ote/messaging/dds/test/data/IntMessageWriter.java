@@ -34,10 +34,6 @@ public class IntMessageWriter extends DataWriter {
       buffer = new IntegerData(0);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see osee.messaging.dds.entity.DataWriter#write(osee.messaging.dds.Data, osee.messaging.dds.InstanceHandle)
-    */
    public ReturnCode write(int value) {
       buffer.setTheInt(value);
       return super.write(null, null, buffer, null);

@@ -63,9 +63,6 @@ class TaggerRunnable implements Runnable {
       }
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Runnable#run()
-    */
    @Override
    public void run() {
       this.waitTime = System.currentTimeMillis() - this.waitStart;
@@ -143,9 +140,6 @@ class TaggerRunnable implements Runnable {
          return attributeDatas;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
-       */
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = getDataFromQueryId(connection, getTagQueueQueryId(), TOTAL_RETRIES);
@@ -180,9 +174,6 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxFinally()
-       */
       @Override
       protected void handleTxFinally() throws OseeCoreException {
          super.handleTxFinally();
@@ -191,9 +182,6 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String, java.lang.Long)
-       */
       @Override
       public void addTag(String word, Long codedTag) {
          if (this.currentTag != null) {

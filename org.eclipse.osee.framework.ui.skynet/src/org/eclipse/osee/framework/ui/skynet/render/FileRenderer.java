@@ -62,18 +62,12 @@ public abstract class FileRenderer extends FileSystemRenderer {
       super();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
-    */
    @Override
    public IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       return renderToFile(baseFolder, getFilenameFromArtifact(artifact, presentationType), branch,
             getRenderInputStream(artifact, presentationType), presentationType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
-    */
    @Override
    public IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Branch initialBranch = null;
@@ -194,9 +188,6 @@ public abstract class FileRenderer extends FileSystemRenderer {
          super(time, unit);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.utility.FileWatcher#run()
-       */
       @Override
       public synchronized void run() {
          try {

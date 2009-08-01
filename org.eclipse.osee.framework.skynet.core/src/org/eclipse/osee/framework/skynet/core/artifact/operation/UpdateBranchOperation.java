@@ -45,9 +45,6 @@ public class UpdateBranchOperation extends AbstractOperation {
       return String.format("%s - for update - %s", storeName, Lib.getDateTimeString());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (originalBranch != null && originalBranch.hasParentBranch()) {
@@ -57,9 +54,6 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
-    */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error updating branch [%s]", originalBranch.getShortName()));

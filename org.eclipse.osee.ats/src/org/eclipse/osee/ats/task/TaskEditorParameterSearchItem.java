@@ -44,9 +44,6 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
       super(worldSearchItem, AtsImage.TASK);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldSearchItem#copy()
-    */
    @Override
    public WorldSearchItem copy() {
       return null;
@@ -58,9 +55,6 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
 
    public abstract Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.ITaskEditorParameterProvider#getWidgetOptions(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData)
-    */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
       return null;

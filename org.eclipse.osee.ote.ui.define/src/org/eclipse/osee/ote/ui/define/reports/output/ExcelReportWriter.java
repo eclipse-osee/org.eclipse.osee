@@ -39,9 +39,6 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#getReport()
-    */
    public String getReport() throws IOException {
       if (result == null) {
          generate();
@@ -49,9 +46,6 @@ public class ExcelReportWriter implements IReportWriter {
       return result;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#length()
-    */
    public int length() throws IOException {
       if (result == null) {
          generate();
@@ -59,9 +53,6 @@ public class ExcelReportWriter implements IReportWriter {
       return result.length();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeHeader(java.lang.String[])
-    */
    public void writeHeader(String[] headers) {
       try {
          this.sheetWriter.startSheet(title, headers.length);
@@ -71,9 +62,6 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeRow(java.lang.String[])
-    */
    public void writeRow(String... cellData) {
       try {
          this.sheetWriter.writeRow(cellData);
@@ -82,16 +70,10 @@ public class ExcelReportWriter implements IReportWriter {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeTitle(java.lang.String)
-    */
    public void writeTitle(String title) {
       this.title = title;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.reports.output.IReportWriter#writeToOutput(java.io.OutputStream)
-    */
    public void writeToOutput(OutputStream outputStream) throws IOException {
       if (result == null) {
          generate();

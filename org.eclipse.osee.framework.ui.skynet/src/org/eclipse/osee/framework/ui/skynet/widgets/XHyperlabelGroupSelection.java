@@ -49,9 +49,6 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelSelection {
       refresh();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection#handleClear()
-    */
    @Override
    public boolean handleClear() {
       selectedGroups.clear();

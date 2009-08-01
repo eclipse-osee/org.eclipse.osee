@@ -25,9 +25,6 @@ import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
  */
 public class LongIntegerElement extends NumericElement<Long> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-    */
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asLongIntegerElement(this);
@@ -50,32 +47,17 @@ public class LongIntegerElement extends NumericElement<Long> {
       return (LongIntegerElement) super.switchMessages(messages);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#valueOf(java.lang.Object)
-    */
    @Override
    public String toString(Long obj) {
       long value = elementMask(obj);
       return value + "(0x" + Long.toHexString(value).toUpperCase() + ")";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#setValue()
-    */
    @Override
    public void setValue(Long value) {
       getMsgData().getMem().setLong((Long) value, byteOffset, msb, lsb);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#getValue()
-    */
    @Override
    public Long getValue() {
       return new Long(getMsgData().getMem().getLong(byteOffset, msb, lsb));
@@ -179,17 +161,11 @@ public class LongIntegerElement extends NumericElement<Long> {
       super.sendMessage();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#set(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, java.lang.String)
-    */
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       this.set(accessor, Long.parseLong(value));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-    */
    @Override
    protected NonMappingLongIntegerElement getNonMappingElement() {
       return new NonMappingLongIntegerElement(this);
@@ -200,9 +176,6 @@ public class LongIntegerElement extends NumericElement<Long> {
       return removeSign(value);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.NumericElement#getNumericBitValue()
-    */
    @Override
    public long getNumericBitValue() {
       return getValue();

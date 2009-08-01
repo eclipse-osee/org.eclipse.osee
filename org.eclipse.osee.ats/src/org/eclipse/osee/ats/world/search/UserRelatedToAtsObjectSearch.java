@@ -76,9 +76,6 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       return arts;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new UserRelatedToAtsObjectSearch(this);

@@ -28,9 +28,6 @@ import org.junit.Before;
  */
 public class MasterTestSuite_DemoDbPopulate {
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
    @Before
    public void setUp() throws Exception {
       try {

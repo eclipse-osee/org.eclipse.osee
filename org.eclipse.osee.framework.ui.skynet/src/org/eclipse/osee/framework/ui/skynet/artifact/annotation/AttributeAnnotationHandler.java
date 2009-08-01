@@ -25,11 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class AttributeAnnotationHandler implements IArtifactAnnotation {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation#getAnnotations(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact.isAttributeTypeValid(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE)) {

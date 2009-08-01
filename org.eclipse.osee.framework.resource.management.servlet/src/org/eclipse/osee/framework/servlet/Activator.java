@@ -25,10 +25,6 @@ public class Activator implements BundleActivator {
    private ServiceTracker resourceLocatorManagerTracker;
    private ServiceTracker servletTracker;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       Activator.instance = this;
 
@@ -43,10 +39,6 @@ public class Activator implements BundleActivator {
       servletTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       servletTracker.close();
       servletTracker = null;

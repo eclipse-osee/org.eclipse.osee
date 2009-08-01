@@ -403,17 +403,11 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#set(osee.test.core.environment.interfaces.ITestEnvironmentAccessor, java.lang.String)
-    */
    @Override
    public void parseAndSet(ITestEnvironmentAccessor accessor, String value) throws IllegalArgumentException {
       throwNoMappingElementException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#isNonMappingElement()
-    */
    @Override
    public boolean isNonMappingElement() {
       return true;

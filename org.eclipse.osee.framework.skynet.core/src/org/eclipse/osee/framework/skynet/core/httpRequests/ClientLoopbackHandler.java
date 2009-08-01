@@ -27,17 +27,11 @@ public class ClientLoopbackHandler implements IHttpServerRequest {
          new ExtensionDefinedObjects<IClientLoopbackCmd>(Activator.PLUGIN_ID + ".ClientLoopbackCmd",
                "ClientLoopbackCmd", "className");
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.server.IHttpServerRequest#getRequestType()
-    */
    @Override
    public String getRequestType() {
       return "osee/loopback";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.server.IHttpServerRequest#processRequest(org.eclipse.osee.framework.core.client.server.HttpRequest, org.eclipse.osee.framework.core.client.server.HttpResponse)
-    */
    @Override
    public void processRequest(final HttpRequest httpRequest, final HttpResponse httpResponse) {
       final String cmd = httpRequest.getParameter("cmd");

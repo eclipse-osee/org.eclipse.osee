@@ -41,11 +41,6 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
       super(parent, "New Stand-alone Peer To Peer Review", AtsImage.REVIEW);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       final ActionableItemListDialog ld = new ActionableItemListDialog(Active.Both);

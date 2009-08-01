@@ -70,18 +70,12 @@ public class UdpFileTransferHandler {
          this.lock = lock;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.tool.IFileTransferHandle#addListener(org.eclipse.osee.ote.message.tool.IUdpTransferListener)
-       */
       public void addListener(IUdpTransferListener listener) {
          if (!listeners.contains(listener)) {
             listeners.add(listener);
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.ote.message.tool.IFileTransferHandle#stop()
-       */
       public void stop() throws IOException {
          synchronized (gate) {
             handles.remove(key);
@@ -105,11 +99,6 @@ public class UdpFileTransferHandler {
       selector = Selector.open();
       thread = new Thread(new Runnable() {
 
-         /*
-          * (non-Javadoc)
-          * 
-          * @see java.lang.Runnable#run()
-          */
          public void run() {
             try {
                while (!done) {

@@ -71,11 +71,6 @@ public class ConflictResolutionWizard extends Wizard {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#getStartingPage()
-    */
    @Override
    public IWizardPage getStartingPage() {
       if (conflict.isWordAttribute())
@@ -90,11 +85,6 @@ public class ConflictResolutionWizard extends Wizard {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.wizard.Wizard#performCancel()
-    */
    @Override
    public boolean performCancel() {
       return super.performCancel();

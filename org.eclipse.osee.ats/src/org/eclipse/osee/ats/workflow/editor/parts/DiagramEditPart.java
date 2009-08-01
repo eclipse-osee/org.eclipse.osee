@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2005 Donald G. Dunne and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* All rights reserved. This program and the accompanying materials
+ï¿½* are made available under the terms of the Eclipse Public License v1.0
+ï¿½* which accompanies this distribution, and is available at
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.parts;
 
 import java.beans.PropertyChangeEvent;
@@ -65,9 +65,6 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
-    */
    @Override
    protected void createEditPolicies() {
       // disallows the removal of this edit part from its parent
@@ -77,9 +74,6 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       installEditPolicy(EditPolicy.LAYOUT_ROLE, new ShapesXYLayoutEditPolicy());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
-    */
    @Override
    protected IFigure createFigure() {
       Figure f = new FreeformLayer();
@@ -108,17 +102,11 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       return (WorkflowDiagram) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
-    */
    @Override
    protected List getModelChildren() {
       return getCastedModel().getChildren(); // return a list of shapes
    }
 
-   /* (non-Javadoc)
-    * @see java.beans.PropertyChangeListener#propertyChange(PropertyChangeEvent)
-    */
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       // these properties are fired when Shapes are added into or removed from 
@@ -137,9 +125,6 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
     */
    private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
-      /* (non-Javadoc)
-       * @see ConstrainedLayoutEditPolicy#createChangeConstraintCommand(ChangeBoundsRequest, EditPart, Object)
-       */
       @Override
       protected Command createChangeConstraintCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
          if (child instanceof ShapeEditPart && constraint instanceof Rectangle) {
@@ -149,18 +134,12 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
          return super.createChangeConstraintCommand(request, child, constraint);
       }
 
-      /* (non-Javadoc)
-       * @see ConstrainedLayoutEditPolicy#createChangeConstraintCommand(EditPart, Object)
-       */
       @Override
       protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
          // not used in this example
          return null;
       }
 
-      /* (non-Javadoc)
-       * @see LayoutEditPolicy#getCreateCommand(CreateRequest)
-       */
       @Override
       protected Command getCreateCommand(CreateRequest request) {
          Object childClass = request.getNewObjectType();

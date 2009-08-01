@@ -57,11 +57,6 @@ public class StandAloneApplicationLaunchJob extends Job {
       this.progress = progress;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.OK_STATUS;

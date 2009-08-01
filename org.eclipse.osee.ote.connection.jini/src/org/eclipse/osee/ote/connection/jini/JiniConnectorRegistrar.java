@@ -85,20 +85,11 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @seeorg.eclipse.osee.connection.service.IConnectorListener# onConnectionServiceStopped()
-    */
    @Override
    public void onConnectionServiceStopped() {
       shutdown();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectorListener#onConnectorAdded
-    * (org.eclipse.osee.connection.service.IServiceConnector)
-    */
    @Override
    public synchronized void onConnectorsAdded(
 	    Collection<IServiceConnector> connectors) {
@@ -168,11 +159,6 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
       lookupDiscoveryManager.addGroups(groups);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IConnectorListener#onConnectorRemoved
-    * (org.eclipse.osee.connection.service.IServiceConnector)
-    */
    @Override
    public synchronized void onConnectorRemoved(IServiceConnector connector) {
       if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
@@ -224,11 +210,6 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
 
    }
 
-   /*
-    * (non-Javadoc)
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceAdded(net.jini.lookup
-    * .ServiceDiscoveryEvent)
-    */
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       ServiceItem serviceItem = event.getPostEventServiceItem();
       JiniClientSideConnector connector = new JiniClientSideConnector(serviceItem);
@@ -250,11 +231,6 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see net.jini.lookup.ServiceDiscoveryListener#serviceChanged(net.jini.lookup
-    * .ServiceDiscoveryEvent)
-    */
    public synchronized void serviceChanged(ServiceDiscoveryEvent event) {
       ServiceItem item = event.getPostEventServiceItem();
       JiniClientSideConnector connector = clientSideConnectors.get(item.serviceID);

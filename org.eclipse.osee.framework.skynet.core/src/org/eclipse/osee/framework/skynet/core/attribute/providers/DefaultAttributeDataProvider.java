@@ -40,25 +40,16 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       this.rawStringValue = "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#getDisplayableString()
-    */
    @Override
    public String getDisplayableString() throws OseeCoreException {
       return getValueAsString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#setDisplayableString(java.lang.String)
-    */
    @Override
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
       throw new UnsupportedOperationException();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#getValueAsString()
-    */
    @Override
    public String getValueAsString() throws OseeCoreException {
       String fromStorage = null;
@@ -76,9 +67,6 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       return toReturn != null ? toReturn : "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#setValue(java.lang.String)
-    */
    @Override
    public boolean setValue(String value) throws OseeCoreException {
       boolean response = false;
@@ -110,17 +98,11 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#getData()
-    */
    @Override
    public Object[] getData() throws OseeDataStoreException {
       return new Object[] {rawStringValue, dataStore.getLocator()};
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
-    */
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
@@ -129,17 +111,11 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
-    */
    @Override
    public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       dataStore.persist(storageId);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
-    */
    @Override
    public void purge() throws OseeCoreException {
       dataStore.purge();

@@ -32,9 +32,6 @@ public class ArtifactPropertySource extends ModelPropertySource {
       idSuperTypes = new PropertyId(categoryName, "Super Types");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.views.property.AbstractPropertySource#addPropertyDescriptors(java.util.List)
-    */
    @Override
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new ReadOnlyPropertyDescriptor(idSuperTypes));
@@ -45,17 +42,11 @@ public class ArtifactPropertySource extends ModelPropertySource {
       return (ArtifactDataType) getModel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertyResettable(java.lang.Object)
-    */
    @Override
    public boolean isPropertyResettable(Object id) {
       return id == idImage;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource2#isPropertySet(java.lang.Object)
-    */
    @Override
    public boolean isPropertySet(Object id) {
       if (id == idImage) return getDataTypeElement().getImage() != null;
@@ -63,9 +54,6 @@ public class ArtifactPropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
-    */
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idImage) return ImagePropertyDescriptor.fromModel(getDataTypeElement().getImage());
@@ -73,17 +61,11 @@ public class ArtifactPropertySource extends ModelPropertySource {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-    */
    @Override
    public void resetPropertyValue(Object id) {
       if (id == idImage) getDataTypeElement().setImage(null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-    */
    @Override
    public void setPropertyValue(Object id, Object value) {
       if (id == idImage) getDataTypeElement().setImage(ImagePropertyDescriptor.toModel(value));

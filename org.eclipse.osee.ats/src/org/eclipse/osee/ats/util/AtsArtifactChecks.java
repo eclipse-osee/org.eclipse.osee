@@ -37,9 +37,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  * @author Donald G. Dunne
  */
 public class AtsArtifactChecks extends ArtifactCheck {
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactOperation#isDeleteable(java.util.Collection)
-    */
    @Override
    public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
       String result = checkActionableItems(artifacts);

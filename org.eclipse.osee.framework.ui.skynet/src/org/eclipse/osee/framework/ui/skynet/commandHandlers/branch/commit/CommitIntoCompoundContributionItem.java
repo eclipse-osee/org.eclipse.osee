@@ -54,9 +54,6 @@ public class CommitIntoCompoundContributionItem extends CompoundContributionItem
       super(id);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.actions.CompoundContributionItem#getContributionItems()
-    */
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider =

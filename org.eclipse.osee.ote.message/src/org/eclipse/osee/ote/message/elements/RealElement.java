@@ -24,9 +24,6 @@ import org.eclipse.osee.ote.message.data.MessageData;
  */
 public abstract class RealElement extends NumericElement<Double> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#visit(org.eclipse.osee.ote.message.elements.IElementVisitor)
-    */
    @Override
    public void visit(IElementVisitor visitor) {
       visitor.asRealElement(this);
@@ -44,11 +41,6 @@ public abstract class RealElement extends NumericElement<Double> {
       super(message, elementName, messageData, bitOffset, bitLength);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.message.elements.Element#switchMessages(org.eclipse.osee.ote.message.Message[])
-    */
    @Override
    public RealElement switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
       return (RealElement) super.switchMessages(messages);
@@ -104,9 +96,6 @@ public abstract class RealElement extends NumericElement<Double> {
       return value;
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.NumericElement#getNumericBitValue()
-    */
    @Override
    public long getNumericBitValue() {
       return getRaw();

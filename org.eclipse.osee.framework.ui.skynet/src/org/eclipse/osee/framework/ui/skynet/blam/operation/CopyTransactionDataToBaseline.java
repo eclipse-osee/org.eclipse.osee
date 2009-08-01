@@ -27,9 +27,6 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
    private static final String COPY_TX_DATA =
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_txs WHERE transaction_id = ?";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Copy TransactionData To Baseline";

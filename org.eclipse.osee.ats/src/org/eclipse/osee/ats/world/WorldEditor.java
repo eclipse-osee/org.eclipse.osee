@@ -52,11 +52,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    private AtsMetricsComposite metricsComposite;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public void doSave(IProgressMonitor monitor) {
    }
@@ -67,9 +62,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    public static void open(final IWorldEditorProvider provider, boolean forcePend) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          public void run() {
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
@@ -84,9 +76,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    public void closeEditor() {
       final MultiPageEditorPart editor = this;
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             AWorkbench.getActivePage().closeEditor(editor, false);
@@ -97,9 +86,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    public static Collection<WorldEditor> getEditors() {
       final List<WorldEditor> editors = new ArrayList<WorldEditor>();
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
@@ -112,9 +98,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    public static void closeAll() {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
@@ -150,21 +133,11 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
       actionPage.setTableTitle(title, warning);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#isDirty()
-    */
    @Override
    public boolean isDirty() {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-    */
    @Override
    protected void addPages() {
 
@@ -196,9 +169,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    public void setEditorTitle(final String str) {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             setPartName(str);
@@ -237,17 +207,11 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
       return actionPage.getWorldComposite().getLoadedArtifacts();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getArtifacts()
-    */
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException {
       return getLoadedArtifacts();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getMetricsVersionArtifact()
-    */
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       return getWorldEditorProvider().getTargetedVersionArtifact();
@@ -257,33 +221,21 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
       return actionPage.getWorldComposite();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    @Override
    public String getActionDescription() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IAtsMetricsProvider#getManHoursPerDayPreference()
-    */
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return actionPage.getWorldComposite().getManHoursPerDayPreference();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#reflow()
-    */
    @Override
    public void reflow() {
       getActionPage().reflow();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#createToolBarPulldown(org.eclipse.swt.widgets.Menu)
-    */
    @Override
    public void createToolBarPulldown(Menu menu) {
       final WorldEditor fWorldEditor = this;
@@ -295,9 +247,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
                MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
                menuItem.setText(atsMenuItem.getMenuItemName());
                menuItem.addSelectionListener(new SelectionAdapter() {
-                  /* (non-Javadoc)
-                   * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                   */
                   @Override
                   public void widgetSelected(SelectionEvent e) {
                      try {
@@ -314,9 +263,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditor#getIActionable()
-    */
    @Override
    public IActionable getIActionable() {
       return null;

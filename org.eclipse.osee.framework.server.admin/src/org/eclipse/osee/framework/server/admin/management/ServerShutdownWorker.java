@@ -24,9 +24,6 @@ class ServerShutdownWorker extends BaseServerCommand {
       super("Server Shutdown");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();

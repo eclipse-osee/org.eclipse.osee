@@ -69,9 +69,6 @@ class InternalOseeServerInfo extends OseeServerInfo {
       backingData.put(VERSION, supportedVersions.toArray(new String[supportedVersions.size()]));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.OseeServerInfo#getVersion()
-    */
    @Override
    public String[] getVersion() {
       if (updateFromStore.getValue()) {

@@ -15,9 +15,6 @@ import org.w3c.dom.Element;
   
 public class CheckPointHelper implements Comparable<CheckPointHelper> {
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#toString()
-       */
       @Override
       public String toString() {
          return String.format("%s[%s, %s]", testPointName, expected, actual);
@@ -30,9 +27,6 @@ public class CheckPointHelper implements Comparable<CheckPointHelper> {
          count++;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#equals(java.lang.Object)
-       */
       @Override
       public boolean equals(Object obj) {
          if (obj instanceof CheckPointHelper) {
@@ -41,9 +35,6 @@ public class CheckPointHelper implements Comparable<CheckPointHelper> {
          return false;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
       @Override
       public int hashCode() {
          return key.hashCode();
@@ -69,9 +60,6 @@ public class CheckPointHelper implements Comparable<CheckPointHelper> {
          key = testPointName + expected + actual;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Comparable#compareTo(java.lang.Object)
-       */
       public int compareTo(CheckPointHelper o) {
          return o.count - this.count;
       }

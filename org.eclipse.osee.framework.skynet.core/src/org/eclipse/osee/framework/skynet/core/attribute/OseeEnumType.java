@@ -142,9 +142,6 @@ public class OseeEnumType {
       }
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof OseeEnumType) {
@@ -160,9 +157,6 @@ public class OseeEnumType {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       final int prime = 37;
@@ -170,9 +164,6 @@ public class OseeEnumType {
       return prime * result + getEnumTypeId();
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return enumTypeName;
@@ -215,9 +206,6 @@ public class OseeEnumType {
          return new ObjectPair<String, Integer>(name(), ordinal());
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#equals(java.lang.Object)
-       */
       @Override
       public boolean equals(Object obj) {
          if (obj instanceof OseeEnumEntry) {
@@ -233,9 +221,6 @@ public class OseeEnumType {
          return false;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
       @Override
       public int hashCode() {
          final int prime = 37;
@@ -250,9 +235,6 @@ public class OseeEnumType {
          return String.format("[%s].[%s:%s]", getEnumTypeName(), name, ordinal);
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Comparable#compareTo(java.lang.Object)
-       */
       @Override
       public int compareTo(OseeEnumEntry other) {
          return this.ordinal() - other.ordinal();

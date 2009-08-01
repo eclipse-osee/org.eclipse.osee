@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.messaging.Message;
  */
 public class OteServerSideEndprointRecieve extends EndpointReceive {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointReceive#start(java.util.Properties)
-    */
    public void start(Properties properties) {
    }
 
@@ -33,9 +30,6 @@ public class OteServerSideEndprointRecieve extends EndpointReceive {
       onReceive(message);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.EndpointReceive#dispose()
-    */
    @Override
    public void dispose() {
    }

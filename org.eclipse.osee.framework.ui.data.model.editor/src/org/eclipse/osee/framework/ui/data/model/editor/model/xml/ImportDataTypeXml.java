@@ -19,25 +19,16 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
  */
 public class ImportDataTypeXml extends BaseXmlDataType<DataType> {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#getElementName()
-    */
    @Override
    public String getElementName() {
       return "import";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#writeBody(javax.xml.stream.XMLStreamWriter, org.eclipse.osee.framework.ui.data.model.editor.model.DataType)
-    */
    @Override
    protected void writeBody(XMLStreamWriter writer, DataType dataType) throws XMLStreamException {
       writer.writeAttribute("type", dataType.getClass().getSimpleName());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.data.model.editor.model.xml.BaseXmlDataType#newDataTypeInstance()
-    */
    @Override
    protected DataType newDataTypeInstance() {
       return null;

@@ -70,9 +70,6 @@ public class UpdateBranchHandler extends CommandHandler {
       return branch;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.util.CommandHandler#isEnabledWithException()
-    */
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
@@ -83,9 +80,6 @@ public class UpdateBranchHandler extends CommandHandler {
       return enabled;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       Branch branchToUpdate = getSelectedBranch();
@@ -107,9 +101,6 @@ public class UpdateBranchHandler extends CommandHandler {
          super("Launch Merge Manager", SkynetGuiPlugin.PLUGIN_ID);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          ConflictManagerExternal conflictManager = getConflictManager();
@@ -119,9 +110,6 @@ public class UpdateBranchHandler extends CommandHandler {
 
       private Job createMergeViewJob(final Branch sourceBranch, final Branch destinationBranch) {
          Job job = new UIJob("Launch Merge Manager") {
-            /* (non-Javadoc)
-             * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-             */
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                IStatus status = Status.OK_STATUS;

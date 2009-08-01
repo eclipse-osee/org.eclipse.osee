@@ -126,11 +126,6 @@ public class DomainParticipantFactory implements EntityFactory {
          return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.messaging.dds.entity.EntityFactory#isEnabled()
-    */
    public boolean isEnabled() {
       // This is always true because DomainParticipantFactory is never disabled nor disableable.
       return true;

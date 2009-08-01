@@ -33,9 +33,6 @@ public class ExchangeIntegrityWorker extends BaseServerCommand {
       return arg != null && arg.length() > 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.server.admin.BaseCmdOperation#doCommandWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String arg = null;

@@ -26,9 +26,6 @@ public class CompletedWorkPageShape extends WorkPageShape {
       super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID));
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof WorkPageShape) {

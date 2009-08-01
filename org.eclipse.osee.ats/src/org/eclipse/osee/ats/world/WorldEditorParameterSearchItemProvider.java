@@ -47,9 +47,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       this.worldParameterSearchItem = worldParameterSearchItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#copy(org.eclipse.osee.ats.world.IWorldEditorProvider)
-    */
    @Override
    public IWorldEditorProvider copyProvider() throws OseeArgumentException {
       return new WorldEditorParameterSearchItemProvider(
@@ -63,17 +60,11 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       return worldParameterSearchItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getName()
-    */
    @Override
    public String getName() throws OseeCoreException {
       return worldParameterSearchItem.getName();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#run(org.eclipse.osee.ats.world.WorldEditor)
-    */
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
       if (firstTime) {
          firstTime = false;
@@ -117,11 +108,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          this.tableLoadOptions = tableLoadOptions;
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected IStatus run(IProgressMonitor monitor) {
 
@@ -161,41 +147,26 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorProvider#getSelectedName(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return worldParameterSearchItem.getSelectedName(searchType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getParameterXWidgetXml()
-    */
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return worldParameterSearchItem.getParameterXWidgetXml();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#performSearchGetResults(org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType)
-    */
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return worldParameterSearchItem.performSearchGetResults(searchType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getDynamicWidgetLayoutListener()
-    */
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       return worldParameterSearchItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldEditorParameterProvider#getWidgetOptions(org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData)
-    */
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
       return null;

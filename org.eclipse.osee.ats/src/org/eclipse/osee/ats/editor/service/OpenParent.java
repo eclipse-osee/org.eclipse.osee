@@ -57,9 +57,6 @@ public class OpenParent extends WorkPageService {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Open Parent";

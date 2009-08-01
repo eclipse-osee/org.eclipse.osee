@@ -329,9 +329,6 @@ public class AtsUtil implements IAtsLib {
                   SMAEditor.editArtifact(teams.iterator().next());
                else {
                   Displays.ensureInDisplayThread(new Runnable() {
-                     /* (non-Javadoc)
-                      * @see java.lang.Runnable#run()
-                      */
                      @Override
                      public void run() {
                         try {
@@ -383,9 +380,6 @@ public class AtsUtil implements IAtsLib {
       if (otherArts.size() > 0) WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IAtsLib#openInAtsTaskEditor(java.lang.String, java.util.Collection)
-    */
    @Override
    public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));

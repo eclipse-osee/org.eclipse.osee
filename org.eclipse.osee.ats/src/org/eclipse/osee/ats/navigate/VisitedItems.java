@@ -53,11 +53,6 @@ public class VisitedItems extends XNavigateItemAction {
       super(parent, "My Recently Visited", AtsImage.GLOBE);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), visited, null, tableLoadOptions));

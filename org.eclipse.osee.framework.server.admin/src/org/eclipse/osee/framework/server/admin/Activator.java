@@ -28,11 +28,6 @@ public class Activator implements BundleActivator {
    private ServiceTracker searchEngineTracker;
    private ServiceTracker branchExchangeTracker;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
       resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
@@ -51,11 +46,6 @@ public class Activator implements BundleActivator {
       branchExchangeTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       resourceManagementTracker.close();
       resourceManagementTracker = null;

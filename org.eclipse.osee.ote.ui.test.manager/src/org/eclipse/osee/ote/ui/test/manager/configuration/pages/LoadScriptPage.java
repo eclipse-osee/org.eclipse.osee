@@ -130,9 +130,6 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
 
       private String path;
 
-      /* (non-Javadoc)
-       * @see java.lang.Runnable#run()
-       */
       public void run() {
          path = scriptPage.getTestManager().getAlternateOutputDir();
       }

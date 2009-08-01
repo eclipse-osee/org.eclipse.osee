@@ -46,11 +46,6 @@ public class JobbedNode extends TreeNode {
       this.providerRunnable = providerRunnable;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.swt.ITreeNode#getChildren()
-    */
    @Override
    public Object[] getChildren() {
       if (children == null && providerRunnable != null) {

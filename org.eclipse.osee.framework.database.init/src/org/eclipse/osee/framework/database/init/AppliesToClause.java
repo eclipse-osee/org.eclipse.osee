@@ -78,11 +78,6 @@ public class AppliesToClause implements Xmlizable {
       return new HashCodeBuilder(23, 37).append(columnName).append(orderType).toHashCode();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.persistence.Xmlizable#toXml()
-    */
    public Element toXml(Document doc) {
       Element element = doc.createElement(APPLIES_TO_TAG);
       element.setAttribute(AppliesToEntries.id.name(), columnName);

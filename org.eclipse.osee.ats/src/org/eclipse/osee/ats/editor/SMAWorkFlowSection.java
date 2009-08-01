@@ -112,9 +112,6 @@ public class SMAWorkFlowSection extends SectionPart {
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
@@ -322,11 +319,6 @@ public class SMAWorkFlowSection extends SectionPart {
       return sb.toString();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       super.dispose();
@@ -525,11 +517,6 @@ public class SMAWorkFlowSection extends SectionPart {
 
       transitionToStateCombo.getCombo().setVisibleItemCount(20);
       transitionToStateCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
          public void selectionChanged(SelectionChangedEvent event) {
             try {
                updateTransitionToAssignees();

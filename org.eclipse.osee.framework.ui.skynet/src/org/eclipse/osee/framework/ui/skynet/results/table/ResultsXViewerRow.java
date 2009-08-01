@@ -39,9 +39,6 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
       this(Arrays.asList(values), null);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.results.xresults.IXViewerTestTask#getValue(int)
-    */
    @Override
    public String getValue(int col) {
       return values.get(col);

@@ -47,9 +47,6 @@ public class SMAHistoryComposite extends Composite {
       button.setText("    ");
       final SMAManager fSmaMgr = smaMgr;
       button.addListener(SWT.MouseUp, new Listener() {
-         /* (non-Javadoc)
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          @Override
          public void handleEvent(Event event) {
             ArtifactEditor.editArtifact(fSmaMgr.getSma());

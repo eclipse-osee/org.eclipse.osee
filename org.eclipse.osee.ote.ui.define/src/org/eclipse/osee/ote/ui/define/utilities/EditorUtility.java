@@ -64,9 +64,6 @@ public class EditorUtility {
       Job job = new RemoteResourceRequestJob(url, fileName);
       job.addJobChangeListener(new JobChangeAdapter() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-          */
          @Override
          public void done(IJobChangeEvent event) {
             org.eclipse.core.runtime.IStatus status = event.getResult();

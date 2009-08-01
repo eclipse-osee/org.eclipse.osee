@@ -78,9 +78,6 @@ public class CommitXManager extends XViewer {
       return xCommitManager.getWorkingBranch();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewer#handleDoubleClick()
-    */
    @Override
    public void handleDoubleClick() {
       try {

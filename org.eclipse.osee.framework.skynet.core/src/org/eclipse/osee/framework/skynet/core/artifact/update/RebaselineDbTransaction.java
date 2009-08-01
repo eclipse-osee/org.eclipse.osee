@@ -43,9 +43,6 @@ public class RebaselineDbTransaction extends DbTransaction{
       this.updateArtifactHandler = new UpdateArtifactHandler(branchToUpdate, updatingSourceBranch, artifactVersions, transactionNumber, true);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxWork(org.eclipse.osee.framework.db.connection.OseeConnection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       updateArtifactHandler.update(connection);
@@ -81,9 +78,6 @@ public class RebaselineDbTransaction extends DbTransaction{
       }
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxFinally()
-    */
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       updateSystemCaches(branchToUpdate, artifactVersions);

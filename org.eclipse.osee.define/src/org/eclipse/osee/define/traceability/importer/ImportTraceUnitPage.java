@@ -87,12 +87,12 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
 
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
-   private MutableBoolean isFolderRecursionAllowed;
-   private MutableBoolean isArtifactPersistanceAllowed;
+   private final MutableBoolean isFolderRecursionAllowed;
+   private final MutableBoolean isArtifactPersistanceAllowed;
    private IResource currentResourceSelection;
-   private MutableBoolean isFileContainingMultiplePaths;
-   private Map<Button, Boolean> traceUnitHandlers;
-   private Map<String, Button> optionButtons;
+   private final MutableBoolean isFileContainingMultiplePaths;
+   private final Map<Button, Boolean> traceUnitHandlers;
+   private final Map<String, Button> optionButtons;
 
    /**
     * @param name
@@ -117,9 +117,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       }
    }
 
-   /**
-    * (non-Javadoc) Method declared on IDialogPage.
-    */
+   @Override
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
 
@@ -337,9 +335,6 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       return selectedIds.toArray(new String[selectedIds.size()]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.WizardDataTransferPage#restoreWidgetValues()
-    */
    @Override
    protected void restoreWidgetValues() {
       super.restoreWidgetValues();
@@ -402,9 +397,6 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.WizardDataTransferPage#saveWidgetValues()
-    */
    @Override
    protected void saveWidgetValues() {
       super.saveWidgetValues();
@@ -424,11 +416,6 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.dialogs.WizardResourceImportPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;

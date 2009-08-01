@@ -43,9 +43,6 @@ public class BlamOutputSection extends BaseBlamSection {
       super(editor, parent, toolkit, style);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
@@ -103,9 +100,6 @@ public class BlamOutputSection extends BaseBlamSection {
       return appendableOutput;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#dispose()
-    */
    @Override
    public void dispose() {
       if (Widgets.isAccessible(formText)) {
@@ -114,9 +108,6 @@ public class BlamOutputSection extends BaseBlamSection {
       super.dispose();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -128,9 +119,6 @@ public class BlamOutputSection extends BaseBlamSection {
          appendText(text);
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Appendable#append(java.lang.CharSequence)
-       */
       @Override
       public Appendable append(CharSequence csq) throws IOException {
          if (csq == null) {
@@ -141,18 +129,12 @@ public class BlamOutputSection extends BaseBlamSection {
          return this;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Appendable#append(char)
-       */
       @Override
       public Appendable append(char c) throws IOException {
          write(new String(new char[] {c}));
          return this;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Appendable#append(java.lang.CharSequence, int, int)
-       */
       @Override
       public Appendable append(CharSequence csq, int start, int end) throws IOException {
          CharSequence cs = csq == null ? "null" : csq;

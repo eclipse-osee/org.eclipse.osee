@@ -41,19 +41,11 @@ public class SubscribedOperation extends WorkPageService {
       return action;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
    @Override
    public void refresh() {
       if (action != null) action.setToolTipText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Remove Subscribed" : "Add Subscribed");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Subscribe to Email Notifications";

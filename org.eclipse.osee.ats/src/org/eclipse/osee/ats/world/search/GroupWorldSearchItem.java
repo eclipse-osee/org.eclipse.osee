@@ -114,9 +114,6 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       this.selectedGroup = selectedGroup;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.search.WorldUISearchItem#copy()
-    */
    @Override
    public WorldUISearchItem copy() {
       return new GroupWorldSearchItem(this, 0);

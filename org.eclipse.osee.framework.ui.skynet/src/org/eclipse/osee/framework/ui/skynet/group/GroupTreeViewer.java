@@ -28,9 +28,6 @@ public class GroupTreeViewer extends TreeViewer {
       this.groupExplorer = groupExplorer;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh()
-    */
    @Override
    public void refresh() {
       super.refresh();
@@ -38,9 +35,6 @@ public class GroupTreeViewer extends TreeViewer {
       groupExplorer.restoreExpandedAndSelection();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.StructuredViewer#refresh(boolean)
-    */
    @Override
    public void refresh(boolean updateLabels) {
       super.refresh(updateLabels);

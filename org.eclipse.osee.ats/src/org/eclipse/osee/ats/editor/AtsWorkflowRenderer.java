@@ -30,9 +30,6 @@ import org.eclipse.swt.graphics.Image;
 public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getCommandId()
-    */
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
@@ -44,17 +41,11 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
       return commandIds;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer#getImage()
-    */
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getImage(AtsImage.ACTION);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getName()
-    */
    @Override
    public String getName() {
       return "ATS Workflow Editor";
@@ -74,17 +65,11 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#newInstance()
-   */
    @Override
    public AtsWorkflowRenderer newInstance() throws OseeCoreException {
       return new AtsWorkflowRenderer();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#isValidFor(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
@@ -93,17 +78,11 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
       return NO_MATCH;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List)
-    */
    @Override
    public void preview(List<Artifact> artifacts) throws OseeCoreException {
       open(artifacts);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#minimumRanking()
-    */
    @Override
    public int minimumRanking() throws OseeCoreException {
       if (AccessControlManager.isOseeAdmin()) {

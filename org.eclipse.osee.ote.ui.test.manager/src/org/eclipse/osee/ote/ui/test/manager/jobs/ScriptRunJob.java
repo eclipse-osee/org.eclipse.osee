@@ -60,17 +60,11 @@ public class ScriptRunJob extends Job {
       } else {
          return new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, "unable to access out files") {
 
-            /* (non-Javadoc)
-             * @see org.eclipse.core.runtime.Status#isMultiStatus()
-             */
             @Override
             public boolean isMultiStatus() {
                return true;
             }
 
-            /* (non-Javadoc)
-             * @see org.eclipse.core.runtime.Status#getChildren()
-             */
             @Override
             public IStatus[] getChildren() {
                return failedLocations.toArray(new IStatus[failedLocations.size()]);
@@ -80,9 +74,6 @@ public class ScriptRunJob extends Job {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    public IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;

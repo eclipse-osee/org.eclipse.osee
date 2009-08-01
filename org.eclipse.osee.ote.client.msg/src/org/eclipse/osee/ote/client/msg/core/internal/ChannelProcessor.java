@@ -57,11 +57,6 @@ final public class ChannelProcessor {
 			buffer.flip();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Runnable#run()
-		 */
 		public void run() {
 			try {
 				final int id = buffer.getInt();
@@ -96,13 +91,6 @@ final public class ChannelProcessor {
 		this.memType = memType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.osee.ote.ui.message.internal.core.IChannelHandler#process
-	 * (java.nio.channels.SelectionKey)
-	 */
 	public final void process(final ReadableByteChannel channel) throws InterruptedException, IOException {
 		// get a free task
 		final Task task = queue.take();

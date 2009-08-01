@@ -79,9 +79,6 @@ public class NonMappingFloat64Element extends Float64Element {
 
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.message.elements.Element#isNonMappingElement()
-    */
    @Override
    public boolean isNonMappingElement() {
       return true;

@@ -30,9 +30,6 @@ public class RemoteResourceRequestOperation extends AbstractRemoteResourceReques
       this.fileName = fileName;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.define.operations.AbstractRemoteResourceRequestTemplate#getLocalStorageName()
-    */
    @Override
    protected String getLocalStorageName() throws Exception {
       StringBuilder builder = new StringBuilder();
@@ -42,9 +39,6 @@ public class RemoteResourceRequestOperation extends AbstractRemoteResourceReques
       return builder.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.define.operations.AbstractRemoteResourceRequestTemplate#getRemoteFileName()
-    */
    @Override
    protected String getRemoteFileName() {
       return fileName;
@@ -59,9 +53,6 @@ public class RemoteResourceRequestOperation extends AbstractRemoteResourceReques
       return connection;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.define.operations.AbstractRemoteResourceRequestTemplate#handleTransfer(org.eclipse.core.runtime.IProgressMonitor, java.net.HttpURLConnection)
-    */
    @Override
    protected IFile handleTransfer(IProgressMonitor monitor, HttpURLConnection connection) throws Exception {
       IFile file = null;

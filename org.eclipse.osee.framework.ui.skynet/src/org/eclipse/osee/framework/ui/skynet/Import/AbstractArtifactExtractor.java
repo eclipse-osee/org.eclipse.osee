@@ -21,16 +21,10 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
    private final ArrayList<RoughArtifact> roughArtifacts = new ArrayList<RoughArtifact>();
    private final ArrayList<RoughRelation> roughRelations = new ArrayList<RoughRelation>();
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.ArtifactExtractor#getRoughArtifacts()
-    */
    public List<RoughArtifact> getRoughArtifacts() {
       return roughArtifacts;
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.ArtifactExtractor#getRoughRelations(osee.define.artifact.Import.RoughArtifact)
-    */
    public List<RoughRelation> getRoughRelations(RoughArtifact parent) throws OseeCoreException {
       determineParentChildRelations();
 

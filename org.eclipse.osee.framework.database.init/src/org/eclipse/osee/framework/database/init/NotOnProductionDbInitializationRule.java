@@ -18,9 +18,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class NotOnProductionDbInitializationRule implements IDbInitializationRule {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.IDbInitializationRule#isAllowed()
-    */
    @Override
    public boolean isAllowed() throws OseeCoreException {
       return !ClientSessionManager.isProductionDataStore();

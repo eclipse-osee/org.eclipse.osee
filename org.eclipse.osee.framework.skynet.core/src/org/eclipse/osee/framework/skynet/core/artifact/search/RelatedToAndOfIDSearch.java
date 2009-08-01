@@ -30,18 +30,10 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
       this.relType = relType;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "artLinkJoin.art_id";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
-    */
    public String getSql() {
       return "artLinkJoin.rel_link_type_id = " + relType;
    }

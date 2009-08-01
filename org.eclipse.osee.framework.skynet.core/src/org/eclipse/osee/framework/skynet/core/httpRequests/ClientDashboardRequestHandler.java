@@ -46,17 +46,11 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       log, info, pingId
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.server.IHttpServerRequest#getRequestType()
-    */
    @Override
    public String getRequestType() {
       return "osee/request";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.client.server.IHttpServerRequest#processRequest(org.eclipse.osee.framework.core.client.server.HttpRequest, org.eclipse.osee.framework.core.client.server.HttpResponse)
-    */
    @Override
    public void processRequest(final HttpRequest httpRequest, final HttpResponse httpResponse) {
       final String cmd = httpRequest.getParameter("cmd");

@@ -30,26 +30,17 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
 
    private AtsConfigWizardPage1 page1;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.IWizard#addPages()
-    */
    @Override
    public void addPages() {
       // add pages to this wizard
       addPage(page1);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-    */
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       // create pages for this wizard
       page1 = new AtsConfigWizardPage1(this);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.wizard.IWizard#performFinish()
-    */
    @Override
    public boolean performFinish() {
       try {

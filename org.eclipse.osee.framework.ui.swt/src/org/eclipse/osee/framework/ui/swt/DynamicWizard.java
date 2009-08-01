@@ -121,9 +121,6 @@ public abstract class DynamicWizard implements IWizard {
    public void addPages() {
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public boolean canFinish() {
       Set<String> keys = pages.keySet();
       for (String key : keys) {
@@ -171,16 +168,10 @@ public abstract class DynamicWizard implements IWizard {
       }
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public IWizardContainer getContainer() {
       return container;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public Image getDefaultPageImage() {
       if (defaultImage == null) {
          defaultImage = JFaceResources.getResources().createImageWithDefault(defaultImageDescriptor);
@@ -188,9 +179,6 @@ public abstract class DynamicWizard implements IWizard {
       return defaultImage;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public IDialogSettings getDialogSettings() {
       return dialogSettings;
    }
@@ -199,24 +187,14 @@ public abstract class DynamicWizard implements IWizard {
       return pages.get(name);
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard. The default behavior is to return the page that was
-    * added to this wizard after the given page.
-    */
    public IWizardPage getNextPage(IWizardPage page) {
       return page.getNextPage();
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public int getPageCount() {
       return pages.size();
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public IWizardPage[] getPages() {
       Collection<IWizardPage> collectionOfPages = pages.values();
       return (IWizardPage[]) collectionOfPages.toArray(new IWizardPage[collectionOfPages.size()]);
@@ -227,10 +205,6 @@ public abstract class DynamicWizard implements IWizard {
       return pageNames.contains(page.getName());
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard. The default behavior is to return the page that was
-    * added to this wizard before the given page.
-    */
    public IWizardPage getPreviousPage(IWizardPage page) {
       return page.getPreviousPage();
    }
@@ -245,45 +219,26 @@ public abstract class DynamicWizard implements IWizard {
       return container.getShell();
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard. By default this is the first page inserted into the
-    * wizard.
-    */
    public IWizardPage getStartingPage() {
       return this.startingPage;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public RGB getTitleBarColor() {
       return titleBarColor;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public String getWindowTitle() {
       return windowTitle;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public boolean isHelpAvailable() {
       return isHelpAvailable;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public boolean needsPreviousAndNextButtons() {
       return forcePreviousAndNextButtons || pages.size() > 1;
    }
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public boolean needsProgressMonitor() {
       return needsProgressMonitor;
    }
@@ -303,9 +258,6 @@ public abstract class DynamicWizard implements IWizard {
     */
    public abstract boolean performFinish();
 
-   /*
-    * (non-Javadoc) Method declared on IWizard.
-    */
    public void setContainer(IWizardContainer wizardContainer) {
       container = wizardContainer;
    }

@@ -42,9 +42,6 @@ public class MassArtifactEditorInput implements IEditorInput {
       this.skynetXViewerFactory = skynetXViewerFactory;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput#equals(java.lang.Object)
-    */
    @Override
    public boolean equals(Object obj) {
       return false;
@@ -64,37 +61,22 @@ public class MassArtifactEditorInput implements IEditorInput {
       return name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#exists()
-    */
    public boolean exists() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-    */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getPersistable()
-    */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorInput#getToolTipText()
-    */
    public String getToolTipText() {
       return "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;

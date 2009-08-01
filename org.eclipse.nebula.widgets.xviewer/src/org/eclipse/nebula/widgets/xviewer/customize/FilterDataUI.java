@@ -53,19 +53,9 @@ public class FilterDataUI {
       filterText.setLayoutData(gd);
 
       filterText.addKeyListener(new KeyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyPressed(KeyEvent e) {
          }
 
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || filterRealTime) {
@@ -78,11 +68,6 @@ public class FilterDataUI {
       filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       filterLabel.setImage(XViewerLib.getImage("clear.gif"));
       filterLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          public void handleEvent(Event event) {
             filterText.setText("");
             xViewer.getCustomizeMgr().setFilterText("");

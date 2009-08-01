@@ -50,10 +50,6 @@ public class InternalActivator implements BundleActivator {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
 
@@ -67,10 +63,6 @@ public class InternalActivator implements BundleActivator {
       applicationDbManagerTracker.open();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       instance = null;
       dbConnectionProviderTracker.close();

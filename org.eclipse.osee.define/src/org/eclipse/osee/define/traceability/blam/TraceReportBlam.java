@@ -72,9 +72,6 @@ public class TraceReportBlam extends AbstractBlam {
       this.resultsTabs = new ArrayList<IResultsEditorTab>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getName()
-    */
    @Override
    public String getName() {
       return "Trace Report";
@@ -85,9 +82,6 @@ public class TraceReportBlam extends AbstractBlam {
       return Arrays.asList("Define.Trace");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#getDescriptionUsage()
-    */
    @Override
    public String getDescriptionUsage() {
       return "Generates a trace report by scanning the selected branch for the selected trace unit types.";
@@ -458,9 +452,6 @@ public class TraceReportBlam extends AbstractBlam {
          this.title = title;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#addRow(java.lang.String[])
-       */
       @Override
       public void addRow(String... data) {
          try {
@@ -470,9 +461,6 @@ public class TraceReportBlam extends AbstractBlam {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#addTableHeader(java.lang.String[])
-       */
       @Override
       public void addTableHeader(String... header) {
          try {
@@ -483,9 +471,6 @@ public class TraceReportBlam extends AbstractBlam {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#endTable()
-       */
       @Override
       public void endTable() {
          try {
@@ -507,9 +492,6 @@ public class TraceReportBlam extends AbstractBlam {
          this.rows = null;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#addRow(java.lang.String[])
-       */
       @Override
       public void addRow(String... data) {
          if (rows == null) {
@@ -518,9 +500,6 @@ public class TraceReportBlam extends AbstractBlam {
          rows.add(new ResultsXViewerRow(data));
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#addTableHeader(java.lang.String[])
-       */
       @Override
       public void addTableHeader(String... header) {
          this.columns = new ArrayList<XViewerColumn>();
@@ -529,9 +508,6 @@ public class TraceReportBlam extends AbstractBlam {
          }
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.define.traceability.report.IReportDataCollector#endTable()
-       */
       @Override
       public void endTable() {
          resultsTabs.add(new ResultsEditorTableTab(title, columns, rows));

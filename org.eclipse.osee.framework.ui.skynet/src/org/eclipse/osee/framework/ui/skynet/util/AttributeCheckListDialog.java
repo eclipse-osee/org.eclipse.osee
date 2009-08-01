@@ -143,11 +143,6 @@ public class AttributeCheckListDialog extends SelectionDialog {
       return selectedAttributes;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-    */
    @Override
    protected void okPressed() {
       super.okPressed();

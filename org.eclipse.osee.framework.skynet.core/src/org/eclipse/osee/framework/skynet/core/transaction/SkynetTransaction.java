@@ -349,9 +349,6 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.OseeConnection)
-    */
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
@@ -360,9 +357,6 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxException(java.lang.Exception)
-    */
    @Override
    protected void handleTxException(Exception ex) {
       executedWithException = true;
@@ -399,9 +393,6 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.DbTransaction#handleTxFinally()
-    */
    @Override
    protected void handleTxFinally() throws OseeCoreException {
       if (!executedWithException) {

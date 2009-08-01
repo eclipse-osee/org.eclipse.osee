@@ -260,9 +260,6 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       return user;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != BranchManager.getCommonBranch().getBranchId()) return;
@@ -302,17 +299,11 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener#handleTransactionsDeletedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, int[])
-    */
    @Override
    public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       // TODO Need to handle this case when event sends more data about the contents of the deleted transactions
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {

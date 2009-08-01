@@ -55,9 +55,6 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       monitor.setTaskName(getName());

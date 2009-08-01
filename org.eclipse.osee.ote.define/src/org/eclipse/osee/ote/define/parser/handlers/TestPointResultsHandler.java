@@ -18,11 +18,6 @@ import org.w3c.dom.Element;
  */
 public class TestPointResultsHandler extends AbstractParseHandler {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.ui.define.parser.handlers.AbstractParseHandler#processSaxChunk(org.w3c.dom.Element)
-    */
    @Override
    protected void processSaxChunk(Element element) {
       notifyOnDataEvent(TestRunField.TEST_POINTS_PASSED.toString(), element.getAttribute("pass"));

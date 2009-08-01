@@ -125,12 +125,6 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jini.lease.ILeaseGrantor#cancelRequest(net.jini.core.lease.Lease,
-    *      null)
-    */
    public void cancelRequest(Lease lease, Object consumer) throws UnknownLeaseException, RemoteException {
       // debug.report("Lease cancelRequest: " + consumer + " @" + new Date());
       if (leaseStore.remove(consumer) != null) {

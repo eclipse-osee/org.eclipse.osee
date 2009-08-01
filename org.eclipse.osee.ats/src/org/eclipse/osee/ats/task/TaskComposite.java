@@ -580,11 +580,6 @@ public class TaskComposite extends Composite implements IActionable {
       return taskXViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return taskXViewer.getInput();
@@ -660,9 +655,6 @@ public class TaskComposite extends Composite implements IActionable {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    public String getActionDescription() {
       return null;
    }

@@ -85,9 +85,6 @@ public class TemplateAttribute implements ITemplateTask {
       return this.name;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(java.lang.StringBuilder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
-    */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeCoreException {
       for (ITemplateAttributeHandler handler : handlers) {
@@ -118,9 +115,6 @@ public class TemplateAttribute implements ITemplateTask {
       return this.label != null && this.label.length() > 0;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#isTypeNameWildcard()
-    */
    @Override
    public boolean isTypeNameWildcard() {
       return getName().equals("*");

@@ -27,9 +27,6 @@ public class CheckPoint extends ElementHandlers{
    }
 
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.saxparse.ElementHandlers#createStartElementFoundObject(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-    */
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
       return null;

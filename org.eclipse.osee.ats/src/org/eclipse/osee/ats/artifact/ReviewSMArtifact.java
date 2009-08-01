@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -61,9 +60,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       initializeSMA();
    };
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persistAttributes()
-    */
    @Override
    public void onAttributePersist() throws OseeCoreException {
       super.onAttributePersist();
@@ -89,11 +85,11 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    private Collection<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      return (this).getUserRoleManager().getRoleUsersReviewComplete();
+      return this.getUserRoleManager().getRoleUsersReviewComplete();
    }
 
    public void notifyReviewersComplete() throws OseeCoreException {
-      UserRoleManager userRoleManager = (this).getUserRoleManager();
+      UserRoleManager userRoleManager = this.getUserRoleManager();
       if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete())) {
          //all reviewers are complete; send notification to author/moderator
          if (userRoleManager.getUserRoles(Role.Reviewer).equals(userRoleManager.getRoleUsersReviewComplete())) {
@@ -104,7 +100,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    /**
-    * Reset managers for case where artifact is re-loaded/initialized (non-Javadoc)
+    * Reset managers for case where artifact is re-loaded/initialized
     * 
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
     */
@@ -116,11 +112,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getArtifactSuperTypeName()
-    */
    @Override
    public String getArtifactSuperTypeName() {
       return "Review";
@@ -149,9 +140,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return defectManager;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperTargetVersion()
-    */
    @Override
    public String getHyperTargetVersion() {
       return null;
@@ -171,8 +159,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
 
    public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      if (getParentTeamWorkflow() != null)
+      if (getParentTeamWorkflow() != null) {
          teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
+      }
       if (getActionableItemsDam().getActionableItems().size() > 0) {
          teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
       }
@@ -197,9 +186,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewParentID()
-    */
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentTeamWorkflow().getHumanReadableId();

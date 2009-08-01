@@ -79,9 +79,6 @@ public class SMAReviewInfoComposite extends Composite {
       // If ATS Admin, allow right-click to auto-complete reviews
       if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
          label.addListener(SWT.MouseUp, new Listener() {
-            /* (non-Javadoc)
-                         * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                         */
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
@@ -276,11 +273,6 @@ public class SMAReviewInfoComposite extends Composite {
                   SWT.NONE);
       hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
          public void handleEvent(Event event) {
             SMAEditor.editArtifact(revArt);
          }

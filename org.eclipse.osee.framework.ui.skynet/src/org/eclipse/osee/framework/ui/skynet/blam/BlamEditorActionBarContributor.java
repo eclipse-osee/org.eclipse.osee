@@ -35,9 +35,6 @@ public class BlamEditorActionBarContributor implements IActionContributor {
       this.editor = editor;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
-    */
    @Override
    public void contributeToToolBar(IToolBarManager manager) {
       manager.add(getExecuteBlamAction());

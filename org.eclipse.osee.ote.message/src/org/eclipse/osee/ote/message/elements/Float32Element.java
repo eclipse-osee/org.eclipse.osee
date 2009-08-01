@@ -94,11 +94,6 @@ public class Float32Element extends RealElement {
 		super.sendMessage();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.ote.message.elements.RealElement#getValue()
-	 */
 	@Override
 	public Double getValue() {
 		return new Double(Float.intBitsToFloat(getMsgData().getMem().getInt(byteOffset, msb, lsb)));
@@ -112,11 +107,6 @@ public class Float32Element extends RealElement {
 		return new Double(Float.intBitsToFloat(mem.getInt(byteOffset, msb, lsb)));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.ote.message.elements.Element#setValue(java.lang.Object)
-	 */
 	@Override
 	public void setValue(Double obj) {
 		setValue(obj.floatValue());
@@ -126,27 +116,14 @@ public class Float32Element extends RealElement {
 		getMsgData().getMem().setInt(Float.floatToIntBits(obj), byteOffset, msb, lsb);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see osee.test.core.message.RealElement#toDouble(long)
-	 */
 	protected double toDouble(long value) {
 		return Float.intBitsToFloat((int) value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see osee.test.core.message.RealElement#toLong(double)
-	 */
 	protected long toLong(double value) {
 		return Double.doubleToLongBits(value);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.message.elements.Element#getNonMappingElement()
-	 */
 	@Override
 	protected NonMappingFloat32Element getNonMappingElement() {
 		return new NonMappingFloat32Element(this);

@@ -43,11 +43,6 @@ public class CommandRemoved implements Serializable, IServiceStatusDataCommand {
       return reason;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ote.core.environment.status.IServiceStatusData#accept(org.eclipse.osee.ote.core.environment.status.IServiceStatusDataVisitor)
-    */
    public void accept(IServiceStatusDataVisitor visitor) {
       if (visitor != null) {
          visitor.asCommandRemoved(this);

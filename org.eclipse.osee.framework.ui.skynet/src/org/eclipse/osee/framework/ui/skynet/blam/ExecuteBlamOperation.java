@@ -35,9 +35,6 @@ public class ExecuteBlamOperation extends AbstractOperation {
       this.output = output;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (operations.isEmpty()) {
@@ -50,9 +47,6 @@ public class ExecuteBlamOperation extends AbstractOperation {
       }
    }
 
-   /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.core.operation.AbstractOperation#createErrorStatus(java.lang.Throwable)
-   */
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       IStatus status = super.createErrorStatus(error);
@@ -76,9 +70,6 @@ public class ExecuteBlamOperation extends AbstractOperation {
          this.operation = operation;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-       */
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          operation.runOperation(variableMap, monitor);

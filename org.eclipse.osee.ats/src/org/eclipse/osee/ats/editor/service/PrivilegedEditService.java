@@ -87,9 +87,6 @@ public class PrivilegedEditService extends WorkPageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
-    */
    @Override
    public String getName() {
       return "Privileged Edit";

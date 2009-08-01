@@ -30,9 +30,6 @@ import org.eclipse.osee.framework.ui.branch.graph.utility.GraphFigureConstants;
  */
 public class BranchEditPart extends AbstractGraphicalEditPart {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
-    */
    @Override
    protected IFigure createFigure() {
       BranchModel branchModel = (BranchModel) getModel();

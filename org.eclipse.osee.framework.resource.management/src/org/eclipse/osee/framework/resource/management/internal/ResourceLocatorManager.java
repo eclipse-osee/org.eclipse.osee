@@ -28,34 +28,22 @@ public class ResourceLocatorManager implements IResourceLocatorManager {
       this.resourceLocatorProviders = new CopyOnWriteArrayList<IResourceLocatorProvider>();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorManager#addResourceLocatorProvider(org.eclipse.osee.framework.resource.management.IResourceLocatorProvider)
-    */
    @Override
    public void addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
       this.resourceLocatorProviders.add(resourceLocatorProvider);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorManager#removeResourceLocatorProvider(org.eclipse.osee.framework.resource.management.IResourceLocatorProvider)
-    */
    @Override
    public void removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
       this.resourceLocatorProviders.remove(resourceLocatorProvider);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorManager#generateResourceLocator(java.lang.String, java.lang.String, java.lang.String)
-    */
    @Override
    public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws MalformedLocatorException {
       IResourceLocatorProvider resourceLocatorProvider = getProvider(protocol);
       return resourceLocatorProvider.generateResourceLocator(seed, name);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.resource.management.IResourceLocatorManager#getResourceLocator(java.lang.String, java.lang.String)
-    */
    @Override
    public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
       IResourceLocatorProvider resourceLocatorProvider = getProvider(path);

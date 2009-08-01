@@ -49,11 +49,6 @@ public class XButton extends XWidget {
       this.image = image;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return button;
@@ -176,11 +171,6 @@ public class XButton extends XWidget {
       return selected;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return Boolean.valueOf(isSelected());

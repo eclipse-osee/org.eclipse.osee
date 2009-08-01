@@ -20,9 +20,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RefreshOteNavigator implements ITestBatchDataListener {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.batches.navigate.ITestBatchDataListener#dataAddedEvent(org.eclipse.osee.ote.ui.test.manager.batches.navigate.TestBatchData)
-    */
    @Override
    public void dataAddedEvent(TestBatchData data) {
       OteNavigateView navigator = getOteNavigator();
@@ -31,9 +28,6 @@ public class RefreshOteNavigator implements ITestBatchDataListener {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.test.manager.batches.navigate.ITestBatchDataListener#dataRemovedEvent(org.eclipse.osee.ote.ui.test.manager.batches.navigate.TestBatchData)
-    */
    @Override
    public void dataRemovedEvent(TestBatchData data) {
       OteNavigateView navigator = getOteNavigator();

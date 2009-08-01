@@ -18,11 +18,6 @@ import java.util.regex.Pattern;
  */
 public class DefaultXWidgetOptionResolver implements IXWidgetOptionResolver {
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWidgetOptionResolver#getWidgetOptions(java.lang.String)
-    */
    public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData) {
       Matcher m = Pattern.compile("\\((.*?)\\)$").matcher(xWidgetData.getXWidgetName());
 

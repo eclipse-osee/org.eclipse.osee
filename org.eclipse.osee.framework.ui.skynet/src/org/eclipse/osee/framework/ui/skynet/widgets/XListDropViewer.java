@@ -49,9 +49,6 @@ public class XListDropViewer extends XListViewer {
       setLabelProvider(this.myArtifactLabelProvider);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XListViewer#createControls(org.eclipse.swt.widgets.Composite, int)
-    */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       Menu popupMenu = new Menu(parent);

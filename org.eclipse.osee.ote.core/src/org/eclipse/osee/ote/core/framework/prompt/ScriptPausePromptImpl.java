@@ -28,17 +28,11 @@ public class ScriptPausePromptImpl extends AbstractInteractivePrompt<String> imp
       super(connector, script, id, message);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.BasicRemotePrompt#doPrompt(org.eclipse.osee.ote.core.IUserSession, org.eclipse.osee.ote.core.TestScript)
-    */
    @Override
    public void doPrompt() throws Exception {
       getScript().getUserSession().initiateResumePrompt(createRemoteReference(IResumeResponse.class));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.core.framework.prompt.IScriptPauseResponse#resume()
-    */
    public void resume() throws RemoteException {
       endPrompt("CONTINUE", null);
    }

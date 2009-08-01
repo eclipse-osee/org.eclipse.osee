@@ -23,42 +23,27 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
       super("Word Attribute Track Change Enabled");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getDescription()
-    */
    @Override
    public String getCheckDescription() {
       return "Checks Word Attribute data to detect word track changes";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation#getFixDescription()
-    */
    @Override
    public String getFixDescription() {
       return "Removes track changes from word attributes";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#applyFix(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData)
-    */
    @Override
    protected void applyFix(AttrData attrData) throws OseeCoreException {
       String fixedData = WordAnnotationHandler.removeAnnotations(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#getBackUpPrefix()
-    */
    @Override
    protected String getBackUpPrefix() {
       return "TrackChangesFix_";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation#isFixRequired(org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.AttrData, org.eclipse.osee.framework.ui.skynet.dbHealth.AbstractWordAttributeHealthOperation.Resource)
-    */
    @Override
    protected boolean isFixRequired(AttrData attrData, Resource resource) throws OseeCoreException {
       boolean result = false;

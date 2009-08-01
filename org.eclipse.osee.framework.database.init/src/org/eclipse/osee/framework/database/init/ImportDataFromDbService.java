@@ -169,42 +169,24 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#setDependancies(java.util.List)
-    */
    public void setDependancies(List<String> bundles) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#getBundle()
-    */
    public String getBundle() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#getDependancies()
-    */
    public List<String> getDependancies() {
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#setBundle(java.lang.String)
-    */
    public void setBundle(String bundle) {
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
    public int compareTo(IDbInitializationTask o) {
       return 0;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Comparable#compareTo(java.lang.Object)
-    */
    public int compareTo(Object o) {
       return 0;
    }

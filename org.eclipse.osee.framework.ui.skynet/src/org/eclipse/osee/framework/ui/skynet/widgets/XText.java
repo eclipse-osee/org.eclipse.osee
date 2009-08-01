@@ -98,11 +98,6 @@ public class XText extends XWidget {
       return getLabel() + ": *" + text + "*";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getControl()
-    */
    @Override
    public Control getControl() {
       return sText;
@@ -580,11 +575,6 @@ public class XText extends XWidget {
       return Status.OK_STATUS;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getData()
-    */
    @Override
    public Object getData() {
       return sText.getText();

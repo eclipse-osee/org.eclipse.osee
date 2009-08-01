@@ -27,11 +27,6 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    public AddDbInitDemoChoice() {
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.database.utility.IAddDbInitChoice#addDbInitChoice()
-    */
    public void addDbInitChoice(GroupSelection groupSelection) {
       addDemoDbInitChoice(groupSelection);
    }

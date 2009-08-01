@@ -301,29 +301,14 @@ public class DbTableViewer {
          return dbTaskList.getTasks().toArray();
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see ITaskListViewer#addTask(ExampleTask)
-       */
       public void addTask(DbModel task) {
          tableViewer.add(task);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see ITaskListViewer#removeTask(ExampleTask)
-       */
       public void removeTask(DbModel task) {
          tableViewer.remove(task);
       }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see ITaskListViewer#updateTask(ExampleTask)
-       */
       public void updateTask(DbModel task) {
          tableViewer.update(task, null);
       }
@@ -366,9 +351,6 @@ public class DbTableViewer {
          this.setShellStyle(this.getShellStyle() | SWT.RESIZE);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
-       */
       @Override
       protected Control createCustomArea(Composite parent) {
          Composite composite = new Composite(parent, SWT.NONE);

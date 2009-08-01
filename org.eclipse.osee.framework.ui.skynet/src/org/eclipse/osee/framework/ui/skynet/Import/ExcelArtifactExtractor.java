@@ -50,11 +50,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processHeaderRow(java.lang.String[])
-    */
    public void processHeaderRow(String[] headerRow) {
       rowCount++;
       this.headerRow = headerRow.clone();
@@ -129,9 +124,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
-    */
    public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception {
       this.branch = branch;
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
@@ -139,41 +131,20 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processEmptyRow()
-    */
    public void processEmptyRow() {
       rowCount++;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#processCommentRow(java.lang.String[])
-    */
    public void processCommentRow(String[] row) {
       rowCount++;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.define.artifact.Import.RowProcessor#reachedEndOfWorksheet()
-    */
    public void reachedEndOfWorksheet() {
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.RowProcessor#detectedTotalRowCount(int)
-    */
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
-   /* (non-Javadoc)
-    * @see osee.define.artifact.Import.RowProcessor#foundStartOfWorksheet(java.lang.String)
-    */
    public void foundStartOfWorksheet(String sheetName) {
       rowCount = 0;
       try {
@@ -190,9 +161,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getFileFilter()
-    */
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
@@ -201,17 +169,11 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       };
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#getName()
-    */
    @Override
    public String getName() {
       return "Excel XML Artifacts";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor#usesTypeList()
-    */
    @Override
    public boolean usesTypeList() {
       return false;

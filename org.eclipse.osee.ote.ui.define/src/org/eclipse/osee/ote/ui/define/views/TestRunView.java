@@ -66,9 +66,6 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
 
    //   private static final String FLAT_KEY = "flat";
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       parent.setLayout(new GridLayout());
@@ -110,16 +107,10 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.define.testRunView");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-    */
    @Override
    public void setFocus() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
-    */
    public String getActionDescription() {
       return "";
    }
@@ -191,9 +182,6 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       });
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ote.ui.define.viewers.IDataChangedListener#onDataChanged()
-    */
    public void onDataChanged() {
       String message = BEGIN_MESSAGE;
       Object object = viewer.getInput();

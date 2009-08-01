@@ -59,33 +59,21 @@ public class RelaxedSecurity extends SecurityManager {
 
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.SecurityManager#checkAccess(java.lang.Thread)
-    */
    @Override
    public void checkAccess(Thread arg0) {
 
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.SecurityManager#checkAccess(java.lang.ThreadGroup)
-    */
    @Override
    public void checkAccess(ThreadGroup arg0) {
 
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.SecurityManager#checkCreateClassLoader()
-    */
    @Override
    public void checkCreateClassLoader() {
 
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.SecurityManager#checkExec(java.lang.String)
-    */
    @Override
    public void checkExec(String arg0) {
 

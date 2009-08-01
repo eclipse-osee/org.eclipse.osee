@@ -31,11 +31,6 @@ public class WorkAttrHelpResource implements IHelpResource {
       this.layoutData = layoutData;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.help.IHelpResource#getHref()
-    */
    public String getHref() {
       if (layoutData != null) {
          File file = AtsPlugin.getInstance().getPluginStoreFile(layoutData.getStorageName() + ".html");
@@ -59,11 +54,6 @@ public class WorkAttrHelpResource implements IHelpResource {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.help.IHelpResource#getLabel()
-    */
    public String getLabel() {
       if (layoutData != null) return layoutData.getName();
       return "";

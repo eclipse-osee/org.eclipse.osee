@@ -29,10 +29,6 @@ public class Activator implements BundleActivator {
    private static Activator instance = null;
    private JiniServiceSideConnector testConnector;
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-    */
    public void start(BundleContext context) throws Exception {
       instance = this;
       connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
@@ -82,10 +78,6 @@ public class Activator implements BundleActivator {
       }, 10000);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-    */
    public void stop(BundleContext context) throws Exception {
       instance = null;
       getConnectionService().removeConnector(testConnector);

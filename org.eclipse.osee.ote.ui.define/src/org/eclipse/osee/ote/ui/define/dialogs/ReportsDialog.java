@@ -105,9 +105,6 @@ public class ReportsDialog extends TitleAreaDialog {
       setShellStyle(SWT.SHELL_TRIM);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.Dialog#createButtonBar(org.eclipse.swt.widgets.Composite)
-    */
    protected Control createButtonBar(Composite parent) {
       Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
@@ -196,9 +193,6 @@ public class ReportsDialog extends TitleAreaDialog {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-    */
    @Override
    protected void okPressed() {
       saveDialog();
@@ -435,9 +429,6 @@ public class ReportsDialog extends TitleAreaDialog {
    }
 
    private final class SelectionChangedListener implements ISelectionChangedListener {
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-       */
       @SuppressWarnings("unchecked")
       public void selectionChanged(SelectionChangedEvent event) {
          IStructuredSelection selection = listSelectionPanel.getSelection();
@@ -460,9 +451,6 @@ public class ReportsDialog extends TitleAreaDialog {
 
    private final class ListLabelProvider extends LabelProvider {
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-       */
       @SuppressWarnings("unchecked")
       @Override
       public Image getImage(Object element) {
@@ -473,9 +461,6 @@ public class ReportsDialog extends TitleAreaDialog {
          return toReturn;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-       */
       @SuppressWarnings("unchecked")
       @Override
       public String getText(Object element) {

@@ -28,9 +28,6 @@ public class PostgresqlConnection implements IConnection {
       return connection;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IConnection#getDriver()
-    */
    @Override
    public String getDriver() {
       return driverName;

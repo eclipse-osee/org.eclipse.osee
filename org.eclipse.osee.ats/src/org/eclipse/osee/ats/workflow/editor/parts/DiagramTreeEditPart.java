@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2005 Donald G. Dunne and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Donald G. Dunne - initial API and implementation
- *******************************************************************************/
+ï¿½* All rights reserved. This program and the accompanying materials
+ï¿½* are made available under the terms of the Eclipse Public License v1.0
+ï¿½* which accompanies this distribution, and is available at
+ï¿½* http://www.eclipse.org/legal/epl-v10.html
+ï¿½*
+ï¿½* Contributors:
+ï¿½*ï¿½ï¿½ï¿½ï¿½Donald G. Dunne - initial API and implementation
+ï¿½*******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.parts;
 
 import java.beans.PropertyChangeEvent;
@@ -52,9 +52,6 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements PropertyChange
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.examples.shapes.parts.ShapeTreeEditPart#createEditPolicies()
-    */
    @Override
    protected void createEditPolicies() {
       // If this editpart is the root content of the viewer, then disallow removal
@@ -88,17 +85,11 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements PropertyChange
       return (EditPart) getViewer().getEditPartRegistry().get(child);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
-    */
    @Override
    protected List getModelChildren() {
       return getCastedModel().getChildren(); // a list of shapes
    }
 
-   /* (non-Javadoc)
-   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-   */
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
       if (WorkflowDiagram.CHILD_ADDED_PROP.equals(prop)) {

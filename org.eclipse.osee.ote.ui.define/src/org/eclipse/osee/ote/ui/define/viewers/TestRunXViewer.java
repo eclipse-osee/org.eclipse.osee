@@ -92,11 +92,6 @@ public class TestRunXViewer extends XViewer {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#createSupportWidgets(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);

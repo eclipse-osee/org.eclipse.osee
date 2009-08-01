@@ -28,9 +28,6 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
       return getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
-    */
    @Override
    protected Boolean convertStringToValue(String value) {
       return value != null && value.equalsIgnoreCase(booleanChoices[0]);

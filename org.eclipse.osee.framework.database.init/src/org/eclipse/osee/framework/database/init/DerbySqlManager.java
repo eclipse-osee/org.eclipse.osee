@@ -34,9 +34,6 @@ public class DerbySqlManager extends SqlManagerImpl {
       super(sqlDataType);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.database.sql.SqlManager#constraintDataToSQL(org.eclipse.osee.framework.database.data.ConstraintElement, java.lang.String)
-    */
    @Override
    public String constraintDataToSQL(ConstraintElement constraint, String tableID) {
       StringBuilder toReturn = new StringBuilder();

@@ -80,9 +80,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          fLabelProvider = labelProvider;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
-       */
       public int category(Object element) {
          if (element instanceof Artifact) {
             return 4;
@@ -339,9 +336,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.search.ui.text.AbstractTextSearchViewPage#handleOpen(org.eclipse.jface.viewers.OpenEvent)
-    */
    @Override
    protected void handleOpen(OpenEvent event) {
       ArtifactDoubleClick.openArtifact(getSearchSelectionProvider().getSelection());
@@ -400,23 +394,14 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener#rebuildMenu()
-    */
    @Override
    public void rebuildMenu() {
       // Do Nothing
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             if (getViewer() != null) {
@@ -435,15 +420,9 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
-    */
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             try {
@@ -498,52 +477,34 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          this.collection = collection;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.ISelection#isEmpty()
-       */
       @Override
       public boolean isEmpty() {
          return collection.isEmpty();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredSelection#getFirstElement()
-       */
       @Override
       public Object getFirstElement() {
          return collection.size() == 0 ? null : iterator().next();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
-       */
       @SuppressWarnings("unchecked")
       @Override
       public Iterator iterator() {
          return collection.iterator();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredSelection#size()
-       */
       @Override
       public int size() {
          // TODO Auto-generated method stub
          return collection.size();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredSelection#toArray()
-       */
       @Override
       public Object[] toArray() {
          // TODO Auto-generated method stub
          return collection.toArray();
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
-       */
       @SuppressWarnings("unchecked")
       @Override
       public List toList() {

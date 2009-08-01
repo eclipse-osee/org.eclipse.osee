@@ -41,9 +41,6 @@ public class CustomTextCellEditor extends TextCellEditor{
 		super(parent);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.TextCellEditor#getLayoutData()
-	 */
 	@Override
 	public LayoutData getLayoutData() {
 		LayoutData data = super.getLayoutData();

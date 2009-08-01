@@ -36,9 +36,6 @@ public abstract class TaskEditorProvider implements ITaskEditorProvider {
       return customizeData;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.ITaskEditorProvider#getTableLoadOptions()
-    */
    @Override
    public Collection<TableLoadOption> getTableLoadOptions() throws OseeCoreException {
       return Collections.getAggregate(tableLoadOptions);

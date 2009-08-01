@@ -49,23 +49,14 @@ public class CharArrayChange implements CharacterChanger {
       this(srcStartIndex, srcEndIndex, newChars, 0, newChars.length);
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getStartIndex()
-    */
    public int getStartIndex() {
       return srcStartIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#getEndIndex()
-    */
    public int getEndIndex() {
       return srcEndIndex;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#applyChange(char[], int)
-    */
    public int applyChange(char[] dest, int destPos) {
       System.arraycopy(newChars, offset, dest, destPos, length);
       return destPos + length;
@@ -75,16 +66,10 @@ public class CharArrayChange implements CharacterChanger {
       writer.write(newChars, offset, length);
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#next()
-    */
    public CharacterChanger next() {
       return next;
    }
 
-   /* (non-Javadoc)
-    * @see text.change.CharacterChanger#setNext(text.change.CharacterChanger)
-    */
    public void setNext(CharacterChanger next) {
       this.next = next;
    }

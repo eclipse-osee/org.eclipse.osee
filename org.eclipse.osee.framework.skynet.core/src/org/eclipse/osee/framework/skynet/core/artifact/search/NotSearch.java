@@ -29,37 +29,22 @@ public class NotSearch implements ISearchPrimitive {
       this.search = search;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getCriteriaSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
-    */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE " + ARTIFACT_TABLE.column("art_id") + "= arts." + search.getArtIdColName() + ")";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getArtIdColName()
-    */
    public String getArtIdColName() {
       return "art_id";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getTableSql(java.util.List)
-    */
    public String getTableSql(List<Object> dataList, Branch branch) {
       return ARTIFACT_TABLE.toString();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
-    */
    public String getStorageString() {
       return "Not [" + search.getStorageString() + "]";
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
    @Override
    public String toString() {
       return "Not " + search.toString();

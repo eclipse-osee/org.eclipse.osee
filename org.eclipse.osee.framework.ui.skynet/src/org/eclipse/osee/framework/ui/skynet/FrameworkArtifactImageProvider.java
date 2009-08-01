@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#init()
-    */
    @Override
    public void init() throws OseeCoreException {
       ImageManager.registerBaseImage("Heading", FrameworkImage.HEADING);
@@ -38,9 +35,6 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerOverrideImageProvider(this, ArtifactTypeManager.getType("User"));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider#getImage(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
    @Override
    public String setupImage(Artifact artifact) throws OseeCoreException {
       if (artifact.isDeleted()) {

@@ -24,9 +24,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ODMEditorLauncher implements IEditorLauncher {
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-    */
    @Override
    public void open(IPath file) {
       try {

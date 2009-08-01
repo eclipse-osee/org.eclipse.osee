@@ -52,11 +52,6 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       super(parent, "Does Not Work - ATS - ??", FrameworkImage.ADMIN);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
-    */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))

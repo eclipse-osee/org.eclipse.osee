@@ -141,11 +141,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       return treeViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-    */
    public void createPartControl() {
       this.setLayout(new GridLayout());
       this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -879,17 +874,11 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       return toolBar;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String, java.lang.String)
-    */
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       try {
          if (link.getArtifactA().equals(this.artifact) || link.getArtifactB().equals(this.artifact)) {
             Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
                @Override
                public void run() {
                   if (!treeViewer.getControl().isDisposed()) {
@@ -903,16 +892,10 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.isRelAddedChangedDeleted(this.artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
             @Override
             public void run() {
                if (!treeViewer.getControl().isDisposed()) {

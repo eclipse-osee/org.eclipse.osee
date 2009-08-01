@@ -63,9 +63,6 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
       try {
          getTreeViewer().getViewer().setInput(TeamDefinitionArtifact.getTopLevelTeamDefinitions(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-             */
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {

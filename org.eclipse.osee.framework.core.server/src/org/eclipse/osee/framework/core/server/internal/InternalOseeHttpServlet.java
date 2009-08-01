@@ -64,9 +64,6 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
 
    protected abstract void checkAccessControl(HttpServletRequest request) throws OseeCoreException;
 
-   /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
    @Override
    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       long start = 0L;
