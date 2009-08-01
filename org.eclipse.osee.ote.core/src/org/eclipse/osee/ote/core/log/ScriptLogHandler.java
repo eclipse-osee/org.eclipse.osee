@@ -40,16 +40,16 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
  * @author Robert A. Fisher
  */
 public class ScriptLogHandler extends Handler {
-   private TestEnvironment testEnvironment;
+   private final TestEnvironment testEnvironment;
    protected Element testCaseElement;
    protected Element parent;
    protected Element child;
-   private OutputFormat format;
+   private final OutputFormat format;
    protected Element testScriptElement;
    protected Element scriptInitElement;
    protected Document document;
-   private File outFile;
-   private List<LogRecord> records;
+   private final File outFile;
+   private final List<LogRecord> records;
 
    /**
     * ScriptLogHandler Constructor. Sets the outfile to log to and the test script that will be logged. It also
@@ -67,7 +67,7 @@ public class ScriptLogHandler extends Handler {
       try {
          document = Jaxp.newDocument();
       } catch (ParserConfigurationException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
 
       // create an XMLOutputter that indents using 3 spaces and uses newlines
@@ -101,13 +101,13 @@ public class ScriptLogHandler extends Handler {
          }
          Jaxp.writeXmlDocument(document, outFile, format);
       } catch (TransformerException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       } catch (IOException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
    }
 
-
+   @Override
    public synchronized void publish(LogRecord logRecord) {
       if (isLoggable(logRecord)) {
          records.add(logRecord);
@@ -116,7 +116,7 @@ public class ScriptLogHandler extends Handler {
 
    public synchronized void flushRecords() {
       for (int i = 0; i < records.size(); i++) {
-         LogRecord logRecord = (LogRecord) records.get(i);
+         LogRecord logRecord = records.get(i);
 
          if (logRecord instanceof TestRecord) {
             TestRecord record = (TestRecord) logRecord;
@@ -186,10 +186,12 @@ public class ScriptLogHandler extends Handler {
       records.clear();
    }
 
+   @Override
    public void close() throws SecurityException {
       writeOutFile();
    }
 
+   @Override
    public void flush() {
       // don't call this method
 

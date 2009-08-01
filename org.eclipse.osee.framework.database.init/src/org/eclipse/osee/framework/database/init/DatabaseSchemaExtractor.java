@@ -124,13 +124,14 @@ public class DatabaseSchemaExtractor {
          try {
             Jaxp.writeXmlDocument(tableData.getXmlDocument(), xmlFile);
          } catch (TransformerException ex) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
          } catch (ParserConfigurationException ex) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
          }
       }
    }
 
+   @Override
    public String toString() {
       String toReturn = "Name: " + dbName + "\tVer: " + dbVersion + "\n";
       Set<String> keys = database.keySet();

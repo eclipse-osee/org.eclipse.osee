@@ -86,7 +86,7 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
             addPage("");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       Job job = new UIJob("Update Stacked XText") {
 

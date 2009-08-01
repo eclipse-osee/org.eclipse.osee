@@ -50,7 +50,7 @@ public class DerbyDbServer {
                   "Please try to increase the amount of time to keep trying to connect to the Server.");
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -80,6 +80,7 @@ public class DerbyDbServer {
 
    private void addShutdownHook() {
       Runtime.getRuntime().addShutdownHook(new Thread() {
+         @Override
          public void run() {
             OseeLog.log(Activator.class, Level.INFO, "Shutting down");
             shutdown();
@@ -91,7 +92,7 @@ public class DerbyDbServer {
       boolean knowIfServerUp = false;
       int numTimes = 5;
 
-      while (!knowIfServerUp && (numTimes > 0)) {
+      while (!knowIfServerUp && numTimes > 0) {
          try {
             numTimes--;
             nwServer.testForConnection();

@@ -36,7 +36,7 @@ public class EarlyStartup implements IStartup {
                workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
                workspaceTracker.open(true);
             } catch (BundleException ex) {
-               OseeLog.log(RuntimeManager.class, Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
             }
          }
       });

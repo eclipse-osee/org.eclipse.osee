@@ -13,11 +13,11 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class AttributeCompareItem extends CompareItem {
-   private AttributeConflict attributeConflict;
+   private final AttributeConflict attributeConflict;
 
    public AttributeCompareItem(AttributeConflict attributeConflict, String name, String contents, boolean isEditable, Image image) {
       super(name, contents, System.currentTimeMillis(), isEditable, image);
-      
+
       this.attributeConflict = attributeConflict;
    }
 
@@ -26,7 +26,7 @@ public class AttributeCompareItem extends CompareItem {
       try {
          attributeConflict.setAttributeValue(getStringContent());
       } catch (OseeCoreException ex) {
-         OseeLog.log(AttributeCompareItem.class.getCanonicalName(), Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(AttributeCompareItem.class.getCanonicalName(), Level.SEVERE, ex);
       }
    }
 }

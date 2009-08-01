@@ -76,7 +76,9 @@ public class RelationManager {
             }
          }
       }
-      if (relations.size() == 0) return null;
+      if (relations.size() == 0) {
+         return null;
+      }
       if (relations.size() > 1) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]", artifact.getArtId(),
@@ -227,15 +229,13 @@ public class RelationManager {
                   Artifact art = relation.getArtifactOnOtherSide(artifact);
                   relatedArtifacts.add(art);
                } else {
-                  // only select relations where the related artifact is on relationSide
-                  // (and thus on the side opposite of "artifact")
-                  if (relation.getSide(artifact) != relationSide) {
+                  if (relation.getSide(artifact).isOppositeSide(relationSide)) {
                      Artifact art = relation.getArtifact(relationSide);
                      relatedArtifacts.add(art);
                   }
                }
             } catch (ArtifactDoesNotExist ex) {
-               OseeLog.log(Activator.class, Level.WARNING, ex.getMessage(), ex);
+               OseeLog.log(Activator.class, Level.WARNING, ex);
             }
          }
       }

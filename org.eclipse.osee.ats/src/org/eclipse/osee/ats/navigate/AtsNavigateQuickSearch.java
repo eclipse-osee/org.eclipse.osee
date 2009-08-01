@@ -70,7 +70,7 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
          return getExpectedArtifacts(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
                searchStr, false, false, false));
       } catch (Exception ex) {
-         OseeLog.log("AtsNavigateQuickSearch.performSearch", Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log("AtsNavigateQuickSearch.performSearch", Level.SEVERE, ex);
       }
       return null;
    }
@@ -86,8 +86,9 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
                if (!sma.getSmaMgr().isCancelledOrCompleted()) {
                   allArtifacts.add(art);
                }
-            } else
+            } else {
                allArtifacts.add(art);
+            }
          }
       }
       return allArtifacts;

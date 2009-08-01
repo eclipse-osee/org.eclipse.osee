@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -40,7 +39,6 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
-
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.JiniPlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -51,22 +49,22 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
 
    private static ServiceDataStore theInstance = null;
 
-   private List<ClassListener> classListeners;
-   private Set<IRegistrarListener> registrarListeners;
-   private Set<IServiceLookupListener> noFilterServiceListeners;
-   private Set<String> locators;
+   private final List<ClassListener> classListeners;
+   private final Set<IRegistrarListener> registrarListeners;
+   private final Set<IServiceLookupListener> noFilterServiceListeners;
+   private final Set<String> locators;
 
    // private Set allowedGroups;
 
-   private List<ServiceItem> serviceItemList;
-   private Map<ServiceID, ServiceRegistrar> serviceRegistrars;
+   private final List<ServiceItem> serviceItemList;
+   private final Map<ServiceID, ServiceRegistrar> serviceRegistrars;
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
 
    // private LookupCache lookupCache;
    // private LookupCache lookupCache;
-   private Map<Class<?>, LookupCache> lookupCaches;
-   private Logger logger = Logger.getLogger("org.eclipse.osee.framework.jini.discovery.ServiceDataStore");
+   private final Map<Class<?>, LookupCache> lookupCaches;
+   private final Logger logger = Logger.getLogger("org.eclipse.osee.framework.jini.discovery.ServiceDataStore");
    private LookupCache everythingCache;
 
    // *************************************************************************
@@ -83,12 +81,12 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       locators = Collections.synchronizedSet(new HashSet<String>());
 
       ClassLoader currentContext = Thread.currentThread().getContextClassLoader();
-      try{
-	      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-	      System.setSecurityManager(new RelaxedSecurity());
-	      registerWithJINI();
-      } finally{
-    	  Thread.currentThread().setContextClassLoader(currentContext);
+      try {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+         System.setSecurityManager(new RelaxedSecurity());
+         registerWithJINI();
+      } finally {
+         Thread.currentThread().setContextClassLoader(currentContext);
       }
    }
 
@@ -173,13 +171,14 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
 
    private class LookupList extends Thread {
 
-      private Collection<String> lookupLocations;
+      private final Collection<String> lookupLocations;
 
       public LookupList(Collection<String> lookupLocations) {
          this.lookupLocations = lookupLocations;
          System.setSecurityManager(new RelaxedSecurity());
       }
 
+      @Override
       public void run() {
          Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          System.setSecurityManager(new RelaxedSecurity());
@@ -189,9 +188,13 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
                try {
                   LookupLocator locator = new LookupLocator(location);
                   ServiceRegistrar reg = locator.getRegistrar(5000);
-                  if (lookupDiscoveryManager.getFrom(reg) == LookupDiscoveryManager.FROM_GROUP || compareGroups(reg)) if (reg != null) locatorList.add(locator);
+                  if (lookupDiscoveryManager.getFrom(reg) == LookupDiscoveryManager.FROM_GROUP || compareGroups(reg)) {
+                     if (reg != null) {
+                        locatorList.add(locator);
+                     }
+                  }
                } catch (MalformedURLException ex) {
-                  OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+                  OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
                } catch (Exception ex) {
                   System.out.println(); // ?
                }
@@ -224,9 +227,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    // *************************************************************************
 
    /**
-    * Returns a list of currently available services that match the class types provided. <br /> Note: If this is called
-    * immediatly after the first call to getInstance(), the Jini lookup will not have had time to complete, and no
-    * services will yet be available.
+    * Returns a list of currently available services that match the class types provided. <br />
+    * Note: If this is called immediatly after the first call to getInstance(), the Jini lookup will not have had time
+    * to complete, and no services will yet be available.
     */
    public List<ServiceItem> getAvailableServices(Class<?>[] classTypes) {
       List<ServiceItem> serviceList = new ArrayList<ServiceItem>();
@@ -282,16 +285,15 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          everythingCache = serviceDiscoveryManager.createLookupCache(null, null, this);
       } else {
          if (lookupCaches.get(classType) == null) {
-        	 ClassLoader currentContext = Thread.currentThread().getContextClassLoader();
-             try{
-       	      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-       	      lookupCaches.put(classType, serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null,
-                   new Class[] {classType}, null), null, this));
-             } finally{
-           	  Thread.currentThread().setContextClassLoader(currentContext);
-             } 
-            
-            
+            ClassLoader currentContext = Thread.currentThread().getContextClassLoader();
+            try {
+               Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+               lookupCaches.put(classType, serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null,
+                     new Class[] {classType}, null), null, this));
+            } finally {
+               Thread.currentThread().setContextClassLoader(currentContext);
+            }
+
          }
       }
    }
@@ -543,7 +545,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          while (iter.hasNext()) {
             ServiceItem si = iter.next();
             if (si.serviceID.equals(sid)) {
-               if (remove) iter.remove();
+               if (remove) {
+                  iter.remove();
+               }
                return true;
             }
          }
@@ -568,7 +572,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(JiniPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -587,7 +591,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    }
 
    public void serviceChanged(ServiceDiscoveryEvent event) {
-      if (findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) notifyServiceChanged(event.getPostEventServiceItem());
+      if (findServiceId(serviceItemList, event.getPostEventServiceItem().serviceID, false)) {
+         notifyServiceChanged(event.getPostEventServiceItem());
+      }
    }
 
    public void discovered(DiscoveryEvent arg0) {
@@ -664,18 +670,20 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    private void addLookupLocators(Collection<String> lookupList, boolean addToLocators) {
       boolean isEnabled = OseeProperties.isOseeJiniForcedReggieSearchEnabled();
       if (isEnabled) {
-    	 
-    	  ClassLoader currentContext = Thread.currentThread().getContextClassLoader();
-          try{
-    	      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-    	         if (addToLocators) locators.addAll(lookupList);
 
-    	         Thread thread = new LookupList(lookupList);
-    	         thread.setContextClassLoader(ExportClassLoader.getInstance());
-    	         thread.start();
-          } finally{
-        	  Thread.currentThread().setContextClassLoader(currentContext);
-          } 
+         ClassLoader currentContext = Thread.currentThread().getContextClassLoader();
+         try {
+            Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+            if (addToLocators) {
+               locators.addAll(lookupList);
+            }
+
+            Thread thread = new LookupList(lookupList);
+            thread.setContextClassLoader(ExportClassLoader.getInstance());
+            thread.start();
+         } finally {
+            Thread.currentThread().setContextClassLoader(currentContext);
+         }
       }
    }
 

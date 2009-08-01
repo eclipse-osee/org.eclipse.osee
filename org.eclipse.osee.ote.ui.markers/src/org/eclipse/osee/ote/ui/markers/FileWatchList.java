@@ -20,32 +20,31 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class FileWatchList {
-   
-   private class FileWatchItem{
+
+   private class FileWatchItem {
       IFile file;
       List<IMarker> markers;
       long timeUpdated;
-      
-      FileWatchItem(IFile file, List<IMarker> markers){
+
+      FileWatchItem(IFile file, List<IMarker> markers) {
          this.file = file;
          this.markers = markers;
          timeUpdated = System.currentTimeMillis();
       }
    }
-   
-   private List<FileWatchItem> fileWatchItems;
-   
+
+   private final List<FileWatchItem> fileWatchItems;
+
    public FileWatchList() {
       fileWatchItems = new CopyOnWriteArrayList<FileWatchItem>();
    }
-   
-   public void put(IFile file, List<IMarker> markers){
+
+   public void put(IFile file, List<IMarker> markers) {
       FileWatchItem item = findWatchItem(file);
-      if(item == null){
-         if(isListTooBig()){
+      if (item == null) {
+         if (isListTooBig()) {
             removeOldestWatchItem();
          }
          fileWatchItems.add(new FileWatchItem(file, markers));
@@ -54,30 +53,32 @@ public class FileWatchList {
          item.timeUpdated = System.currentTimeMillis();
       }
    }
-   
+
    /**
     * 
     */
    private void removeOldestWatchItem() {
       FileWatchItem oldest = null;
-      for(FileWatchItem item:fileWatchItems)  {
-         if(oldest == null){
+      for (FileWatchItem item : fileWatchItems) {
+         if (oldest == null) {
             oldest = item;
          } else {
-            if(oldest.timeUpdated > item.timeUpdated){
+            if (oldest.timeUpdated > item.timeUpdated) {
                oldest = item;
             }
          }
       }
-      if(oldest != null){
-         OseeLog.log(FileWatchList.class, Level.INFO, String.format("Removing markers from [%s] because maximium marker watch list size has been reached.", oldest.file.getName()));
+      if (oldest != null) {
+         OseeLog.log(FileWatchList.class, Level.INFO, String.format(
+               "Removing markers from [%s] because maximium marker watch list size has been reached.",
+               oldest.file.getName()));
          fileWatchItems.remove(oldest);
-         if(oldest.markers != null){
-            for(IMarker marker:oldest.markers){
+         if (oldest.markers != null) {
+            for (IMarker marker : oldest.markers) {
                try {
                   marker.delete();
                } catch (CoreException ex) {
-                  OseeLog.log(FileWatchList.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(FileWatchList.class, Level.SEVERE, ex);
                }
             }
          }
@@ -91,9 +92,9 @@ public class FileWatchList {
       return fileWatchItems.size() > 20;
    }
 
-   public List<IMarker> get(IFile file){
+   public List<IMarker> get(IFile file) {
       FileWatchItem item = findWatchItem(file);
-      if(item != null){
+      if (item != null) {
          return item.markers;
       } else {
          return null;
@@ -105,12 +106,12 @@ public class FileWatchList {
     * @return
     */
    private FileWatchItem findWatchItem(IFile file) {
-      for(FileWatchItem item:fileWatchItems){
-         if(item.file.equals(file)){
+      for (FileWatchItem item : fileWatchItems) {
+         if (item.file.equals(file)) {
             return item;
          }
       }
       return null;
    }
-   
+
 }

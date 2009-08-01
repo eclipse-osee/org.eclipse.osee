@@ -263,7 +263,7 @@ public class OseeClientProperties extends OseeProperties {
          try {
             properties.loadFromXML(url.openStream());
          } catch (Exception ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
          }
          if (!properties.isEmpty()) {
             OseeLog.log(CoreClientActivator.class, Level.INFO, String.format("Initializing properties [%s]", flag));

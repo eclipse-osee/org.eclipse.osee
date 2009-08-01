@@ -81,8 +81,7 @@ public class UdpFileTransferHandler {
             handles.remove(key);
             key.cancel();
             //selector.wakeup();
-            OseeLog.log(MessageSystemTestEnvironment.class,
-                  Level.INFO, "stopping transfer for " + config.getFileName());
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "stopping transfer for " + config.getFileName());
             key.channel().close();
             lock.release();
             lock.channel().close();
@@ -113,12 +112,10 @@ public class UdpFileTransferHandler {
             } catch (ClosedByInterruptException ex) {
                if (!done) {
                   // interrupted but we were not stopped
-                  OseeLog.log(MessageSystemTestEnvironment.class,
-                        Level.SEVERE, ex.getMessage(), ex);
+                  OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
                }
             } catch (IOException ex) {
-               OseeLog.log(MessageSystemTestEnvironment.class,
-                     Level.SEVERE, ex.getMessage(), ex);
+               OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
             }
          }
 
@@ -251,18 +248,20 @@ public class UdpFileTransferHandler {
             System.out.printf("Writing to %s data recieved from %s via local port %d\n", file, address.toString(),
                   localPort);
          }
-         TransferConfig config = new TransferConfig(file, address, new InetSocketAddress(InetAddress.getLocalHost(), localPort), direction, 7 * 188);
+         TransferConfig config =
+               new TransferConfig(file, address, new InetSocketAddress(InetAddress.getLocalHost(), localPort),
+                     direction, 7 * 188);
          rec.registerTransfer(config);
          System.in.read();
          rec.stop(2500);
       } catch (UnknownHostException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
       } catch (FileNotFoundException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
       } catch (IOException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
       } catch (InterruptedException ex) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
       }
    }
 
@@ -272,8 +271,7 @@ public class UdpFileTransferHandler {
     * @throws IOException
     */
    public synchronized void stopAllTransfers() throws IOException {
-      OseeLog.log(MessageSystemTestEnvironment.class,Level.FINE,
-            "stopping all transfers");
+      OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE, "stopping all transfers");
       for (Handle handle : handles.values()) {
          handle.stop();
       }

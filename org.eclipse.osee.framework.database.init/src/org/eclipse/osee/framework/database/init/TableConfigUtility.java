@@ -49,7 +49,9 @@ public class TableConfigUtility {
    }
 
    public static TableConfigUtility getInstance() {
-      if (instance == null) instance = new TableConfigUtility();
+      if (instance == null) {
+         instance = new TableConfigUtility();
+      }
       return instance;
    }
 
@@ -64,11 +66,11 @@ public class TableConfigUtility {
       try {
          document = Jaxp.readXmlDocument(configFile);
       } catch (ParserConfigurationException ex) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
       } catch (SAXException ex) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
       } catch (IOException ex) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
       }
       return document;
    }

@@ -43,9 +43,9 @@ public class ReggieCache implements DiscoveryListener {
 
    private static ReggieCache theInstance = null;
 
-   private Set<IRegistrarListener> registrarListeners;
-   private Set<String> locators;
-   private Map<ServiceID, ServiceRegistrar> serviceRegistrars;
+   private final Set<IRegistrarListener> registrarListeners;
+   private final Set<String> locators;
+   private final Map<ServiceID, ServiceRegistrar> serviceRegistrars;
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
 
@@ -97,12 +97,13 @@ public class ReggieCache implements DiscoveryListener {
 
    private class LookupList extends Thread {
 
-      private String[] lookupLocations;
+      private final String[] lookupLocations;
 
       public LookupList(String[] lookupLocations) {
          this.lookupLocations = lookupLocations;
       }
 
+      @Override
       public void run() {
          ClassLoader loader = Thread.currentThread().getContextClassLoader();
          SecurityManager securityManager = System.getSecurityManager();
@@ -128,7 +129,7 @@ public class ReggieCache implements DiscoveryListener {
                lookupDiscoveryManager.addLocators(locatorList.toArray(new LookupLocator[locatorList.size()]));
             }
          } catch (MalformedURLException ex) {
-            OseeLog.log(ControlPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+            OseeLog.log(ControlPlugin.class, Level.SEVERE, ex);
          } finally {
             Thread.currentThread().setContextClassLoader(loader);
             System.setSecurityManager(securityManager);

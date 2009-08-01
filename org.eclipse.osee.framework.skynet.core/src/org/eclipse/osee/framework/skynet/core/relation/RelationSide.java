@@ -36,4 +36,8 @@ public enum RelationSide {
    public static RelationSide[] getSides() {
       return sides;
    }
+
+   public boolean isOppositeSide(RelationSide side) {
+      return this != side;
+   }
 }

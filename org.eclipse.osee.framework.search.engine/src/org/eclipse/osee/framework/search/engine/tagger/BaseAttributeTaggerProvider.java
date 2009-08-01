@@ -67,13 +67,13 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
             inputStream = getExtendedDataAsStream(attributeData);
             toReturn = Lib.inputStreamToString(inputStream);
          } catch (Exception ex) {
-            OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex);
          } finally {
             if (inputStream != null) {
                try {
                   inputStream.close();
                } catch (IOException ex) {
-                  OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex);
                }
             }
          }

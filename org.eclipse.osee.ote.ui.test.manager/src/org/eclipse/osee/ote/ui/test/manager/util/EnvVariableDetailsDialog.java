@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 public class EnvVariableDetailsDialog extends MessageDialog {
 
    private Button cancelButton;
-   private String dialogMessage;
+   private final String dialogMessage;
 
    private Button okButton;
 
@@ -50,9 +50,7 @@ public class EnvVariableDetailsDialog extends MessageDialog {
    private boolean selectionOk;
    private StyledText textArea;
 
-
-   public EnvVariableDetailsDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex,
-         String oldValue) {
+   public EnvVariableDetailsDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, String oldValue) {
       super(parentShell, dialogTitle, dialogTitleImage, null, dialogImageType, dialogButtonLabels, defaultIndex);
 
       this.selectionOk = false;
@@ -122,6 +120,7 @@ public class EnvVariableDetailsDialog extends MessageDialog {
       importButton.setText("Import");
       importButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             FileDialog dialog = new FileDialog(EnvVariableDetailsDialog.this.getShell(), SWT.OPEN);
 
@@ -132,9 +131,8 @@ public class EnvVariableDetailsDialog extends MessageDialog {
                   importedData = Lib.fileToString(new File(result));
                   textArea.setText(textArea.getText() + importedData);
                   selection = textArea.getText();
-               }
-               catch (IOException ex) {
-                  OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+               } catch (IOException ex) {
+                  OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
                }
             }
          }

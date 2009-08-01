@@ -33,9 +33,9 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature> {
 
-   private Map<String, Bundle> installedBundles;
-   private Map<String, Bundle> runningBundles;
-   private Collection<Bundle> stoppedBundles;
+   private final Map<String, Bundle> installedBundles;
+   private final Map<String, Bundle> runningBundles;
+   private final Collection<Bundle> stoppedBundles;
    private JarChangeResourceListener workspaceListener;
    private SafeWorkspaceAccess service;
 
@@ -66,13 +66,14 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       try {
          installWorkspacePlugins();
       } catch (CoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } catch (BundleException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      workspace.addResourceChangeListener((JarChangeResourceListener) workspaceListener);
+      workspace.addResourceChangeListener(workspaceListener);
    }
 
+   @Override
    public synchronized void close() {
       IWorkspace workspace = service.getWorkspace();
       cleanupHandledBundles();

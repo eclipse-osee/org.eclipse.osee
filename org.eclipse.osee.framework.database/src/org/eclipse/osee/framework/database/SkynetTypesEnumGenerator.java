@@ -191,7 +191,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
 

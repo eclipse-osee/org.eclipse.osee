@@ -27,7 +27,7 @@ public class ExtensionContributions {
          TestManagerPlugin.PLUGIN_ID + "." + ADVANCED_PAGE_EXTENSION_ELEMENT;
    private static String EXTENSION_ATTRIBUTE = "classname";
 
-   private ExtensionDefinedObjects<IAdvancedPageContribution> advancedPageContributions;
+   private final ExtensionDefinedObjects<IAdvancedPageContribution> advancedPageContributions;
 
    public ExtensionContributions() {
       this.advancedPageContributions =
@@ -40,7 +40,7 @@ public class ExtensionContributions {
       try {
          toReturn = advancedPageContributions.getObjects();
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
       }
       return toReturn;
    }

@@ -235,8 +235,9 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null)
+      if (dynamicXWidgetLayout == null) {
          return Result.TrueResult;
+      }
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
             IStatus status = widget.isValid();
@@ -254,13 +255,15 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetDirty() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null)
+      if (dynamicXWidgetLayout == null) {
          return Result.FalseResult;
+      }
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
             Result result = ((IArtifactWidget) widget).isDirty();
-            if (result.isTrue())
+            if (result.isTrue()) {
                return result;
+            }
          }
       }
       return Result.FalseResult;
@@ -278,7 +281,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    private String getCurrentStateTitle() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(atsWorkPage.getName());
-      if (isEditable && (!smaMgr.isCompleted() && !smaMgr.isCancelled())) {
+      if (isEditable && !smaMgr.isCompleted() && !smaMgr.isCancelled()) {
          sb.append(" - Current State");
       }
       if (smaMgr.isCancelled()) {
@@ -289,8 +292,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
-            if (!item.getMsg().equals(""))
+            if (!item.getMsg().equals("")) {
                sb.append(" - Reason: " + item.getMsg());
+            }
          }
       }
       if (isCurrentState) {
@@ -323,18 +327,21 @@ public class SMAWorkFlowSection extends SectionPart {
    public void dispose() {
       super.dispose();
       atsWorkPage.dispose();
-      if (reviewInfoComposite != null)
+      if (reviewInfoComposite != null) {
          reviewInfoComposite.clearFormMessages();
-      if (targetVersionInfoComposite != null)
+      }
+      if (targetVersionInfoComposite != null) {
          targetVersionInfoComposite.clearFormMessages();
+      }
       servicesArea.dispose();
    }
 
    final SMAWorkFlowSection fSection = this;
    final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget xWidget) {
-         if (smaMgr.getSma().isDeleted())
+         if (smaMgr.getSma().isDeleted()) {
             return;
+         }
          // Notify extensions of widget modified
          try {
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
@@ -363,14 +370,15 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
             WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
-            if (toWorkPage == null)
+            if (toWorkPage == null) {
                transitionAssigneesLabel.setText("");
-            else
+            } else {
                transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
+            }
             transitionAssigneesLabel.getParent().layout();
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       refreshStateServices();
    }
@@ -460,8 +468,9 @@ public class SMAWorkFlowSection extends SectionPart {
       UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(smaMgr.getTransitionAssignees());
-      if (uld.open() != 0)
+      if (uld.open() != 0) {
          return;
+      }
       Collection<User> users = uld.getUsersSelected();
       if (users.size() == 0) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
@@ -554,8 +563,9 @@ public class SMAWorkFlowSection extends SectionPart {
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          assignees = item.getOverrideTransitionToAssignees(this);
-         if (assignees != null)
+         if (assignees != null) {
             break;
+         }
       }
       // If override set and isn't the same as already selected, update
       if (assignees != null && !smaMgr.getTransitionAssignees().equals(assignees)) {
@@ -570,13 +580,15 @@ public class SMAWorkFlowSection extends SectionPart {
       String transitionStateOverride = null;
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
          transitionStateOverride = item.getOverrideTransitionToStateName(this);
-         if (transitionStateOverride != null)
+         if (transitionStateOverride != null) {
             break;
+         }
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride))
+         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) {
             return;
+         }
          // Find page corresponding to override state name
          for (WorkPageDefinition toWorkPageDefinition : smaMgr.getToWorkPages()) {
             if (toWorkPageDefinition.getPageName().equals(transitionStateOverride)) {
@@ -593,8 +605,9 @@ public class SMAWorkFlowSection extends SectionPart {
    public void setTransitionToStateSelection(String stateName) throws OseeCoreException {
       ArrayList<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
-         if (nextPage.getPageName().equals(stateName))
+         if (nextPage.getPageName().equals(stateName)) {
             allPages.add(nextPage);
+         }
       }
       transitionToStateCombo.setSelected(allPages);
    }
@@ -647,8 +660,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-            if (cancelDialog.open() != 0)
+            if (cancelDialog.open() != 0) {
                return;
+            }
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             Result result =
                   smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
@@ -673,10 +687,11 @@ public class SMAWorkFlowSection extends SectionPart {
 
          // Get transition to assignees
          Collection<User> toAssignees;
-         if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage())
+         if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage()) {
             toAssignees = new HashSet<User>();
-         else
+         } else {
             toAssignees = smaMgr.getTransitionAssignees();
+         }
 
          // If this is a return transition, don't require page/tasks to be complete
          if (!smaMgr.isReturnPage(toWorkPageDefinition)) {
@@ -734,8 +749,9 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Ask for metrics for this page (store in state versus task?)
-            if (!handlePopulateStateMetrics())
+            if (!handlePopulateStateMetrics()) {
                return;
+            }
          }
 
          // Persist must be done prior and separate from transition 
@@ -760,8 +776,9 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public void refreshStateServices() {
-      if (servicesArea != null)
+      if (servicesArea != null) {
          servicesArea.refresh();
+      }
       smaMgr.getEditor().onDirtied();
    }
 
@@ -780,8 +797,9 @@ public class SMAWorkFlowSection extends SectionPart {
          double minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
          double hoursSinceCreation = minSinceCreation / 60.0;
-         if (hoursSinceCreation < 0.02)
+         if (hoursSinceCreation < 0.02) {
             hoursSinceCreation = 0.02;
+         }
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
             smaMgr.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
@@ -807,7 +825,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Date createDate = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
-      float diff = (date.getTime() - createDateLong);
+      float diff = date.getTime() - createDateLong;
       // System.out.println("diff *" + diff + "*");
       Float min = diff / 60000;
       // System.out.println("min *" + min + "*");

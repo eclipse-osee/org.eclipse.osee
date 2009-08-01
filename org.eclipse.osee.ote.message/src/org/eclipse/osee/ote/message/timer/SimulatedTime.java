@@ -47,19 +47,19 @@ public class SimulatedTime extends TimerControl {
          try {
             task.baseRunOneCycle(cycleCount);
          } catch (Throwable ex) {
-            OseeLog.log(MessageSystemTestEnvironment.class,
-                  Level.SEVERE, "Aborting the test script because an Environment Task is failing", ex);
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
+                  "Aborting the test script because an Environment Task is failing", ex);
             env.getRunManager().abort(ex, false);
          }
       }
    }
    private final Collection<CycleCountDown> cycleCounters;
-   private IScriptControl scriptControl;
+   private final IScriptControl scriptControl;
    private int cycleCount;
    private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<Task>();
 
    /**
-    * @param scriptControl - 
+    * @param scriptControl -
     * @throws IOException
     */
    public SimulatedTime(IScriptControl scriptControl) throws IOException {
@@ -70,20 +70,22 @@ public class SimulatedTime extends TimerControl {
    }
 
    public long getEnvTime() {
-      return (long) (cycleCount * (1000.0 / EnvironmentTask.cycleResolution));
+      return (long) (cycleCount * 1000.0 / EnvironmentTask.cycleResolution);
    }
 
    public ICancelTimer setTimerFor(ITimeout objToNotify, int milliseconds) {
       try {
-    	 
+
          scriptControl.unlock();
       } catch (IllegalMonitorStateException ex) {
          if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
-               "(JSK) Mux request dispatch")) OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.getMessage(), ex);
+               "(JSK) Mux request dispatch")) {
+            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
+         }
       }
       CycleCountDown cycleCountDown =
             new CycleCountDown(scriptControl, objToNotify,
-                  ((int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution))) - 1);
+                  (int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution)) - 1);
       synchronized (cycleCounters) {
          cycleCounters.add(cycleCountDown);
       }
@@ -105,8 +107,7 @@ public class SimulatedTime extends TimerControl {
          }
       }
       if (itemToRemove != null) {
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE,
-               "removing environment task " + task.toString());
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE, "removing environment task " + task.toString());
          tasks.remove(itemToRemove);
       }
    }

@@ -54,11 +54,11 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
 
    private final XMLReader xmlReader;
 
-   private TreeSet<String> artifacts;
+   private final TreeSet<String> artifacts;
 
-   private TreeSet<String> attributes;
+   private final TreeSet<String> attributes;
 
-   private TreeSet<String> relations;
+   private final TreeSet<String> relations;
 
    private String sheetName;
 
@@ -88,7 +88,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       xmlReader.parse(new InputSource(new FileInputStream(importFile)));
 
       this.destinationDir =
-            (destinationDir != null && destinationDir.isDirectory()) ? destinationDir : importFile.getParentFile();
+            destinationDir != null && destinationDir.isDirectory() ? destinationDir : importFile.getParentFile();
    }
 
    public void finish() throws IOException {
@@ -105,7 +105,9 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       while (it.hasNext()) {
          out.append("   ");
          out.append(it.next());
-         if (it.hasNext()) out.append(",\n");
+         if (it.hasNext()) {
+            out.append(",\n");
+         }
       }
       out.append(";\n");
       out.append(relationEnumCode.replace("CLASSNAME_PLACEHOLDER", relClassName));
@@ -121,7 +123,9 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       while (it.hasNext()) {
          out.append("   ");
          out.append(it.next());
-         if (it.hasNext()) out.append(",\n");
+         if (it.hasNext()) {
+            out.append(",\n");
+         }
       }
       out.append(";\n\n");
       out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", attrClassName));
@@ -137,7 +141,9 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       while (it.hasNext()) {
          out.append("   ");
          out.append(it.next());
-         if (it.hasNext()) out.append(",\n");
+         if (it.hasNext()) {
+            out.append(",\n");
+         }
       }
       out.append(";\n\n");
       out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", artClassName));
@@ -150,7 +156,9 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    }
 
    public void processHeaderRow(String[] headerRow) {
-      if (done) return;
+      if (done) {
+         return;
+      }
       if (tableIterator.hasNext()) {
          currentTable = tableIterator.next();
       } else {
@@ -165,7 +173,9 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
     * @param row
     */
    public void processRow(String[] row) {
-      if (done) return;
+      if (done) {
+         return;
+      }
       try {
          switch (currentTable) {
             case ARTIFACT_TYPE_TABLE:
@@ -181,7 +191,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
       }
    }
 

@@ -84,7 +84,7 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
             addPage("");
          }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       Job job = new UIJob("Update Flat XText") {
 

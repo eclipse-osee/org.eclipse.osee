@@ -83,34 +83,33 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private IExecutionUnitManagement executionUnitManagement;
 
    private File outDir = null;
-   private ITestStation testStation;
-   private HashMap<Serializable, Object> users;
+   private final ITestStation testStation;
+   private final HashMap<Serializable, Object> users;
    private volatile IUserSession activeUser = null;
    private boolean batchMode = false;
    private OteLogFile oteLog;
    private final HashMap<String, Remote> controlInterfaces = new HashMap<String, Remote>();
-   private IEnvironmentFactory factory;
+   private final IEnvironmentFactory factory;
    private IServiceConnector connector;
    private final IRuntimeLibraryManager runtimeManager;
-   
-   
+
    @Deprecated
-   private HashMap<Class<?>, Object> associatedObjects;
+   private final HashMap<Class<?>, Object> associatedObjects;
    @Deprecated
-   private HashMap<Class<?>, ArrayList<IAssociatedObjectListener>> associatedObjectListeners;
+   private final HashMap<Class<?>, ArrayList<IAssociatedObjectListener>> associatedObjectListeners;
    @Deprecated
    private boolean isEnvSetup = false;
    @Deprecated
-   private List<IScriptCompleteEvent> scriptCompleteListeners = new ArrayList<IScriptCompleteEvent>();
+   private final List<IScriptCompleteEvent> scriptCompleteListeners = new ArrayList<IScriptCompleteEvent>();
    @Deprecated
-   private List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<IScriptSetupEvent>();
-   
+   private final List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<IScriptSetupEvent>();
+
    private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
    private OteServerSideEndpointSender oteServerSideEndpointSender;
-   private ServiceTracker messagingServiceTracker;
+   private final ServiceTracker messagingServiceTracker;
    ExecutorService execInitializationTasks;
    LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
-   
+
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
       execInitializationTasks = Executors.newCachedThreadPool();
@@ -118,20 +117,20 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
       this.runtimeManager.addRuntimeLibraryListener(Activator.getInstance());
-      
+
       this.associatedObjectListeners = new HashMap<Class<?>, ArrayList<IAssociatedObjectListener>>();
       this.associatedObjects = new HashMap<Class<?>, Object>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
       this.users = new HashMap<Serializable, Object>(32);
-      
+
       messagingServiceTracker = setupOteMessagingSenderAndReceiver();
-            
+
       setupOteServerLogFile();
    }
-   
-   public void init(IServiceConnector connector){
+
+   public void init(IServiceConnector connector) {
       this.connector = connector;
-      initializationThreadAdd(new Callable(){
+      initializationThreadAdd(new Callable() {
          public Object call() throws Exception {
             Activator.getInstance().registerTestEnvironment(TestEnvironment.this);
             return null;
@@ -139,24 +138,24 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       });
       waitForWorkerThreadsToComplete();
    }
-   
-   public void waitForWorkerThreadsToComplete(){
-      while(!listOfThreadsToWaitOnInInit.isEmpty()){
+
+   public void waitForWorkerThreadsToComplete() {
+      while (!listOfThreadsToWaitOnInInit.isEmpty()) {
          Future future = listOfThreadsToWaitOnInInit.poll();
          try {
             future.get();
          } catch (InterruptedException ex) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
          } catch (ExecutionException ex) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
          }
       }
    }
-   
-   public void initializationThreadAdd(Callable callable){
+
+   public void initializationThreadAdd(Callable callable) {
       listOfThreadsToWaitOnInInit.add(execInitializationTasks.submit(callable));
    }
-   
+
    /**
     * 
     */
@@ -170,10 +169,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       props.setProperty("date", new Date());
       props.setProperty("group", "OSEE Test Environment");
       props.setProperty("owner", System.getProperty("user.name"));
-      connector = new LocalConnector(this, props); 
+      connector = new LocalConnector(this, props);
    }
 
-   private void setupOteServerLogFile(){
+   private void setupOteServerLogFile() {
       try {
          String saveFile = OteProperties.getOseeOteLogFilePath();
          if (!Strings.isValid(saveFile)) {
@@ -191,33 +190,34 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          OseeLog.registerLoggerListener(oteLog);
       } catch (Exception e1) {
          e1.printStackTrace();
-      }      
+      }
    }
-   
-   private ServiceTracker setupOteMessagingSenderAndReceiver(){
+
+   private ServiceTracker setupOteMessagingSenderAndReceiver() {
       oteServerSideEndpointRecieve = new OteServerSideEndprointRecieve();
       oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
       BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
-      return getServiceTracker(MessagingGateway.class.getName(),
-            new OteEnvironmentTrackerCustomizer(context, oteServerSideEndpointRecieve, oteServerSideEndpointSender, OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
+      return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
+            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
+            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
    }
-   
-   public void sendCommand(Command command){
+
+   public void sendCommand(Command command) {
       Activator.getInstance().getCommandDistributer().distribute(command);
    }
 
-   public void sendMessageToServer(Message message){
+   public void sendMessageToServer(Message message) {
       oteServerSideEndpointRecieve.recievedMessage(message);
    }
-   
-   public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer){
+
+   public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       return Activator.getInstance().getServiceTracker(clazz, customizer);
    }
-   
-   public ServiceTracker getServiceTracker(String clazz){
+
+   public ServiceTracker getServiceTracker(String clazz) {
       return getServiceTracker(clazz, null);
    }
-   
+
    public ICommandHandle addCommand(ITestServerCommand cmd) throws ExportException {
       return factory.getCommandManager().addCommand(cmd, this);
    }
@@ -226,14 +226,14 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return factory.getRunManager();
    }
 
-   public IRuntimeLibraryManager getRuntimeManager(){
+   public IRuntimeLibraryManager getRuntimeManager() {
       return this.runtimeManager;
    }
 
-   public IEnvironmentFactory getEnvironmentFactory(){
+   public IEnvironmentFactory getEnvironmentFactory() {
       return factory;
    }
-   
+
    public boolean isInBatchMode() {
       return batchMode;
    }
@@ -266,7 +266,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          return false;
       }
    }
-   
+
    public long getEnvTime() {
       return getTimerCtrl().getEnvTime();
    }
@@ -308,8 +308,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
             throw new IOException("Could not completely read file " + file.getName());
          }
          is.close();
-         OseeLog.log(TestEnvironment.class, Level.FINE,
-               "going to send " + bytes.length + " bytes to the client");
+         OseeLog.log(TestEnvironment.class, Level.FINE, "going to send " + bytes.length + " bytes to the client");
 
          return bytes;
       } catch (Exception ex) {
@@ -335,11 +334,9 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public void disconnect(final UserTestSessionKey key) throws RemoteException {
       try {
-         OseeLog.log(TestEnvironment.class, Level.INFO,
-               "Disconnecting user " + getUserSession(key).getUser().getName());
+         OseeLog.log(TestEnvironment.class, Level.INFO, "Disconnecting user " + getUserSession(key).getUser().getName());
       } catch (Exception ex) {
-         OseeLog.log(TestEnvironment.class, Level.INFO,
-               "problem with accessing user name from the useer session");
+         OseeLog.log(TestEnvironment.class, Level.INFO, "problem with accessing user name from the useer session");
       }
       users.remove(key);
    }
@@ -358,7 +355,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public void removeUser(OSEEPerson1_4 user) {
       if (users.containsKey(user)) {
-         users.put(user, new Integer((((Integer) users.get(user)).intValue()) - 1));
+         users.put(user, new Integer(((Integer) users.get(user)).intValue() - 1));
          if (((Integer) users.get(user)).intValue() == 0) {
             users.remove(user);
          }
@@ -388,11 +385,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
             if (!outDir.mkdirs()) {
                throw new IOException("Failed to create the output directory");
             }
-            OseeLog.log(TestEnvironment.class, Level.INFO, 
-                  String.format("Outfile Dir [%s] created.", outDir.getAbsolutePath()));
+            OseeLog.log(TestEnvironment.class, Level.INFO, String.format("Outfile Dir [%s] created.",
+                  outDir.getAbsolutePath()));
          } else {
-            OseeLog.log(TestEnvironment.class, Level.FINE,
-                  String.format("Outfile Dir [%s] exists.", outDir.getAbsolutePath()));
+            OseeLog.log(TestEnvironment.class, Level.FINE, String.format("Outfile Dir [%s] exists.",
+                  outDir.getAbsolutePath()));
          }
       } else {
          throw new IOException("A valid outfile directory must be specified.");
@@ -409,9 +406,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
 
       messagingServiceTracker.close();
-      
-      OseeLog.log(TestEnvironment.class, Level.FINE,
-            "shutting down environment");
+
+      OseeLog.log(TestEnvironment.class, Level.FINE, "shutting down environment");
       factory.getTimerControl().cancelTimers();
       stop();
       cleanupClassReferences();
@@ -479,20 +475,17 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    }
 
    protected void cleanupClassReferences() {
-      OseeLog.log(TestEnvironment.class, Level.FINE,
-            "cleanupreferences");
-      
+      OseeLog.log(TestEnvironment.class, Level.FINE, "cleanupreferences");
+
       System.out.println("Associated objects that are getting cleaned up.");
-      for(Class<?> clazz :associatedObjects.keySet()){
+      for (Class<?> clazz : associatedObjects.keySet()) {
          System.out.println(clazz.toString());
       }
-      
-      
+
       if (associatedObjects != null) {
          associatedObjects.clear();
       }
-      OseeLog.log(TestEnvironment.class, Level.FINE,
-            "got the other PM REF");
+      OseeLog.log(TestEnvironment.class, Level.FINE, "got the other PM REF");
       if (associatedObjectListeners != null) {
          associatedObjectListeners.clear();
       }
@@ -516,7 +509,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
       return people;
    }
-   
+
    public Remote getControlInterface(String id) {
       return controlInterfaces.get(id);
    }
@@ -529,10 +522,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return connector;
    }
 
-//   public void setConnector(IServiceConnector connector) {
-//      this.connector = connector;
-//   }
-   
+   //   public void setConnector(IServiceConnector connector) {
+   //      this.connector = connector;
+   //   }
+
    public void setupClassLoaderAndJar(String[] jarVersions, String classPath) throws Exception {
       setupClassLoaderAndJar(jarVersions, new String[] {classPath});
    }
@@ -540,37 +533,37 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public void setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception {
       getRuntimeManager().setupClassLoaderAndJar(jarVersions, classPaths);
    }
-   
+
    @Deprecated
    public void setEnvSetup(boolean isEnvSetup) {
       this.isEnvSetup = isEnvSetup;
    }
-   
+
    @Deprecated
    public void addScriptCompleteListener(IScriptCompleteEvent scriptComplete) {
       this.scriptCompleteListeners.add(scriptComplete);
    }
-   
+
    @Deprecated
    public void removeScriptCompleteListener(IScriptCompleteEvent scriptComplete) {
       this.scriptCompleteListeners.remove(scriptComplete);
    }
-   
+
    @Deprecated
    public void addScriptSetupListener(IScriptSetupEvent scriptSetup) {
       this.scriptSetupListeners.add(scriptSetup);
    }
-   
+
    @Deprecated
    public void removeScriptSetupListener(IScriptSetupEvent scriptSetup) {
       this.scriptSetupListeners.remove(scriptSetup);
    }
-   
+
    @Deprecated
    protected boolean isEnvSetup() {
       return isEnvSetup;
    }
-   
+
    @Deprecated
    /**
     * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
@@ -582,7 +575,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public void handleException(Throwable t, Level logLevel) {
       handleException(t, "An exception has occurred in the environment", logLevel, true);
    }
-   
+
    @Deprecated
    /**
     * @param t
@@ -592,7 +585,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public void handleException(Throwable t, Level logLevel, boolean abortScript) {
       handleException(t, "An exception has occurred in the environment", logLevel, abortScript);
    }
-   
+
    @Deprecated
    /**
     * alerts the environment of an exception. The environment will take any necessary actions and alert any interested
@@ -604,8 +597,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
     */
    public void handleException(Throwable t, String message, Level logLevel, boolean abortScript) {
       if (logLevel != Level.OFF) {
-         OseeLog.log(TestEnvironment.class, logLevel,
-               message, t);
+         OseeLog.log(TestEnvironment.class, logLevel, message, t);
       }
       if (getTestScript() != null && abortScript) {
          getTestScript().abortDueToThrowable(t);
@@ -616,7 +608,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          listener.onException(message, t);
       }
    }
-   
+
    @Deprecated
    public void testEnvironmentCommandComplete(ICommandHandle handle) {
       for (ITestEnvironmentListener listener : envListeners) {
@@ -656,8 +648,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          try {
             scriptCompleteListeners.get(i).scriptComplete();
          } catch (Exception e) {
-            OseeLog.log(TestEnvironment.class, Level.SEVERE,
-                  "problem with script complete listener", e);
+            OseeLog.log(TestEnvironment.class, Level.SEVERE, "problem with script complete listener", e);
          }
       }
 
@@ -667,7 +658,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          this.associatedObjects.clear();// get rid of all models and support
       }
    }
-   
+
    @Deprecated
    public void associateObject(Class<?> c, Object obj) {
       associatedObjects.put(c, obj);
@@ -675,10 +666,9 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (listeners != null) {
          for (int i = 0; i < listeners.size(); i++) {
             try {
-               ((IAssociatedObjectListener) listeners.get(i)).updateAssociatedListener();
+               (listeners.get(i)).updateAssociatedListener();
             } catch (RemoteException e) {
-               OseeLog.log(TestEnvironment.class, 
-                     Level.SEVERE, e.getMessage(), e);
+               OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
             }
 
          }
@@ -689,7 +679,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public Object getAssociatedObject(Class<?> c) {
       return associatedObjects.get(c);
    }
-   
+
    @Deprecated
    public Set<Class<?>> getAssociatedObjects() {
       return associatedObjects.keySet();
@@ -702,7 +692,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    public TestScript getTestScript() {
       return getRunManager().getCurrentScript();
    }
-   
+
    @Deprecated
    public void abortTestScript() {
       getRunManager().abort();

@@ -121,7 +121,7 @@ public class HttpAttributeTagger {
                try {
                   inputStream.close();
                } catch (IOException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
          }

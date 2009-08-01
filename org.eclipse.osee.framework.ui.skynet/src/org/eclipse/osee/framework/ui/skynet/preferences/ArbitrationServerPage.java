@@ -66,7 +66,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
          try {
             defaultArbitrationServer = HttpUrlBuilder.getInstance().getArbitrationServerPrefix();
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
 
@@ -74,7 +74,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       try {
          defaultApplicationServer = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       List<Data> entries = new ArrayList<Data>();
@@ -105,10 +105,10 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
    }
 
    private final class Data {
-      private String label;
-      private Color labelColor;
-      private String value;
-      private Color valueColor;
+      private final String label;
+      private final Color labelColor;
+      private final String value;
+      private final Color valueColor;
 
       public Data(String label, Color labelColor, String value, Color valueColor) {
          super();
