@@ -344,6 +344,9 @@ public class SMAWorkFlowSection extends SectionPart {
    @Override
    public void dispose() {
       super.dispose();
+      for (XWidget xWidget : allXWidgets) {
+         xWidget.dispose();
+      }
       atsWorkPage.dispose();
       if (reviewInfoComposite != null) {
          reviewInfoComposite.clearFormMessages();
