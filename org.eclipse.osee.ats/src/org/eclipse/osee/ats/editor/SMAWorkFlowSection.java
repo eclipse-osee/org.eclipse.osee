@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FontManager;
@@ -93,18 +92,14 @@ public class SMAWorkFlowSection extends SectionPart {
 
    private XComboViewer transitionToStateCombo;
    private Button transitionButton;
-   private static String ASSIGNEES = "Assignee(s):";
-   private Label currentAssigneesLabel;
    private Label transitionAssigneesLabel;
    protected final SMAManager smaMgr;
    private final AtsWorkPage atsWorkPage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
    private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
-   public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
    private SMAReviewInfoComposite reviewInfoComposite;
-   private SMATargetVersionInfoComposite targetVersionInfoComposite;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
@@ -351,9 +346,6 @@ public class SMAWorkFlowSection extends SectionPart {
       if (reviewInfoComposite != null) {
          reviewInfoComposite.clearFormMessages();
       }
-      if (targetVersionInfoComposite != null) {
-         targetVersionInfoComposite.clearFormMessages();
-      }
       servicesArea.dispose();
    }
 
@@ -385,10 +377,6 @@ public class SMAWorkFlowSection extends SectionPart {
    public void refresh() {
       super.refresh();
       try {
-         if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-            currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
-            currentAssigneesLabel.getParent().layout();
-         }
          if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
             WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
             if (toWorkPage == null) {
@@ -470,7 +458,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       toolkit.createLabel(comp, "to");
 
-      transitionToStateCombo = new XComboViewer(TRANSITION_TO_STATE_COMBO);
+      transitionToStateCombo = new XComboViewer("Transition To State Combo");
       transitionToStateCombo.setDisplayLabel(false);
       ArrayList<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
@@ -510,7 +498,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       });
 
-      Hyperlink assigneesLabelLink = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
+      Hyperlink assigneesLabelLink = toolkit.createHyperlink(comp, "Assignee(s)", SWT.NONE);
       assigneesLabelLink.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
