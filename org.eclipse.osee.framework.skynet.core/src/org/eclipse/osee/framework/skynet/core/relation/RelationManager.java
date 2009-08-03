@@ -208,12 +208,8 @@ public class RelationManager {
             new CompositeKeyHashMap<Integer, Integer, Object[]>((int) (selectedRelations.size() * 1.25) + 1);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
-      if (relationType == null) {
-         addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
-               RelationSide.OPPOSITE);
-      } else {
-         addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations, relationSide);
-      }
+      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
+            relationType == null ? RelationSide.OPPOSITE : relationSide);
 
       if (insertParameters.size() > 0) {
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
@@ -226,13 +222,9 @@ public class RelationManager {
          if (!relation.isDeleted()) {
             try {
                if (relationSide == null) {
-                  Artifact art = relation.getArtifactOnOtherSide(artifact);
-                  relatedArtifacts.add(art);
-               } else {
-                  if (relation.getSide(artifact).isOppositeSide(relationSide)) {
-                     Artifact art = relation.getArtifact(relationSide);
-                     relatedArtifacts.add(art);
-                  }
+                  relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
+               } else if (relation.getSide(artifact).isOppositeSide(relationSide)) {
+                  relatedArtifacts.add(relation.getArtifact(relationSide));
                }
             } catch (ArtifactDoesNotExist ex) {
                OseeLog.log(Activator.class, Level.WARNING, ex);
