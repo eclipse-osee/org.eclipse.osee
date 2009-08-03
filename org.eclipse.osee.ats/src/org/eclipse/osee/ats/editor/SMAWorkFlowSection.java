@@ -31,6 +31,10 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
+import org.eclipse.osee.ats.editor.widget.EstimatedHoursXWidget;
+import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
+import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
+import org.eclipse.osee.ats.editor.widget.TargetVersionXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -67,6 +71,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -96,9 +101,9 @@ public class SMAWorkFlowSection extends SectionPart {
    private final XFormToolkit toolkit;
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
-   private DynamicXWidgetLayout dynamicXWidgetLayout;
    private SMAReviewInfoComposite reviewInfoComposite;
    private SMATargetVersionInfoComposite targetVersionInfoComposite;
+   private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -112,6 +117,9 @@ public class SMAWorkFlowSection extends SectionPart {
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
@@ -161,10 +169,6 @@ public class SMAWorkFlowSection extends SectionPart {
 
       createCurrentPageHeader(workComp, atsWorkPage, toolkit);
 
-      if (!atsWorkPage.isCompleteCancelledState()) {
-         new SMAStateMetricsHeader(workComp, toolkit, smaMgr, atsWorkPage);
-      }
-
       // Add static layoutDatas to atsWorkPage
       List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();
       for (WorkItemDefinition workItemDefinition : atsWorkPage.getWorkPageDefinition().getWorkItems(true)) {
@@ -190,11 +194,15 @@ public class SMAWorkFlowSection extends SectionPart {
 
       atsWorkPage.setSmaMgr(smaMgr);
 
-      dynamicXWidgetLayout =
+      //      createTargetVersionAndAssigneesHeader(workComp);
+      createMetricsHeader(workComp);
+
+      DynamicXWidgetLayout dynamicXWidgetLayout =
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
+      allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
 
-      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget xWidget : allXWidgets) {
          if (xWidget.getLabelWidget() != null) {
             SMAEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
          }
@@ -222,6 +230,24 @@ public class SMAWorkFlowSection extends SectionPart {
       return workComp;
    }
 
+   private void createTargetVersionAndAssigneesHeader(Composite parent) throws OseeCoreException {
+      Composite comp = new Composite(parent, SWT.None);
+      comp.setLayout(new GridLayout(6, false));
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      allXWidgets.add(new TargetVersionXWidget(smaMgr, comp, 2, xModListener));
+   }
+
+   private void createMetricsHeader(Composite parent) throws OseeCoreException {
+      if (!atsWorkPage.isCompleteCancelledState()) {
+         Composite comp = new Composite(parent, SWT.None);
+         comp.setLayout(new GridLayout(6, false));
+         comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
+         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
+         allXWidgets.add(new EstimatedHoursXWidget(smaMgr, comp, 2, xModListener));
+      }
+   }
+
    protected boolean isShowTaskInfo() throws OseeCoreException {
       return smaMgr.isTaskable();
    }
@@ -235,10 +261,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null) {
-         return Result.TrueResult;
-      }
-      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactWidget) {
             IStatus status = widget.isValid();
             if (!status.isOK()) {
@@ -255,10 +278,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public Result isXWidgetDirty() throws OseeCoreException {
-      if (dynamicXWidgetLayout == null) {
-         return Result.FalseResult;
-      }
-      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactWidget) {
             Result result = ((IArtifactWidget) widget).isDirty();
             if (result.isTrue()) {
@@ -270,7 +290,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public void getDirtyIArtifactWidgets(List<IArtifactWidget> widgets) throws OseeCoreException {
-      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactWidget) {
             if (((IArtifactWidget) widget).isDirty().isTrue()) {
                widgets.add((IArtifactWidget) widget);
@@ -381,6 +401,9 @@ public class SMAWorkFlowSection extends SectionPart {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       refreshStateServices();
+      for (XWidget xWidget : allXWidgets) {
+         xWidget.refresh();
+      }
    }
 
    private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
@@ -862,7 +885,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    public List<XWidget> getXWidgets(Class<?> clazz) {
       List<XWidget> widgets = new ArrayList<XWidget>();
-      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+      for (XWidget widget : allXWidgets) {
          if (clazz.isInstance(widget)) {
             widgets.add(widget);
          }

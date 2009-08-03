@@ -83,7 +83,9 @@ public abstract class XWidget {
 
    public void setToolTip(String toolTip) {
       this.toolTip = toolTip;
-      if (this.labelWidget != null && !labelWidget.isDisposed()) this.labelWidget.setToolTipText(toolTip);
+      if (this.labelWidget != null && !labelWidget.isDisposed()) {
+         this.labelWidget.setToolTipText(toolTip);
+      }
    }
 
    public void addXModifiedListener(XModifiedListener listener) {
@@ -384,6 +386,9 @@ public abstract class XWidget {
 
    public void setLabel(String label) {
       this.label = label;
+      if (labelWidget != null && !labelWidget.isDisposed()) {
+         labelWidget.setText(label);
+      }
    }
 
    public Label getLabelWidget() {

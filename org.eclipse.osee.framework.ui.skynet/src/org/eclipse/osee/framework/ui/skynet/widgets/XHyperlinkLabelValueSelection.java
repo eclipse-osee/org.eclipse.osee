@@ -13,63 +13,31 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class XHyperlinkLabelSelection extends XWidget {
+public abstract class XHyperlinkLabelValueSelection extends XWidget {
 
-   Label valueLabel;
-   HyperLinkLabel selectHyperLinkLabel, clearHyperLinkLabel;
-   private final boolean supportClear;
+   Hyperlink valueHyperlinkLabel;
 
-   /**
-    * @param label
-    */
-   public XHyperlinkLabelSelection(String label) {
-      this(label, false);
-   }
-
-   public XHyperlinkLabelSelection(String label, boolean supportClear) {
+   public XHyperlinkLabelValueSelection(String label) {
       super(label);
-      this.supportClear = supportClear;
    }
 
    public String getCurrentValue() {
       return "";
-   }
-
-   public String getHyperlinkLabelString() {
-      return " (select)";
-   }
-
-   public String getClearHyperlinkLabelString() {
-      return "(clear) ";
-   }
-
-   public boolean handleSelection() {
-      return false;
-   }
-
-   public boolean handleClear() {
-      return false;
-   }
-
-   /**
-    * @return the supportClear
-    */
-   public boolean isSupportClear() {
-      return supportClear;
    }
 
    @Override
@@ -88,68 +56,52 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
          }
       }
 
-      selectHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
-      selectHyperLinkLabel.setToolTipText("Select to Modify");
-      selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+      if (toolkit == null) {
+         valueHyperlinkLabel = new Hyperlink(comp, SWT.NONE);
+      } else {
+         valueHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
+      }
+      valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
+      valueHyperlinkLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
+         /*
+          * (non-Javadoc)
+          * 
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
          public void handleEvent(Event event) {
-            if (handleSelection()) {
-               refresh();
-               notifyXModifiedListeners();
-            }
+            refresh();
+            notifyXModifiedListeners();
          }
       });
-      if (supportClear) {
-         clearHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
-         clearHyperLinkLabel.setToolTipText("Select to Clear");
-         clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-            public void handleEvent(Event event) {
-               if (handleClear()) {
-                  refresh();
-                  notifyXModifiedListeners();
-               }
-            }
-         });
-      }
-      valueLabel = new Label(comp, SWT.NONE);
-      valueLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      valueLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 
       refresh();
    }
 
    @Override
    public void refresh() {
-      selectHyperLinkLabel.refresh();
-      selectHyperLinkLabel.setText(getHyperlinkLabelString());
-      if (supportClear) {
-         clearHyperLinkLabel.refresh();
-         clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
-      }
-      valueLabel.setText(getCurrentValue());
-      valueLabel.getParent().layout();
+      valueHyperlinkLabel.setText(getCurrentValue());
+      valueHyperlinkLabel.update();
+      valueHyperlinkLabel.getParent().update();
       validate();
 
    }
 
    @Override
    public Control getControl() {
-      return valueLabel;
+      return valueHyperlinkLabel;
    }
 
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(selectHyperLinkLabel, true, true);
-      selectHyperLinkLabel.refresh();
-      if (supportClear) {
-         toolkit.adapt(clearHyperLinkLabel, true, true);
-         clearHyperLinkLabel.refresh();
-      }
+      toolkit.adapt(valueHyperlinkLabel, true, true);
+      valueHyperlinkLabel.update();
    }
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getHyperlinkLabelString(), getCurrentValue());
+      return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getLabel(), getCurrentValue());
    }
 
    @Override
@@ -184,4 +136,7 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
    public void setXmlData(String str) {
    }
 
+   public void setValueLabel(String str) {
+      valueHyperlinkLabel.setText(str);
+   }
 }

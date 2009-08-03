@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelSelection {
+public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
    Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlabelGroupSelection extends XHyperlinkLabelSelection {
+public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelGroupSelection.class.getSimpleName();
    Set<Artifact> selectedGroups = new HashSet<Artifact>();

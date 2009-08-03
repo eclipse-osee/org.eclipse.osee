@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlabelMemberSelection extends XHyperlinkLabelSelection {
+public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection {
 
    Set<User> selectedUsers = new HashSet<User>();
 

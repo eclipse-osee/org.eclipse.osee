@@ -96,7 +96,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMADetailsSection smaDetailsSection;
    private SMARelationsSection smaRelationsSection;
    private SMAGoalMembersSection smaGoalMembersSection;
-   private SMAGoalMembersSection smaGoalMembers2Section;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -143,14 +142,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          AtsWorkPage atsWorkPage =
                new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
                      ATSXWidgetOptionResolver.getInstance());
-         if (smaMgr.isCurrentState(atsWorkPage.getName()))
-            currentAtsWorkPage = atsWorkPage;
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
          if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
             // Don't show completed or cancelled state if not currently those state
-            if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted())
-               continue;
-            if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled())
-               continue;
+            if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
+            if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
             SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, toolkit, SWT.NONE, atsWorkPage, smaMgr);
             managedForm.addPart(section);
             control = section.getMainComp();
@@ -159,8 +155,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       }
       if (smaMgr.getSma() instanceof GoalArtifact) {
-         smaGoalMembers2Section = new SMAGoalMembersSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
-         managedForm.addPart(smaGoalMembers2Section);
+         smaGoalMembersSection = new SMAGoalMembersSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+         managedForm.addPart(smaGoalMembersSection);
       }
 
       smaRelationsSection = new SMARelationsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
@@ -204,9 +200,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          refreshToolbar();
 
-         if (smaMgr.getSma().getHelpContext() != null)
-            AtsPlugin.getInstance().setHelp(scrolledForm, smaMgr.getSma().getHelpContext(),
-                  "org.eclipse.osee.ats.help.ui");
+         if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
+               smaMgr.getSma().getHelpContext(), "org.eclipse.osee.ats.help.ui");
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -251,8 +246,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public Result isXWidgetDirty() throws OseeCoreException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetDirty();
-         if (result.isTrue())
-            return result;
+         if (result.isTrue()) return result;
       }
       return Result.FalseResult;
    }
@@ -260,8 +254,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public Result isXWidgetSavable() throws OseeCoreException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetSavable();
-         if (result.isFalse())
-            return result;
+         if (result.isFalse()) return result;
       }
       return Result.TrueResult;
    }
@@ -290,9 +283,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       if (smaRelationsSection != null) {
          smaRelationsSection.dispose();
-      }
-      if (smaGoalMembers2Section != null) {
-         smaGoalMembers2Section.dispose();
       }
       if (smaGoalMembersSection != null) {
          smaGoalMembersSection.dispose();
@@ -368,8 +358,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;
-               if (control == null || control.isDisposed())
-                  return;
+               if (control == null || control.isDisposed()) return;
                Composite parent = control.getParent();
                while (parent != null) {
                   if (parent instanceof ScrolledComposite) {
