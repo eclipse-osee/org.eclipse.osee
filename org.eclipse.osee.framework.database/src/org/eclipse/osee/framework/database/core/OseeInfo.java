@@ -23,6 +23,9 @@ public class OseeInfo {
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
    public static final String USE_GUID_STORAGE = "osee.framework.skynet.core.guid.storage";
+   // This is a unique identifier generated upon database initialization and should never be changed once it has been created.
+   public static final String DB_ID_KEY = "osee.db.guid";
+   public static final String DB_TYPE_KEY = "osee.db.type";
 
    private static Map<String, String> cache = new HashMap<String, String>();
 
@@ -48,7 +51,7 @@ public class OseeInfo {
       cache.put(key, value);
    }
 
-   public static String getGuid() throws OseeDataStoreException {
-      return getCachedValue("osee.db.guid");
+   public static String getDatabaseGuid() throws OseeDataStoreException {
+      return getCachedValue(DB_ID_KEY);
    }
 }

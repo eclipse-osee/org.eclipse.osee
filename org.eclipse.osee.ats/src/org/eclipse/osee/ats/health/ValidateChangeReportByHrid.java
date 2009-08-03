@@ -68,7 +68,7 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
             try {
                TeamWorkFlowArtifact teamArt =
                      (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsUtil.getAtsBranch());
-               String currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
+               String currentDbGuid = OseeInfo.getDatabaseGuid();
                ValidateChangeReports.changeReportValidated(currentDbGuid, teamArt, rd, exportWasIs);
             } catch (Exception ex) {
                rd.logError(ex.getLocalizedMessage());

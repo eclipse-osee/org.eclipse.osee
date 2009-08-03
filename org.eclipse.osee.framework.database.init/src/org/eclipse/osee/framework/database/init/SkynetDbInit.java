@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.OseeDatabaseId;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -73,7 +72,7 @@ public class SkynetDbInit implements IDbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig);
       DbInit.addViews();
       initializeApplicationServer();
-      OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.create());
+      OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       populateSequenceTable();
       addDefaultPermissions();
    }

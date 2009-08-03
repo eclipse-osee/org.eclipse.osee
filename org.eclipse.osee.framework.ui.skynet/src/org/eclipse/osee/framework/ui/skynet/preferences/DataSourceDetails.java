@@ -99,7 +99,7 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
                "<b>Name:</b> %s<br/><b>Schema:</b> %s<br/><b>Driver:</b> %s<br/><b>Is Production:</b> %s<br/><b>ID:</b> %s<br/>",
                ClientSessionManager.getDataStoreName(), ClientSessionManager.getDataStoreLoginName(),
                ClientSessionManager.getDataStoreDriver(), ClientSessionManager.isProductionDataStore(),
-               OseeInfo.getGuid())));
+               OseeInfo.getDatabaseGuid())));
       } catch (Exception ex) {
          builder.append(Lib.exceptionToString(ex));
       } finally {

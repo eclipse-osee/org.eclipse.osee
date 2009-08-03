@@ -86,7 +86,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
       transaction.execute();
 
-      OseeInfo.putValue("osee.db.type", "demo");
+      OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, "demo");
    }
 
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {

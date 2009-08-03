@@ -86,7 +86,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          }
       }
 
-      this.currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
+      this.currentDbGuid = OseeInfo.getDatabaseGuid();
    }
 
    private void cleanUp() {
@@ -295,6 +295,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       }
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Admin");
    }

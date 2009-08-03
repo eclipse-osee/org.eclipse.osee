@@ -88,7 +88,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
+         return;
+      }
       Jobs.startJob(new Report(getName()), true);
    }
 
@@ -114,7 +116,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    }
 
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
-      String currentDbGuid = OseeInfo.getCachedValue("osee.db.guid");
+      String currentDbGuid = OseeInfo.getDatabaseGuid();
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
@@ -137,7 +139,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   }
 
                   // Only validate committed branches cause working branches change too much
-                  if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) continue;
+                  if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+                     continue;
+                  }
                   Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
                   if (valid.isFalse()) {
                      resultStr = "Error: Not Valid: " + valid.getText();
