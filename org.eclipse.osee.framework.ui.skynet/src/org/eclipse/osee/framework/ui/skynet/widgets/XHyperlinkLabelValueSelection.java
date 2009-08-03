@@ -45,7 +45,11 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
 
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(5, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (isFillHorizontally()) {
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      } else {
+         comp.setLayoutData(new GridData());
+      }
 
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {
@@ -62,7 +66,13 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
          valueHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
       }
       valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
-      valueHyperlinkLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      if (isFillHorizontally()) {
+         if (isFillHorizontally()) {
+            valueHyperlinkLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         } else {
+            valueHyperlinkLabel.setLayoutData(new GridData());
+         }
+      }
       valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)
@@ -70,8 +80,10 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
           */
          public void handleEvent(Event event) {
-            refresh();
-            notifyXModifiedListeners();
+            if (handleSelection()) {
+               refresh();
+               notifyXModifiedListeners();
+            }
          }
       });
 
@@ -84,7 +96,10 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
       valueHyperlinkLabel.update();
       valueHyperlinkLabel.getParent().update();
       validate();
+   }
 
+   public boolean handleSelection() {
+      return false;
    }
 
    @Override

@@ -47,6 +47,10 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
       return "";
    }
 
+   public void setErrorState(boolean error) {
+      valueLabel.setForeground(error ? Display.getCurrent().getSystemColor(SWT.COLOR_RED) : null);
+   }
+
    public String getHyperlinkLabelString() {
       return " (select)";
    }
