@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -69,11 +68,10 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       setItemsToFix(attributesWithErrors.size());
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI", "ADDITIONAL DATA"}));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
       for (AttrData attrData : attributesWithErrors) {
-         Object object = attrData.getAdditionalData();
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getHrid(), attrData.getGammaId(),
-               attrData.getUri(), object != null ? String.valueOf(object) : ""}));
+               attrData.getUri()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.10));
@@ -87,9 +85,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          for (AttrData attrData : attributesWithErrors) {
             Resource resource = attrData.getResource();
             ResourceUtil.backupResourceLocally(backupFolder, resource);
-
-            resource.data = WordUtil.removeWordMarkupSmartTags(resource.data);
-
+            applyFix(attrData);
             ResourceUtil.uploadResource(attrData.getGammaId(), resource);
             monitor.worked(workAmount);
          }
@@ -136,16 +132,23 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
                checkForCancelledStatus(monitor);
                AttrData attrData = attrDatas.get(index);
                monitor.setTaskName(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
-               Resource resource = ResourceUtil.getResource(attrData.getUri());
-
-               if (isFixRequired(attrData, resource)) {
-                  attrData.setResource(resource);
-                  attributesWithErrors.add(attrData);
+               checkAttributeData(attrData);
+               if (index % 1000 == 0) {
+                  System.out.println("Index: " + index + " Size:  " + attributesWithErrors.size());
+                  System.gc();
                }
                monitor.worked(work);
             }
          } else {
             monitor.worked(calculateWork(0.80));
+         }
+      }
+
+      private void checkAttributeData(AttrData attrData) throws OseeCoreException {
+         Resource resource = ResourceUtil.getResource(attrData.getUri());
+         if (isFixRequired(attrData, resource)) {
+            attrData.setResource(resource);
+            attributesWithErrors.add(attrData);
          }
       }
 
@@ -298,22 +301,12 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       private final String hrid;
       private final String uri;
       private Resource resource;
-      private Object additionalData;
 
       public AttrData(String gammaId, String hrid, String uri) {
          super();
          this.gammaId = gammaId;
          this.hrid = hrid;
          this.uri = uri;
-         this.additionalData = null;
-      }
-
-      public void setAdditionalData(Object additionalData) {
-         this.additionalData = additionalData;
-      }
-
-      public Object getAdditionalData() {
-         return additionalData;
       }
 
       public void setResource(Resource resource) {
