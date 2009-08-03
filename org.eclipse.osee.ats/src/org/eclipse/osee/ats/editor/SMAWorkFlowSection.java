@@ -239,7 +239,7 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = ALayout.getZeroMarginLayout(6, false);
          layout.marginLeft = 2;
          comp.setLayout(layout);
-         comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new EstimatedHoursXWidget(smaMgr, comp, 2, xModListener));
