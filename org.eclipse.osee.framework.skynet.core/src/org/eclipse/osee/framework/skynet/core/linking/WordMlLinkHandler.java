@@ -138,6 +138,7 @@ public class WordMlLinkHandler {
             matchMap.put(guid, new MatchRange(OSEE_LINK_PATTERN.start(), OSEE_LINK_PATTERN.end()));
          }
       }
+      OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(destLinkType, source, content, matchMap, false);
@@ -172,6 +173,7 @@ public class WordMlLinkHandler {
             }
          }
       }
+      WORDML_LINK.reset();
       return matchMap;
    }
 

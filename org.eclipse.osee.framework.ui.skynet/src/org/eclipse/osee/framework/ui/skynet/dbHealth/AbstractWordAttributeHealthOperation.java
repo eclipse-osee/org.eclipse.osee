@@ -133,9 +133,9 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
                AttrData attrData = attrDatas.get(index);
                monitor.setTaskName(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
                checkAttributeData(attrData);
-               if (index % 1000 == 0) {
-                  System.out.println("Index: " + index + " Size:  " + attributesWithErrors.size());
-                  System.gc();
+               int size = attributesWithErrors.size();
+               if (size > 0 && size % 3000 == 0) {
+                  break;
                }
                monitor.worked(work);
             }
