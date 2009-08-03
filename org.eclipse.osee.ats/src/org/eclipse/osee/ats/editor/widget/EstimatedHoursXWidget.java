@@ -32,6 +32,7 @@ public class EstimatedHoursXWidget extends XFloatDam {
             addXModifiedListener(xModListener);
          }
          setArtifact(smaMgr.getSma(), ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         setFillHorizontally(true);
          createWidgets(composite, horizontalSpan);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);

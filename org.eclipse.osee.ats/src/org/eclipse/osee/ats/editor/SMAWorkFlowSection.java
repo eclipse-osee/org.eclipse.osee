@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
+import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
 import org.eclipse.osee.ats.editor.widget.EstimatedHoursXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
@@ -67,6 +68,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionViewSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -163,12 +165,6 @@ public class SMAWorkFlowSection extends SectionPart {
 
    protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
 
-      Composite workComp = toolkit.createContainer(comp, 1);
-      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-      // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
-
-      createCurrentPageHeader(workComp, atsWorkPage, toolkit);
-
       // Add static layoutDatas to atsWorkPage
       List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();
       for (WorkItemDefinition workItemDefinition : atsWorkPage.getWorkPageDefinition().getWorkItems(true)) {
@@ -194,14 +190,21 @@ public class SMAWorkFlowSection extends SectionPart {
 
       atsWorkPage.setSmaMgr(smaMgr);
 
-      //      createTargetVersionAndAssigneesHeader(workComp);
+      // Create Page
+      Composite workComp = toolkit.createContainer(comp, 1);
+      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
+
+      createTargetVersionAndAssigneeHeader(workComp, atsWorkPage, toolkit);
       createMetricsHeader(workComp);
 
+      // Create dynamic XWidgets
       DynamicXWidgetLayout dynamicXWidgetLayout =
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
       allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
 
+      // Set all XWidget labels to bold font
       for (XWidget xWidget : allXWidgets) {
          if (xWidget.getLabelWidget() != null) {
             SMAEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
@@ -230,17 +233,12 @@ public class SMAWorkFlowSection extends SectionPart {
       return workComp;
    }
 
-   private void createTargetVersionAndAssigneesHeader(Composite parent) throws OseeCoreException {
-      Composite comp = new Composite(parent, SWT.None);
-      comp.setLayout(new GridLayout(6, false));
-      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      allXWidgets.add(new TargetVersionXWidget(smaMgr, comp, 2, xModListener));
-   }
-
    private void createMetricsHeader(Composite parent) throws OseeCoreException {
       if (!atsWorkPage.isCompleteCancelledState()) {
          Composite comp = new Composite(parent, SWT.None);
-         comp.setLayout(new GridLayout(6, false));
+         GridLayout layout = ALayout.getZeroMarginLayout(6, false);
+         layout.marginLeft = 2;
+         comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_BOTH));
          allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
@@ -406,7 +404,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void createCurrentPageHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+   private void createTargetVersionAndAssigneeHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
       Composite comp = toolkit.createContainer(parent, 6);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -417,65 +415,16 @@ public class SMAWorkFlowSection extends SectionPart {
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
-      // Targeted Version composite
+      // Targeted Version
       if (isShowTargetedVersion()) {
-         targetVersionInfoComposite = new SMATargetVersionInfoComposite(smaMgr, comp, getManagedForm(), toolkit);
+         allXWidgets.add(new TargetVersionXWidget(getManagedForm(), smaMgr, comp, 2, xModListener));
       }
 
-      if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-         // Assignee(s) label
-         Label label = toolkit.createLabel(comp, ASSIGNEES);
-         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-
-         // Assignees "edit" hyperlink
-         Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
-         setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
-
-            public void linkEntered(HyperlinkEvent e) {
-            }
-
-            public void linkExited(HyperlinkEvent e) {
-            }
-
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  handleChangeCurrentAssignees();
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-
-         });
-
-         currentAssigneesLabel = toolkit.createLabel(comp, smaMgr.getStateMgr().getAssigneesStr(80));
-         currentAssigneesLabel.setToolTipText(smaMgr.getStateMgr().getAssigneesStr());
-         currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (smaMgr.getStateMgr().getAssignees().size() == 0) {
-            Label errorLabel = toolkit.createLabel(comp, "Error: State has no assignees");
-            errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         }
-      } else if (smaMgr.getStateMgr().getAssignees().size() > 0) {
-         Label errorLabel =
-               toolkit.createLabel(comp,
-                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.toString("; ",
-                           smaMgr.getStateMgr().getAssignees()));
-         errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      // Current Assignees
+      if (page.isCurrentNonCompleteCancelledState(smaMgr)) {
+         allXWidgets.add(new CurrentAssigneesXWidget(getManagedForm(), smaMgr, comp, 2, xModListener, isEditable));
       }
 
-   }
-
-   private void handleChangeCurrentAssignees() throws OseeCoreException {
-      if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && !smaMgr.getStateMgr().getAssignees().contains(
-            UserManager.getUser())) {
-         AWorkbench.popup(
-               "ERROR",
-               "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
-         return;
-      }
-      if (smaMgr.promptChangeAssignees(false)) {
-         refresh();
-         smaMgr.getEditor().onDirtied();
-      }
    }
 
    private void handleChangeTransitionAssignees() throws OseeCoreException {

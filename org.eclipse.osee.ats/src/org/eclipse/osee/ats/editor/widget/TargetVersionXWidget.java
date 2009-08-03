@@ -15,44 +15,30 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 
 /**
  * @author Donald G. Dunne
  */
-public class TargetVersionXWidget extends XHyperlinkLabelCmdValueSelection {
+public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
 
    private final SMAManager smaMgr;
 
    /**
     * @param label
     */
-   public TargetVersionXWidget(SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
-      super("Target Version", false);
+   public TargetVersionXWidget(IManagedForm managedForm, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+      super("Target Version");
       this.smaMgr = smaMgr;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      final SMAManager fSmaMgr = smaMgr;
-      addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            try {
-               if (fSmaMgr.promptChangeVersion(
-                     AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
-                  refresh();
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-      super.createControls(composite, horizontalSpan);
-
+      setFillHorizontally(false);
+      setEditable(!smaMgr.getSma().isReadOnly());
+      super.createWidgets(managedForm, composite, horizontalSpan);
    }
 
    @Override
@@ -94,6 +80,21 @@ public class TargetVersionXWidget extends XHyperlinkLabelCmdValueSelection {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return status;
+   }
+
+   @Override
+   public boolean handleSelection() {
+      try {
+         if (smaMgr.promptChangeVersion(AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+               false)) {
+            refresh();
+            smaMgr.getEditor().onDirtied();
+            return true;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
    }
 
 }

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -40,21 +39,21 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          addXModifiedListener(xModListener);
       }
       setEditable(!smaMgr.getSma().isReadOnly());
-      addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            try {
-               SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(smaMgr.getSma()), false);
-               refresh();
-               smaMgr.getEditor().onDirtied();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
+      setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);
+   }
+
+   @Override
+   public boolean handleSelection() {
+      try {
+         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(smaMgr.getSma()), false);
+         smaMgr.getEditor().onDirtied();
+         return true;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
    }
 
    public static String TOOLTIP = "Calculation: \n     State Percent: amount entered by user\n" +
