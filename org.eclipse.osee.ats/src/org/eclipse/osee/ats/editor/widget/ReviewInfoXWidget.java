@@ -30,8 +30,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
@@ -52,19 +57,43 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class ReviewInfoXWidget extends XLabelValue {
+public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransactionEventListener {
 
    private final SMAManager smaMgr;
    private final String forStateName;
    private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
+   private Composite destroyableComposite = null;
+   private final Composite composite;
+   private final IManagedForm managedForm;
+   private final int horizontalSpan;
+   private final XFormToolkit toolkit;
 
    public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final SMAManager smaMgr, final String forStateName, Composite composite, int horizontalSpan) {
       super("\"" + forStateName + "\" State Reviews");
+      this.managedForm = managedForm;
+      this.toolkit = toolkit;
       this.smaMgr = smaMgr;
       this.forStateName = forStateName;
+      this.composite = composite;
+      this.horizontalSpan = horizontalSpan;
+      OseeEventManager.addListener(this);
+
+      reDisplay();
+   }
+
+   public void reDisplay() {
+      if (composite != null && composite.isDisposed()) {
+         return;
+      }
+      if (destroyableComposite != null) {
+         destroyableComposite.dispose();
+      }
+      destroyableComposite = new Composite(composite, SWT.None);
+      destroyableComposite.setLayout(ALayout.getZeroMarginLayout(6, false));
+
       setToolTip("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
 
-      createWidgets(managedForm, composite, horizontalSpan);
+      createWidgets(managedForm, destroyableComposite, horizontalSpan);
 
       try {
          // If ATS Admin, allow right-click to auto-complete tasks
@@ -103,10 +132,10 @@ public class ReviewInfoXWidget extends XLabelValue {
          }
          Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
          if (revArts.size() == 0) {
-            (new Label(composite, SWT.NONE)).setText("No Reviews Created");
+            (new Label(destroyableComposite, SWT.NONE)).setText("No Reviews Created");
          }
 
-         Hyperlink link = toolkit.createHyperlink(composite, "[Add Decision Review]", SWT.NONE);
+         Hyperlink link = toolkit.createHyperlink(destroyableComposite, "[Add Decision Review]", SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             public void linkEntered(HyperlinkEvent e) {
@@ -141,7 +170,7 @@ public class ReviewInfoXWidget extends XLabelValue {
             }
          });
 
-         link = toolkit.createHyperlink(composite, "[Add Peer to Peer Review]", SWT.NONE);
+         link = toolkit.createHyperlink(destroyableComposite, "[Add Peer to Peer Review]", SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             public void linkEntered(HyperlinkEvent e) {
@@ -176,7 +205,7 @@ public class ReviewInfoXWidget extends XLabelValue {
             }
          });
          if (revArts.size() > 0) {
-            Composite workComp = toolkit.createContainer(composite, 1);
+            Composite workComp = toolkit.createContainer(destroyableComposite, 1);
             workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
             GridData gd = new GridData();
             gd.horizontalIndent = 20;
@@ -200,13 +229,6 @@ public class ReviewInfoXWidget extends XLabelValue {
       } catch (Exception ex) {
          return "ReviewInfoXWidget " + ex.getLocalizedMessage();
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue#refresh()
-    */
-   @Override
-   public void refresh() {
    }
 
    public static String toHTML(final SMAManager smaMgr, String forStateName) throws OseeCoreException {
@@ -271,6 +293,30 @@ public class ReviewInfoXWidget extends XLabelValue {
             SMAEditor.editArtifact(revArt);
          }
       });
+   }
+
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+      if (smaMgr.isInTransition()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews(forStateName)) {
+         if (transData.isHasEvent(reviewArt)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  reDisplay();
+               }
+            });
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue#dispose()
+    */
+   @Override
+   public void dispose() {
+      OseeEventManager.removeListener(this);
    }
 
 }

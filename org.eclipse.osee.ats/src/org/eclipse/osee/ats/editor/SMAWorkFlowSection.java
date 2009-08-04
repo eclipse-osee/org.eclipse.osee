@@ -240,10 +240,10 @@ public class SMAWorkFlowSection extends SectionPart {
    private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
       if (isShowReviewInfo()) {
          Composite comp = new Composite(parent, SWT.None);
-         GridLayout layout = new GridLayout(6, false);
+         GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, smaMgr, forStateName, comp, 2));
+         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, smaMgr, forStateName, comp, 1));
       }
    }
 
