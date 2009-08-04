@@ -33,9 +33,11 @@ import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
 import org.eclipse.osee.ats.editor.widget.EstimatedHoursXWidget;
+import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TargetVersionXWidget;
+import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -99,7 +101,6 @@ public class SMAWorkFlowSection extends SectionPart {
    private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
    private Composite mainComp;
-   private SMAReviewInfoComposite reviewInfoComposite;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
@@ -199,19 +200,14 @@ public class SMAWorkFlowSection extends SectionPart {
                   isEditable || isGlobalEditable);
       allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
 
+      createTaskFooter(workComp, atsWorkPage.getName());
+      createReviewFooter(workComp, atsWorkPage.getName());
+
       // Set all XWidget labels to bold font
       for (XWidget xWidget : allXWidgets) {
          if (xWidget.getLabelWidget() != null) {
             SMAEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
          }
-      }
-
-      if (isShowTaskInfo()) {
-         new SMATaskInfoComposite(smaMgr, workComp, getManagedForm(), atsWorkPage.getName());
-      }
-      if (isShowReviewInfo()) {
-         reviewInfoComposite =
-               new SMAReviewInfoComposite(smaMgr, workComp, getManagedForm(), toolkit, atsWorkPage.getName());
       }
 
       // Check extension points for page creation
@@ -238,6 +234,26 @@ public class SMAWorkFlowSection extends SectionPart {
          allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new EstimatedHoursXWidget(smaMgr, comp, 2, xModListener));
+      }
+   }
+
+   private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
+      if (isShowReviewInfo()) {
+         Composite comp = new Composite(parent, SWT.None);
+         GridLayout layout = new GridLayout(6, false);
+         comp.setLayout(layout);
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, smaMgr, forStateName, comp, 2));
+      }
+   }
+
+   private void createTaskFooter(Composite parent, String forStateName) throws OseeCoreException {
+      if (isShowTaskInfo()) {
+         Composite comp = new Composite(parent, SWT.None);
+         GridLayout layout = new GridLayout(6, false);
+         comp.setLayout(layout);
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), smaMgr, forStateName, comp, 2));
       }
    }
 
@@ -343,9 +359,6 @@ public class SMAWorkFlowSection extends SectionPart {
          xWidget.dispose();
       }
       atsWorkPage.dispose();
-      if (reviewInfoComposite != null) {
-         reviewInfoComposite.clearFormMessages();
-      }
       servicesArea.dispose();
    }
 

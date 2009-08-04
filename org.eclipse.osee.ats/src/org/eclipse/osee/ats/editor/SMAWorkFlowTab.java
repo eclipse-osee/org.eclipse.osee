@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
+import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -316,7 +317,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
             htmlSb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString(), SMAReviewInfoComposite.toHTML(smaMgr, page.getName())));
+                  notesSb.toString(), ReviewInfoXWidget.toHTML(smaMgr, page.getName())));
             htmlSb.append(AHTML.newline());
          }
       }
