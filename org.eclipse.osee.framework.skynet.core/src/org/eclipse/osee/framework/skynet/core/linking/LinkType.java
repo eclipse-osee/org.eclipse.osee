@@ -14,5 +14,8 @@ package org.eclipse.osee.framework.skynet.core.linking;
  * @author Roberto E. Escobar
  */
 public enum LinkType {
-   OSEE_SERVER_LINK, INTERNAL_DOC_REFERENCE;
+   OSEE_SERVER_LINK,
+   INTERNAL_DOC_REFERENCE_USE_NAME,
+   INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER,
+   INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
 }

@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler.MatchRange;
 
@@ -23,8 +24,11 @@ import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler.MatchRan
  */
 public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAttributeHealthOperation {
 
+   private final OseeLinkBuilder linkBuilder;
+
    public WordAttributeUpdateHyperlinksHealthOperation() {
       super("Word Attribute Old style hyperlinks");
+      linkBuilder = new OseeLinkBuilder();
    }
 
    @Override
@@ -51,7 +55,7 @@ public class WordAttributeUpdateHyperlinksHealthOperation extends AbstractWordAt
          Collection<MatchRange> matchRanges = matches.getValues(guid);
          if (matchRanges != null) {
             for (MatchRange match : matchRanges) {
-               String replaceWith = WordMlLinkHandler.getOseeLinkMarker(guid);
+               String replaceWith = linkBuilder.getOseeLinkMarker(guid);
                changeSet.replace(match.start(), match.end(), replaceWith);
             }
          }

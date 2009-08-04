@@ -103,7 +103,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
-            "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null"; // and t1.attr_id = 1155574";
+            "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null order by t1.gamma_id asc"; // and t1.attr_id = 1155574";
 
       private final List<AttrData> attributesWithErrors;
 
@@ -135,6 +135,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
                checkAttributeData(attrData);
                int size = attributesWithErrors.size();
                if (size > 0 && size % 3000 == 0) {
+                  getSummary().append("Index at break: " + index + " gamma: " + attrData.getGammaId());
                   break;
                }
                monitor.worked(work);

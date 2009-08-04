@@ -17,16 +17,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -82,17 +79,7 @@ public class WordMlLinkHandler {
    private static final Matcher WORDML_LINK =
          Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>", Pattern.DOTALL).matcher("");
 
-   //      Pattern.compile(<w:hlink\\s+w:dest=\"(.*?)\".*?<w:t\\s*>(.*?)</w:t\\s*>\\s*</w:r\\s*>\\s*</w:hlink\\s*>",
-   //               Pattern.DOTALL).matcher("");
-   private static final String OSEE_LINK_MARKER = "OSEE_LINK(%s)";
-   private static final String WORDML_LINK_FORMAT =
-         "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
-
-   private static final String WORDML_BOOKMARK_FORMAT =
-         "<aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.Start\" w:name=\"OSEE.%s\"/><aml:annotation aml:id=\"\" w:type=\"Word.Bookmark.End\"/>";
-
-   private static final String WORDML_INTERNAL_DOC_LINK_FORMAT =
-         "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> HYPERLINK \\l \"OSEE.%s\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>";
+   private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
    private WordMlLinkHandler() {
    }
@@ -144,9 +131,9 @@ public class WordMlLinkHandler {
          modified = modifiedContent(destLinkType, source, content, matchMap, false);
       }
 
-      if (destLinkType == LinkType.INTERNAL_DOC_REFERENCE) {
+      if (destLinkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
-         modified = getWordMlBookmark(source) + modified;
+         modified = linkBuilder.getWordMlBookmark(source) + modified;
       }
       return modified;
    }
@@ -220,7 +207,7 @@ public class WordMlLinkHandler {
             for (String guid : unknownGuids) {
                Collection<MatchRange> matches = matchMap.getValues(guid);
                for (MatchRange match : matches) {
-                  String replaceWith = getOseeLinkMarker(guid);
+                  String replaceWith = linkBuilder.getOseeLinkMarker(guid);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
@@ -228,12 +215,7 @@ public class WordMlLinkHandler {
             // Items not found
             for (String guid : unknownGuids) {
                for (MatchRange match : matchMap.getValues(guid)) {
-                  String internalLink =
-                        String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
-                  String link =
-                        String.format(WORDML_LINK_FORMAT, internalLink, String.format(
-                              "Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid,
-                              branch.getBranchId()));
+                  String link = linkBuilder.getUnknownArtifactLink(guid, branch);
                   changeSet.replace(match.start(), match.end(), link);
                }
             }
@@ -244,42 +226,14 @@ public class WordMlLinkHandler {
          for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
             String replaceWith = null;
             if (isUnliking) {
-               replaceWith = getOseeLinkMarker(artifact.getGuid());
+               replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
             } else {
-               replaceWith = getWordMlLink(destLinkType, artifact);
+               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact);
             }
             changeSet.replace(match.start(), match.end(), replaceWith);
          }
       }
       return changeSet.applyChangesToSelf().toString();
-   }
-
-   public static String getOseeLinkMarker(String guid) {
-      return String.format(OSEE_LINK_MARKER, guid);
-   }
-
-   private static String getWordMlBookmark(Artifact source) {
-      return String.format(WORDML_BOOKMARK_FORMAT, source.getGuid());
-   }
-
-   private static String getWordMlLink(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
-      String toReturn = "";
-      String linkText = artifact.getName() + (artifact.isDeleted() ? " (DELETED)" : "");
-      linkText = Xml.escape(linkText).toString();
-      switch (destLinkType) {
-         case OSEE_SERVER_LINK:
-            String url = ArtifactURL.getOpenInOseeLink(artifact).toString();
-            // XML compliant url
-            url = url.replaceAll("&", "&amp;");
-            toReturn = String.format(WORDML_LINK_FORMAT, url, linkText);
-            break;
-         case INTERNAL_DOC_REFERENCE:
-            toReturn = String.format(WORDML_INTERNAL_DOC_LINK_FORMAT, artifact.getGuid(), linkText);
-            break;
-         default:
-            throw new OseeArgumentException(String.format("Unsupported link type [%s]", destLinkType));
-      }
-      return toReturn;
    }
 
    public static final class MatchRange {

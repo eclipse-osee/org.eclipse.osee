@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -61,7 +62,7 @@ public class PublishRequirements extends AbstractBlam {
       return "Publish Requirements";
    }
 
-   
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
@@ -73,15 +74,30 @@ public class PublishRequirements extends AbstractBlam {
       }
       branch = variableMap.getBranch("Diff Branch");
 
+      boolean useArtifactNameInLinks = variableMap.getBoolean("Use Artifact Names");
+      boolean useParagraphNumbersInLinks = variableMap.getBoolean("Use Paragraph Numbers");
+
+      if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
+         throw new OseeArgumentException("Please select at least one Document Link Format");
+      }
+      LinkType linkType;
+      if (useArtifactNameInLinks && useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+      } else if (useParagraphNumbersInLinks) {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER;
+      } else {
+         linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
+      }
       RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
       String templateOption =
-            publishAsDiff ? (includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE) : (includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE);
+            publishAsDiff ? (includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE) : includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE;
+
       VariableMap options =
             new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
                   ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
-                  "linkType", LinkType.INTERNAL_DOC_REFERENCE);
+                  "linkType", linkType);
       for (Artifact artifact : artifacts) {
          try {
             publish(monitor, artifact, options);
@@ -138,13 +154,11 @@ public class PublishRequirements extends AbstractBlam {
       }
    }
 
-   
    @Override
    public String getDescriptionUsage() {
       return "Drag in parent artifacts below and click the play button at the top right.";
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       List<Artifact> templates = new ArrayList<Artifact>();
@@ -157,8 +171,20 @@ public class PublishRequirements extends AbstractBlam {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       }
       StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" /><XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" /><XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getName() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
+      builder.append("<xWidgets>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Paragraph Numbers\" />");
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Publishing Options:\"/>");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" />");
+      builder.append("<XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" />");
+      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getName() + "\" />");
+      builder.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -196,6 +222,7 @@ public class PublishRequirements extends AbstractBlam {
       }
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }
