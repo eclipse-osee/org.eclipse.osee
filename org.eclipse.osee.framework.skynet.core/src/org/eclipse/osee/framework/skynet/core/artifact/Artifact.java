@@ -255,7 +255,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    };
 
    @Deprecated
-   public void onAttributePersist() throws OseeCoreException {
+   public void onAttributePersist(SkynetTransaction transaction) throws OseeCoreException {
    };
 
    /**
@@ -1102,7 +1102,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
       if (hasDirtyAttributes()) {
          transaction.addArtifact(this);
-         onAttributePersist();
+         onAttributePersist(transaction);
       }
    }
 

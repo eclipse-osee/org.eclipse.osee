@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -61,8 +62,8 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    };
 
    @Override
-   public void onAttributePersist() throws OseeCoreException {
-      super.onAttributePersist();
+   public void onAttributePersist(SkynetTransaction transaction) throws OseeCoreException {
+      super.onAttributePersist(transaction);
       // Since multiple ways exist to change the assignees, notification is performed on the persist
       if (isDeleted()) {
          return;

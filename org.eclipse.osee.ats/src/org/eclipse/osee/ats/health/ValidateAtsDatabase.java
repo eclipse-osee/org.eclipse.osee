@@ -519,6 +519,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.log(monitor, "testStateMachineAssignees");
       User unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
       User oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             try {
@@ -528,7 +529,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
                      smaMgr.getStateMgr().clearAssignees();
-                     smaMgr.getSma().persistAttributesAndRelations();
+                     smaMgr.getSma().persistAttributesAndRelations(transaction);
                      xResultData.log(monitor, "Fixed");
                   }
                }
@@ -553,8 +554,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
                   if (fixAssignees) {
                      try {
-                        ((StateMachineArtifact) art).updateAssigneeRelations();
-                        art.persistAttributesAndRelations();
+                        ((StateMachineArtifact) art).updateAssigneeRelations(transaction);
+                        art.persistAttributesAndRelations(transaction);
                      } catch (OseeCoreException ex) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
@@ -566,7 +567,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {
-                           ((StateMachineArtifact) art).updateAssigneeRelations();
+                           ((StateMachineArtifact) art).updateAssigneeRelations(transaction);
                            art.persistAttributesAndRelations();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -581,6 +582,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
       }
+      transaction.execute();
    }
 
    /**

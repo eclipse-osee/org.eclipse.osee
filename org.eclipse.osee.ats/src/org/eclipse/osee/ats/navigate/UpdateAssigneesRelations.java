@@ -58,7 +58,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
          System.out.println("Processing artifact type - " + artTypeName);
          for (Artifact art : ArtifactQuery.getArtifactListFromType(artTypeName, AtsUtil.getAtsBranch())) {
             if (art instanceof StateMachineArtifact) {
-               ((StateMachineArtifact) art).updateAssigneeRelations();
+               ((StateMachineArtifact) art).updateAssigneeRelations(transaction);
                if (art.hasDirtyAttributes()) {
                   System.out.println("Updated assignee relations for " + art.getHumanReadableId() + " - " + art);
                }
