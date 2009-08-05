@@ -250,7 +250,9 @@ public abstract class SqlManager {
       StringBuilder appliesTo = new StringBuilder();
       String tableName = formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
       for (IndexElement iData : tableIndeces) {
-         if (iData.ignoreMySql()) continue;
+         if (iData.ignoreMySql()) {
+            continue;
+         }
          indexId = iData.getId();
          appliesTo.delete(0, appliesTo.length());
 
@@ -290,8 +292,8 @@ public abstract class SqlManager {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(),
-               tableName));
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n",
+               iData.getId(), tableName));
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }
    }

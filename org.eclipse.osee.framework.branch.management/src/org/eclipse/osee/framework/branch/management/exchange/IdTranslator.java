@@ -71,7 +71,7 @@ public class IdTranslator {
       Long newVersion = transalateId(originalLong);
       Object toReturn = newVersion;
       if (original instanceof Double) {
-         toReturn = Double.valueOf((double) newVersion);
+         toReturn = Double.valueOf(newVersion);
       } else if (original instanceof Integer) {
          toReturn = newVersion.intValue();
       } else if (original instanceof Long) {

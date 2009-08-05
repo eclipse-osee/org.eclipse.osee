@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,14 +38,14 @@ import org.w3c.dom.NodeList;
  * @author Roberto E. Escobar
  */
 public class DatabaseDataImporter {
-   private File directory;
-   private SqlManager sqlManager;
+   private final File directory;
+   private final SqlManager sqlManager;
    private List<String> tableOrder;
    private String schemaToImportTo;
-   private Set<String> tableFilter;
+   private final Set<String> tableFilter;
 
    private class TableData extends TableElement {
-      private List<List<ColumnDbData>> rowData;
+      private final List<List<ColumnDbData>> rowData;
 
       public TableData() {
          rowData = new ArrayList<List<ColumnDbData>>();
@@ -144,10 +145,11 @@ public class DatabaseDataImporter {
       return toReturn;
    }
 
-   private void processData(List<TableData> tables) throws OseeDataStoreException {
+   private void processData(List<TableData> tables) throws OseeDataStoreException, ParseException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
-            OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
+            OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+                  "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");
             List<List<ColumnDbData>> rows = tableData.getRows();
             if (!rows.isEmpty()) {
                for (List<ColumnDbData> rowData : rows) {
