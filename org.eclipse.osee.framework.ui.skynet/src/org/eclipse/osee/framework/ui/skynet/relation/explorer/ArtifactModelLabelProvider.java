@@ -12,16 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 
 public class ArtifactModelLabelProvider implements ITableLabelProvider {
-
-   public static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
-
    public ArtifactModelLabelProvider() {
       super();
    };
@@ -59,10 +54,11 @@ public class ArtifactModelLabelProvider implements ITableLabelProvider {
       ArtifactModel model = (ArtifactModel) element;
       switch (columnIndex) {
          case RelationTableViewer.ADD_NUM:
-            if (model.isAdd())
+            if (model.isAdd()) {
                return ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED);
-            else
+            } else {
                return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
+            }
       }
       return null;
    }

@@ -17,15 +17,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 
-public class RevertLabelProvider extends LabelProvider { //StyledCellLabelProvider {
-   private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
+public class RevertLabelProvider extends LabelProvider {
    private Combo artifactSelectionBox = null;
    private List<List<Artifact>> artifacts = null;
 
@@ -38,6 +35,7 @@ public class RevertLabelProvider extends LabelProvider { //StyledCellLabelProvid
    /*
     * @see ILabelProvider#getImage(Object)
     */
+   @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
          return ImageManager.getImage((Artifact) element);
@@ -50,6 +48,7 @@ public class RevertLabelProvider extends LabelProvider { //StyledCellLabelProvid
    /*
     * @see ILabelProvider#getText(Object)
     */
+   @Override
    public String getText(Object element) {
       if (element instanceof Match) {
          element = ((Match) element).getElement();

@@ -292,8 +292,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(refreshAction);
 
-      // IMenuManager manager = getViewSite().getActionBars().getMenuManager();
-
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Group Explorer");
    }
 

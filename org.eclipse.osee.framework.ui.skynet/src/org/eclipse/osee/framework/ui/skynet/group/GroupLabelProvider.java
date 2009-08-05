@@ -15,15 +15,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 
 public class GroupLabelProvider extends LabelProvider {
-   private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
-
    public GroupLabelProvider() {
       super();
    }
@@ -48,7 +45,9 @@ public class GroupLabelProvider extends LabelProvider {
       if (element instanceof GroupExplorerItem) {
          GroupExplorerItem item = (GroupExplorerItem) element;
          Artifact artifact = item.getArtifact();
-         if (artifact.isDeleted()) throw new IllegalArgumentException("Can not display a deleted artifact");
+         if (artifact.isDeleted()) {
+            throw new IllegalArgumentException("Can not display a deleted artifact");
+         }
 
          try {
             if (artifact instanceof IGroupExplorerProvider) {
