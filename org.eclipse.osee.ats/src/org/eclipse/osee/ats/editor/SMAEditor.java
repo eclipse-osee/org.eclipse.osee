@@ -434,7 +434,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
       });
 
-      item = new ToolItem(toolBar, SWT.SEPARATOR);
+      new ToolItem(toolBar, SWT.SEPARATOR);
 
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);

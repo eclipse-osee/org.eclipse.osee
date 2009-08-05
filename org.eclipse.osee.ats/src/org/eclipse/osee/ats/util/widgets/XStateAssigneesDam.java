@@ -63,7 +63,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
+               AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 
@@ -74,7 +74,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       setState(currState);
       if (logMetrics) {
          XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
+               AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
       }
    }
 

@@ -65,7 +65,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    }
 
    public void logMetrics() throws OseeCoreException {
-      logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsUtil.doubleToStrString(sma.getHoursSpentSMATotal()),
+      logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal()),
             "", UserManager.getUser(), new Date());
    }
 

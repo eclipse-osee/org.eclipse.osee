@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -785,7 +786,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Otherwise, open dialog to ask for hours complete
       String msg =
-            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToStrString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
       SMAStatusDialog tsd =
             new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
                   msg, false, Arrays.asList(smaMgr.getSma()));

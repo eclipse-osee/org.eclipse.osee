@@ -138,7 +138,9 @@ public class AtsUtil implements IAtsLib {
    }
 
    public static void setEmailEnabled(boolean enabled) {
-      if (!DbUtil.isDbInit()) System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+      if (!DbUtil.isDbInit()) {
+         System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+      }
       emailEnabled = enabled;
    }
 
@@ -187,8 +189,12 @@ public class AtsUtil implements IAtsLib {
 
    public static ToolBar createCommonToolBar(Composite parent, XFormToolkit toolkit) {
       ToolBar toolBar = ALayout.createCommonToolBar(parent);
-      if (toolkit != null) toolkit.adapt(toolBar.getParent());
-      if (toolkit != null) toolkit.adapt(toolBar);
+      if (toolkit != null) {
+         toolkit.adapt(toolBar.getParent());
+      }
+      if (toolkit != null) {
+         toolkit.adapt(toolBar);
+      }
       return toolBar;
    }
 
@@ -204,10 +210,10 @@ public class AtsUtil implements IAtsLib {
    public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
       Set<A> results = new HashSet<A>();
       for (Artifact art : artifacts) {
-         if ((art.getClass().equals(clazz)) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
-            if (active == Active.Both)
+         if (art.getClass().equals(clazz) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
+            if (active == Active.Both) {
                results.add((A) art);
-            else {
+            } else {
                // Ats config Artifact is Active unless otherwise specified
                boolean attributeActive =
                      ((A) art).getSoleAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false);
@@ -222,31 +228,40 @@ public class AtsUtil implements IAtsLib {
       return results;
    }
 
-   public static String doubleToStrString(double d) {
-      return doubleToStrString(d, false);
+   public static String doubleToI18nString(double d) {
+      return doubleToI18nString(d, false);
    }
 
-   public static String doubleToStrString(double d, boolean blankIfZero) {
-      if (blankIfZero && d == 0)
+   public static String doubleToI18nString(double d, boolean blankIfZero) {
+      if (blankIfZero && d == 0) {
          return "";
-      else
+      } else {
          return String.format("%4.2f", d);
+      }
    }
 
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       Result result = actionArt.editActionableItems();
-      if (result.isFalse() && result.getText().equals("")) return;
-      if (result.isFalse()) result.popup();
+      if (result.isFalse() && result.getText().equals("")) {
+         return;
+      }
+      if (result.isFalse()) {
+         result.popup();
+      }
    }
 
    public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Result result = teamArt.editActionableItems();
-      if (result.isFalse() && result.getText().equals("")) return;
-      if (result.isFalse() && !result.getText().equals("")) result.popup();
+      if (result.isFalse() && result.getText().equals("")) {
+         return;
+      }
+      if (result.isFalse() && !result.getText().equals("")) {
+         result.popup();
+      }
    }
 
    public static void open(String guid, OseeAts.OpenView view) {
-      (new AtsUtil()).openArtifact(guid, view);
+      new AtsUtil().openArtifact(guid, view);
    }
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
@@ -275,10 +290,11 @@ public class AtsUtil implements IAtsLib {
       }
 
       if (view == OseeAts.OpenView.ActionEditor) {
-         if ((artifact instanceof StateMachineArtifact) || (artifact instanceof ActionArtifact))
+         if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
             openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-         else
+         } else {
             ArtifactEditor.editArtifact(artifact);
+         }
       } else if (view == OseeAts.OpenView.ArtifactEditor) {
          ArtifactEditor.editArtifact(artifact);
       } else if (view == OseeAts.OpenView.ArtifactHyperViewer) {
@@ -287,7 +303,7 @@ public class AtsUtil implements IAtsLib {
    }
 
    public static void createAtsAction(String initialDescription, String actionableItem) {
-      (new AtsUtil()).createATSAction(initialDescription, actionableItem);
+      new AtsUtil().createATSAction(initialDescription, actionableItem);
    }
 
    public void createATSAction(String initialDescription, String actionableItemName) {
@@ -310,7 +326,7 @@ public class AtsUtil implements IAtsLib {
    }
 
    public static void openAtsAction(final Artifact art, final AtsOpenOption option) {
-      (new AtsUtil()).openATSAction(art, option);
+      new AtsUtil().openATSAction(art, option);
    }
 
    public void openATSAction(final Artifact art, final AtsOpenOption option) {
@@ -318,25 +334,27 @@ public class AtsUtil implements IAtsLib {
          if (art instanceof ActionArtifact) {
             final ActionArtifact actionArt = (ActionArtifact) art;
             Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
-            if (option == AtsOpenOption.OpenAll)
-               for (TeamWorkFlowArtifact team : teams)
+            if (option == AtsOpenOption.OpenAll) {
+               for (TeamWorkFlowArtifact team : teams) {
                   SMAEditor.editArtifact(team);
-            else if (option == AtsOpenOption.AtsWorld)
+               }
+            } else if (option == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
                      Arrays.asList(actionArt)));
-            else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
-               if (teams.size() == 1)
+            } else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
+               if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());
-               else {
+               } else {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
                      public void run() {
                         try {
                            TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(actionArt);
-                           if (teamArt != null)
+                           if (teamArt != null) {
                               SMAEditor.editArtifact((Artifact) teamArt);
-                           else
+                           } else {
                               return;
+                           }
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
@@ -344,8 +362,9 @@ public class AtsUtil implements IAtsLib {
                   });
                }
             }
-         } else
+         } else {
             SMAEditor.editArtifact(art);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -359,10 +378,11 @@ public class AtsUtil implements IAtsLib {
       ld.setMessage("Select Team Workflow");
       ld.setInput(actArt.getTeamWorkFlowArtifacts());
       if (ld.open() == 0) {
-         if (ld.getResult().length == 0)
+         if (ld.getResult().length == 0) {
             AWorkbench.popup("Error", "No Workflow Selected");
-         else
+         } else {
             return (TeamWorkFlowArtifact) ld.getResult()[0];
+         }
       }
       return null;
    }
@@ -374,10 +394,13 @@ public class AtsUtil implements IAtsLib {
          if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
                   TableLoadOption.None));
-         } else
+         } else {
             otherArts.add(art);
+         }
       }
-      if (otherArts.size() > 0) WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
+      if (otherArts.size() > 0) {
+         WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
+      }
    }
 
    @Override

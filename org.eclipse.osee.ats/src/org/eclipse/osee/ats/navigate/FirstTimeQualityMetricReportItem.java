@@ -183,7 +183,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
                XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
                numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
                numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToStrString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
+               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

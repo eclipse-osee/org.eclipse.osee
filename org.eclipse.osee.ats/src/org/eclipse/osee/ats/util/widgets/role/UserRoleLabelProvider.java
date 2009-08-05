@@ -57,7 +57,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       if (aCol.equals(UserRoleXViewerFactory.User_Col))
          return defectItem.getUser().getName();
       else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col))
-         return defectItem.getHoursSpent() == null ? "" : AtsUtil.doubleToStrString(defectItem.getHoursSpent(), false);
+         return defectItem.getHoursSpent() == null ? "" : AtsUtil.doubleToI18nString(defectItem.getHoursSpent(), false);
       else if (aCol.equals(UserRoleXViewerFactory.Role_Col))
          return defectItem.getRole().name();
       else if (aCol.equals(UserRoleXViewerFactory.Completed_Col))

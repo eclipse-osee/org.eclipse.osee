@@ -19,9 +19,11 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import com.ibm.icu.text.NumberFormat;
 
 /**
  * @author Donald G. Dunne
@@ -82,13 +84,18 @@ public class UserRole {
       try {
          this.role = Role.valueOf(AXml.getTagData(xml, "role"));
          this.user = UserManager.getUserByUserId(AXml.getTagData(xml, "userId"));
-         this.hoursSpent =
-               AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
+         String hoursSpent = AXml.getTagData(xml, "hoursSpent");
+         if (Strings.isValid(hoursSpent)) {
+            this.hoursSpent = NumberFormat.getInstance().parse(hoursSpent).doubleValue();
+         } else {
+            this.hoursSpent = null;
+         }
          String completedStr = AXml.getTagData(xml, "completed");
-         if (completedStr != null)
+         if (Strings.isValid(completedStr)) {
             this.completed = completedStr.equals("true");
-         else
+         } else {
             this.completed = false;
+         }
          this.guid = AXml.getTagData(xml, "guid");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -150,7 +157,7 @@ public class UserRole {
    }
 
    public String getHoursSpentStr() {
-      return hoursSpent == null ? "" : AtsUtil.doubleToStrString(hoursSpent, true);
+      return hoursSpent == null ? "" : AtsUtil.doubleToI18nString(hoursSpent, true);
    }
 
    /**

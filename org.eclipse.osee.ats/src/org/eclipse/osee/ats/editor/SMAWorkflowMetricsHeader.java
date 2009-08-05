@@ -88,15 +88,15 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          if (!percentLabel.isDisposed())
             percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
          if (estHoursLabel != null && !estHoursLabel.isDisposed())
-            estHoursLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal())));
+            estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getEstimatedHoursTotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed())
-            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal())));
+            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getHoursSpentSMATotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
             if (result.isFalse())
                remainHoursLabel.setText("Error" + result.getText());
             else
-               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours())));
+               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getWorldViewRemainHours())));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
