@@ -1802,6 +1802,12 @@
                  className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeUpdateHyperlinksHealthOperation">
            </DatabaseHealthOperation>
         </extension>
+                         <extension
+              point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+           <DatabaseHealthOperation
+                 className="org.eclipse.osee.framework.ui.skynet.dbHealth.RepeatEnumerationAttributeValues">
+           </DatabaseHealthOperation>
+        </extension>
         
         <extension
               point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
