@@ -67,5 +67,6 @@ Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.ui.skynet.widgets,
  org.eclipse.osee.framework.ui.skynet.widgets.xBranch,
  org.eclipse.osee.framework.ui.skynet.widgets.xHistory,
- org.eclipse.osee.framework.ui.skynet.widgets.xnavigate
+ org.eclipse.osee.framework.ui.skynet.widgets.xnavigate,
+ org.eclipse.osee.framework.ui.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
