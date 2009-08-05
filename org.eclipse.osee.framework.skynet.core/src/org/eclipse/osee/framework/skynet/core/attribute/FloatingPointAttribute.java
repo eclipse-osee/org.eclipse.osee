@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -18,22 +19,51 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
+   private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
+
    @Override
    public Double getValue() throws OseeCoreException {
-      String doubleString = getAttributeDataProvider().getValueAsString();
-      return Strings.isValid(doubleString) ? Double.valueOf(doubleString) : null;
+      return convertStringToValue(getAttributeDataProvider().getValueAsString());
    }
 
    @Override
    public boolean subClassSetValue(Double value) throws OseeCoreException {
+      if (value == null) {
+         throw new OseeArgumentException("Attribute value was null");
+      }
       return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
    @Override
    protected Double convertStringToValue(String value) {
-      if (value == null || value.equals("")) {
-         return null;
+      Double toReturn = null;
+      if (isValidDouble(value)) {
+         toReturn = Double.valueOf(value);
+      } else {
+         toReturn = getDefaultValue();
       }
-      return new Double(value);
+      return toReturn;
+   }
+
+   public Double getDefaultValue() {
+      Double toReturn = DEFAULT_DOUBLE;
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (isValidDouble(defaultValue)) {
+         toReturn = Double.valueOf(defaultValue);
+      }
+      return toReturn;
+   }
+
+   private boolean isValidDouble(String value) {
+      boolean result = false;
+      if (Strings.isValid(value)) {
+         try {
+            Double.parseDouble(value);
+            result = true;
+         } catch (NumberFormatException ex) {
+            // Do Nothing;
+         }
+      }
+      return result;
    }
 }

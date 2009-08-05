@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -43,27 +46,31 @@ public class XFloat extends XText {
 
    @Override
    public double getFloat() {
-      if (get().equals("")) return 0.0;
+      if (get().equals("")) {
+         return 0.0;
+      }
       try {
-         return new Double(get());
-      } catch (NumberFormatException ex) {
+         return NumberFormat.getInstance().parse(get()).doubleValue();
+      } catch (ParseException e) {
          return 0.0;
       }
    }
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() || (super.get().compareTo("") != 0)) {
+      if (isRequiredEntry() || Strings.isValid(get())) {
          String name = getLabel();
-         if (name.equals("")) name = "Value";
+         if (name.equals("")) {
+            name = "Value";
+         }
          IStatus result = super.isValid();
          if (!result.isOK()) {
             return result;
          } else if (!this.isFloat()) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be a Float");
-         } else if (minValueSet && (this.getFloat() < minValue)) {
+         } else if (minValueSet && this.getFloat() < minValue) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be >= " + minValue);
-         } else if (maxValueSet && (this.getFloat() > maxValue)) {
+         } else if (maxValueSet && this.getFloat() > maxValue) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, name + " must be <= " + maxValue);
          }
       }

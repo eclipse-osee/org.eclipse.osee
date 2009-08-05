@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -104,8 +105,10 @@ public class XDate extends XWidget {
    }
 
    public static String getDateStr(Date date, String format) {
-      if (date == null) return "";
-      return (new SimpleDateFormat(format)).format(date);
+      if (date == null) {
+         return "";
+      }
+      return new SimpleDateFormat(format).format(date);
    }
 
    public static String getDateNow() {
@@ -134,7 +137,9 @@ public class XDate extends XWidget {
       // composite = new Composite(parent, parent.getStyle());
       this.parent = parent;
 
-      if (horizontalSpan < 2) horizontalSpan = 2;
+      if (horizontalSpan < 2) {
+         horizontalSpan = 2;
+      }
 
       labelWidget = new Label(parent, SWT.NONE);
       labelWidget.setText(getLabel() + ": ");
@@ -142,15 +147,18 @@ public class XDate extends XWidget {
       dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
       gd.widthHint = 100;
-      if (date != null) dateCombo.setDate(date);
+      if (date != null) {
+         dateCombo.setDate(date);
+      }
       dateCombo.addCalendarListener(new CalendarListenerAdapter() {
          @Override
          public void dateChanged(Calendar newDate) {
             super.dateChanged(newDate);
-            if (newDate == null)
+            if (newDate == null) {
                date = null;
-            else
+            } else {
                date = newDate.getTime();
+            }
             validate();
             notifyXModifiedListeners();
             dateCombo.getParent().layout();
@@ -162,7 +170,9 @@ public class XDate extends XWidget {
    @Override
    public void dispose() {
       labelWidget.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (Widgets.isAccessible(parent)) {
+         parent.layout();
+      }
    }
 
    @Override
@@ -211,10 +221,11 @@ public class XDate extends XWidget {
    public void setDate(Date date) {
       this.date = date;
       if (dateCombo != null && !dateCombo.isDisposed()) {
-         if (dateCombo != null)
+         if (dateCombo != null) {
             dateCombo.setDate(date);
-         else
+         } else {
             dateCombo.setDate((Date) null);
+         }
       }
    }
 
@@ -226,12 +237,14 @@ public class XDate extends XWidget {
    @Override
    public IStatus isValid() {
       if (isRequireFutureDate()) {
-         if (getDate().before(new Date())) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-               getLabel() + " must be in future.");
+         if (getDate().before(new Date())) {
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be in future.");
+         }
       }
       if (isRequiredEntry()) {
-         if (get().equals("")) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
-               getLabel() + " must be selected.");
+         if (get().equals("")) {
+            return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+         }
       }
       return Status.OK_STATUS;
    }
@@ -242,8 +255,10 @@ public class XDate extends XWidget {
    }
 
    public String get() {
-      if (date == null) return "";
-      return date.toString();
+      if (date == null) {
+         return "";
+      }
+      return DateFormat.getDateInstance().format(date);
    }
 
    public String get(String pattern) {
@@ -251,14 +266,18 @@ public class XDate extends XWidget {
    }
 
    public String get(DateFormat dateFormat) {
-      if (date == null) return "";
+      if (date == null) {
+         return "";
+      }
       String result = dateFormat.format(date);
       return result;
    }
 
    @Override
    public void setFocus() {
-      if (dateCombo != null) dateCombo.setFocus();
+      if (dateCombo != null) {
+         dateCombo.setFocus();
+      }
    }
 
    /**
@@ -267,7 +286,9 @@ public class XDate extends XWidget {
    @Override
    public String getXmlData() {
       String dateStr = "";
-      if (date != null) dateStr = date.getTime() + "";
+      if (date != null) {
+         dateStr = date.getTime() + "";
+      }
       return dateStr;
    }
 
@@ -276,9 +297,9 @@ public class XDate extends XWidget {
     */
    @Override
    public void setXmlData(String str) {
-      if (str.equals(""))
+      if (str.equals("")) {
          date = null;
-      else {
+      } else {
          try {
             Long l = new Long(str);
             date = new Date(l.longValue());

@@ -12,16 +12,17 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.List;
 
+@Deprecated
 public class StringFormat {
-
    public static String separateWith(String[] items, String separateWith) {
       StringBuilder string = new StringBuilder();
       boolean first = true;
       for (String item : items) {
-         if (first)
+         if (first) {
             first = false;
-         else
+         } else {
             string.append(separateWith);
+         }
          string.append(item);
       }
 
@@ -50,9 +51,5 @@ public class StringFormat {
          charArray[charArrayIndex] = '0';
       }
       return new String(charArray);
-   }
-
-   public static String truncate(String str, int length) {
-      return str.substring(0, Math.min(length, str.length()));
    }
 }

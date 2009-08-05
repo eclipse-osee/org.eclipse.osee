@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,7 +41,7 @@ public class UpdateBranchOperation extends AbstractOperation {
    }
 
    private static String getUpdatedName(String branchName) {
-      String storeName = StringFormat.truncate(branchName, 100);
+      String storeName = Strings.truncate(branchName, 100);
       return String.format("%s - for update - %s", storeName, Lib.getDateTimeString());
    }
 

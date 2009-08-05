@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -17,22 +18,52 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Ryan D. Brooks
  */
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
+
+   private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
+
    @Override
-   public Integer getValue() throws NumberFormatException, OseeCoreException {
-      String integerString = getAttributeDataProvider().getValueAsString();
-      return Strings.isValid(integerString) ? Integer.valueOf(integerString) : null;
+   public Integer getValue() throws OseeCoreException {
+      return convertStringToValue(getAttributeDataProvider().getValueAsString());
    }
 
    @Override
    public boolean subClassSetValue(Integer value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(Integer.toString(value));
+      if (value == null) {
+         throw new OseeArgumentException("Attribute value was null");
+      }
+      return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
    @Override
    protected Integer convertStringToValue(String value) throws OseeCoreException {
-      if (value == null || value.equals("")) {
-         return new Integer(0);
+      Integer toReturn = null;
+      if (isValidInteger(value)) {
+         toReturn = Integer.valueOf(value);
+      } else {
+         toReturn = getDefaultValue();
       }
-      return Integer.parseInt(value);
+      return toReturn;
+   }
+
+   public Integer getDefaultValue() {
+      Integer toReturn = DEFAULT_INTEGER;
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (isValidInteger(defaultValue)) {
+         toReturn = Integer.valueOf(defaultValue);
+      }
+      return toReturn;
+   }
+
+   private boolean isValidInteger(String value) {
+      boolean result = false;
+      if (Strings.isValid(value)) {
+         try {
+            Integer.parseInt(value);
+            result = true;
+         } catch (NumberFormatException ex) {
+            // Do Nothing;
+         }
+      }
+      return result;
    }
 }

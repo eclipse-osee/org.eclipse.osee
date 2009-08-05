@@ -17,27 +17,19 @@ package org.eclipse.osee.framework.jdk.core.util;
 public class Strings {
    private final static String EMPTY_STRING = "";
 
-   /**
-    * Return string truncated if size > length, otherwise return string
-    * 
-    * @param string
-    * @param length
-    * @return truncated string
-    */
-   public static String truncate(String string, int length) {
-
-      if (string.length() > length) {
-         return string.substring(0, length);
-      }
-
-      return string;
-   }
-
    public static boolean isValid(String value) {
       return value != null && value.length() > 0;
    }
 
    public static String emptyString() {
       return EMPTY_STRING;
+   }
+
+   public static String truncate(String value, int length) {
+      String toReturn = value;
+      if (Strings.isValid(value)) {
+         toReturn = value.substring(0, Math.min(length, value.length()));
+      }
+      return toReturn;
    }
 }

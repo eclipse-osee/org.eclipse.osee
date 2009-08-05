@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
@@ -361,8 +363,8 @@ public class XText extends XWidget {
 
    public boolean isFloat() {
       try {
-         new Float(text);
-      } catch (NumberFormatException e) {
+         NumberFormat.getInstance().parse(text);
+      } catch (ParseException e) {
          return false;
       }
       return true;
@@ -379,11 +381,11 @@ public class XText extends XWidget {
    }
 
    public double getFloat() {
-      Double num;
+      Number num;
       try {
-         num = new Double(text);
-      } catch (NumberFormatException e) {
-         return 0;
+         num = NumberFormat.getInstance().parse(text);
+      } catch (ParseException e) {
+         return 0.0;
       }
       return num.doubleValue();
    }

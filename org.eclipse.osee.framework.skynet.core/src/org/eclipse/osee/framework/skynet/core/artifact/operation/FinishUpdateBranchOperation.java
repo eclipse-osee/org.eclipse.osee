@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,7 +41,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    }
 
    private String getUpdatedName(String branchName) {
-      String storeName = StringFormat.truncate(branchName, 100);
+      String storeName = Strings.truncate(branchName, 100);
       return String.format("%s - moved by update on - %s", storeName, Lib.getDateTimeString());
    }
 

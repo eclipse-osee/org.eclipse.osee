@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.text.NumberFormat;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,17 +26,10 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
    private Artifact artifact;
    private String attributeTypeName;
 
-   /**
-    * @param displayLabel
-    */
    public XFloatDam(String displayLabel) {
       super(displayLabel);
    }
 
-   /**
-    * @param displayLabel
-    * @param xmlRoot
-    */
    public XFloatDam(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
    }
@@ -44,7 +38,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
       Double value = artifact.getSoleAttributeValue(attributeTypeName, null);
-      super.set(value == null ? "" : value.toString());
+      super.set(value == null ? "" : NumberFormat.getInstance().format(value));
    }
 
    @Override
@@ -77,5 +71,4 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
    public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
-
 }

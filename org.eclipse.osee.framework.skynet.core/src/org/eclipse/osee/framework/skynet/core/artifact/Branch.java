@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -122,7 +121,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
     * @return Returns the short branch name if provided else returns null.
     */
    public String getShortName() {
-      return Strings.isValid(getName()) ? StringFormat.truncate(getName(), SHORT_NAME_LIMIT) : Strings.emptyString();
+      return Strings.isValid(getName()) ? Strings.truncate(getName(), SHORT_NAME_LIMIT) : Strings.emptyString();
    }
 
    private void kickRenameEvents() throws OseeCoreException {
@@ -364,7 +363,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       // Remove illegal filename characters
       // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name
       branchName = branchName.replaceAll("[^A-Za-z0-9]", "_");
-      branchName = StringFormat.truncate(branchName, 20).trim();
+      branchName = Strings.truncate(branchName, 20).trim();
 
       return String.format("%s.%s", branchName.toLowerCase(), this.getBranchId());
    }

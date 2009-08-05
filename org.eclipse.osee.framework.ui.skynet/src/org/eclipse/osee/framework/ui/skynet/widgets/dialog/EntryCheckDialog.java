@@ -25,24 +25,11 @@ public class EntryCheckDialog extends EntryDialog {
    private final String checkBoxMessage;
    private boolean checked = false;
 
-   /**
-    * @param dialogTitle
-    * @param dialogMessage
-    */
    public EntryCheckDialog(String dialogTitle, String dialogMessage, String checkBoxMessage) {
       super(dialogTitle, dialogMessage);
       this.checkBoxMessage = checkBoxMessage;
    }
 
-   /**
-    * @param parentShell
-    * @param dialogTitle
-    * @param dialogTitleImage
-    * @param dialogMessage
-    * @param dialogImageType
-    * @param dialogButtonLabels
-    * @param defaultIndex
-    */
    public EntryCheckDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, String checkBoxMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
             defaultIndex);
@@ -75,16 +62,10 @@ public class EntryCheckDialog extends EntryDialog {
 
    }
 
-   /**
-    * @return the checked
-    */
    public boolean isChecked() {
       return checked;
    }
 
-   /**
-    * @param checked the checked to set
-    */
    public void setChecked(boolean checked) {
       this.checked = checked;
    }

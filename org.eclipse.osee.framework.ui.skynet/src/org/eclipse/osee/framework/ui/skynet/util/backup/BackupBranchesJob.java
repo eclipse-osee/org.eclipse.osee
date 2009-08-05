@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Zip;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -74,7 +74,7 @@ public class BackupBranchesJob extends EmailableJob {
          rd.log("Starting OSEE DB Backup - " + XDate.getDateNow());
          for (Branch branch : branches) {
             rd.log("Backing up \"" + branch.getShortName() + "\" - " + XDate.getDateNow());
-            String backupName = StringFormat.truncate(branch.getName(), 25);
+            String backupName = Strings.truncate(branch.getName(), 25);
             backupName = backupName.replaceAll("\\W+", "_");
             File xmlFile =
                   new File(

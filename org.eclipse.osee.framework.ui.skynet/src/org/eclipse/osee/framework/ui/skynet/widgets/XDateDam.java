@@ -57,9 +57,15 @@ public class XDateDam extends XDate implements IArtifactWidget {
    public Result isDirty() throws OseeCoreException {
       Date enteredValue = getDate();
       Date storedValue = artifact.getSoleAttributeValue(attributeTypeName, null);
-      if (enteredValue == null && storedValue == null) return Result.FalseResult;
-      if (enteredValue == null && storedValue != null) return new Result(true, attributeTypeName + " is dirty");
-      if (enteredValue != null && storedValue == null) return new Result(true, attributeTypeName + " is dirty");
+      if (enteredValue == null && storedValue == null) {
+         return Result.FalseResult;
+      }
+      if (enteredValue == null && storedValue != null) {
+         return new Result(true, attributeTypeName + " is dirty");
+      }
+      if (enteredValue != null && storedValue == null) {
+         return new Result(true, attributeTypeName + " is dirty");
+      }
       if (enteredValue.getTime() != storedValue.getTime()) {
          return new Result(true, attributeTypeName + " is dirty");
       }
