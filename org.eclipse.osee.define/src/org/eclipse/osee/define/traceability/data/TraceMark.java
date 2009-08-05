@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.data;
 
-import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +34,7 @@ public class TraceMark {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof CompositeKey) {
+      if (obj instanceof TraceMark) {
          final TraceMark other = (TraceMark) obj;
          boolean result = true;
          if (other.getTraceType() != null && getTraceType() != null) {
