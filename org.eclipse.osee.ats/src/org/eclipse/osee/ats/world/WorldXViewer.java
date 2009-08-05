@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -490,13 +491,21 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    }
 
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
-      if (!(treeColumn.getData() instanceof XViewerAttributeColumn)) {
+      if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
          return;
       }
-      final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+
       XResultData rData = new XResultData();
-      final String attrName = xCol.getAttributeTypeName();
+      String attrName = null;
+      if (treeColumn.getData() instanceof XViewerAttributeColumn) {
+         final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+         attrName = xCol.getAttributeTypeName();
+      }
+      if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
+         final XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
+         attrName = xCol.getAttributeTypeName();
+      }
       if (attrName == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return;
@@ -522,7 +531,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             return;
          }
          if (useArts.size() > 0) {
-            ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
+            ArtifactPromptChange.promptChangeAttribute(attrName, attrName, useArts, persist);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -537,12 +546,16 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
          return false;
       }
+      String attrName = null;
       // Currently don't know how to multi-edit anything but attribute
-      if (!(treeColumn.getData() instanceof XViewerAttributeColumn)) {
-         return false;
+      if (treeColumn.getData() instanceof XViewerAttributeColumn) {
+         XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+         attrName = xCol.getAttributeTypeName();
       }
-      XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
-      final String attrName = xCol.getAttributeTypeName();
+      if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
+         XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
+         attrName = xCol.getAttributeTypeName();
+      }
       if (attrName == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return false;
