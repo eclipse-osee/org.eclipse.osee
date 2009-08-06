@@ -30,7 +30,6 @@
 			</path>
 		</pathconvert>
 
-		<available property="" />
 		<ant antfile="${pdePathPrefix}/scripts/build.xml" target="${pdeTarget}" />
 
 		<antcall target="internalPostBuild" />
