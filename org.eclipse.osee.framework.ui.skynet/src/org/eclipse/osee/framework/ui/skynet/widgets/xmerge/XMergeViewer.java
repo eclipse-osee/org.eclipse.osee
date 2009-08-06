@@ -101,17 +101,16 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       Composite mainComp = new Composite(parent, SWT.BORDER);
-      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      Tree tree = mergeXViewer.getTree();
-
+      createTaskActionBar(mainComp);
       createTextWidgets(parent);
       createMainComposite(mainComp);
+      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       createMergeXViewer();
-      createTree(tree);
-
       if (toolkit != null) {
          toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
       }
+      Tree tree = mergeXViewer.getTree();
+      createTree(tree);
    }
 
    private void createTextWidgets(Composite parent) {
@@ -131,7 +130,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
          toolkit.paintBordersFor(mainComp);
       }
 
-      createTaskActionBar(mainComp);
    }
 
    private void createMergeXViewer() {
