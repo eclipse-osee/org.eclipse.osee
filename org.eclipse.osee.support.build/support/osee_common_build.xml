@@ -13,6 +13,8 @@
 		<property name="pdeTarget" value="main" />
 		<property name="p2.category.definition" value="file:${basedir}/category.xml" />
 
+		<antcall target="set-proxy" />
+
 		<delete verbose="true" quiet="true" includeEmptyDirs="true">
 			<fileset dir="${buildDirectory}" excludes="plugins/**/*" />
 		</delete>
@@ -28,6 +30,7 @@
 			</path>
 		</pathconvert>
 
+		<available property="" />
 		<ant antfile="${pdePathPrefix}/scripts/build.xml" target="${pdeTarget}" />
 
 		<antcall target="internalPostBuild" />
@@ -35,6 +38,10 @@
 		<antcall target="copyToUpdatesite" />
 	</target>
 
+	<target name="set-proxy" if="${proxy_host}">
+		<echo message="Setting proxy to ${proxy_host}:${proxy_port}" />
+		<setproxy proxyhost="${proxy_host}" proxyport="${proxy_port}" />
+	</target>
 
 	<target name="internalPostBuild" if="postBuildFile">
 		<ant antfile="${postBuildFile}" target="${postBuildTarget}" />
