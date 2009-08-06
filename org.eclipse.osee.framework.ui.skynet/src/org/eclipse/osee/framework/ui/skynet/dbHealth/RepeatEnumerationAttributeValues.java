@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -17,12 +18,18 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Ryan D. Brooks
@@ -31,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private final static String FIND_REPEAT_ENUMS =
-         "select art1.guid, att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.transaction_id = txd1.transaction_id and txd1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.transaction_id = txd2.transaction_id and txd2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT.getValue() + " and txs2.tx_current = " + TxChange.CURRENT.getValue() + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = attr1.art_id order by att1.art_id,att1.attr_type_id,att1.value";
+         "select art1.guid, att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_tx_details txd1, osee_tx_details txd2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.transaction_id = txd1.transaction_id and txd1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.transaction_id = txd2.transaction_id and txd2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT.getValue() + " and txs2.tx_current = " + TxChange.CURRENT.getValue() + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = att1.art_id order by att1.art_id,att1.attr_type_id,att1.value";
 
    public RepeatEnumerationAttributeValues() {
       super("Repeat Enumeration Attribute Values");
@@ -39,13 +46,16 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    public String getFixTaskName() {
-      return "";
+      return "Delete Repeat Enumeration Attribute Values";
    }
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       HashCollection<Branch, AttrData> attributesWithErrors = new HashCollection<Branch, AttrData>();
-      List<Branch> branches = BranchManager.getTopLevelBranches();
+      List<Branch> branches = BranchManager.getBaselineBranches();
+      if (branches.isEmpty()) {
+         throw new OseeStateException("no branches found");
+      }
       for (Branch branch : branches) {
          Collection<AttrData> datas = getRepeatEnumeratedAttrs(monitor, branch);
          if (!datas.isEmpty()) {
@@ -60,7 +70,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          appendToDetails(AHTML.addRowSpanMultiColumnTable(branch.getName(), 3));
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getArtifactGuid(),
-                  attrData.getAttributeTypeId(), attrData.getValue()}));
+                  AttributeTypeManager.getType(attrData.getAttributeTypeId()).getName(), attrData.getValue()}));
          }
       }
       appendToDetails(AHTML.endMultiColumnTable());
@@ -70,8 +80,27 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
       setItemsToFix(attributesWithErrors.size());
       checkForCancelledStatus(monitor);
-      if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
-         // No Fix Provided
+      if (isFixOperationEnabled() && hadItemsToFix()) {
+         for (Branch branch : attributesWithErrors.keySet()) {
+            Collection<AttrData> attributeData = attributesWithErrors.getValues(branch);
+            List<String> artifactGuids = new ArrayList<String>(attributeData.size());
+            for (AttrData attrData : attributeData) {
+               artifactGuids.add(attrData.getArtifactGuid());
+            }
+
+            ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, false); // bulk load for speed
+            SkynetTransaction transaction =
+                  new SkynetTransaction(branch, "Delete Repeat Attribute Values for" + branch.getShortName());
+            for (AttrData attrData : attributeData) {
+               Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
+               AttributeType attributeType = AttributeTypeManager.getType(attrData.getAttributeTypeId());
+               if (attributeType.isEnumerated()) {
+                  artifact.setAttributeValues(attributeType, artifact.getAttributesToStringList(attributeType));
+                  transaction.addArtifact(artifact);
+               }
+            }
+            transaction.execute();
+         }
       }
       monitor.worked(calculateWork(0.40));
 
@@ -81,22 +110,22 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    public String getCheckDescription() {
-      return "Searches for attributes having the same values in a branch";
+      return "Searches for attributes of the same artifact having the same values in top level branches";
    }
 
    @Override
    public String getFixDescription() {
-      return "NO FIX PROVIDED";
+      return "Deletes the repeat attribute values using a transaction directly on the branch";
    }
 
    private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       Set<AttrData> attrData = new HashSet<AttrData>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getBranchId());
+         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getBranchId(), branch.getBranchId());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            attrData.add(new AttrData(chStmt.getString("guid"), chStmt.getString("attr_type_id"),
+            attrData.add(new AttrData(chStmt.getString("guid"), chStmt.getInt("attr_type_id"),
                   chStmt.getString("value")));
          }
       } finally {
@@ -107,10 +136,10 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private final class AttrData {
       private final String artifactGuid;
-      private final String attributeTypeId;
+      private final int attributeTypeId;
       private final String value;
 
-      public AttrData(String artifactGuid, String attributeTypeId, String value) {
+      public AttrData(String artifactGuid, int attributeTypeId, String value) {
          super();
          this.artifactGuid = artifactGuid;
          this.attributeTypeId = attributeTypeId;
@@ -121,7 +150,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          return artifactGuid;
       }
 
-      public String getAttributeTypeId() {
+      public int getAttributeTypeId() {
          return attributeTypeId;
       }
 
@@ -129,22 +158,16 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          return value;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
       @Override
       public int hashCode() {
          final int prime = 31;
          int result = 1;
          result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + (attributeTypeId == null ? 0 : attributeTypeId.hashCode());
+         result = prime * result + attributeTypeId;
          result = prime * result + (value == null ? 0 : value.hashCode());
          return result;
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Object#equals(java.lang.Object)
-       */
       @Override
       public boolean equals(Object obj) {
          if (this == obj) {
@@ -158,11 +181,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          } else if (!artifactGuid.equals(other.artifactGuid)) {
             return false;
          }
-         if (attributeTypeId == null) {
-            if (other.attributeTypeId != null) {
-               return false;
-            }
-         } else if (!attributeTypeId.equals(other.attributeTypeId)) {
+         if (attributeTypeId != other.attributeTypeId) {
             return false;
          }
          if (value == null) {
@@ -175,5 +194,4 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          return true;
       }
    }
-
 }

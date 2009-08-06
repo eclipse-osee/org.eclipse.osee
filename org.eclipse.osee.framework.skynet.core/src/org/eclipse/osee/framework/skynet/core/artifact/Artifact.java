@@ -833,21 +833,35 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
     * excess attributes will be deleted.
     * 
+    * @param attributeType
+    * @param newValues
+    * @throws OseeCoreException
+    */
+   public void setAttributeValues(AttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
+      setAttributeValues(attributeType.getName(), newValues);
+   }
+
+   /**
+    * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
+    * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
+    * excess attributes will be deleted.
+    * 
     * @param attributeTypeName
     * @param newValues
     * @throws OseeCoreException
     */
    public void setAttributeValues(String attributeTypeName, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
+      HashSet<String> uniqueNewValues = new HashSet<String>(newValues); // ensure new values are unique
 
-      List<Attribute<String>> remainingAttributes = getAttributes(attributeTypeName);
-      List<String> remainingNewValues = new ArrayList<String>(newValues.size());
+      List<Attribute<Object>> remainingAttributes = getAttributes(attributeTypeName);
+      List<String> remainingNewValues = new ArrayList<String>(uniqueNewValues.size());
 
       // all existing attributes matching a new value will be left untouched
-      for (String newValue : newValues) {
+      for (String newValue : uniqueNewValues) {
          boolean found = false;
-         for (Attribute<String> attribute : remainingAttributes) {
-            if (attribute.getValue().equals(newValue)) {
+         for (Attribute<Object> attribute : remainingAttributes) {
+            if (attribute.getValue().toString().equals(newValue)) {
                remainingAttributes.remove(attribute);
                found = true;
                break;
@@ -868,7 +882,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          }
       }
 
-      for (Attribute<String> attribute : remainingAttributes) {
+      for (Attribute<Object> attribute : remainingAttributes) {
          attribute.delete();
       }
    }
@@ -930,7 +944,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    /**
     * @param attributeTypeName
-    * @return string collection representation of all the attributes of the type attributeName
+    * @return string collection containing of all the attribute values of the type attributeName
     * @throws OseeCoreException
     */
    public List<String> getAttributesToStringList(String attributeTypeName) throws OseeCoreException {
@@ -941,6 +955,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          items.add(attribute.toString());
       }
       return items;
+   }
+
+   /**
+    * @param attributeType
+    * @return string collection containing of all the attribute values of the type attributeName
+    * @throws OseeCoreException
+    */
+   public List<String> getAttributesToStringList(AttributeType attributeType) throws OseeCoreException {
+      return getAttributesToStringList(attributeType.getName());
    }
 
    /**

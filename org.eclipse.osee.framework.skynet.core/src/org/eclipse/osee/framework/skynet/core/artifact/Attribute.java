@@ -161,13 +161,11 @@ public abstract class Attribute<T> {
 
    @Override
    public String toString() {
-      StringBuilder builder = new StringBuilder();
       try {
-         builder.append(getDisplayableString());
+         return getDisplayableString();
       } catch (OseeCoreException ex) {
-         builder.append(Lib.exceptionToString(ex));
+         return Lib.exceptionToString(ex);
       }
-      return builder.toString();
    }
 
    public IAttributeDataProvider getAttributeDataProvider() {

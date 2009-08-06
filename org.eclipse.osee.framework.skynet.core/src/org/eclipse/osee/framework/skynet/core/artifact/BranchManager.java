@@ -663,14 +663,8 @@ public class BranchManager {
       return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, 1, "System Root Branch", null, null);
    }
 
-   public static List<Branch> getTopLevelBranches() throws OseeCoreException {
-      List<Branch> topLevelBranches = new ArrayList<Branch>();
-      for (Branch branch : getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.BASELINE)) {
-         if (branch.isTopLevelBranch()) {
-            topLevelBranches.add(branch);
-         }
-      }
-      return topLevelBranches;
+   public static List<Branch> getBaselineBranches() throws OseeCoreException {
+      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.BASELINE);
    }
 
    public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
