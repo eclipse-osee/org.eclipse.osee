@@ -32,7 +32,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private final AtsWorkPage page;
 
    public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
-      super("State Hours Spent");
+      super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
       this.smaMgr = smaMgr;
       if (xModListener != null) {
@@ -91,11 +91,9 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            setLabel("Total State Hours");
             setValueLabel(String.format("%5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(page.getName())));
             setToolTip(sb.toString());
          } else {
-            setLabel("State Hours Spent");
             setValueLabel(String.format("%5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName())));
          }
 

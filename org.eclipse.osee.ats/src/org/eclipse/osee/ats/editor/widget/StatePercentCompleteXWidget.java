@@ -32,7 +32,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
    private final AtsWorkPage page;
 
    public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
-      super("State Percent Complete");
+      super("\"" + page.getName() + "\"" + " State Percent Complete");
       this.page = page;
       this.smaMgr = smaMgr;
       if (xModListener != null) {
@@ -88,13 +88,11 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            setLabel("Total State Percent:");
             setValueLabel(String.valueOf(smaMgr.getSma().getPercentCompleteSMAStateTotal(page.getName())));
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
          } else {
-            setLabel("State Percent Complete:");
             setValueLabel(String.valueOf(smaMgr.getStateMgr().getPercentComplete(page.getName())));
          }
          setEditable(!smaMgr.getSma().isReadOnly());

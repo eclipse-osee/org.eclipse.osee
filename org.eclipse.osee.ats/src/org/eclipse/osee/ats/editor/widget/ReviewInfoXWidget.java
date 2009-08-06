@@ -89,10 +89,9 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
          destroyableComposite.dispose();
       }
       destroyableComposite = new Composite(composite, SWT.None);
-      destroyableComposite.setLayout(ALayout.getZeroMarginLayout(6, false));
+      destroyableComposite.setLayout(ALayout.getZeroMarginLayout(4, false));
 
       setToolTip("Blocking Reviews must be completed before transtion.  Select Review hyperlink to view.");
-
       createWidgets(managedForm, destroyableComposite, horizontalSpan);
 
       try {
@@ -132,7 +131,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
          }
          Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
          if (revArts.size() == 0) {
-            (new Label(destroyableComposite, SWT.NONE)).setText("No Reviews Created");
+            setValueText("No Reviews Created");
          }
 
          Hyperlink link = toolkit.createHyperlink(destroyableComposite, "[Add Decision Review]", SWT.NONE);

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
-import org.eclipse.osee.ats.editor.widget.EstimatedHoursXWidget;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
@@ -57,7 +56,6 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -228,13 +226,12 @@ public class SMAWorkFlowSection extends SectionPart {
    private void createMetricsHeader(Composite parent) throws OseeCoreException {
       if (!atsWorkPage.isCompleteCancelledState()) {
          Composite comp = new Composite(parent, SWT.None);
-         GridLayout layout = ALayout.getZeroMarginLayout(6, false);
+         GridLayout layout = ALayout.getZeroMarginLayout(4, false);
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
-         allXWidgets.add(new EstimatedHoursXWidget(smaMgr, comp, 2, xModListener));
       }
    }
 

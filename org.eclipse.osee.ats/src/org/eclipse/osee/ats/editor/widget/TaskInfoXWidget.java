@@ -109,9 +109,9 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
    public void refresh() {
       try {
          if (smaMgr.getTaskMgr().getTaskArtifacts(forStateName).size() > 0) {
-            setText(smaMgr.getTaskMgr().getStatus(forStateName));
+            setValueText(smaMgr.getTaskMgr().getStatus(forStateName));
          } else {
-            setText("No Tasks Created");
+            setValueText("No Tasks Created");
          }
          if (smaMgr.getTaskMgr().areTasksComplete(forStateName).isFalse()) {
             IMessageManager messageManager = managedForm.getMessageManager();

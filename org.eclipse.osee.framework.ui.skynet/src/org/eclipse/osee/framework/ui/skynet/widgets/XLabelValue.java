@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -28,13 +29,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class XLabelValue extends XWidget {
 
    Label valueLabel;
+   String valueText = "";
 
    public XLabelValue(String label) {
       super(label);
-   }
-
-   public String getText() {
-      return "";
    }
 
    @Override
@@ -52,6 +50,7 @@ public abstract class XLabelValue extends XWidget {
       if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(comp, SWT.NONE);
          labelWidget.setText(getLabel() + ":");
+         labelWidget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());
          }
@@ -77,7 +76,7 @@ public abstract class XLabelValue extends XWidget {
 
    @Override
    public void refresh() {
-      valueLabel.setText(getText());
+      valueLabel.setText(getValueText());
       valueLabel.update();
       valueLabel.getParent().update();
       validate();
@@ -97,7 +96,7 @@ public abstract class XLabelValue extends XWidget {
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getLabel(), getText());
+      return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getLabel(), getValueText());
    }
 
    @Override
@@ -132,7 +131,22 @@ public abstract class XLabelValue extends XWidget {
    public void setXmlData(String str) {
    }
 
-   public void setText(String str) {
-      valueLabel.setText(str);
+   /**
+    * @return the valueText
+    */
+   public String getValueText() {
+      return valueText;
+   }
+
+   /**
+    * @param valueText the valueText to set
+    */
+   public void setValueText(String valueText) {
+      this.valueText = valueText;
+      if (valueLabel != null && !valueLabel.isDisposed()) {
+         valueLabel.update();
+         valueLabel.getParent().update();
+      }
+
    }
 }
