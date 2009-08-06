@@ -71,7 +71,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(ATSAttributes.SMA_NOTE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, true);
    public static final XViewerColumn Deadline_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline", ATSAttributes.NEED_BY_ATTRIBUTE, 75, SWT.LEFT,
-               true, SortDataType.String, true, null);
+               true, SortDataType.Date, true, null);
 
    // Aren't shown by default
    public static final XViewerColumn Annual_Cost_Avoidance_Col =
