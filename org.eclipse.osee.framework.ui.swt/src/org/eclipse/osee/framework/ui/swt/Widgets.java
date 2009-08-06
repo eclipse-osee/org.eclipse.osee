@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import java.util.regex.Pattern;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;

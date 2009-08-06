@@ -78,6 +78,7 @@ public class IPAddressBox extends Composite {
             clamp(box[0], value);
          }
       };
+      
       Widgets.attachToParent(box[0], SWT.LEFT, 0, 0);
       Widgets.attachToControl(box[0], sep1, SWT.RIGHT, SWT.LEFT, 0);
       Widgets.attachToControl(box[0], sep1, SWT.TOP, SWT.CENTER, 0);
