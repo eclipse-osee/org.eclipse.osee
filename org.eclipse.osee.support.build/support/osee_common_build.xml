@@ -38,7 +38,7 @@
 		<antcall target="copyToUpdatesite" />
 	</target>
 
-	<target name="set-proxy" if="${proxy_host}">
+	<target name="set-proxy" if="proxy_host">
 		<echo message="Setting proxy to ${proxy_host}:${proxy_port}" />
 		<setproxy proxyhost="${proxy_host}" proxyport="${proxy_port}" />
 	</target>
