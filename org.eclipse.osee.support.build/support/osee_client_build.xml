@@ -5,9 +5,9 @@
 
 	<!-- if behind a firewall set the following properties: proxyhost & proxyport -->
 	<target name="build">
-		<property name="releaseVersion" default="0.8.1RC" />
-		<property name="topLevelElementId" default="org.eclipse.osee.master.feature" />
-		<property name="filteredDependencyCheck" default="false" />
+		<property name="releaseVersion" value="0.8.1RC" />
+		<property name="topLevelElementId" value="org.eclipse.osee.master.feature" />
+		<property name="filteredDependencyCheck" value="false" />
 		<antcall target="PdeBuild" />
 	</target>
 
