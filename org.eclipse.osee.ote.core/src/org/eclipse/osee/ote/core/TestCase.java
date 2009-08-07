@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.util.requirement.RequirementId;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
@@ -64,17 +63,19 @@ import org.w3c.dom.Element;
  * <li>		public OipCase(TestScript parent) {
  * 			<ul style="list-style: none">
  * <li>			</code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
- * <li>			super(parent);</code><i>Standalone defaulted to <b>false</b></i><code>
- * <li>			super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
+ * <li>			super(parent);</code>
+ * <i>Standalone defaulted to <b>false</b></i><code>
+ * <li>			super(parent, true);</code><i>Standalone explicitly set to
+ * <b>true</b></i><code>
  * <li>			
- * <li>			</code><i>All requirements tested in the test case should be noted here with the </i><code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(RequirementId) addTracability}</code><i>
- * method.</i><code>
+ * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
+ * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
  * 			</ul>
  * <li>		}
  * <li>
- * <li>		</code><i><b>Note:</b>It is very important that </i><code>doTestCase</code><i> always has the </i><code>throws InterrupedException</code><i>
- * in the method declaration. The ability to abort a script relies on this statement, and without it many calls would
- * have to be wrapped with a try/catch block.</i><code>
+ * <li>		</code><i><b>Note:</b>It is very important that </i><code>doTestCase</code><i> always has the </i>
+ * <code>throws InterrupedException</code><i> in the method declaration. The ability to abort a script relies on this
+ * statement, and without it many calls would have to be wrapped with a try/catch block.</i><code>
  * <li>		public void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException {
  * 			<ul style="list-style: none">
  * <li>			</code><i>Place all of the runtime code for the test case here.</i><code>
@@ -91,15 +92,11 @@ import org.w3c.dom.Element;
 public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    protected ITestLogger logger;
    private final WeakReference<ITestEnvironmentAccessor> environment;
-   private boolean standAlone;
+   private final boolean standAlone;
    public int testCaseNumber;
    private final WeakReference<TestScript> testScript;
-   // private List tracability;
-
-   private TestDescriptionRecord testDescription;
+   private final TestDescriptionRecord testDescription;
    protected ArrayList<RequirementRecord> scriptTraceability;
-
-   // private List<RequirementId> tracability;
 
    /**
     * TestCase Constructor.
@@ -157,14 +154,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    }
 
    /**
-    * Add a requirement id to the tracability list.
-    * 
-    * @param reqId
-    */
-   // public void addTracability(RequirementId reqId) {
-   // tracability.add(reqId);
-   // }
-   /**
     * Called by baseDoTestCase(). This is implemented by the tester's in each test case in the test script.
     * 
     * @param environment The Test environment.
@@ -211,12 +200,6 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       return testScript.get();
    }
 
-   /**
-    * @return Returns reference to the tracability list.
-    */
-   // public List getTracability() {
-   // return tracability;
-   // }
    public Element getTracabilityXml(Document doc) {
       Element traceElement = doc.createElement("Tracability");
       for (RequirementRecord record : scriptTraceability) {
@@ -242,11 +225,10 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    }
 
    public void promptPassFail(String message) throws InterruptedException {
-      getTestScript().getLogger().methodCalled(getTestScript().getTestEnvironment(),
-            (new MethodFormatter()).add(message));
+      getTestScript().getLogger().methodCalled(getTestScript().getTestEnvironment(), new MethodFormatter().add(message));
 
       getTestScript().promptPassFail(message);
-      
+
       getTestScript().getLogger().methodEnded(getTestScript().getTestEnvironment());
    }
 
@@ -273,6 +255,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       logger.testpoint(this.getTestEnvironment(), this.getTestScript(), this, passed, testPointName, expected, actual);
    }
 
+   @Override
    public String toString() {
       String description = getTestScript().getClass().getName() + "Test Case " + testCaseNumber + ":";
       if (scriptTraceability != null) {
@@ -299,15 +282,13 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
     */
    public void baseDoTestCase(ITestEnvironmentAccessor environment) throws InterruptedException {
       this.logger = environment.getLogger();
-      
-      logger.testCaseBegan(this);   // This is required for valid outfile.  
-                                    //This creates the test case outfile logging.
+
+      logger.testCaseBegan(this); // This is required for valid outfile.  
+      //This creates the test case outfile logging.
 
       environment.getTestScript().setTestCase(this);
-      OseeLog.log(TestEnvironment.class,
-            OteLevel.TEST_EVENT,
-            String.format("Starting Test Case %s.%s", this.getTestScript().getClass().getSimpleName(),
-                  this.getClass().getSimpleName()));
+      OseeLog.log(TestEnvironment.class, OteLevel.TEST_EVENT, String.format("Starting Test Case %s.%s",
+            this.getTestScript().getClass().getSimpleName(), this.getClass().getSimpleName()));
       doTestCase(environment, environment.getLogger());
    }
 
@@ -410,8 +391,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       try {
          testScript.get().prompt(p);
       } catch (Throwable e) {
-         OseeLog.log(TestEnvironment.class, Level.INFO,
-               e.getMessage(), e);
+         OseeLog.log(TestEnvironment.class, Level.INFO, e.getMessage(), e);
       }
    }
 

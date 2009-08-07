@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.util.requirement.RequirementId;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -138,8 +137,7 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
  * <b>true</b></i><code>
  * <li>			
  * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
- * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(RequirementId) addTracability}</code><i> method.</i>
- * <code>
+ * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
  * 			</ul>
  * <li>		}
  * <li>
@@ -168,19 +166,19 @@ public abstract class TestScript implements ITimeout {
    private static final AtomicLong constructed = new AtomicLong(0);
    private static final AtomicLong finalized = new AtomicLong(0);
    private final IUserSession userSession;
-   private boolean isBatchable;
+   private final boolean isBatchable;
    private final ITestStation testStation;
    private CommandDescription cmdDescription;
    protected TestCase currentTestCase;
    protected final TestEnvironment environment;
-   private boolean isMpLevel;
+   private final boolean isMpLevel;
    private IScriptInitializer scriptInitializer;
    private ScriptLogHandler scriptLogHandler;
    private final ScriptTypeEnum scriptType;
    private final ArrayList<TestCase> selectiveRunList = new ArrayList<TestCase>(32);
    private Date startTime;
    private final ArrayList<TestCase> testCases = new ArrayList<TestCase>(32);
-   private ITestPointTally testPointTally;
+   private final ITestPointTally testPointTally;
    protected CommandEndedStatusEnum status;
    private Throwable rootCause;
    private volatile boolean timedOut;
@@ -188,11 +186,11 @@ public abstract class TestScript implements ITimeout {
    private final ArrayList<IScriptCompleteListener> scriptCompleteListeners =
          new ArrayList<IScriptCompleteListener>(32);
 
-   private ScriptResultRecord sciprtResultRecord;
+   private final ScriptResultRecord sciprtResultRecord;
    private int pass;
    private int fail;
    private ScriptLoggingListener loggingListener;
-   private Executor promptInitWorker;
+   private final Executor promptInitWorker;
    private ITestRunListenerProvider listenerProvider;
 
    /*
@@ -512,15 +510,15 @@ public abstract class TestScript implements ITimeout {
    public synchronized void testWaitWithInfo(int ms) throws InterruptedException {
       int mult = 0;
       if (ms > 999) {
-         prompt(new TestPrompt("\tWaiting for " + (ms / 1000.0) + " seconds."));
+         prompt(new TestPrompt("\tWaiting for " + ms / 1000.0 + " seconds."));
          while (ms >= 30000) {
             mult++;
             ms -= 20000;
             testWait(20000);
-            prompt(new TestPrompt("\t" + (20 * mult) + " seconds elapsed."));
+            prompt(new TestPrompt("\t" + 20 * mult + " seconds elapsed."));
          }
 
-         prompt(new TestPrompt("\tFinishing up; " + (ms / 1000.0) + " more seconds."));
+         prompt(new TestPrompt("\tFinishing up; " + ms / 1000.0 + " more seconds."));
       }
       testWait(ms);
       prompt(new TestPrompt("\ttestWait done."));
