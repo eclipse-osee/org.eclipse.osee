@@ -36,7 +36,7 @@ public class ServerDatabaseProvider implements IApplicationDatabaseInfoProvider 
 
    @Override
    public int getPriority() {
-      return Integer.MAX_VALUE;
+      return Integer.MIN_VALUE;
    }
 
 }
