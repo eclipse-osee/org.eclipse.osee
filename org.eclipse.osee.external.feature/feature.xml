@@ -148,8 +148,8 @@
 
    <plugin
          id="com.lowagie.text"
-         download-size="0"
-         install-size="0"
+         download-size="1166"
+         install-size="1168"
          version="0.0.0"
          unpack="false"/>
 
