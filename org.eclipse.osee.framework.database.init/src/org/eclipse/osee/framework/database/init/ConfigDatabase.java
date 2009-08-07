@@ -17,7 +17,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class ConfigDatabase implements IApplication {
 
    private static String[] bundlesToStart =
-         new String[] {"org.eclipse.osee.framework.db.connection", "org.eclipse.equinox.ds"};
+         new String[] {"org.eclipse.osee.framework.database", "org.eclipse.equinox.ds"};
 
    public Object start(IApplicationContext context) throws Exception {
       for (String symbolicName : bundlesToStart) {
