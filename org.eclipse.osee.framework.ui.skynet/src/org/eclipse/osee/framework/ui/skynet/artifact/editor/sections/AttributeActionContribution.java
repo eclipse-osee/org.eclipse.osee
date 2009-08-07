@@ -21,10 +21,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -50,6 +52,7 @@ public class AttributeActionContribution implements IActionContributor {
    }
 
    public void contributeToToolBar(IToolBarManager manager) {
+      manager.add(new OpenSetDefaultAttributeTypeDialogAction());
       manager.add(new OpenAddAttributeTypeDialogAction());
       manager.add(new OpenDeleteAttributeTypeDialogAction());
    }
@@ -75,8 +78,8 @@ public class AttributeActionContribution implements IActionContributor {
       return dialog;
    }
 
-   private void handleAttributeTypeEdits(Artifact artifact, boolean isAdd, String title, Image image) throws OseeCoreException {
-      String operation = isAdd ? "add" : "delete";
+   private void handleAttributeTypeEdits(Artifact artifact, boolean isAdd, boolean isDefault, String title, Image image) throws OseeCoreException {
+      String operation = isAdd ? "add" : (isDefault ? "default" : "delete");
       AttributeType[] types =
             isAdd ? AttributeTypeUtil.getEmptyTypes(artifact) : AttributeTypeUtil.getTypesWithData(artifact);
       List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
@@ -102,6 +105,10 @@ public class AttributeActionContribution implements IActionContributor {
                   String attributeTypeName = ((AttributeType) object).getName();
                   if (isAdd) {
                      artifact.addAttribute(AttributeTypeManager.getType(attributeTypeName));
+                  } else if (!isAdd && isDefault) {
+                     Attribute<String> attr = artifact.getSoleAttribute(attributeTypeName);
+                     attr.internalInitialize(attr.getAttributeType(), artifact, ModificationType.MODIFIED,
+                           attr.getAttrId(), attr.getGammaId(), true, true);
                   } else {
                      artifact.deleteAttributes(attributeTypeName);
                   }
@@ -110,7 +117,6 @@ public class AttributeActionContribution implements IActionContributor {
          }
       }
    }
-
    private final class OpenAddAttributeTypeDialogAction extends Action {
       public OpenAddAttributeTypeDialogAction() {
          super();
@@ -123,7 +129,7 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             Artifact artifact = editor.getEditorInput().getArtifact();
-            handleAttributeTypeEdits(artifact, true, "Add Attribute Types",
+            handleAttributeTypeEdits(artifact, true, false, "Add Attribute Types",
                   ImageManager.getImage(FrameworkImage.ADD_GREEN));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -142,8 +148,27 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             Artifact artifact = editor.getEditorInput().getArtifact();
-            handleAttributeTypeEdits(artifact, false, "Delete Attribute Types",
+            handleAttributeTypeEdits(artifact, false, false, "Delete Attribute Types",
                   ImageManager.getImage(FrameworkImage.DELETE));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   }
+
+   private final class OpenSetDefaultAttributeTypeDialogAction extends Action {
+      public OpenSetDefaultAttributeTypeDialogAction() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BACK));
+         setToolTipText("Opens a dialog to select which attribute type instances to set back to its default value");
+      }
+
+      @Override
+      public void run() {
+         try {
+            Artifact artifact = editor.getEditorInput().getArtifact();
+            handleAttributeTypeEdits(artifact, false, true, "Set Default Value for Attribute Types",
+                  ImageManager.getImage(FrameworkImage.BACK));
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
