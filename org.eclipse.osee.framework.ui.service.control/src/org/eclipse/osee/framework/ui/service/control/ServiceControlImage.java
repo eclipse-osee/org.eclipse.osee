@@ -22,7 +22,7 @@ public enum ServiceControlImage implements OseeImage {
    FILE("file.gif"),
    GROUP("group.gif"),
    HELP("help.gif"),
-   MONITOR("monitor. GIF"),
+   MONITOR("monitor.GIF"),
    REFRESH("refresh.gif"),
    ROCKET("rocket.gif"),
    TOOLS("tools.gif");
