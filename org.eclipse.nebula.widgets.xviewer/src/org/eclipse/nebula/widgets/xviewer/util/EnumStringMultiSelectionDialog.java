@@ -37,6 +37,8 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
       AddSelection, ReplaceAll, DeleteSelected
    };
    private Selection selected = Selection.AddSelection;
+   private boolean enableReplace = false;
+   private boolean enableDelete = false;
 
    /**
     * @param parent
@@ -49,6 +51,12 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
       setInput(enums);
       setComparator(new StringViewerSorter());
       setInitialSelections(selEnums.toArray());
+   }
+
+   public EnumStringMultiSelectionDialog(String displayName, Collection<String> enums, Collection<String> selEnums, boolean enableReplace, boolean enableDelete) {
+      this(displayName, enums, selEnums);
+      this.enableDelete = enableDelete;
+      this.enableReplace = enableReplace;
    }
 
    @Override
@@ -70,27 +78,31 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
          }
       });
 
-      (new Label(comp, SWT.None)).setText("Replace all existing with selected item(s).");
+      if (enableReplace) {
+         (new Label(comp, SWT.None)).setText("Replace all existing with selected item(s).");
 
-      replaceAllRadioButton = new Button(comp, SWT.CHECK);
-      replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            if (replaceAllRadioButton.getSelection()) selected = Selection.ReplaceAll;
-         }
-      });
+         replaceAllRadioButton = new Button(comp, SWT.CHECK);
+         replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (replaceAllRadioButton.getSelection()) selected = Selection.ReplaceAll;
+            }
+         });
+      }
 
-      (new Label(comp, SWT.None)).setText("Remove selected item(s) if already chosen.");
+      if (enableDelete) {
+         (new Label(comp, SWT.None)).setText("Remove selected item(s) if already chosen.");
 
-      deleteSelectedRadioButton = new Button(comp, SWT.CHECK);
-      deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            if (deleteSelectedRadioButton.getSelection()) selected = Selection.DeleteSelected;
-         }
-      });
+         deleteSelectedRadioButton = new Button(comp, SWT.CHECK);
+         deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (deleteSelectedRadioButton.getSelection()) selected = Selection.DeleteSelected;
+            }
+         });
+      }
       return c;
    }
 
