@@ -24,14 +24,8 @@
 		</copy>
 		<antcall target="copySupplementalMapFile" />
 
-		<pathconvert property="pdePathPrefix" setonempty="false" pathsep=" ">
-			<path>
-				<dirset dir="${baseLocation}/plugins" includes="org.eclipse.pde.build_*" />
-			</path>
-		</pathconvert>
-
-		<ant antfile="${pdePathPrefix}/scripts/build.xml" target="${pdeTarget}" />
-
+		<ant antfile="${eclipse.pdebuild.scripts}/build.xml" target="${pdeTarget}" />
+		
 		<antcall target="internalPostBuild" />
 
 		<antcall target="copyToUpdatesite" />
