@@ -1,15 +1,16 @@
 <project name="Osee Client Build" default="build" basedir=".">
 	<!-- since this ant file is assumed to be located at <workspace>\org.eclipse.osee.buildsupport, basedir will be the same -->
-
 	<import file="${basedir}/osee_common_build.xml" />
 
-	<!-- if behind a firewall set the following properties: proxyhost & proxyport -->
 	<target name="build">
+	<!-- if behind a firewall then uncomment the following properties:
+		<property name="proxy_host" value="www-my-proxy.domain.com" />
+		<property name="proxy_port" value="12345" />
+	-->
 		<property name="releaseVersion" value="0.8.1RC" />
 		<property name="topLevelElementId" value="org.eclipse.osee.master.feature" />
 		<property name="filteredDependencyCheck" value="false" />
-		
+
 		<antcall target="PdeBuild" />
 	</target>
-
 </project>
