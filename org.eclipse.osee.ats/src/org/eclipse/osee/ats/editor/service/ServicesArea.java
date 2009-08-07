@@ -99,7 +99,9 @@ public class ServicesArea {
       loadSidebarServices(page);
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : sideBarServices) {
-         if (service.getSidebarCategory() != null) categories.add(service.getSidebarCategory());
+         if (service.getSidebarCategory() != null) {
+            categories.add(service.getSidebarCategory());
+         }
       }
       createSidebarServicesArea(comp, STATISTIC_CATEGORY, page, toolkit, section);
       categories.remove(STATISTIC_CATEGORY);
@@ -131,7 +133,9 @@ public class ServicesArea {
       // Determine services that are in this category and confirm that they should be displayed
       List<WorkPageService> displayServices = new ArrayList<WorkPageService>();
       for (WorkPageService service : sideBarServices)
-         if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(category) && service.isShowSidebarService(page)) displayServices.add(service);
+         if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(category) && service.isShowSidebarService(page)) {
+            displayServices.add(service);
+         }
       if (displayServices.size() == 0) return;
 
       Group workComp = new Group(comp, SWT.NONE);
