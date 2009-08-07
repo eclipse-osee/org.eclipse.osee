@@ -13,9 +13,13 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -459,7 +464,27 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist
     */
    public static Artifact reloadArtifactFromId(int artId, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
+      Artifact artifact = new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
+      OseeEventManager.kickArtifactReloadEvent(new ArtifactQuery(), Collections.singleton(artifact));
+      return artifact;
+   }
+
+   public static Collection<Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      Set<Integer> artIds = new HashSet<Integer>();
+      Branch branch = null;
+      for (Artifact artifact : artifacts) {
+         if (branch == null) {
+            branch = artifact.getBranch();
+         } else if (!branch.equals(artifact.getBranch())) {
+            throw new OseeArgumentException("Reloading artifacts of different branches not supported");
+         }
+         artIds.add(artifact.getArtId());
+      }
+
+      Collection<Artifact> reloadedArts =
+            new ArtifactQueryBuilder(artIds, branch, true, FULL).reloadArtifacts(artifacts.size());
+      OseeEventManager.kickArtifactReloadEvent(new ArtifactQuery(), artifacts);
+      return reloadedArts;
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {

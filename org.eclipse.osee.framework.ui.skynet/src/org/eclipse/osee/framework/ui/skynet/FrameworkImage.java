@@ -134,6 +134,7 @@ public enum FrameworkImage implements OseeImage {
    RECTANGLE_24("rectangle24.gif"),
    REFRESH("refresh.gif"),
    RELATION("relate.gif"),
+   RELOAD("reload.gif"),
    REMOVE("remove.gif"),
    REMOVE_ALL("removeAll.gif"),
    REJECT("reject.gif"),

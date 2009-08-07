@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Vector;
 import java.util.logging.Level;
 import org.eclipse.draw2d.ChopboxAnchor;
@@ -197,8 +198,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    private void gridLoad(HyperViewItem hvi) {
-      if (HyperView.debugOn)
-         System.out.println("gridLoad");
+      if (HyperView.debugOn) System.out.println("gridLoad");
       /*
        * If grid already loaded and it was a collection, remove old home and all links associated
        * with it.
@@ -219,8 +219,7 @@ public class HyperView extends ViewPart implements IPartListener {
     */
    @Override
    public void createPartControl(Composite parent) {
-      if (HyperView.debugOn)
-         System.out.println("createPartControl");
+      if (HyperView.debugOn) System.out.println("createPartControl");
 
       try {
          if (OseeDbConnection.hasOpenConnection()) {
@@ -283,8 +282,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    private void printBackList(String inStr) {
       final boolean debug = false;
-      if (!debug)
-         return;
+      if (!debug) return;
       StringBuilder builder = new StringBuilder();
       builder.append(inStr + "backList : [");
       for (int i = 0; i < backList.size(); i++) {
@@ -329,16 +327,14 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    protected void clear() {
-      if (HyperView.debugOn)
-         System.out.println("gridClear");
+      if (HyperView.debugOn) System.out.println("gridClear");
       if (connectors != null) {
          for (int i = 0; i < connectors.size(); i++) {
             (connectors.get(i)).erase();
          }
          connectors.clear();
       }
-      if (container != null)
-         container.removeAll();
+      if (container != null) container.removeAll();
    }
 
    private void gridDrawCenterItem() {
@@ -349,14 +345,11 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    private void gridDraw(HyperViewItem hvi, Point center) {
-      if (HyperView.debugOn)
-         System.out.println("zoom *" + zoom + "*");
+      if (HyperView.debugOn) System.out.println("zoom *" + zoom + "*");
       // Draw center node
       if (hvi != null) {
-         if (HyperView.debugOn)
-            System.out.println("center x: " + center.x + " y:" + center.y);
-         if (HyperView.debugOn)
-            System.out.println("centerFigure *" + hvi.getTitle() + "*");
+         if (HyperView.debugOn) System.out.println("center x: " + center.x + " y:" + center.y);
+         if (HyperView.debugOn) System.out.println("centerFigure *" + hvi.getTitle() + "*");
          Point useCenter;
          if (zoom.dragCenter != null) {
             useCenter = zoom.dragCenter.getCopy();
@@ -364,10 +357,8 @@ public class HyperView extends ViewPart implements IPartListener {
             useCenter = center.getCopy();
          }
          // Offset by scroll
-         if (vsb != null)
-            useCenter.y -= (vsb.getSelection() - 40) * 10;
-         if (hsb != null)
-            useCenter.x -= (hsb.getSelection() - 40) * 10;
+         if (vsb != null) useCenter.y -= (vsb.getSelection() - 40) * 10;
+         if (hsb != null) useCenter.x -= (hsb.getSelection() - 40) * 10;
          // System.out.println("zoom.dragCenter *" + zoom.dragCenter + "*");
          // System.out.println("center *" + center + "*");
          // System.out.println("vsb.getSelection() *" + vsb.getSelection() +
@@ -378,14 +369,11 @@ public class HyperView extends ViewPart implements IPartListener {
          Point cPoint;
          centerFigure = createFigure(centerSearchItem, true);
          Dimension dim = centerFigure.getPreferredSize();
-         if (HyperView.debugOn)
-            System.out.println("dim center w: " + dim.width + " h:" + dim.height);
+         if (HyperView.debugOn) System.out.println("dim center w: " + dim.width + " h:" + dim.height);
          nwPoint = new Point((useCenter.x - dim.width / 2), (useCenter.y - dim.height / 2));
          cPoint = new Point((nwPoint.x + dim.width / 2), (nwPoint.y + dim.height / 2));
-         if (HyperView.debugOn)
-            System.out.println("nwPoint *" + nwPoint + "*");
-         if (HyperView.debugOn)
-            System.out.println("cPoint *" + cPoint + "*");
+         if (HyperView.debugOn) System.out.println("nwPoint *" + nwPoint + "*");
+         if (HyperView.debugOn) System.out.println("cPoint *" + cPoint + "*");
          contentsLayout.setConstraint(centerFigure, new Rectangle(nwPoint.x, nwPoint.y, -1, -1));
          // centerFigure.repaint();
          ChopboxAnchor sourceAnchor = new ChopboxAnchor(centerFigure);
@@ -417,16 +405,13 @@ public class HyperView extends ViewPart implements IPartListener {
     * @param offsetPoint - x,y to offset figures
     */
    private void drawNodes(RelationEnum relType, ArrayList<HyperViewItem> hvis, Point offsetPoint, ChopboxAnchor sourceAnchor) {
-      if (HyperView.debugOn)
-         System.out.println("drawNodes");
-      if (hvis.size() == 0)
-         return;
+      if (HyperView.debugOn) System.out.println("drawNodes");
+      if (hvis.size() == 0) return;
       final boolean isRight = relType == RelationEnum.RIGHT;
       final boolean isLeft = relType == RelationEnum.LEFT;
       final boolean isBottom = relType == RelationEnum.BOTTOM;
       final boolean isTop = relType == RelationEnum.TOP;
-      if (HyperView.debugOn)
-         System.out.println("offsetPoint *" + offsetPoint + "*");
+      if (HyperView.debugOn) System.out.println("offsetPoint *" + offsetPoint + "*");
       double startDegree = 0;
       if (isRight)
          startDegree = HyperView.rightQuadrantStart;
@@ -434,8 +419,7 @@ public class HyperView extends ViewPart implements IPartListener {
          startDegree = HyperView.leftQuadrantStart;
       else if (isTop)
          startDegree = HyperView.topQuadrantStart;
-      else if (isBottom)
-         startDegree = HyperView.bottomQuadrantStart;
+      else if (isBottom) startDegree = HyperView.bottomQuadrantStart;
       double degree = 0;
       Point cPoint = new Point(); // center of figure
       Point nwPoint = new Point();
@@ -445,20 +429,15 @@ public class HyperView extends ViewPart implements IPartListener {
       if (isBottom)
          for (int i = hvis.size() - 1; i >= 0; i--) {
             HyperViewItem hvi = hvis.get(i);
-            if (hvi.isShow())
-               orderedHvis.add(hvis.get(i));
+            if (hvi.isShow()) orderedHvis.add(hvis.get(i));
          }
       else
          for (HyperViewItem hvi : hvis)
-            if (hvi.isShow())
-               orderedHvis.add(hvi);
+            if (hvi.isShow()) orderedHvis.add(hvi);
       final double degreeDiff = quadrant / (orderedHvis.size() + 1);
-      if (HyperView.debugOn)
-         System.out.println("quadrant *" + quadrant + "*");
-      if (HyperView.debugOn)
-         System.out.println("orderedHvis size *" + orderedHvis.size() + "*");
-      if (HyperView.debugOn)
-         System.out.println("degreeDiff *" + degreeDiff + "*");
+      if (HyperView.debugOn) System.out.println("quadrant *" + quadrant + "*");
+      if (HyperView.debugOn) System.out.println("orderedHvis size *" + orderedHvis.size() + "*");
+      if (HyperView.debugOn) System.out.println("degreeDiff *" + degreeDiff + "*");
 
       // what is sent into constraint as the nw corner
       int myRadius;
@@ -469,25 +448,18 @@ public class HyperView extends ViewPart implements IPartListener {
       }
       for (int i = 0; i < orderedHvis.size(); i++) {
          HyperViewItem hvi = orderedHvis.get(i);
-         if (HyperView.debugOn)
-            System.out.println("\n");
-         if (HyperView.debugOn)
-            System.out.println("HIV " + hvi.getShortTitle());
+         if (HyperView.debugOn) System.out.println("\n");
+         if (HyperView.debugOn) System.out.println("HIV " + hvi.getShortTitle());
          degree = startDegree + degreeDiff + (degreeDiff * i);
-         if (HyperView.debugOn)
-            System.out.println("startDegree *" + startDegree + "*");
-         if (HyperView.debugOn)
-            System.out.println("degree *" + degree + "*");
+         if (HyperView.debugOn) System.out.println("startDegree *" + startDegree + "*");
+         if (HyperView.debugOn) System.out.println("degree *" + degree + "*");
          NodeFigure figure = createFigure(hvi, false);
          cPoint.x = offsetPoint.x + (int) Math.round((myRadius * Math.cos(degree)));
          cPoint.y = offsetPoint.y + (int) Math.round((myRadius * Math.sin(degree)));
-         if (HyperView.debugOn)
-            drawX(offsetPoint.x, offsetPoint.y - 5, "o");
-         if (HyperView.debugOn)
-            drawX(cPoint.x, cPoint.y - 5, "c");
+         if (HyperView.debugOn) drawX(offsetPoint.x, offsetPoint.y - 5, "o");
+         if (HyperView.debugOn) drawX(cPoint.x, cPoint.y - 5, "c");
          Dimension dim = figure.getPreferredSize();
-         if (HyperView.debugOn)
-            System.out.println("dim " + relType + " w: " + dim.width + " h:" + dim.height);
+         if (HyperView.debugOn) System.out.println("dim " + relType + " w: " + dim.width + " h:" + dim.height);
          if (isLeft) {
             nwPoint.x = cPoint.x - dim.width;
             nwPoint.y = cPoint.y - (dim.height / 2);
@@ -537,22 +509,15 @@ public class HyperView extends ViewPart implements IPartListener {
          // ((NodeFigure) figure).getHvi().getRelationLabel(), ((NodeFigure)
          // figure).getHvi().getRelationDirty());
 
-         if (HyperView.debugOn)
-            System.out.println("cPoint *" + cPoint + "*");
-         if (HyperView.debugOn)
-            System.out.println("nwPoint *" + nwPoint + "*");
-         if (HyperView.debugOn)
-            System.out.println("offsetPoint *" + offsetPoint + "*");
+         if (HyperView.debugOn) System.out.println("cPoint *" + cPoint + "*");
+         if (HyperView.debugOn) System.out.println("nwPoint *" + nwPoint + "*");
+         if (HyperView.debugOn) System.out.println("offsetPoint *" + offsetPoint + "*");
          ChopboxAnchor thisAnchor = new ChopboxAnchor(figure);
-         if (hvi.getTop().size() > 0)
-            drawNodes(RelationEnum.TOP, hvi.getTop(), cPoint, thisAnchor);
-         if (hvi.getBottom().size() > 0)
-            drawNodes(RelationEnum.BOTTOM, hvi.getBottom(), new Point((nwPoint.x + dim.width / 2),
-                  (nwPoint.y + dim.height / 2)), thisAnchor);
-         if (hvi.getLeft().size() > 0)
-            drawNodes(RelationEnum.LEFT, hvi.getLeft(), cPoint, thisAnchor);
-         if (hvi.getRight().size() > 0)
-            drawNodes(RelationEnum.RIGHT, hvi.getRight(), cPoint, thisAnchor);
+         if (hvi.getTop().size() > 0) drawNodes(RelationEnum.TOP, hvi.getTop(), cPoint, thisAnchor);
+         if (hvi.getBottom().size() > 0) drawNodes(RelationEnum.BOTTOM, hvi.getBottom(), new Point(
+               (nwPoint.x + dim.width / 2), (nwPoint.y + dim.height / 2)), thisAnchor);
+         if (hvi.getLeft().size() > 0) drawNodes(RelationEnum.LEFT, hvi.getLeft(), cPoint, thisAnchor);
+         if (hvi.getRight().size() > 0) drawNodes(RelationEnum.RIGHT, hvi.getRight(), cPoint, thisAnchor);
       }
    }
 
@@ -586,14 +551,13 @@ public class HyperView extends ViewPart implements IPartListener {
    private void drawLine(ChopboxAnchor source, ChopboxAnchor target, HyperViewItem hvi) {
       PolylineConnection c = new PolylineConnection();
       c.setLineWidth(2);
-      if (hvi.isRelationDirty())
-         c.setForegroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+      if (hvi.isRelationDirty()) c.setForegroundColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
       c.setSourceAnchor(source);
       c.setTargetAnchor(target);
       setConnectionMouseListener(c, hvi);
       // Add tooltip
-      if (hvi.getRelationToolTip() != null && !hvi.getRelationToolTip().equals(""))
-         c.setToolTip(new Label(hvi.getRelationToolTip()));
+      if (hvi.getRelationToolTip() != null && !hvi.getRelationToolTip().equals("")) c.setToolTip(new Label(
+            hvi.getRelationToolTip()));
       // Add label
 
       ConnectionEndpointLocator targetEndpointLocator = new ConnectionEndpointLocator(c, true);
@@ -643,18 +607,15 @@ public class HyperView extends ViewPart implements IPartListener {
       MouseListener mouseListener = new MouseListener() {
 
          public void mouseDoubleClicked(MouseEvent e) {
-            if (HyperView.debugOn)
-               System.out.println("DoubleClick");
+            if (HyperView.debugOn) System.out.println("DoubleClick");
          }
 
          public void mousePressed(MouseEvent e) {
-            if (HyperView.debugOn)
-               System.out.println("mousePressed");
+            if (HyperView.debugOn) System.out.println("mousePressed");
          }
 
          public void mouseReleased(MouseEvent e) {
-            if (HyperView.debugOn)
-               System.out.println("mouseReleased");
+            if (HyperView.debugOn) System.out.println("mouseReleased");
             if (e.button == 3) {
                if (e.getSource() instanceof PolylineConnection) {
                   // PolylineConnection c = (PolylineConnection) e.getSource();
@@ -683,8 +644,7 @@ public class HyperView extends ViewPart implements IPartListener {
          nameLabel = new Label(title, null);
       }
       Image markImage = hvi.getMarkImage();
-      if (markImage != null)
-         infoLabel = new Label(null, markImage);
+      if (markImage != null) infoLabel = new Label(null, markImage);
 
       NodeFigure figure = new NodeFigure(nameLabel, infoLabel, hvi, center);
       // System.out.println(title + " " + figure.hashCode());
@@ -752,8 +712,7 @@ public class HyperView extends ViewPart implements IPartListener {
             if (e.getSource() instanceof NodeFigure) {
                NodeFigure nf = (NodeFigure) e.getSource();
                HyperViewItem si = nf.getSearchItem();
-               if (HyperView.debugOn)
-                  System.out.println("Click: " + si.getTitle());
+               if (HyperView.debugOn) System.out.println("Click: " + si.getTitle());
                if (e.button == 3) {
                   createMenuBar(si);
                }
@@ -789,10 +748,8 @@ public class HyperView extends ViewPart implements IPartListener {
                   Artifact a = null;
                   if (fHvi instanceof ArtifactHyperItem)
                      a = ((ArtifactHyperItem) fHvi).getArtifact();
-                  else if (fHvi instanceof ActionHyperItem)
-                     a = ((ActionHyperItem) fHvi).getArtifact();
-                  if (a != null)
-                     ArtifactEditor.editArtifact(a);
+                  else if (fHvi instanceof ActionHyperItem) a = ((ActionHyperItem) fHvi).getArtifact();
+                  if (a != null) ArtifactEditor.editArtifact(a);
                   popupMenu.dispose();
                   popupMenu = null;
                }
@@ -814,8 +771,8 @@ public class HyperView extends ViewPart implements IPartListener {
                   dialogText.append("\n\n Are you sure you want to delete this artifact and its default-hierarchy children?");
                   if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         dialogTitle, dialogText.toString())) {
-                     if (art instanceof StateMachineArtifact)
-                        SMAEditor.close((StateMachineArtifact) art, false);
+                     if (art instanceof StateMachineArtifact) SMAEditor.close(
+                           Collections.singleton((StateMachineArtifact) art), false);
                      try {
                         art.deleteAndPersist();
                      } catch (Exception ex) {
@@ -838,10 +795,8 @@ public class HyperView extends ViewPart implements IPartListener {
                Artifact a = null;
                if (fHvi instanceof ArtifactHyperItem)
                   a = ((ArtifactHyperItem) fHvi).getArtifact();
-               else if (fHvi instanceof ActionHyperItem)
-                  a = ((ActionHyperItem) fHvi).getArtifact();
-               if (a != null)
-                  openActionEditor(a);
+               else if (fHvi instanceof ActionHyperItem) a = ((ActionHyperItem) fHvi).getArtifact();
+               if (a != null) openActionEditor(a);
             }
          });
          popupMenu.setVisible(true);
@@ -941,8 +896,7 @@ public class HyperView extends ViewPart implements IPartListener {
             if (homeSearchItem == null) {
                return;
             }
-            if (HyperView.debugOn)
-               System.out.println("zoomInAction");
+            if (HyperView.debugOn) System.out.println("zoomInAction");
             zoom.pcRadius += zoom.pcRadiusFactor;
             zoom.uuRadius += zoom.uuRadiusFactor;
             zoom.xSeparation += zoom.xSeparationFactor;
@@ -961,8 +915,7 @@ public class HyperView extends ViewPart implements IPartListener {
             if (homeSearchItem == null) {
                return;
             }
-            if (HyperView.debugOn)
-               System.out.println("zoomOutAction");
+            if (HyperView.debugOn) System.out.println("zoomOutAction");
             if (zoom.pcRadius >= zoom.pcRadiusFactor) {
                zoom.pcRadius -= zoom.pcRadiusFactor;
             }
@@ -983,8 +936,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
          @Override
          public void run() {
-            if (HyperView.debugOn)
-               System.out.println("expandTitles");
+            if (HyperView.debugOn) System.out.println("expandTitles");
             refresh();
          }
       };
@@ -1070,8 +1022,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    public void setVerticalSelection(int verticalSelection) {
       this.verticalSelection = verticalSelection;
-      if (vsb != null)
-         vsb.setSelection(verticalSelection);
+      if (vsb != null) vsb.setSelection(verticalSelection);
    }
 
    @Override

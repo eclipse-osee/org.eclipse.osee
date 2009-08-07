@@ -113,7 +113,7 @@ public class SMAManager {
    }
 
    public void closeEditors(boolean save) {
-      SMAEditor.close(sma, save);
+      SMAEditor.close(java.util.Collections.singleton(sma), save);
    }
 
    public Set<User> getPrivilegedUsers() throws OseeCoreException {

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -347,12 +348,11 @@ public class TaskComposite extends Composite implements IActionable {
    }
 
    public void updateExtraInfoLine() throws OseeCoreException {
-      if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection())
-         if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
-            extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
-                  getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null));
-         } else
-            extraInfoLabel.setText("");
+      if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection()) if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
+         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
+               getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null));
+      } else
+         extraInfoLabel.setText("");
       extraInfoLabel.getParent().layout();
    }
 
@@ -506,7 +506,7 @@ public class TaskComposite extends Composite implements IActionable {
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             delItems.addAll(items);
             for (TaskArtifact taskArt : delItems) {
-               SMAEditor.close(taskArt, false);
+               SMAEditor.close(Collections.singleton(taskArt), false);
                taskArt.deleteAndPersist(transaction);
             }
             transaction.execute();
@@ -541,15 +541,13 @@ public class TaskComposite extends Composite implements IActionable {
       ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifact)
-            items.add((TaskArtifact) obj);
+         if (obj instanceof TaskArtifact) items.add((TaskArtifact) obj);
       }
       return items;
    }
 
    public String toHTML(String labelFont) {
-      if (getTaskXViewer().getTree().getItemCount() == 0)
-         return "";
+      if (getTaskXViewer().getTree().getItemCount() == 0) return "";
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -628,10 +626,8 @@ public class TaskComposite extends Composite implements IActionable {
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
-            if (iXTaskViewer.getParentSmaMgr() == null)
-               return;
-            if (iXTaskViewer.getParentSmaMgr().getSma() == null)
-               return;
+            if (iXTaskViewer.getParentSmaMgr() == null) return;
+            if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
             for (Artifact art : artsToRelate) {

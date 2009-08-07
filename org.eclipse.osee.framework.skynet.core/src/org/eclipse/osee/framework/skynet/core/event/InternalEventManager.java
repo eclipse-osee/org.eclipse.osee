@@ -714,6 +714,56 @@ public class InternalEventManager {
    }
 
    /**
+    * Kick LOCAL ArtifactReloadEvent
+    * 
+    * @param sender
+    * @param xModifiedEvents
+    */
+   static void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
+      if (isDisableEvents()) {
+         return;
+      }
+      try {
+         if (DEBUG) {
+            OseeLog.log(InternalEventManager.class, Level.INFO,
+                  "OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.INFO, ex);
+      }
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback) {
+                  for (IEventListner listener : listeners) {
+                     if (listener instanceof IArtifactReloadEventListener) {
+                        // Don't fail on any one listener's exception
+                        try {
+                           ((IArtifactReloadEventListener) listener).handleReloadEvent(sender, artifacts);
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     }
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   /**
     * Add listeners
     * 
     * @param listener

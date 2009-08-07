@@ -92,6 +92,7 @@ public class ServicesArea {
          for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             toolBarServices.addAll(item.getToolbarServices(smaMgr));
          }
+         toolBarServices.add(new ReloadOperation(smaMgr));
       }
    }
 

@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -88,7 +89,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
+public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -1039,6 +1040,36 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
       updateStatusLabel();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener#handleReloadEvent(org.eclipse.osee.framework.skynet.core.event.Sender, java.util.Collection)
+    */
+   @Override
+   public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            for (Artifact art : artifacts) {
+               if (art instanceof IWorldViewArtifact) {
+                  refresh(art);
+                  // If parent is loaded and child changed, refresh parent
+                  try {
+                     if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
+                        refresh(((StateMachineArtifact) art).getParentAtsArtifact());
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+            }
+         }
+      });
+
    }
 
 }

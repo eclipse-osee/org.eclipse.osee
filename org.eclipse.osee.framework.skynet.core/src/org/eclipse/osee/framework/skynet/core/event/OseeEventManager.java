@@ -180,6 +180,14 @@ public class OseeEventManager {
    }
 
    /**
+    * Kick LOCAL transaction event
+    */
+   public static void kickArtifactReloadEvent(Object source, Collection<? extends Artifact> artifacts) throws OseeAuthenticationRequiredException {
+      if (isDisableEvents()) return;
+      InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
+   }
+
+   /**
     * Add listeners
     * 
     * @param listener

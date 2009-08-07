@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -312,7 +313,7 @@ public class AtsBranchConfigurationTest {
                   testType.name() + " Req Changes", AtsUtil.getAtsBranch());
       if (aArt != null) {
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
-            SMAEditor.close(teamArt, false);
+            SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction);
          }
          aArt.deleteAndPersist(transaction);

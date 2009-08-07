@@ -451,7 +451,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
-      SMAEditor.close(this, true);
+      SMAEditor.close(Collections.singleton(this), true);
       super.atsDelete(deleteArts, allRelated);
    }
 

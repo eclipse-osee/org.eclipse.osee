@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -91,7 +93,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
    private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, attributesPageIndex;
@@ -507,17 +509,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       });
    }
 
-   public static void close(StateMachineArtifact artifact, boolean save) {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      IEditorReference editors[] = page.getEditorReferences();
-      for (int j = 0; j < editors.length; j++) {
-         IEditorReference editor = editors[j];
-         if (editor.getPart(false) instanceof SMAEditor) {
-            if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
-               ((SMAEditor) editor.getPart(false)).closeEditor();
+   public static void close(final Collection<? extends StateMachineArtifact> artifacts, boolean save) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IEditorReference editors[] = page.getEditorReferences();
+            for (int j = 0; j < editors.length; j++) {
+               IEditorReference editor = editors[j];
+               if (editor.getPart(false) instanceof SMAEditor) {
+                  if (artifacts.contains(((SMAEditor) editor.getPart(false)).getSmaMgr().getSma())) {
+                     ((SMAEditor) editor.getPart(false)).closeEditor();
+                  }
+               }
             }
          }
-      }
+      });
    }
 
    public static SMAEditor getSmaEditor(StateMachineArtifact artifact) {
@@ -775,5 +782,37 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    public List<XWidget> getXWidgetsFromState(String stateName, Class<?> clazz) {
       return workFlowTab.getXWidgetsFromState(stateName, clazz);
+   }
+
+   @Override
+   public void handleReloadEvent(Sender sender, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      StateMachineArtifact sma = smaMgr.getSma();
+      boolean reload = false;
+      if (artifacts.contains(sma)) {
+         reload = true;
+      }
+      if (!reload) {
+         for (TaskArtifact taskArt : sma.getSmaMgr().getTaskMgr().getTaskArtifacts()) {
+            if (artifacts.contains(taskArt)) {
+               reload = true;
+               break;
+            }
+         }
+      }
+      if (!reload) {
+         for (ReviewSMArtifact reviewArt : sma.getSmaMgr().getReviewManager().getReviews()) {
+            if (artifacts.contains(reviewArt)) {
+               reload = true;
+               break;
+            }
+
+         }
+      }
+      if (reload) {
+         SMAEditor.close(Collections.singleton(sma), false);
+         if (!sma.isDeleted()) {
+            SMAEditor.editArtifact(sma);
+         }
+      }
    }
 }
