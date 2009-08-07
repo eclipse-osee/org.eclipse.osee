@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.eclipse.osee.framework.help.ui" basedir="."
 	default="all">
-	<property name="osee.base.help.plugin" value="../org.eclipse.osee.framework.help.ui" />
+	<property name="osee.base.help.plugin" value="." />
 	<property name="ant.file.imported" value="${osee.base.help.plugin}/scripts" />
 	<import file="${ant.file.imported}/help-build-common.xml" />
 
@@ -10,6 +10,7 @@
 	</description>
 
 	<property name="osee.help.doc.url.base" value="http://wiki.eclipse.org" />
+	<property name="osee.help.userguide.folder" value="userguide" />
 	<property name="osee.help.image.folder" value="images" />
 
 	<property name="osee.help.doc.intro" value="OSEE/Users_Guide/Getting_Started" />
@@ -29,10 +30,10 @@
 	<target name="all" 
 		description="Generate Eclipse help content for the OSEE user guide">
 		<sequential>
+			<echo message="basedir=${basedir}" />
 			<delete>
 				<fileset dir="userguide" />
 			</delete>
-			<!-- Refactor this into some sort of loop if possible -->
 			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
 				wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.features}"
 				help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.features}"

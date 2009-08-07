@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="help.common" basedir=".">
-
 	<property name="extract.style.sheet" value="${ant.file.imported}/extract-markup.xsl" />
-
 	<property name="eclipse.plugin.dir" value="${eclipse.home}/plugins" />
 
-	<property name="wikitext.build" value="1.1.0.v20090617-0100-e3x" />
-
+	<path id="wikitext.tasks.classpath">
+		<fileset dir="${eclipse.plugin.dir}" includes="org.eclipse.mylyn.wikitext.core_*.jar" />
+		<fileset dir="${eclipse.plugin.dir}" includes="org.eclipse.mylyn.wikitext.mediawiki.core_*.jar" />
+	</path>	
+	
 	<path id="tasks.classpath">
+		<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
 		<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
 	</path>
 
-	<path id="wikitext.tasks.classpath">
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.core_${wikitext.build}.jar" />
-		<pathelement location="${eclipse.plugin.dir}/org.eclipse.mylyn.wikitext.mediawiki.core_${wikitext.build}.jar" />
-	</path>
-	
 	<taskdef classpathref="tasks.classpath" resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties" />
 	<taskdef classpathref="wikitext.tasks.classpath" resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
 
