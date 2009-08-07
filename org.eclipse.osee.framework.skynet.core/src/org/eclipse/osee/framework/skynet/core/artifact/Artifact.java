@@ -495,7 +495,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public <T> Attribute<T> internalInitializeAttribute(AttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, attributeId, gammaId, markDirty);
+      attribute.internalInitialize(attributeType, this, modificationType, attributeId, gammaId, markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
    }

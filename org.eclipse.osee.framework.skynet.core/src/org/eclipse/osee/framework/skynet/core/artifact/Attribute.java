@@ -78,8 +78,8 @@ public abstract class Attribute<T> {
    protected void uponInitialize() throws OseeCoreException {
    }
 
-   public void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty) throws OseeCoreException {
-      internalInitialize(attributeType, artifact, modificationType, markDirty, false);
+   public void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+      internalInitialize(attributeType, artifact, modificationType, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
    }
