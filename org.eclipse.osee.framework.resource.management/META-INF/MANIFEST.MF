@@ -14,4 +14,3 @@ Service-Component: OSGI-INF/resource.provider.consumer.xml, OSGI-INF/resource.lo
 Export-Package: org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds

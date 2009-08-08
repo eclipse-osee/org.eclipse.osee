@@ -5,11 +5,9 @@ Bundle-SymbolicName: org.eclipse.osee.framework.oracle;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.oracle.Activator
 Bundle-Vendor: Eclipse.org
-OseeEarlyStart: true
 Service-Component: OSGI-INF/oracle.connection.driver.provider.xml
 Import-Package: oracle.jdbc;resolution:=optional,
  org.eclipse.osee.framework.database.core,
  org.osgi.framework
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds
 Bundle-ActivationPolicy: lazy

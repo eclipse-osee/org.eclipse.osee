@@ -6,10 +6,8 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.postgresql.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
-OseeEarlyStart: true
 Service-Component: OSGI-INF/postgresql.connection.driver.provider.xml
 Import-Package: org.eclipse.osee.framework.database.core,
  org.osgi.framework,
  org.postgresql;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds

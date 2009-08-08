@@ -10,14 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core;
 
-import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.BundleListener;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -57,38 +50,5 @@ public class PluginCoreActivator extends OseeActivator {
 
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
-
-      try {
-         Platform.getBundle("org.eclipse.equinox.ds").start();
-      } catch (Exception ex) {
-         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Unable to load: org.eclipse.equinox.ds", ex);
-      }
-
-      for (Bundle bundle : context.getBundles()) {
-         checkForEarlyStartup(bundle);
-      }
-
-      context.addBundleListener(new BundleListener() {
-
-         @Override
-         public void bundleChanged(BundleEvent event) {
-            if (event.getType() == BundleEvent.RESOLVED) {
-               checkForEarlyStartup(event.getBundle());
-            }
-         }
-      });
-   }
-
-   /**
-    * @param bundle
-    */
-   private void checkForEarlyStartup(Bundle bundle) {
-      if (bundle.getHeaders().get("OseeEarlyStart") != null) {
-         try {
-            bundle.start();
-         } catch (BundleException ex) {
-            OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
-         }
-      }
    }
 }

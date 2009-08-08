@@ -33,4 +33,3 @@ Service-Component: OSGI-INF/attribute.tagger.provider.consumer.xml,
  OSGI-INF/search.engine.service.xml,
  OSGI-INF/search.engine.tagger.service.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds
