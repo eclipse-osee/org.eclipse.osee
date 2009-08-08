@@ -49,12 +49,6 @@
          </ExcelFile>
       </extension>
       <extension
-            point="org.eclipse.osee.framework.plugin.core.logHandler">
-         <handler
-               name="org.eclipse.osee.framework.skynet.core.usage.SkynetUsageHandler">
-         </handler>
-      </extension>
-      <extension
             id="SkynetSchemaDefinition"
             name="SkynetSchemaDefinition"
             point="org.eclipse.osee.framework.skynet.core.OseeDbSchema">
