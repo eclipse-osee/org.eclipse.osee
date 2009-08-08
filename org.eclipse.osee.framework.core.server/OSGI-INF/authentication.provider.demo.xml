@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="authentication.provider.demo">
+	<implementation class="org.eclipse.osee.framework.core.server.internal.authentication.DemoAuthenticationProvider"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"/>
+	</service>	
+</component>
