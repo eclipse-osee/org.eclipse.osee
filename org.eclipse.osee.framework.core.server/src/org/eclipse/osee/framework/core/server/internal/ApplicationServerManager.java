@@ -60,7 +60,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
                timer.cancel();
             }
          }
-      }, 8 * 1000);
+      }, 3 * 1000);
    }
 
    private InternalOseeServerInfo createOseeServerInfo() {
