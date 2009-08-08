@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import org.eclipse.osee.framework.core.server.internal.ApplicationServerManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class CoreServerActivator implements BundleActivator {
@@ -23,15 +27,15 @@ public class CoreServerActivator implements BundleActivator {
    private ServiceTracker sessionServiceTracker;
    private ServiceTracker scheduledServerTracker;
 
-   //   private static List<ServiceRegistration> services;
+   private static List<ServiceRegistration> services;
    private static CoreServerActivator instance;
 
    public void start(BundleContext context) throws Exception {
       instance = this;
-      //      services = new ArrayList<ServiceRegistration>();
-      //
-      //      services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
-      //            null));
+      services = new ArrayList<ServiceRegistration>();
+
+      services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
+            null));
 
       applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
       applicationManagerTracker.open();
@@ -77,10 +81,10 @@ public class CoreServerActivator implements BundleActivator {
          scheduledServerTracker = null;
       }
 
-      //      for (ServiceRegistration service : services) {
-      //         service.unregister();
-      //      }
-      //      services.clear();
+      for (ServiceRegistration service : services) {
+         service.unregister();
+      }
+      services.clear();
       instance = null;
    }
 

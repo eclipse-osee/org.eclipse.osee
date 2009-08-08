@@ -20,8 +20,7 @@ Import-Package: javax.servlet,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.framework.core.server
 Bundle-ActivationPolicy: lazy
-Service-Component:  OSGI-INF/application.server.manager.xml,
- OSGI-INF/server.application.db.provider.xml,
+Service-Component:  OSGI-INF/server.application.db.provider.xml,
  OSGI-INF/authentication.manager.xml,
  OSGI-INF/authentication.provider.xml,
  OSGI-INF/authentication.provider.demo.xml,

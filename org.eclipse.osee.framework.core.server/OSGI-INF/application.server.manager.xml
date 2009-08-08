@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="application.server.manager">
-	<implementation class="org.eclipse.osee.framework.core.server.internal.ApplicationServerManager"/>
-	<service>
-		<provide interface="org.eclipse.osee.framework.core.server.IApplicationServerManager"/>
-	</service>
-</component>
