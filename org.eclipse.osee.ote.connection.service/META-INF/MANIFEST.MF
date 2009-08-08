@@ -6,11 +6,10 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.connection.service.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.logging,
+Import-Package: org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core.util,
  org.osgi.framework,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.connection.service
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.equinox.ds,
- org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.plugin.core
