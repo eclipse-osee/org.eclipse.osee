@@ -54,7 +54,19 @@ public class CoreServerActivator implements BundleActivator {
    }
 
    public void stop(BundleContext context) throws Exception {
+      if (applicationManagerTracker != null) {
+         IApplicationServerManager manager = getApplicationServerManager();
+         if (manager != null) {
+            manager.setServletRequestsAllowed(false);
+         }
+      }
 
+      if (sessionServiceTracker != null) {
+         ISessionManager sessionManager = getSessionManager();
+         if (sessionManager != null) {
+            sessionManager.shutdown();
+         }
+      }
       if (applicationManagerTracker != null) {
          getApplicationServerManager().shutdown();
          applicationManagerTracker.close();
@@ -88,16 +100,18 @@ public class CoreServerActivator implements BundleActivator {
       instance = null;
    }
 
-   private static CoreServerActivator getInstance() {
-      return instance;
-   }
-
    public static IAuthenticationManager getAuthenticationManager() {
-      return (IAuthenticationManager) getInstance().authenticationServiceTracker.getService();
+      if (instance.authenticationServiceTracker != null) {
+         return (IAuthenticationManager) instance.authenticationServiceTracker.getService();
+      }
+      return null;
    }
 
    public static ISessionManager getSessionManager() {
-      return (ISessionManager) getInstance().sessionServiceTracker.getService();
+      if (instance != null && instance.sessionServiceTracker != null) {
+         return (ISessionManager) instance.sessionServiceTracker.getService();
+      }
+      return null;
    }
 
    public static ThreadFactory createNewThreadFactory(String name) {
@@ -109,10 +123,16 @@ public class CoreServerActivator implements BundleActivator {
    }
 
    public static IApplicationServerManager getApplicationServerManager() {
-      return (IApplicationServerManager) getInstance().applicationManagerTracker.getService();
+      if (instance != null && instance.applicationManagerTracker != null) {
+         return (IApplicationServerManager) instance.applicationManagerTracker.getService();
+      }
+      return null;
    }
 
    public static IApplicationServerLookup getApplicationServerLookup() {
-      return (IApplicationServerLookup) getInstance().applicationLookupTracker.getService();
+      if (instance != null && instance.applicationLookupTracker != null) {
+         return (IApplicationServerLookup) instance.applicationLookupTracker.getService();
+      }
+      return null;
    }
 }

@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -38,6 +40,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
    private final InternalOseeServerInfo applicationServerInfo;
+   private final Timer timer;
 
    public ApplicationServerManager() {
       this.oseeHttpServlets = Collections.synchronizedMap(new HashMap<String, InternalOseeHttpServlet>());
@@ -45,16 +48,19 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.applicationServerInfo = createOseeServerInfo();
       applicationServerInfo.setAcceptingRequests(true);
 
-      //      new Thread(new Runnable() {
-      //         @Override
-      //         public void run() {
-      //            try {
-      //               executeLookupRegistration();
-      //            } catch (Exception ex) {
-      //               ex.printStackTrace();
-      //            }
-      //         }
-      //      }).start();
+      timer = new Timer();
+      timer.schedule(new TimerTask() {
+         @Override
+         public void run() {
+            try {
+               executeLookupRegistration();
+            } catch (Exception ex) {
+               OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
+            } finally {
+               timer.cancel();
+            }
+         }
+      }, 8 * 1000);
    }
 
    private InternalOseeServerInfo createOseeServerInfo() {
@@ -145,6 +151,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public void shutdown() throws OseeCoreException {
+      timer.cancel();
       setServletRequestsAllowed(false);
       ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
    }

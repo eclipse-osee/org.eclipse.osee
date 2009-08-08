@@ -41,4 +41,5 @@ public interface ISessionManager {
 
    public boolean isAlive(OseeSession oseeSession) throws OseeCoreException;
 
+   public void shutdown();
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -194,6 +195,10 @@ public class SessionManager implements ISessionManager {
       }
    }
 
+   public void shutdown() {
+      updateTimer.cancel();
+   }
+
    private final class UpdateDataStore extends TimerTask {
 
       private boolean firstTimeThrough = true;
@@ -237,8 +242,11 @@ public class SessionManager implements ISessionManager {
 
       private void recoverSessions() {
          try {
-            String serverId = CoreServerActivator.getApplicationServerManager().getId();
-            SessionDataStore.loadSessions(serverId, sessionCache);
+            IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
+            if (manager != null) {
+               String serverId = manager.getId();
+               SessionDataStore.loadSessions(serverId, sessionCache);
+            }
          } catch (OseeDataStoreException ex) {
             OseeLog.log(CoreServerActivator.class, Level.WARNING, "Error loading sessions.", ex);
          }
@@ -255,18 +263,21 @@ public class SessionManager implements ISessionManager {
       private void createUpdateHelper(List<OseeSession> sessionsList, boolean isCreate) {
          try {
             if (!sessionsList.isEmpty()) {
-               String serverId = CoreServerActivator.getApplicationServerManager().getId();
-               OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
-               SessionState stateToSet = isCreate ? SessionState.CREATED : SessionState.UPDATED;
-               if (isCreate) {
-                  SessionDataStore.createSessions(serverId, sessionsArray);
-               } else {
-                  SessionDataStore.updateSessions(serverId, sessionsArray);
-               }
-               for (OseeSession session : sessionsArray) {
-                  SessionData sessionData = sessionCache.get(session.getSessionId());
-                  if (sessionData.getSessionState() == stateToSet) {
-                     sessionData.setSessionState(SessionState.CURRENT);
+               IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
+               if (manager != null) {
+                  String serverId = manager.getId();
+                  OseeSession[] sessionsArray = sessionsList.toArray(new OseeSession[sessionsList.size()]);
+                  SessionState stateToSet = isCreate ? SessionState.CREATED : SessionState.UPDATED;
+                  if (isCreate) {
+                     SessionDataStore.createSessions(serverId, sessionsArray);
+                  } else {
+                     SessionDataStore.updateSessions(serverId, sessionsArray);
+                  }
+                  for (OseeSession session : sessionsArray) {
+                     SessionData sessionData = sessionCache.get(session.getSessionId());
+                     if (sessionData.getSessionState() == stateToSet) {
+                        sessionData.setSessionState(SessionState.CURRENT);
+                     }
                   }
                }
             }
