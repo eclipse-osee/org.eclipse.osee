@@ -45,16 +45,16 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.applicationServerInfo = createOseeServerInfo();
       applicationServerInfo.setAcceptingRequests(true);
 
-      new Thread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               executeLookupRegistration();
-            } catch (Exception ex) {
-               ex.printStackTrace();
-            }
-         }
-      }).start();
+      //      new Thread(new Runnable() {
+      //         @Override
+      //         public void run() {
+      //            try {
+      //               executeLookupRegistration();
+      //            } catch (Exception ex) {
+      //               ex.printStackTrace();
+      //            }
+      //         }
+      //      }).start();
    }
 
    private InternalOseeServerInfo createOseeServerInfo() {
