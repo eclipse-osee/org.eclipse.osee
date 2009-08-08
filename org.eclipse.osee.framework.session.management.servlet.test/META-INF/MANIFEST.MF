@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Session Management Servlet Test Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.session.management.servlet.test
+Bundle-SymbolicName: org.eclipse.osee.framework.session.management.servlet.test;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.session.management.servlet.test.SessionManagementTestsActivator
-Bundle-Vendor: Boeing
+Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: junit.framework,
  org.osgi.framework
+Bundle-ActivationPolicy: lazy
