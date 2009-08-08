@@ -28,6 +28,7 @@ public class CoreClientActivator extends Plugin {
       context = null;
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
       this.context = context;
@@ -37,8 +38,6 @@ public class CoreClientActivator extends Plugin {
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
-      savePluginPreferences();
-
       HttpServer.stopServer();
 
       ClientSessionManager.releaseSession();
