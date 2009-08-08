@@ -7,8 +7,6 @@ Bundle-Activator: org.eclipse.osee.framework.database.internal.InternalActivator
 Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.sql
-Require-Bundle: 
- org.eclipse.equinox.ds;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.core.runtime,
