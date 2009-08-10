@@ -274,6 +274,7 @@ public class UpdateArtifactJob extends UpdateJob {
 
       Document doc = Jaxp.readXmlDocument(wordFile);
       Element paragraphRoot = null;
+      Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = doc.getDocumentElement();
       Element body = null;
       boolean containsTag = false;
@@ -288,6 +289,10 @@ public class UpdateArtifactJob extends UpdateJob {
          }
          if (element.getNodeName().endsWith("wx:sect")) {
             paragraphRoot = element;
+            //handle the case where there exists two wx:sext elements
+            if (element != null) {
+               sectList.add(element);
+            }
          }
          if (element.getNodeName().endsWith("body") && single) {
             artifacts.add(element);
@@ -302,14 +307,21 @@ public class UpdateArtifactJob extends UpdateJob {
       //fldChar
       if (containsTag) {
          artifacts.remove(body);
-      } else if (paragraphRoot != null) {
-         //Lets try and remove everything after the listnum tag
-         if (!cleanUpParagraph(paragraphRoot)) {
-            throw new OseeCoreException("This document does not contain the approporate tags to be correctly saved.");
-         }
+      } else if (!sectList.isEmpty()) {
+         handleMultiSectTags(sectList);
       }
-
       return artifacts;
+   }
+
+   private void handleMultiSectTags(Collection<Element> sectList) throws OseeCoreException {
+      boolean containTag = false;
+      // need to check all wx:sect for the listnum tag
+      for (Element sectElem : sectList) {
+         containTag |= cleanUpParagraph(sectElem);
+      }
+      if (!containTag) {
+         throw new OseeCoreException("This document does not contain the approporate tags to be correctly saved.");
+      }
    }
 
    //To handle the case of sub-sections
