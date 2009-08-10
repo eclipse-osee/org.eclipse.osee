@@ -94,12 +94,12 @@ public class HistoryXViewer extends XViewer {
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActions();
+            updateMenuActionsForTable();
          }
       });
    }
 
-   public void updateMenuActions() {
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }

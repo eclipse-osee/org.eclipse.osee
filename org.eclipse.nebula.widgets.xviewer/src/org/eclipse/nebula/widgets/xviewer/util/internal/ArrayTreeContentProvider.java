@@ -19,9 +19,6 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ArrayTreeContentProvider implements ITreeContentProvider {
 
-   /**
-    * 
-    */
    public ArrayTreeContentProvider() {
       super();
    }

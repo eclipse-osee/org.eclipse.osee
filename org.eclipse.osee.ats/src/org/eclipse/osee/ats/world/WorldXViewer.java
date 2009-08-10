@@ -20,8 +20,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -224,13 +222,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    Action resetActionArtifactAction;
 
    public void createMenuActions() {
-      MenuManager mm = getMenuManager();
-      mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActions();
-         }
-      });
 
       editNotesAction = new Action("Edit Notes", Action.AS_PUSH_BUTTON) {
          @Override
@@ -644,7 +635,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    }
 
-   public void updateMenuActions() {
+   @Override
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_EDIT));

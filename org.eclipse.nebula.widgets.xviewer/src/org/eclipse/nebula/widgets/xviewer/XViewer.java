@@ -29,12 +29,11 @@ import org.eclipse.nebula.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.nebula.widgets.xviewer.customize.SearchDataUI;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerMenuDetectListener;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerMouseListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -142,6 +141,12 @@ public class XViewer extends TreeViewer {
       return customizeAction;
    }
 
+   public void updateMenuActionsForTable() {
+   }
+
+   public void updateMenuActionsForHeader() {
+   }
+
    public void addCustomizeToViewToolbar(IToolBarManager toolbarManager) {
       toolbarManager.add(getCustomizeAction());
    }
@@ -186,8 +191,8 @@ public class XViewer extends TreeViewer {
             handleDoubleClick();
          };
       });
-      getTree().addMouseListener(new XViewerMouseListener());
-
+      getTree().addMouseListener(new XViewerMouseListener(this));
+      getTree().addListener(SWT.MenuDetect, new XViewerMenuDetectListener(this));
       getTree().setMenu(getMenuManager().getMenu());
       columnFilterDataUI.createWidgets();
 
@@ -437,16 +442,10 @@ public class XViewer extends TreeViewer {
       this.getControl().setEnabled(arg);
    }
 
-   /**
-    * @return the rightClickSelectedColumn
-    */
    public TreeColumn getRightClickSelectedColumn() {
       return rightClickSelectedColumn;
    }
 
-   /**
-    * @return the rightClickSelectedItem
-    */
    public TreeItem getRightClickSelectedItem() {
       return rightClickSelectedItem;
    }
@@ -467,25 +466,15 @@ public class XViewer extends TreeViewer {
       return altKeyDown;
    }
 
-   /**
-    * @param text
-    * @return
-    */
    boolean searchMatch(String text) {
       if (searchDataUI == null) return false;
       return searchDataUI.match(text);
    }
 
-   /**
-    * @return
-    */
    Color getSearchMatchColor() {
       return searchColor;
    }
 
-   /**
-    * @return true if currently searching
-    */
    public boolean isSearch() {
       if (searchDataUI == null) return false;
       return searchDataUI.isSearch();
@@ -501,140 +490,62 @@ public class XViewer extends TreeViewer {
       return returnVal;
    }
 
-   private final class XViewerMouseListener implements MouseListener {
-      @Override
-      public void mouseDoubleClick(MouseEvent e) {
-         TreeColumn column = getColumnUnderMouseClick(e);
-         TreeItem itemToReturn = getItemUnderMouseClick(e);
+   /**
+    * Mouse clicks can happend in table via XViewerMouseListener or in menu area via XViewerMenuDetectListener. Both are
+    * processed here to use in UI
+    * 
+    * @param point
+    */
+   public void processRightClickMouseEvent(Point point) {
+      rightClickSelectedColumn = null;
+      rightClickSelectedColumnNum = null;
+      rightClickSelectedItem = null;
 
-         handleDoubleClick(column, itemToReturn);
-      }
+      rightClickSelectedItem = getItemUnderMouseClick(point);
+      if (rightClickSelectedItem == null) return;
+      rightClickSelectedColumn = getColumnUnderMouseClick(point);
+      rightClickSelectedColumnNum = getColumnNumberUnderMouseClick(point);
+   }
 
-      @Override
-      public void mouseDown(MouseEvent event) {
-         if (isRightClick(event)) {
-            rightClickSelectedColumn = null;
-            rightClickSelectedColumnNum = null;
-            rightClickSelectedItem = null;
+   public TreeColumn getColumnUnderMouseClick(Point point) {
+      int columnNumber = getColumnNumberUnderMouseClick(point);
+      TreeColumn column = getTree().getColumn(columnNumber);
+      return column;
+   }
 
-            rightClickSelectedItem = getItemUnderMouseClick(event);
-            if (rightClickSelectedItem == null) return;
-            rightClickSelectedColumn = getColumnUnderMouseClick(event);
-            rightClickSelectedColumnNum = getColumnNumberUnderMouseClick(event);
-
+   public int getColumnNumberUnderMouseClick(Point point) {
+      int[] columnOrder = getTree().getColumnOrder();
+      int sum = 0;
+      int columnCount = 0;
+      for (int column : columnOrder) {
+         TreeColumn col = getTree().getColumn(column);
+         sum = sum + col.getWidth();
+         if (sum > point.x) {
+            break;
          }
+         columnCount++;
       }
 
-      /**
-       * @param event
-       * @return
-       */
-      private boolean isRightClick(MouseEvent event) {
-         return event.button == 3;
-      }
+      int columnNumber = columnOrder[columnCount];
+      return columnNumber;
+   }
 
-      @Override
-      public void mouseUp(MouseEvent event) {
-         TreeItem item = getItemUnderMouseClick(event);
-         if (item == null) return;
+   public TreeItem getItemUnderMouseClick(Point point) {
+      TreeItem itemToReturn = getTree().getItem(point);
 
-         TreeColumn column = getColumnUnderMouseClick(event);
-
-         if (isLeftClick(event) && controlNotBeingHeld(event)) {
-            if (altIsBeingHeld(event)) {
-               // System.out.println("Column " + colNum);
-               handleAltLeftClick(column, item);
-            } else if (clickOccurredInIconArea(event, item)) {
-               handleLeftClickInIconArea(column, item);
-            } else {
-               // System.out.println("Column " + colNum);
-               handleLeftClick(column, item);
-            }
-         }
-         updateStatusLabel();
-
-      }
-
-      /**
-       * @param event
-       * @param rect
-       * @return
-       */
-      private boolean clickOccurredInIconArea(MouseEvent event, TreeItem item) {
-         int columnNumber = getColumnNumberUnderMouseClick(event);
-         Rectangle rect = item.getBounds(columnNumber);
-         return (event.x <= (rect.x + 18));
-      }
-
-      /**
-       * @param event
-       * @return
-       */
-      private boolean isLeftClick(MouseEvent event) {
-         return event.button == 1;
-      }
-
-      /**
-       * @param event
-       * @return
-       */
-      private boolean altIsBeingHeld(MouseEvent event) {
-         return ((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT);
-      }
-
-      /**
-       * @param event
-       * @return
-       */
-      private boolean controlNotBeingHeld(MouseEvent event) {
-         return !((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL);
-      }
-
-      private TreeColumn getColumnUnderMouseClick(MouseEvent e) {
-         int columnNumber = getColumnNumberUnderMouseClick(e);
-         TreeColumn column = getTree().getColumn(columnNumber);
-         return column;
-      }
-
-      /**
-       * @param e
-       * @return
-       */
-      private int getColumnNumberUnderMouseClick(MouseEvent e) {
-         int[] columnOrder = getTree().getColumnOrder();
-         int sum = 0;
-         int columnCount = 0;
-         for (int column : columnOrder) {
-            TreeColumn col = getTree().getColumn(column);
-            sum = sum + col.getWidth();
-            if (sum > e.x) {
+      if (itemToReturn == null) {
+         int sum;
+         sum = 0;
+         TreeItem[] allItems = getTree().getItems();
+         for (TreeItem item : allItems) {
+            sum = sum + getTree().getItemHeight();
+            if (sum > point.y) {
+               itemToReturn = item;
                break;
             }
-            columnCount++;
          }
-
-         int columnNumber = columnOrder[columnCount];
-         return columnNumber;
       }
-
-      private TreeItem getItemUnderMouseClick(MouseEvent event) {
-         Point pt = new Point(event.x, event.y);
-         TreeItem itemToReturn = getTree().getItem(pt);
-
-         if (itemToReturn == null) {
-            int sum;
-            sum = 0;
-            TreeItem[] allItems = getTree().getItems();
-            for (TreeItem item : allItems) {
-               sum = sum + getTree().getItemHeight();
-               if (sum > event.y) {
-                  itemToReturn = item;
-                  break;
-               }
-            }
-         }
-         return itemToReturn;
-      }
+      return itemToReturn;
    }
 
    /**

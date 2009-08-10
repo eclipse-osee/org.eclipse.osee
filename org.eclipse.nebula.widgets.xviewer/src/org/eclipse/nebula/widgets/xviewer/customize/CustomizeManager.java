@@ -294,6 +294,16 @@ public class CustomizeManager {
       return columns;
    }
 
+   public List<XViewerColumn> getCurrentHiddenTableColumns() {
+      List<XViewerColumn> columns = new ArrayList<XViewerColumn>(15);
+      for (XViewerColumn xCol : getCurrentTableColumns()) {
+         if (!xCol.isShow()) {
+            columns.add(xCol);
+         }
+      }
+      return columns;
+   }
+
    /**
     * Return index of XColumn to original column index on creation of table. Since table allows drag re-ordering of
     * columns, this index will provide the map back to the original column index. Used for label providers

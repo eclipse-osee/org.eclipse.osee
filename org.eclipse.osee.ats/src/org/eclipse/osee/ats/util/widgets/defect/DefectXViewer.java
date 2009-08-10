@@ -89,7 +89,7 @@ public class DefectXViewer extends XViewer {
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActions();
+            updateMenuActionsForTable();
          }
       });
 
@@ -235,7 +235,7 @@ public class DefectXViewer extends XViewer {
 
    }
 
-   public void updateMenuActions() {
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       updateEditMenuActions();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());

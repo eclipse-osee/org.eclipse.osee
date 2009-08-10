@@ -104,7 +104,7 @@ public class ChangeXViewer extends XViewer {
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActions();
+            updateMenuActionsForTable();
          }
       });
 
@@ -125,7 +125,7 @@ public class ChangeXViewer extends XViewer {
 
    }
 
-   public void updateMenuActions() {
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
       updateEditMenuActions();

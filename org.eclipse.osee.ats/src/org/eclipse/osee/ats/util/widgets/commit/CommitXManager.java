@@ -42,7 +42,7 @@ public class CommitXManager extends XViewer {
       super.createSupportWidgets(parent);
    }
 
-   public void updateMenuActions() {
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
       mm.insertBefore(MENU_GROUP_PRE, new Separator());

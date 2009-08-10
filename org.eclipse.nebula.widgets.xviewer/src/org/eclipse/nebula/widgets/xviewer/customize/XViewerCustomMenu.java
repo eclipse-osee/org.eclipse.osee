@@ -32,15 +32,18 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumnLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.nebula.widgets.xviewer.util.internal.ArrayTreeContentProvider;
 import org.eclipse.nebula.widgets.xviewer.util.internal.CollectionsUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.HtmlDialog;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.ListDialogSortable;
+import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.XCheckFilteredTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -50,13 +53,19 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ListDialog;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * Allow for the customization of the xViewer's right-click menus. Full menu can be used or selected Actions accessed
@@ -78,12 +87,11 @@ public class XViewerCustomMenu {
    protected Action removeSelected;
    protected Action removeNonSelected;
    protected Action copySelected;
+   protected Action showColumn, hideColumn;
    protected Action copySelectedCell;
    protected Action viewSelectedCell;
+   private Boolean headerMouseClick = false;
 
-   /**
-    * @param factory
-    */
    public XViewerCustomMenu() {
    }
 
@@ -91,23 +99,47 @@ public class XViewerCustomMenu {
       this.xViewer = xViewer;
    }
 
-   public void init(XViewer xviewer) {
+   public void init(final XViewer xviewer) {
       this.xViewer = xviewer;
       setupActions();
-      xViewer.getMenuManager().addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            setupMenu();
-         }
-      });
       xViewer.getTree().addKeyListener(new KeySelectedListener());
       xViewer.getTree().addDisposeListener(new DisposeListener() {
          public void widgetDisposed(org.eclipse.swt.events.DisposeEvent e) {
             if (clipboard != null) clipboard.dispose();
          };
       });
+      xViewer.getMenuManager().addMenuListener(new IMenuListener() {
+         public void menuAboutToShow(IMenuManager manager) {
+            if (headerMouseClick) {
+               setupMenuForHeader();
+               xviewer.updateMenuActionsForHeader();
+            } else {
+               setupMenuForTable();
+               xViewer.updateMenuActionsForTable();
+            }
+         }
+      });
+      xViewer.getTree().addListener(SWT.MenuDetect, new Listener() {
+         public void handleEvent(Event event) {
+            Point pt = Display.getCurrent().map(null, xViewer.getTree(), new Point(event.x, event.y));
+            Rectangle clientArea = xViewer.getTree().getClientArea();
+            headerMouseClick = clientArea.y <= pt.y && pt.y < (clientArea.y + xViewer.getTree().getHeaderHeight());
+         }
+      });
    }
 
-   protected void setupMenu() {
+   protected void setupMenuForHeader() {
+      MenuManager mm = xViewer.getMenuManager();
+      mm.add(showColumn);
+      mm.add(hideColumn);
+      mm.add(copySelectedCell);
+      mm.add(new Separator());
+      mm.add(filterByColumn);
+      mm.add(clearAllFilters);
+      mm.add(clearAllSorting);
+   }
+
+   protected void setupMenuForTable() {
       MenuManager mm = xViewer.getMenuManager();
       mm.add(new GroupMarker(XViewer.MENU_GROUP_PRE));
       mm.add(new Separator());
@@ -229,7 +261,68 @@ public class XViewerCustomMenu {
       });
    }
 
+   private static PatternFilter patternFilter = new PatternFilter();
+
+   protected void handleShowColumn() {
+      TreeColumn insertTreeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn insertXCol = (XViewerColumn) insertTreeCol.getData();
+      XCheckFilteredTreeDialog dialog =
+            new XCheckFilteredTreeDialog("Show Column", "Select Columns to Show", patternFilter,
+                  new ArrayTreeContentProvider(), new XViewerColumnLabelProvider(), new XViewerColumnSorter());
+      dialog.setInput(xViewer.getCustomizeMgr().getCurrentHiddenTableColumns());
+      if (dialog.open() == 0) {
+         //         System.out.println("Selected " + dialog.getChecked());
+         //         System.out.println("Selected column to add before " + insertXCol);
+         CustomizeData custData = xViewer.getCustomizeMgr().generateCustDataFromTable();
+         List<XViewerColumn> xCols = custData.getColumnData().getColumns();
+         List<XViewerColumn> newXCols = new ArrayList<XViewerColumn>();
+         for (XViewerColumn currXCol : xCols) {
+            if (currXCol.equals(insertXCol)) {
+               for (Object obj : dialog.getChecked()) {
+                  XViewerColumn newXCol = (XViewerColumn) obj;
+                  newXCol.setShow(true);
+                  newXCols.add(newXCol);
+               }
+            }
+            newXCols.add(currXCol);
+         }
+         custData.getColumnData().setColumns(newXCols);
+         xViewer.getCustomizeMgr().loadCustomization(custData);
+         xViewer.refresh();
+      }
+   }
+
+   protected void handleHideColumn() {
+      TreeColumn insertTreeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn insertXCol = (XViewerColumn) insertTreeCol.getData();
+      //      System.out.println("Hide column " + insertXCol);
+      CustomizeData custData = xViewer.getCustomizeMgr().generateCustDataFromTable();
+      List<XViewerColumn> xCols = custData.getColumnData().getColumns();
+      List<XViewerColumn> newXCols = new ArrayList<XViewerColumn>();
+      for (XViewerColumn currXCol : xCols) {
+         if (currXCol.equals(insertXCol)) {
+            currXCol.setShow(false);
+         }
+         newXCols.add(currXCol);
+      }
+      custData.getColumnData().setColumns(newXCols);
+      xViewer.getCustomizeMgr().loadCustomization(custData);
+      xViewer.refresh();
+   }
+
    protected void setupActions() {
+      showColumn = new Action("Show Column") {
+         @Override
+         public void run() {
+            handleShowColumn();
+         };
+      };
+      hideColumn = new Action("Hide Column") {
+         @Override
+         public void run() {
+            handleHideColumn();
+         };
+      };
       removeSelected = new Action("Remove Selected from View") {
          @Override
          public void run() {
@@ -424,7 +517,7 @@ public class XViewerCustomMenu {
       Set<TreeColumn> visibleColumns = new HashSet<TreeColumn>();
       TreeItem[] items = xViewer.getTree().getSelection();
       if (items.length == 0) {
-         XViewerLib.popup("ERROR", "No items to copy");
+         XViewerLib.popup("ERROR", "Select items to copy");
          return;
       }
       ArrayList<String> textTransferData = new ArrayList<String>();

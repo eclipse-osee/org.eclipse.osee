@@ -74,7 +74,7 @@ public class MergeXViewer extends XViewer {
       mm.createContextMenu(getControl());
       mm.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActions();
+            updateMenuActionsForTable();
          }
       });
 
@@ -100,7 +100,7 @@ public class MergeXViewer extends XViewer {
       return true;
    }
 
-   public void updateMenuActions() {
+   public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
       updateEditMenuActions();

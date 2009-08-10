@@ -61,7 +61,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * @since 3.2
  */
 @SuppressWarnings("restriction")
-public class FilteredTree extends Composite {
+public class FilteredTreeComposite extends Composite {
 
    /**
     * The filter text widget to be used by this tree. This value may be <code>null</code> if there is no filter widget,
@@ -163,7 +163,7 @@ public class FilteredTree extends Composite {
     * @param treeStyle the style bits for the <code>Tree</code>
     * @param filter the filter to be used
     */
-   public FilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
+   public FilteredTreeComposite(Composite parent, int treeStyle, PatternFilter filter) {
       super(parent, SWT.NONE);
       this.parent = parent;
       init(treeStyle, filter);
@@ -178,7 +178,7 @@ public class FilteredTree extends Composite {
     * @see #init(int, PatternFilter)
     * @since 3.3
     */
-   protected FilteredTree(Composite parent) {
+   protected FilteredTreeComposite(Composite parent) {
       super(parent, SWT.NONE);
       this.parent = parent;
    }
@@ -747,7 +747,7 @@ public class FilteredTree extends Composite {
     * @param filter PatternFilter which determines a match
     * @return bold font
     */
-   public static Font getBoldFont(Object element, FilteredTree tree, PatternFilter filter) {
+   public static Font getBoldFont(Object element, FilteredTreeComposite tree, PatternFilter filter) {
       String filterText = tree.getFilterString();
 
       if (filterText == null) {

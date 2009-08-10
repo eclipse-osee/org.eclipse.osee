@@ -8,21 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.nebula.widgets.xviewer.util.internal;
+package org.eclipse.nebula.widgets.xviewer.util.internal.dialog;
 
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerFilteredTree extends FilteredTreeComposite {
+public class XFilteredTree extends FilteredTree {
 
-   public XViewerFilteredTree(Composite parent) {
+   public XFilteredTree(Composite parent) {
       this(parent, SWT.BORDER | SWT.MULTI, new PatternFilter());
    }
 
@@ -31,7 +34,7 @@ public class XViewerFilteredTree extends FilteredTreeComposite {
     * @param treeStyle
     * @param filter
     */
-   public XViewerFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
+   public XFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
       super(parent, treeStyle, filter);
       setInitialText("");
    }

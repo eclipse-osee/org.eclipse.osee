@@ -315,8 +315,8 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    @Override
-   public void updateMenuActions() {
-      super.updateMenuActions();
+   public void updateMenuActionsForTable() {
+      super.updateMenuActionsForTable();
       MenuManager mm = getMenuManager();
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, new Separator());
