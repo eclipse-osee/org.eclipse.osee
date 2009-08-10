@@ -18,12 +18,6 @@
 		<copy todir="${buildDirectory}/repository/configuration/">
 			<fileset file="${basedir}/config.ini" />
 		</copy>
-
-		<move todir="${buildDirectory}/repository">
-			<fileset dir="${buildDirectory}/repository/plugins">
-				<include name="org.eclipse.equinox.launcher_*.jar" />
-			</fileset>
-		</move>
 	</target>
 </project>
 

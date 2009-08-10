@@ -119,7 +119,7 @@
 	<!-- ===================================================================== -->
 	<!-- Steps to do after running the build.xmls for the elements being built. -->
 	<!-- ===================================================================== -->
-	<target name="postProcess">
+	<target name="postProcess" if="buildHelp">
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.ats.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.define.help.ui" antfile="build-helper.xml" target="all" />
