@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jdbcodbc Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.jdbcodbc;singleton:=true
 Bundle-Version: 0.2.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.jdbcodbc.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/jdbcodbc.connection.driver.provider.xml
