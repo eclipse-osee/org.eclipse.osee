@@ -56,7 +56,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
 
    private static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private static String CREATE_NEW_ACTION =
-         "Create New Action - Creates new action in start state with current assignees.";
+         "Create New Action (Creates new action in start state with current assignees)";
    private Collection<? extends TaskableStateMachineArtifact> defaultTeamWorkflows;
 
    public DuplicateWorkflowBlam() throws IOException {
@@ -228,6 +228,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       return "Duplicate Workflow";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }
