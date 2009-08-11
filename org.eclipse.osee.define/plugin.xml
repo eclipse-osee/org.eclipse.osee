@@ -139,12 +139,6 @@
           className="org.eclipse.osee.define.blam.operation.SubsystemToLowLevelReqTraceReport">
     </Operation>
  </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-      <ArtifactFactory
-            classname="org.eclipse.osee.define.DefineArtifactFactory">
-      </ArtifactFactory>
-   </extension>
  <extension
        point="org.eclipse.ui.popupMenus">
     <viewerContribution

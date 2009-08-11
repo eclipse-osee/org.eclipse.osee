@@ -67,8 +67,8 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof IATSArtifact && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

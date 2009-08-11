@@ -635,7 +635,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    }
 
-   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -1039,7 +1038,9 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
     */
    @Override
    public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) return;
+      if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) {
+         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

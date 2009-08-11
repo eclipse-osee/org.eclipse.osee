@@ -33,25 +33,25 @@ public class ExtensionDefinedObjects<T> {
    private List<T> loadedObjects;
    private Map<String, T> objectsByID;
 
-   private String extensionPointId;
-   private String elementName;
-   private String classNameAttribute;
-   private boolean allowZeroExtensions = false;
+   private final String extensionPointId;
+   private final String elementName;
+   private final String classNameAttribute;
+   private final boolean allowsEmptyOnLoad;
 
    public ExtensionDefinedObjects(String extensionPointId, String elementName, String classNameAttribute) {
+      this(extensionPointId, elementName, classNameAttribute, false);
+   }
+
+   public ExtensionDefinedObjects(String extensionPointId, String elementName, String classNameAttribute, boolean allowsEmptyOnLoad) {
       this.extensionPointId = extensionPointId;
       this.elementName = elementName;
       this.classNameAttribute = classNameAttribute;
+      this.allowsEmptyOnLoad = allowsEmptyOnLoad;
    }
 
    public List<T> getObjects() {
       checkInitialized();
       return loadedObjects;
-   }
-
-   public List<T> getObjectsAllowZeroExtensions() {
-      allowZeroExtensions = true;
-      return getObjects();
    }
 
    public T getObjectById(String id) {
@@ -64,7 +64,7 @@ public class ExtensionDefinedObjects<T> {
       return objectsByID.keySet();
    }
 
-   private void checkInitialized() {
+   private synchronized void checkInitialized() {
       if (!isInitialized()) {
          initialize(extensionPointId, elementName, classNameAttribute);
       }
@@ -74,7 +74,7 @@ public class ExtensionDefinedObjects<T> {
       return loadedObjects != null && objectsByID != null;
    }
 
-   public void clear() {
+   public synchronized void clear() {
       if (loadedObjects != null) {
          loadedObjects.clear();
          loadedObjects = null;
@@ -91,7 +91,7 @@ public class ExtensionDefinedObjects<T> {
       objectsByID = new HashMap<String, T>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
       for (IConfigurationElement element : elements) {
-         IExtension extension = ((IExtension) element.getParent());
+         IExtension extension = (IExtension) element.getParent();
          String identifier = extension.getUniqueIdentifier();
          String className = element.getAttribute(classNameAttribute);
          String bundleName = element.getContributor().getName();
@@ -117,13 +117,14 @@ public class ExtensionDefinedObjects<T> {
             }
          }
       }
-      if (!allowZeroExtensions && loadedObjects.size() == 0) {
+      if (!allowsEmptyOnLoad && loadedObjects.isEmpty()) {
          OseeLog.log(OseeActivator.class, Level.WARNING, String.format(
                "No Objects loaded for [%s] with element name [%s] and attribute [%s]", extensionPointId, elementName,
                classNameAttribute));
       }
    }
 
+   @Override
    public String toString() {
       return getObjects().toString();
    }
