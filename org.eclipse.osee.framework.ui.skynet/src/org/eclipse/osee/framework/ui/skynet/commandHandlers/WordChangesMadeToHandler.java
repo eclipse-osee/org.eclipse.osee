@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -86,7 +86,10 @@ public class WordChangesMadeToHandler extends AbstractHandler {
          try {
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
             boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);
-            boolean wordArtifactSelected = changedArtifact.isOfType(WordArtifact.ARTIFACT_NAME);
+
+            boolean wordArtifactSelected =
+                  changedArtifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || changedArtifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName());
+
             isEnabled = readPermission && wordArtifactSelected;
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

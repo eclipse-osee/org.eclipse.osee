@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -56,8 +56,9 @@ public class NativeRenderer extends FileRenderer {
       return new NativeRenderer();
    }
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ((artifact.isOfType("Native") || artifact.isOfType("General Data"))) {
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
          switch (presentationType) {
             case SPECIALIZED_EDIT:
             case PREVIEW:
@@ -69,7 +70,7 @@ public class NativeRenderer extends FileRenderer {
 
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(NativeArtifact.EXTENSION, "xml");
+      return artifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "xml");
    }
 
    @Override
@@ -90,7 +91,7 @@ public class NativeRenderer extends FileRenderer {
 
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(NativeArtifact.CONTENT_NAME);
+      return artifact.getSoleAttributeValue(CoreAttributes.NATIVE_CONTENT.getName());
    }
 
    @Override

@@ -68,11 +68,13 @@ public class LoadedArtifacts {
     */
    public LoadedArtifacts(Artifact artifact) {
       this.artifacts = new HashSet<Artifact>();
-      if (artifact != null) this.artifacts.add(artifact);
+      if (artifact != null) {
+         this.artifacts.add(artifact);
+      }
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
    }
 
-   public static LoadedArtifacts EmptyLoadedArtifacts() {
+   public static LoadedArtifacts createEmptyLoadedArtifacts() {
       return new LoadedArtifacts((Artifact) null);
    }
 
@@ -89,7 +91,7 @@ public class LoadedArtifacts {
       return "LoadedArtifacts - " + (this.artifacts == null ? "" : this.artifacts.size() + " arts - ") + (this.unloadedArtifacts == null ? "" : this.unloadedArtifacts.size() + " unlodaded");
    }
 
-   public Collection<Integer> getAllArtifactIds() {
+   public synchronized Collection<Integer> getAllArtifactIds() {
       if (allArtifactIds == null) {
          allArtifactIds = new HashSet<Integer>(artifacts.size() + unloadedArtifacts.size());
          for (Artifact artifact : this.artifacts) {
@@ -102,7 +104,7 @@ public class LoadedArtifacts {
       return allArtifactIds;
    }
 
-   public Collection<Integer> getAllArtifactTypeIds() {
+   public synchronized Collection<Integer> getAllArtifactTypeIds() {
       if (allArtifactTypeIds == null) {
          allArtifactTypeIds = new HashSet<Integer>();
          for (Artifact artifact : this.artifacts) {

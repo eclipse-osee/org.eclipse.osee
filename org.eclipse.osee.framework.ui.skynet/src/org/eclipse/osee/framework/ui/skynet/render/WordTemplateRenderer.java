@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
@@ -367,14 +367,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (!artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
          if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {
             return WORD_PUBLICATION;
          }
       }
-
-      if (artifact.isOfType(WordArtifact.WORD_TEMPLATE)) {
+      if (artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName())) {
          if (presentationType != PresentationType.GENERALIZED_EDIT) {
             return PRESENTATION_SUBTYPE_MATCH;
          }

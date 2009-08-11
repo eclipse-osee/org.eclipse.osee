@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -56,13 +54,8 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       return NO_MATCH;
-   }
-
-   private String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
-            NativeArtifact.CONTENT_NAME);
    }
 
    @Override

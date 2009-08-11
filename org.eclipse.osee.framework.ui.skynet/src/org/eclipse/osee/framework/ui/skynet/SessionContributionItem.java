@@ -78,7 +78,7 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                         public void run() {
                            try {
                               OseeEventManager.kickAccessControlArtifactsEvent(this,
-                                    AccessControlEventType.UserAuthenticated, LoadedArtifacts.EmptyLoadedArtifacts());
+                                    AccessControlEventType.UserAuthenticated, LoadedArtifacts.createEmptyLoadedArtifacts());
                            } catch (Exception ex) {
                               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                            }

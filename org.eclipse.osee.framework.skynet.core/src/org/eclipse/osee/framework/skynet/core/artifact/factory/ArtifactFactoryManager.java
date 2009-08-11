@@ -10,34 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
 public class ArtifactFactoryManager {
-   private static List<ArtifactFactory> factories;
+   private static final String ARTIFACT_FACTORY_EXTENSION = "ArtifactFactory";
+   private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + ARTIFACT_FACTORY_EXTENSION;
+   private static final String CLASSNAME_ATTRIBUTE = "classname";
 
-   public static ArtifactFactory getFactory(ArtifactType artifactType) throws OseeCoreException {
-      return getFactory(artifactType.getName());
-   }
+   private static final ExtensionDefinedObjects<ArtifactFactory> extensionDefinedObjects =
+         new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
+
+   private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
 
    public static ArtifactFactory getFactory(String artifactTypeName) throws OseeCoreException {
-      loadFactoryBundleMap();
       ArtifactFactory responsibleFactory = null;
-      for (ArtifactFactory factory : factories) {
+      for (ArtifactFactory factory : getFactories()) {
          if (factory.isResponsibleFor(artifactTypeName)) {
             if (responsibleFactory == null) {
                responsibleFactory = factory;
@@ -46,40 +43,21 @@ public class ArtifactFactoryManager {
                      Activator.class,
                      Level.SEVERE,
                      "Multiple ArtifactFactories [" + responsibleFactory + "][" + factory + "]responsible for same artifact type [" + artifactTypeName + "].  Defaulting to DefaultArtifactFactory.");
-               return new DefaultArtifactFactory();
+               return getDefaultArtifactFactory();
             }
          }
       }
       if (responsibleFactory != null) {
          return responsibleFactory;
       }
-      return new DefaultArtifactFactory();
+      return getDefaultArtifactFactory();
    }
 
-   private synchronized static void loadFactoryBundleMap() {
-      if (factories == null) {
-         factories = new ArrayList<ArtifactFactory>();
-         List<IConfigurationElement> elements =
-               ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.ArtifactFactory",
-                     "ArtifactFactory");
+   private static ArtifactFactory getDefaultArtifactFactory() {
+      return defaultArtifactFactory;
+   }
 
-         for (IConfigurationElement element : elements) {
-            String factoryClassName = element.getAttribute("classname");
-            try {
-               String bundleSymbolicName = element.getContributor().getName();
-               if (bundleSymbolicName == null) {
-                  OseeLog.log(Activator.class, Level.WARNING,
-                        "No bundle associated with the factory class: " + factoryClassName);
-                  return;
-               }
-
-               Bundle bundle = Platform.getBundle(bundleSymbolicName);
-               ArtifactFactory factory = (ArtifactFactory) bundle.loadClass(factoryClassName).newInstance();
-               factories.add(factory);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
-            }
-         }
-      }
+   private synchronized static List<ArtifactFactory> getFactories() {
+      return extensionDefinedObjects.getObjects();
    }
 }

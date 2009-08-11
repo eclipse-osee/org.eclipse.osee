@@ -38,10 +38,10 @@ import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -112,11 +112,11 @@ public class WordTemplateProcessor {
    private boolean recurseChildren;
    private String outlineNumber;
    private String headingAttributeName;
-   private List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
+   private final List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
-   private Set<String> ignoreAttributeExtensions = new HashSet<String>();
-   private Set<Artifact> processedArtifacts = new HashSet<Artifact>();
-   private IRenderer renderer;
+   private final Set<String> ignoreAttributeExtensions = new HashSet<String>();
+   private final Set<Artifact> processedArtifacts = new HashSet<Artifact>();
+   private final IRenderer renderer;
 
    public WordTemplateProcessor(IRenderer renderer) {
       this.renderer = renderer;
@@ -164,7 +164,8 @@ public class WordTemplateProcessor {
          throw new OseeWrappedException(ex);
       }
 
-      this.outlineNumber = outlineNumber == null? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
+      this.outlineNumber =
+            outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
 
       template = wordMl.setHeadingNumbers(outlineNumber, template, outlineType);
       template = WordUtil.stripSpellCheck(template);
@@ -312,7 +313,9 @@ public class WordTemplateProcessor {
    }
 
    public void populateVariableMap(VariableMap variableMap) throws OseeCoreException {
-      if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
+      if (variableMap == null) {
+         throw new IllegalArgumentException("variableMap must not be null");
+      }
 
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
@@ -351,7 +354,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (!artifact.isOfType(WordArtifact.WHOLE_WORD) && !artifact.isOfType("Native")) {
+      if (!artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
             if (outlining) {
@@ -401,7 +404,7 @@ public class WordTemplateProcessor {
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false,
                      presentationType, multipleArtifacts);
             }
- 
+
          }
       }
 
@@ -474,7 +477,9 @@ public class WordTemplateProcessor {
       String elementName = artifactName.trim().replaceAll("[^A-Za-z0-9]", "_");
 
       // Ensure the name did not end up empty
-      if (elementName.equals("")) elementName = "nameless";
+      if (elementName.equals("")) {
+         elementName = "nameless";
+      }
 
       // Fix the first character if it is a number by replacing it with its name
       char firstChar = elementName.charAt(0);

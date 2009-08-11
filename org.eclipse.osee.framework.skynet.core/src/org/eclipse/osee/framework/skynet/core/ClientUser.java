@@ -113,7 +113,7 @@ final class ClientUser {
          @Override
          public IStatus run(IProgressMonitor monitor) throws Exception {
             OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
-                  LoadedArtifacts.EmptyLoadedArtifacts());
+                  LoadedArtifacts.createEmptyLoadedArtifacts());
             return Status.OK_STATUS;
          }
 

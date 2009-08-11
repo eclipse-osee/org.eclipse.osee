@@ -135,13 +135,13 @@ public class TypeValidityManager {
    public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
       ensurePopulated();
 
-      Collection<AttributeType> inhieritedAttributeTypes = new HashSet<AttributeType>();
+      Collection<AttributeType> inheritedAttributeTypes = new HashSet<AttributeType>();
       Branch branchCursor = branch;
       boolean notDone = true;
       while (notDone) {
          Collection<AttributeType> attributeTypes = instance.artifactToAttributeMap.get(branchCursor, artifactType);
          if (attributeTypes != null) {
-            inhieritedAttributeTypes.addAll(attributeTypes);
+            inheritedAttributeTypes.addAll(attributeTypes);
          }
 
          if (branchCursor.isSystemRootBranch()) {
@@ -151,11 +151,11 @@ public class TypeValidityManager {
          }
       }
 
-      if (inhieritedAttributeTypes.isEmpty()) {
+      if (inheritedAttributeTypes.isEmpty()) {
          throw new OseeTypeDoesNotExist(
                "There are no valid attribute types available for the artifact type \"" + artifactType + "\"");
       }
-      return inhieritedAttributeTypes;
+      return inheritedAttributeTypes;
    }
 
    public static boolean isValid(ArtifactType artifactType, AttributeType attributeType, Branch branch) throws OseeCoreException {

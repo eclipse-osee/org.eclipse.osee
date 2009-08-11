@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ARTIFACTS;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
@@ -136,7 +137,9 @@ public class TestRunXViewer extends XViewer {
    public void refresh() {
       super.refresh();
       try {
-         if (getTree() == null || getTree().isDisposed() || actionList == null) return;
+         if (getTree() == null || getTree().isDisposed() || actionList == null) {
+            return;
+         }
          for (AbstractActionHandler action : actionList) {
             action.updateState();
          }
@@ -171,7 +174,7 @@ public class TestRunXViewer extends XViewer {
       public void updateState() {
          boolean haveUnCommitableItems = dataManager.getUnCommitable().length > 0;
          boolean haveCommitableItems = dataManager.getAllCommitable().length > 0;
-         this.setEnabled(haveCommitableItems || (CommitConfiguration.isCommitOverrideAllowed() && haveUnCommitableItems));
+         this.setEnabled(haveCommitableItems || CommitConfiguration.isCommitOverrideAllowed() && haveUnCommitableItems);
       }
 
       private boolean isOverrideAllowed() {
@@ -252,7 +255,7 @@ public class TestRunXViewer extends XViewer {
       boolean returnValue = false;
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : selectedArtifacts) {
-         if (artifact.isOfType("Test Run")) {
+         if (artifact.isOfType(OTE_SKYNET_ARTIFACTS.TEST_RUN.getName())) {
             String name = artifact.getSoleAttributeValueAsString("Name", "");
             if (name != "") {
                Artifact dispoArtifact = null;

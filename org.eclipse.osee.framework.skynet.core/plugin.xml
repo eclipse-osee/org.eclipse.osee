@@ -21,7 +21,7 @@
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetCoreArtifactFactory">
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.UserArtifactFactory">
          </ArtifactFactory>
       </extension>
       <extension

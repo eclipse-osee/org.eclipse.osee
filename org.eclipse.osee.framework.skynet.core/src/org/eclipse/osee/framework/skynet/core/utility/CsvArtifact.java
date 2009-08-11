@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.io.IOException;
-import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 /**
  * Supports the loading, modifying and saving of General Document artifacts of extension csv
@@ -27,43 +25,37 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
  */
 public class CsvArtifact {
 
-   private final NativeArtifact artifact;
+   private final Artifact artifact;
 
-   /**
-    * @return the artifact
-    */
-   public NativeArtifact getArtifact() {
-      return artifact;
-   }
-
-   public CsvArtifact(NativeArtifact nativeArtifact) {
+   public CsvArtifact(Artifact nativeArtifact) {
       this.artifact = nativeArtifact;
    }
 
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
    public void setCsvData(String csvData) throws OseeCoreException {
-      artifact.setSoleAttributeFromString(NativeArtifact.CONTENT_NAME, csvData);
+      artifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), csvData);
    }
 
    public String getCsvData() throws OseeCoreException {
-      InputStream inputStream = artifact.getNativeContent();
-      try {
-         String data = Lib.inputStreamToString(inputStream);
-         return data;
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+      String csvData = null;
+      if (artifact != null) {
+         csvData = artifact.getSoleAttributeValueAsString(CoreAttributes.NATIVE_CONTENT.getName(), null);
       }
+      return csvData;
    }
 
    public void appendData(String csvData) throws OseeCoreException {
-      InputStream inputStream = artifact.getNativeContent();
-      try {
-         String data = Lib.inputStreamToString(inputStream);
+      String data = getCsvData();
+      if (Strings.isValid(data)) {
          data = data.replaceFirst("\n+$", "");
          data = data + "\n" + csvData;
-         setCsvData(data);
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+      } else {
+         data = csvData;
       }
+      setCsvData(data);
    }
 
    /**
@@ -76,17 +68,19 @@ public class CsvArtifact {
     * @throws OseeCoreException
     */
    public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, Branch branch) throws OseeCoreException {
-      NativeArtifact artifact = (NativeArtifact) ArtifactTypeManager.addArtifact("General Document", branch);
+      Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch);
       artifact.setDescriptiveName(artifactName);
       artifact.setSoleAttributeValue("Extension", "csv");
-      artifact.setSoleAttributeFromString(NativeArtifact.CONTENT_NAME, csvData);
+      artifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), csvData);
       StaticIdManager.setSingletonAttributeValue(artifact, staticId);
       return new CsvArtifact(artifact);
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, Branch branch, boolean create) throws OseeCoreException {
       Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch);
-      if (art != null) return new CsvArtifact((NativeArtifact) art);
+      if (art != null) {
+         return new CsvArtifact(art);
+      }
       return generateCsvArtifact(staticId, staticId, "", branch);
    }
 

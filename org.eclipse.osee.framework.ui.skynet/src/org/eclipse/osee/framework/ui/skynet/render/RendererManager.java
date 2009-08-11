@@ -94,7 +94,7 @@ public class RendererManager {
          String classname = element.getAttribute("classname");
          String bundleName = element.getContributor().getName();
          try {
-            Class<IRenderer> clazz = (Class<IRenderer>) Platform.getBundle(bundleName).loadClass(classname);
+            Class<IRenderer> clazz = Platform.getBundle(bundleName).loadClass(classname);
             Constructor<IRenderer> constructor = clazz.getConstructor();
             IRenderer renderer = constructor.newInstance();
             renderers.put(renderer.getClass().getCanonicalName(), renderer);
@@ -151,6 +151,8 @@ public class RendererManager {
       ArrayList<IRenderer> renderers = new ArrayList<IRenderer>();
 
       for (IRenderer prototypeRenderer : instance.renderers.values()) {
+         // Add Catch Exception Code -- 
+
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
          if (rating > getBestRenderer(presentationType, artifact, options).minimumRanking()) {
             IRenderer renderer = prototypeRenderer.newInstance();
@@ -194,7 +196,7 @@ public class RendererManager {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws Exception {
 
-            if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
+            if (presentationType != PresentationType.SPECIALIZED_EDIT || ArtifactGuis.checkOtherEdit(artifacts)) {
                HashCollection<IRenderer, Artifact> rendererArtifactMap =
                      createRenderMap(presentationType, artifacts, options);
 

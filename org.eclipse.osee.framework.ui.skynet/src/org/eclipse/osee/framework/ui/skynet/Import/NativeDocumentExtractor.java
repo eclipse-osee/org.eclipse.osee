@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileFilter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
@@ -26,8 +26,8 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       RoughArtifact roughArtifact =
             new RoughArtifact(RoughArtifactKind.PRIMARY, branch, Lib.removeExtension(importFile.getName()));
       addRoughArtifact(roughArtifact);
-      roughArtifact.addAttribute("Extension", Lib.getExtension(importFile.getName()));
-      roughArtifact.addFileAttribute(NativeArtifact.CONTENT_NAME, importFile);
+      roughArtifact.addAttribute(CoreAttributes.NATIVE_EXTENSION.getName(), Lib.getExtension(importFile.getName()));
+      roughArtifact.addFileAttribute(CoreAttributes.NATIVE_CONTENT.getName(), importFile);
    }
 
    public FileFilter getFileFilter() {

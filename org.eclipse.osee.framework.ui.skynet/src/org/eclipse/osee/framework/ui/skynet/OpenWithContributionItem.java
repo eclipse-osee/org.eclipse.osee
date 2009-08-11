@@ -21,9 +21,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -94,14 +95,17 @@ public class OpenWithContributionItem extends CompoundContributionItem {
       List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, presentationType);
       Artifact firstArtifact = artifacts.iterator().next();
       for (IRenderer render : commonRenders) {
+         ImageDescriptor imageDescriptor = null;
          if (render instanceof WordRenderer) {
-            contributionItems.addAll(loadCommands(render, presentationType, WordRenderer.getImageDescriptor()));
-         } else {
-            contributionItems.addAll(loadCommands(
-                  render,
-                  presentationType,
-                  render instanceof NativeRenderer && firstArtifact instanceof NativeArtifact ? ImageManager.getProgramImageDescriptor(((NativeArtifact) firstArtifact).getFileExtension()) : null));
+            imageDescriptor = WordRenderer.getImageDescriptor();
+         } else if (render instanceof NativeRenderer) {
+            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName());
+            if (Strings.isValid(fileExtension)) {
+               imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
+            }
          }
+         List<IContributionItem> commandList = loadCommands(render, presentationType, imageDescriptor);
+         contributionItems.addAll(commandList);
       }
       return contributionItems;
    }
@@ -233,11 +237,11 @@ public class OpenWithContributionItem extends CompoundContributionItem {
                   if (artifacts != null && !artifacts.isEmpty()) {
                      Artifact artifact = artifacts.iterator().next();
                      if (isPreviewEnabled && artifact != null) {
-                        if (true) {
-                           RendererManager.previewInJob(artifact);
-                        } else {
-                           RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
-                        }
+                        //                        if (true) {
+                        RendererManager.previewInJob(artifact);
+                        //                        } else {
+                        //                           RendererManager.openInJob(artifact, PresentationType.SPECIALIZED_EDIT);
+                        //                        }
                      }
                   }
                } catch (OseeCoreException ex) {

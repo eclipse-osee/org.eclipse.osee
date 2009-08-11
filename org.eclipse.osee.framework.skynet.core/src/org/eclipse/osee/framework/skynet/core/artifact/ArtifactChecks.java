@@ -11,44 +11,25 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactChecks {
-   public static List<IArtifactCheck> tasks;
-   public static String EXTENSION_POINT = "org.eclipse.osee.framework.skynet.core.ArtifactCheck";
+   private static String ELEMENT_ID = "ArtifactCheck";
+   private static String EXTENSION_ID = Activator.PLUGIN_ID + "." + ELEMENT_ID;
+   private static String CLASS_NAME_ATTRIBUTE = "classname";
+
+   private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
+         new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
+
+   private ArtifactChecks() {
+   }
 
    public static List<IArtifactCheck> getArtifactChecks() {
-      if (tasks == null) {
-         tasks = new ArrayList<IArtifactCheck>();
-         List<IConfigurationElement> iExtensions =
-               ExtensionPoints.getExtensionElements(EXTENSION_POINT, "ArtifactCheck");
-         for (IConfigurationElement element : iExtensions) {
-            String className = element.getAttribute("classname");
-            String bundleName = element.getContributor().getName();
-            try {
-               if (className != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  Class<?> interfaceClass = bundle.loadClass(className);
-                  IArtifactCheck check = (IArtifactCheck) interfaceClass.getConstructor().newInstance();
-                  tasks.add(check);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                     "Problem loading ArtifactCheck extension \"" + className + "\".  Ignorning.", ex);
-            }
-         }
-      }
-      return tasks;
+      return artifactCheckObjects.getObjects();
    }
 }

@@ -111,7 +111,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       if (presentationType == PresentationType.GENERALIZED_EDIT) {
          return PRESENTATION_TYPE;
       }
-
       return DEFAULT_MATCH;
    }
 

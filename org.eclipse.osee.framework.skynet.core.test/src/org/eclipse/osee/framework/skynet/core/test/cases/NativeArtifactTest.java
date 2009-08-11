@@ -15,14 +15,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -37,81 +39,56 @@ public class NativeArtifactTest {
       cleanup();
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#NativeArtifact(org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory, java.lang.String, java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.ArtifactType)}
-    * .
-    */
    @org.junit.Test
    public void testNativeArtifact() throws Exception {
       CsvArtifact csvArtifact =
             CsvArtifact.getCsvArtifact(getClass().getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
       assertNotNull(csvArtifact);
-      assertTrue(csvArtifact.getArtifact() instanceof NativeArtifact);
+      Artifact artifact = csvArtifact.getArtifact();
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName()));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributes.NATIVE_EXTENSION.getName()));
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getImage()}.
-    */
    @org.junit.Test
    public void testGetImage() throws Exception {
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      assertTrue(nativeArtifact.getFileExtension().equals("csv"));
+      Artifact nativeArtifact = getNativeArtifact();
+      assertTrue("Fix this Test - not testing what its supposed to", false);
+      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "").equals("csv"));
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getFileName()}.
-    */
-   @org.junit.Test
-   public void testGetFileName() throws Exception {
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      assertEquals(nativeArtifact.getFileName(), "NativeArtifactTest.csv");
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getFileExtension()}.
-    */
    @org.junit.Test
    public void testGetFileExtension() throws Exception {
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      assertTrue(nativeArtifact.getFileExtension().equals("csv"));
+      Artifact nativeArtifact = getNativeArtifact();
+      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "").equals("csv"));
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#setNativeContent(java.io.File)}.
-    */
    @org.junit.Test
-   public void testSetNativeContentFile() throws Exception {
-      File file = OseeData.getFile(GUID.create() + ".txt");
-      Lib.writeStringToFile("hello world", file);
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setNativeContent(file);
+   public void testSetAndGetValueAsString() throws Exception {
+      Artifact nativeArtifact = getNativeArtifact();
+      nativeArtifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), "hello world");
       nativeArtifact.persistAttributes();
-      String content = Lib.inputStreamToString(nativeArtifact.getNativeContent());
+      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributes.NATIVE_CONTENT.getName(), "");
       assertEquals("hello world", content);
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact#getNativeContent()}.
-    */
    @org.junit.Test
    public void testSetAndGetNativeContent() throws Exception {
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setNativeContent(Lib.stringToInputStream("hello world"));
+      File file = OseeData.getFile(GUID.create() + ".txt");
+      Lib.writeStringToFile("hello world", file);
+      Artifact nativeArtifact = getNativeArtifact();
+      nativeArtifact.setSoleAttributeFromStream(CoreAttributes.NATIVE_CONTENT.getName(), new FileInputStream(file));
       nativeArtifact.persistAttributes();
-      String content = Lib.inputStreamToString(nativeArtifact.getNativeContent());
-      assertEquals("hello world", content);
-   }
-
-   @org.junit.Test
-   public void testGetValueAsString() throws Exception {
-      NativeArtifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setNativeContent(Lib.stringToInputStream("hello world"));
-      nativeArtifact.persistAttributes();
-      String content = nativeArtifact.getSoleAttributeValueAsString(NativeArtifact.CONTENT_NAME, "");
-      assertEquals("hello world", content);
+      InputStream inputStream = null;
+      try {
+         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_CONTENT.getName(), null);
+         String content = Lib.inputStreamToString(inputStream);
+         assertEquals("hello world", content);
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
    }
 
    @org.junit.Test
@@ -119,7 +96,7 @@ public class NativeArtifactTest {
       cleanup();
    }
 
-   private NativeArtifact getNativeArtifact() throws Exception {
+   private Artifact getNativeArtifact() throws Exception {
       return CsvArtifact.getCsvArtifact(getClass().getSimpleName(),
             BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false).getArtifact();
    }

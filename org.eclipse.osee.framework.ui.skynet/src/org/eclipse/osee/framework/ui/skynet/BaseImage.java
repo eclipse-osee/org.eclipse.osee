@@ -13,10 +13,11 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.swt.graphics.ImageData;
 
 /**
@@ -54,7 +55,9 @@ public class BaseImage implements OseeImage {
       }
       // Check extensions
       OseeImage oseeImage = ImageManager.getArtifactTypeImage(artifactType.getName());
-      if (oseeImage != null) return oseeImage;
+      if (oseeImage != null) {
+         return oseeImage;
+      }
 
       return FrameworkImage.LASER;
    }
@@ -63,13 +66,15 @@ public class BaseImage implements OseeImage {
       if (ImageManager.getOverrideImageEnum() != null) {
          return ImageManager.getOverrideImageEnum();
       }
-      if (artifact instanceof NativeArtifact) {
-         try {
-            String extension = ((NativeArtifact) artifact).getFileExtension();
-            return new ProgramImage(extension);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      try {
+         if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_EXTENSION.getName())) {
+            String extension = artifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName());
+            if (Strings.isValid(extension)) {
+               return new ProgramImage(extension);
+            }
          }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return getBaseImageEnum(artifact.getArtifactType());
    }

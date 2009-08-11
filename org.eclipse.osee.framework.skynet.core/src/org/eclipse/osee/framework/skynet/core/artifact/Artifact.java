@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
@@ -93,13 +94,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    private boolean historical;
    private ModificationType modType;
    private ModificationType lastValidModType;
-   private static String[] WholeArtifactMatches =
-         new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
-               "Template (WordML)", "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)"};
-
-   static {
-      Arrays.sort(WholeArtifactMatches);
-   }
 
    public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       modType = ModificationType.NEW;
@@ -298,21 +292,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
          return true;
       }
       if (artifactType.equals(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT) && Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(getArtifactTypeName())) {
-         return true;
-      }
-      if (artifactType.equals("Native") && (this instanceof NativeArtifact || getArtifactTypeName().equals(
-            "Renderer Template"))) {
-         return true;
-      }
-      if (artifactType.equals(WordArtifact.ARTIFACT_NAME) && this instanceof WordArtifact) {
-         return true;
-      }
-      if (artifactType.equals(WordArtifact.WHOLE_WORD) && Arrays.binarySearch(WholeArtifactMatches,
-            getArtifactTypeName()) >= 0) {
-         return true;
-      }
-      if (artifactType.equals(WordArtifact.WORD_TEMPLATE) && this instanceof WordArtifact && Arrays.binarySearch(
-            WholeArtifactMatches, getArtifactTypeName()) < 0) {
          return true;
       }
       return getArtifactTypeName().equals(artifactType);
@@ -711,11 +690,27 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
    public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+      String toReturn = null;
       Object value = getSoleAttributeValue(attributeTypeName, defaultReturnValue);
-      if (value == null) {
-         return null;
+      if (value instanceof InputStream) {
+         InputStream inputStream = (InputStream) value;
+         try {
+            toReturn = Lib.inputStreamToString(inputStream);
+         } catch (IOException ex) {
+            throw new OseeWrappedException(ex);
+         } finally {
+            try {
+               inputStream.close();
+            } catch (IOException ex) {
+               throw new OseeWrappedException(ex);
+            }
+         }
+      } else {
+         if (value != null) {
+            toReturn = value.toString();
+         }
       }
-      return value.toString();
+      return toReturn;
    }
 
    /**
@@ -1714,7 +1709,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return null;
    }
 
-   public int compareTo(Artifact otherArtifact) {
+   public final int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
       } else if (this.isDeleted()) {
@@ -1736,7 +1731,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    @Override
-   public int hashCode() {
+   public final int hashCode() {
       return 37 * guid.hashCode() + branch.hashCode();
    }
 
@@ -1745,7 +1740,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @return <code>true</code> if this artifact has the same GUID and branch <code>false</code> otherwise.
     */
    @Override
-   public boolean equals(Object obj) {
+   public final boolean equals(Object obj) {
       if (obj instanceof Artifact) {
          Artifact otherArtifact = (Artifact) obj;
          return guid.equals(otherArtifact.guid) && branch.equals(otherArtifact.branch);

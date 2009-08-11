@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -64,8 +64,9 @@ public class WholeDocumentRenderer extends WordRenderer {
       return commandIds;
    }
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.isOfType(WordArtifact.WHOLE_WORD)) {
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName())) {
          if (presentationType == PresentationType.DIFF) {
             return WORD_PUBLICATION;
          } else {
@@ -109,10 +110,11 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
-      if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
-            "baseVersion and newerVersion can't both be null.");
+      if (baseVersion == null && newerVersion == null) {
+         throw new IllegalArgumentException("baseVersion and newerVersion can't both be null.");
+      }
 
-      Branch branch = (baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch());
+      Branch branch = baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch();
       IFile baseFile;
       IFile newerFile;
       Pair<String, Boolean> originalValue = null;

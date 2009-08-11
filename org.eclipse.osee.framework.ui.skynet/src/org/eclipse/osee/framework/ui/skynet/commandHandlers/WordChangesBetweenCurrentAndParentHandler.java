@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -43,8 +43,8 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
          Artifact secondArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
-                     change.getToTransactionId(), true);
+               ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(), change.getToTransactionId(),
+                     true);
          RendererManager.diffInJob(null, secondArtifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -75,7 +75,9 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
             Artifact artifact = change.getArtifact();
 
             boolean readPermission = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
-            boolean wordArtifactSelected = artifact.isOfType(WordArtifact.ARTIFACT_NAME);
+
+            boolean wordArtifactSelected =
+                  artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName());
             boolean modifiedWordArtifactSelected =
                   wordArtifactSelected && change.getModificationType() == ModificationType.MODIFIED;
             boolean conflictedWordArtifactSelected =

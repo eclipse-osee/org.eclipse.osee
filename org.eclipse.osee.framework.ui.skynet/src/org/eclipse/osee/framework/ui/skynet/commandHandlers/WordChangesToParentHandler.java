@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -48,8 +48,8 @@ public class WordChangesToParentHandler extends AbstractHandler {
          try {
             Artifact firstArtifact =
                   selectedArtifactChange.getModificationType() == NEW ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                        selectedArtifactChange.getArtifact().getArtId(),
-                        selectedArtifactChange.getFromTransactionId(), true);
+                        selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getFromTransactionId(),
+                        true);
 
             Artifact secondArtifact = null;
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();
@@ -84,17 +84,18 @@ public class WordChangesToParentHandler extends AbstractHandler {
             mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
             if (mySelectedArtifactChangeList.size() == 0) {
-               return (false);
+               return false;
             }
             Change mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
             if (mySelectedArtifactChange.getModificationType() == NEW || mySelectedArtifactChange.getModificationType() == DELETED) {
-               return (false);
+               return false;
             }
 
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
             Branch reportBranch = changedArtifact.getBranch();
-            boolean wordArtifactSelected = changedArtifact.isOfType(WordArtifact.ARTIFACT_NAME);
+            boolean wordArtifactSelected =
+                  changedArtifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || changedArtifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName());
             boolean validDiffParent = wordArtifactSelected && reportBranch.hasParentBranch();
 
             boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);

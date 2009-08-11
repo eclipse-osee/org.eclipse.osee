@@ -40,9 +40,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
@@ -109,10 +108,10 @@ public class UpdateArtifactJob extends UpdateJob {
          singleGuid = singleEditMatcher.group(1);
          artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
 
-         if (artifact.isOfType(WordArtifact.ARTIFACT_NAME)) {
+         if (artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName())) {
             wordArtifactUpdate(getArtifacts(workingFile, true), branch);
-         } else if (artifact.isOfType("Native")) {
-            updateNativeArtifact((NativeArtifact) artifact);
+         } else if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+            updateNativeArtifact(artifact);
          } else {
             throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
          }
@@ -128,9 +127,9 @@ public class UpdateArtifactJob extends UpdateJob {
             artifact.toString()));
    }
 
-   private void updateNativeArtifact(NativeArtifact artifact) throws OseeCoreException, FileNotFoundException {
+   private void updateNativeArtifact(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       if (!artifact.isReadOnly()) {
-         artifact.setNativeContent(workingFile);
+         artifact.setSoleAttributeFromStream(CoreAttributes.NATIVE_CONTENT.getName(), new FileInputStream(workingFile));
          artifact.persistAttributes();
       } else {
          logUpdateSkip(artifact);
@@ -352,7 +351,9 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private String getGuid(Element artifactElement) throws OseeArgumentException {
-      if (singleGuid != null) return singleGuid;
+      if (singleGuid != null) {
+         return singleGuid;
+      }
       NamedNodeMap attributes = artifactElement.getAttributes();
       for (int i = 0; i < attributes.getLength(); i++) {
          // MS Word has a nasty habit of changing the namespace say from

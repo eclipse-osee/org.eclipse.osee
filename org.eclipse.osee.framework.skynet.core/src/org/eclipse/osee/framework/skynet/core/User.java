@@ -73,7 +73,7 @@ public class User extends Artifact implements Serializable {
 
    public boolean isMe() {
       try {
-         return (getUserId().equals(UserManager.getUser().getUserId()));
+         return getUserId().equals(UserManager.getUser().getUserId());
       } catch (Exception ex) {
          return false;
       }
@@ -118,8 +118,9 @@ public class User extends Artifact implements Serializable {
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
       Collection<Branch> branches = BranchManager.getNormalBranches();
       HashSet<Integer> branchIds = new HashSet<Integer>();
-      for (Branch branch : branches)
+      for (Branch branch : branches) {
          branchIds.add(branch.getBranchId());
+      }
 
       boolean found = false;
       Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
