@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.osee.master.feature"
-      label="Eclipse OSEE Master Feature  (Incubation)"
+      id="org.eclipse.osee.client.feature"
+      label="Eclipse OSEE Client Feature  (Incubation)"
       version="1.0.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
@@ -33,11 +33,11 @@
    <includes
          id="org.eclipse.osee.framework.ui.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.osee.define.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.osee.ats.feature"
          version="0.0.0"/>
@@ -45,9 +45,21 @@
    <includes
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
-         
-    <includes id="org.eclipse.osee.define.feature.source" version="0.0.0"/>
-    <includes id="org.eclipse.osee.ats.feature.source" version="0.0.0"/>
-    <includes id="org.eclipse.osee.framework.feature.source" version="0.0.0"/>
-    <includes id="org.eclipse.osee.framework.ui.feature.source" version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.define.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.ats.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.framework.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.framework.ui.feature.source"
+         version="0.0.0"/>
+
 </feature>
