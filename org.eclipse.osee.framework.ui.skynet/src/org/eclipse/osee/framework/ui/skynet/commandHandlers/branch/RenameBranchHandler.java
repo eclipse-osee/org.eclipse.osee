@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -139,7 +140,8 @@ public class RenameBranchHandler extends CommandHandler {
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).isWorkingBranch());
+      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).isWorkingBranch() || branches.get(
+            0).getAuthorId() == UserManager.getUser().getArtId());
    }
 
 }
