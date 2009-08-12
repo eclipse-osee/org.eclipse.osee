@@ -25,16 +25,22 @@ import org.eclipse.swt.SWT;
 public class XViewerDaysTillTodayColumn extends XViewerComputedColumn {
 
    private final static SimpleDateFormat format10 = new SimpleDateFormat("MM/dd/yyyy");
+   private static String ID = "ats.computed.daysTillToday";
 
    public XViewerDaysTillTodayColumn() {
-      super("ats.computed.daysTillToday", "Days Till Today", 30, SWT.LEFT, false, SortDataType.Integer, false,
+      super(ID, "Days Till Today", 30, SWT.LEFT, false, SortDataType.Integer, false,
+            "Shows number of days till today for selected column");
+   }
+
+   private XViewerDaysTillTodayColumn(String id) {
+      super(id, "Days Till Today", 30, SWT.LEFT, false, SortDataType.Integer, false,
             "Shows number of days till today for selected column");
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (sourceXViewerColumn == null) {
-         return "Source column not set";
+         return String.format("Source column not found for " + id + ".  Delete column and re-create.");
       }
       try {
          String dateStr =
@@ -68,20 +74,17 @@ public class XViewerDaysTillTodayColumn extends XViewerComputedColumn {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerComputedColumn#isApplicableFor(org.eclipse.nebula.widgets.xviewer.XViewerColumn)
-    */
    @Override
    public boolean isApplicableFor(XViewerColumn xViewerColumn) {
       return xViewerColumn.getSortDataType() == SortDataType.Date;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerColumn#getName()
-    */
    @Override
    public String getName() {
-      return super.getName() + " from " + sourceXViewerColumn.getName() + "";
+      if (sourceXViewerColumn == null) {
+         return "Days Till Today";
+      }
+      return "Days Till Today from " + sourceXViewerColumn.getName() + "";
    }
 
    @Override
@@ -92,15 +95,21 @@ public class XViewerDaysTillTodayColumn extends XViewerComputedColumn {
       return col;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.nebula.widgets.xviewer.XViewerColumn#getId()
-    */
    @Override
    public String getId() {
       if (sourceXViewerColumn == null) {
-         return super.getId();
+         return ID;
       }
-      return super.getId() + "(" + sourceXViewerColumn.getId() + ")";
+      return ID + "(" + sourceXViewerColumn.getId() + ")";
    }
 
+   @Override
+   public boolean isApplicableFor(String storedId) {
+      return storedId.startsWith(ID);
+   }
+
+   @Override
+   public XViewerComputedColumn createFromStored(XViewerColumn storedColumn) {
+      return new XViewerDaysTillTodayColumn(storedColumn.getId());
+   }
 }

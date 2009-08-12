@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
@@ -84,6 +85,7 @@ public class CustomizeManager {
       List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
       for (XViewerColumn storedCol : loadedCustData.getColumnData().getColumns()) {
          XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
+
          // Handle known stored values
          if (resolvedCol == null) {
             String name = storedCol.getName();
@@ -122,6 +124,16 @@ public class CustomizeManager {
                }
             }
          }
+
+         // Resolve computed columns
+         if (resolvedCol == null) {
+            for (XViewerComputedColumn xViewerComputedCol : xViewer.getComputedColumns()) {
+               if (xViewerComputedCol.isApplicableFor(storedCol.getId())) {
+                  resolvedCol = xViewerComputedCol.createFromStored(storedCol);
+               }
+            }
+         }
+
          // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
          if (resolvedCol != null && resolvedCol.getWidth() > 0) {
             resolvedCol.setWidth(storedCol.getWidth());
@@ -148,6 +160,14 @@ public class CustomizeManager {
             // Since column wasn't saved, don't show it
             extraCol.setShow(false);
             resolvedColumns.add(extraCol);
+         }
+      }
+      /*
+       * Resolve computed columns, again, to enable source column to get set
+       */
+      for (XViewerColumn resolveCol : resolvedColumns) {
+         if (resolveCol instanceof XViewerComputedColumn) {
+            ((XViewerComputedColumn) resolveCol).setSourceXViewerColumnFromColumns(resolvedColumns);
          }
       }
       resolvedCustData.getColumnData().setColumns(resolvedColumns);

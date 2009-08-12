@@ -19,8 +19,8 @@ import org.eclipse.swt.SWT;
 public class XViewerColumn {
 
    private XViewer xViewer;
-   private String id;
-   private String name = "";
+   protected String id;
+   protected String name = "";
    private String description;
    private boolean multiColumnEditable = false;
    private int width;
