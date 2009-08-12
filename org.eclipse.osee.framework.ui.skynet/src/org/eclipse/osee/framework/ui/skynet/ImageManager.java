@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -79,7 +81,9 @@ public class ImageManager {
       for (ArtifactImageProvider imageProvider : providers) {
          try {
             imageProvider.init();
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
+        	 // we want to catch any possible exception so that we don't bail out in the middle
+        	 // of initializing all providers
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
