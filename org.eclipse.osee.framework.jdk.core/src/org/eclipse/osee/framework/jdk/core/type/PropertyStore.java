@@ -15,9 +15,11 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -31,24 +33,6 @@ public class PropertyStore implements IPropertyStore, Serializable {
    private String storeId;
    private final Properties storageData;
    private final Properties storageArrays;
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof PropertyStore) {
-         PropertyStore castObj = (PropertyStore) obj;
-         return castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && castObj.storageArrays.equals(storageArrays);
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      int result = 17;
-      result = 31 * result + storeId.hashCode();
-      result = 31 * result + storageData.hashCode();
-      result = 31 * result + storageArrays.hashCode();
-      return result;
-   }
 
    private PropertyStore(String storeId, Properties storageData, Properties storageArrays) {
       super();
@@ -156,6 +140,9 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    protected void setId(String name) {
+      if (name == null) {
+         name = "";
+      }
       this.storeId = name;
    }
 
@@ -170,7 +157,22 @@ public class PropertyStore implements IPropertyStore, Serializable {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append(storageData.toString().replaceAll(",", ",\n"));
+      builder.append(String.format("Id:[%s] Data:%s Arrays:{", getId(), storageData.toString()));
+
+      int cnt = 0;
+      for (Object key : storageArrays.keySet()) {
+         if (cnt != 0) {
+            builder.append(" ");
+         }
+         builder.append(key);
+         builder.append("=");
+         builder.append(Arrays.deepToString((String[]) storageArrays.get(key)));
+         cnt++;
+         if (cnt < storageArrays.size()) {
+            builder.append(",");
+         }
+      }
+      builder.append("}");
       return builder.toString();
    }
 
@@ -202,5 +204,64 @@ public class PropertyStore implements IPropertyStore, Serializable {
    public Set<String> keySet() {
       List<String> items = Collections.castAll(this.storageData.keySet());
       return Collections.toSet(items);
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof PropertyStore) {
+         PropertyStore castObj = (PropertyStore) obj;
+         return castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && areStorageArraysEqual(castObj);
+      }
+      return false;
+   }
+
+   private boolean areStorageArraysEqual(PropertyStore other) {
+      boolean result = other.storageArrays.size() == storageArrays.size();
+      if (result) {
+         for (Entry<Object, Object> expectedEntry : storageArrays.entrySet()) {
+            Object expectedValue = expectedEntry.getValue();
+            Object actualValue = other.storageArrays.get(expectedEntry.getKey());
+            String[] expArray = (String[]) expectedValue;
+            String[] actualArray = (String[]) actualValue;
+            result &= checkArrays(expArray, actualArray);
+            if (!result) {
+               break;
+            }
+         }
+      }
+      return result;
+   }
+
+   private boolean checkArrays(String[] expArray, String[] actualArray) {
+      boolean result = expArray.length == actualArray.length;
+      if (result) {
+         for (int index = 0; index < expArray.length; index++) {
+            result &= expArray[index].equals(actualArray[index]);
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public int hashCode() {
+      int result = 17;
+      result = 31 * result + storeId.hashCode();
+      result = 31 * result + getPropertiesHashCode(storageData);
+      result = 31 * result + getPropertiesHashCode(storageArrays);
+      return result;
+   }
+
+   public int getPropertiesHashCode(Properties properties) {
+      int result = 0;
+      for (Entry<Object, Object> entry : properties.entrySet()) {
+         result += entry.getKey().hashCode();
+         Object value = entry.getValue();
+         if (value instanceof String[]) {
+            result += Arrays.deepHashCode((String[]) value);
+         } else {
+            result += value.hashCode();
+         }
+      }
+      return result;
    }
 }
