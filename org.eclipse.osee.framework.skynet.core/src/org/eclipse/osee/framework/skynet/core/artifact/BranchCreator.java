@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -237,6 +238,9 @@ public class BranchCreator {
          Integer startTransactionNumber = startTransactionId.getTransactionNumber();
          insertGammas(connection, attributeGammas, startTransactionNumber, queryId, sourceBranch);
          insertGammas(connection, artifactVersionGammas, startTransactionNumber, queryId, sourceBranch);
+      } catch (OseeCoreException ex) {
+         throw new OseeCoreException(
+               "Source Branch Id: " + sourceBranch.getBranchId() + " Artifact Ids: " + Collections.toString(",", artIds));
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);
       }
