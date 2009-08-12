@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -166,11 +164,14 @@ public class User extends Artifact implements Serializable {
 
    }
 
-   public void saveSettings() throws OseeCoreException, IOException {
+   public void saveSettings() throws OseeCoreException {
       if (userSettings != null) {
          StringWriter stringWriter = new StringWriter();
-         PropertyStoreWriter storeWriter = new PropertyStoreWriter();
-         storeWriter.save(userSettings, stringWriter);
+         try {
+            userSettings.save(stringWriter);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
+         }
          setSoleAttributeFromString("User Settings", stringWriter.toString());
          persistAttributes();
       }
@@ -178,16 +179,16 @@ public class User extends Artifact implements Serializable {
 
    private void ensureUserSettingsAreLoaded() throws OseeWrappedException {
       if (userSettings == null) {
+         PropertyStore store = new PropertyStore(getGuid());
          try {
             String settings = getSoleAttributeValue("User Settings", null);
-            if (settings == null) {
-               userSettings = new PropertyStore(getGuid());
-            } else {
-               userSettings = new PropertyStore(new StringReader(settings));
+            if (settings != null) {
+               store.load(new StringReader(settings));
             }
          } catch (Exception ex) {
             throw new OseeWrappedException(ex);
          }
+         userSettings = store;
       }
    }
 

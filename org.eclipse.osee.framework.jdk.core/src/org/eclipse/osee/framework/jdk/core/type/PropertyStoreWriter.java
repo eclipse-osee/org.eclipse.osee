@@ -24,18 +24,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import java.util.Map.Entry;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class PropertyStoreWriter {
    private static final String TAG_SECTION = "store";
@@ -45,27 +41,12 @@ public class PropertyStoreWriter {
    private static final String TAG_LIST = "list";
    private static final String TAG_ITEM = "item";
 
-   public void load(PropertyStore store, Reader reader) throws IOException, SAXException, ParserConfigurationException {
-      Document document = null;
-      try {
-         DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-         document = parser.parse(new InputSource(reader));
-
-         //Strip out any comments first
-         Node root = document.getFirstChild();
-         while (root.getNodeType() == Node.COMMENT_NODE) {
-            document.removeChild(root);
-            root = document.getFirstChild();
-         }
-         load(store, document, (Element) root);
-      } finally {
-         if (reader != null) {
-            reader.close();
-         }
-      }
+   public void load(PropertyStore store, Reader reader) throws Exception {
+      XMLReader xmlReader = new XMLReader();
+      xmlReader.load(store, reader);
    }
 
-   public void load(PropertyStore store, InputStream inputStream) throws IOException, SAXException, ParserConfigurationException {
+   public void load(PropertyStore store, InputStream inputStream) throws Exception {
       load(store, new BufferedReader(new InputStreamReader(inputStream, "utf-8")));
    }
 
@@ -79,67 +60,35 @@ public class PropertyStoreWriter {
       internalSave(store, internalWriter);
    }
 
-   @SuppressWarnings("unchecked")
-   private void load(PropertyStore store, Document document, Element root) {
-      store.setId(root.getAttribute(TAG_NAME));
-      NodeList l = root.getElementsByTagName(TAG_ITEM);
-      for (int i = 0; i < l.getLength(); i++) {
-         Node n = l.item(i);
-         if (root == n.getParentNode()) {
-            String key = ((Element) l.item(i)).getAttribute(TAG_KEY);
-            String value = ((Element) l.item(i)).getAttribute(TAG_VALUE);
-            store.put(key, value);
-         }
-      }
-      l = root.getElementsByTagName(TAG_LIST);
-      for (int i = 0; i < l.getLength(); i++) {
-         Node n = l.item(i);
-         if (root == n.getParentNode()) {
-            Element child = (Element) l.item(i);
-            String key = child.getAttribute(TAG_KEY);
-            NodeList list = child.getElementsByTagName(TAG_ITEM);
-            List valueList = new ArrayList();
-            for (int j = 0; j < list.getLength(); j++) {
-               Element node = (Element) list.item(j);
-               if (child == node.getParentNode()) {
-                  valueList.add(node.getAttribute(TAG_VALUE));
-               }
-            }
-            String[] value = new String[valueList.size()];
-            valueList.toArray(value);
-            store.put(key, value);
-         }
-      }
-   }
-
-   @SuppressWarnings("unchecked")
    private void internalSave(PropertyStore store, XMLWriter out) {
-      HashMap attributes = new HashMap(2);
+      Map<String, String> attributes = new HashMap<String, String>(2);
       String name = store.getId();
-      attributes.put(TAG_NAME, name == null ? "" : name); //$NON-NLS-1$
+      attributes.put(TAG_NAME, name == null ? "" : name);
       out.startTag(TAG_SECTION, attributes);
       attributes.clear();
+
       Properties items = store.getItems();
-      for (Iterator i = items.keySet().iterator(); i.hasNext();) {
-         String key = (String) i.next();
-         attributes.put(TAG_KEY, key == null ? "" : key); //$NON-NLS-1$
-         String string = (String) items.get(key);
-         attributes.put(TAG_VALUE, string == null ? "" : string); //$NON-NLS-1$        
+      for (Entry<Object, Object> entry : items.entrySet()) {
+         String key = (String) entry.getKey();
+         attributes.put(TAG_KEY, key == null ? "" : key);
+         String value = (String) entry.getValue();
+         attributes.put(TAG_VALUE, value == null ? "" : value);
          out.printTag(TAG_ITEM, attributes, true);
       }
 
       attributes.clear();
       Properties arrayItems = store.getArrays();
-      for (Iterator i = arrayItems.keySet().iterator(); i.hasNext();) {
-         String key = (String) i.next();
-         attributes.put(TAG_KEY, key == null ? "" : key); //$NON-NLS-1$
+      for (Entry<Object, Object> entry : arrayItems.entrySet()) {
+         String key = (String) entry.getKey();
+         attributes.put(TAG_KEY, key == null ? "" : key);
          out.startTag(TAG_LIST, attributes);
-         String[] value = (String[]) arrayItems.get(key);
+
+         String[] value = (String[]) entry.getValue();
          attributes.clear();
          if (value != null) {
             for (int index = 0; index < value.length; index++) {
-               String string = value[index];
-               attributes.put(TAG_VALUE, string == null ? "" : string); //$NON-NLS-1$
+               String item = value[index];
+               attributes.put(TAG_VALUE, item == null ? "" : item);
                out.printTag(TAG_ITEM, attributes, true);
             }
          }
@@ -149,13 +98,85 @@ public class PropertyStoreWriter {
       out.endTag(TAG_SECTION);
       out.close();
    }
+   private static class XMLReader {
+      private List<String> valueList;
+      private String tagListKey;
+      private boolean isInTagList;
+
+      public XMLReader() {
+         isInTagList = false;
+         valueList = null;
+         tagListKey = null;
+      }
+
+      public void load(PropertyStore store, Reader input) throws Exception {
+         try {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            XMLStreamReader streamReader = inputFactory.createXMLStreamReader(input);
+            while (streamReader.hasNext()) {
+               process(store, streamReader);
+               streamReader.next();
+            }
+         } finally {
+            if (input != null) {
+               input.close();
+            }
+         }
+      }
+
+      private void process(PropertyStore store, XMLStreamReader reader) {
+         String name = reader.getLocalName();
+         String uri = reader.getNamespaceURI();
+
+         int eventType = reader.getEventType();
+         switch (eventType) {
+            case XMLStreamConstants.START_ELEMENT:
+               if (TAG_SECTION.equals(name)) {
+                  store.setId(reader.getAttributeValue(uri, TAG_NAME));
+               } else if (TAG_ITEM.equals(name)) {
+                  processTagItemSection(uri, store, reader);
+               } else if (TAG_LIST.equals(name)) {
+                  isInTagList = true;
+                  tagListKey = reader.getAttributeValue(uri, TAG_KEY);
+               }
+               break;
+            case XMLStreamConstants.END_ELEMENT:
+               if (TAG_LIST.equals(name)) {
+                  isInTagList = false;
+                  if (Strings.isValid(tagListKey) && valueList != null && !valueList.isEmpty()) {
+                     String[] value = valueList.toArray(new String[valueList.size()]);
+                     store.put(tagListKey, value);
+                  }
+                  valueList = null;
+                  tagListKey = null;
+               }
+               break;
+            default:
+               break;
+         }
+      }
+
+      private void processTagItemSection(String uri, PropertyStore store, XMLStreamReader reader) {
+         String value = reader.getAttributeValue(uri, TAG_VALUE);
+         if (Strings.isValid(value)) {
+            if (isInTagList) {
+               if (valueList == null) {
+                  valueList = new ArrayList<String>();
+               }
+               valueList.add(value);
+            } else {
+               String key = reader.getAttributeValue(uri, TAG_KEY);
+               if (Strings.isValid(key)) {
+                  store.put(key, value);
+               }
+            }
+         }
+      }
+   }
 
    private static class XMLWriter extends PrintWriter {
-      /** current number of tabs to use for ident */
-      protected int tab;
-
-      /** the xml header */
-      protected static final String XML_VERSION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
+      private static final String XML_VERSION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
+      private int tab;
 
       public XMLWriter(Writer writer) {
          super(writer);
@@ -164,17 +185,12 @@ public class PropertyStoreWriter {
       }
 
       public XMLWriter(OutputStream output) throws UnsupportedEncodingException {
-         this(new OutputStreamWriter(output, "UTF8")); //$NON-NLS-1$
+         this(new OutputStreamWriter(output, "UTF8"));
       }
 
-      /**
-       * write the intended end tag
-       * 
-       * @param name the name of the tag to end
-       */
       public void endTag(String name) {
          tab--;
-         printTag("/" + name, null, false); //$NON-NLS-1$
+         printTag("/" + name, null, false);
       }
 
       private void printTabulation() {
@@ -183,24 +199,22 @@ public class PropertyStoreWriter {
          }
       }
 
-      @SuppressWarnings("unchecked")
-      public void printTag(String name, HashMap parameters, boolean close) {
+      public void printTag(String name, Map<String, String> parameters, boolean close) {
          printTag(name, parameters, true, true, close);
       }
 
-      @SuppressWarnings("unchecked")
-      private void printTag(String name, HashMap parameters, boolean shouldTab, boolean newLine, boolean close) {
+      private void printTag(String name, Map<String, String> parameters, boolean shouldTab, boolean newLine, boolean close) {
          StringBuffer sb = new StringBuffer();
          sb.append('<');
          sb.append(name);
          if (parameters != null) {
-            for (Enumeration e = Collections.enumeration(parameters.keySet()); e.hasMoreElements();) {
-               sb.append(" "); //$NON-NLS-1$
-               String key = (String) e.nextElement();
+            for (Enumeration<String> e = Collections.enumeration(parameters.keySet()); e.hasMoreElements();) {
+               sb.append(" ");
+               String key = e.nextElement();
                sb.append(key);
-               sb.append("=\""); //$NON-NLS-1$
+               sb.append("=\"");
                sb.append(getEscaped(String.valueOf(parameters.get(key))));
-               sb.append("\""); //$NON-NLS-1$
+               sb.append("\"");
             }
          }
          if (close) {
@@ -217,14 +231,12 @@ public class PropertyStoreWriter {
          }
       }
 
-      @SuppressWarnings("unchecked")
-      public void startTag(String name, HashMap parameters) {
+      public void startTag(String name, Map<String, String> parameters) {
          startTag(name, parameters, true);
          tab++;
       }
 
-      @SuppressWarnings("unchecked")
-      private void startTag(String name, HashMap parameters, boolean newLine) {
+      private void startTag(String name, Map<String, String> parameters, boolean newLine) {
          printTag(name, parameters, true, newLine, false);
       }
 
@@ -247,28 +259,28 @@ public class PropertyStoreWriter {
          return result.toString();
       }
 
-      private static String getReplacement(char c) {
+      private static String getReplacement(char character) {
          // Encode special XML characters into the equivalent character references.
          // The first five are defined by default for all XML documents.
          // The next three (#xD, #xA, #x9) are encoded to avoid them
          // being converted to spaces on deserialization
-         switch (c) {
+         switch (character) {
             case '<':
-               return "lt"; //$NON-NLS-1$
+               return "lt";
             case '>':
-               return "gt"; //$NON-NLS-1$
+               return "gt";
             case '"':
-               return "quot"; //$NON-NLS-1$
+               return "quot";
             case '\'':
-               return "apos"; //$NON-NLS-1$
+               return "apos";
             case '&':
-               return "amp"; //$NON-NLS-1$
+               return "amp";
             case '\r':
-               return "#x0D"; //$NON-NLS-1$
+               return "#x0D";
             case '\n':
-               return "#x0A"; //$NON-NLS-1$
+               return "#x0A";
             case '\u0009':
-               return "#x09"; //$NON-NLS-1$
+               return "#x09";
          }
          return null;
       }

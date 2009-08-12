@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Set;
 
 /**
@@ -146,20 +148,20 @@ public interface IPropertyStore {
    public String getId();
 
    /**
-    * Save a property store to a file.
+    * Save a property store to an outputStream.
     * 
-    * @param fileName the name of the file the property store values are written to.
+    * @param outputStream the outputStream to write to.
     * @throws IOException
     */
-   public void save(String fileName) throws Exception;
+   public void save(OutputStream outputStream) throws Exception;
 
    /**
-    * Load a property store from a file and fill the receiver with its content.
+    * Loads a property store from an inputStream.
     * 
-    * @param fileName the name of the file the property store values are read from.
+    * @param inputStream to read property store values from.
     * @throws IOException
     */
-   public void load(String fileName) throws Exception;
+   public void load(InputStream inputStream) throws Exception;
 
    /**
     * Get keys referencing primitive type items

@@ -10,19 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +30,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    private String storeId;
    private final Properties storageData;
-   private Properties storageArrays;
+   private final Properties storageArrays;
 
    @Override
    public boolean equals(Object obj) {
@@ -54,21 +50,23 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return result;
    }
 
-   public PropertyStore(String storeId) {
+   private PropertyStore(String storeId, Properties storageData, Properties storageArrays) {
+      super();
       this.storeId = storeId;
-      this.storageData = new Properties();
-      this.storageArrays = new Properties();
+      this.storageData = storageData;
+      this.storageArrays = storageArrays;
    }
 
-   public PropertyStore(Reader properties) throws IOException, SAXException, ParserConfigurationException {
-      this((String) null);
-      PropertyStoreWriter writer = new PropertyStoreWriter();
-      writer.load(this, properties);
+   public PropertyStore(String storeId) {
+      this(storeId, new Properties(), new Properties());
+   }
+
+   public PropertyStore() {
+      this("");
    }
 
    public PropertyStore(Properties properties) {
-      this.storageData = properties;
-      this.storeId = Integer.toString(properties.hashCode());
+      this(Integer.toString(properties.hashCode()), properties, new Properties());
    }
 
    public String get(String key) {
@@ -176,14 +174,22 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return builder.toString();
    }
 
-   public void load(String fileName) throws Exception {
-      InputStream inputStream = new FileInputStream(fileName);
+   public void load(InputStream inputStream) throws Exception {
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.load(this, inputStream);
    }
 
-   public void save(String fileName) throws Exception {
-      OutputStream outputStream = new FileOutputStream(fileName);
+   public void load(Reader reader) throws Exception {
+      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+      storeWriter.load(this, reader);
+   }
+
+   public void save(Writer writer) throws Exception {
+      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+      storeWriter.save(this, writer);
+   }
+
+   public void save(OutputStream outputStream) throws Exception {
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.save(this, outputStream);
    }
