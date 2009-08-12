@@ -11,7 +11,9 @@
 
 package org.eclipse.nebula.widgets.xviewer;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -23,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.nebula.widgets.xviewer.column.XViewerDaysTillTodayColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.ColumnFilterDataUI;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.nebula.widgets.xviewer.customize.FilterDataUI;
@@ -108,6 +111,26 @@ public class XViewer extends TreeViewer {
       tree.setLinesVisible(true);
       setUseHashlookup(true);
       setupCtrlKeyListener();
+   }
+
+   private static List<XViewerComputedColumn> computedColumns;
+
+   public Collection<XViewerComputedColumn> getComputedColumns() {
+      if (computedColumns == null) {
+         computedColumns = new ArrayList<XViewerComputedColumn>();
+         computedColumns.add(new XViewerDaysTillTodayColumn());
+      }
+      return computedColumns;
+   }
+
+   public Collection<XViewerComputedColumn> getComputedColumns(XViewerColumn xCol) {
+      List<XViewerComputedColumn> matchCols = new ArrayList<XViewerComputedColumn>();
+      for (XViewerColumn computedCol : getComputedColumns()) {
+         if (((XViewerComputedColumn) computedCol).isApplicableFor(xCol)) {
+            matchCols.add((XViewerComputedColumn) computedCol);
+         }
+      }
+      return matchCols;
    }
 
    public void dispose() {

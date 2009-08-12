@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class SMAMetrics {
 
-   private static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
-
    double estHours = 0;
    double hrsRemainFromEstimates = 0;
    double hrsSpent = 0;
@@ -65,8 +63,7 @@ public class SMAMetrics {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
-      if (artifacts.size() == 0)
-         return;
+      if (artifacts.size() == 0) return;
       for (Artifact art : artifacts) {
          if (art instanceof ActionArtifact) {
             actionArts.add((ActionArtifact) art);
@@ -110,8 +107,7 @@ public class SMAMetrics {
          manDaysNeeded += team.getWorldViewManDaysNeeded();
          cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
-      if (hrsRemainFromEstimates != 0)
-         manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
+      if (hrsRemainFromEstimates != 0) manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
       percentCompleteByWorkflowPercents = 0;
       if (getNumSMAs() > 0 && cummulativeWorkflowPercentComplete > 0) {
          percentCompleteByWorkflowPercents = cummulativeWorkflowPercentComplete / getNumSMAs();
@@ -123,7 +119,7 @@ public class SMAMetrics {
          estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
-         daysTillRel = (estimatedReleaseDate.getTime() - today.getTime()) / MILLISECS_PER_DAY;
+         daysTillRel = (estimatedReleaseDate.getTime() - today.getTime()) / AtsUtil.MILLISECS_PER_DAY;
       }
       str =
             String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
@@ -148,8 +144,7 @@ public class SMAMetrics {
 
    @SuppressWarnings("unchecked")
    public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
-      if (!userToCompletedSmas.containsKey(user))
-         return Collections.emptyList();
+      if (!userToCompletedSmas.containsKey(user)) return Collections.emptyList();
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToCompletedSmas.getValues(user)) {
          if (clazz == null || art.getClass().isInstance(clazz)) {
@@ -161,8 +156,7 @@ public class SMAMetrics {
 
    @SuppressWarnings("unchecked")
    public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user, Class<A> clazz) {
-      if (!userToAssignedSmas.containsKey(user))
-         return Collections.emptyList();
+      if (!userToAssignedSmas.containsKey(user)) return Collections.emptyList();
       List<A> smas = new ArrayList<A>();
       for (Artifact art : userToAssignedSmas.getValues(user)) {
          if (clazz == null || art.getClass().equals(clazz)) {
@@ -193,20 +187,16 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
-      if (getTeamArts().size() == 0)
-         return 0;
+      if (getTeamArts().size() == 0) return 0;
       double completed = getCompletedTeamWorkflows().size();
-      if (completed == 0)
-         return 0;
+      if (completed == 0) return 0;
       return completed / getTeamArts().size() * 100;
    }
 
    public double getPercentCompleteByWorkflow() throws OseeCoreException {
-      if (smas.size() == 0)
-         return 0;
+      if (smas.size() == 0) return 0;
       double completed = getCompletedWorkflows().size();
-      if (completed == 0)
-         return 0;
+      if (completed == 0) return 0;
       return completed / smas.size() * 100;
    }
 
@@ -221,11 +211,9 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
-      if (getTaskArts().size() == 0)
-         return 0;
+      if (getTaskArts().size() == 0) return 0;
       double completed = getCompletedTaskWorkflows().size();
-      if (completed == 0)
-         return 0;
+      if (completed == 0) return 0;
       return completed / getTaskArts().size() * 100;
    }
 
@@ -338,8 +326,7 @@ public class SMAMetrics {
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
       for (StateMachineArtifact sma : smas) {
-         if (sma.getWorldViewEstimatedHours() == 0)
-            count++;
+         if (sma.getWorldViewEstimatedHours() == 0) count++;
       }
       return count;
    }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +34,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public class XViewerLib {
    static Random random = new Random();
+   private static final Date today = new Date();
+   public static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
+
+   public static long daysTillToday(Date date) {
+      return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
+   }
 
    public static String generateGuidStr() {
       long rand = (random.nextLong() & 0x7FFFFFFFFFFFFFFFL) | 0x4000000000000000L;

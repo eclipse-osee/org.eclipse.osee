@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -84,9 +85,15 @@ public class AtsUtil implements IAtsLib {
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
    private static OseeGroup atsAdminGroup = null;
    private static boolean goalEnabled = false;
+   private static final Date today = new Date();
+   public static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
 
    public AtsUtil() {
       super();
+   }
+
+   public long daysTillToday(Date date) throws OseeCoreException {
+      return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
    }
 
    public static boolean isProductionDb() throws OseeCoreException {

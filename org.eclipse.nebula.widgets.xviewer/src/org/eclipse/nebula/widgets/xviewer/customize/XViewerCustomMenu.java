@@ -34,6 +34,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumnLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
+import org.eclipse.nebula.widgets.xviewer.XViewerComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.util.internal.ArrayTreeContentProvider;
@@ -87,7 +88,7 @@ public class XViewerCustomMenu {
    protected Action removeSelected;
    protected Action removeNonSelected;
    protected Action copySelected;
-   protected Action showColumn, hideColumn;
+   protected Action showColumn, addComputedColumn, hideColumn;
    protected Action copySelectedCell;
    protected Action viewSelectedCell;
    private Boolean headerMouseClick = false;
@@ -132,6 +133,7 @@ public class XViewerCustomMenu {
       MenuManager mm = xViewer.getMenuManager();
       mm.add(showColumn);
       mm.add(hideColumn);
+      mm.add(addComputedColumn);
       mm.add(copySelectedCell);
       mm.add(new Separator());
       mm.add(filterByColumn);
@@ -292,6 +294,43 @@ public class XViewerCustomMenu {
       }
    }
 
+   protected void handleAddComputedColumn() {
+      TreeColumn insertTreeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn insertXCol = (XViewerColumn) insertTreeCol.getData();
+      XCheckFilteredTreeDialog dialog =
+            new XCheckFilteredTreeDialog("Add Computed Column", String.format("Column to compute against [%s]",
+                  insertXCol.getName() + "(" + insertXCol.getId() + ")") + "\n\nSelect Columns to Add", patternFilter,
+                  new ArrayTreeContentProvider(), new XViewerColumnLabelProvider(), new XViewerColumnSorter());
+      Collection<XViewerComputedColumn> computedCols = xViewer.getComputedColumns(insertXCol);
+      if (computedCols.size() == 0) {
+         XViewerLib.popup("ERROR", "Selected column has no applicable computed columns");
+         return;
+      }
+      dialog.setInput(computedCols);
+      if (dialog.open() == 0) {
+         //         System.out.println("Selected " + dialog.getChecked());
+         //         System.out.println("Selected column to add before " + insertXCol);
+         CustomizeData custData = xViewer.getCustomizeMgr().generateCustDataFromTable();
+         List<XViewerColumn> xCols = custData.getColumnData().getColumns();
+         List<XViewerColumn> newXCols = new ArrayList<XViewerColumn>();
+         for (XViewerColumn currXCol : xCols) {
+            if (currXCol.equals(insertXCol)) {
+               for (Object obj : dialog.getChecked()) {
+                  XViewerComputedColumn newComputedXCol = ((XViewerComputedColumn) obj).copy();
+                  newComputedXCol.setShow(true);
+                  newComputedXCol.setSourceXViewerColumn(insertXCol);
+                  newComputedXCol.setXViewer(xViewer);
+                  newXCols.add(newComputedXCol);
+               }
+            }
+            newXCols.add(currXCol);
+         }
+         custData.getColumnData().setColumns(newXCols);
+         xViewer.getCustomizeMgr().loadCustomization(custData);
+         xViewer.refresh();
+      }
+   }
+
    protected void handleHideColumn() {
       TreeColumn insertTreeCol = xViewer.getRightClickSelectedColumn();
       XViewerColumn insertXCol = (XViewerColumn) insertTreeCol.getData();
@@ -315,6 +354,12 @@ public class XViewerCustomMenu {
          @Override
          public void run() {
             handleShowColumn();
+         };
+      };
+      addComputedColumn = new Action("Add Computed Column") {
+         @Override
+         public void run() {
+            handleAddComputedColumn();
          };
       };
       hideColumn = new Action("Hide Column") {
