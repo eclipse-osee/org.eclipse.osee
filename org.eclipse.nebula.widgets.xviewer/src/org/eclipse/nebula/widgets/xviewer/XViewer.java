@@ -525,7 +525,6 @@ public class XViewer extends TreeViewer {
       rightClickSelectedItem = null;
 
       rightClickSelectedItem = getItemUnderMouseClick(point);
-      if (rightClickSelectedItem == null) return;
       rightClickSelectedColumn = getColumnUnderMouseClick(point);
       rightClickSelectedColumnNum = getColumnNumberUnderMouseClick(point);
    }
