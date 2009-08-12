@@ -11,6 +11,11 @@
 package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -74,7 +79,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private int lastPageIndex = 0;
 
-   private TestManagerModel model;
+   private final TestManagerModel model;
 
    private boolean reloadSourcePage = false;
 
@@ -116,6 +121,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       pageManager.getScriptPage().addFile(fullPath);
    }
 
+   @Override
    public void dispose() {
       super.dispose();
       TestManagerPlugin.getInstance().getOteClientService().removeConnectionListener(this);
@@ -129,6 +135,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * Saves the multi-page editor's document.
     */
+   @Override
    public void doSave(IProgressMonitor monitor) {
       if (getActivePage() != sourcePage) {
          pageSourceLoad();
@@ -144,6 +151,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
     * Saves the multi-page editor's document as another file. Also updates the text for page 0's tab, and updates this
     * multi-page editor's input to correspond to the nested editor's.
     */
+   @Override
    public void doSaveAs() {
       if (getActivePage() != sourcePage) {
          pageSourceLoad();
@@ -228,12 +236,15 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       return testManagerFactory;
    }
 
+   @Override
    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-      if (!(editorInput instanceof IFileEditorInput || editorInput instanceof TestManagerInput || editorInput instanceof IEditorInput)) throw new PartInitException(
-            "Invalid Input: Must be IFileEditorInput");
+      if (!(editorInput instanceof IFileEditorInput || editorInput instanceof TestManagerInput || editorInput instanceof IEditorInput)) {
+         throw new PartInitException("Invalid Input: Must be IFileEditorInput");
+      }
       super.init(site, editorInput);
    }
 
+   @Override
    public boolean isDirty() {
       if (super.isDirty()) {
          return true;
@@ -241,6 +252,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       return fileIsDirty;
    }
 
+   @Override
    public boolean isSaveAsAllowed() {
       return true;
    }
@@ -335,6 +347,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * Creates the pages of the multi-page editor.
     */
+   @Override
    protected void createPages() {
       readXmlData();
 
@@ -371,6 +384,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    /**
     * reloads pages as necessary
     */
+   @Override
    protected void pageChange(int newPageIndex) {
       // NOTE: Hosts page will be updated continuously, even it if it is not
       // the current page.
@@ -380,7 +394,9 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       if (newPageIndex == sourcePage) {
          pageSourceLoad();
       } else {
-         if (sourceEditor == null) return;
+         if (sourceEditor == null) {
+            return;
+         }
          String newXml = sourceEditor.getDocumentProvider().getDocument(sourceEditor.getEditorInput()).get();
          if (sourceEditor.isDirty() || fileWasSaved) {
             fileWasSaved = false;
@@ -424,25 +440,44 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    }
 
    public void doSave() {
-
       readXmlData();
       model.setFromXml(xmlText);
       pageManager.save();
+      OutputStream outputStream = null;
       try {
          File file = OseeData.getFile("testManagerSettings.xml");
-         getPropertyStore().save(file.getAbsolutePath());
+         outputStream = new FileOutputStream(file);
+         getPropertyStore().save(outputStream);
       } catch (Exception ex) {
          TestManagerPlugin.log(Level.SEVERE, "Error storing settings.", ex);
+      } finally {
+         if (outputStream != null) {
+            try {
+               outputStream.close();
+            } catch (IOException ex) {
+               TestManagerPlugin.log(Level.WARNING, "Error closing stream during settings storage.", ex);
+            }
+         }
       }
    }
 
    public void restoreSettings() {
+      InputStream inputStream = null;
       try {
          File file = OseeData.getFile("testManagerSettings.xml");
-         getPropertyStore().load(file.getAbsolutePath());
+         inputStream = new FileInputStream(file);
+         getPropertyStore().load(inputStream);
          pageManager.restore();
       } catch (Exception ex) {
          TestManagerPlugin.log(Level.WARNING, "Stored settings not available. Using defaults.", ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (IOException ex) {
+               TestManagerPlugin.log(Level.WARNING, "Error closing stream while loading settings.", ex);
+            }
+         }
       }
    }
 
