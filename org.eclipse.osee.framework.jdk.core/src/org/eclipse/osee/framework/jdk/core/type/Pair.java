@@ -59,11 +59,13 @@ public class Pair<T, K> implements Serializable {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof Pair)) {
+      if (obj == null || !(obj instanceof Pair)) {
          return false;
       }
       Pair<?, ?> other = (Pair<?, ?>) obj;
-      return first.equals(other.first) && second.equals(other.second);
+      boolean left = first == null ? other.first == null : first.equals(other.first);
+      boolean right = second == null ? other.second == null : second.equals(other.second);
+      return left && right;
    }
 
    @Override
