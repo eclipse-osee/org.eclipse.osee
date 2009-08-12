@@ -67,9 +67,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    public void setFocus() {
    }
 
-   /*
-    * @see IWorkbenchPart#createPartControl(Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       setPartName("Branch Manager");
@@ -111,9 +108,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       return "";
    }
 
-   /**
-    * Reveal a branch in the viewer and select it.
-    */
    public static void revealBranch(Branch branch) throws OseeWrappedException {
       try {
          BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
@@ -123,9 +117,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   /**
-    * @param branch
-    */
    private void reveal(Branch branch) {
       xBranchWidget.reveal(branch);
    }
@@ -196,41 +187,25 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
-    * of the regular API.
+    * These five methods is called by BranchViewPresentationPreferences to change the branch view data presentation. Not
+    * part of the regular API.
     */
    protected void setPresentation(boolean flat) {
       xBranchWidget.setPresentation(flat);
    }
 
-   /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
-    * of the regular API.
-    */
    protected void setFavoritesFirst(boolean favoritesFirst) {
       xBranchWidget.setFavoritesFirst(favoritesFirst);
    }
 
-   /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
-    * of the regular API.
-    */
    protected void setShowMergeBranches(boolean showMergeBranches) {
       xBranchWidget.setShowMergeBranches(showMergeBranches);
    }
 
-   /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
-    * of the regular API.
-    */
    protected void setShowTransactions(boolean showTransactions) {
       xBranchWidget.setShowTransactions(showTransactions);
    }
 
-   /**
-    * This method is called by BranchViewPresentationPreferences to change the branch view data presentation. Not part
-    * of the regular API.
-    */
    protected void setShowArchivedBranches(boolean showArchivedBranches) {
       xBranchWidget.setShowArchivedBranches(showArchivedBranches);
    }

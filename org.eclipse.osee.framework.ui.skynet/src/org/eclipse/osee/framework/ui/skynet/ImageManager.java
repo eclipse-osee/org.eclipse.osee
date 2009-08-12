@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -82,8 +80,8 @@ public class ImageManager {
          try {
             imageProvider.init();
          } catch (Exception ex) {
-        	 // we want to catch any possible exception so that we don't bail out in the middle
-        	 // of initializing all providers
+            // we want to catch any possible exception so that we don't bail out in the middle
+            // of initializing all providers
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
@@ -195,6 +193,11 @@ public class ImageManager {
    }
 
    public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactType artifactType) {
+      instance.providersOverrideImageMap.put(artifactType, imageProvider);
+   }
+
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, String artifactTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
       instance.providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
