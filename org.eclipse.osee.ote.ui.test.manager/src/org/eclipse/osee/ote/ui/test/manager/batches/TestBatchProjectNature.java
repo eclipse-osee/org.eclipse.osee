@@ -38,11 +38,11 @@ import org.eclipse.swt.widgets.Display;
 public class TestBatchProjectNature implements IProjectNature {
    public static final String NATURE_ID = "org.eclipse.osee.ote.ui.test.manager.TestBatchProjectNature";
    private IProject project;
-   private ResourceFinder resourceFinder;
-   private IResourceChangeListener resourceChangeListener;
-   private IResourceChangeListener projectClosedListener;
-   private IResourceChangeListener projectDeletedListener;
-   private FindResourceWorker worker;
+   private final ResourceFinder resourceFinder;
+   private final IResourceChangeListener resourceChangeListener;
+   private final IResourceChangeListener projectClosedListener;
+   private final IResourceChangeListener projectDeletedListener;
+   private final FindResourceWorker worker;
 
    public TestBatchProjectNature() {
       this.resourceFinder = new ResourceFinder();
@@ -210,7 +210,7 @@ public class TestBatchProjectNature implements IProjectNature {
 
    private final class FindResourceWorker implements IWorkspaceRunnable {
 
-      private TestBatchProjectNature nature;
+      private final TestBatchProjectNature nature;
 
       public FindResourceWorker(TestBatchProjectNature nature) {
          this.nature = nature;
@@ -223,7 +223,7 @@ public class TestBatchProjectNature implements IProjectNature {
          TestBatchRegistry registry = TestBatchSetupViewItems.getInstance().getRegistry();
          for (String key : finder.getIds()) {
             Pair<IFile, IFile> fileSet = finder.getFileSet(key);
-            registry.registerTestBatch(key, fileSet.getKey().getLocationURI(), fileSet.getValue().getLocationURI());
+            registry.registerTestBatch(key, fileSet.getFirst().getLocationURI(), fileSet.getSecond().getLocationURI());
          }
          Display.getDefault().asyncExec(new Runnable() {
             public void run() {

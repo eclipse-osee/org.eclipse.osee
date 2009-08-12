@@ -96,7 +96,7 @@ public class ReportsDialog extends TitleAreaDialog {
    private Text previewSizeArea;
    private String selectedReportId;
    private OutputFormat selectedReportFormat;
-   private List<IFile> filesToDelete;
+   private final List<IFile> filesToDelete;
    private Map<OutputFormat, Button> formatButtons;
 
    public ReportsDialog(Shell parent) {
@@ -105,6 +105,7 @@ public class ReportsDialog extends TitleAreaDialog {
       setShellStyle(SWT.SHELL_TRIM);
    }
 
+   @Override
    protected Control createButtonBar(Composite parent) {
       Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
@@ -114,6 +115,7 @@ public class ReportsDialog extends TitleAreaDialog {
    /*
     * @see Dialog#createDialogArea(Composite)
     */
+   @Override
    protected Control createDialogArea(Composite parent) {
       Composite content = (Composite) super.createDialogArea(parent);
 
@@ -210,11 +212,12 @@ public class ReportsDialog extends TitleAreaDialog {
       listSelectionPanel = new ListSelectionPanel(composite, SWT.NONE, 300, 300, new ListLabelProvider());
       listSelectionPanel.setSorter(new ViewerSorter() {
 
+         @Override
          @SuppressWarnings("unchecked")
          public int compare(Viewer viewer, Object o1, Object o2) {
             Pair<String, String> pair1 = (Pair<String, String>) o1;
             Pair<String, String> pair2 = (Pair<String, String>) o2;
-            return getComparator().compare(pair1.getValue(), pair2.getValue());
+            return getComparator().compare(pair1.getSecond(), pair2.getSecond());
          }
 
       });
@@ -309,6 +312,7 @@ public class ReportsDialog extends TitleAreaDialog {
          }
          button.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                Button button = (Button) e.getSource();
                if (button.getSelection() != false) {
@@ -337,7 +341,7 @@ public class ReportsDialog extends TitleAreaDialog {
             if (selection != null) {
                Pair<String, String> item = (Pair<String, String>) selection.getFirstElement();
                if (item != null) {
-                  selectedReportId = item.getKey();
+                  selectedReportId = item.getFirst();
                }
             }
             okPressed();
@@ -435,9 +439,9 @@ public class ReportsDialog extends TitleAreaDialog {
          if (selection != null) {
             Pair<String, String> item = (Pair<String, String>) selection.getFirstElement();
             if (item != null) {
-               ITestRunReport report = ExtensionDefinedReports.getInstance().getReportGenerator(item.getKey());
+               ITestRunReport report = ExtensionDefinedReports.getInstance().getReportGenerator(item.getFirst());
                if (report != null) {
-                  selectedReportId = item.getKey();
+                  selectedReportId = item.getFirst();
                   try {
                      generatePreview(selectedReportFormat, selectedReportId, report);
                   } catch (Exception ex) {
@@ -456,7 +460,7 @@ public class ReportsDialog extends TitleAreaDialog {
       public Image getImage(Object element) {
          Image toReturn = null;
          if (element instanceof Pair) {
-            toReturn = ExtensionDefinedReports.getInstance().getImage(((Pair<String, String>) element).getKey());
+            toReturn = ExtensionDefinedReports.getInstance().getImage(((Pair<String, String>) element).getFirst());
          }
          return toReturn;
       }
@@ -465,15 +469,15 @@ public class ReportsDialog extends TitleAreaDialog {
       @Override
       public String getText(Object element) {
          if (element instanceof Pair) {
-            return ((Pair<String, String>) element).getValue();
+            return ((Pair<String, String>) element).getSecond();
          }
          return super.getText(element);
       }
    }
 
    private final class PreviewUpdateJobChangeListener extends JobChangeAdapter {
-      private ITestRunReport report;
-      private OutputFormat format;
+      private final ITestRunReport report;
+      private final OutputFormat format;
 
       private PreviewUpdateJobChangeListener(ITestRunReport report, OutputFormat format) {
          this.report = report;

@@ -37,7 +37,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.define.help.ui;bundle-version="1.0.0";resolution:=optional
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.core.client,
+Import-Package: org.apache.commons.lang,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.logging,

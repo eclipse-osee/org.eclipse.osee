@@ -83,7 +83,7 @@ public class TransactionMonitor {
       }
    }
 
-   private final class TxOperation {
+   private static final class TxOperation {
       private final DbTransaction tx;
       private Throwable throwable;
       private TxState txState;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.service.control.wizards.launcher.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Roberto E. Escobar
@@ -38,8 +38,7 @@ abstract class ExecutionCommandFormatter {
       String applicationArgsString = "";
       if (applicationArgs.size() > 0) {
          applicationArgsString =
-               ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(applicationArgs,
-                     ServiceItem.EXEC_SEPARATOR);
+               ServiceItem.EXEC_SEPARATOR + StringUtils.join(applicationArgs, ServiceItem.EXEC_SEPARATOR);
       }
       return applicationArgsString;
    }
@@ -47,8 +46,7 @@ abstract class ExecutionCommandFormatter {
    public String getJvmArgsString() {
       String jvmArgsString = "";
       if (jvmArgs.size() > 0) {
-         jvmArgsString =
-               ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(jvmArgs, ServiceItem.EXEC_SEPARATOR);
+         jvmArgsString = ServiceItem.EXEC_SEPARATOR + StringUtils.join(jvmArgs, ServiceItem.EXEC_SEPARATOR);
       }
       return jvmArgsString;
    }

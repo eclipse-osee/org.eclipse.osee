@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -41,7 +41,7 @@ public class RoughArtifact {
    private HashMap<String, File> fileAttributes;
    private final Branch branch;
    private RoughArtifactKind roughArtifactKind;
-   private final List<ObjectPair<String, String>> attributes = new ArrayList<ObjectPair<String, String>>();
+   private final List<Pair<String, String>> attributes = new ArrayList<Pair<String, String>>();
    private final Collection<RoughArtifact> children = new ArrayList<RoughArtifact>();
    private ArtifactType primaryArtifactType;
 
@@ -92,7 +92,7 @@ public class RoughArtifact {
    }
 
    public void addAttribute(String name, String value) {
-      attributes.add(new ObjectPair<String, String>(name, value));
+      attributes.add(new Pair<String, String>(name, value));
    }
 
    public boolean isChild(RoughArtifact otherArtifact) {
@@ -100,9 +100,9 @@ public class RoughArtifact {
    }
 
    public void conferAttributesUpon(Artifact artifact) throws OseeCoreException {
-      for (ObjectPair<String, String> roughtAttribute : attributes) {
-         if (roughtAttribute.object2 != null) {
-            artifact.addAttributeFromString(roughtAttribute.object1, roughtAttribute.object2);
+      for (Pair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.getSecond() != null) {
+            artifact.addAttributeFromString(roughtAttribute.getFirst(), roughtAttribute.getSecond());
          }
       }
       setFileAttributes(artifact);
@@ -120,6 +120,7 @@ public class RoughArtifact {
       }
    }
 
+   @Override
    public String toString() {
       return getName();
    }
@@ -131,7 +132,7 @@ public class RoughArtifact {
       this.number = new ReqNumbering(number);
    }
 
-   public Collection<ObjectPair<String, String>> getAttributes() {
+   public Collection<Pair<String, String>> getAttributes() {
       return attributes;
    }
 
@@ -173,8 +174,8 @@ public class RoughArtifact {
    }
 
    public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
-      for (ObjectPair<String, String> roughtAttribute : attributes) {
-         artifact.setSoleAttributeFromString(roughtAttribute.object1, roughtAttribute.object2);
+      for (Pair<String, String> roughtAttribute : attributes) {
+         artifact.setSoleAttributeFromString(roughtAttribute.getFirst(), roughtAttribute.getSecond());
       }
 
       setFileAttributes(artifact);
@@ -223,18 +224,18 @@ public class RoughArtifact {
       if (realArtifact != null) {
          return realArtifact.getName();
       }
-      for (ObjectPair<String, String> roughtAttribute : attributes) {
-         if (roughtAttribute.object1.equals("Name")) {
-            return roughtAttribute.object2;
+      for (Pair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.getFirst().equals("Name")) {
+            return roughtAttribute.getSecond();
          }
       }
       return "";
    }
 
    public String getRoughAttribute(String attributeName) {
-      for (ObjectPair<String, String> roughtAttribute : attributes) {
-         if (roughtAttribute.object1.equalsIgnoreCase(attributeName)) {
-            return roughtAttribute.object2;
+      for (Pair<String, String> roughtAttribute : attributes) {
+         if (roughtAttribute.getFirst().equalsIgnoreCase(attributeName)) {
+            return roughtAttribute.getSecond();
          }
       }
       return null;

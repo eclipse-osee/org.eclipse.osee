@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -187,7 +187,7 @@ public class ExchangeDb {
       return translators;
    }
 
-   public static ObjectPair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, Options options) throws Exception {
+   public static Pair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, Options options) throws Exception {
       if (originalQuery.contains("%s")) {
          if (originalQuery.contains("osee_tx_details") || originalQuery.contains("osee_merge")) {
             List<Object> dataArray = new ArrayList<Object>();
@@ -223,11 +223,11 @@ public class ExchangeDb {
                throw new Exception(String.format("Invalid transaction range: min - %d >  max - %d", minTxs, maxTxs));
             }
 
-            return new ObjectPair<String, Object[]>(String.format(originalQuery, optionString),
+            return new Pair<String, Object[]>(String.format(originalQuery, optionString),
                   dataArray.toArray(new Object[dataArray.size()]));
          }
       }
-      return new ObjectPair<String, Object[]>(originalQuery, new Object[] {queryId});
+      return new Pair<String, Object[]>(originalQuery, new Object[] {queryId});
    }
 
    static Long getMaxTransaction(Options options) {

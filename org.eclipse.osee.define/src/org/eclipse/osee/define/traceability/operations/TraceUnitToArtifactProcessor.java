@@ -198,7 +198,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          Pair<String, String> structuredRequirement =
                TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
          if (structuredRequirement != null) {
-            toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getKey());
+            toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getFirst());
          }
       }
       return toReturn;

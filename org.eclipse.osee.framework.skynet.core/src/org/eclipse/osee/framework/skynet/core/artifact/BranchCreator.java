@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -187,7 +186,7 @@ public class BranchCreator {
          Pair<Branch, Integer> branchWithTransactionNumber;
          branchWithTransactionNumber =
                createMergeBranchWithBaselineTransactionNumber(connection, UserManager.getUser(),
-                     TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
+                     TransactionIdManager.getStartEndPoint(sourceBranch).getFirst(),
                      "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName(),
                      "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName(), BranchType.MERGE,
                      BranchState.CREATED, destBranch);
@@ -201,14 +200,14 @@ public class BranchCreator {
          }
          try {
             ArtifactLoader.insertIntoArtifactJoin(datas);
-            insertGammas(connection, attributeGammas, branchWithTransactionNumber.getValue(), queryId, sourceBranch);
-            insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId,
+            insertGammas(connection, attributeGammas, branchWithTransactionNumber.getSecond(), queryId, sourceBranch);
+            insertGammas(connection, artifactVersionGammas, branchWithTransactionNumber.getSecond(), queryId,
                   sourceBranch);
          } finally {
             ArtifactLoader.clearQuery(connection, queryId);
          }
 
-         mergeBranch = branchWithTransactionNumber.getKey();
+         mergeBranch = branchWithTransactionNumber.getFirst();
 
          ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
                destBranch.getBranchId(), mergeBranch.getBranchId(), -1);
@@ -224,7 +223,7 @@ public class BranchCreator {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getKey();
+      TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getFirst();
 
       List<Object[]> datas = new LinkedList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();

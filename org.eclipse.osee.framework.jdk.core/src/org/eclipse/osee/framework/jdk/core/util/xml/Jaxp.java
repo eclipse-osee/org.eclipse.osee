@@ -57,7 +57,9 @@ public class Jaxp {
       List<Element> elementList = new ArrayList<Element>(nl.getLength()); // this may be oversized
       for (int i = 0; i < nl.getLength(); i++) {
          Node n = nl.item(i);
-         if (n.getNodeType() == Node.ELEMENT_NODE) elementList.add((Element) n);
+         if (n.getNodeType() == Node.ELEMENT_NODE) {
+            elementList.add((Element) n);
+         }
       }
       return elementList;
    }
@@ -75,7 +77,9 @@ public class Jaxp {
       NodeList nl = element.getChildNodes();
       for (int i = 0; i < nl.getLength(); i++) {
          Node n = nl.item(i);
-         if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(childTagName)) elementList.add((Element) n);
+         if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(childTagName)) {
+            elementList.add((Element) n);
+         }
       }
       return elementList;
    }
@@ -91,7 +95,9 @@ public class Jaxp {
       NodeList nl = element.getChildNodes();
       for (int i = 0; i < nl.getLength(); i++) {
          Node n = nl.item(i);
-         if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(childTagName)) return ((Element) n);
+         if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(childTagName)) {
+            return (Element) n;
+         }
       }
       return null;
    }
@@ -137,11 +143,15 @@ public class Jaxp {
       for (int i = 0; i < childNodes.getLength(); i++) {
          Node n = childNodes.item(i);
          if (n.getNodeType() == Node.TEXT_NODE) {
-            if (!first && trimWhitespace) resultString += " ";
+            if (!first && trimWhitespace) {
+               resultString += " ";
+            }
             resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
             first = false;
          } else if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
-            if (!first && trimWhitespace) resultString += " ";
+            if (!first && trimWhitespace) {
+               resultString += " ";
+            }
             resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
             first = false;
          }
@@ -236,9 +246,9 @@ public class Jaxp {
       for (Element e : source) {
          List<Element> children = getChildDirects(e, tag);
          if (!children.isEmpty()) {
-            if (path.size() == 0) // we're at the end of the path
+            if (path.size() == 0) {
                list.addAll(children);
-            else {
+            } else {
                findElementsInternal(children, childPath, list);
             }
          }
@@ -262,15 +272,18 @@ public class Jaxp {
       source.add(element);
 
       LinkedList<String> path;
-      if (elementPath instanceof LinkedList)
-         path = (LinkedList<String>) (elementPath);
-      else
+      if (elementPath instanceof LinkedList) {
+         path = (LinkedList<String>) elementPath;
+      } else {
          path = new LinkedList<String>(elementPath);
+      }
 
       // Strip off the first item of elementPath and make sure it matches 'element'
       if (firstIsRoot) {
          String firstTagName = path.poll();
-         if (element.getTagName().equals(firstTagName)) return result;
+         if (element.getTagName().equals(firstTagName)) {
+            return result;
+         }
       }
 
       findElementsInternal(source, path, result);
@@ -316,13 +329,15 @@ public class Jaxp {
          Element nextElement = null;
          for (int i = 0; i < a.getLength() && nextElement == null; i++) {
             Node n = a.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(tag)) nextElement =
-                  (Element) n;
+            if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(tag)) {
+               nextElement = (Element) n;
+            }
          }
-         if (nextElement == null)
+         if (nextElement == null) {
             return null;
-         else
+         } else {
             e = nextElement;
+         }
       }
       return e;
    }
@@ -339,13 +354,16 @@ public class Jaxp {
       List<String> pathList = Arrays.asList(elementPath.split("/"));
       String rootTagName = pathList.get(0);
       // Remove the first item from the list, Arrays.asList List type doesn't support .remove()
-      if (pathList.size() > 1)
+      if (pathList.size() > 1) {
          pathList = pathList.subList(1, pathList.size());
-      else
+      } else {
          pathList.clear();
+      }
 
       Element root = d.getDocumentElement();
-      if (!root.getTagName().equals(rootTagName)) return null;
+      if (!root.getTagName().equals(rootTagName)) {
+         return null;
+      }
       return findElement(d.getDocumentElement(), pathList);
    }
 
@@ -559,7 +577,7 @@ public class Jaxp {
                + "  </C>" //
                + "</A>");
 
-         Element e = (Element) getChild(doc.getDocumentElement(), "C");
+         Element e = getChild(doc.getDocumentElement(), "C");
          System.out.println("e.getTagName     :" + e.getTagName());
          System.out.println("e.getLocalName   :" + e.getLocalName());
          System.out.println("e.getNodeName    :" + e.getNodeName());
@@ -591,8 +609,9 @@ public class Jaxp {
          System.out.println(em.getTagName() + ":" + getElementCharacterData(em));
 
          List<Element> list = findElements(doc.getDocumentElement(), "C/D");
-         for (Element te : list)
+         for (Element te : list) {
             System.out.println(te.getTagName() + ":" + getElementCharacterData(te));
+         }
 
          Element joe = Jaxp.createElement(doc, "f", "This is F's Data");
          em.appendChild(joe);
@@ -602,7 +621,11 @@ public class Jaxp {
          System.out.println("******");
          System.out.println(xmlToString(doc, getPrettyFormat(doc)));
 
-      } catch (Exception ex) {
+      } catch (SAXException ex) {
+         ex.printStackTrace();
+      } catch (IOException ex) {
+         ex.printStackTrace();
+      } catch (ParserConfigurationException ex) {
          ex.printStackTrace();
       }
    }

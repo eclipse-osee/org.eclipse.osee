@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.database.core.IConnection;
  */
 public class DbConnectionFactory implements IDbConnectionFactory {
 
-   private List<IConnection> connectionProviders;
-   private Object myWait;
+   private final List<IConnection> connectionProviders;
+   private final Object myWait;
 
    public DbConnectionFactory() {
       connectionProviders = new CopyOnWriteArrayList<IConnection>();
@@ -34,7 +34,7 @@ public class DbConnectionFactory implements IDbConnectionFactory {
    public IConnection get(String driver) throws OseeCoreException {
       IConnection selectedDriver = getInternal(driver);
       if (selectedDriver == null) {
-         long endTime = System.currentTimeMillis() + (1000 * 20);
+         long endTime = System.currentTimeMillis() + 1000 * 20;
          long timeLeft = 1000 * 20;
          while (timeLeft > 0 && selectedDriver == null) {
             synchronized (myWait) {
@@ -48,8 +48,7 @@ public class DbConnectionFactory implements IDbConnectionFactory {
          }
       }
       if (selectedDriver == null) {
-         throw new OseeStateException(
-               String.format("Unable to find matching driver provider for [%s].", driver, driver));
+         throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver));
       }
       return selectedDriver;
    }
@@ -64,16 +63,16 @@ public class DbConnectionFactory implements IDbConnectionFactory {
    }
 
    @Override
-   public void bind(IConnection obj) {
-      connectionProviders.add((IConnection) obj);
+   public void bind(IConnection connection) {
+      connectionProviders.add(connection);
       synchronized (myWait) {
          myWait.notifyAll();
       }
    }
 
    @Override
-   public void unbind(IConnection obj) {
-      connectionProviders.remove((IConnection) obj);
+   public void unbind(IConnection connection) {
+      connectionProviders.remove(connection);
    }
 
 }

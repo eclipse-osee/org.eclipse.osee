@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -92,12 +92,12 @@ public class RelationalExportItem extends AbstractDbExportItem {
       return locator.getRawPath().replace('/', '\\');
    }
 
+   @Override
    protected void doWork(Appendable appendable) throws Exception {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
       try {
-         ObjectPair<String, Object[]> sqlData =
-               ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
-         chStmt.runPreparedQuery(sqlData.object1, sqlData.object2);
+         Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
+         chStmt.runPreparedQuery(sqlData.getFirst(), sqlData.getSecond());
          while (chStmt.next()) {
             processData(appendable, chStmt);
          }
@@ -204,6 +204,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
+   @Override
    public void cleanUp() {
       this.exportColumnListeners.clear();
       super.cleanUp();

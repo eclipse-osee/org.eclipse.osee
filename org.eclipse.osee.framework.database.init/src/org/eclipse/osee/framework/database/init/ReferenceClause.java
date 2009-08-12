@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,6 +33,7 @@ public class ReferenceClause implements Xmlizable {
    public enum OnDeleteEnum {
       NO_ACTION, RESTRICT, CASCADE, SET_NULL, UNSPECIFIED;
 
+      @Override
       public String toString() {
          String toReturn = super.toString();
          toReturn = toReturn.replaceAll("_", " ");
@@ -43,6 +44,7 @@ public class ReferenceClause implements Xmlizable {
    public enum OnUpdateEnum {
       NO_ACTION, RESTRICT, UNSPECIFIED;
 
+      @Override
       public String toString() {
          String toReturn = super.toString();
          toReturn = toReturn.replaceAll("_", " ");
@@ -101,9 +103,10 @@ public class ReferenceClause implements Xmlizable {
    }
 
    public String getCommaSeparatedColumnsList() {
-      return StringFormat.listToCommaSeparatedString(columns);
+      return StringUtils.join(columns, ",");
    }
 
+   @Override
    public String toString() {
       String toReturn = REFERENCES_TAG + ": " + getFullyQualifiedTableName();
       toReturn += "\t[";

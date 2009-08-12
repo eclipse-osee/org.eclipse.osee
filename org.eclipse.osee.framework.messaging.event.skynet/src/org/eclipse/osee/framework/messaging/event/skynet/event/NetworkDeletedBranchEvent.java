@@ -32,9 +32,4 @@ public class NetworkDeletedBranchEvent extends SkynetEventBase {
       return branchId;
    }
 
-   @Override
-   public int compareTo(Object o) {
-      return 0;
-   }
-
 }

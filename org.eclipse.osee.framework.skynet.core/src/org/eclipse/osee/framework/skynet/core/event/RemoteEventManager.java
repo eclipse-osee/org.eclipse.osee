@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -311,7 +310,7 @@ public class RemoteEventManager {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               Arrays.sort(events);
+               //               Arrays.sort(events);
 
                Sender lastArtifactRelationModChangeSender = null;
 

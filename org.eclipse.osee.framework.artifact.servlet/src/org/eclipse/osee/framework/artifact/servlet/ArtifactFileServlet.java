@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -52,9 +52,10 @@ public class ArtifactFileServlet extends OseeHttpServlet {
             //               System.out.println(String.format("%s: %s", headerField, value));
             //            }
 
-            ObjectPair<String, String> defaultArtifact = DefaultOseeArtifact.get();
+            Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
-               artifactFileInfo = new HttpArtifactFileInfo(defaultArtifact.object1, null, defaultArtifact.object2);
+               artifactFileInfo =
+                     new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
             }
          } else {
             artifactFileInfo = new HttpArtifactFileInfo(request);

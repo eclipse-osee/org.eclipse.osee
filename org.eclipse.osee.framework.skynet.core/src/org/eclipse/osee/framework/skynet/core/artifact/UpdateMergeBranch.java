@@ -109,7 +109,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       int numberAttrUpdated = 0;
       //Copy over any missing attributes
-      int baselineTransaction = TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber();
+      int baselineTransaction = TransactionIdManager.getStartEndPoint(mergeBranch).getFirst().getTransactionNumber();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
                ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, sourceBranch.getBranchId(),

@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -79,7 +80,7 @@ public class JoinUtility {
    }
 
    public static int getNewQueryId() {
-      return (int) (Math.random() * Integer.MAX_VALUE);
+      return new Random().nextInt();
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
@@ -184,6 +185,7 @@ public class JoinUtility {
          return delete(null);
       }
 
+      @Override
       public String toString() {
          return String.format("id: [%s] entrySize: [%d]", getQueryId(), size());
       }
@@ -210,8 +212,8 @@ public class JoinUtility {
    public static final class TransactionJoinQuery extends JoinQueryEntry {
 
       private final class TempTransactionEntry implements IJoinRow {
-         private int gammaId;
-         private int transactionId;
+         private final int gammaId;
+         private final int transactionId;
 
          private TempTransactionEntry(int gammaId, int transactionId) {
             this.gammaId = gammaId;
@@ -224,8 +226,12 @@ public class JoinUtility {
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof TempTransactionEntry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof TempTransactionEntry)) {
+               return false;
+            }
             TempTransactionEntry other = (TempTransactionEntry) obj;
             return other.gammaId == this.gammaId && other.transactionId == this.transactionId;
          }
@@ -235,6 +241,7 @@ public class JoinUtility {
             return 37 * gammaId * transactionId;
          }
 
+         @Override
          public String toString() {
             return String.format("gamma_id=%d, tx_id=%d", gammaId, transactionId);
          }
@@ -252,8 +259,8 @@ public class JoinUtility {
    public static final class ArtifactJoinQuery extends JoinQueryEntry {
 
       private final class Entry implements IJoinRow {
-         private int artId;
-         private int branchId;
+         private final int artId;
+         private final int branchId;
 
          private Entry(int artId, int branchId) {
             this.artId = artId;
@@ -264,14 +271,19 @@ public class JoinUtility {
             return new Object[] {getQueryId(), getInsertTime(), artId, branchId};
          }
 
+         @Override
          public String toString() {
             return String.format("art_id=%d, branch_id=%d", artId, branchId);
          }
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof Entry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof Entry)) {
+               return false;
+            }
             Entry other = (Entry) obj;
             return other.artId == this.artId && other.branchId == this.branchId;
          }
@@ -294,7 +306,7 @@ public class JoinUtility {
    public static final class AttributeJoinQuery extends JoinQueryEntry {
 
       private final class Entry implements IJoinRow {
-         private String value;
+         private final String value;
 
          private Entry(String value) {
             this.value = value;
@@ -306,10 +318,14 @@ public class JoinUtility {
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof Entry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof Entry)) {
+               return false;
+            }
             Entry other = (Entry) obj;
-            return other.value == null && this.value == null || (other.value != null && this.value != null && this.value.equals(other.value));
+            return other.value == null && this.value == null || other.value != null && this.value != null && this.value.equals(other.value);
          }
 
          @Override
@@ -317,6 +333,7 @@ public class JoinUtility {
             return 37 * (value != null ? value.hashCode() : -1);
          }
 
+         @Override
          public String toString() {
             return String.format("attr_value=%s", value);
          }
@@ -334,7 +351,7 @@ public class JoinUtility {
    public static final class SearchTagJoinQuery extends JoinQueryEntry {
 
       private final class TagEntry implements IJoinRow {
-         private long value;
+         private final long value;
 
          private TagEntry(long value) {
             this.value = value;
@@ -346,8 +363,12 @@ public class JoinUtility {
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof TagEntry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof TagEntry)) {
+               return false;
+            }
             TagEntry other = (TagEntry) obj;
             return this.value == other.value;
          }
@@ -357,6 +378,7 @@ public class JoinUtility {
             return (int) (37 * value);
          }
 
+         @Override
          public String toString() {
             return String.format("tag=%d", value);
          }
@@ -374,7 +396,7 @@ public class JoinUtility {
    public static final class TagQueueJoinQuery extends JoinQueryEntry {
 
       private final class GammaEntry implements IJoinRow {
-         private long gammaId;
+         private final long gammaId;
 
          private GammaEntry(long gammaId) {
             this.gammaId = gammaId;
@@ -386,8 +408,12 @@ public class JoinUtility {
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof GammaEntry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof GammaEntry)) {
+               return false;
+            }
             GammaEntry other = (GammaEntry) obj;
             return this.gammaId == other.gammaId;
          }
@@ -397,6 +423,7 @@ public class JoinUtility {
             return (int) (37 * gammaId);
          }
 
+         @Override
          public String toString() {
             return String.format("gammaId=%d", gammaId);
          }
@@ -414,8 +441,8 @@ public class JoinUtility {
    public static final class ExportImportJoinQuery extends JoinQueryEntry {
 
       private final class ExportImportEntry implements IJoinRow {
-         private long id1;
-         private long id2;
+         private final long id1;
+         private final long id2;
 
          private ExportImportEntry(long id1, long id2) {
             this.id1 = id1;
@@ -428,8 +455,12 @@ public class JoinUtility {
 
          @Override
          public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (!(obj instanceof ExportImportEntry)) return false;
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof ExportImportEntry)) {
+               return false;
+            }
             ExportImportEntry other = (ExportImportEntry) obj;
             return this.id1 == other.id1 && this.id2 == other.id2;
          }
@@ -439,6 +470,7 @@ public class JoinUtility {
             return (int) (37 * id1 * id2);
          }
 
+         @Override
          public String toString() {
             return String.format("id1=%d id2=%d", id1, id2);
          }

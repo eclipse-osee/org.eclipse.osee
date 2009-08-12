@@ -511,8 +511,7 @@ public final class Lib {
          buf = new char[size];
       } else if (size > buf.length) {
          buf = null;
-         System.gc(); // since the currently allocated buf might already
-         // be quite large
+         System.gc(); // since the currently allocated buf might already be quite large
          buf = new char[size];
       }
 
@@ -1466,7 +1465,7 @@ public final class Lib {
          is.close();
       } catch (Exception ex) {
          String information =
-               "JarFile: " + (jarFile != null ? jarFile.getAbsolutePath() : "NULL") + "\n" + "Entry: " + (entry != null ? entry.toString() : "NULL") + "\n" + "Destination: " + (destination != null ? destination.getAbsoluteFile().toString() : "NULL") + "\n";
+               "JarFile: " + jarFile.getAbsolutePath() + "\n" + "Entry: " + (entry != null ? entry.toString() : "NULL") + "\n" + "Destination: " + (destination != null ? destination.getAbsoluteFile().toString() : "NULL") + "\n";
          throw new IOException(information + ex.getMessage());
       }
    }

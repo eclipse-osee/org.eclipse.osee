@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -84,7 +84,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypeNames)));
       }
 
-      String options = String.format(" - Options:[%s]", StringFormat.listToValueSeparatedString(optionsList, ", "));
+      String options = String.format(" - Options:[%s]", StringUtils.join(optionsList, ", "));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 

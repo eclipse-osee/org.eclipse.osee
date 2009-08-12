@@ -31,7 +31,7 @@ public class CompositeOperation extends AbstractOperation {
       if (operations == null || operations.isEmpty()) {
          throw new OseeArgumentException("Sub-operations not available.");
       }
-      double workPercentage = 1 / operations.size();
+      double workPercentage = 1.00 / operations.size();
       for (IOperation operation : operations) {
          doSubWork(operation, monitor, workPercentage);
       }

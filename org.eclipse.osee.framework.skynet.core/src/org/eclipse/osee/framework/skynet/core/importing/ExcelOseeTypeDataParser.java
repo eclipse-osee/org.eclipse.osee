@@ -22,10 +22,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -93,8 +92,8 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
 
    private void processRelationValidity() throws OseeCoreException {
       Collection<String> concreteTypes = new ArrayList<String>();
-      CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> keyMap =
-            new CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>>();
+      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
+            new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
       for (ValidityRow row : validityArray) {
          concreteTypes.clear();
          for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
@@ -102,23 +101,23 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
             int sideAMax = row.sideAmax;
             int sideBMax = row.sideBmax;
 
-            ObjectPair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
+            Pair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
             if (sideDefinition == null) {
-               sideDefinition = new ObjectPair<Integer, Integer>(sideAMax, sideBMax);
+               sideDefinition = new Pair<Integer, Integer>(sideAMax, sideBMax);
                keyMap.put(artifactTypeName, relationType, sideDefinition);
             } else {
-               sideDefinition.object1 = Math.max(sideDefinition.object1, sideAMax);
-               sideDefinition.object2 = Math.max(sideDefinition.object2, sideBMax);
+               sideDefinition.setFirst(Math.max(sideDefinition.getFirst(), sideAMax));
+               sideDefinition.setSecond(Math.max(sideDefinition.getSecond(), sideBMax));
             }
          }
       }
 
-      for (Entry<CompositeKey<String, String>, ObjectPair<Integer, Integer>> entry : keyMap.entrySet()) {
-         String artifactTypeName = entry.getKey().getKey1();
-         String relationTypeName = entry.getKey().getKey2();
-         ObjectPair<Integer, Integer> sideDefinition = entry.getValue();
-         int sideAMax = sideDefinition.object1;
-         int sideBMax = sideDefinition.object2;
+      for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
+         String artifactTypeName = entry.getKey().getFirst();
+         String relationTypeName = entry.getKey().getSecond();
+         Pair<Integer, Integer> sideDefinition = entry.getValue();
+         int sideAMax = sideDefinition.getFirst();
+         int sideBMax = sideDefinition.getSecond();
          dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
       }
    }

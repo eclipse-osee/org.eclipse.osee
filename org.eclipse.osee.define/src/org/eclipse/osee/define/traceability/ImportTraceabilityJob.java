@@ -60,7 +60,7 @@ public class ImportTraceabilityJob extends Job {
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
-   private boolean writeOutResults;
+   private final boolean writeOutResults;
 
    public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws CoreException, IOException {
       super("Importing Traceability");
@@ -75,6 +75,7 @@ public class ImportTraceabilityJob extends Job {
       this.writeOutResults = writeOutResults;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
@@ -167,8 +168,8 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
 
       for (Artifact artifact : requirementData.getDirectSwRequirements()) {
-         excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
-               Collections.toString(",", artifact.getAttributesToStringList(Requirements.PARTITION)));
+         excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)), Collections.toString(
+               ",", artifact.getAttributesToStringList(Requirements.PARTITION)));
       }
 
       excelWriter.endSheet();
@@ -185,7 +186,7 @@ public class ImportTraceabilityJob extends Job {
          if (reqArtifact == null) {
             Pair<String, String> structuredRequirement = traceExtractor.getStructuredRequirement(traceMark);
             if (structuredRequirement != null) {
-               reqArtifact = requirementData.getRequirementFromTraceMark(structuredRequirement.getKey());
+               reqArtifact = requirementData.getRequirementFromTraceMark(structuredRequirement.getFirst());
 
                if (reqArtifact == null) {
                   foundStr = "no match in DB";
@@ -194,7 +195,7 @@ public class ImportTraceabilityJob extends Job {
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
                         WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
-                  if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getValue()))) {
+                  if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "paritial match";

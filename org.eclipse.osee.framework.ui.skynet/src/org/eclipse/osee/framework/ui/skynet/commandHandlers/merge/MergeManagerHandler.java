@@ -52,7 +52,7 @@ public class MergeManagerHandler extends CommandHandler {
                Branch toBranch = BranchManager.getBranch(Integer.parseInt(arg0.getParameter(BranchView.BRANCH_ID)));
                if (selectedBranch != null && toBranch != null) {
                   MergeView.openView(selectedBranch, toBranch,
-                        TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
+                        TransactionIdManager.getStartEndPoint(selectedBranch).getFirst());
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

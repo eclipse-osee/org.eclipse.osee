@@ -17,31 +17,69 @@ import java.io.Serializable;
  */
 public class Pair<T, K> implements Serializable {
    private static final long serialVersionUID = 1764353834209869140L;
-   private T key;
-   private K value;
+   private T first;
+   private K second;
 
-   public Pair(T key, K value) {
-      this.key = key;
-      this.value = value;
+   public Pair(T first, K second) {
+      this.first = first;
+      this.second = second;
    }
 
-   public T getKey() {
-      return key;
+   public T getFirst() {
+      return first;
    }
 
-   public K getValue() {
-      return value;
+   public K getSecond() {
+      return second;
    }
 
-   public void setKey(T key) {
-      this.key = key;
+   public void setFirst(T key) {
+      this.first = key;
    }
 
-   public void setValue(K value) {
-      this.value = value;
+   public void setSecond(K value) {
+      this.second = value;
    }
 
+   public void setBoth(T first, K second) {
+      this.first = first;
+      this.second = second;
+   }
+
+   public Pair<T, K> setCompositeKey(T first, K second) {
+      this.first = first;
+      this.second = second;
+      return this;
+   }
+
+   @Override
    public String toString() {
-      return String.format("[%s, %s]", key.toString(), value.toString());
+      return String.format("[%s, %s]", first.toString(), second.toString());
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (!(obj instanceof Pair)) {
+         return false;
+      }
+      Pair<?, ?> other = (Pair<?, ?>) obj;
+      return first.equals(other.first) && second.equals(other.second);
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 37;
+      int result = 17;
+      if (first != null) {
+         result = prime * result + first.hashCode();
+      } else {
+         result = prime * result;
+      }
+      if (second != null) {
+         result = prime * result + second.hashCode();
+      } else {
+         result = prime * result;
+      }
+      return result;
    }
 }

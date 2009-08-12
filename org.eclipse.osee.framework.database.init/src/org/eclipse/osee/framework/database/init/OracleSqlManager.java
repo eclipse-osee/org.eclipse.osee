@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -38,10 +38,11 @@ public class OracleSqlManager extends SqlManager {
          Map<ColumnFields, String> column = columns.get(key).getColumnFields();
          lines.add(columnDataToSQL(column));
       }
-      String toExecute = StringFormat.listToValueSeparatedString(lines, ",\n");
+      String toExecute = StringUtils.join(lines, ",\n");
       return toExecute;
    }
 
+   @Override
    public void createTable(TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
@@ -54,7 +55,8 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(" tablespace ");
       toExecute.append(tableDef.getTablespace());
       toExecute.append("\n");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+            "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 
@@ -71,7 +73,8 @@ public class OracleSqlManager extends SqlManager {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " cascade constraints purge");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+            "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
 }

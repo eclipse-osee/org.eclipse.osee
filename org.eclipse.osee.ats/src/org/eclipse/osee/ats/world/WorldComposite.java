@@ -223,20 +223,22 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             worldArts.clear();
             otherArts.clear();
             for (Artifact art : arts) {
-               if (art instanceof IWorldViewArtifact)
+               if (art instanceof IWorldViewArtifact) {
                   worldArts.add(art);
-               else
+               } else {
                   otherArts.add(art);
+               }
             }
             worldXViewer.set(worldArts);
             if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
                   customizeData)) {
                setCustomizeData(customizeData);
             }
-            if (arts.size() == 0)
+            if (arts.size() == 0) {
                setTableTitle("No Results Found - " + name, true);
-            else
+            } else {
                setTableTitle(name, false);
+            }
             worldXViewer.refresh();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(
@@ -307,8 +309,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    }
 
    public void updateExtraInfoLine() throws OseeCoreException {
-      if (extraInfoLabel == null || extraInfoLabel.isDisposed())
+      if (extraInfoLabel == null || extraInfoLabel.isDisposed()) {
          return;
+      }
       String str = "";
       if (releaseMetricsAction.isChecked()) {
          VersionArtifact verArt = null;
@@ -441,8 +444,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
          @Override
          public void run() {
-            if (releaseMetricsAction.isChecked())
+            if (releaseMetricsAction.isChecked()) {
                selectionMetricsAction.setChecked(false);
+            }
             try {
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
@@ -456,8 +460,9 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
 
          @Override
          public void run() {
-            if (selectionMetricsAction.isChecked())
+            if (selectionMetricsAction.isChecked()) {
                releaseMetricsAction.setChecked(false);
+            }
             try {
                updateExtraInfoLine();
             } catch (OseeCoreException ex) {
@@ -550,6 +555,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
       actionToMenuItem(menu, toWorkFlow, SWT.PUSH);
       actionToMenuItem(menu, toTask, SWT.PUSH);
       actionToMenuItem(menu, toReview, SWT.PUSH);
+
       iWorldEditor.createToolBarPulldown(menu);
 
    }

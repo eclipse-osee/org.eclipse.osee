@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher.data;
 
 import java.io.File;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
  * @author Roberto E. Escobar
@@ -25,21 +25,22 @@ public class EclipseApplicationFormatter extends ExecutionCommandFormatter {
    // "org.eclipse.core.launcher.Main", "-application", "#APPLICATION_NAME#", "#APPLICATION_ARGS#"},
    // EXEC_SEPARATOR);
    private final String baseExecString =
-         StringFormat.separateWith(new String[] {"#ECLIPSE_INSTALL_HOME#", "-nosplash", "-application",
-               "#APPLICATION_NAME#", "#APPLICATION_ARGS#", "-vmargs", "#JVM_ARGS#"}, ServiceItem.EXEC_SEPARATOR);
+         StringUtils.join(new String[] {"#ECLIPSE_INSTALL_HOME#", "-nosplash", "-application", "#APPLICATION_NAME#",
+               "#APPLICATION_ARGS#", "-vmargs", "#JVM_ARGS#"}, ServiceItem.EXEC_SEPARATOR);
 
-   private String applicationName;
+   private final String applicationName;
 
    public EclipseApplicationFormatter(String applicationName) {
       this.applicationName = applicationName;
    }
 
+   @Override
    protected String buildExecString() {
       String toReturn = baseExecString;
       toReturn = toReturn.replaceAll("#JAVA#", "java");
       String localLocation = null;
       if (Platform.isRunning()) {
-         localLocation = (new File(Platform.getInstallLocation().getURL().getFile())).getAbsolutePath();
+         localLocation = new File(Platform.getInstallLocation().getURL().getFile()).getAbsolutePath();
       } else {
          throw new IllegalStateException("Platform needs to be running");
       }

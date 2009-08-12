@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.io.Serializable;
+
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IOseeUser {
+public interface IOseeUser extends Serializable {
    String getEmail();
 
    String getName();

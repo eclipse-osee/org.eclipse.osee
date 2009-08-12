@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangePr
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -53,7 +53,7 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static ObjectPair<Boolean, File> getTempExchangeFile(IResourceLocator locator) throws Exception {
+   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator) throws Exception {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
       IResource resource = InternalBranchActivator.getResourceManager().acquire(locator, new Options());
@@ -69,7 +69,7 @@ public class ExchangeUtil {
          wasZipExtractionRequired = false;
          importSource = source;
       }
-      return new ObjectPair<Boolean, File>(wasZipExtractionRequired, importSource);
+      return new Pair<Boolean, File>(wasZipExtractionRequired, importSource);
    }
 
    public static void cleanUpTempExchangeFile(File exchangeSource, boolean wasZipExtractionRequired) {

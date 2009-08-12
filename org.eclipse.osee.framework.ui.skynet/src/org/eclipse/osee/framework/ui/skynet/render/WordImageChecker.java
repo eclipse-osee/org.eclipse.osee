@@ -26,8 +26,8 @@ public class WordImageChecker {
 
    public static void restoreOriginalValue(Attribute attr, Pair<String, Boolean> originalValue) throws OseeCoreException {
       if (attr != null && originalValue != null) {
-         attr.setValue(originalValue.getKey());
-         if (!originalValue.getValue()) {
+         attr.setValue(originalValue.getFirst());
+         if (!originalValue.getSecond()) {
             attr.setNotDirty();
          }
       }
@@ -53,7 +53,7 @@ public class WordImageChecker {
          for (int y = 0; y < oldPictures.size(); y++) {
             if (y < newPictures.size() && oldPictures.get(y).getBinaryData() != null && newPictures.get(y).getBinaryData() != null) {
                if (!oldPictures.get(y).getBinaryData().equals(newPictures.get(y).getBinaryData())) {
-                  int index = oldPictures.get(y).getStartIndex() + (MODIFIED_STRING.length() * count);
+                  int index = oldPictures.get(y).getStartIndex() + MODIFIED_STRING.length() * count;
                   oldValue = oldValue.substring(0, index) + MODIFIED_STRING + oldValue.substring(index);
                   modified = true;
                   count++;

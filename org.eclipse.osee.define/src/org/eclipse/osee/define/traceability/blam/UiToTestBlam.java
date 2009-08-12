@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -204,9 +204,9 @@ public class UiToTestBlam extends AbstractBlam {
             List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
             List<String> validates = getTrace(testUnit, CoreRelationEnumeration.Validation__Requirement);
-            String verifyStr = StringFormat.listToValueSeparatedString(verified, ",");
-            String usesStr = StringFormat.listToValueSeparatedString(used, ",");
-            String validatesStr = StringFormat.listToValueSeparatedString(validates, ",");
+            String verifyStr = StringUtils.join(verified, ",");
+            String usesStr = StringUtils.join(used, ",");
+            String validatesStr = StringUtils.join(validates, ",");
 
             addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr,
                   usesStr));

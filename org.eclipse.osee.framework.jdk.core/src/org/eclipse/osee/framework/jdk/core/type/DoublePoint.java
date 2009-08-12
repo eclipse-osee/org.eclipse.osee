@@ -50,17 +50,28 @@ public class DoublePoint {
       this.y = y;
    }
 
+   @Override
    public boolean equals(Object object) {
       boolean matches = false;
 
       if (object instanceof DoublePoint) {
          DoublePoint point = (DoublePoint) object;
-         matches = (point.x == this.x) && (point.y == this.y);
+         matches = point.x == this.x && point.y == this.y;
       }
 
       return matches;
    }
 
+   @Override
+   public int hashCode() {
+      int result = 17;
+      int prime = 31;
+      result = result * prime + ((Double) x).hashCode();
+      result = result * prime + ((Double) y).hashCode();
+      return result;
+   }
+
+   @Override
    public String toString() {
       return "(" + x + ", " + y + ")";
    }

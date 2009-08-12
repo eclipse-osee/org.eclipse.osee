@@ -70,12 +70,11 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       if (getControl().isDisposed()) {
          setValueLabel("State Percent Error: page == null");
          return;
-      } else if (page == null) return;
-
-      if (page == null) {
+      } else if (page == null) {
          setValueLabel("page == null");
          return;
-      } else if (page == null) return;
+      }
+
       try {
          StringBuffer sb =
                new StringBuffer(String.format("        State Hours: %5.2f", smaMgr.getStateMgr().getHoursSpent(

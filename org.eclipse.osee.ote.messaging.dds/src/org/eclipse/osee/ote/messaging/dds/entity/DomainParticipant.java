@@ -13,8 +13,8 @@ package org.eclipse.osee.ote.messaging.dds.entity;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
 import org.eclipse.osee.ote.messaging.dds.IDestination;
 import org.eclipse.osee.ote.messaging.dds.ISource;
@@ -57,7 +57,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
    private Publisher middlewarePublisher; // Publisher who can send anything
 
    // DONT_NEED The builtinSubscriber is here for future functionality that is described in the DDS specification but has not been implemented or used.
-   private Subscriber builtinSubscriber;
+   private final Subscriber builtinSubscriber;
 
    /**
     * @param domainId The domain this participant will belong to
@@ -78,8 +78,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
       this.publishers = new CopyOnWriteArrayList<Publisher>(); // Thread Safe
       this.subscribers = new CopyOnWriteArrayList<Subscriber>(); // Thread Safe
       this.topics =
-            new CompositeKeyHashMap<String, String, Topic>(new ConcurrentHashMap<CompositeKey<String, String>, Topic>(
-                  512));
+            new CompositeKeyHashMap<String, String, Topic>(new ConcurrentHashMap<Pair<String, String>, Topic>(512));
       this.middlewarePublisher = null;
       this.typeRegistry = new TypeRegistry(typeCapacity, typeFactor);
 
@@ -104,7 +103,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public Subscriber getBuiltinSubscriber() {
       // DONT_NEED This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
       return builtinSubscriber;
    }
 
@@ -173,7 +174,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public Publisher createPublisher(PublisherListener publisherListener) {
       Publisher publisher = createAPublisher(publisherListener);
-      if (publisher != null) publishers.add(publisher);
+      if (publisher != null) {
+         publishers.add(publisher);
+      }
       return publisher;
    }
 
@@ -188,20 +191,27 @@ public class DomainParticipant extends Entity implements EntityFactory {
    public ReturnCode deletePublisher(Publisher publisher) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       // Check that a publisher was supplied
-      if (publisher == null) return ReturnCode.ERROR;
+      if (publisher == null) {
+         return ReturnCode.ERROR;
+      }
 
       // Check the pre-condition
-      if (publisher.hasDataWriters()) return ReturnCode.PRECONDITION_NOT_MET;
+      if (publisher.hasDataWriters()) {
+         return ReturnCode.PRECONDITION_NOT_MET;
+      }
 
       // Attempt to remove, if it did not exist in our list then return an error,
       // since it can only be removed from the <code>DomainParticipant</code> which created it.
-      if (publishers.remove(publisher))
+      if (publishers.remove(publisher)) {
          return ReturnCode.OK;
-      else
+      } else {
          return ReturnCode.PRECONDITION_NOT_MET;
+      }
    }
 
    /**
@@ -233,20 +243,27 @@ public class DomainParticipant extends Entity implements EntityFactory {
    public ReturnCode deleteSubscriber(Subscriber subscriber) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       // Check that a subscriber was supplied
-      if (subscriber == null) return ReturnCode.ERROR;
+      if (subscriber == null) {
+         return ReturnCode.ERROR;
+      }
 
       // Check the pre-condition
-      if (subscriber.hasDataReaders()) return ReturnCode.PRECONDITION_NOT_MET;
+      if (subscriber.hasDataReaders()) {
+         return ReturnCode.PRECONDITION_NOT_MET;
+      }
 
       // Attempt to remove, if it did not exist in our list then return an error,
       // since it can only be removed from the <code>DomainParticipant</code> which created it.
-      if (subscribers.remove(subscriber))
+      if (subscribers.remove(subscriber)) {
          return ReturnCode.OK;
-      else
+      } else {
          return ReturnCode.PRECONDITION_NOT_MET;
+      }
    }
 
    /**
@@ -310,15 +327,23 @@ public class DomainParticipant extends Entity implements EntityFactory {
    public ReturnCode deleteTopic(Topic topic) {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       // Check the pre-condition
-      if (topic.hasDataReaders()) return ReturnCode.PRECONDITION_NOT_MET;
+      if (topic.hasDataReaders()) {
+         return ReturnCode.PRECONDITION_NOT_MET;
+      }
       // Check the pre-condition
-      if (topic.hasDataWriters()) return ReturnCode.PRECONDITION_NOT_MET;
+      if (topic.hasDataWriters()) {
+         return ReturnCode.PRECONDITION_NOT_MET;
+      }
 
       // Check that a topic was supplied
-      if (topic == null) return ReturnCode.ERROR;
+      if (topic == null) {
+         return ReturnCode.ERROR;
+      }
 
       // Attempt to remove, if it did not exist in our list then return an error,
       // since it can only be removed from the <code>DomainParticipant</code> which created it.
@@ -327,7 +352,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
          topic.decrementCount();
 
          // If the creation count is zero, then remove it from the list
-         if (topic.getCount() <= 0) topics.removeValues(topic.getNamespace() + topic.getName());
+         if (topic.getCount() <= 0) {
+            topics.removeValues(topic.getNamespace() + topic.getName());
+         }
 
          return ReturnCode.OK;
       } else {
@@ -370,7 +397,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
       // UNSURE this is stubbed for now, until we determine it's necessity
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -384,10 +413,14 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public ReturnCode ignoreTopic() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -401,10 +434,14 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public ReturnCode ignorePublication() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -418,10 +455,14 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public ReturnCode ignoreSubscription() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       return ReturnCode.ERROR;
    }
@@ -446,7 +487,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
    public ReturnCode deleteContainedEntities() {
 
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) return ReturnCode.NOT_ENABLED;
+      if (!isEnabled()) {
+         return ReturnCode.NOT_ENABLED;
+      }
 
       for (Publisher publisher : publishers) {
          publisher.deleteContainedEntities();
@@ -473,7 +516,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
     */
    public void assertLiveliness() {
       // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) throw new NotImplementedException();
+      if (true) {
+         throw new NotImplementedException();
+      }
    }
 
    /**
@@ -505,16 +550,19 @@ public class DomainParticipant extends Entity implements EntityFactory {
       if (writer != null) {
          // Invoke the DomainParticipantListener if available
          DomainParticipantListener domainParticipantListener = getListener();
-         if (domainParticipantListener != null) domainParticipantListener.onPublishNotifyMiddleware(destination,
-               source, dataStoreItem);
+         if (domainParticipantListener != null) {
+            domainParticipantListener.onPublishNotifyMiddleware(destination, source, dataStoreItem);
+         }
 
          // If the writer has a listener, then invoke it
          DataWriterListener writerListener = writer.getListener();
-         if (writerListener != null) writerListener.onDataSentToMiddleware(writer);
+         if (writerListener != null) {
+            writerListener.onDataSentToMiddleware(writer);
+         }
 
       }
 
-      if (writer == null || (writer != null && writer.isPublishBackToLocalDDSReaders())) {
+      if (writer == null || writer != null && writer.isPublishBackToLocalDDSReaders()) {
          // Notify all of the subscribers in our domain
          for (Subscriber domainSubscribers : subscribers) {
             domainSubscribers.processNewData(dataStoreItem);

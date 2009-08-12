@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IDatabaseInfo {
+public interface IDatabaseInfo extends Serializable {
 
    String getId();
 

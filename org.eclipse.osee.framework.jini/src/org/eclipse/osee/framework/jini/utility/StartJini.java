@@ -30,10 +30,10 @@ import java.util.regex.Pattern;
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.service.core.JiniService;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
@@ -49,7 +49,7 @@ public class StartJini extends JiniService {
    public static final String SPAWNED_REGGIE_SERVICE_ID = "Spawned Reggie Id";
    public static final String SPAWNED_REGGIE_ON_HOST = "On Host";
 
-   private List<Process> jiniProcesses;
+   private final List<Process> jiniProcesses;
 
    public StartJini(String port, boolean nohup, boolean browser, String jiniHome, InputStream manifestFile) {
       super();
@@ -68,7 +68,7 @@ public class StartJini extends JiniService {
          String[] groups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
          String allowedGroups = "";
          if (groups != null) {
-            allowedGroups = StringFormat.commaSeparate(groups);
+            allowedGroups = StringUtils.join(groups, ",");
          } else {
             OseeLog.log(
                   StartJini.class,

@@ -165,7 +165,7 @@ public class MergeUtility {
          if (conflict.getSourceBranch() == null) {
             return null;
          }
-         TransactionId id = TransactionIdManager.getStartEndPoint(conflict.getSourceBranch()).getKey();
+         TransactionId id = TransactionIdManager.getStartEndPoint(conflict.getSourceBranch()).getFirst();
          return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), id, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);

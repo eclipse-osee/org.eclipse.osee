@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,8 +66,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private Text txtImportUnderFolderName;
 
    private DirectoryOrFileSelector directoryFileSelector;
-   private final java.util.List<ObjectPair<ArtifactExtractor, Button>> extractors =
-         new ArrayList<ObjectPair<ArtifactExtractor, Button>>();
+   private final java.util.List<Pair<ArtifactExtractor, Button>> extractors =
+         new ArrayList<Pair<ArtifactExtractor, Button>>();
    private File importResource;
    private boolean built = false;
 
@@ -101,7 +101,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             if (resource instanceof IResource) {
                importResource = ((IResource) resource).getLocation().toFile();
             }
-         } else if (firstElement instanceof Artifact) {
+         }
+         if (firstElement instanceof Artifact) {
             selectedArtifact = (Artifact) firstElement;
          }
       }
@@ -176,18 +177,19 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       Group composite = new Group(parent, SWT.NONE);
       GridLayout layout = new GridLayout(2, false);
+      composite.setText("Import Destination");
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       radImportUnderDhRoot = new Button(composite, SWT.RADIO);
       radImportUnderDhRoot.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
       radImportUnderDhRoot.setText("Add to Default Hierarchy Root");
-      radImportUnderDhRoot.setToolTipText("All the top level artifacts that are imported " + "will become root level children.");
+      radImportUnderDhRoot.setToolTipText("All the top level artifacts that are imported will become root level children.");
       radImportUnderDhRoot.addListener(SWT.Selection, this);
 
       radImportUnderNamedRootFolder = new Button(composite, SWT.RADIO);
-      radImportUnderNamedRootFolder.setText("Add to Root Level Folder:");
-      radImportUnderNamedRootFolder.setToolTipText("All the top level artifacts that are imported " + "will become children of the named folder at the root level.");
+      radImportUnderNamedRootFolder.setText("Add to Root Level Folder: ");
+      radImportUnderNamedRootFolder.setToolTipText("All the top level artifacts that are imported will become children of the named folder at the root level.");
       radImportUnderNamedRootFolder.addListener(SWT.Selection, this);
       txtImportUnderFolderName = new Text(composite, SWT.BORDER);
       txtImportUnderFolderName.setText("Recent Imports");
@@ -195,8 +197,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       radImportUnderSelection = new Button(composite, SWT.RADIO);
       radImportUnderSelection.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
-      radImportUnderSelection.setText("Add to Selected Artifact:" + destinationArtifact);
-      radImportUnderSelection.setToolTipText("All the top level artifacts that are imported " + "will become children of the selected artifact.");
+      radImportUnderSelection.setText("Add to Selected Artifact: " + destinationArtifact);
+      radImportUnderSelection.setToolTipText("All the top level artifacts that are imported will become children of the selected artifact.");
       radImportUnderSelection.addListener(SWT.Selection, this);
       radImportUnderSelection.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -226,9 +228,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   /*
-    * @see WizardPage#becomesVisible
-    */
    @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -248,24 +247,24 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       Group composite = new Group(parent, SWT.NONE);
       composite.setText("Options");
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      composite.setLayout(new GridLayout(2, false));
+      composite.setLayout(new GridLayout(1, false));
 
       Label label = new Label(composite, SWT.NONE);
       label.setText("Branch:");
       label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
+      branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, false);
+
       label = new Label(composite, SWT.NONE);
       label.setText("Artifact Type:");
       label.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-
-      branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, false);
 
       typeList = new List(composite, SWT.BORDER | SWT.V_SCROLL);
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 300;
       typeList.setLayoutData(gridData);
 
-      populateTypeList(destinationArtifact != null ? destinationArtifact.getBranch() : null);
+      populateTypeList(destinationArtifact == null ? null : destinationArtifact.getBranch());
       // Start out with an item selected
       typeList.setSelection(0);
 
@@ -324,16 +323,17 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             new ExtensionDefinedObjects<ArtifactExtractor>("org.eclipse.osee.framework.ui.skynet.ArtifactExtractor",
                   "ArtifactExtractor", "class");
       java.util.List<ArtifactExtractor> artifactExtractors = definedObjects.getObjects();
+      GridData extractorButtonGridData = new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1);
       for (ArtifactExtractor artifactExtractor : artifactExtractors) {
          Button extractorButton = new Button(composite, SWT.RADIO);
          extractorButton.setText(artifactExtractor.getName());
          extractorButton.setToolTipText(artifactExtractor.getDescription());
-         extractorButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
+         extractorButton.setLayoutData(extractorButtonGridData);
          extractorButton.addListener(SWT.Selection, this);
          if (artifactExtractor.getName().equals("Word Outline")) {
             extractorButton.setSelection(true);
          }
-         extractors.add(new ObjectPair<ArtifactExtractor, Button>(artifactExtractor, extractorButton));
+         extractors.add(new Pair<ArtifactExtractor, Button>(artifactExtractor, extractorButton));
       }
    }
 
@@ -397,18 +397,18 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          txtImportUnderFolderName.setEnabled(false);// TODO future development
          radImportUnderSelection.setEnabled(destinationArtifact != null);
 
-         for (ObjectPair<ArtifactExtractor, Button> extractor : extractors) {
-            if (extractor.object2.getSelection()) {
-               typeList.setEnabled(extractor.object1.usesTypeList());
+         for (Pair<ArtifactExtractor, Button> extractor : extractors) {
+            if (extractor.getSecond().getSelection()) {
+               typeList.setEnabled(extractor.getFirst().usesTypeList());
             }
          }
       }
    }
 
    public ArtifactExtractor getExtractor() throws OseeStateException {
-      for (ObjectPair<ArtifactExtractor, Button> extractor : extractors) {
-         if (extractor.object2.getSelection()) {
-            return extractor.object1;
+      for (Pair<ArtifactExtractor, Button> extractor : extractors) {
+         if (extractor.getSecond().getSelection()) {
+            return extractor.getFirst();
          }
       }
       throw new OseeStateException("No artifact extractor has been selected");

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
@@ -67,9 +67,9 @@ public class OseeEnumTypeManagerTest {
       String[] entryNames = new String[] {"oneA", "twoA", "threeA"};
       Integer[] entryOrdinals = new Integer[] {1, 50, 100};
 
-      List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
+      List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
       for (int index = 0; index < entryNames.length && index < entryOrdinals.length; index++) {
-         entries.add(new ObjectPair<String, Integer>(entryNames[index], entryOrdinals[index]));
+         entries.add(new Pair<String, Integer>(entryNames[index], entryOrdinals[index]));
       }
 
       OseeEnumTypeManager.createEnumType(enumTypeName, entries);
@@ -95,7 +95,7 @@ public class OseeEnumTypeManagerTest {
          checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
 
          try {
-            OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("one", 3));
+            OseeEnumTypeManager.addEntries(oseeEnumType, new Pair<String, Integer>("one", 3));
             assertTrue("Should have exceptioned - Error", false);
          } catch (Exception ex) {
             assertTrue("name violated", ex instanceof OseeArgumentException);
@@ -104,7 +104,7 @@ public class OseeEnumTypeManagerTest {
          }
 
          try {
-            OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 2));
+            OseeEnumTypeManager.addEntries(oseeEnumType, new Pair<String, Integer>("four", 2));
             assertTrue("Should have exceptioned - Error", false);
          } catch (Exception ex) {
             assertTrue("Ordinal violated", ex instanceof OseeArgumentException);
@@ -112,7 +112,7 @@ public class OseeEnumTypeManagerTest {
             checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, oseeEnumType);
          }
 
-         OseeEnumTypeManager.addEntries(oseeEnumType, new ObjectPair<String, Integer>("four", 3));
+         OseeEnumTypeManager.addEntries(oseeEnumType, new Pair<String, Integer>("four", 3));
          checkOseeEnumType(enumTypeName, new String[] {"one", "two", "three", "four"}, new Integer[] {0, 1, 2, 3},
                oseeEnumType);
 

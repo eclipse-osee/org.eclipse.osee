@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.database.init.TableElement.TableSections;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,11 +30,11 @@ public class ConstraintElement implements Xmlizable {
       id, schema, type, appliesTo, deferrable
    };
 
-   private ConstraintTypes constraintType;
-   private boolean deferrable;
+   private final ConstraintTypes constraintType;
+   private final boolean deferrable;
    private String schema;
    private String id;
-   private List<String> columns;
+   private final List<String> columns;
 
    public ConstraintElement(ConstraintTypes constraintType, String schema, String id, boolean deferrable) {
       this.schema = schema.toUpperCase();
@@ -96,9 +96,10 @@ public class ConstraintElement implements Xmlizable {
    }
 
    public String getCommaSeparatedColumnsList() {
-      return StringFormat.listToCommaSeparatedString(columns);
+      return StringUtils.join(columns, ",");
    }
 
+   @Override
    public String toString() {
       String toReturn = TableSections.Constraint + ": ";
       toReturn += "\t" + ConstraintFields.schema + "[" + schema + "]";

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.servlet.data;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 
@@ -62,8 +62,8 @@ public class HttpRequestDecoder {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   public static ObjectPair<String, Boolean> fromGetRequest(HttpServletRequest request) {
-      return new ObjectPair<String, Boolean>(request.getParameter(URI),
+   public static Pair<String, Boolean> fromGetRequest(HttpServletRequest request) {
+      return new Pair<String, Boolean>(request.getParameter(URI),
             Boolean.valueOf(request.getParameter(CHECK_AVAILABLE)));
    }
 

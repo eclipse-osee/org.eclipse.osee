@@ -67,21 +67,22 @@ public class Xml {
          if (chr == '&') {
             startIndex = index;
             endIndex = text.indexOf(';', startIndex) + 1;
-            if (endIndex > startIndex && endIndex < (startIndex + 6)) {
+            if (endIndex > startIndex && endIndex < startIndex + 6) {
                String entityReference = text.substring(startIndex, endIndex);
-               if (entityReference.equals("&amp;"))
+               if (entityReference.equals("&amp;")) {
                   strB.append('&');
-               else if (entityReference.equals("&lt;"))
+               } else if (entityReference.equals("&lt;")) {
                   strB.append('<');
-               else if (entityReference.equals("&gt;"))
+               } else if (entityReference.equals("&gt;")) {
                   strB.append('>');
-               else if (entityReference.equals("&nbsp;"))
+               } else if (entityReference.equals("&nbsp;")) {
                   strB.append(' ');
-               else if (entityReference.equals("&quot;"))
+               } else if (entityReference.equals("&quot;")) {
                   strB.append('"');
-               else
+               } else {
                   throw new IllegalArgumentException(
                         "unknown entity reference: " + text.substring(startIndex, endIndex));
+               }
                index = endIndex - 1;
             } else {
                strB.append(chr);
@@ -184,7 +185,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -202,7 +203,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -220,7 +221,7 @@ public class Xml {
       Element newElement = null;
       try {
          Document ownerDocument =
-               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+               parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
          newElement = ownerDocument.createElement(newElementTagName);
          parentNode.appendChild(newElement);
          if (newText != null) {
@@ -239,16 +240,17 @@ public class Xml {
    }
 
    public static final Element[] appendNewElementsWithText(Node parentNode, String newElementsTagName, String[] textInstances) {
-      Element[] newElements = new Element[textInstances.length];
+      Element[] newElements = null;
       try {
          if (textInstances != null) {
+            newElements = new Element[textInstances.length];
             Document ownerDocument =
-                  (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+                  parentNode.getNodeType() == Node.DOCUMENT_NODE ? (Document) parentNode : parentNode.getOwnerDocument();
             for (int i = 0; i < textInstances.length; i++) {
                newElements[i] = ownerDocument.createElement(newElementsTagName);
                parentNode.appendChild(newElements[i]);
-               String textInstance = (textInstances[i] == null) ? "null" : textInstances[i];
-               textInstance = (textInstance.length() == 0) ? "null" : textInstance;
+               String textInstance = textInstances[i] == null ? "null" : textInstances[i];
+               textInstance = textInstance.length() == 0 ? "null" : textInstance;
                newElements[i].appendChild(ownerDocument.createTextNode(textInstance));
             }
          }
@@ -353,7 +355,7 @@ public class Xml {
    }
 
    public static final boolean isSeriousXPath(String xPathExpression) {
-      return (xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf("(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1);
+      return xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf("(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
    }
 
    public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {

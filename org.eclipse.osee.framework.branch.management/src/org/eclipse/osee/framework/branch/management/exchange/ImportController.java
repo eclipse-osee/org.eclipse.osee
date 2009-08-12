@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -92,9 +92,9 @@ final class ImportController {
 
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
-      ObjectPair<Boolean, File> result = ExchangeUtil.getTempExchangeFile(locator);
-      wasZipExtractionRequired = result.object1;
-      importSource = result.object2;
+      Pair<Boolean, File> result = ExchangeUtil.getTempExchangeFile(locator);
+      wasZipExtractionRequired = result.getFirst();
+      importSource = result.getSecond();
 
       currentSavePoint = "setup";
       translator = new TranslationManager();

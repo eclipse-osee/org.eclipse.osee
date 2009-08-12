@@ -76,7 +76,7 @@ public class OseeDataTypeFactory {
             }
          }
       }
-      //      CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> relationsMap =
+      //      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> relationsMap =
       //            OseeDataTypeDatastore.getArtifactToRelationEntries();
       //      TypeManager<RelationDataType> relationDataType = dataTypeSource.getRelationTypeManager();
       //      for (CompositeKey<String, String> key : relationsMap.keySet()) {

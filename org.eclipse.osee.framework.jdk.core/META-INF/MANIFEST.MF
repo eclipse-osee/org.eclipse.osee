@@ -29,4 +29,5 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.apache.commons.httpclient
+Require-Bundle: org.apache.commons.httpclient,
+ org.apache.commons.lang

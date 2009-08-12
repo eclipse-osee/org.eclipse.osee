@@ -74,7 +74,7 @@ public class Zip {
          Enumeration<? extends ZipEntry> e = zipfile.entries();
          int size = 0;
          while (e.hasMoreElements()) {
-            entry = (ZipEntry) e.nextElement();
+            entry = e.nextElement();
             is = new BufferedInputStream(zipfile.getInputStream(entry));
             int count;
             byte data[] = new byte[BUFFER];
@@ -87,7 +87,7 @@ public class Zip {
                fileDir.getParentFile().mkdirs();
             }
 
-            if (!fileDir.exists() || (fileDir.exists() && fileDir.canWrite())) {
+            if (!fileDir.exists() || fileDir.exists() && fileDir.canWrite()) {
                FileOutputStream fos = new FileOutputStream(fileDir.getAbsolutePath());
                dest = new BufferedOutputStream(fos, BUFFER);
                while ((count = is.read(data, 0, BUFFER)) != -1) {
@@ -106,7 +106,7 @@ public class Zip {
             }
             progressBar.setValue(++size);
          }
-      } catch (Exception ex) {
+      } catch (RuntimeException ex) {
          String information =
                "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
          throw new IOException(information + ex.getMessage());

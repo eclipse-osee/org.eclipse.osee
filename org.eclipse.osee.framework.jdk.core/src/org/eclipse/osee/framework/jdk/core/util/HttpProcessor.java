@@ -84,7 +84,7 @@ public class HttpProcessor {
          } finally {
             method.releaseConnection();
          }
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          // Do Nothing
       }
       return result;

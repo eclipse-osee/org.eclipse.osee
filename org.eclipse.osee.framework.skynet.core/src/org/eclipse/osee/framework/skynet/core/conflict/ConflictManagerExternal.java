@@ -36,7 +36,7 @@ public class ConflictManagerExternal {
       if (originalConflicts == null) {
          originalConflicts =
                ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
-                     TransactionIdManager.getStartEndPoint(sourceBranch).getKey(), new EmptyMonitor());
+                     TransactionIdManager.getStartEndPoint(sourceBranch).getFirst(), new EmptyMonitor());
       }
       return originalConflicts;
    }

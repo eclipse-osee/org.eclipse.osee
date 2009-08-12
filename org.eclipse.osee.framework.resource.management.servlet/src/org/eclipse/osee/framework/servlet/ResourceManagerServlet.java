@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -52,9 +52,9 @@ public class ResourceManagerServlet extends OseeHttpServlet {
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
       try {
-         ObjectPair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
-         String path = parameters.object1;
-         boolean isCheckExistance = parameters.object2;
+         Pair<String, Boolean> parameters = HttpRequestDecoder.fromGetRequest(request);
+         String path = parameters.getFirst();
+         boolean isCheckExistance = parameters.getSecond();
          Options options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
@@ -146,7 +146,7 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       try {
          String path = HttpRequestDecoder.fromDeleteRequest(request);
          IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
-         int status =  IResourceManager.OK;
+         int status = IResourceManager.OK;
          //Activator.getInstance().getResourceManager().delete(locator);
          if (status == IResourceManager.OK) {
             result = HttpServletResponse.SC_ACCEPTED;

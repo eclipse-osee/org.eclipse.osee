@@ -26,7 +26,7 @@ public class ByteUtil {
          if ((i + 1) % bytesPerGroup == 0) {
             out.print(" ");
             groups++;
-            if ((groups) % groupPerLine == 0) {
+            if (groups % groupPerLine == 0) {
                out.println();
             }
          }
@@ -40,7 +40,7 @@ public class ByteUtil {
          if ((i + 1) % bytesPerGroup == 0) {
             out.print(" ");
             groups++;
-            if ((groups) % groupPerLine == 0) {
+            if (groups % groupPerLine == 0) {
                out.println();
             }
          }
@@ -78,13 +78,13 @@ public class ByteUtil {
     */
    public static String toBinaryString(byte b) {
       StringBuffer sb = new StringBuffer();
-      sb.append(((b >> 7) & 0x01));
-      sb.append(((b >> 6) & 0x01));
-      sb.append(((b >> 5) & 0x01));
-      sb.append(((b >> 4) & 0x01));
-      sb.append(((b >> 3) & 0x01));
-      sb.append(((b >> 2) & 0x01));
-      sb.append(((b >> 1) & 0x01));
+      sb.append((b >> 7 & 0x01));
+      sb.append((b >> 6 & 0x01));
+      sb.append((b >> 5 & 0x01));
+      sb.append((b >> 4 & 0x01));
+      sb.append((b >> 3 & 0x01));
+      sb.append((b >> 2 & 0x01));
+      sb.append((b >> 1 & 0x01));
       sb.append((b & 0x01));
       return sb.toString();
    }
@@ -97,24 +97,25 @@ public class ByteUtil {
 
    public static void toBytes(byte[] bytes, int startPos, long n) {
       for (int i = startPos + 7; i >= startPos; i--) {
-         bytes[i] = (byte) (n);
+         bytes[i] = (byte) n;
          n >>>= 8;
       }
    }
 
    public static void toBytes(byte[] bytes, int startPos, int n) {
       for (int i = startPos + 3; i >= startPos; i--) {
-         bytes[i] = (byte) (n);
+         bytes[i] = (byte) n;
          n >>>= 8;
       }
    }
 
    public static String toHexString(byte b) {
       String temp = Integer.toHexString(b);
-      if (temp.length() >= 2)
+      if (temp.length() >= 2) {
          return temp.substring(temp.length() - 2).toUpperCase();
-      else
-         return "0" + temp.substring(0).toUpperCase();
+      } else {
+         return "0" + temp.toUpperCase();
+      }
    }
 
    /**
@@ -128,7 +129,7 @@ public class ByteUtil {
          throw new IllegalArgumentException();
       }
 
-      return ((((long) b[7]) & 0xFF) + ((((long) b[6]) & 0xFF) << 8) + ((((long) b[5]) & 0xFF) << 16) + ((((long) b[4]) & 0xFF) << 24) + ((((long) b[3]) & 0xFF) << 32) + ((((long) b[2]) & 0xFF) << 40) + ((((long) b[1]) & 0xFF) << 48) + ((((long) b[0]) & 0xFF) << 56));
+      return ((long) b[7] & 0xFF) + (((long) b[6] & 0xFF) << 8) + (((long) b[5] & 0xFF) << 16) + (((long) b[4] & 0xFF) << 24) + (((long) b[3] & 0xFF) << 32) + (((long) b[2] & 0xFF) << 40) + (((long) b[1] & 0xFF) << 48) + (((long) b[0] & 0xFF) << 56);
    }
 
    /**
@@ -165,7 +166,7 @@ public class ByteUtil {
          if (hex) {
             strBuilder.append(String.format("%02x ", data[i]));
          } else {
-        	 
+
             strBuilder.append(data[i]).append(' ');
          }
          columnCount++;

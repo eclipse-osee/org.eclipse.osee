@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSax
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -45,8 +45,8 @@ public class ExchangeIntegrity {
 
    public void execute() throws Exception {
       long startTime = System.currentTimeMillis();
-      ObjectPair<Boolean, File> tempExchange = ExchangeUtil.getTempExchangeFile(locator);
-      final File exchange = tempExchange.object2;
+      Pair<Boolean, File> tempExchange = ExchangeUtil.getTempExchangeFile(locator);
+      final File exchange = tempExchange.getSecond();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
          ExchangeUtil.readExchange(exchange, "export.manifest.xml", manifestSaxHandler);
@@ -63,7 +63,7 @@ public class ExchangeIntegrity {
          checkExchange = exchange.getName() + ".verify.xml";
          writeResults(exchange.getParentFile(), checkExchange, checkList);
       } finally {
-         ExchangeUtil.cleanUpTempExchangeFile(exchange, tempExchange.object1);
+         ExchangeUtil.cleanUpTempExchangeFile(exchange, tempExchange.getFirst());
          OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]", locator.getLocation(),
                Lib.getElapseString(startTime)));
       }

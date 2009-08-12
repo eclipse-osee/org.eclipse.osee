@@ -268,8 +268,8 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    }
 
    public boolean hasChanges() throws OseeCoreException {
-        Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(this);
-      return transactions.getKey() != transactions.getValue();
+      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(this);
+      return transactions.getFirst() != transactions.getSecond();
    }
 
    public int getAuthorId() {

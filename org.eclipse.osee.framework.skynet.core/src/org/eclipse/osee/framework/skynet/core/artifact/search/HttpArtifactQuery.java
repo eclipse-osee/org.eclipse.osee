@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -98,17 +98,17 @@ final class HttpArtifactQuery {
 
    public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> toReturn = null;
-      ObjectPair<String, ByteArrayOutputStream> data = executeSearch(false, false);
+      Pair<String, ByteArrayOutputStream> data = executeSearch(false, false);
       if (data != null) {
          try {
-            ObjectPair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.object2);
-            if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+            Pair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.getSecond());
+            if (queryIdAndSize != null && queryIdAndSize.getSecond() > 0) {
                try {
                   toReturn =
-                        ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
-                              queryIdAndSize.object2, reload, historical, allowDeleted);
+                        ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
+                              queryIdAndSize.getSecond(), reload, historical, allowDeleted);
                } finally {
-                  JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+                  JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.getFirst().intValue());
                }
             }
          } catch (Exception ex) {
@@ -123,12 +123,12 @@ final class HttpArtifactQuery {
 
    public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
       List<ArtifactMatch> toReturn = new ArrayList<ArtifactMatch>();
-      ObjectPair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
+      Pair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
       if (data != null) {
 
          try {
-            if (data.object1.endsWith("xml")) {
-               List<XmlArtifactSearchResult> results = handleAsXmlResults(data.object2);
+            if (data.getFirst().endsWith("xml")) {
+               List<XmlArtifactSearchResult> results = handleAsXmlResults(data.getSecond());
                for (XmlArtifactSearchResult result : results) {
                   try {
                      result.getJoinQuery().store();
@@ -148,18 +148,18 @@ final class HttpArtifactQuery {
                      result.getJoinQuery().delete();
                   }
                }
-            } else if (data.object1.endsWith("plain")) {
-               ObjectPair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.object2);
-               if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+            } else if (data.getFirst().endsWith("plain")) {
+               Pair<Integer, Integer> queryIdAndSize = handleAsDbJoin(data.getSecond());
+               if (queryIdAndSize != null && queryIdAndSize.getSecond() > 0) {
                   try {
                      List<Artifact> artifactList =
-                           ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
-                                 queryIdAndSize.object2, reload, historical, allowDeleted);
+                           ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.getFirst(), loadLevel, confirmer,
+                                 queryIdAndSize.getSecond(), reload, historical, allowDeleted);
                      for (Artifact artifact : artifactList) {
                         toReturn.add(new ArtifactMatch(artifact));
                      }
                   } finally {
-                     JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+                     JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.getFirst().intValue());
                   }
                }
             }
@@ -170,8 +170,8 @@ final class HttpArtifactQuery {
       return toReturn;
    }
 
-   private ObjectPair<String, ByteArrayOutputStream> executeSearch(boolean withMatches, boolean findAllMatchLocations) throws OseeCoreException {
-      ObjectPair<String, ByteArrayOutputStream> toReturn = null;
+   private Pair<String, ByteArrayOutputStream> executeSearch(boolean withMatches, boolean findAllMatchLocations) throws OseeCoreException {
+      Pair<String, ByteArrayOutputStream> toReturn = null;
       String sessionId = ClientSessionManager.getSessionId();
       CharBackedInputStream inputStream = null;
       try {
@@ -181,7 +181,7 @@ final class HttpArtifactQuery {
                HttpProcessor.post(new URL(getSearchUrl(sessionId)), inputStream, "application/xml", "UTF-8",
                      outputStream);
          if (httpRequestResult.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
-            toReturn = new ObjectPair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
+            toReturn = new Pair<String, ByteArrayOutputStream>(httpRequestResult.getContentType(), outputStream);
          } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
             throw new OseeCoreException(String.format("Search error due to bad request: url[%s] status code: [%s]",
                   inputStream.toString(), httpRequestResult.getCode()));
@@ -208,13 +208,13 @@ final class HttpArtifactQuery {
       return parser.getResults();
    }
 
-   private ObjectPair<Integer, Integer> handleAsDbJoin(ByteArrayOutputStream outputStream) throws UnsupportedEncodingException {
-      ObjectPair<Integer, Integer> toReturn = null;
+   private Pair<Integer, Integer> handleAsDbJoin(ByteArrayOutputStream outputStream) throws UnsupportedEncodingException {
+      Pair<Integer, Integer> toReturn = null;
       String queryIdString = outputStream.toString("UTF-8");
       if (Strings.isValid(queryIdString)) {
          String[] entries = queryIdString.split(",\\s*");
          if (entries.length >= 2) {
-            toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
+            toReturn = new Pair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
          }
       }
       return toReturn;

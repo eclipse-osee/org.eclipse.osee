@@ -100,7 +100,9 @@ public class WordUtil {
     * @throws Exception
     */
    public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      if (branch == null) throw new IllegalArgumentException("branch can not be null");
+      if (branch == null) {
+         throw new IllegalArgumentException("branch can not be null");
+      }
 
       AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT);
 
@@ -134,12 +136,14 @@ public class WordUtil {
                newest = nextNewest;
                nextNewest = iter.next();
 
-               if (WordUtil.textOnly(newest.getKey()).equals(nextNewest.getKey())) {
-                  repeatGammas.add(newest.getValue());
+               if (WordUtil.textOnly(newest.getFirst()).equals(nextNewest.getFirst())) {
+                  repeatGammas.add(newest.getSecond());
                }
             }
 
-            if (repeatGammas.isEmpty()) return false;
+            if (repeatGammas.isEmpty()) {
+               return false;
+            }
 
             // For now expect that later we will remove all unaddressed attributes, this is safer
             // since addressing can be 'easily' reestablished, but not the actual data

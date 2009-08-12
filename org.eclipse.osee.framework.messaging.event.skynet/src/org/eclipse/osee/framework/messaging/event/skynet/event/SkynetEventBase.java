@@ -20,31 +20,11 @@ public class SkynetEventBase implements ISkynetEvent {
 
    private final NetworkSender networkSender;
 
-   /**
-    * @return the networkSender
-    */
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param author
-    */
    public SkynetEventBase(NetworkSender networkSender) {
       this.networkSender = networkSender;
    }
-
-   public int compareTo(Object o) {
-
-      if (o instanceof NetworkArtifactDeletedEvent) {
-         return 1;
-      } else if (o instanceof SkynetArtifactEventBase) {
-         return 1;
-      } else {
-         return -1;
-      }
-   }
-
 }

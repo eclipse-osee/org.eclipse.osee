@@ -19,7 +19,7 @@ import java.net.URI;
 public class UriSource implements Source, Serializable {
 
    private static final long serialVersionUID = -917397242786038197L;
-   private URI source;
+   private final URI source;
 
    public UriSource(URI source) {
       this.source = source;
@@ -31,7 +31,10 @@ public class UriSource implements Source, Serializable {
 
    @Override
    public boolean equals(Object obj) {
-      return source.equals(obj);
+      if (!(obj instanceof UriSource)) {
+         return false;
+      }
+      return source.equals(((UriSource) obj).source);
    }
 
    @Override

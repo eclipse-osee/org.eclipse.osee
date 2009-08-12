@@ -39,7 +39,7 @@ public class RebaselineDbTransaction extends DbTransaction{
       
       this.branchToUpdate = branchToUpdate;
       this.artifactVersions = artifactVersions;
-      int transactionNumber = TransactionIdManager.getStartEndPoint(branchToUpdate).getKey().getTransactionNumber();
+      int transactionNumber = TransactionIdManager.getStartEndPoint(branchToUpdate).getFirst().getTransactionNumber();
       this.updateArtifactHandler = new UpdateArtifactHandler(branchToUpdate, updatingSourceBranch, artifactVersions, transactionNumber, true);
    }
 

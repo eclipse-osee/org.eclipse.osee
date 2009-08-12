@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -48,8 +48,8 @@ public class OseeEnumType {
       enumSet.add(entry);
    }
 
-   protected void internalAddEnum(ObjectPair<String, Integer> entry) throws OseeArgumentException {
-      internalAddEnum(entry.object1, entry.object2);
+   protected void internalAddEnum(Pair<String, Integer> entry) throws OseeArgumentException {
+      internalAddEnum(entry.getFirst(), entry.getSecond());
    }
 
    protected synchronized void internalRemoveEnums(OseeEnumEntry... entries) {
@@ -202,8 +202,8 @@ public class OseeEnumType {
          return OseeEnumType.this.values();
       }
 
-      public ObjectPair<String, Integer> asObjectPair() {
-         return new ObjectPair<String, Integer>(name(), ordinal());
+      public Pair<String, Integer> asPair() {
+         return new Pair<String, Integer>(name(), ordinal());
       }
 
       @Override

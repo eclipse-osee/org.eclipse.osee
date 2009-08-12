@@ -101,7 +101,7 @@ public class AtsBranchManager {
                return;
             }
             MergeView.openView(getWorkingBranch(), branch,
-                  TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
+                  TransactionIdManager.getStartEndPoint(getWorkingBranch()).getFirst());
 
          } else if (isCommittedBranchExists()) {
             TransactionId transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
@@ -172,7 +172,7 @@ public class AtsBranchManager {
    public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
       if (isWorkingBranchInWork()) {
          MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(
-               getWorkingBranch()).getKey());
+               getWorkingBranch()).getFirst());
       } else if (isCommittedBranchExists()) {
          for (TransactionId transactionId : getTransactionIds(true)) {
             if (transactionId.getBranch() == destinationBranch) {

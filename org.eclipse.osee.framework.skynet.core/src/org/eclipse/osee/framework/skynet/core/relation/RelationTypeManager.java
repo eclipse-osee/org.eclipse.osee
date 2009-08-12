@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -45,8 +45,8 @@ public class RelationTypeManager {
 
    private final HashMap<String, RelationType> nameToTypeMap = new HashMap<String, RelationType>();
    private final HashMap<Integer, RelationType> idToTypeMap = new HashMap<Integer, RelationType>();
-   private final CompositeKeyHashMap<RelationType, ArtifactType, ObjectPair<Integer, Integer>> validityMap =
-         new CompositeKeyHashMap<RelationType, ArtifactType, ObjectPair<Integer, Integer>>(300);
+   private final CompositeKeyHashMap<RelationType, ArtifactType, Pair<Integer, Integer>> validityMap =
+         new CompositeKeyHashMap<RelationType, ArtifactType, Pair<Integer, Integer>>(300);
 
    private static final String SELECT_LINK_VALIDITY = "SELECT * FROM osee_valid_relations";
    private static final RelationTypeManager instance = new RelationTypeManager();
@@ -158,11 +158,11 @@ public class RelationTypeManager {
    }
 
    public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) {
-      ObjectPair<Integer, Integer> pair = instance.validityMap.get(relationType, artifactType);
+      Pair<Integer, Integer> pair = instance.validityMap.get(relationType, artifactType);
       if (pair == null) {
          return 0;
       }
-      return relationSide == RelationSide.SIDE_A ? pair.object1 : pair.object2;
+      return relationSide == RelationSide.SIDE_A ? pair.getFirst() : pair.getSecond();
    }
 
    private void loadLinkValidities() throws OseeDataStoreException, OseeTypeDoesNotExist {
@@ -174,8 +174,8 @@ public class RelationTypeManager {
             try {
                RelationType relationType = internalGetType(chStmt.getInt("rel_link_type_id"));
                ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-               validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(
-                     chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
+               validityMap.put(relationType, artifactType, new Pair<Integer, Integer>(chStmt.getInt("side_a_max"),
+                     chStmt.getInt("side_b_max")));
             } catch (OseeCoreException exception) {
                OseeLog.log(Activator.class, Level.SEVERE, exception);
             }
@@ -201,13 +201,24 @@ public class RelationTypeManager {
       if (typeExists(namespace, relationTypeName)) {
          return getType(namespace, relationTypeName);
       }
-      if (!Strings.isValid(relationTypeName)) throw new IllegalArgumentException(
-            "The relationName can not be null or empty");
-      if (!Strings.isValid(sideAName)) throw new IllegalArgumentException("The sideAName can not be null or empty");
-      if (!Strings.isValid(sideBName)) throw new IllegalArgumentException("The sideBName can not be null or empty");
-      if (!Strings.isValid(abPhrasing)) throw new IllegalArgumentException("The abPhrasing can not be null or empty");
-      if (!Strings.isValid(baPhrasing)) throw new IllegalArgumentException("The baPhrasing can not be null or empty");
-      if (!Strings.isValid(shortName)) throw new IllegalArgumentException("The shortName can not be null or empty");
+      if (!Strings.isValid(relationTypeName)) {
+         throw new IllegalArgumentException("The relationName can not be null or empty");
+      }
+      if (!Strings.isValid(sideAName)) {
+         throw new IllegalArgumentException("The sideAName can not be null or empty");
+      }
+      if (!Strings.isValid(sideBName)) {
+         throw new IllegalArgumentException("The sideBName can not be null or empty");
+      }
+      if (!Strings.isValid(abPhrasing)) {
+         throw new IllegalArgumentException("The abPhrasing can not be null or empty");
+      }
+      if (!Strings.isValid(baPhrasing)) {
+         throw new IllegalArgumentException("The baPhrasing can not be null or empty");
+      }
+      if (!Strings.isValid(shortName)) {
+         throw new IllegalArgumentException("The shortName can not be null or empty");
+      }
 
       int relationTypeId = SequenceManager.getNextRelationTypeId();
 
@@ -231,14 +242,18 @@ public class RelationTypeManager {
     * @throws OseeArgumentException
     */
    public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws OseeDataStoreException, OseeArgumentException {
-      if (sideAMax < 0) throw new OseeArgumentException("The sideAMax can no be negative");
-      if (sideBMax < 0) throw new OseeArgumentException("The sideBMax can no be negative");
+      if (sideAMax < 0) {
+         throw new OseeArgumentException("The sideAMax can no be negative");
+      }
+      if (sideBMax < 0) {
+         throw new OseeArgumentException("The sideBMax can no be negative");
+      }
 
-      ObjectPair<Integer, Integer> entry = instance.validityMap.get(relationType, artifactType);
+      Pair<Integer, Integer> entry = instance.validityMap.get(relationType, artifactType);
       if (entry == null) {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, artifactType.getArtTypeId(),
                relationType.getRelationTypeId(), sideAMax, sideBMax, branch.getBranchId());
-         instance.validityMap.put(relationType, artifactType, new ObjectPair<Integer, Integer>(sideAMax, sideBMax));
+         instance.validityMap.put(relationType, artifactType, new Pair<Integer, Integer>(sideAMax, sideBMax));
       }
    }
 }

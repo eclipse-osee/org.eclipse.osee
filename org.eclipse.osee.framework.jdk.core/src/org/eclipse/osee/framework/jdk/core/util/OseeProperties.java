@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Roberto E. Escobar
@@ -34,12 +35,12 @@ public class OseeProperties {
    protected OseeProperties() {
    }
 
-   public static ObjectPair<String, Integer> getDerbyServerAddress() {
-      ObjectPair<String, Integer> addressAndPort = null;
+   public static Pair<String, Integer> getDerbyServerAddress() {
+      Pair<String, Integer> addressAndPort = null;
       String serverAddress = System.getProperty(OSEE_DERBY_SERVER, "");
       if (Strings.isValid(serverAddress)) {
          String[] hostPort = serverAddress.split(":");
-         addressAndPort = new ObjectPair<String, Integer>(hostPort[0], Integer.parseInt(hostPort[1]));
+         addressAndPort = new Pair<String, Integer>(hostPort[0], Integer.parseInt(hostPort[1]));
       }
       return addressAndPort;
    }
@@ -130,7 +131,7 @@ public class OseeProperties {
                   String value = (String) object;
                   list.add(String.format("%s: %s", value, System.getProperty(value)));
                }
-            } catch (Exception ex) {
+            } catch (IllegalAccessException ex) {
                // DO NOTHING
             } finally {
                if (wasModified) {
@@ -150,6 +151,6 @@ public class OseeProperties {
       List<String> list = new ArrayList<String>();
       toStringHelper(list, getClass());
       Collections.sort(list);
-      return StringFormat.listToValueSeparatedString(list, "\n");
+      return StringUtils.join(list, "\n");
    }
 }

@@ -17,10 +17,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKey;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -101,20 +100,19 @@ public class OseeDataTypeDatastore {
       return toReturn;
    }
 
-   public static CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> getArtifactToRelationEntries() throws OseeCoreException {
-      CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>> toReturn =
-            new CompositeKeyHashMap<String, String, ObjectPair<Integer, Integer>>();
+   public static CompositeKeyHashMap<String, String, Pair<Integer, Integer>> getArtifactToRelationEntries() throws OseeCoreException {
+      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> toReturn =
+            new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_RELATION_VALIDITY);
          while (chStmt.next()) {
             try {
-               CompositeKey<String, String> key =
-                     new CompositeKey<String, String>(chStmt.getString("art_type_id"),
-                           chStmt.getString("rel_link_type_id"));
+               Pair<String, String> key =
+                     new Pair<String, String>(chStmt.getString("art_type_id"), chStmt.getString("rel_link_type_id"));
 
-               ObjectPair<Integer, Integer> multiplicity =
-                     new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
+               Pair<Integer, Integer> multiplicity =
+                     new Pair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
 
                toReturn.put(key, multiplicity);
             } catch (OseeCoreException ex) {

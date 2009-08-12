@@ -38,7 +38,7 @@ public class HashCollectionPlus<K, V, O> {
    private Class<? extends Collection> collectionType;
    private IPlusProvider<O> plusProvider;
 
-   private Map<K, ObjectPair<Collection<V>, O>> map;
+   private Map<K, Pair<Collection<V>, O>> map;
    @SuppressWarnings("unchecked")
    public static final Class<? extends Collection> DEFAULT_COLLECTION_TYPE = ArrayList.class;
 
@@ -59,9 +59,9 @@ public class HashCollectionPlus<K, V, O> {
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
 
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity, loadFactor));
+         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor));
       } else {
-         map = new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity, loadFactor);
+         map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor);
       }
 
       this.isSynchronized = isSynchronized;
@@ -81,9 +81,9 @@ public class HashCollectionPlus<K, V, O> {
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity));
+         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>(initialCapacity));
       } else {
-         map = new HashMap<K, ObjectPair<Collection<V>, O>>(initialCapacity);
+         map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity);
       }
 
       this.isSynchronized = isSynchronized;
@@ -102,9 +102,9 @@ public class HashCollectionPlus<K, V, O> {
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, ObjectPair<Collection<V>, O>>());
+         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>());
       } else {
-         map = new HashMap<K, ObjectPair<Collection<V>, O>>();
+         map = new HashMap<K, Pair<Collection<V>, O>>();
       }
 
       this.isSynchronized = isSynchronized;
@@ -153,7 +153,7 @@ public class HashCollectionPlus<K, V, O> {
     */
    @SuppressWarnings("unchecked")
    public Collection<V> put(K key, V value) {
-      ObjectPair<Collection<V>, O> objectPair = map.get(key);
+      Pair<Collection<V>, O> objectPair = map.get(key);
       if (objectPair == null) {
          try {
             Collection<V> items;
@@ -163,7 +163,7 @@ public class HashCollectionPlus<K, V, O> {
                items = collectionType.newInstance();
             }
 
-            objectPair = new ObjectPair(items, plusProvider.newObject());
+            objectPair = new Pair(items, plusProvider.newObject());
             map.put(key, objectPair);
          } catch (InstantiationException ex) {
             ex.printStackTrace();
@@ -173,8 +173,8 @@ public class HashCollectionPlus<K, V, O> {
             return null;
          }
       }
-      objectPair.object1.add(value);
-      return objectPair.object1;
+      objectPair.getFirst().add(value);
+      return objectPair.getFirst();
    }
 
    /**
@@ -203,10 +203,10 @@ public class HashCollectionPlus<K, V, O> {
     * @return true iff the value was removed from the collection for key.
     */
    public boolean removeValue(K key, V value) {
-      ObjectPair<Collection<V>, O> objectPair = map.get(key);
+      Pair<Collection<V>, O> objectPair = map.get(key);
 
       if (objectPair != null) {
-         Collection<V> items = objectPair.object1;
+         Collection<V> items = objectPair.getFirst();
          if (items != null) {
             if (items.remove(value)) {
                if (items.isEmpty()) {
@@ -220,7 +220,7 @@ public class HashCollectionPlus<K, V, O> {
    }
 
    public Collection<V> removeValues(K key) {
-      return map.remove(key).object1;
+      return map.remove(key).getFirst();
    }
 
    /**
@@ -230,9 +230,9 @@ public class HashCollectionPlus<K, V, O> {
     * @return Return value collection reference
     */
    public Collection<V> getValues(K key) {
-      ObjectPair<Collection<V>, O> objectPair = map.get(key);
+      Pair<Collection<V>, O> objectPair = map.get(key);
       if (objectPair != null) {
-         return map.get(key).object1;
+         return map.get(key).getFirst();
       }
       return null;
    }
@@ -245,9 +245,9 @@ public class HashCollectionPlus<K, V, O> {
     */
    public List<V> getValues() {
       List<V> values = new ArrayList<V>();
-      for (ObjectPair<Collection<V>, O> objectPair : map.values()) {
+      for (Pair<Collection<V>, O> objectPair : map.values()) {
          if (objectPair != null) {
-            values.addAll(objectPair.object1);
+            values.addAll(objectPair.getFirst());
          }
       }
       return values;
@@ -260,9 +260,9 @@ public class HashCollectionPlus<K, V, O> {
     * @return Return object reference
     */
    public O getPlusObject(K key) {
-      ObjectPair<Collection<V>, O> objectPair = map.get(key);
+      Pair<Collection<V>, O> objectPair = map.get(key);
       if (objectPair != null) {
-         return map.get(key).object2;
+         return map.get(key).getSecond();
       }
       return null;
    }
@@ -303,9 +303,9 @@ public class HashCollectionPlus<K, V, O> {
     * @return whether the map contains this value
     */
    public boolean containsValue(Object value) {
-      for (ObjectPair<Collection<V>, O> objectPair : map.values()) {
+      for (Pair<Collection<V>, O> objectPair : map.values()) {
          if (objectPair != null) {
-            for (V tempValue : objectPair.object1) {
+            for (V tempValue : objectPair.getFirst()) {
                if (value.equals(tempValue)) {
                   return true;
                }

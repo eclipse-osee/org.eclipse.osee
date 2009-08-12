@@ -33,8 +33,8 @@ public class DbDetailData {
       id;
    }
 
-   private Map<ConfigField, Pair<String, String>> configFieldMap;
-   private Map<DescriptionField, String> descriptionMap;
+   private final Map<ConfigField, Pair<String, String>> configFieldMap;
+   private final Map<DescriptionField, String> descriptionMap;
 
    public DbDetailData() {
       super();
@@ -62,11 +62,12 @@ public class DbDetailData {
       String toReturn = "";
       if (configFieldMap.containsKey(field)) {
          Pair<String, String> pair = configFieldMap.get(field);
-         toReturn = pair.getValue();
+         toReturn = pair.getSecond();
       }
       return toReturn;
    }
 
+   @Override
    public String toString() {
       String toReturn = "DatabaseInfo: \n";
       Set<DescriptionField> descriptionMapkeys = descriptionMap.keySet();
@@ -79,7 +80,7 @@ public class DbDetailData {
       Set<ConfigField> keys = configFieldMap.keySet();
       for (ConfigField field : keys) {
          Pair<String, String> pair = configFieldMap.get(field);
-         toReturn += field + ": " + "[" + pair.getKey() + "],[" + pair.getValue() + "]\n";
+         toReturn += field + ": " + "[" + pair.getFirst() + "],[" + pair.getSecond() + "]\n";
       }
       return toReturn + "\n";
    }

@@ -18,8 +18,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
  * 
  * @author Robert A. Fisher
  */
-@SuppressWarnings("unchecked")
-public interface ISkynetEvent extends Serializable, Comparable {
+public interface ISkynetEvent extends Serializable {
    public static final ISkynetEvent[] EMPTY_ARRAY = new ISkynetEvent[0];
 
    public NetworkSender getNetworkSender();

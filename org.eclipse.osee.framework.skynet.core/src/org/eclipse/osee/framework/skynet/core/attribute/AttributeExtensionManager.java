@@ -63,7 +63,7 @@ public class AttributeExtensionManager {
          throw new OseeArgumentException(String.format("Unable to find class for: [%s]", name));
       }
 
-      return instance.loadClass(entry.getKey(), entry.getValue());
+      return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
 
    public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws OseeCoreException {
@@ -75,7 +75,7 @@ public class AttributeExtensionManager {
       if (entry == null) {
          throw new OseeArgumentException(String.format("Unable to find class for: [%s]", name));
       }
-      return instance.loadClass(entry.getKey(), entry.getValue());
+      return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
 
    @SuppressWarnings("unchecked")

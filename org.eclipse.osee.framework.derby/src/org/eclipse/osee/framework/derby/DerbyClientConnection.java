@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 import org.eclipse.osee.framework.database.core.IConnection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
@@ -30,9 +30,9 @@ public class DerbyClientConnection implements IConnection {
 
       if (firstTime) {
          firstTime = false;
-         ObjectPair<String, Integer> addressAndPort = OseeProperties.getDerbyServerAddress();
+         Pair<String, Integer> addressAndPort = OseeProperties.getDerbyServerAddress();
          if (addressAndPort != null) {
-            DerbyDbServer.startServer(addressAndPort.object1, addressAndPort.object2);
+            DerbyDbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond());
          }
       }
       Connection connection = DriverManager.getConnection(connectionURL, properties);

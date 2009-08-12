@@ -52,7 +52,7 @@ public abstract class CommitHandler extends CommandHandler {
    public static boolean commitBranch(final ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       final Branch sourceBranch = conflictManager.getSourceBranch();
       final Branch destinationBranch = conflictManager.getDestinationBranch();
-      final TransactionId transactionId = TransactionIdManager.getStartEndPoint(sourceBranch).getKey();
+      final TransactionId transactionId = TransactionIdManager.getStartEndPoint(sourceBranch).getFirst();
       boolean branchCommitted = false;
 
       if (conflictManager.getRemainingConflicts().size() > 0) {

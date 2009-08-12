@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class VariantData implements IVariantData {
    private static final long serialVersionUID = 9076969425223251739L;
 
-   private final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
-   private final String CONVERSION_EXCEPTION_MESSAGE = "Unable to convert [%s] from [%s] to [%s]";
+   private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
+   private static final String CONVERSION_EXCEPTION_MESSAGE = "Unable to convert [%s] from [%s] to [%s]";
 
    private final Properties storageData;
    private final Properties storageArrays;
@@ -44,7 +44,9 @@ public class VariantData implements IVariantData {
    }
 
    public boolean isEmpty(String key) {
-      if (get(key) == null) return true;
+      if (get(key) == null) {
+         return true;
+      }
       return get(key).equals("");
    }
 

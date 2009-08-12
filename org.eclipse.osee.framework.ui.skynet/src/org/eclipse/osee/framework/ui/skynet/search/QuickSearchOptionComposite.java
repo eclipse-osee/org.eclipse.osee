@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -108,7 +108,7 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    private void updateTextArea(Text text, String[] data) {
-      text.setText(StringFormat.separateWith(data, ", "));
+      text.setText(StringUtils.join(data, ", "));
    }
 
    public Map<String, Boolean> getOptions() {
@@ -234,7 +234,7 @@ public class QuickSearchOptionComposite extends Composite {
          label.setText(option + ":");
 
          final Text text = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);
-         text.setText(StringFormat.separateWith(configHandler.getConfiguration(), ", "));
+         text.setText(StringUtils.join(configHandler.getConfiguration(), ", "));
          GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
          data.minimumWidth = 100;
          text.setLayoutData(data);
@@ -295,7 +295,7 @@ public class QuickSearchOptionComposite extends Composite {
       for (String key : data.keySet()) {
          String[] config = data.get(key);
          if (config != null && config.length > 0) {
-            memento.putString(OPTION_CONFIGS_KEY_ID + key.replaceAll(" ", "_"), StringFormat.separateWith(config,
+            memento.putString(OPTION_CONFIGS_KEY_ID + key.replaceAll(" ", "_"), StringUtils.join(config,
                   ENTRY_SEPARATOR));
          }
       }

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public abstract class Rule {
-   private String outExtension;
+   private final String outExtension;
    private String currentOutfileName;
    private File inputFile;
    private String subdirectoryName;
@@ -80,7 +80,9 @@ public abstract class Rule {
       if (subdirectoryName != null) {
          File parent = outFile.getParentFile();
          subdirectory = new File(parent, subdirectoryName);
-         subdirectory.mkdir();
+         if (!subdirectory.mkdir()) {
+            throw new IOException("Could not create directory");
+         }
          outFile = new File(subdirectory, outFile.getName());
       }
 
@@ -104,15 +106,14 @@ public abstract class Rule {
          if (ruleWasApplicable) {
             if (subdirectoryName == null) {
                System.out.println("Rule was applied to " + currentOutfileName);
-            } else
+            } else {
                System.out.println("Rule was applied to " + subdirectoryName + currentOutfileName);
+            }
 
-            if (changeSet != null) changeSet.applyChanges(outFile);
+            if (changeSet != null) {
+               changeSet.applyChanges(outFile);
+            }
          }
-         // else {
-         // System.out.println("Not applicable to " + currentFileName);
-         // }
-
       } else {
          System.out.println("The file " + inFile + " does not exist!");
       }

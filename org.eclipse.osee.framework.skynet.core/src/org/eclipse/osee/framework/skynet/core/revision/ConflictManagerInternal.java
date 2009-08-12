@@ -472,7 +472,7 @@ public class ConflictManagerInternal {
       } else {
          for (Branch branch : destBranches) {
             if (branch.getParentBranch().equals(commonBranch)) {
-               destTransaction = TransactionIdManager.getStartEndPoint(branch).getKey().getTransactionNumber();
+               destTransaction = TransactionIdManager.getStartEndPoint(branch).getFirst().getTransactionNumber();
                break;
             }
 
@@ -480,7 +480,7 @@ public class ConflictManagerInternal {
       }
       for (Branch branch : sourceBranches) {
          if (branch.getParentBranch().equals(commonBranch)) {
-            sourceTransaction = TransactionIdManager.getStartEndPoint(branch).getKey().getTransactionNumber();
+            sourceTransaction = TransactionIdManager.getStartEndPoint(branch).getFirst().getTransactionNumber();
             break;
          }
       }

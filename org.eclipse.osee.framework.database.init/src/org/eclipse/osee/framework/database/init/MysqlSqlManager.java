@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -44,7 +44,7 @@ public class MysqlSqlManager extends SqlManagerImpl {
          Map<ColumnFields, String> column = columns.get(key).getColumnFields();
          lines.add(columnDataToSQL(column));
       }
-      String toExecute = StringFormat.listToValueSeparatedString(lines, ",\n");
+      String toExecute = StringUtils.join(lines, ",\n");
       return toExecute;
    }
 
@@ -55,33 +55,38 @@ public class MysqlSqlManager extends SqlManagerImpl {
       toExecute +=
             handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+            "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(connection, toExecute);
    }
 
    @Override
    public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+            "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute);
    }
 
+   @Override
    protected String formatQuotedString(String value, String splitAt) {
       String[] array = value.split(splitAt);
       for (int index = 0; index < array.length; index++) {
          array[index] = array[index];
       }
-      // return value;
-      return StringFormat.separateWith(array, splitAt.replaceAll("\\\\", ""));
+      return StringUtils.join(array, splitAt.replaceAll("\\\\", ""));
    }
 
+   @Override
    public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
-         if (iData.ignoreMySql()) continue;
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]", iData.getId(),
-               tableName));
+         if (iData.ignoreMySql()) {
+            continue;
+         }
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]",
+               iData.getId(), tableName));
          if (iData.getId().equals("PRIMARY")) {
             ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {
@@ -90,6 +95,7 @@ public class MysqlSqlManager extends SqlManagerImpl {
       }
    }
 
+   @Override
    public String constraintDataToSQL(ConstraintElement constraint, String tableID) {
       StringBuilder toReturn = new StringBuilder();
       String id = formatQuotedString(constraint.getId(), "\\.");

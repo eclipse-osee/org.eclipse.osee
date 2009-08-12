@@ -130,7 +130,7 @@ public class RequirementData extends BaseTraceDataCache {
       if (toReturn == null) {
          Pair<String, String> structured = TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
          if (structured != null) {
-            toReturn = getRequirementFromTraceMark(structured.getKey());
+            toReturn = getRequirementFromTraceMark(structured.getFirst());
          }
       }
       return toReturn;

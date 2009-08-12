@@ -100,7 +100,7 @@ public class ConflictTest {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
+                           ConflictTestManager.getSourceBranch()).getFirst(), new EmptyMonitor());
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
@@ -128,7 +128,7 @@ public class ConflictTest {
          Collection<Conflict> conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
+                           ConflictTestManager.getSourceBranch()).getFirst(), new EmptyMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -146,7 +146,7 @@ public class ConflictTest {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getKey(), new EmptyMonitor());
+                           ConflictTestManager.getSourceBranch()).getFirst(), new EmptyMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(

@@ -30,17 +30,17 @@ import org.xml.sax.SAXException;
 public class PropertyStore implements IPropertyStore, Serializable {
    private static final long serialVersionUID = 9076969425223251739L;
 
-   private final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
+   private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
 
    private String storeId;
-   private Properties storageData;
+   private final Properties storageData;
    private Properties storageArrays;
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof PropertyStore) {
          PropertyStore castObj = (PropertyStore) obj;
-         return (castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && castObj.storageArrays.equals(storageArrays));
+         return castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && castObj.storageArrays.equals(storageArrays);
       }
       return false;
    }
@@ -169,6 +169,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return storageArrays;
    }
 
+   @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append(storageData.toString().replaceAll(",", ",\n"));

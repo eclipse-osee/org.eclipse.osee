@@ -171,7 +171,7 @@ public class HealthHelper {
       List<Object[]> insertParameters = new LinkedList<Object[]>();
 
       for (Pair<Integer, Integer> pair : noneSet) {
-         insertParameters.add(new Object[] {pair.getKey(), pair.getValue(), pair.getKey()});
+         insertParameters.add(new Object[] {pair.getFirst(), pair.getSecond(), pair.getFirst()});
       }
       int total = 0;
       if (insertParameters.size() > 0) {
@@ -184,7 +184,7 @@ public class HealthHelper {
       int counter = 0;
       for (Pair<Integer, Integer> pairs : noneSet) {
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(counter++),
-               String.valueOf(pairs.getKey()), String.valueOf(pairs.getValue())}));
+               String.valueOf(pairs.getFirst()), String.valueOf(pairs.getSecond())}));
       }
    }
 

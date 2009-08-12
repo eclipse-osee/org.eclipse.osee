@@ -84,17 +84,23 @@ public class Benchmark {
     * Begins the sample
     */
    public void startSample() {
-      if (!isBenchmarkingEnabled()) return;
+      if (!isBenchmarkingEnabled()) {
+         return;
+      }
       startSample(System.nanoTime());
    }
 
    public void startSample(long time) {
-      if (!isBenchmarkingEnabled()) return;
+      if (!isBenchmarkingEnabled()) {
+         return;
+      }
       startTime = time;
    }
 
    public void samplePoint() {
-      if (!isBenchmarkingEnabled()) return;
+      if (!isBenchmarkingEnabled()) {
+         return;
+      }
       samplePoint(System.nanoTime());
    }
 
@@ -102,7 +108,9 @@ public class Benchmark {
     * Measures time between sample points
     */
    public void samplePoint(long time) {
-      if (!isBenchmarkingEnabled()) return;
+      if (!isBenchmarkingEnabled()) {
+         return;
+      }
       if (startTime == Long.MIN_VALUE) {
          // this is the first time samplePoint was called
          startTime = time;
@@ -126,7 +134,9 @@ public class Benchmark {
    }
 
    public boolean endSample() {
-      if (!isBenchmarkingEnabled()) return false;
+      if (!isBenchmarkingEnabled()) {
+         return false;
+      }
       return endSample(System.nanoTime());
    }
 
@@ -135,7 +145,9 @@ public class Benchmark {
     */
    public boolean endSample(long time) {
       boolean exceeded = false;
-      if (!isBenchmarkingEnabled()) return exceeded;
+      if (!isBenchmarkingEnabled()) {
+         return exceeded;
+      }
       final long duration = (time - startTime) / 1000;
       totalTime += duration;
       if (duration > threshold) {
@@ -223,7 +235,7 @@ public class Benchmark {
       for (int i = 0; i < 1000; i++) {
          bm.startSample();
          try {
-            Thread.sleep((i % 2) == 0 ? 5 : 10);
+            Thread.sleep(i % 2 == 0 ? 5 : 10);
          } catch (InterruptedException ex) {
             ex.printStackTrace();
          }
@@ -232,8 +244,8 @@ public class Benchmark {
 
       // Sorry Need to keep this java 1.4 compatible
       Object[] formatArgs =
-            {new Long(bm.getTotalSamples()), new Float(bm.getLongestSample() / 1000),
-                  new Float(bm.getShortestSample() / 1000), new Float(bm.getAverage() / 1000),
+            {new Long(bm.getTotalSamples()), new Float((float) bm.getLongestSample() / 1000),
+                  new Float((float) bm.getShortestSample() / 1000), new Float((float) bm.getAverage() / 1000),
                   new Long(bm.getExceedCount())};
       MessageFormat outmessage =
             new MessageFormat(
@@ -243,6 +255,7 @@ public class Benchmark {
 
    }
 
+   @Override
    public String toString() {
       return String.format("%s\t total samples: %d,\t average: %fms,\t max time: %f, min: %fms, exceed count: %d",
             name, new Long(getTotalSamples()), new Float(getLongestSample() / 1000), new Float(

@@ -13,14 +13,12 @@ package org.eclipse.osee.framework.ui.service.control.renderer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
-
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.jini.service.core.FormmatedEntry;
 import org.eclipse.osee.framework.jini.service.core.GroupEntry;
 import org.eclipse.osee.framework.jini.service.core.OwnerEntry;
@@ -44,8 +42,8 @@ public class ServiceItemHandler implements IRenderer {
 
    private class ItemEntry {
       String value;
-      private int style;
-      private int color;
+      private final int style;
+      private final int color;
 
       public ItemEntry(String value, int style, int color) {
          this.value = value;
@@ -67,8 +65,8 @@ public class ServiceItemHandler implements IRenderer {
    }
 
    private class ItemRecord {
-      private ItemEntry label;
-      private ItemEntry data;
+      private final ItemEntry label;
+      private final ItemEntry data;
 
       public ItemRecord(String label, String data) {
          this(label, SWT.BOLD, SWT.COLOR_DARK_BLUE, data, SWT.NORMAL, SWT.COLOR_BLACK);
@@ -127,7 +125,7 @@ public class ServiceItemHandler implements IRenderer {
             } else if (entries[i] instanceof GroupEntry) {
                String[] groups = ((GroupEntry) entries[i]).group;
                serviceRecords.add(new ItemRecord("Group",
-                     "{ " + ((groups == null) ? "" : StringFormat.commaSeparate(groups)) + " }", SWT.BOLD,
+                     "{ " + (groups == null ? "" : StringUtils.join(groups, ",")) + " }", SWT.BOLD,
                      SWT.COLOR_DARK_GREEN));
             } else if (entries[i] instanceof FormmatedEntry) {
                additionalInfo += ((FormmatedEntry) entries[i]).getFormmatedString();
@@ -138,13 +136,13 @@ public class ServiceItemHandler implements IRenderer {
                serviceRecords.add(new ItemRecord("Model", info.model));
                serviceRecords.add(new ItemRecord("Version", info.version));
                serviceRecords.add(new ItemRecord("SerialNumber", info.serialNumber));
-            } else if (entries[i] instanceof PropertyEntry){
-            	PropertyEntry info = (PropertyEntry) entries[i];
-            	String[] keys = info.map.keySet().toArray(new String[info.map.keySet().size()]);
-            	Arrays.sort(keys);
-            	for(String key:keys){
-            		serviceRecords.add(new ItemRecord(key, info.map.get(key).toString()));
-            	}
+            } else if (entries[i] instanceof PropertyEntry) {
+               PropertyEntry info = (PropertyEntry) entries[i];
+               String[] keys = info.map.keySet().toArray(new String[info.map.keySet().size()]);
+               Arrays.sort(keys);
+               for (String key : keys) {
+                  serviceRecords.add(new ItemRecord(key, info.map.get(key).toString()));
+               }
             }
          }
 
@@ -199,6 +197,7 @@ public class ServiceItemHandler implements IRenderer {
       return parent;
    }
 
+   @Override
    public String toString() {
       String toReturn = "";
       for (ItemRecord record : serviceRecords) {

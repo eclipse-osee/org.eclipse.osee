@@ -32,11 +32,12 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       return "Copy TransactionData To Baseline";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       int txNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
       TransactionId fromTransactionId = TransactionIdManager.getTransactionId(txNumber);
-      TransactionId baseLineTransaction = TransactionIdManager.getStartEndPoint(branch).getValue();
+      TransactionId baseLineTransaction = TransactionIdManager.getStartEndPoint(branch).getSecond();
 
       ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, baseLineTransaction, fromTransactionId);
 
@@ -52,6 +53,7 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       return "Copy tx data from the From Transaction to the baseline transaction of the branch";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

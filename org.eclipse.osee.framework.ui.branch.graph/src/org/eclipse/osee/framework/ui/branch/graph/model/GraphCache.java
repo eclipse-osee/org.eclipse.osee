@@ -108,9 +108,9 @@ public class GraphCache {
          toReturn = new BranchModel(branch);
 
          Pair<TransactionId, TransactionId> startAndEnd = TransactionIdManager.getStartEndPoint(branch);
-         addTxsToBranchModel(toReturn, startAndEnd.getKey());
-         if (startAndEnd.getKey().equals(startAndEnd.getValue())) {
-            addTxsToBranchModel(toReturn, startAndEnd.getValue());
+         addTxsToBranchModel(toReturn, startAndEnd.getFirst());
+         if (startAndEnd.getFirst().equals(startAndEnd.getSecond())) {
+            addTxsToBranchModel(toReturn, startAndEnd.getSecond());
          }
          addBranchModel(toReturn);
       }

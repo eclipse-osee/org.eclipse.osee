@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
-
 import org.eclipse.osee.framework.jdk.core.type.InputManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
@@ -36,8 +34,8 @@ import org.eclipse.osee.framework.ui.service.control.data.ServiceNodeFactory;
 public class ServiceTreeBuilder {
 
    private static ServiceNodeFactory serviceNodeFactory = null;
-   private InputManager<TreeParent> inputManager;
-   private Map<ServiceID, ServiceItem> map;
+   private final InputManager<TreeParent> inputManager;
+   private final Map<ServiceID, ServiceItem> map;
 
    public ServiceTreeBuilder() {
       serviceNodeFactory = ServiceNodeFactory.getInstance();
@@ -50,7 +48,7 @@ public class ServiceTreeBuilder {
       List<TreeParent> nodes = inputManager.getInputList();
       for (TreeParent node : nodes) {
          if (node instanceof GroupParent) {
-            GroupParent groupParent = ((GroupParent) node);
+            GroupParent groupParent = (GroupParent) node;
             if (serviceNode.isMemberOf(groupParent.getName())) {
                if (!toReturn.contains(groupParent)) {
                   toReturn.add(groupParent);
@@ -66,7 +64,7 @@ public class ServiceTreeBuilder {
          TreeObject[] children = groupParent.getChildren();
          for (TreeObject child : children) {
             if (child instanceof CategoryParent) {
-               CategoryParent categoryParent = ((CategoryParent) child);
+               CategoryParent categoryParent = (CategoryParent) child;
                if (categoryParent.getName().equals(serviceNode.getName())) {
                   return categoryParent;
                }
@@ -82,7 +80,7 @@ public class ServiceTreeBuilder {
          TreeObject[] children = category.getChildren();
          for (TreeObject child : children) {
             if (child instanceof ServiceNode) {
-               ServiceNode serviceNode = ((ServiceNode) child);
+               ServiceNode serviceNode = (ServiceNode) child;
                if (serviceNode.getServiceID().equals(searchNode.getServiceID())) {
                   return new Pair<CategoryParent, ServiceNode>(category, serviceNode);
                }
@@ -108,19 +106,19 @@ public class ServiceTreeBuilder {
                   if (!existingGroupNames.contains(groupParent.getName())) {
                      existingGroupNames.add(groupParent.getName());
                   }
-//                  CategoryParent categoryParent = findCategory(groupParent, serviceNode);
-//                  if (categoryParent == null) {
-//                     categoryParent = new CategoryParent(serviceNode.getName());
-//                     groupParent.addChild(categoryParent);
-//                     categoryParent.addChild(serviceNode);
-//                  } else {
-                     Pair<CategoryParent, ServiceNode> node = findService(groupParent, serviceNode);
-                     if (node != null) {
-                        node.getValue().setServiceItem(serviceItem);
-                     } else {
-                        groupParent.addChild(serviceNode);
-                     }
-//                  }
+                  //                  CategoryParent categoryParent = findCategory(groupParent, serviceNode);
+                  //                  if (categoryParent == null) {
+                  //                     categoryParent = new CategoryParent(serviceNode.getName());
+                  //                     groupParent.addChild(categoryParent);
+                  //                     categoryParent.addChild(serviceNode);
+                  //                  } else {
+                  Pair<CategoryParent, ServiceNode> node = findService(groupParent, serviceNode);
+                  if (node != null) {
+                     node.getSecond().setServiceItem(serviceItem);
+                  } else {
+                     groupParent.addChild(serviceNode);
+                  }
+                  //                  }
                }
                inputManager.inputChanged();
             }
@@ -128,9 +126,9 @@ public class ServiceTreeBuilder {
             for (String group : serviceNode.getGroups()) {
                if (!existingGroupNames.contains(group)) {
                   GroupParent groupParent = new GroupParent(group);
-//                  CategoryParent categoryParent = new CategoryParent(serviceNode.getName());
+                  //                  CategoryParent categoryParent = new CategoryParent(serviceNode.getName());
                   groupParent.addChild(serviceNode);
-//                  categoryParent.addChild(serviceNode);
+                  //                  categoryParent.addChild(serviceNode);
                   inputManager.addNode(groupParent);
                }
             }
@@ -156,7 +154,7 @@ public class ServiceTreeBuilder {
                   }
                   Pair<CategoryParent, ServiceNode> node = findService(groupParent, serviceNode);
                   if (node != null) {
-                     node.getValue().setServiceItem(serviceItem);
+                     node.getSecond().setServiceItem(serviceItem);
                      inputManager.inputChanged();
                   } else {
                      handleAsServiceAddedEvent = true;
@@ -191,9 +189,9 @@ public class ServiceTreeBuilder {
                for (GroupParent groupParent : groupParents) {
                   Pair<CategoryParent, ServiceNode> node = findService(groupParent, serviceNode);
                   if (node != null) {
-                     node.getKey().removeChild(node.getValue());
-                     if (!node.getKey().hasChildren()) {
-                        groupParent.removeChild(node.getKey());
+                     node.getFirst().removeChild(node.getSecond());
+                     if (!node.getFirst().hasChildren()) {
+                        groupParent.removeChild(node.getFirst());
                      }
                      inputManager.inputChanged();
                   }

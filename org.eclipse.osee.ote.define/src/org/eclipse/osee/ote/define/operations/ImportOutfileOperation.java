@@ -17,13 +17,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -36,8 +36,8 @@ import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
  */
 public class ImportOutfileOperation {
 
-   private URI[] fileSystemObjects;
-   private Branch selectedBranch;
+   private final URI[] fileSystemObjects;
+   private final Branch selectedBranch;
 
    public ImportOutfileOperation(Branch selectedBranch, URI... fileSystemObjects) throws OseeCoreException {
       checkForNull(selectedBranch);
@@ -104,7 +104,7 @@ public class ImportOutfileOperation {
       for (Artifact artifact : artifacts) {
          toReturn.add(artifact.getName());
       }
-      return StringFormat.listToValueSeparatedString(toReturn, ",\n");
+      return StringUtils.join(toReturn, ",\n");
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {

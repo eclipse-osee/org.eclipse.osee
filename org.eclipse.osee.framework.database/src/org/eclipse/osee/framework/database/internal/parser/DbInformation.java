@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class DbInformation implements IDatabaseInfo {
 
-   private DbDetailData dbDetailData;
-   private DbSetupData dbSetupData;
-   private DbConnectionData dbConnectionData;
+   private final DbDetailData dbDetailData;
+   private final DbSetupData dbSetupData;
+   private final DbConnectionData dbConnectionData;
 
    public enum DbObjectType {
       ConnectionDescription, AvailableDbServices, DatabaseInfo
@@ -53,14 +53,14 @@ public class DbInformation implements IDatabaseInfo {
       Set<DbDetailData.ConfigField> keys = dbDetailData.getConfigMap().keySet();
       for (DbDetailData.ConfigField field : keys) {
          Pair<String, String> pair = dbDetailData.getConfigMap().get(field);
-         if (pair.getValue().startsWith("@")) {
-            DbObjectType type = DbObjectType.valueOf(pair.getValue().substring(1, pair.getValue().indexOf('.')));
-            String value = pair.getValue().substring(pair.getValue().indexOf('.') + 1);
+         if (pair.getSecond().startsWith("@")) {
+            DbObjectType type = DbObjectType.valueOf(pair.getSecond().substring(1, pair.getSecond().indexOf('.')));
+            String value = pair.getSecond().substring(pair.getSecond().indexOf('.') + 1);
             String realValue = getValue(type, value);
 
-            toReturn = toReturn.replace(pair.getKey(), realValue);
+            toReturn = toReturn.replace(pair.getFirst(), realValue);
          } else {
-            toReturn = toReturn.replace(pair.getKey(), pair.getValue());
+            toReturn = toReturn.replace(pair.getFirst(), pair.getSecond());
          }
       }
       return toReturn;
@@ -78,6 +78,7 @@ public class DbInformation implements IDatabaseInfo {
       return "none";
    }
 
+   @Override
    public String toString() {
       return getFormattedURL() + " : user=" + getDatabaseLoginName();
    }

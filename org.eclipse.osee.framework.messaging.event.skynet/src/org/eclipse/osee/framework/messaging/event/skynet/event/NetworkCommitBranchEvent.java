@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
-
 /**
  * Skynet messaging event; Should not be subscribed to by OSEE applications.
  * 
@@ -31,10 +30,6 @@ public class NetworkCommitBranchEvent extends SkynetEventBase {
 
    public int getBranchId() {
       return branchId;
-   }
-
-   public int compareTo(Object o) {
-      return 0;
    }
 
 }

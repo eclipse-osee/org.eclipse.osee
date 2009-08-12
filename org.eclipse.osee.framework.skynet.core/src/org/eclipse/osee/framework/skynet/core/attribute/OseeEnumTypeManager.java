@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -166,7 +166,7 @@ public class OseeEnumTypeManager {
       }
    }
 
-   private static void checkEntryIntegrity(String enumTypeName, List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
+   private static void checkEntryIntegrity(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
       if (entries == null) {
          throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries", enumTypeName));
       }
@@ -174,9 +174,9 @@ public class OseeEnumTypeManager {
       //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
       //            enumTypeName));
       Map<String, Integer> values = new HashMap<String, Integer>();
-      for (ObjectPair<String, Integer> entry : entries) {
-         String name = entry.object1;
-         int ordinal = entry.object2;
+      for (Pair<String, Integer> entry : entries) {
+         String name = entry.getFirst();
+         int ordinal = entry.getSecond();
          if (!Strings.isValid(name)) {
             throw new OseeArgumentException("Enum entry name cannot be null");
          }
@@ -199,7 +199,7 @@ public class OseeEnumTypeManager {
       return -1;
    }
 
-   public static OseeEnumType createEnumType(String enumTypeName, List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
+   public static OseeEnumType createEnumType(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
       checkEnumTypeName(enumTypeName);
       checkEntryIntegrity(enumTypeName, entries);
 
@@ -217,7 +217,7 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType createEnumTypeFromXml(String attributeTypeName, String xmlDefinition) throws OseeCoreException {
-      List<ObjectPair<String, Integer>> entries = new ArrayList<ObjectPair<String, Integer>>();
+      List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
       String enumTypeName = "";
 
       if (!Strings.isValid(xmlDefinition)) {
@@ -246,7 +246,7 @@ public class OseeEnumTypeManager {
 
       int ordinal = 0;
       for (String choice : choices) {
-         entries.add(new ObjectPair<String, Integer>(choice, ordinal++));
+         entries.add(new Pair<String, Integer>(choice, ordinal++));
       }
 
       return createEnumType(enumTypeName, entries);
@@ -304,10 +304,10 @@ public class OseeEnumTypeManager {
       checkNull(entries);
       if (entries.length > 0) {
          final List<OseeEnumEntry> itemsToRemove = Arrays.asList(entries);
-         final List<ObjectPair<String, Integer>> newEntries = new ArrayList<ObjectPair<String, Integer>>();
+         final List<Pair<String, Integer>> newEntries = new ArrayList<Pair<String, Integer>>();
          for (OseeEnumEntry entry : enumType.values()) {
             if (!itemsToRemove.contains(entry)) {
-               newEntries.add(entry.asObjectPair());
+               newEntries.add(entry.asPair());
             }
          }
          UpdateEnumTx updateEnumTx = new UpdateEnumTx(enumType, newEntries);
@@ -318,13 +318,13 @@ public class OseeEnumTypeManager {
       }
    }
 
-   public static void addEntries(final OseeEnumType oseeEnumType, final ObjectPair<String, Integer>... entries) throws OseeCoreException {
+   public static void addEntries(final OseeEnumType oseeEnumType, final Pair<String, Integer>... entries) throws OseeCoreException {
       addEntries(oseeEnumType, Collections.getAggregate(entries));
    }
 
-   public static void addEntries(final OseeEnumType oseeEnumType, final List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
+   public static void addEntries(final OseeEnumType oseeEnumType, final List<Pair<String, Integer>> entries) throws OseeCoreException {
       checkNull(oseeEnumType);
-      final List<ObjectPair<String, Integer>> newEntries = getCombinedEntries(oseeEnumType, entries);
+      final List<Pair<String, Integer>> newEntries = getCombinedEntries(oseeEnumType, entries);
 
       UpdateEnumTx updateEnumTx = new UpdateEnumTx(oseeEnumType, newEntries);
       updateEnumTx.execute();
@@ -334,7 +334,7 @@ public class OseeEnumTypeManager {
          instance.cache(oseeEnumType);
          wasCreated = true;
       }
-      for (ObjectPair<String, Integer> entry : entries) {
+      for (Pair<String, Integer> entry : entries) {
          oseeEnumType.internalAddEnum(entry);
       }
       // TODO Signal to other clients - Event here
@@ -343,22 +343,22 @@ public class OseeEnumTypeManager {
       }
    }
 
-   private static List<ObjectPair<String, Integer>> getCombinedEntries(final OseeEnumType enumType, final List<ObjectPair<String, Integer>> entries) {
-      final List<ObjectPair<String, Integer>> combinedList = new ArrayList<ObjectPair<String, Integer>>();
+   private static List<Pair<String, Integer>> getCombinedEntries(final OseeEnumType enumType, final List<Pair<String, Integer>> entries) {
+      final List<Pair<String, Integer>> combinedList = new ArrayList<Pair<String, Integer>>();
       if (entries != null) {
          combinedList.addAll(entries);
       }
       for (OseeEnumEntry entry : enumType.values()) {
-         combinedList.add(entry.asObjectPair());
+         combinedList.add(entry.asPair());
       }
       return combinedList;
    }
 
    private static final class UpdateEnumTx extends DbTransaction {
-      private final List<ObjectPair<String, Integer>> entries;
+      private final List<Pair<String, Integer>> entries;
       private final OseeEnumType enumType;
 
-      public UpdateEnumTx(final OseeEnumType enumType, final List<ObjectPair<String, Integer>> entries) throws OseeCoreException {
+      public UpdateEnumTx(final OseeEnumType enumType, final List<Pair<String, Integer>> entries) throws OseeCoreException {
          super();
          this.enumType = enumType;
          this.entries = entries;
@@ -371,8 +371,8 @@ public class OseeEnumTypeManager {
 
          Integer oseeEnumTypeId = enumType.getEnumTypeId();
          List<Object[]> data = new ArrayList<Object[]>();
-         for (ObjectPair<String, Integer> entry : entries) {
-            data.add(new Object[] {oseeEnumTypeId, entry.object1, entry.object2});
+         for (Pair<String, Integer> entry : entries) {
+            data.add(new Object[] {oseeEnumTypeId, entry.getFirst(), entry.getSecond()});
          }
          ConnectionHandler.runPreparedUpdate(connection, DELETE_ENUM_TYPE_ENTRIES, oseeEnumTypeId);
          if (!data.isEmpty()) {

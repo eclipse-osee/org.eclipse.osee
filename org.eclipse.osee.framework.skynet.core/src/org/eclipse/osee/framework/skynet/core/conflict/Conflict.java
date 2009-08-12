@@ -86,7 +86,7 @@ public abstract class Conflict implements IAdaptable {
          } else {
             sourceArtifact =
                   ArtifactQuery.getHistoricalArtifactFromId(artId,
-                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey(), true);
+                        TransactionIdManager.getStartEndPoint(mergeBranch).getFirst(), true);
          }
       }
       return sourceArtifact;
@@ -192,7 +192,7 @@ public abstract class Conflict implements IAdaptable {
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
                   getConflictType().getValue(), passedStatus,
-                  TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber());
+                  TransactionIdManager.getStartEndPoint(mergeBranch).getFirst().getTransactionNumber());
       return status;
    }
 

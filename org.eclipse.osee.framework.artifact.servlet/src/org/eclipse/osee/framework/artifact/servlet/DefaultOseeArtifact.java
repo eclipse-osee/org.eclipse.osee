@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.artifact.servlet;
 
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -25,7 +25,7 @@ public class DefaultOseeArtifact {
    private static String OSEE_DEFAULT_SERVER_PAGE_GUID_KEY = "osee.default.server.page.guid";
    private static String OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID = "osee.default.server.page.branch.id";
 
-   public static ObjectPair<String, String> get() throws Exception {
+   public static Pair<String, String> get() throws Exception {
 
       final String artifactGuid = OseeInfo.getValue(OSEE_DEFAULT_SERVER_PAGE_GUID_KEY);
       String defaultBranchId = OseeInfo.getValue(OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID);
@@ -42,6 +42,6 @@ public class DefaultOseeArtifact {
                      "OSEE default server page not found. Ensure values exist in OseeInfo table for [%s] and [%s] keys.",
                      OSEE_DEFAULT_SERVER_PAGE_GUID_KEY, OSEE_DEFAULT_SERVER_PAGE_BRANCH_ID));
       }
-      return new ObjectPair<String, String>(artifactGuid, String.valueOf(artifactBranchId));
+      return new Pair<String, String>(artifactGuid, String.valueOf(artifactBranchId));
    }
 }

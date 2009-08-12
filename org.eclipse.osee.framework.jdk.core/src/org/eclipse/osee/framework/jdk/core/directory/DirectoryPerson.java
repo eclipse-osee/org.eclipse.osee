@@ -385,6 +385,15 @@ public class DirectoryPerson implements Comparable<Object>, Serializable {
       return fullName.compareTo(((DirectoryPerson) person).fullName);
    }
 
+   @Override
+   public boolean equals(Object obj) {
+      if (!(obj instanceof DirectoryPerson)) {
+         return false;
+      }
+      DirectoryPerson dp = (DirectoryPerson) obj;
+      return this.fullName.equals(dp.fullName);
+   }
+
    /**
     * @return Returns the policies.
     */
@@ -407,6 +416,7 @@ public class DirectoryPerson implements Comparable<Object>, Serializable {
       this.hasPolicy = hasPolicy;
    }
 
+   @Override
    public String toString() {
       return fullName + " : " + this.bemsid + " : " + email;
    }

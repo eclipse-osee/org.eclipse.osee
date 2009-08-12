@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.view;
 
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.actions.HideLookupsAction;
@@ -35,6 +35,7 @@ public class ServiceManagerView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView";
    private ManagerMain managerMain;
 
+   @Override
    public void createPartControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(new GridLayout());
@@ -45,7 +46,8 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       createServicesViewerPopUp();
       createLookupViewerPopUp();
 
-      this.setContentDescription("Jini Groups { " + StringFormat.commaSeparate(JiniLookupGroupConfig.getOseeJiniServiceGroups()) + " }");
+      this.setContentDescription("Jini Groups { " + StringUtils.join(JiniLookupGroupConfig.getOseeJiniServiceGroups(),
+            ",") + " }");
 
       OseeAts.addBugToViewToolbar(this, this, ControlPlugin.getInstance(), VIEW_ID, "Service Manager");
    }

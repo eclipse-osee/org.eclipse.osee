@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import net.jini.core.lookup.ServiceRegistrar;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
@@ -39,10 +39,10 @@ import org.eclipse.ui.PlatformUI;
  */
 public class JiniGroupSelector implements IRegistrarListener {
 
-   private Set<String> availableGroups;
+   private final Set<String> availableGroups;
    private String[] jiniGroup;
    private ComboViewer comboViewer;
-   private ReggieCache reggieCache;
+   private final ReggieCache reggieCache;
 
    public JiniGroupSelector() {
       this.comboViewer = null;
@@ -119,7 +119,7 @@ public class JiniGroupSelector implements IRegistrarListener {
    }
 
    public String getJiniGroupVmArg() {
-      return StringFormat.commaSeparate(jiniGroup);
+      return StringUtils.join(jiniGroup, ",");
    }
 
    public void dispose() {

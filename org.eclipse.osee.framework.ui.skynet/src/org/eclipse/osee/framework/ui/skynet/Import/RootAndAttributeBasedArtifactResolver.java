@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -40,10 +40,12 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
     */
    public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
       super(primaryArtifactType, secondaryArtifactType);
-      if (identifyingAttributeDescriptors == null) throw new IllegalArgumentException(
-            "identifyingAttributeDescriptors can not be null");
-      if (identifyingAttributeDescriptors.isEmpty()) throw new IllegalArgumentException(
-            "identifyingAttributeDescriptors can not be empty");
+      if (identifyingAttributeDescriptors == null) {
+         throw new IllegalArgumentException("identifyingAttributeDescriptors can not be null");
+      }
+      if (identifyingAttributeDescriptors.isEmpty()) {
+         throw new IllegalArgumentException("identifyingAttributeDescriptors can not be empty");
+      }
 
       this.identifyingAttributeDescriptors = new LinkedList<AttributeType>(identifyingAttributeDescriptors);
       this.createNewIfNotExist = createNewIfNotExist;
@@ -51,10 +53,10 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
 
-      Collection<ObjectPair<String, String>> roughAttributeCollection = roughArtifact.getAttributes();
+      Collection<Pair<String, String>> roughAttributeCollection = roughArtifact.getAttributes();
       HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();
-      for (ObjectPair<String, String> roughAttribute : roughAttributeCollection) {
-         roughAttributeMap.put(roughAttribute.object1, roughAttribute.object2);
+      for (Pair<String, String> roughAttribute : roughAttributeCollection) {
+         roughAttributeMap.put(roughAttribute.getFirst(), roughAttribute.getSecond());
       }
 
       for (AttributeType attributeType : identifyingAttributeDescriptors) {
@@ -96,6 +98,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 
+   @Override
    public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException {
       try {
          Artifact realArtifact = null;

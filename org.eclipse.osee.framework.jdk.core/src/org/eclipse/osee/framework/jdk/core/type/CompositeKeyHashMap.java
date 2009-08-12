@@ -26,35 +26,34 @@ import java.util.Set;
  * @param <KeyTwo>
  * @param <Value>
  */
-public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<CompositeKey<KeyOne, KeyTwo>, Value> {
-   private final HashCollection<KeyOne, KeyTwo> signleKeyMap = new HashCollection<KeyOne, KeyTwo>();
-   private final Map<CompositeKey<KeyOne, KeyTwo>, Value> map;
+public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
+   private final HashCollection<KeyOne, KeyTwo> singleKeyMap = new HashCollection<KeyOne, KeyTwo>();
+   private final Map<Pair<KeyOne, KeyTwo>, Value> map;
 
-   private final ThreadLocal<CompositeKey<KeyOne, KeyTwo>> threadLocalKey =
-         new ThreadLocal<CompositeKey<KeyOne, KeyTwo>>() {
+   private final ThreadLocal<Pair<KeyOne, KeyTwo>> threadLocalKey = new ThreadLocal<Pair<KeyOne, KeyTwo>>() {
 
-            @Override
-            protected CompositeKey<KeyOne, KeyTwo> initialValue() {
-               return new CompositeKey<KeyOne, KeyTwo>();
-            }
+      @Override
+      protected Pair<KeyOne, KeyTwo> initialValue() {
+         return new Pair<KeyOne, KeyTwo>(null, null);
+      }
 
-         };
+   };
 
    public CompositeKeyHashMap() {
       this(50);
    }
 
-   public CompositeKeyHashMap(Map<CompositeKey<KeyOne, KeyTwo>, Value> map) {
+   public CompositeKeyHashMap(Map<Pair<KeyOne, KeyTwo>, Value> map) {
       this.map = map;
    }
 
    public CompositeKeyHashMap(int initialCapacity) {
-      map = new HashMap<CompositeKey<KeyOne, KeyTwo>, Value>(initialCapacity);
+      map = new HashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
    }
 
    public void clear() {
       map.clear();
-      signleKeyMap.clear();
+      singleKeyMap.clear();
    }
 
    /**
@@ -64,7 +63,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
     * @return whether the map contains the key keyOne
     */
    public boolean containsKey(Object key1) {
-      return signleKeyMap.containsKey((KeyOne) key1);
+      return singleKeyMap.containsKey((KeyOne) key1);
    }
 
    /**
@@ -73,7 +72,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
     * @return whether the map contains the compound key <keyOne, keyTwo>
     */
    public boolean containsKey(KeyOne key1, KeyTwo key2) {
-      return map.containsKey(threadLocalKey.get().setKeys(key1, key2));
+      return map.containsKey(threadLocalKey.get().setCompositeKey(key1, key2));
    }
 
    /**
@@ -83,10 +82,10 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
     * @return whether the map contains this value
     */
    public boolean containsValue(Object value) {
-      return signleKeyMap.containsValue(value);
+      return singleKeyMap.containsValue(value);
    }
 
-   public Set<Map.Entry<CompositeKey<KeyOne, KeyTwo>, Value>> entrySet() {
+   public Set<Map.Entry<Pair<KeyOne, KeyTwo>, Value>> entrySet() {
       return map.entrySet();
    }
 
@@ -95,7 +94,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public List<Value> getValues(KeyOne key1) {
-      Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
       if (key2s == null) {
          return Collections.emptyList();
       }
@@ -107,32 +106,32 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value get(KeyOne key1, KeyTwo key2) {
-      return map.get(threadLocalKey.get().setKeys(key1, key2));
+      return map.get(threadLocalKey.get().setCompositeKey(key1, key2));
    }
 
    public boolean isEmpty() {
       return map.isEmpty();
    }
 
-   public Set<CompositeKey<KeyOne, KeyTwo>> keySet() {
+   public Set<Pair<KeyOne, KeyTwo>> keySet() {
       return map.keySet();
    }
 
-   public Value put(CompositeKey<KeyOne, KeyTwo> key, Value value) {
-      signleKeyMap.put(key.getKey1(), key.getKey2());
+   public Value put(Pair<KeyOne, KeyTwo> key, Value value) {
+      singleKeyMap.put(key.getFirst(), key.getSecond());
       return map.put(key, value);
    }
 
    public Value put(KeyOne key1, KeyTwo key2, Value value) {
-      signleKeyMap.put(key1, key2);
-      return map.put(new CompositeKey<KeyOne, KeyTwo>(key1, key2), value);
+      singleKeyMap.put(key1, key2);
+      return map.put(new Pair<KeyOne, KeyTwo>(key1, key2), value);
    }
 
-   public void putAll(Map<? extends CompositeKey<KeyOne, KeyTwo>, ? extends Value> copyMap) {
+   public void putAll(Map<? extends Pair<KeyOne, KeyTwo>, ? extends Value> copyMap) {
       map.putAll(copyMap);
 
-      for (CompositeKey<KeyOne, KeyTwo> key : copyMap.keySet()) {
-         signleKeyMap.put(key.getKey1(), key.getKey2());
+      for (Pair<KeyOne, KeyTwo> key : copyMap.keySet()) {
+         singleKeyMap.put(key.getFirst(), key.getSecond());
       }
    }
 
@@ -145,21 +144,21 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
     * @return the previous value associated with key, or null if there was no mapping for key.
     */
    public Collection<Value> removeValues(KeyOne key1) {
-      Collection<KeyTwo> key2s = signleKeyMap.getValues(key1);
+      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
       if (key2s == null) {
          return null;
       }
       ArrayList<Value> values = new ArrayList<Value>(key2s.size());
       for (KeyTwo key2 : key2s) {
-         values.add(map.remove(threadLocalKey.get().setKeys(key1, key2)));
+         values.add(map.remove(threadLocalKey.get().setCompositeKey(key1, key2)));
       }
-      signleKeyMap.removeValues(key1);
+      singleKeyMap.removeValues(key1);
       return values;
    }
 
    public Value remove(KeyOne key1, KeyTwo key2) {
-      Value value = map.remove(threadLocalKey.get().setKeys(key1, key2));
-      signleKeyMap.removeValue(key1, key2);
+      Value value = map.remove(threadLocalKey.get().setCompositeKey(key1, key2));
+      singleKeyMap.removeValue(key1, key2);
       return value;
    }
 

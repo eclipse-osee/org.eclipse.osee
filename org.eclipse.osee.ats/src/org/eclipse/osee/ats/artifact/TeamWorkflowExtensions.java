@@ -48,9 +48,13 @@ public class TeamWorkflowExtensions {
       return artifactNames;
    }
 
-   @SuppressWarnings( {"unchecked"})
-   public Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
-      if (teamWorkflowExtensionItems != null) return teamWorkflowExtensionItems;
+   /* due to lazy initialization, this function is non-reentrant
+    * therefore, the synchronized keyword is necessary */
+   //   @SuppressWarnings( {"unchecked"})
+   public synchronized Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
+      if (teamWorkflowExtensionItems != null) {
+         return teamWorkflowExtensionItems;
+      }
       teamWorkflowExtensionItems = new HashSet<IAtsTeamWorkflow>();
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflow");
@@ -70,7 +74,7 @@ public class TeamWorkflowExtensions {
                if (classname != null && bundleName != null) {
                   Bundle bundle = Platform.getBundle(bundleName);
                   try {
-                     Class taskClass = bundle.loadClass(classname);
+                     Class<?> taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      teamWorkflowExtensionItems.add((IAtsTeamWorkflow) obj);
                   } catch (Exception ex) {

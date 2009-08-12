@@ -24,16 +24,13 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 public class ATSPerspective implements IPerspectiveFactory {
 
-   public ATSPerspective() {
-      super();
-   }
-
-   public void createInitialLayout(IPageLayout layout) {
+   @Override
+   public void createInitialLayout(final IPageLayout layout) {
       defineActions(layout);
       defineLayout(layout);
    }
 
-   public void defineActions(IPageLayout layout) {
+   public void defineActions(final IPageLayout layout) {
 
       // Add "show views".
       layout.addShowViewShortcut(NavigateView.VIEW_ID);
@@ -51,20 +48,20 @@ public class ATSPerspective implements IPerspectiveFactory {
 
    }
 
-   public void defineLayout(IPageLayout layout) {
+   public void defineLayout(final IPageLayout layout) {
       // Editors are placed for free.
-      String editorArea = layout.getEditorArea();
+      final String editorArea = layout.getEditorArea();
 
       // Place navigator and outline to left of
       // editor area.
-      IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float) 0.20, editorArea);
+      final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float) 0.20, editorArea);
       left.addView(NavigateView.VIEW_ID);
       left.addView(GroupExplorer.VIEW_ID);
       left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(BranchView.VIEW_ID);
 
       if (AtsUtil.isAtsAdmin()) {
-         IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);
+         final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);
          right.addView("org.eclipse.pde.runtime.LogView");
       }
 
