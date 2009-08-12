@@ -155,7 +155,7 @@ public class SvnAPI {
    private final class CheckoutOperationBuilder {
       private static final int WAIT_TIME = 30000;
       private CheckoutOperation checkoutOperation;
-      private HashMap<String, IRepositoryResource> checkoutMap;
+      private final HashMap<String, IRepositoryResource> checkoutMap;
       private boolean callbackReceived;
 
       public CheckoutOperationBuilder(HashMap<String, IRepositoryResource> checkoutMap) {

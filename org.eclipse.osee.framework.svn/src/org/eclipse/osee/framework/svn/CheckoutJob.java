@@ -20,12 +20,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.svn.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CheckoutJob extends Job {
-   private String[] fileToCheckout;
+   private final String[] fileToCheckout;
 
    public CheckoutJob(String jobName, String[] fileToCheckout) {
       super(jobName);
@@ -42,8 +43,8 @@ public class CheckoutJob extends Job {
             }
          }, this.getRule(), IWorkspace.AVOID_UPDATE, monitor);
       } catch (Exception ex) {
-         OseeLog.log(SvnActivator.class, Level.SEVERE, ex);
-         toReturn = new Status(Status.ERROR, SvnActivator.PLUGIN_ID, "Unable to Checkout Files", ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         toReturn = new Status(Status.ERROR, Activator.PLUGIN_ID, "Unable to Checkout Files", ex);
       }
       return toReturn;
    }

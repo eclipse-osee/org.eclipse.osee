@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.svn;
+package org.eclipse.osee.framework.svn.internal;
 
-import org.eclipse.osee.framework.plugin.core.OseeActivator;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle see http://svnkit.com/kb/examples/index.php for code examples on
@@ -18,18 +19,12 @@ import org.eclipse.osee.framework.plugin.core.OseeActivator;
  * 
  * @author Ryan D. Brooks
  */
-public class SvnActivator extends OseeActivator {
-   private static SvnActivator pluginInstance; // The shared instance.
-   public static final String PLUGIN_ID = "osee.svn";
+public class Activator implements BundleActivator {
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.svn";
 
-   public SvnActivator() {
-      pluginInstance = this;
+   public void start(BundleContext context) throws Exception {
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static SvnActivator getInstance() {
-      return pluginInstance;
+   public void stop(BundleContext context) throws Exception {
    }
 }

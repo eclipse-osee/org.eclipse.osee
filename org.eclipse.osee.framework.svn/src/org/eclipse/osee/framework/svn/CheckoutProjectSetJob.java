@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.svn.internal.Activator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.TeamException;
@@ -58,7 +59,7 @@ public class CheckoutProjectSetJob extends Job {
             toReturn = Status.CANCEL_STATUS;
          }
       } catch (Throwable ex) {
-         OseeLog.log(SvnActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return toReturn;
    }
