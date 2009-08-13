@@ -197,7 +197,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       radImportUnderSelection = new Button(composite, SWT.RADIO);
       radImportUnderSelection.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false, 2, 1));
-      radImportUnderSelection.setText("Add to Selected Artifact: " + destinationArtifact);
+      StringBuffer selectedArtifactText = new StringBuffer();
+      selectedArtifactText.append("Add to Selected Arifact");
+      if (destinationArtifact != null) {
+         selectedArtifactText.append(": ");
+         selectedArtifactText.append(destinationArtifact.toString());
+      }
+      radImportUnderSelection.setText(selectedArtifactText.toString());
       radImportUnderSelection.setToolTipText("All the top level artifacts that are imported will become children of the selected artifact.");
       radImportUnderSelection.addListener(SWT.Selection, this);
       radImportUnderSelection.addSelectionListener(new SelectionAdapter() {
