@@ -329,12 +329,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             new ExtensionDefinedObjects<ArtifactExtractor>("org.eclipse.osee.framework.ui.skynet.ArtifactExtractor",
                   "ArtifactExtractor", "class");
       java.util.List<ArtifactExtractor> artifactExtractors = definedObjects.getObjects();
-      GridData extractorButtonGridData = new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1);
       for (ArtifactExtractor artifactExtractor : artifactExtractors) {
          Button extractorButton = new Button(composite, SWT.RADIO);
          extractorButton.setText(artifactExtractor.getName());
          extractorButton.setToolTipText(artifactExtractor.getDescription());
-         extractorButton.setLayoutData(extractorButtonGridData);
+         extractorButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 1, 1));
          extractorButton.addListener(SWT.Selection, this);
          if (artifactExtractor.getName().equals("Word Outline")) {
             extractorButton.setSelection(true);
