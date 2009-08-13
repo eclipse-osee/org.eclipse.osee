@@ -272,6 +272,9 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return transactions.getFirst() != transactions.getSecond();
    }
 
+   /**
+    * @return the artifact id of the user who created the branch
+    */
    public int getAuthorId() {
       return authorId;
    }
