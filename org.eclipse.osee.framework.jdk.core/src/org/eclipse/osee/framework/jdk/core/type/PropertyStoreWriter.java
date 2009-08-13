@@ -158,17 +158,15 @@ public class PropertyStoreWriter {
 
       private void processTagItemSection(String uri, PropertyStore store, XMLStreamReader reader) {
          String value = reader.getAttributeValue(uri, TAG_VALUE);
-         if (Strings.isValid(value)) {
-            if (isInTagList) {
-               if (valueList == null) {
-                  valueList = new ArrayList<String>();
-               }
-               valueList.add(value);
-            } else {
-               String key = reader.getAttributeValue(uri, TAG_KEY);
-               if (Strings.isValid(key)) {
-                  store.put(key, value);
-               }
+         if (isInTagList) {
+            if (valueList == null) {
+               valueList = new ArrayList<String>();
+            }
+            valueList.add(value);
+         } else {
+            String key = reader.getAttributeValue(uri, TAG_KEY);
+            if (Strings.isValid(key)) {
+               store.put(key, value);
             }
          }
       }
