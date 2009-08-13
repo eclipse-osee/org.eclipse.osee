@@ -54,7 +54,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public String get(String key) {
-      return (String) storageData.get(key);
+      return storageData.getProperty(key);
    }
 
    public String[] getArray(String key) {
@@ -62,11 +62,11 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public boolean getBoolean(String key) {
-      return Boolean.valueOf((String) storageData.get(key)).booleanValue();
+      return Boolean.valueOf(storageData.getProperty(key));
    }
 
    public double getDouble(String key) throws NumberFormatException {
-      String setting = (String) storageData.get(key);
+      String setting = storageData.getProperty(key);
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
@@ -75,7 +75,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public float getFloat(String key) throws NumberFormatException {
-      String setting = (String) storageData.get(key);
+      String setting = storageData.getProperty(key);
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
@@ -84,7 +84,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public int getInt(String key) throws NumberFormatException {
-      String setting = (String) storageData.get(key);
+      String setting = storageData.getProperty(key);
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
@@ -93,7 +93,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public long getLong(String key) throws NumberFormatException {
-      String setting = (String) storageData.get(key);
+      String setting = storageData.getProperty(key);
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
@@ -128,7 +128,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
       if (value == null) {
          value = "";
       }
-      storageData.put(key, value);
+      storageData.setProperty(key, value);
    }
 
    public void put(String key, boolean value) {

@@ -67,9 +67,9 @@ public class BaseExchangeData implements Serializable {
    }
 
    protected void putProperties(String fieldName, Properties properties) {
-      for (Object theKey : properties.keySet()) {
+      for (String theKey : properties.stringPropertyNames()) {
          String keyStr = String.format("%s.%s", fieldName, theKey);
-         backingData.put(keyStr, properties.getProperty((String) theKey));
+         backingData.put(keyStr, properties.getProperty(theKey));
       }
    }
 
