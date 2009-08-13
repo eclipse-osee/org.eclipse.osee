@@ -1169,4 +1169,19 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public boolean isValidElement(Element currentElement, Element proposedElement) {
       return true;
    }
+   
+   public IMessageHeader[] getHeaders() {
+      final Collection<T> dataSources = getMemSource(getMemType());
+      if (dataSources.size() > 0) {
+         final IMessageHeader[] headers = new IMessageHeader[dataSources.size()];
+         int i = 0;
+         for (T dataSrc : dataSources) {
+            headers[i] = dataSrc.getMsgHeader();
+            i++;
+         }
+         return headers;
+      } else {
+         return new IMessageHeader[0];
+      }
+   }
 }
