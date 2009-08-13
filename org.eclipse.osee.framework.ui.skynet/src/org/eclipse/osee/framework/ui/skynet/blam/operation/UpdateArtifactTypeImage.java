@@ -43,6 +43,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
       return "Update ArtifactType Image";
    }
 
+   @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String filename = variableMap.getString(SELECT_IMAGE);
       final ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
@@ -72,7 +73,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\nLeaving image filename blank will clear the image from the database.  Programatic default will be used instead.\n\nNOTE: Change default branch for other Artifact Types.";
+      return "This BLAM will import the selected 16x16 pixel gif image as the image for the selected artifact type.  Existing image will be overwritten.\nLeaving image filename blank will clear the image from the database.  Programatic default will be used instead.";
    }
 
    @Override
@@ -84,6 +85,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
       return buffer.toString();
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }
