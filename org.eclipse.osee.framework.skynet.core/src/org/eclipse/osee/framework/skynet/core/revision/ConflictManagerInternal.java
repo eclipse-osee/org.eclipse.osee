@@ -129,7 +129,7 @@ public class ConflictManagerInternal {
          monitor = new EmptyMonitor();
       }
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
-      if (commitTransactionId != 0) {
+      if (commitTransactionId != -1) {
          try {
             return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId), monitor);
          } catch (TransactionDoesNotExist ex) {

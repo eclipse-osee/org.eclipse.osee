@@ -129,7 +129,7 @@ public class CommitDbTx extends DbTransaction {
    // Store branches that are currently being committed
    private static Set<Branch> branchesInCommit = new HashSet<Branch>();
 
-   protected CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+   public CommitDbTx(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.conflictManager = conflictManager;
       this.destinationBranch = conflictManager.getDestinationBranch();
@@ -146,7 +146,7 @@ public class CommitDbTx extends DbTransaction {
    }
 
    @Override
-   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   public void handleTxWork(OseeConnection connection) throws OseeCoreException {
       branchesInCommit.add(this.sourceBranch);
       User userToBlame = UserManager.getUser();
 

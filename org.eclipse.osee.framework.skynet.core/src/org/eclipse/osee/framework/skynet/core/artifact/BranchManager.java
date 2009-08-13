@@ -479,7 +479,7 @@ public class BranchManager {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
       runCommitExtPointActions(conflictManager.getSourceBranch());
-      new CommitDbTx(conflictManager, archiveSourceBranch).execute();
+      Activator.getInstance().getCommitBranchService().commitBranch(conflictManager, archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
