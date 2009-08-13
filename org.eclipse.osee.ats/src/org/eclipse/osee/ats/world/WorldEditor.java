@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -214,7 +215,16 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      return getWorldEditorProvider().getTargetedVersionArtifact();
+      VersionArtifact verArt = getWorldEditorProvider().getTargetedVersionArtifact();
+      if (verArt != null) return verArt;
+      for (Artifact artifact : getLoadedArtifacts()) {
+         if (artifact instanceof StateMachineArtifact) {
+            if (((StateMachineArtifact) artifact).getWorldViewTargetedVersion() != null) {
+               return ((StateMachineArtifact) artifact).getWorldViewTargetedVersion();
+            }
+         }
+      }
+      return null;
    }
 
    public WorldComposite getWorldComposite() {

@@ -71,6 +71,9 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
                if (artifactDecorator.showArtType()) {
                   name += " <" + artifact.getArtifactTypeName() + "> ";
                }
+               if (artifactDecorator.showArtBranch()) {
+                  name += " [" + artifact.getBranch() + "] ";
+               }
 
                name += artifactDecorator.getSelectedAttributeData(artifact);
             } catch (Exception ex) {

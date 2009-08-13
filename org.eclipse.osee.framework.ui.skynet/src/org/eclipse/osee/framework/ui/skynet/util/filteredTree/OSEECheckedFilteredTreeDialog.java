@@ -31,7 +31,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
 
    protected Label statusLabel;
-   private Button okButton;
+   protected Button okButton;
    private OSEECheckedFilteredTree treeViewer;
    private final PatternFilter patternFilter;
    private Object input;

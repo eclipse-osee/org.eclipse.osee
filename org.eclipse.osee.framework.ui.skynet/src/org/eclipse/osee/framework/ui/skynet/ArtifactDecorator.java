@@ -28,6 +28,7 @@ public class ArtifactDecorator {
    private Action showArtIds;
    private Action showArtType;
    private Action showArtVersion;
+   private Action showArtBranch;
    private ShowAttributeAction attributesAction;
    private StructuredViewer viewer;
    private final String preferenceKey;
@@ -61,6 +62,17 @@ public class ArtifactDecorator {
          };
          showArtType.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       }
+      if (showArtBranch == null) {
+         showArtBranch = new Action("Show Artifact Branch") {
+            @Override
+            public void run() {
+               setChecked(!isChecked());
+               updateShowArtBranchText();
+               viewer.refresh();
+            }
+         };
+         showArtBranch.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
+      }
       if (showArtVersion == null) {
          showArtVersion = new Action("Show Artifact Version") {
             @Override
@@ -73,7 +85,7 @@ public class ArtifactDecorator {
          showArtVersion.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.FILTERS));
       }
 
-      if (attributesAction == null) {
+      if (attributesAction == null && branchProvider != null) {
          attributesAction = new ShowAttributeAction(branchProvider, viewer, preferenceKey);
       }
 
@@ -106,16 +118,24 @@ public class ArtifactDecorator {
    public void addActions(IMenuManager manager, IBranchProvider provider) {
       checkActionsCreated(provider);
 
-      manager.add(showArtVersion);
-      manager.add(showArtType);
+      if (manager != null) {
+         manager.add(showArtVersion);
+         manager.add(showArtType);
+         manager.add(showArtBranch);
+      }
       updateShowArtTypeText();
       updateShowArtVersionText();
+      updateShowArtBranchText();
 
       if (showArtIds != null && isAdmin()) {
-         manager.add(showArtIds);
+         if (manager != null) {
+            manager.add(showArtIds);
+         }
          updateShowArtIdText();
       }
-      manager.add(attributesAction);
+      if (manager != null) {
+         manager.add(attributesAction);
+      }
    }
 
    private void updateShowArtIdText() {
@@ -124,6 +144,10 @@ public class ArtifactDecorator {
 
    private void updateShowArtTypeText() {
       showArtType.setText((showArtType.isChecked() ? "Hide" : "Show") + " Artifact Type");
+   }
+
+   private void updateShowArtBranchText() {
+      showArtBranch.setText((showArtBranch.isChecked() ? "Hide" : "Show") + " Artifact Branch");
    }
 
    private void updateShowArtVersionText() {
@@ -142,7 +166,35 @@ public class ArtifactDecorator {
       return showArtType != null && showArtType.isChecked();
    }
 
+   public boolean showArtBranch() {
+      return showArtBranch != null && showArtBranch.isChecked();
+   }
+
    public boolean showArtVersion() {
       return showArtVersion != null && showArtVersion.isChecked();
+   }
+
+   public void setShowArtType(boolean set) {
+      if (showArtType != null) {
+         showArtType.setChecked(set);
+      }
+   }
+
+   public void setShowArtBranch(boolean set) {
+      if (showArtBranch != null) {
+         showArtBranch.setChecked(set);
+      }
+   }
+
+   public void setShowArtIds(boolean set) {
+      if (showArtIds != null) {
+         showArtIds.setChecked(set);
+      }
+   }
+
+   public void setShowArtVersion(boolean set) {
+      if (showArtVersion != null) {
+         showArtVersion.setChecked(set);
+      }
    }
 }

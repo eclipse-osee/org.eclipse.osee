@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.database.init.TableElement.TableSections;
@@ -96,7 +95,7 @@ public class ConstraintElement implements Xmlizable {
    }
 
    public String getCommaSeparatedColumnsList() {
-      return StringUtils.join(columns, ",");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(columns, ",");
    }
 
    @Override

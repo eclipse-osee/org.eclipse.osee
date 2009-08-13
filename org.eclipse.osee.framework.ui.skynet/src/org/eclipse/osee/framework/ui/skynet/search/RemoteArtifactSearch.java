@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -84,7 +83,9 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypeNames)));
       }
 
-      String options = String.format(" - Options:[%s]", StringUtils.join(optionsList, ", "));
+      String options =
+            String.format(" - Options:[%s]", org.eclipse.osee.framework.jdk.core.util.Collections.toString(optionsList,
+                  ", "));
       return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 

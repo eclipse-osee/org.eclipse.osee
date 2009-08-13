@@ -43,7 +43,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
          Map<ColumnFields, String> column = columns.get(key).getColumnFields();
          lines.add(columnDataToSQL(column));
       }
-      String toExecute = StringUtils.join(lines, ",\n");
+      String toExecute = org.eclipse.osee.framework.jdk.core.util.Collections.toString(lines, ",\n");
       return toExecute;
    }
 

@@ -64,9 +64,12 @@ public class Collections {
       return toString(objectsCol, null, separator, null);
    }
 
-   @SuppressWarnings("unchecked")
-   public static String toString(String separator, Collection c) {
+   public static String toString(String separator, Collection<?> c) {
       return toString(c, null, separator, null);
+   }
+
+   public static String toString(Collection<?> c, String separator) {
+      return toString(separator, c);
    }
 
    /**

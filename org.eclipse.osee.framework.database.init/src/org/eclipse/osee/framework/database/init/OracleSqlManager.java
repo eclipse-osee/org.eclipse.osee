@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
@@ -38,7 +37,7 @@ public class OracleSqlManager extends SqlManager {
          Map<ColumnFields, String> column = columns.get(key).getColumnFields();
          lines.add(columnDataToSQL(column));
       }
-      String toExecute = StringUtils.join(lines, ",\n");
+      String toExecute = org.eclipse.osee.framework.jdk.core.util.Collections.toString(lines, ",\n");
       return toExecute;
    }
 

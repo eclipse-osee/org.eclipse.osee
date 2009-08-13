@@ -232,7 +232,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                0,
                iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getName()));
          lines.add(new XBarGraphLine(
-               "Version Estimated Release Date",
+               "Targeted Version - Estimated Release Date",
                0,
                iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
                      ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
@@ -385,8 +385,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void adapt(Control control) {
-      if (control == null)
-         return;
+      if (control == null) return;
       control.setBackground(BACKGROUND_COLOR);
       control.setForeground(FOREGROUND_COLOR);
    }

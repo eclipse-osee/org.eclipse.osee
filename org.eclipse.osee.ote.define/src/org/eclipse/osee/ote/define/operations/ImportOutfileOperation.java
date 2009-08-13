@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -104,7 +103,7 @@ public class ImportOutfileOperation {
       for (Artifact artifact : artifacts) {
          toReturn.add(artifact.getName());
       }
-      return StringUtils.join(toReturn, ",\n");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(toReturn, ",\n");
    }
 
    private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {

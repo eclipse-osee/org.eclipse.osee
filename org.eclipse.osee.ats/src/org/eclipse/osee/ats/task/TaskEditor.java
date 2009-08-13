@@ -112,12 +112,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void dispose() {
       for (TaskArtifact taskArt : tasks)
-         if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue())
-            taskArt.revertSMA();
-      if (taskActionPage.getTaskComposite() != null)
-         taskActionPage.getTaskComposite().dispose();
-      if (metricsComposite != null)
-         metricsComposite.disposeComposite();
+         if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
+      if (taskActionPage.getTaskComposite() != null) taskActionPage.getTaskComposite().dispose();
+      if (metricsComposite != null) metricsComposite.disposeComposite();
 
       super.dispose();
    }
@@ -127,8 +124,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       for (TaskArtifact taskArt : tasks) {
          if (taskArt.isDeleted())
             continue;
-         else if (taskArt.isSMAEditorDirty().isTrue())
-            return true;
+         else if (taskArt.isSMAEditorDirty().isTrue()) return true;
       }
       return false;
    }
@@ -299,8 +295,10 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      if (tasks.size() > 0) {
-         return tasks.iterator().next().getWorldViewTargetedVersion();
+      for (TaskArtifact taskArt : tasks) {
+         if (taskArt.getWorldViewTargetedVersion() != null) {
+            return taskArt.getWorldViewTargetedVersion();
+         }
       }
       return null;
    }
@@ -345,8 +343,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      if (tasks.size() == 0)
-         return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+      if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
       return tasks.iterator().next().getManHrsPerDayPreference();
    }
 }

@@ -32,7 +32,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET);
       ImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP);
 
-      ImageManager.registerOverrideImageProvider(this, ArtifactTypeManager.getType("User"));
+      ImageManager.registerOverrideImageProvider(this, "User");
    }
 
    @Override

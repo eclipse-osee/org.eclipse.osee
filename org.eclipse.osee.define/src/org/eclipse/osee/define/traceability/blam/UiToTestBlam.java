@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -204,9 +203,9 @@ public class UiToTestBlam extends AbstractBlam {
             List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
             List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
             List<String> validates = getTrace(testUnit, CoreRelationEnumeration.Validation__Requirement);
-            String verifyStr = StringUtils.join(verified, ",");
-            String usesStr = StringUtils.join(used, ",");
-            String validatesStr = StringUtils.join(validates, ",");
+            String verifyStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(verified, ",");
+            String usesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(used, ",");
+            String validatesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(validates, ",");
 
             addRow(appendable, asArray(uiTitle, uiType, testType, testUnitName, testUnitType, verifyStr, validatesStr,
                   usesStr));

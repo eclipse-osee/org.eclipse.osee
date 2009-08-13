@@ -59,8 +59,8 @@ public class ImageManager {
    private static final String SELECT_ARTIFACT_TYPES_IMAGE_QUERY =
          "SELECT art_type_id, image FROM osee_artifact_type where image is not null";
    private static final ImageManager instance = new ImageManager();
-   private final Map<ArtifactType, ArtifactImageProvider> providersOverrideImageMap =
-         Collections.synchronizedMap(new HashMap<ArtifactType, ArtifactImageProvider>());
+   private final Map<String, ArtifactImageProvider> providersOverrideImageMap =
+         Collections.synchronizedMap(new HashMap<String, ArtifactImageProvider>());
    private final Map<String, OseeImage> artifactTypeImageMap =
          Collections.synchronizedMap(new HashMap<String, OseeImage>());
    private final ImageRegistry imageRegistry = SkynetGuiPlugin.getInstance().getImageRegistry();
@@ -168,7 +168,7 @@ public class ImageManager {
          }
 
          // Check if image provider provides override for this image
-         ArtifactImageProvider imageProvider = instance.providersOverrideImageMap.get(artifactType);
+         ArtifactImageProvider imageProvider = instance.providersOverrideImageMap.get(artifactType.getName());
          if (imageProvider != null) {
             String imageKey = imageProvider.setupImage(artifactType);
             if (imageKey != null) {
@@ -192,13 +192,8 @@ public class ImageManager {
       return setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location);
    }
 
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactType artifactType) {
-      instance.providersOverrideImageMap.put(artifactType, imageProvider);
-   }
-
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, String artifactTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
-      instance.providersOverrideImageMap.put(artifactType, imageProvider);
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, String artifactTypeName) {
+      instance.providersOverrideImageMap.put(artifactTypeName, imageProvider);
    }
 
    public static void registerBaseImage(String artifactTypeName, OseeImage oseeImage) {
@@ -248,7 +243,8 @@ public class ImageManager {
 
    private synchronized String setupImage(Artifact artifact) {
       try {
-         ArtifactImageProvider imageProvider = instance.providersOverrideImageMap.get(artifact.getArtifactType());
+         ArtifactImageProvider imageProvider =
+               instance.providersOverrideImageMap.get(artifact.getArtifactType().getName());
          if (imageProvider != null) {
             return imageProvider.setupImage(artifact);
          }

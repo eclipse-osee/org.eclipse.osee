@@ -63,16 +63,14 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
       if (toolkit == null) {
          valueHyperlinkLabel = new Hyperlink(comp, SWT.NONE);
       } else {
-         valueHyperlinkLabel = toolkit.createHyperlink(comp, "<edit>", SWT.NONE);
+         valueHyperlinkLabel = toolkit.createHyperlink(comp, " <edit>", SWT.NONE);
       }
       valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
+      GridData gd = new GridData();
       if (isFillHorizontally()) {
-         if (isFillHorizontally()) {
-            valueHyperlinkLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         } else {
-            valueHyperlinkLabel.setLayoutData(new GridData());
-         }
+         gd.grabExcessHorizontalSpace = true;
       }
+      valueHyperlinkLabel.setLayoutData(gd);
       valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)

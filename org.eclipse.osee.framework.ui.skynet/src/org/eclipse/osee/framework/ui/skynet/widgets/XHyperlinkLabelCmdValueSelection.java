@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +32,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    Label valueLabel;
-   HyperLinkLabel selectHyperLinkLabel, clearHyperLinkLabel;
+   Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
    private final boolean supportClear;
 
    public XHyperlinkLabelCmdValueSelection(String label) {
@@ -52,11 +53,11 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
    }
 
    public String getHyperlinkLabelString() {
-      return " (select)";
+      return " <select>";
    }
 
    public String getClearHyperlinkLabelString() {
-      return "(clear) ";
+      return "<clear> ";
    }
 
    public boolean handleSelection() {
@@ -86,8 +87,11 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
             labelWidget.setToolTipText(getToolTip());
          }
       }
-
-      selectHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
+      if (toolkit == null) {
+         selectHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+      } else {
+         selectHyperLinkLabel = toolkit.createHyperlink(comp, "<select>", SWT.NONE);
+      }
       selectHyperLinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
       selectHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event event) {
@@ -98,7 +102,11 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
          }
       });
       if (supportClear) {
-         clearHyperLinkLabel = new HyperLinkLabel(comp, SWT.NONE);
+         if (toolkit == null) {
+            clearHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+         } else {
+            clearHyperLinkLabel = toolkit.createHyperlink(comp, "<clear>", SWT.NONE);
+         }
          clearHyperLinkLabel.setToolTipText("Select to Clear");
          clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
             public void handleEvent(Event event) {
@@ -118,10 +126,8 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    @Override
    public void refresh() {
-      selectHyperLinkLabel.refresh();
       selectHyperLinkLabel.setText(getHyperlinkLabelString());
       if (supportClear) {
-         clearHyperLinkLabel.refresh();
          clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
       }
       valueLabel.setText(getCurrentValue());
@@ -139,10 +145,8 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
       toolkit.adapt(selectHyperLinkLabel, true, true);
-      selectHyperLinkLabel.refresh();
       if (supportClear) {
          toolkit.adapt(clearHyperLinkLabel, true, true);
-         clearHyperLinkLabel.refresh();
       }
    }
 

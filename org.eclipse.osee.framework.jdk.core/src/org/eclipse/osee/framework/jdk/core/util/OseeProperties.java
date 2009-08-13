@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -151,6 +150,6 @@ public class OseeProperties {
       List<String> list = new ArrayList<String>();
       toStringHelper(list, getClass());
       Collections.sort(list);
-      return StringUtils.join(list, "\n");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);
    }
 }

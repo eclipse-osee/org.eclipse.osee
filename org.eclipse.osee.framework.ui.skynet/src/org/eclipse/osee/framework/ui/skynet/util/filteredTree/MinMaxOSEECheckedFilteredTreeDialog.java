@@ -12,6 +12,8 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
@@ -26,6 +28,15 @@ public class MinMaxOSEECheckedFilteredTreeDialog extends OSEECheckedFilteredTree
       super(dialogTitle, dialogMessage, patternFilter, contentProvider, labelProvider, viewerSorter);
       this.minSelectionRequired = minSelectionRequired;
       this.maxSelectionRequired = maxSelectionRequired;
+   }
+
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Control c = super.createButtonBar(parent);
+      if (this.minSelectionRequired == 0) {
+         okButton.setEnabled(true);
+      }
+      return c;
    }
 
    @Override
