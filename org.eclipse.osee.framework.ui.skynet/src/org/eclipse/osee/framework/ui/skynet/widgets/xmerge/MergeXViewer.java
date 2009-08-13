@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -188,11 +189,19 @@ public class MergeXViewer extends XViewer {
                   CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
                   compareHandler.compare();
                } else{
-                  conWizard = new ConflictResolutionWizard(conflict);
-                  WizardDialog dialog = new WizardDialog(shell, conWizard);
-                  dialog.create();
-                  if (dialog.open() == 0) {
-                     conWizard.getResolved();
+                  if (attributeConflict.getArtifact().isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+                     MessageDialog dialog =
+                        new MessageDialog(shell, "Artifact type not supported", null, "Native artifact types are not currently supported for the merge wizzard.\n" +
+                        		"You will need to populate the merge value with the source or destination values" +
+                        		" and then merge by hand by righ-clicking edit merge artifact.", 2, new String[] {"OK"}, 1);
+                  dialog.open();
+                  }else{
+                     conWizard = new ConflictResolutionWizard(conflict);
+                     WizardDialog dialog = new WizardDialog(shell, conWizard);
+                     dialog.create();
+                     if (dialog.open() == 0) {
+                        conWizard.getResolved();
+                     }
                   }
                }
             }

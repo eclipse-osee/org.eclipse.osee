@@ -409,7 +409,7 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   public static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   private static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -451,7 +451,7 @@ public class ConflictManagerInternal {
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   public static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   private static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       List<Branch> sourceBranches = sourceBranch.getBranchHierarchy();
       List<Branch> destBranches = destBranch.getBranchHierarchy();
       Branch commonBranch = null;

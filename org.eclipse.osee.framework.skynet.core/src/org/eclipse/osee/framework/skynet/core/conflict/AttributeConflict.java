@@ -11,6 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -21,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -388,19 +392,38 @@ public class AttributeConflict extends Conflict {
       if (getMergeObject() == null || getSourceObject() == null) {
          mergeEqualsSource = false;
       } else {
-         mergeEqualsSource = getMergeObject().equals(getSourceObject());
+         mergeEqualsSource = compareObjects(getMergeObject(), getSourceObject());
       }
       if (getMergeObject() == null || getDestObject() == null) {
          mergeEqualsDest = false;
       } else {
-         mergeEqualsDest = getMergeObject().equals(getDestObject());
+         mergeEqualsDest = compareObjects(getMergeObject(), getDestObject());
       }
 
       if (getSourceObject() == null || getDestObject() == null) {
          sourceEqualsDest = false;
       } else {
-         sourceEqualsDest = getSourceObject().equals(getDestObject());
+         sourceEqualsDest = compareObjects(getSourceObject(), getDestObject());
       }
+   }
+   
+   private boolean compareObjects(Object obj1, Object obj2)throws OseeCoreException{
+      if(obj1 instanceof InputStream && obj2 instanceof InputStream){
+         InputStream inputStream1 = (InputStream)(obj1);
+         InputStream inputStream2 = (InputStream)(obj2);
+         
+         boolean equals = Arrays.equals(Streams.getByteArray(inputStream1), Streams.getByteArray(inputStream2));
+         
+         try {
+            inputStream1.reset();
+            inputStream2.reset();
+         } catch (IOException ex) {
+            throw new OseeCoreException(ex);
+         }
+
+         return equals;
+      }
+      return obj1.equals(obj2);
    }
 
    public void markStatusToReflectEdit() throws OseeCoreException {

@@ -676,8 +676,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       public void run() {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
-               //(Object[] choose, Shell parentShell, String dialogTitle, Image dialogTitleImage, 
-               //String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) 
                ArrayList<String> selections = new ArrayList<String>();
                ArrayList<Integer> branchIds = new ArrayList<Integer>();
                try {
