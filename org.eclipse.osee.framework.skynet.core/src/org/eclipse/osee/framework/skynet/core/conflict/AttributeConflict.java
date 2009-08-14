@@ -86,7 +86,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttribute() instanceof WordAttribute;
+      this.isWordAttribute = getAttributeType().getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT);
       computeEqualsValues();
    }
 
@@ -95,7 +95,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttribute() instanceof WordAttribute;
+      this.isWordAttribute = getAttributeType().getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT);
       computeEqualsValues();
    }
 
@@ -108,10 +108,6 @@ public class AttributeConflict extends Conflict {
          if (localAttribute.getAttrId() == attrId) {
             attribute = localAttribute;
          }
-      }
-      if (attribute == null) {
-         throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + mergeBranch.getBranchId());
       }
       return attribute;
    }
@@ -279,7 +275,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public Object getMergeObject() throws OseeCoreException {
-      return getAttribute().getValue();
+      return getAttribute() != null? getAttribute().getValue(): null;
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
