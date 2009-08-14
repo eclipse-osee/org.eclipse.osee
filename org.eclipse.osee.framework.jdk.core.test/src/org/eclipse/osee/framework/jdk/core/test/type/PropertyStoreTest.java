@@ -149,6 +149,7 @@ public class PropertyStoreTest extends TestCase {
       store1.put("key4", 12);
       store1.put("key5", 12.3f);
       store1.put("key6", 543L);
+      store1.put("key6.5", "");
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
 
@@ -164,6 +165,7 @@ public class PropertyStoreTest extends TestCase {
       Assert.assertEquals(12, store1.getInt("key4"));
       Assert.assertEquals(12.3f, store1.getFloat("key5"));
       Assert.assertEquals(543L, store1.getLong("key6"));
+      Assert.assertEquals("", store1.get("key6.5"));
 
       checkArrays(new String[] {"entry1", "entry2", "entry3"}, store1.getArray("key7"));
       checkArrays(new String[] {"entry4", "entry5", "entry6"}, store1.getArray("key8"));
