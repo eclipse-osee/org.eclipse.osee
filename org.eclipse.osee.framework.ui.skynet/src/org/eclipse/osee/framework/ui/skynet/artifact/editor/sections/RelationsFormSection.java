@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
@@ -20,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -49,6 +51,14 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      Label dragDropLabel = new Label(sectionBody, SWT.BORDER | SWT.CENTER);
+      dragDropLabel.setText("Click here to drag this \"" + getEditor().getEditorInput().getArtifact().getArtifactTypeName() + "\"");
+      GridData gd = new GridData(GridData.FILL_BOTH);
+      gd.heightHint = 25;
+      dragDropLabel.setLayoutData(gd);
+      new ArtifactDragAndDrop(dragDropLabel, getEditor().getEditorInput().getArtifact(), ArtifactEditor.EDITOR_ID);
+      toolkit.adapt(dragDropLabel, true, true);
 
       relationComposite =
             new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
