@@ -197,7 +197,7 @@ public class ArtifactPromptChange {
    private static void setInitialText(Collection<? extends Artifact> smas, EntryDialog ed, NumberFormat format, String attributeName) throws OseeCoreException {
       if (smas.size() == 1) {
          Object smaObj = smas.iterator().next().getSoleAttributeValue(attributeName, "");
-         String initialText = formatObject(smaObj, format);
+         String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
          ed.setEntry(initialText);
       } else {
          ed.setEntry("");
