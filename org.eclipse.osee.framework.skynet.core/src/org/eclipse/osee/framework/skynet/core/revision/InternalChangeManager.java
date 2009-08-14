@@ -74,13 +74,23 @@ public final class InternalChangeManager {
    Collection<Change> getChangesPerArtifact(Artifact artifact, IStatusMonitor monitor) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
-
-      for (TransactionId transactionId : getTransactionsPerArtifact(branch, artifact)) {
+      ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
+      recurseBranches(branch, artifact, transactionIds);
+      
+      for (TransactionId transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
       }
       return changes;
    }
 
+   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds) throws OseeCoreException{
+      transactionIds.addAll(getTransactionsPerArtifact(branch, artifact));
+      
+      if(branch.getParentBranch() != null && branch.getParentBranchId() != 1){
+         recurseBranches(branch.getParentBranch(), artifact, transactionIds);
+      }
+   }
+   
    private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact) throws OseeCoreException {
       Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
 
