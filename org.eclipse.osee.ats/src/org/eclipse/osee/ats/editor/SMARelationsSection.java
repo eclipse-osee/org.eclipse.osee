@@ -18,19 +18,14 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -62,35 +57,24 @@ public class SMARelationsSection extends SectionPart {
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       final Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
-      sectionBody.setLayout(ALayout.getZeroMarginLayout());
+      sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (AtsUtil.isAtsAdmin()) {
-         ToolBar toolBar = AtsUtil.createCommonToolBar(sectionBody);
-         final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
-
-         showAllRelationsItem.setImage(ImageManager.getImage(FrameworkImage.RELATION));
-         showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
-         showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               if (showAllRelationsItem.getSelection()) {
-                  relationComposite.getTreeViewer().removeFilter(userRelationsFilter);
-                  relationComposite.refreshArtifact(editor.getSmaMgr().getSma());
-               } else {
-                  relationComposite.getTreeViewer().addFilter(userRelationsFilter);
-               }
-               getManagedForm().getForm().getBody().layout();
-               getManagedForm().reflow(true);
-            }
-         });
-      }
+      Label dragDropLabel = new Label(sectionBody, SWT.BORDER | SWT.CENTER);
+      dragDropLabel.setText("Click here to drag this \"" + editor.getSmaMgr().getSma().getArtifactTypeName() + "\"");
+      GridData gd = new GridData(GridData.FILL_BOTH);
+      gd.heightHint = 25;
+      dragDropLabel.setLayoutData(gd);
+      new SMADragAndDrop(dragDropLabel, editor.getSmaMgr().getSma(), SMAEditor.EDITOR_ID);
+      toolkit.adapt(dragDropLabel, true, true);
 
       relationComposite = new RelationsComposite(editor, sectionBody, SWT.NONE, editor.getSmaMgr().getSma());
       relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       // Don't allow users to see all relations
-      relationComposite.getTreeViewer().addFilter(userRelationsFilter);
+      if (!AtsUtil.isAtsAdmin()) {
+         relationComposite.getTreeViewer().addFilter(userRelationsFilter);
+      }
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
