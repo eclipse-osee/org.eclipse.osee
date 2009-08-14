@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -85,8 +86,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
             }
          });
 
-         // Don why are you doing this ??? I don't like it! R.E. - Please don't do this
-         // PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
+         PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
       }
    }
 
