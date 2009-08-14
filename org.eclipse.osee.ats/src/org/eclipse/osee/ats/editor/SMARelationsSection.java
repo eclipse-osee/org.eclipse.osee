@@ -60,7 +60,7 @@ public class SMARelationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Label dragDropLabel = new Label(sectionBody, SWT.BORDER | SWT.CENTER);
+      Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
       dragDropLabel.setText("Click here to drag this \"" + editor.getSmaMgr().getSma().getArtifactTypeName() + "\"");
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 25;

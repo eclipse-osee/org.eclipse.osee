@@ -52,7 +52,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Label dragDropLabel = new Label(sectionBody, SWT.BORDER | SWT.CENTER);
+      Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
       dragDropLabel.setText("Click here to drag this \"" + getEditor().getEditorInput().getArtifact().getArtifactTypeName() + "\"");
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 25;
