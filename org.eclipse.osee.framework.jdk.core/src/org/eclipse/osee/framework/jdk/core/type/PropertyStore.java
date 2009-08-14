@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -160,7 +161,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
       builder.append(String.format("Id:[%s] Data:%s Arrays:{", getId(), storageData.toString()));
 
       int cnt = 0;
-      for (Object key : storageArrays.keySet()) {
+      for (Object key : new TreeSet<Object>(storageArrays.keySet())) {
          if (cnt != 0) {
             builder.append(" ");
          }
