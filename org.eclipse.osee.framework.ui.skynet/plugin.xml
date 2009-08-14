@@ -1034,6 +1034,18 @@
          </with>
       </enabledWhen>
    </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NativePreviewEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
 </extension>
  <extension
        name="Branch View Handlers"
@@ -1339,6 +1351,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.tispreview.command"
          name="MS Word TIS Preview">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command"
+         name="Preview Native Editor">
    </command>
 </extension>
  <extension
