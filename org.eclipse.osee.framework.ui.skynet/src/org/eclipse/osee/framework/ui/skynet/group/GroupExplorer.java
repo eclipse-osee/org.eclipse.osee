@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -69,6 +70,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -115,7 +119,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
       branchSelect = new XBranchSelectWidget("");
       branchSelect.setDisplayLabel(false);
-      branch = BranchManager.getLastBranch();
       branchSelect.setBranch(branch);
       branchSelect.createWidgets(parent, 1);
 
@@ -538,6 +541,45 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
                item.setEnabled(valid);
             }
          }
+      }
+   }
+
+   private static final String INPUT = "input";
+   private static final String BRANCH_ID = "branchId";
+
+   @Override
+   public void saveState(IMemento memento) {
+      super.saveState(memento);
+      memento = memento.createChild(INPUT);
+      if (branch != null) {
+         memento.putInteger(BRANCH_ID, branch.getBranchId());
+      }
+   }
+
+   @Override
+   public void init(IViewSite site, IMemento memento) throws PartInitException {
+      super.init(site, memento);
+      try {
+         Integer branchId = null;
+
+         if (memento != null) {
+            memento = memento.getChild(INPUT);
+            if (memento != null) {
+               branchId = memento.getInteger(BRANCH_ID);
+               if (branchId != null) {
+                  try {
+                     branch = BranchManager.getBranch(branchId);
+                     if (branch.isDeleted() || branch.isArchived()) {
+                        branch = null;
+                     }
+                  } catch (BranchDoesNotExist ex) {
+                     branch = null;
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Group Explorer exception on init", ex);
       }
    }
 
