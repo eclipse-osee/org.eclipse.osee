@@ -99,7 +99,7 @@ public class OseeNotifyUsersJob extends Job {
          // do nothing
          return;
       }
-      if (EmailUtil.isEmailValid(UserManager.getUser())) {
+      if (!EmailUtil.isEmailValid(UserManager.getUser())) {
          // do nothing; can't send email from user with invalid email address
          return;
       }

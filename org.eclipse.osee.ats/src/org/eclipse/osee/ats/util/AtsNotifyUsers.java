@@ -198,37 +198,43 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
       if (sender.isRemote()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       boolean notificationAdded = false;
-      // Handle notifications for subscription by TeamDefinition and ActionableItem
-      for (Artifact art : transData.cacheAddedArtifacts) {
-         if (art instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
+      try {
+         // Handle notifications for subscription by TeamDefinition and ActionableItem
+         for (Artifact art : transData.cacheAddedArtifacts) {
+            if (art instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
 
-            // Handle Team Definitions
-            Collection<User> subscribedUsers =
-                  Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(AtsRelation.SubscribedUser_User));
-            if (subscribedUsers.size() > 0) {
-               notificationAdded = true;
-               OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                     subscribedUsers,
-                     getIdString(teamArt),
-                     "Workflow Creation",
-                     "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
-            }
-
-            // Handle Actionable Items
-            for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
-               subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelation.SubscribedUser_User));
+               // Handle Team Definitions
+               Collection<User> subscribedUsers =
+                     Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(
+                           AtsRelation.SubscribedUser_User));
                if (subscribedUsers.size() > 0) {
                   notificationAdded = true;
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                         subscribedUsers,
                         getIdString(teamArt),
                         "Workflow Creation",
-                        "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
+                        "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
+               }
+
+               // Handle Actionable Items
+               for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
+                  subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelation.SubscribedUser_User));
+                  if (subscribedUsers.size() > 0) {
+                     notificationAdded = true;
+                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                           subscribedUsers,
+                           getIdString(teamArt),
+                           "Workflow Creation",
+                           "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
+                  }
                }
             }
          }
+      } finally {
+         if (notificationAdded) {
+            OseeNotificationManager.sendNotifications();
+         }
       }
-      if (notificationAdded) OseeNotificationManager.sendNotifications();
    }
 }
