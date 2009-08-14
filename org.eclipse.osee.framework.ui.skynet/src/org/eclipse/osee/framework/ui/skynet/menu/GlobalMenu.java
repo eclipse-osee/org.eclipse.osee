@@ -22,9 +22,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -186,18 +183,13 @@ public class GlobalMenu {
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
 
                   try {
-                     new DbTransaction() {
-                        @Override
-                        protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-                           for (Artifact artifactToPurge : artifactsToBePurged) {
-                              if (!artifactToPurge.isDeleted()) {
-                                 monitor.setTaskName("Purge: " + artifactToPurge.getName());
-                                 artifactToPurge.purgeFromBranch(connection);
-                              }
-                              monitor.worked(1);
-                           }
+                     for (Artifact artifactToPurge : artifactsToBePurged) {
+                        if (!artifactToPurge.isDeleted()) {
+                           monitor.setTaskName("Purge: " + artifactToPurge.getName());
+                           artifactToPurge.purgeFromBranch();
                         }
-                     }.execute();
+                        monitor.worked(1);
+                     }                     
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

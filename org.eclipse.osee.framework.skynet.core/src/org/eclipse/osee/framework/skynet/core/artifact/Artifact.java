@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumer
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -1263,11 +1264,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    /**
     * Remove artifact from a specific branch in the database
     * 
-    * @param connection TODO
     * @throws OseeCoreException
     */
-   public void purgeFromBranch(OseeConnection connection) throws OseeCoreException {
-      ArtifactPersistenceManager.purgeArtifactFromBranch(connection, branch.getBranchId(), artId);
+   public void purgeFromBranch() throws OseeCoreException {
+      new PurgeDbTransaction(Arrays.asList(this)).execute();
    }
 
    public boolean isDeleted() {

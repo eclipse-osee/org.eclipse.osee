@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
@@ -90,6 +89,12 @@ public class FrameworkTestUtil {
       }
    }
 
+   public static void purgeArtifacts(Collection<Artifact> artifacts) throws Exception {
+      for (Artifact art : artifacts) {
+         art.purgeFromBranch();
+      }
+   }
+
    /**
     * Deletes all artifacts with names that start with any title given
     * 
@@ -101,7 +106,8 @@ public class FrameworkTestUtil {
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, false));
       }
-      ArtifactPersistenceManager.purgeArtifacts(artifacts);
+      purgeArtifacts(artifacts);
+      //      ArtifactPersistenceManager.purgeArtifacts(artifacts);
       TestUtil.sleep(4000);
    }
 

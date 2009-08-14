@@ -78,8 +78,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       if (!allMergeBranchArtifactsCopy.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifactsCopy) {
-            ArtifactPersistenceManager.purgeArtifactFromBranch(connection, mergeBranch.getBranchId(),
-                  artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch.getBranchId(), artifact.intValue());
             count++;
          }
       }
@@ -97,8 +96,7 @@ public class UpdateMergeBranch extends DbTransaction {
       if (!allMergeBranchArtifacts.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifacts) {
             count++;
-            ArtifactPersistenceManager.purgeArtifactFromBranch(connection, mergeBranch.getBranchId(),
-                  artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch.getBranchId(), artifact.intValue());
          }
       }
       if (DEBUG) {
@@ -187,4 +185,24 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       return artSet;
    }
+
+   /**
+    * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
+    * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
+    * will also be removed from the database only for the branch it is on).
+    * 
+    * @param artifact
+    */
+   public static void purgeArtifactFromBranch(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
+      ArtifactPersistenceManager.revertArtifact(connection, branchId, artId);
+
+      //Remove from Baseline
+      ConnectionHandler.runPreparedUpdate(connection, ArtifactPersistenceManager.PURGE_BASELINE_ATTRIBUTE_TRANS,
+            branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, ArtifactPersistenceManager.PURGE_BASELINE_RELATION_TRANS,
+            branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, ArtifactPersistenceManager.PURGE_BASELINE_ARTIFACT_TRANS,
+            branchId, artId);
+   }
+
 }

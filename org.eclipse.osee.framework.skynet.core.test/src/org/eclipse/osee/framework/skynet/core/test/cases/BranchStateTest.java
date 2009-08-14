@@ -18,12 +18,10 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -31,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBra
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.junit.Before;
 
 /**
@@ -140,7 +139,7 @@ public class BranchStateTest {
    }
 
    @org.junit.Test
-   public void testRebaselineWithoutConflicts() throws OseeCoreException, InterruptedException {
+   public void testRebaselineWithoutConflicts() throws Exception {
       Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
@@ -195,7 +194,7 @@ public class BranchStateTest {
    }
 
    @org.junit.Test
-   public void testRebaselineWithConflicts() throws OseeCoreException, InterruptedException {
+   public void testRebaselineWithConflicts() throws Exception {
       Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
@@ -277,7 +276,7 @@ public class BranchStateTest {
       }
    }
 
-   private void cleanup(String originalBranchName, Artifact baseArtifact, Branch workingBranch, Branch mergeBranch) throws OseeDataStoreException, OseeCoreException {
+   private void cleanup(String originalBranchName, Artifact baseArtifact, Branch workingBranch, Branch mergeBranch) throws Exception {
       for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
          for (Branch child : branch.getChildBranches(true)) {
             BranchManager.purgeBranch(child);
@@ -293,7 +292,7 @@ public class BranchStateTest {
       if (baseArtifact != null) {
          List<Artifact> itemsToPurge = new ArrayList<Artifact>();
          itemsToPurge.add(baseArtifact);
-         ArtifactPersistenceManager.purgeArtifacts(itemsToPurge);
+         FrameworkTestUtil.purgeArtifacts(itemsToPurge);
       }
    }
 

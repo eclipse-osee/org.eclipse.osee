@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,11 +26,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -54,8 +55,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
-         return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
       //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsUtil.getAtsBranch())) {
       //         int branchId = art.getSoleAttributeValue("ats.Branch Id");
@@ -119,7 +119,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                System.out.println("Sleeping 5 sec...");
                Thread.sleep(5000);
                System.out.println("Purging " + artsToDelete.size() + " artifacts...");
-               ArtifactPersistenceManager.purgeArtifacts(artsToDelete);
+               purgeArtifacts(artsToDelete);
             }
          } catch (ArtifactDoesNotExist ex) {
             System.out.println("Artifact with hrid does not exist: " + hrid);
@@ -129,6 +129,12 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       }
 
+   }
+
+   private static void purgeArtifacts(Collection<Artifact> artifacts) throws OseeDataStoreException, OseeCoreException {
+      for (Artifact art : artifacts) {
+         art.purgeFromBranch();
+      }
    }
 
    private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {

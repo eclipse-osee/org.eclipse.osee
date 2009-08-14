@@ -46,11 +46,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
+   public static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ATTRIBUTE_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
-   private static final String PURGE_BASELINE_RELATION_TRANS =
+   public static final String PURGE_BASELINE_RELATION_TRANS =
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + RELATION_LINK_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and (T3.a_art_id = ? or T3.b_art_id = ?))";
-   private static final String PURGE_BASELINE_ARTIFACT_TRANS =
+   public static final String PURGE_BASELINE_ARTIFACT_TRANS =
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ARTIFACT_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
 
    private static final String GET_GAMMAS_ARTIFACT_REVERT =
@@ -208,23 +208,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   /**
-    * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
-    * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
-    * will also be removed from the database only for the branch it is on).
-    * 
-    * @param artifact
-    */
-   public static void purgeArtifactFromBranch(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
-      revertArtifact(connection, branchId, artId);
-
-      //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
-   }
-
-   public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
+    public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
       if (attribute == null) return;
       revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
             attribute.getArtifact().getArtId(), attribute.getAttrId());
@@ -294,11 +278,7 @@ public class ArtifactPersistenceManager {
          chStmt.close();
       }
    }
-
-   public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
-      new PurgeDbTransaction(artifactsToPurge).execute();
-   }
-
+  
    public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeDataStoreException {
       return (ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH,
             artifact.getBranch().getBranchId(), artifact.getArtId()) == -1);

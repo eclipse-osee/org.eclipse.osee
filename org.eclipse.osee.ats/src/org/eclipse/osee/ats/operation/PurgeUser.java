@@ -55,7 +55,6 @@ public class PurgeUser extends AbstractBlam {
    private static final String UPDATE_AUTHORED_TRANSACTIONS = "update osee_tx_details set author=? where author=?";
    private static final String UPDATE_RELATIONS_ASIDE = "update osee_relation_link set a_art_id=? where a_art_id=?";
    private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
-   private static final String DELETE_ARTIFACT = "delete from osee_artifact where art_id=?";
 
    @Override
    public String getName() {
@@ -86,9 +85,10 @@ public class PurgeUser extends AbstractBlam {
                      // start replacing all transactions, relations, etc.
                      findAndUpdateAuthoredTransactions(connection, fromUser, toUser);
                      findAndUpdateRelations(connection, fromUser, toUser);
-                     confirmDeletionOfArtifact(connection, fromUser);
                   }
                }.execute();
+               // confirm deletion of artifact
+               confirmDeletionOfArtifact(fromUser);
                // output results
                displayReport(mon, toUser, fromUser);
             } catch (Exception ex) {
@@ -105,10 +105,10 @@ public class PurgeUser extends AbstractBlam {
       });
    }
 
-   private void confirmDeletionOfArtifact(final OseeConnection connection, final User fromUser) throws OseeCoreException {
+   private void confirmDeletionOfArtifact(final User fromUser) throws OseeCoreException {
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Persist Confirmation",
             "Do you wish to delete the duplicate User?")) {
-         deleteArtifact(connection, fromUser);
+         deleteArtifact(fromUser);
       }
    }
 
@@ -144,11 +144,9 @@ public class PurgeUser extends AbstractBlam {
                   fromUser.getArtId()});
    }
 
-   private void deleteArtifact(OseeConnection connection, final User fromUser) throws OseeCoreException {
+   private void deleteArtifact(final User fromUser) throws OseeCoreException {
       Artifact art = ArtifactQuery.getArtifactFromId(fromUser.getArtId(), fromUser.getBranch());
-      art.purgeFromBranch(connection);
-      //  need to remove the artifact here.  Currently, purgeFromBranch does not handle this. 
-      ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT, new Object[] {fromUser.getArtId()});
+      art.purgeFromBranch();
    }
 
    private void displayReport(IProgressMonitor monitor, User toUser, User fromUser) throws OseeCoreException {

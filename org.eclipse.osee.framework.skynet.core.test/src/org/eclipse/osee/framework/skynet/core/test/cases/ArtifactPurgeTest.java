@@ -18,10 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.database.core.OseeDbConnection;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
@@ -52,7 +50,7 @@ public class ArtifactPurgeTest {
 
    private static final List<String> tables =
          Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
-               "osee_artifact_version", "osee_branch_delete_helper");
+               "osee_artifact_version");
 
    @BeforeClass
    public static void testInitialize() throws Exception {
@@ -124,7 +122,9 @@ public class ArtifactPurgeTest {
       TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
       // Purge
-      ArtifactPersistenceManager.purgeArtifacts(artsToPurge);
+      for (Artifact art : softArts) {
+         art.purgeFromBranch();
+      }    
 
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);
@@ -133,35 +133,4 @@ public class ArtifactPurgeTest {
 
    }
 
-   @org.junit.Test
-   public void testPurgeArtifactFromBranch() throws Exception {
-      // Count rows in tables prior to purge
-      DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
-
-      // Create some software artifacts      
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
-      SkynetTransaction transaction = new SkynetTransaction(branch);
-      Artifact softArt =
-            FrameworkTestUtil.createSimpleArtifact(Requirements.SOFTWARE_REQUIREMENT, getClass().getSimpleName(),
-                  branch);
-      softArt.persistAttributesAndRelations(transaction);
-      transaction.execute();
-
-      // make more changes to artifact
-      softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
-      softArt.persistAttributesAndRelations();
-
-      // Count rows and check that increased
-      DbUtil.getTableRowCounts(postCreateArtifactsCount, tables);
-      TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
-
-      // Purge artifact
-      ArtifactPersistenceManager.purgeArtifactFromBranch(OseeDbConnection.getConnection(), branch.getBranchId(),
-            softArt.getArtId());
-
-      // Count rows and check that same as when began
-      DbUtil.getTableRowCounts(postPurgeCount, tables);
-      // TODO Looks like attributes created after initial artifact creation are not getting purged.  Needs Fix.
-      TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
-   }
 }

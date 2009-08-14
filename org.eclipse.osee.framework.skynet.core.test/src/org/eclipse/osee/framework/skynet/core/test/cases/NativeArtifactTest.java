@@ -21,10 +21,10 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
+import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -105,6 +105,6 @@ public class NativeArtifactTest {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
-      ArtifactPersistenceManager.purgeArtifacts(arts);
+      FrameworkTestUtil.purgeArtifacts(arts);
    }
 }

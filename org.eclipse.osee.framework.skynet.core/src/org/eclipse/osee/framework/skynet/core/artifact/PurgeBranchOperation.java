@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -56,7 +55,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
 
    private static final String DELETE_FROM_ARTIFACT =
-         "delete from osee_artifact item where exists (select oa.art_id from osee_artifact oa where oa.art_id = item.art_id %s select oav.art_id from osee_artifact_version oav)";
+         "delete from osee_artifact oa1 where not exists(select art_id from osee_artifact_version av1 where av1.art_id = oa1.art_id)";
 
    private static final String DELETE_FROM_BRANCH_DELETE_HELPER =
          "delete from osee_branch_delete_helper where branch_id = ?";
@@ -92,8 +91,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeHelper(monitor, connection, "Relation Versions", PURGE_RELATION_VERSIONS, 0.15, branch.getBranchId());
       purgeHelper(monitor, connection, "Artifact Versions", PURGE_ARTIFACT_VERSIONS, 0.15, branch.getBranchId());
 
-      String deleteFromArtifactTable = String.format(DELETE_FROM_ARTIFACT, SupportedDatabase.getComplementSql());
-      //TODO review sql      purgeHelper(monitor, connection, "Artifact", deleteFromArtifactTable, 0.15);
+      purgeHelper(monitor, connection, "Artifact", DELETE_FROM_ARTIFACT, 0.15);
       monitor.worked(calculateWork(0.15));
 
       purgeHelper(monitor, connection, "Branch", DELETE_FROM_BRANCH_TABLE, 0.10, branch.getBranchId());

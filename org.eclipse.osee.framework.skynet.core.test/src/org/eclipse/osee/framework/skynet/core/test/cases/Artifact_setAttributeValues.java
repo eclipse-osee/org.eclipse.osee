@@ -17,11 +17,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -107,7 +107,7 @@ public class Artifact_setAttributeValues {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(),
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
-      ArtifactPersistenceManager.purgeArtifacts(arts);
+      FrameworkTestUtil.purgeArtifacts(arts);
    }
 
 }

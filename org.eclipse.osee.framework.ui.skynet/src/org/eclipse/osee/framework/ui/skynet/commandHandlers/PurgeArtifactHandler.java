@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -53,16 +51,11 @@ public class PurgeArtifactHandler extends CommandHandler {
                IStatus toReturn = Status.CANCEL_STATUS;
                monitor.beginTask("Purge artifact", artifacts.size());
                try {
-                  new DbTransaction() {
-                     @Override
-                     protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-                        for (Artifact artifactToPurge : artifacts) {
-                           monitor.setTaskName("Purge: " + artifactToPurge.getName());
-                           artifactToPurge.purgeFromBranch(connection);
-                           monitor.worked(1);
-                        }
-                     }
-                  }.execute();
+                  for (Artifact artifactToPurge : artifacts) {
+                     monitor.setTaskName("Purge: " + artifactToPurge.getName());
+                     artifactToPurge.purgeFromBranch();
+                     monitor.worked(1);
+                  }                
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

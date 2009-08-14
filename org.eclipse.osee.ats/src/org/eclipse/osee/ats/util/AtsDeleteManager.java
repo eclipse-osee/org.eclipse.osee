@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -110,7 +111,7 @@ public class AtsDeleteManager {
       }
       // perform the delete/purge
       if (purge) {
-         ArtifactPersistenceManager.purgeArtifacts(allDeleteArts);
+         purgeArtifacts(allDeleteArts);
       } else {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          ArtifactPersistenceManager.deleteArtifact(transaction, false,
@@ -119,6 +120,12 @@ public class AtsDeleteManager {
       }
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed", (purge ? "Purge" : "Delete") + " Completed");
+      }
+   }
+
+   private static void purgeArtifacts(Collection<Artifact> artifacts) throws OseeDataStoreException, OseeCoreException {
+      for (Artifact art : artifacts) {
+         art.purgeFromBranch();
       }
    }
 }
