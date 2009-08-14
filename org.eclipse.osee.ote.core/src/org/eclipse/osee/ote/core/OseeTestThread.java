@@ -100,11 +100,16 @@ public abstract class OseeTestThread {
    }
 
    public void interrupt() {
-      OseeLog.log(TestEnvironment.class, Level.SEVERE,
-            "Calling interrupt() on " + thread.getName(), new RuntimeException("call trace"));
+      OseeLog.log(TestEnvironment.class, Level.INFO,
+            "Calling interrupt() on " + thread.getName(), new Trace());
       thread.interrupt();
    }
 
+   private static final class Trace extends RuntimeException {
+      Trace() {
+         super("call trace");
+      }
+   }
    /**
     * This method will be called upon thread execution
     * 

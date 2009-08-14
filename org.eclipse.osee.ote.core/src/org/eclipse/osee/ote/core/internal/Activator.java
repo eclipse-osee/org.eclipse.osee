@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.StandardShell;
 import org.eclipse.osee.ote.core.cmd.CommandDistributer;
@@ -116,26 +115,26 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
       if (env == null) {
          throw new IllegalStateException("Unable to acquire test environment service");
       }
-      String className = env.getEnvironmentFactory().getRuntimeLibraryConfiguration();
+      Class<? extends RuntimeConfigurationInitilizer> clazz = env.getEnvironmentFactory().getRuntimeClass();
+      if (clazz == null) {
+         String className = env.getEnvironmentFactory().getRuntimeLibraryConfiguration();
+         try {
+            clazz = (Class<? extends RuntimeConfigurationInitilizer>)classloader.loadClass(className).asSubclass(RuntimeConfigurationInitilizer.class);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, "Could not use reflection to load runtime configuration class", ex);
+            return;
+         }
+      }
       try {
-         Class<RuntimeConfigurationInitilizer> clazz = (Class<RuntimeConfigurationInitilizer>)classloader.loadClass(className).asSubclass(RuntimeConfigurationInitilizer.class);
          RuntimeConfigurationInitilizer initilizer = clazz.newInstance();
          initializersToUninitialize.add(initilizer);
          initilizer.startRuntimeOsgiServices(bundleContext);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Failure to start the runtime OTE osgi services.", ex);
-         for (IUserSession session : env.getUserSessions()) {
-            try {
-               session.initiateInformationalPrompt("Server initialization failed");
-            } catch (Exception e) {
-               OseeLog.log(Activator.class, Level.SEVERE, "could not initiate prompt.", e);
-            }
-
+         if (env != null && env instanceof TestEnvironment){
+            ((TestEnvironment)env).waitForWorkerThreadsToComplete();
          }
-      }
-      if (env != null && env instanceof TestEnvironment){
-         ((TestEnvironment)env).waitForWorkerThreadsToComplete();
-      }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Failed to initialize runtime. Runtime Config Class=" + clazz.getName(), ex);
+      } 
    }
 
    public void onRuntimeLibraryUnload() {
