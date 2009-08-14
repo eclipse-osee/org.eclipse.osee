@@ -10,16 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
-import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.BundleListener;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -40,21 +33,6 @@ public class CoreClientActivator extends Plugin {
       super.start(context);
       this.context = context;
       HttpServer.startServer(1);
-      context.addBundleListener(new BundleListener() {
-
-         @Override
-         public void bundleChanged(BundleEvent arg0) {
-            Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.core.server");
-            if (bundle != null && bundle.getState() == Bundle.ACTIVE) {
-               try {
-                  bundle.stop();
-               } catch (BundleException ex) {
-                  OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-               }
-            }
-         }
-
-      });
    }
 
    @Override
