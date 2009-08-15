@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,6 +43,9 @@ public class ArtifactCache {
    private final HashCollection<String, Artifact> staticIdArtifactCache =
          new HashCollection<String, Artifact>(true, HashSet.class, 100);
 
+   private final HashCollection<ArtifactType, Artifact> byArtifactTypeCache =
+         new HashCollection<ArtifactType, Artifact>();
+
    private static final ArtifactCache instance = new ArtifactCache();
 
    private ArtifactCache() {
@@ -48,22 +53,8 @@ public class ArtifactCache {
 
    public static Collection<Artifact> getDirtyArtifacts() throws OseeCoreException {
       Set<Artifact> dirtyArts = new HashSet<Artifact>();
-      for (Artifact art : instance.staticIdArtifactCache.getValues()) {
-         if (art.isDirty()) {
-            dirtyArts.add(art);
-         }
-      }
+      // ArtifactIdCache is the master cache - no need to check other caches
       for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
-         if (entry.getValue().isDirty()) {
-            dirtyArts.add(entry.getValue());
-         }
-      }
-      for (Entry<Pair<String, Integer>, Artifact> entry : instance.artifactGuidCache.entrySet()) {
-         if (entry.getValue().isDirty()) {
-            dirtyArts.add(entry.getValue());
-         }
-      }
-      for (Entry<Pair<String, Branch>, Artifact> entry : instance.keyedArtifactCache.entrySet()) {
          if (entry.getValue().isDirty()) {
             dirtyArts.add(entry.getValue());
          }
@@ -83,7 +74,9 @@ public class ArtifactCache {
       } else {
          instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
          instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
+         instance.byArtifactTypeCache.put(artifact.getArtifactType(), artifact);
       }
+
    }
 
    synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
@@ -119,15 +112,20 @@ public class ArtifactCache {
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
       instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
+      instance.byArtifactTypeCache.removeValue(artifact.getArtifactType(), artifact);
       deCacheStaticIds(artifact);
    }
 
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
-      if (cachedArts == null) return artifacts;
+      if (cachedArts == null) {
+         return artifacts;
+      }
       for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted()) artifacts.add(artifact);
+         if (!artifact.isDeleted()) {
+            artifacts.add(artifact);
+         }
       }
       return artifacts;
    }
@@ -135,9 +133,13 @@ public class ArtifactCache {
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
-      if (cachedArts == null) return artifacts;
+      if (cachedArts == null) {
+         return artifacts;
+      }
       for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted() && artifact.getBranch().equals(branch)) artifacts.add(artifact);
+         if (!artifact.isDeleted() && artifact.getBranch().equals(branch)) {
+            artifacts.add(artifact);
+         }
       }
       return artifacts;
    }
@@ -148,6 +150,15 @@ public class ArtifactCache {
 
    public synchronized static Artifact getHistorical(String guid, Integer transactionNumber) {
       return instance.historicalArtifactGuidCache.get(guid, transactionNumber);
+   }
+
+   public synchronized static List<Artifact> getArtifactsByType(ArtifactType artifactType) {
+      List<Artifact> items = new ArrayList<Artifact>();
+      Collection<Artifact> cachedItems = instance.byArtifactTypeCache.getValues(artifactType);
+      if (cachedItems != null) {
+         items.addAll(cachedItems);
+      }
+      return items;
    }
 
    /**
@@ -200,7 +211,7 @@ public class ArtifactCache {
     * @param branch
     * @param artifact
     */
-   public synchronized static void putByTextId(String key, Artifact artifact) {
-      instance.keyedArtifactCache.put(key, artifact.getBranch(), artifact);
+   public synchronized static Artifact cacheByTextId(String key, Artifact artifact) {
+      return instance.keyedArtifactCache.put(key, artifact.getBranch(), artifact);
    }
 }

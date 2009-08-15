@@ -57,7 +57,7 @@ public final class Artifacts {
          if (artifact == null) {
             artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch, name);
          }
-         ArtifactCache.putByTextId(cacheKey, artifact);
+         ArtifactCache.cacheByTextId(cacheKey, artifact);
       }
       return artifact;
    }

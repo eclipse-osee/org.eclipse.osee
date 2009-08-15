@@ -93,7 +93,7 @@ public class OseeGroup {
             groupArtifact = ArtifactTypeManager.addArtifact(GROUP_ARTIFACT_TYPE, branch, groupName);
             userGroupsFolder.addChild(groupArtifact);
          }
-         ArtifactCache.putByTextId(cacheKey, groupArtifact);
+         ArtifactCache.cacheByTextId(cacheKey, groupArtifact);
       }
 
       return groupArtifact;
@@ -116,7 +116,7 @@ public class OseeGroup {
             }
          }
 
-         ArtifactCache.putByTextId(cacheKey, usersGroupFolder);
+         ArtifactCache.cacheByTextId(cacheKey, usersGroupFolder);
       }
       return usersGroupFolder;
    }

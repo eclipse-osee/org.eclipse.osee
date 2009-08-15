@@ -493,7 +493,7 @@ public class ArtifactQuery {
          root =
                getArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME,
                      ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
-         ArtifactCache.putByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
+         ArtifactCache.cacheByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
       }
       return root;
    }

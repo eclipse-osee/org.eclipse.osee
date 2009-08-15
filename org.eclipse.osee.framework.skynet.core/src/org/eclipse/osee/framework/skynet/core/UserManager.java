@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
@@ -22,38 +21,32 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Roberto E. Escobar
  */
-public class UserManager implements IFrameworkTransactionEventListener, ITransactionsDeletedEventListener, IArtifactsPurgedEventListener {
-   public static enum UserStatusEnum {
+public final class UserManager {
+
+   private static enum UserStatusEnum {
       Active, InActive, Both
    }
 
-   private static final UserManager instance = new UserManager();
-   private final Map<String, User> userIdToUserCache = Collections.synchronizedMap(new HashMap<String, User>());
-   private boolean userCacheIsLoaded = false;
-   private boolean duringMainUserCreation = false;
+   private static final String CACHE_PREFIX = "userManager.";
+   private static boolean userCacheIsLoaded = false;
+   private static boolean duringMainUserCreation = false;
 
    private UserManager() {
    }
@@ -65,7 +58,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * @throws OseeCoreException
     */
    public static User getUser() throws OseeCoreException {
-      if (instance.duringMainUserCreation) {
+      if (duringMainUserCreation) {
          return BootStrapUser.getInstance();
       }
       return ClientUser.getMainUser();
@@ -78,20 +71,33 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       return getUsers(UserStatusEnum.Active);
    }
 
+   public static ArrayList<User> getActiveAndInactiveUsers() throws OseeCoreException {
+      return getUsers(UserStatusEnum.Both);
+   }
+
+   public static ArrayList<User> getInactiveUsers() throws OseeCoreException {
+      return getUsers(UserStatusEnum.InActive);
+   }
+
    public static ArrayList<User> getUsersSortedByName() throws OseeCoreException {
       ArrayList<User> users = getUsers();
       Collections.sort(users);
       return users;
    }
 
-   public static ArrayList<User> getUsers(UserStatusEnum userStatus) throws OseeCoreException {
-      instance.ensurePopulated();
-      if (userStatus == UserStatusEnum.Both) {
-         return new ArrayList<User>(instance.userIdToUserCache.values());
-      }
+   private static List<User> getFromCache() throws OseeTypeDoesNotExist, OseeDataStoreException {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(ArtifactTypeManager.getType(User.ARTIFACT_NAME)));
+   }
 
-      ArrayList<User> users = new ArrayList<User>(instance.userIdToUserCache.size());
-      for (User user : instance.userIdToUserCache.values()) {
+   private static ArrayList<User> getUsers(UserStatusEnum userStatus) throws OseeCoreException {
+      ensurePopulated();
+
+      List<User> allUsers = getFromCache();
+      if (userStatus == UserStatusEnum.Both) {
+         return new ArrayList<User>(allUsers);
+      }
+      ArrayList<User> users = new ArrayList<User>(allUsers.size());
+      for (User user : allUsers) {
          if (userStatus == UserStatusEnum.Active && user.isActive()) {
             users.add(user);
          } else if (userStatus == UserStatusEnum.InActive && !user.isActive()) {
@@ -107,10 +113,11 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * @return String[]
     */
    public static String[] getUserNames() throws OseeCoreException {
-      instance.ensurePopulated();
-      String[] userNames = new String[instance.userIdToUserCache.size()];
+      ensurePopulated();
+      List<User> allUsers = getFromCache();
+      String[] userNames = new String[allUsers.size()];
       int index = 0;
-      for (User user : instance.userIdToUserCache.values()) {
+      for (User user : allUsers) {
          userNames[index++] = user.getName();
       }
       return userNames;
@@ -135,7 +142,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    }
 
    public static User getUserByArtId(int userArtifactId) throws OseeCoreException {
-      instance.ensurePopulated();
+      ensurePopulated();
       User user = (User) ArtifactCache.getActive(userArtifactId, BranchManager.getCommonBranch());
       if (user == null) {
          throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");
@@ -144,8 +151,8 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
    }
 
    public static boolean userExistsWithName(String name) throws OseeCoreException {
-      instance.ensurePopulated();
-      for (User tempUser : instance.userIdToUserCache.values()) {
+      ensurePopulated();
+      for (User tempUser : getFromCache()) {
          if (tempUser.getName().equals(name)) {
             return true;
          }
@@ -161,9 +168,9 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * @throws OseeCoreException
     */
    public static User getUserByName(String name) throws OseeCoreException {
-      instance.ensurePopulated();
+      ensurePopulated();
       User user = null;
-      for (User tempUser : instance.userIdToUserCache.values()) {
+      for (User tempUser : getFromCache()) {
          if (tempUser.getName().equals(name)) {
             user = tempUser;
             return user;
@@ -172,13 +179,21 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       throw new UserNotInDatabase("User requested by name \"" + name + "\" was not found.");
    }
 
+   private static User getFromCacheByUserId(String userId) throws OseeCoreException {
+      return (User) ArtifactCache.getByTextId(CACHE_PREFIX + userId, BranchManager.getCommonBranch());
+   }
+
+   private static User cacheByUserId(User userToCache) throws OseeCoreException {
+      return (User) ArtifactCache.cacheByTextId(CACHE_PREFIX + userToCache.getUserId(), userToCache);
+   }
+
    public static User getUserByUserId(String userId) throws OseeCoreException {
       if (userId == null || userId.equals("")) {
          throw new OseeArgumentException("UserId can't be null or \"\"");
       }
 
-      instance.ensurePopulated();
-      User user = instance.userIdToUserCache.get(userId);
+      ensurePopulated();
+      User user = getFromCacheByUserId(userId);
       if (user == null) {
          try {
             user = (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId, BranchManager.getCommonBranch());
@@ -193,14 +208,14 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
       return getUserByUserId(userEnum.getUserID());
    }
 
-   private synchronized void ensurePopulated() throws OseeCoreException {
+   private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
-         Collection<User> dbUsers =
-               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(
-                     User.ARTIFACT_NAME, BranchManager.getCommonBranch()));
-         for (User user : dbUsers) {
-            User previousUser = userIdToUserCache.put(user.getUserId(), user);
-            if (previousUser != null) { // if duplicate user id found
+         List<Artifact> artifactsFound =
+               ArtifactQuery.getArtifactListFromType(User.ARTIFACT_NAME, BranchManager.getCommonBranch());
+         for (Artifact artifact : artifactsFound) {
+            User user = (User) artifact;
+            User cachedUser = cacheByUserId(user);
+            if (cachedUser != null) { // if duplicate user id found
                OseeCoreException ex =
                      new UserInDatabaseMultipleTimes(
                            "User of userId \"" + user.getUserId() + "\" in datastore more than once");
@@ -221,20 +236,20 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
     * @return whether the Authentication manager is in the middle of creating a user
     */
    public static boolean duringMainUserCreation() {
-      return instance.duringMainUserCreation;
+      return duringMainUserCreation;
    }
 
    public static synchronized User createMainUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
-      instance.duringMainUserCreation = true;
+      duringMainUserCreation = true;
       User user = createUser(userEnum, transaction);
-      instance.duringMainUserCreation = false;
+      duringMainUserCreation = false;
       return user;
    }
 
    public static synchronized User createUser(IOseeUser userEnum, SkynetTransaction transaction) throws OseeCoreException {
-      instance.ensurePopulated();
+      ensurePopulated();
       // Determine if user with id has already been created; boot strap issue with dbInit
-      User user = instance.userIdToUserCache.get(userEnum.getUserID());
+      User user = getFromCacheByUserId(userEnum.getUserID());
       if (user != null) {
          // Update user with this enum data
          user.setDescriptiveName(userEnum.getName());
@@ -247,7 +262,7 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());
          user.setEmail(userEnum.getEmail());
-         instance.userIdToUserCache.put(user.getUserId(), user);
+         cacheByUserId(user);
 
          // this is here in case a user is created at an unexpected time
          if (!DbUtil.isDbInit()) {
@@ -258,59 +273,6 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
 
       user.persistAttributesAndRelations(transaction);
       return user;
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != BranchManager.getCommonBranch().getBranchId()) return;
-      ArtifactType userType = ArtifactTypeManager.getType(User.ARTIFACT_NAME);
-
-      Collection<Integer> deletedUserArtifactIds =
-            transData.getArtifactIdsOfArtifactType(userType, ArtifactModType.Deleted);
-      ArrayList<User> usersToRemove = new ArrayList<User>();
-      for (User tempUser : userIdToUserCache.values()) {
-         if (deletedUserArtifactIds.contains(tempUser.getArtId())) {
-            usersToRemove.add(tempUser);
-         }
-      }
-      for (User user : usersToRemove) {
-         userIdToUserCache.remove(user.getUserId());
-      }
-
-      Collection<Integer> newUserArtifactIds = transData.getArtifactIdsOfArtifactType(userType, ArtifactModType.Added);
-      Collection<User> newUsers =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromIds(
-                  newUserArtifactIds, BranchManager.getCommonBranch(), false));
-      for (User newUser : newUsers) {
-         userIdToUserCache.put(newUser.getUserId(), newUser);
-      }
-
-      Collection<Integer> modUserArtifacts = transData.getArtifactIdsOfArtifactType(userType, ArtifactModType.Changed);
-
-      Collection<User> modUsers =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromIds(
-                  modUserArtifacts, BranchManager.getCommonBranch(), false));
-      for (User modUser : modUsers) {
-         User previousUser = (User) ArtifactCache.getActive(modUser.getArtId(), BranchManager.getCommonBranch());
-         if (previousUser != null) {
-            userIdToUserCache.remove(previousUser);
-         }
-         userIdToUserCache.put(modUser.getUserId(), modUser);
-      }
-   }
-
-   @Override
-   public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
-      // TODO Need to handle this case when event sends more data about the contents of the deleted transactions
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
-      for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-         if (artifact instanceof User) {
-            userIdToUserCache.remove(((User) artifact).getUserId());
-         }
-      }
    }
 
    public static boolean isUserInactive(Collection<User> users) throws OseeCoreException {
@@ -324,14 +286,18 @@ public class UserManager implements IFrameworkTransactionEventListener, ITransac
 
    public static boolean isUserSystem(Collection<User> users) throws OseeCoreException {
       for (User user : users) {
-         if (user.isSystemUser()) return true;
+         if (user.isSystemUser()) {
+            return true;
+         }
       }
       return false;
    }
 
    public static boolean isUserCurrentUser(Collection<User> users) throws OseeCoreException {
       for (User user : users) {
-         if (user.equals(UserManager.getUser())) return true;
+         if (user.equals(UserManager.getUser())) {
+            return true;
+         }
       }
       return false;
    }
