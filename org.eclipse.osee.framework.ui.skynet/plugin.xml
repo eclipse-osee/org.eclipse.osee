@@ -19,21 +19,37 @@
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
  
-
-<extension
-      point="org.eclipse.ui.popupMenus">
-   <objectContribution
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
          adaptable="true"
          id="osee.database.projectContribution"
          objectClass="org.eclipse.core.resources.IResource">
       <action
-            class="org.eclipse.osee.framework.ui.skynet.GenerateTypeEnumAction"
+         class="org.eclipse.osee.framework.ui.skynet.GenerateTypeEnumAction"
+         id="org.eclipse.osee.framework.ui.popup.open.artifact"
+         label="Generate Type Classes"
+         menubarPath="org.eclipse.osee.main/main"/>
+      </objectContribution>
+   </extension>
+
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+         adaptable="true"
+         id="osee.define.projectContribution"
+         objectClass="org.eclipse.core.resources.IResource">
+      <menu
+            label="OSEE"
+            path="additions"
+            id="org.eclipse.osee.main">
+      </menu>
+      <action
+            class="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactAction"
             id="osee.define.popup.open.artifact"
-            label="Generate Type Classes"
-            menubarPath="osee.define.menu.main/main"/>
-   </objectContribution>
-   
-</extension>
+            label="Open Associated Artifact"
+            menubarPath="org.eclipse.osee.main/main"/>
+      </objectContribution>
+   </extension>
+	
 	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
 			<description>

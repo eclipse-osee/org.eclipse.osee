@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 
 /**
  * @author Michael S. Rodgers
  */
 public class WorkspaceURL {
-   public static String getURL(IFile file) {
+   public static String getURL(IResource resource) {
       // Add only 1 "/" due to the path for the file having a preceding "/"
-      return "ws:/" + file.getFullPath().toString();
+      return "ws:/" + resource.getFullPath().toString();
    }
 }

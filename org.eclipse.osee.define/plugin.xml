@@ -37,25 +37,7 @@
             </description>
          </wizard>
       </extension>
-<extension
-      point="org.eclipse.ui.popupMenus">
-   <objectContribution
-         adaptable="true"
-         id="osee.define.projectContribution"
-         objectClass="org.eclipse.core.resources.IResource">
-      <menu
-            label="Define"
-            path="additions"
-            id="osee.define.menu.main">
-      </menu>
-      <action
-            class="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactAction"
-            id="osee.define.popup.open.artifact"
-            label="Open Artifact"
-            menubarPath="osee.define.menu.main/main"/>
-   </objectContribution>
-   
-</extension>
+
       <extension
             point="org.eclipse.ui.perspectives">
          <perspective
@@ -162,7 +144,7 @@
              icon="images/artifact_search.gif"
              id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
              label="Find Trace Unit Artifact"
-             menubarPath="osee.define.menu.main/main"
+             menubarPath="org.eclipse.osee.main/main"
              state="true"
              style="push"
              tooltip="Searches for trace units in OSEE">

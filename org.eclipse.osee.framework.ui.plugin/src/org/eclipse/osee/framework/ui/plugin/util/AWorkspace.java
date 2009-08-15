@@ -78,6 +78,7 @@ public class AWorkspace {
 
    public static void reinit() {
       Job initJob = new Job("Initializing Workspace Search") {
+         @Override
          protected IStatus run(IProgressMonitor monitor) {
             initializedWorkspaceSearch = false;
             File savefile = OseeData.getFile("serializedFileFinder");
@@ -256,7 +257,9 @@ public class AWorkspace {
       String p = file.getAbsolutePath();
       IPath path = new Path(p);
       IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-      if (iFile.exists()) return iFile;
+      if (iFile.exists()) {
+         return iFile;
+      }
       p = p.replace('\\', '/');
       // System.err.println("p *" + p + "*");
       // Run through projects to see if any contain this file
@@ -351,7 +354,9 @@ public class AWorkspace {
    }
 
    public static boolean showInPackageExplorer(IFile file) {
-      if (file == null) return false;
+      if (file == null) {
+         return false;
+      }
       IViewPart p =
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                   "org.eclipse.jdt.ui.PackageExplorer");
@@ -379,7 +384,9 @@ public class AWorkspace {
       IViewReference[] parts = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
       for (int i = 0; i < parts.length; i++) {
          StructuredSelection sel = getSelection(parts[i].getPart(false));
-         if (sel != null) return sel;
+         if (sel != null) {
+            return sel;
+         }
       }
       return null;
    }
@@ -409,39 +416,6 @@ public class AWorkspace {
       return l;
    }
 
-   // public static File findWorkspaceFile(String fileName, String filePathHint) throws IOException
-   // {
-   // File file = fileFindMap.get(fileName);
-   // if(file == null || !file.exists()){
-   // File workspace = new File(AWorkspace.getWorkspacePath());
-   // List files = Lib.recursivelyListFiles(workspace, Pattern.compile(fileName));
-   // if(files.size() == 0){
-   // throw new IOException("we didn't find the file in the workspace");
-   // } else if (files.size() > 1){
-   //            
-   // DialogSelectionHelper selection = new DialogSelectionHelper(files.toArray());
-   //            
-   // Display.getDefault().syncExec(selection);
-   //            
-   // if(selection.getSelectionIndex() == -1){
-   // String message = "we found multiple matches";
-   // for(int i = 0; i < files.size(); i++){
-   // message += "\n" + files.get(i);
-   // }
-   // throw new IOException(message);
-   // } else {
-   // if(selection.isSaveSelection()){
-   // fileFindMap.put(fileName, (File)files.get(selection.getSelectionIndex()));
-   // }
-   // return (File)files.get(selection.getSelectionIndex());
-   // }
-   // } else {
-   // file = (File)files.get(0);
-   // fileFindMap.put(fileName, file);
-   // }
-   // }
-   // return file;
-   // }
    /**
     * Return workspace file give workspace relative path and file. eg ".metadata/.log"
     */
@@ -471,23 +445,12 @@ public class AWorkspace {
                throw new IOException(message);
             } else {
                if (selection.isSaveSelection()) {
-                  fileFindMap.put(fileName, (File) files.get(selection.getSelectionIndex()));
+                  fileFindMap.put(fileName, files.get(selection.getSelectionIndex()));
                }
-               return (File) files.get(selection.getSelectionIndex());
+               return files.get(selection.getSelectionIndex());
             }
          }
       }
-      // Display.getDefault().asyncExec(new Runnable() {
-      // public void run() {
-      // if
-      // (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-      // "Open Error", "Can't find \"" + fileName
-      // + "\" in workspace. Would you like to re-initialize the search structure, it will be
-      // performed in the background and could take several minutes?")) {
-      // reinit();
-      // }
-      // }
-      // });
       return null;
    }
 
@@ -517,12 +480,12 @@ public class AWorkspace {
                throw new IOException(message);
             } else {
                if (selection.isSaveSelection()) {
-                  fileFindMap.put(fileName, (File) files.get(selection.getSelectionIndex()));
+                  fileFindMap.put(fileName, files.get(selection.getSelectionIndex()));
                }
-               return (File) files.get(selection.getSelectionIndex());
+               return files.get(selection.getSelectionIndex());
             }
          } else {
-            file = (File) files.get(0);
+            file = files.get(0);
             fileFindMap.put(fileName, file);
          }
       }

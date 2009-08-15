@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDragDropSupport;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -27,35 +28,37 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author Jeff C. Phillips
+ * @author Ryan D. Brooks
  */
 public class OpenArtifactAction implements IObjectActionDelegate {
    private IWorkbenchPart targetPart;
    private Shell shell;
 
-   public OpenArtifactAction() {
-      super();
-   }
-
    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
       this.targetPart = targetPart;
-      shell = targetPart.getSite().getShell();
+      this.shell = targetPart.getSite().getShell();
    }
 
    public void run(IAction action) {
-      Object object = (Object) AWorkspace.getSelection(targetPart).getFirstElement();
-      Artifact artifact = null;
-      IFile iFile = null;
+      IStructuredSelection sel = (IStructuredSelection) targetPart.getSite().getSelectionProvider().getSelection();
+      for (Object object : sel.toList()) {
+         if (object instanceof IResource) {
+            String path = WorkspaceURL.getURL((IResource) object);
+            Artifact artifact = null;
 
-      if (object instanceof IFile) {
-         iFile = (IFile) object;
-         try {
-            artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(WorkspaceURL.getURL(iFile), shell);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+            try {
+               artifact = ArtifactDragDropSupport.getArtifactFromWorkspaceFile(path, shell);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
 
-         if (artifact != null) {
-            ArtifactEditor.editArtifact(artifact);
+            if (artifact != null) {
+               ArtifactEditor.editArtifact(artifact);
+            }
+         } else {
+            MessageDialog.openInformation(targetPart.getSite().getShell(), "Open Associated Artifact",
+                  "Type " + object.getClass() + " not handeled.");
+            return;
          }
       }
    }

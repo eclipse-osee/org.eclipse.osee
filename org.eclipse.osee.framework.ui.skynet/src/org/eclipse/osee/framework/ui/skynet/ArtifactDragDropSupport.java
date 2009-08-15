@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -46,13 +47,13 @@ public class ArtifactDragDropSupport {
       performDragDrop(e, null, window, shell);
    }
 
-   public static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
+   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 
-         if (artifacts != null)
+         if (artifacts != null) {
             addArtifacts(artifacts, window);
-         else {
+         } else {
             ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(e.currentDataType);
             addArtifacts(artData.getArtifacts(), window);
          }
@@ -151,14 +152,14 @@ public class ArtifactDragDropSupport {
       try {
          location = new URL(url).toString();
       } catch (MalformedURLException e) {
-         window.addInvalid(url, "Malformed Exception : " + e.getMessage());
+         window.addInvalid(url, "Malformed Exception : " + e.getLocalizedMessage());
          return;
       }
 
       try {
          artifact = getArtifactFromWorkspaceFile(location, shell);
       } catch (Exception ex) {
-         window.addInvalid(location, "Runtime exception: " + ex.getMessage());
+         window.addInvalid(location, "Runtime exception: " + ex.getLocalizedMessage());
          return;
       }
 
@@ -175,29 +176,23 @@ public class ArtifactDragDropSupport {
 
    public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws OseeCoreException {
       Artifact artifact = null;
-      int descriptorSelected = -1;
-      ArtifactType descriptor = null;
-      ArtifactDescriptorDialog dialog = null;
       Branch branch = BranchSelectionDialog.getBranchFromUser();
-      try {
-         artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
-      } catch (ArtifactDoesNotExist ex) {
-         Collection<ArtifactType> descriptors =
-               TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", branch);
-         dialog =
-               new ArtifactDescriptorDialog(
-                     shell,
-                     "Artifact Descriptor",
-                     null,
-                     "No Artifact could be found for this file. To create a new artifact please" + " select an artfact descriptor.",
-                     MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, descriptors);
-         descriptorSelected = dialog.open();
-         if (descriptorSelected == 0) {
-            descriptor = dialog.getEntry();
-            artifact = descriptor.makeNewArtifact(branch);
-            artifact.setSoleAttributeValue("Content URL", location);
-            artifact.setSoleAttributeValue("Name", new File(location).getName());
-            artifact.persistAttributes();
+      if (branch != null) {
+         try {
+            artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
+         } catch (ArtifactDoesNotExist ex) {
+            Collection<ArtifactType> artifactTypes =
+                  TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", branch);
+            ArtifactTypeDialog dialog =
+                  new ArtifactTypeDialog(shell, "Artifact Descriptor", null,
+                        "No Artifact could be found for this file. To create one, please select an artfact type.",
+                        MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
+
+            if (dialog.open() == Window.OK) {
+               artifact = dialog.getArtifactType().makeNewArtifact(branch);
+               artifact.setSoleAttributeValue("Content URL", location);
+               artifact.setSoleAttributeValue("Name", new File(location).getName());
+            }
          }
       }
 
