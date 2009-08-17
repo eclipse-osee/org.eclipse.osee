@@ -28,8 +28,8 @@ import org.osgi.framework.BundleContext;
  */
 public class ActivatorHelper {
    private static Map<String, Plugin> pluginIdToOseePlugin = new HashMap<String, Plugin>();
-   private BundleContext context;
-   private Plugin plugin;
+   private final BundleContext context;
+   private final Plugin plugin;
 
    /**
     * 
@@ -49,7 +49,7 @@ public class ActivatorHelper {
    }
 
    /**
-    * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regualar file
+    * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regular file
     * 
     * @param path
     * @return Return plugin file reference
@@ -60,7 +60,9 @@ public class ActivatorHelper {
       result.getParentFile().mkdirs();
       InputStream inStream = getInputStream(path);
       Lib.inputStreamToFile(inStream, result);
-      if (!result.exists()) return null;
+      if (!result.exists()) {
+         return null;
+      }
       return result;
    }
 
