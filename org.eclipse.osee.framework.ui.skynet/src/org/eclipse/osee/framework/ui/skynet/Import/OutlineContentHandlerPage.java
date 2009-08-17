@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
 import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -98,10 +99,13 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
 
    private void initList() {
       hasHandlers = false;
-      for (IArtifactSourceParserDelegate delegate : contributionManager.getArtifactSourceParserDelegate(null)) {
-         hasHandlers = true;
-         handlerList.add(delegate.getName());
-         handlerList.setData(delegate.getName(), delegate);
+      for (IArtifactSourceParser parser : contributionManager.getArtifactSourceParser()) {
+         for (IArtifactSourceParserDelegate delegate : contributionManager.getArtifactSourceParserDelegate(parser)) {
+            hasHandlers = true;
+            handlerList.add(delegate.getName());
+            handlerList.setData(delegate.getName(), delegate);
+            break;
+         }
       }
 
       if (!hasHandlers) {

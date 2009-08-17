@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactSourceParserContributionManager {
 
    private static final String PARSER_ELEMENT = "ArtifactSourceParser";
+   private static final String PARSER_DELEGATE_ELEMENT = "ArtifactSourceParserDelegate";
    private static final String PARSER_EXTENSION = Activator.PLUGIN_ID + "." + PARSER_ELEMENT;
-   private static final String CLASS_NAME_ATTRIBUTE = "classname";
-   private static final String PARSER_DELEGATE_ELEMENT = " ArtifactSourceParserDelegate";
    private static final String PARSER_DELEGATE_EXTENSION = Activator.PLUGIN_ID + "." + PARSER_DELEGATE_ELEMENT;
+   private static final String CLASS_NAME_ATTRIBUTE = "classname";
 
    public ArtifactSourceParserContributionManager() {
    }
