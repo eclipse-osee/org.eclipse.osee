@@ -23,31 +23,30 @@ import org.eclipse.core.runtime.IPath;
 import org.osgi.framework.BundleException;
 
 /**
- * Handler for IResourceChangeEvent.POST_CHANGE and IResourceChangeEvent.PRE_CLOSE events
- * for projects with a given nature ID that extends JarCollectionNature. POST_CHANGE events
- * against the jars in projects with the nature, and close events on the projects with the
- * nature are detected and offered to an IJarChangeListener.
+ * Handler for IResourceChangeEvent.POST_CHANGE and IResourceChangeEvent.PRE_CLOSE events for projects with a given
+ * nature ID that extends JarCollectionNature. POST_CHANGE events against the jars in projects with the nature, and
+ * close events on the projects with the nature are detected and offered to an IJarChangeListener.
  * 
  * @author Robert A. Fisher
- *
  */
 public class JarChangeResourceListener<T extends JarCollectionNature> implements IResourceChangeListener {
    private final String natureId;
    private final IJarChangeListener<T> listener;
-   
+
    /**
     * @param natureId
     * @param listener
     */
    public JarChangeResourceListener(String natureId, IJarChangeListener<T> listener) {
-      if (natureId == null)
+      if (natureId == null) {
          throw new IllegalArgumentException("natureId must not be null");
-      if (listener == null)
+      }
+      if (listener == null) {
          throw new IllegalArgumentException("listener must not be null");
+      }
       this.natureId = natureId;
       this.listener = listener;
    }
-
 
    @SuppressWarnings("unchecked")
    @Override
@@ -58,21 +57,18 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
          } else if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
             IResource resource = event.getResource();
             if (resource != null && resource instanceof IProject) {
-               IProject project = (IProject)resource;
+               IProject project = (IProject) resource;
 
                IProjectNature nature = project.getNature(natureId);
                if (nature != null) {
-                  listener.handleNatureClosed((T)nature);
+                  listener.handleNatureClosed((T) nature);
                }
             }
          }
       } catch (CoreException ex) {
-         // TODO
       } catch (MalformedURLException ex) {
-         // TODO
       }
    }
-
 
    /**
     * @param event
@@ -86,42 +82,42 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
          for (IResourceDelta child : rootDelta.getAffectedChildren()) {
             IResource resource = child.getResource();
             if (resource != null && resource instanceof IProject) {
-               IProject project = (IProject)resource;
+               IProject project = (IProject) resource;
 
                IProjectNature nature = project.getNature(natureId);
                if (nature != null) {
-                  JarCollectionNature starterNature = (JarCollectionNature)nature;
+                  JarCollectionNature starterNature = (JarCollectionNature) nature;
                   IPath[] paths = starterNature.getProjectRelativeBundlePaths();
-                  for(IPath path:paths){
+                  for (IPath path : paths) {
                      IResourceDelta pluginDelta = child.findMember(path);
                      if (pluginDelta != null) {
-                        handlePluginChanges(project.getLocation().removeLastSegments(1), pluginDelta.getAffectedChildren());
+                        handlePluginChanges(project.getLocation().removeLastSegments(1),
+                              pluginDelta.getAffectedChildren());
                         triggered = true;
                      }
                   }
                }
             }
          }
-         
+
          if (triggered) {
             listener.handlePostChange();
          }
       }
    }
 
-
    /**
-    * @param projectPath 
+    * @param projectPath
     * @param affectedChildren
-    * @throws BundleException 
-    * @throws MalformedURLException 
+    * @throws BundleException
+    * @throws MalformedURLException
     */
    protected void handlePluginChanges(IPath workspacePath, IResourceDelta[] affectedChildren) throws MalformedURLException {
       for (IResourceDelta affectedPluginDelta : affectedChildren) {
          URL url = workspacePath.append(affectedPluginDelta.getFullPath()).toFile().toURI().toURL();
          if (affectedPluginDelta.getFullPath().getFileExtension().equals("jar")) {
             try {
-               switch(affectedPluginDelta.getKind()) {
+               switch (affectedPluginDelta.getKind()) {
                   case IResourceDelta.ADDED:
                      listener.handleBundleAdded(url);
                      break;
@@ -131,7 +127,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                   case IResourceDelta.REMOVED:
                      listener.handleBundleRemoved(url);
                      break;
-                  
+
                   default:
                      System.err.println("Do not expect change kind of " + generateKindString(affectedPluginDelta.getKind()));
                }
@@ -142,7 +138,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
          }
       }
    }
-   
+
    private String generateKindString(int kind) {
       switch (kind) {
          case IResourceDelta.ADDED:
@@ -155,7 +151,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
             return "Unexpected Kind: " + kind;
       }
    }
-   
+
    /**
     * @param type
     * @return
@@ -175,7 +171,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
          case IResourceChangeEvent.PRE_REFRESH:
             return "Pre Refresh";
          default:
-            return "Unknown Code: " + type;   
+            return "Unknown Code: " + type;
       }
    }
 }

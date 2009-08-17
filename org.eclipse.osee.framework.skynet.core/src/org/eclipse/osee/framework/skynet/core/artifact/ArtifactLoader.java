@@ -206,8 +206,8 @@ public final class ArtifactLoader {
     * @param confirmer
     * @param insertParameters
     * @param reload
-    * @param historical TODO
-    * @param allowDeleted TODO
+    * @param historical
+    * @param allowDeleted
     * @return list of the loaded artifacts
     * @throws OseeCoreException
     */

@@ -28,7 +28,7 @@ public interface IAtsTeamWorkflow {
     * @param teamDef related to the workflow to be created
     * @param actionableItems that were selected for the creation
     * @return true if responsible, false if not
-    * @throws Exception TODO
+    * @throws Exception
     */
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
@@ -39,7 +39,7 @@ public interface IAtsTeamWorkflow {
     * @param teamDef related to the workflow to be created
     * @param actionableItems that were selected for the creation
     * @return string artifact type name
-    * @throws Exception TODO
+    * @throws Exception
     */
    public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 

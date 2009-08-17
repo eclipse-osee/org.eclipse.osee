@@ -93,7 +93,6 @@ public class UnitTestSupport {
          }
 
          public void onInitListener() throws MessageSystemException {
-            // TODO Auto-generated method stub
 
          }
 

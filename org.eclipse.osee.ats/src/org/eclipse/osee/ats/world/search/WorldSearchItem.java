@@ -77,7 +77,7 @@ public abstract class WorldSearchItem {
     * Method called to display the current search in the view. Override to provide more information about selected
     * values (eg MyWorld)
     * 
-    * @param searchType TODO
+    * @param searchType
     * @return selected name
     * @throws OseeCoreException
     */

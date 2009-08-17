@@ -40,7 +40,6 @@ public class LogProgressMonitor implements IProgressMonitor {
 
    @Override
    public void internalWorked(double work) {
-      // TODO Auto-generated method stub
 
    }
 
@@ -67,7 +66,6 @@ public class LogProgressMonitor implements IProgressMonitor {
 
    @Override
    public void worked(int work) {
-      // TODO Auto-generated method stub
 
    }
 

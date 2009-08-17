@@ -76,8 +76,9 @@ public final class Artifacts {
 
    public static Collection<String> artNames(Collection<? extends Artifact> arts) {
       ArrayList<String> names = new ArrayList<String>();
-      for (Artifact art : arts)
+      for (Artifact art : arts) {
          names.add(art.getName());
+      }
       return names;
    }
 
@@ -108,7 +109,7 @@ public final class Artifacts {
     * @param parentArtifact
     * @param children
     * @param clazz
-    * @param recurse TODO
+    * @param recurse
     * @throws OseeDataStoreException
     */
    @SuppressWarnings("unchecked")
@@ -116,7 +117,9 @@ public final class Artifacts {
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
-            if (recurse) getChildrenOfType(child, children, clazz, recurse);
+            if (recurse) {
+               getChildrenOfType(child, children, clazz, recurse);
+            }
          }
       }
    }
@@ -140,7 +143,9 @@ public final class Artifacts {
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
-            if (recurse) getChildrenOfType(child, children, clazz, recurse);
+            if (recurse) {
+               getChildrenOfType(child, children, clazz, recurse);
+            }
          }
       }
       return children;

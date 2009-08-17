@@ -1450,12 +1450,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       }
    }
 
-   /**
-    * Searches the database to verify that the given HRID is not already taken
-    * 
-    * @param id
-    * @return true iff id is not found in the database TODO make private, implement testing some other way
-    */
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
       String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
 

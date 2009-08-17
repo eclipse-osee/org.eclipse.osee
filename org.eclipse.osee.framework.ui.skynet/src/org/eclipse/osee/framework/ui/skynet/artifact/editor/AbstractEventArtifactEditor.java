@@ -50,7 +50,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
    @Override
    protected void addPages() {
-      // TODO Auto-generated method stub
    }
 
    @Override
@@ -85,7 +84,9 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               if (getArtifactFromEditorInput() == null || !getArtifactFromEditorInput().equals(artifact)) return;
+               if (getArtifactFromEditorInput() == null || !getArtifactFromEditorInput().equals(artifact)) {
+                  return;
+               }
                if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
                   refreshDirtyArtifact();
                }
@@ -183,7 +184,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-         // TODO Auto-generated method stub
       }
 
       @Override

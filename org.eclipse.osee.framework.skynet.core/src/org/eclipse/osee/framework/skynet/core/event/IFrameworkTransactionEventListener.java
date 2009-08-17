@@ -25,7 +25,7 @@ public interface IFrameworkTransactionEventListener extends IEventListner {
     * 
     * @param source
     * @param transData collection of all changes within transaction
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException;
 

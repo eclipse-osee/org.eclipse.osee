@@ -52,7 +52,7 @@ public class RendererManager {
 
    /**
     * @param artifacts
-    * @param presentationType TODO
+    * @param presentationType
     * @return Returns the intersection of renderers applicable for all of the artifacts
     * @throws OseeCoreException
     */

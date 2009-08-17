@@ -464,7 +464,7 @@ public class AtsBranchManager {
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
     * 
-    * @param includeDeleted TODO
+    * @param includeDeleted
     * @return Branch
     */
    public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
@@ -726,8 +726,8 @@ public class AtsBranchManager {
          title = title.substring(0, 39) + "...";
       }
       final String branchName =
-            String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(),
-                  stateMachineArtifact.getName(), title);
+            String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(), stateMachineArtifact.getName(),
+                  title);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {

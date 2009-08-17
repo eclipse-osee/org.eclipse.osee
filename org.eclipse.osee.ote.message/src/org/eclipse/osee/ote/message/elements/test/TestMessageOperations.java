@@ -32,11 +32,13 @@ public class TestMessageOperations extends TestCase {
    public static void tearDownAfterClass() throws Exception {
    }
 
+   @Override
    @Before
    public void setUp() throws Exception {
       support = new UnitTestSupport();
    }
 
+   @Override
    @After
    public void tearDown() throws Exception {
       support.cleanup();
@@ -52,7 +54,6 @@ public class TestMessageOperations extends TestCase {
          }
 
          public void onInitListener() throws MessageSystemException {
-            // TODO Auto-generated method stub
 
          }
 

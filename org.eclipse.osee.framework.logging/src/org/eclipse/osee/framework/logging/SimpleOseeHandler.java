@@ -25,12 +25,10 @@ public class SimpleOseeHandler extends Handler {
 
    @Override
    public void close() throws SecurityException {
-      // TODO Auto-generated method stub
    }
 
    @Override
    public void flush() {
-      // TODO Auto-generated method stub
    }
 
    @Override

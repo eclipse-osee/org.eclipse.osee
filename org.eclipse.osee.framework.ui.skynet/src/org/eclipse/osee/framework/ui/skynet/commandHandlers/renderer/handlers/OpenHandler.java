@@ -48,7 +48,6 @@ public class OpenHandler extends AbstractEditorHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      // TODO Auto-generated method stub
       return super.isEnabledWithException();
    }
 }

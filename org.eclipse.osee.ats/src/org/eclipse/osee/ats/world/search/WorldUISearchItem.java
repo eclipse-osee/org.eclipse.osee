@@ -52,7 +52,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
     * Method called to display the current search in the view. Override to provide more information about selected
     * values (eg MyWorld)
     * 
-    * @param searchType TODO
+    * @param searchType
     * @return selected name
     * @throws OseeCoreException
     */
@@ -93,7 +93,9 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
          }, true);
 
       }
-      if (cancelled) return EMPTY_SET;
+      if (cancelled) {
+         return EMPTY_SET;
+      }
       return performSearch(searchType);
    }
 

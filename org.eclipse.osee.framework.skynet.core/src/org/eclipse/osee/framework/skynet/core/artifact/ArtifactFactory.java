@@ -42,7 +42,7 @@ public abstract class ArtifactFactory {
     * @param artifactType
     * @param guid
     * @param humandReadableId
-    * @param earlyArtifactInitialization TODO
+    * @param earlyArtifactInitialization
     * @return the new artifact instance
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
@@ -62,8 +62,8 @@ public abstract class ArtifactFactory {
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modificationType) throws OseeCoreException {
-      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch,
-            modificationType, false, null);
+      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
+            false, null);
    }
 
    private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modType, boolean historical, TransactionId transactionId) throws OseeCoreException {
@@ -89,7 +89,7 @@ public abstract class ArtifactFactory {
     * 
     * @param branch branch on which this instance of this artifact will be associated
     * @return Return artifact reference
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException;
 

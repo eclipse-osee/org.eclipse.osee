@@ -106,7 +106,7 @@ public abstract class WorkItemDefinition {
     * 
     * @param pageId
     * @return boolean
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException {
       // Collect all ids already visited

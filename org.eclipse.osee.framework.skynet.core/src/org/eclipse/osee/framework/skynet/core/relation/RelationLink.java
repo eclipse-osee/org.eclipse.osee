@@ -62,7 +62,7 @@ public class RelationLink {
    /**
     * This constructor creates new relations that does not already exist in the data store.
     * 
-    * @param modificationType TODO
+    * @param modificationType
     */
    public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
       this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
@@ -265,7 +265,9 @@ public class RelationLink {
          rationale = "";
       }
 
-      if (this.rationale.equals(rationale)) return;
+      if (this.rationale.equals(rationale)) {
+         return;
+      }
 
       this.rationale = rationale;
       markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
@@ -308,18 +310,21 @@ public class RelationLink {
 
       if (artifact == getArtifact(RelationSide.SIDE_A)) {
 
-         if (otherArtifact)
+         if (otherArtifact) {
             sideName = relationType.getBToAPhrasing();
-         else
+         } else {
             sideName = relationType.getAToBPhrasing();
+         }
       } else if (artifact == getArtifact(RelationSide.SIDE_B)) {
 
-         if (otherArtifact)
+         if (otherArtifact) {
             sideName = relationType.getAToBPhrasing();
-         else
+         } else {
             sideName = relationType.getBToAPhrasing();
-      } else
+         }
+      } else {
          throw new IllegalArgumentException("Link does not contain the artifact.");
+      }
 
       return sideName;
    }

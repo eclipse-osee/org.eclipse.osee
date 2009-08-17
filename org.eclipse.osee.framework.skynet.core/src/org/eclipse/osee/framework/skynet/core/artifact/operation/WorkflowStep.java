@@ -24,9 +24,9 @@ public interface WorkflowStep {
     * control construct&gt;
     * 
     * @param artifacts
-    * @param monitor TODO
+    * @param monitor
     * @return list of artifacts that are the result of this step (if null) engine with replace with the empty list
-    * @throws Exception TODO
+    * @throws Exception
     */
    public abstract List<Artifact> perform(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception;
 

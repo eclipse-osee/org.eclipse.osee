@@ -74,7 +74,6 @@ public class WordMlLinkHandlerTest {
                String expected = Lib.inputStreamToString(expectedStream);
                expected = expected.replaceAll("#GUID#", guid);
                expected = expected.replaceAll("#SESSION#", sessionId);
-               //               assertEquals(String.format("%s: [%s] ", isLinkTest ? "Link" : "UnLink", key), expected, actual);
             }
          } finally {
             if (dataStream != null) {
@@ -116,17 +115,6 @@ public class WordMlLinkHandlerTest {
    }
 
    private LinkType getDocType(String name) {
-      //      LinkType toReturn = null;
-      //      int index = name.lastIndexOf('.');
-      //      if (index > 0) {
-      //         try {
-      //            name = name.substring(index + 1, name.length());
-      //            toReturn = LinkType.valueOf(name.toUpperCase());
-      //         } catch (Exception ex) {
-      //            //Do nothing;
-      //         }
-      //      }
-      //      assertNotNull(String.format("Error getting DocType from [%s]", name), toReturn);
       return LinkType.OSEE_SERVER_LINK;
    }
 

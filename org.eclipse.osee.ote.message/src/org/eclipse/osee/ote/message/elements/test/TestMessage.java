@@ -24,8 +24,8 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
    public final StringElement STRING_ELEMENT_1;
    public final EnumeratedElement<TestEnum> ENUM_ELEMENT_1;
    public final Float32Element FLOAT32_ELEMENT_1;
-   private int defaultByteSize = 100;
-   private int defaultOffset = 0;
+   private final int defaultByteSize = 100;
+   private final int defaultOffset = 0;
 
    public TestMessage() {
       super("TEST_MSG", true, 0, 50.0);
@@ -46,7 +46,6 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
 
    @Override
    public void switchElementAssociation(Collection<TestMessage> messages) {
-      // TODO Auto-generated method stub
 
    }
 

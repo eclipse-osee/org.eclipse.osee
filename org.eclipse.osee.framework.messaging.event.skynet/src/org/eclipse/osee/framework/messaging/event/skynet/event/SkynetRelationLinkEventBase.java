@@ -33,7 +33,7 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
     * @param relId
     * @param artAId
     * @param artBId
-    * @param networkSender TODO
+    * @param networkSender
     */
    public SkynetRelationLinkEventBase(int relTypeId, int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, NetworkSender networkSender) {
       super(networkSender);

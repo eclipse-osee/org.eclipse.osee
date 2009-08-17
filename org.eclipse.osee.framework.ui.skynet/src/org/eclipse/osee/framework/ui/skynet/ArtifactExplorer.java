@@ -354,7 +354,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    /**
     * Reveal an artifact in the viewer and select it.
     * 
-    * @param artifact TODO
+    * @param artifact
     */
    public static void revealArtifact(Artifact artifact) {
       try {
@@ -382,7 +382,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    /**
     * Reveal an artifact in the viewer and select it.
     * 
-    * @param artifact TODO
+    * @param artifact
     */
    public static void exploreBranch(Branch branch) {
       if (branch != null) {

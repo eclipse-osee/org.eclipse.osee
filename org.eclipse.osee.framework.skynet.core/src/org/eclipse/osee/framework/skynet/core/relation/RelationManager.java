@@ -443,7 +443,7 @@ public class RelationManager {
    }
 
    /**
-    * @param transaction TODO
+    * @param transaction
     * @param artifact
     * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
     */

@@ -58,16 +58,16 @@ public interface IAtsStateItem {
     * @param toState
     * @param toAssignees
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
-    * @throws Exception TODO
+    * @throws Exception
     */
    public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
 
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
-    * @param smaMgr TODO
+    * @param smaMgr
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
-    * @throws Exception TODO
+    * @throws Exception
     */
    public Result committing(SMAManager smaMgr) throws OseeCoreException;
 

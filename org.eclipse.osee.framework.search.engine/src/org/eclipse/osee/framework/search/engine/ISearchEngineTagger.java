@@ -23,7 +23,7 @@ public interface ISearchEngineTagger {
     * Create tags for a particular branch.
     * 
     * @param branchId of branch to tag
-    * @throws OseeStateException TODO
+    * @throws OseeStateException
     */
    public void tagByBranchId(int branchId) throws OseeCoreException;
 
@@ -32,7 +32,7 @@ public interface ISearchEngineTagger {
     * 
     * @param listener object listening for tag events
     * @param branchId of branch to tag
-    * @throws OseeStateException TODO
+    * @throws OseeStateException
     */
    public void tagByBranchId(ITagListener listener, int queryId) throws OseeCoreException;
 

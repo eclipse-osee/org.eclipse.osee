@@ -71,7 +71,7 @@ public abstract class WorkPageService {
     * overridden to determine if it should be called.
     * 
     * @return the showSidebarService
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    public boolean isShowSidebarService(AtsWorkPage page) throws OseeCoreException {
       return false;

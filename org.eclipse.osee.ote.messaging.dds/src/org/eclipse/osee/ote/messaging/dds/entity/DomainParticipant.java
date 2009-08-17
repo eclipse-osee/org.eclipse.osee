@@ -536,8 +536,8 @@ public class DomainParticipant extends Entity implements EntityFactory {
     * middlewarePublisher. The middleware is only notified of data originating from this <code>DomainPariticipant</code>
     * , that is, data published from other participants in the domain will not be sent to the middleware.
     * 
-    * @param destination TODO
-    * @param source TODO
+    * @param destination
+    * @param source
     * @param dataStoreItem The <code>DataStoreItem</code> that was published.
     */
    void processPublishedData(IDestination destination, ISource source, DataStoreItem dataStoreItem) { // package scope since it is a

@@ -74,7 +74,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
 
    @Override
    public EmptyEnum_Element switchMessages(Collection<? extends Message<?, ?, ?>> messages) {
-      // TODO Auto-generated method stub
       return (EmptyEnum_Element) super.switchMessages(messages);
    }
 
@@ -94,8 +93,9 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
     * 
     * @return The current value of the element.
     */
+   @Override
    public EmptyEnum get(ITestEnvironmentAccessor accessor) {
-      return (EmptyEnum) getValue();
+      return getValue();
    }
 
    @Override

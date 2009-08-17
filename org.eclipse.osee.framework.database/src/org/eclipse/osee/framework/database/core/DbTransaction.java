@@ -27,7 +27,7 @@ public abstract class DbTransaction {
    /**
     * Transaction Constructor
     * 
-    * @throws OseeCoreException TODO
+    * @throws OseeCoreException
     */
    public DbTransaction() throws OseeCoreException {
       OseeDbConnection.reportTxCreation(this);

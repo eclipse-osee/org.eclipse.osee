@@ -119,7 +119,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
     */
    @Override
    protected List<BranchModel> getModelChildren() {
-      GraphCache graphCache = ((GraphCache) getModel());
+      GraphCache graphCache = (GraphCache) getModel();
 
       List<BranchModel> nodes = new ArrayList<BranchModel>();
       nodes.add(graphCache.getRootModel());
@@ -214,7 +214,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    }
 
    public BranchFigure getFigure(Branch branch) {
-      return (BranchFigure) branchFigureMap.get(branch);
+      return branchFigureMap.get(branch);
    }
 
    public TxFigure getTxFigure(TxModel txModel) {
@@ -225,9 +225,9 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       for (BranchModel branchNode : toReturn) {
          for (TxModel txModel : branchNode.getTxs()) {
             if (txModel.getMergedTx() != null) {
-               TxFigure txFigure = (TxFigure) txNumberToTxFigureMap.get(txModel.getRevision());
+               TxFigure txFigure = txNumberToTxFigureMap.get(txModel.getRevision());
                for (TxModel merged : txModel.getMergedTx()) {
-                  TxFigure mergedView = (TxFigure) txNumberToTxFigureMap.get(merged.getRevision());
+                  TxFigure mergedView = txNumberToTxFigureMap.get(merged.getRevision());
                   if (mergedView != null) {
                      String message = getConnectionLabel(merged, txModel);
                      connect(ConnectionType.MERGE, getFigure(), mergedView, txFigure, message, true, ColorConstants.red);
@@ -270,7 +270,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                }
 
                if (connectToBranchLabel) {
-                  BranchFigure branchFigure = (BranchFigure) branchFigureMap.get(branchModel.getBranch());
+                  BranchFigure branchFigure = branchFigureMap.get(branchModel.getBranch());
                   msg = getConnectionLabel(branchModel.getFirstTx(), txModel);
                   connect(ConnectionType.BRANCH_INTERNAL, getFigure(), branchFigure, txFigure, msg, false,
                         ColorConstants.black);
@@ -286,7 +286,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                   TxModel sourceTx = txModel.getSourceTx();
                   String msg = getConnectionLabel(sourceTx, txModel);
 
-                  BranchFigure branchFigure = (BranchFigure) branchFigureMap.get(branchModel.getBranch());
+                  BranchFigure branchFigure = branchFigureMap.get(branchModel.getBranch());
                   if (sourceTx.getParentBranchModel().areTxsVisible()) {
                      TxFigure source = getTxFigure(sourceTx);
                      if (source != null) {
@@ -294,8 +294,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                               ColorConstants.lightBlue);
                      }
                   } else {
-                     BranchFigure source =
-                           (BranchFigure) branchFigureMap.get(sourceTx.getParentBranchModel().getBranch());
+                     BranchFigure source = branchFigureMap.get(sourceTx.getParentBranchModel().getBranch());
                      connect(ConnectionType.PARENT_CHILD, getFigure(), source, branchFigure, msg, true,
                            ColorConstants.lightBlue);
                   }
@@ -388,7 +387,6 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       Viewport viewport = ((FigureCanvas) viewer.getControl()).getViewport();
       Rectangle vbounds = viewport.getBounds();
       Point p = new Point(ax, ay);
-      //    target.translateToAbsolute(p); // TODO
       int x = p.x - vbounds.width / 2;
       int y = p.y - vbounds.height / 2;
       viewport.setHorizontalLocation(x);
@@ -401,7 +399,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
    private final class ConnectionMouseListener implements MouseMotionListener, MouseListener {
 
-      private PolylineConnection connection;
+      private final PolylineConnection connection;
 
       public ConnectionMouseListener(PolylineConnection connection) {
          this.connection = connection;

@@ -24,7 +24,7 @@ public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
     * @param transactionId
     * @param artId
     * @param artTypeId
-    * @param author TODO
+    * @param author
     */
    public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, NetworkSender networkSender) {
       super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
@@ -35,7 +35,7 @@ public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof NetworkArtifactModifiedEvent) {
-         return (getArtId() == (((NetworkArtifactModifiedEvent) obj).getArtId()));
+         return getArtId() == ((NetworkArtifactModifiedEvent) obj).getArtId();
       }
       return super.equals(obj);
    }

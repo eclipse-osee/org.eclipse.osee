@@ -80,6 +80,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          fLabelProvider = labelProvider;
       }
 
+      @Override
       public int category(Object element) {
          if (element instanceof Artifact) {
             return 4;
@@ -88,9 +89,10 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          } else if (element instanceof AttributeMatch) {
             return 2;
          }
-            return 1;
-         }
+         return 1;
+      }
 
+      @Override
       @SuppressWarnings("unchecked")
       public int compare(Viewer viewer, Object e1, Object e2) {
          int cat1 = category(e1);
@@ -108,8 +110,12 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
          String name1 = fLabelProvider.getText(e1);
          String name2 = fLabelProvider.getText(e2);
-         if (name1 == null) name1 = "";//$NON-NLS-1$
-         if (name2 == null) name2 = "";//$NON-NLS-1$
+         if (name1 == null) {
+            name1 = "";//$NON-NLS-1$
+         }
+         if (name2 == null) {
+            name2 = "";//$NON-NLS-1$
+         }
          return getComparator().compare(name1, name2);
       }
    }
@@ -125,12 +131,14 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
    }
 
+   @Override
    public void setElementLimit(Integer elementLimit) {
       super.setElementLimit(elementLimit);
       int limit = elementLimit.intValue();
       getSettings().put(KEY_LIMIT, limit);
    }
 
+   @Override
    public StructuredViewer getViewer() {
       return super.getViewer();
    }
@@ -154,6 +162,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return selectionProvider;
    }
 
+   @Override
    protected void configureTableViewer(TableViewer viewer) {
       viewer.setUseHashlookup(true);
       ArtifactDecorator decorator = getArtifactDecorator();
@@ -166,6 +175,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       addDragAdapters(viewer);
    }
 
+   @Override
    protected void configureTreeViewer(TreeViewer viewer) {
       viewer.setUseHashlookup(true);
       ArtifactDecorator decorator = getArtifactDecorator();
@@ -178,11 +188,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       addDragAdapters(viewer);
    }
 
+   @Override
    protected void fillContextMenu(IMenuManager mgr) {
       mgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       getSite().setSelectionProvider(getSearchSelectionProvider());
 
       mgr.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES, new Action("Open Search Preferences") {
+         @Override
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
             PreferencesUtil.createPreferenceDialogOn(shell, "org.eclipse.search.preferences.SearchPreferencePage",
@@ -191,10 +203,12 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       });
    }
 
+   @Override
    public void setViewPart(ISearchResultViewPart part) {
       super.setViewPart(part);
    }
 
+   @Override
    public void init(IPageSite site) {
       super.init(site);
       setID(VIEW_ID);
@@ -203,23 +217,27 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       OseeEventManager.addListener(this);
    }
 
+   @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
       super.dispose();
    }
 
+   @Override
    protected void elementsChanged(Object[] objects) {
       if (fContentProvider != null) {
          fContentProvider.elementsChanged(objects);
       }
    }
 
+   @Override
    protected void clear() {
       if (fContentProvider != null) {
          fContentProvider.clear();
       }
    }
 
+   @Override
    public void restoreState(IMemento memento) {
       super.restoreState(memento);
 
@@ -230,11 +248,14 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
       if (memento != null) {
          Integer value = memento.getInteger(KEY_LIMIT);
-         if (value != null) elementLimit = value.intValue();
+         if (value != null) {
+            elementLimit = value.intValue();
+         }
       }
       setElementLimit(new Integer(elementLimit));
    }
 
+   @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
@@ -245,6 +266,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return null;
    }
 
+   @Override
    public String getLabel() {
       String label = super.getLabel();
       StructuredViewer viewer = getViewer();
@@ -270,6 +292,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return label;
    }
 
+   @Override
    public int getDisplayedMatchCount(Object element) {
       if (showLineMatches()) {
          if (element instanceof AttributeLineElement) {
@@ -281,6 +304,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       return super.getDisplayedMatchCount(element);
    }
 
+   @Override
    public Match[] getDisplayedMatches(Object element) {
       if (showLineMatches()) {
          if (element instanceof AttributeLineElement) {
@@ -294,26 +318,36 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
    public Match[] getInternalDisplayedMatches(Object element) {
       AbstractArtifactSearchResult result = getInput();
-      if (result == null) return EMPTY_MATCH_ARRAY;
+      if (result == null) {
+         return EMPTY_MATCH_ARRAY;
+      }
       Match[] matches = result.getMatches(element);
-      if (result.getActiveMatchFilters() == null) return matches;
+      if (result.getActiveMatchFilters() == null) {
+         return matches;
+      }
 
       int count = 0;
       for (int i = 0; i < matches.length; i++) {
-         if (matches[i].isFiltered())
+         if (matches[i].isFiltered()) {
             matches[i] = null;
-         else
+         } else {
             count++;
+         }
       }
-      if (count == matches.length) return matches;
+      if (count == matches.length) {
+         return matches;
+      }
 
       Match[] filteredMatches = new Match[count];
       for (int i = 0, k = 0; i < matches.length; i++) {
-         if (matches[i] != null) filteredMatches[k++] = matches[i];
+         if (matches[i] != null) {
+            filteredMatches[k++] = matches[i];
+         }
       }
       return filteredMatches;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    protected void evaluateChangedElements(Match[] matches, Set changedElements) {
       if (showLineMatches()) {
@@ -367,13 +401,13 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
             artifacts.add(toAdd);
          } else if (object instanceof IAdaptable) {
             toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
-               } else if (object instanceof Match) {
+         } else if (object instanceof Match) {
             toAdd = (Artifact) ((Match) object).getElement();
-               }
+         }
          if (toAdd != null) {
             artifacts.add(toAdd);
-            }
          }
+      }
       return artifacts;
    }
    private class SearchDragAndDrop extends SkynetDragAndDrop {
@@ -462,7 +496,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       }
    }
-   
+
    public Branch getBranch() {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
          return getInput().getArtifactResults().get(0).getBranch();
@@ -495,13 +529,11 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       @Override
       public int size() {
-         // TODO Auto-generated method stub
          return collection.size();
       }
 
       @Override
       public Object[] toArray() {
-         // TODO Auto-generated method stub
          return collection.toArray();
       }
 

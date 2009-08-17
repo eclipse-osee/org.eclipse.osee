@@ -30,14 +30,14 @@ public interface IAtsWizardItem {
     * 
     * @param aias
     * @param sb
-    * @throws Exception TODO
+    * @throws Exception
     */
    public void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer sb) throws Exception;
 
    /**
     * @param aias
     * @return true if widgets will be added based on selected aias
-    * @throws Exception TODO
+    * @throws Exception
     */
    public boolean hasWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias) throws Exception;
 
@@ -57,8 +57,8 @@ public interface IAtsWizardItem {
     * 
     * @param actionArt
     * @param wizard
-    * @param transaction TODO
-    * @throws Exception TODO
+    * @param transaction
+    * @throws Exception
     */
    public void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
 

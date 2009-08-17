@@ -137,7 +137,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
          String urlString = url.toString();
          installedBundles.put(urlString, context.installBundle(urlString));
       } catch (BundleException ex) {
-         // TODO
       }
    }
 
@@ -161,7 +160,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
             handleBundleAdded(url);
          }
       } catch (BundleException ex) {
-         // TODO
       }
    }
 
@@ -183,7 +181,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
             stoppedBundles.add(bundle);
          }
       } catch (BundleException ex) {
-         // TODO
       }
    }
 
@@ -229,7 +226,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
          transitionInstalledPlugins();
          transitionStoppedBundles();
       } catch (BundleException ex) {
-         // TODO
       }
    }
 
@@ -251,7 +247,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       try {
          transitionStoppedBundles();
       } catch (BundleException ex) {
-         // TODO
       }
    }
 }

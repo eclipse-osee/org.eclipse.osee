@@ -24,28 +24,28 @@ public interface IArtifactWidget {
    /**
     * Set artifact used as storage for this widget
     * 
-    * @throws Exception TODO
+    * @throws Exception
     */
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException;
 
    /**
     * Save data changes to artifact
     * 
-    * @throws Exception TODO
+    * @throws Exception
     */
    public void saveToArtifact() throws OseeCoreException;
 
    /**
     * Revert changes to widget data back to what was in artifact
     * 
-    * @throws Exception TODO
+    * @throws Exception
     */
    public void revert() throws OseeCoreException;
 
    /**
     * Return true if storage data different than widget data
     * 
-    * @throws Exception TODO
+    * @throws Exception
     */
    public Result isDirty() throws OseeCoreException;
 

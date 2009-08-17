@@ -18,15 +18,14 @@ import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
 import org.eclipse.osee.ote.runtimemanager.BundleInfo;
 import org.eclipse.osee.ote.runtimemanager.SafeWorkspaceTracker;
 
-/** 
+/**
  * @author Robert A. Fisher
- *
  */
 public class RuntimeLibResourceFinder extends ResourceFinder {
-   private SafeWorkspaceTracker safeWorkspaceTracker;
+   private final SafeWorkspaceTracker safeWorkspaceTracker;
 
    /**
-    * @param safeWorkspaceTracker 
+    * @param safeWorkspaceTracker
     * @param runtimeManager
     */
    public RuntimeLibResourceFinder(SafeWorkspaceTracker safeWorkspaceTracker) {
@@ -44,12 +43,11 @@ public class RuntimeLibResourceFinder extends ResourceFinder {
             }
          }
       } catch (CoreException ex) {
-         // TODO
          ex.printStackTrace();
       }
       return null;
    }
-   
+
    @Override
    public void dispose() {
    }
