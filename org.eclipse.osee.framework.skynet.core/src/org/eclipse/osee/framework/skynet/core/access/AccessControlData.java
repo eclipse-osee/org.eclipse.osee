@@ -23,8 +23,8 @@ public class AccessControlData implements Comparable<AccessControlData> {
 
    private boolean dirty = false;
    private boolean birth = false;
-   private Artifact subject;
-   private AccessObject object;
+   private final Artifact subject;
+   private final AccessObject object;
    private PermissionEnum permission;
    private PermissionEnum branchPermission = null;
    private PermissionEnum artifactTypePermission = null;
@@ -55,7 +55,9 @@ public class AccessControlData implements Comparable<AccessControlData> {
     */
    public void setPermission(PermissionEnum permission) {
 
-      if (this.permission == permission) return;
+      if (this.permission == permission) {
+         return;
+      }
 
       this.permission = permission;
       dirty = true;
@@ -112,6 +114,19 @@ public class AccessControlData implements Comparable<AccessControlData> {
 
    public int compareTo(AccessControlData data) {
       return subject.getName().compareTo(data.subject.getName());
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (!(obj instanceof AccessControlData)) {
+         return false;
+      }
+      return subject.getName().equals(((AccessControlData) obj).subject.getName());
+   }
+
+   @Override
+   public int hashCode() {
+      return subject.getName().hashCode();
    }
 
    /**

@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class DateAttribute extends CharacterBackedAttribute<Date> {
    public static final DateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
-   public static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
    public static final DateFormat HHMM = new SimpleDateFormat("hh:mm");
-   public static final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
-   public static final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+   public final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+   public final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
+   public final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
-   private static final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
+   private final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
 
    /**
     * Return current date or null if not set
@@ -36,6 +36,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @return date or null if not set
     * @throws OseeCoreException
     */
+   @Override
    public Date getValue() throws OseeCoreException {
       Date toReturn = null;
       String value = getAttributeDataProvider().getValueAsString();
@@ -77,7 +78,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    public String getDisplayableString() throws OseeCoreException {
-      return getAsFormattedString(DateAttribute.MMDDYYHHMM);
+      return getAsFormattedString(MMDDYYHHMM);
    }
 
    @Override

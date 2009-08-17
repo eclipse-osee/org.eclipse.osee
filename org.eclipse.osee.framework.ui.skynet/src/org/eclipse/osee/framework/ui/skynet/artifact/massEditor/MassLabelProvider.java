@@ -33,33 +33,44 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws XViewerException {
-      if (col == null) return null;
+      if (col == null) {
+         return null;
+      }
       if (columnIndex != 0 && col instanceof XViewerValueColumn) {
          return ((XViewerValueColumn) col).getColumnImage(element, col, columnIndex);
       }
       Artifact artifact = (Artifact) element;
-      if (artifact == null || artifact.isDeleted()) return null;
-      if (columnIndex == 0) return ImageManager.getImage(artifact);
+      if (artifact == null || artifact.isDeleted()) {
+         return null;
+      }
+      if (columnIndex == 0) {
+         return ImageManager.getImage(artifact);
+      }
       return null;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws XViewerException {
       try {
-         if (col == null) return "";
+         if (col == null) {
+            return "";
+         }
          if (col instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) col).getColumnText(element, col, columnIndex);
          }
          if (element instanceof String) {
-            if (columnIndex == 1)
+            if (columnIndex == 1) {
                return (String) element;
-            else
+            } else {
                return "";
+            }
          }
          Artifact artifact = (Artifact) element;
-         if (artifact == null || artifact.isDeleted()) return "";
+         if (artifact == null || artifact.isDeleted()) {
+            return "";
+         }
          // Handle case where columns haven't been loaded yet
-         if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
+         if (columnIndex > getTreeViewer().getTree().getColumns().length - 1) {
             return "";
          }
 
@@ -69,7 +80,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
          }
          if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
             try {
-               return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+               return new DateAttribute().MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
             } catch (OseeCoreException ex) {
                return "";
             }

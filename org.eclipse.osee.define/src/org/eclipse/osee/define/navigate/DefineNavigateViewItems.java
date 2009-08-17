@@ -68,6 +68,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
       if (point == null) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Can't access DefineNavigateItem extension point");
+         return;
       }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {

@@ -68,7 +68,7 @@ public class FindTraceUnitJob extends Job {
       }
       return Status.OK_STATUS;
    }
-   private final class FetchBranchJob extends UIJob {
+   private static final class FetchBranchJob extends UIJob {
       private Branch branch;
 
       public FetchBranchJob(String name) {
@@ -76,6 +76,7 @@ public class FindTraceUnitJob extends Job {
          branch = null;
       }
 
+      @Override
       public IStatus runInUIThread(IProgressMonitor monitor) {
          branch = BranchSelectionDialog.getBranchFromUser();
          return Status.OK_STATUS;

@@ -29,8 +29,8 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    private static final String tables = "osee_artifact";
    private static final String sql =
          "osee_artifact.art_type_id =? AND art_id NOT in (SELECT t2.art_id FROM osee_relation_link t1, osee_artifact t2, " + SkynetDatabase.TRANSACTIONS_TABLE + " t4, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t5, (SELECT Max(t1.gamma_id) AS gamma_id, t1.rel_link_id, t3.branch_id FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 WHERE t1.gamma_id = t2.gamma_id AND t2.transaction_id = t3.transaction_id AND t3.branch_id = ? GROUP BY t1.rel_link_id, t3.branch_id) t6 WHERE t1.rel_link_type_id =? AND t1.b_art_id = t2.art_id AND t1.gamma_id = t4.gamma_id AND t4.transaction_id = t5.transaction_id AND t1.rel_link_id = t6.rel_link_id AND t5.branch_id = t6.branch_id AND t1.gamma_id = t6.gamma_id AND t4.mod_type <> " + ModificationType.DELETED.getValue() + " GROUP BY t2.art_id)";
-   private ArtifactType aritfactType;
-   private int relationTypeId;
+   private final ArtifactType aritfactType;
+   private final int relationTypeId;
 
    public OrphanArtifactSearch(ArtifactType aritfactType) throws OseeTypeDoesNotExist, OseeDataStoreException {
       this.aritfactType = aritfactType;
@@ -68,7 +68,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
          ArtifactType artifactType = ArtifactTypeManager.getType(storageString);
          search = new OrphanArtifactSearch(artifactType);
       } catch (OseeCoreException ex) {
-         new IllegalStateException("Value for " + OrphanArtifactSearch.class.getSimpleName() + " not parsable");
+         throw new IllegalStateException("Value for " + OrphanArtifactSearch.class.getSimpleName() + " not parsable");
       }
       return search;
    }

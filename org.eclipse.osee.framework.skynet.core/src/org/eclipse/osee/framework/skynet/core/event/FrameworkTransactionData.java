@@ -99,38 +99,54 @@ public class FrameworkTransactionData {
       if (changeType == ChangeType.Added || changeType == ChangeType.All) {
          for (LoadedRelation loadedRelation : cacheAddedRelations) {
             if (relationTypes.contains(loadedRelation.getRelationType())) {
-               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
-               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+               if (loadedRelation.getArtifactA() != null) {
+                  artifacts.add(loadedRelation.getArtifactA());
+               }
+               if (loadedRelation.getArtifactB() != null) {
+                  artifacts.add(loadedRelation.getArtifactB());
+               }
             }
          }
       }
       if (changeType == ChangeType.Deleted || changeType == ChangeType.All) {
          for (LoadedRelation loadedRelation : cacheDeletedRelations) {
             if (relationTypes.contains(loadedRelation.getRelationType())) {
-               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
-               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+               if (loadedRelation.getArtifactA() != null) {
+                  artifacts.add(loadedRelation.getArtifactA());
+               }
+               if (loadedRelation.getArtifactB() != null) {
+                  artifacts.add(loadedRelation.getArtifactB());
+               }
             }
          }
       }
       if (changeType == ChangeType.Changed || changeType == ChangeType.All) {
          for (LoadedRelation loadedRelation : cacheChangedRelations) {
             if (relationTypes.contains(loadedRelation.getRelationType())) {
-               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
-               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+               if (loadedRelation.getArtifactA() != null) {
+                  artifacts.add(loadedRelation.getArtifactA());
+               }
+               if (loadedRelation.getArtifactB() != null) {
+                  artifacts.add(loadedRelation.getArtifactB());
+               }
             }
          }
       }
       return artifacts;
    }
 
-   public Collection<Integer> getArtifactIdsOfArtifactType(ArtifactType artifactType, ArtifactModType... artifactModType) throws OseeCoreException {
+   @Deprecated
+   public Collection<Integer> getArtifactIdsOfArtifactType(ArtifactType artifactType, ArtifactModType artifactModType) throws OseeCoreException {
+      // this method is broken and must be euthanized
       Collection<ArtifactModType> artifactModTypes =
             org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(artifactModType);
-      if (artifactType == null) return Collections.emptyList();
+      if (artifactType == null) {
+         return Collections.emptyList();
+      }
       Set<Integer> artIds = new HashSet<Integer>();
       for (ArtifactTransactionModifiedEvent modEvent : xModifiedEvents) {
          if (modEvent instanceof ArtifactModifiedEvent) {
-            if (artifactModTypes.contains(artifactModType) && (((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getArtTypeId())) {
+            if (artifactModTypes.contains(artifactModType) && ((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getArtTypeId()) {
                artIds.add(((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactId());
             }
          }
@@ -210,7 +226,9 @@ public class FrameworkTransactionData {
 
    public boolean isDeleted(int artId) {
       for (Artifact art : cacheDeletedArtifacts) {
-         if (art.getArtId() == artId) return true;
+         if (art.getArtId() == artId) {
+            return true;
+         }
       }
       return false;
    }
@@ -221,7 +239,9 @@ public class FrameworkTransactionData {
 
    public boolean isChanged(int artId) {
       for (Artifact art : cacheChangedArtifacts) {
-         if (art.getArtId() == artId) return true;
+         if (art.getArtId() == artId) {
+            return true;
+         }
       }
       return false;
    }
@@ -242,7 +262,9 @@ public class FrameworkTransactionData {
     */
    public boolean isRelChange(int artId) {
       for (Artifact art : cacheRelationChangedArtifacts) {
-         if (art.getArtId() == artId) return true;
+         if (art.getArtId() == artId) {
+            return true;
+         }
       }
       return false;
    }
@@ -253,7 +275,9 @@ public class FrameworkTransactionData {
 
    public boolean isRelDeleted(int artId) {
       for (Artifact art : cacheRelationDeletedArtifacts) {
-         if (art.getArtId() == artId) return true;
+         if (art.getArtId() == artId) {
+            return true;
+         }
       }
       return false;
    }
@@ -264,7 +288,9 @@ public class FrameworkTransactionData {
 
    public boolean isRelAdded(int artId) {
       for (Artifact art : cacheRelationAddedArtifacts) {
-         if (art.getArtId() == artId) return true;
+         if (art.getArtId() == artId) {
+            return true;
+         }
       }
       return false;
    }

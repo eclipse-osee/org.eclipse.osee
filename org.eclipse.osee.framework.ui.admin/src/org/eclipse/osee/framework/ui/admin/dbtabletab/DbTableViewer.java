@@ -48,7 +48,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class DbTableViewer {
 
-   private DbTableTab dbTab;
+   private final DbTableTab dbTab;
 
    // private Shell shell;
    private Table table;
@@ -72,7 +72,9 @@ public class DbTableViewer {
 
    public void save() {
       for (DbModel dbModel : getTasks()) {
-         if (dbModel.isNeedSave()) dbItem.save(dbDescribe, dbModel);
+         if (dbModel.isNeedSave()) {
+            dbItem.save(dbDescribe, dbModel);
+         }
          dbModel.setNeedSave(false);
          dbModel.setColumnChanged(null);
       }
@@ -98,13 +100,14 @@ public class DbTableViewer {
 
    public List<String> getColumnNames() {
       ArrayList<String> list = new ArrayList<String>();
-      for (Describe d : describeList)
+      for (Describe d : describeList) {
          list.add(d.name);
+      }
       return list;
    }
 
    public String[] getColumnNameArray() {
-      return (String[]) getColumnNames().toArray(new String[describeList.size()]);
+      return getColumnNames().toArray(new String[describeList.size()]);
    }
 
    /**
@@ -116,7 +119,9 @@ public class DbTableViewer {
    private void run(Shell shell) {
       Display display = shell.getDisplay();
       while (!shell.isDisposed()) {
-         if (!display.readAndDispatch()) display.sleep();
+         if (!display.readAndDispatch()) {
+            display.sleep();
+         }
       }
    }
 
@@ -125,7 +130,9 @@ public class DbTableViewer {
       Iterator<?> iter = sel.iterator();
       while (iter.hasNext()) {
          DbModel model = (DbModel) iter.next();
-         if (model != null) dbTaskList.removeTask(model);
+         if (model != null) {
+            dbTaskList.removeTask(model);
+         }
       }
    }
 
@@ -183,13 +190,15 @@ public class DbTableViewer {
          TableColumn column = new TableColumn(table, SWT.LEFT, x);
          column.setText(d.name);
          int width = dbItem.getColumnWidth(d.name);
-         if (width == 0)
+         if (width == 0) {
             column.setWidth(50);
-         else
+         } else {
             column.setWidth(width);
+         }
          final int fx = x;
          column.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                tableViewer.setSorter(new DbTableSorter(fx));
             }
@@ -230,8 +239,9 @@ public class DbTableViewer {
       if (dbItem.isWriteAccess()) {
          String columnNames[] = new String[describeList.size()];
          int x = 0;
-         for (Describe d : describeList)
+         for (Describe d : describeList) {
             columnNames[x++] = d.name;
+         }
          tableViewer.setColumnProperties(columnNames);
          tableViewer.setCellModifier(new DbCellModifier(this, dbItem));
 
@@ -241,7 +251,9 @@ public class DbTableViewer {
          x = 0;
          for (Describe d : describeList) {
             // ID Column of SITE_TOOLS is un-editable
-            if (dbItem.isWriteable(d.name)) editors[x] = new UniversalCellEditor(table);
+            if (dbItem.isWriteable(d.name)) {
+               editors[x] = new UniversalCellEditor(table);
+            }
             x++;
          }
 
@@ -278,7 +290,9 @@ public class DbTableViewer {
     */
    public void close() {
       Shell shell = table.getShell();
-      if (shell != null && !shell.isDisposed()) shell.dispose();
+      if (shell != null && !shell.isDisposed()) {
+         shell.dispose();
+      }
    }
 
    /**
@@ -288,8 +302,12 @@ public class DbTableViewer {
    class ExampleContentProvider implements IStructuredContentProvider, ITaskListViewer {
 
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-         if (newInput != null) ((DbTaskList) newInput).addChangeListener(this);
-         if (oldInput != null) ((DbTaskList) oldInput).removeChangeListener(this);
+         if (newInput != null) {
+            ((DbTaskList) newInput).addChangeListener(this);
+         }
+         if (oldInput != null) {
+            ((DbTaskList) oldInput).removeChangeListener(this);
+         }
       }
 
       public void dispose() {
@@ -339,9 +357,9 @@ public class DbTableViewer {
       return dbTab;
    }
 
-   private final class CellTextDialog extends MessageDialog {
+   private static final class CellTextDialog extends MessageDialog {
 
-      private String dialogMessage;
+      private final String dialogMessage;
 
       public CellTextDialog(Shell parentShell, String dialogTitle, String dialogMessage, String dialogText) {
          super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(

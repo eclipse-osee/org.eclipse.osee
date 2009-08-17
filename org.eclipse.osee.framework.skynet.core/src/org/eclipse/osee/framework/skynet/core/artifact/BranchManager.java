@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -536,13 +537,14 @@ public class BranchManager {
    public static void setBranchState(OseeConnection connection, Map<Branch, BranchState> itemsToUpdate) throws OseeDataStoreException {
       if (!itemsToUpdate.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
-         for (Branch branch : itemsToUpdate.keySet()) {
-            data.add(new Object[] {itemsToUpdate.get(branch).getValue(), branch.getBranchId()});
+         for (Entry<Branch, BranchState> entry : itemsToUpdate.entrySet()) {
+            data.add(new Object[] {entry.getValue(), entry.getKey().getBranchId()});
          }
+
          ConnectionHandler.runBatchUpdate(connection, UPDATE_BRANCH_STATE, data);
 
-         for (Branch branch : itemsToUpdate.keySet()) {
-            branch.setBranchState(itemsToUpdate.get(branch));
+         for (Entry<Branch, BranchState> entry : itemsToUpdate.entrySet()) {
+            entry.getKey().setBranchState(entry.getValue());
          }
       }
    }

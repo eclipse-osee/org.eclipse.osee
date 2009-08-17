@@ -42,7 +42,7 @@ public class XDateDam extends XDate implements IArtifactWidget {
    @Override
    public void saveToArtifact() throws OseeCoreException {
       try {
-         if (date == null || date.equals("")) {
+         if (date == null) {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             Date enteredValue = getDate();

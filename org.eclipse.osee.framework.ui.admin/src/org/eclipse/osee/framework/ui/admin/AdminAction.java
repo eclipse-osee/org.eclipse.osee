@@ -24,8 +24,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AdminAction implements IWorkbenchWindowActionDelegate {
 
-   IWorkbenchWindow activeWindow = null;
-
    public void run(IAction proxyAction) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
@@ -43,7 +41,6 @@ public class AdminAction implements IWorkbenchWindowActionDelegate {
 
    // IWorkbenchWindowActionDelegate method
    public void init(IWorkbenchWindow window) {
-      activeWindow = window;
    }
 
    // IWorkbenchWindowActionDelegate method

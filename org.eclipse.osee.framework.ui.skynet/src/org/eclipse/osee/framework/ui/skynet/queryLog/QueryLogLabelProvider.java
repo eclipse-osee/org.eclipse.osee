@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Robert A. Fisher
  */
 public class QueryLogLabelProvider extends XViewerLabelProvider {
-   private static final DateFormat TIME_FORMAT = new SimpleDateFormat("hh:mm:ss.SSS a");
+   private final DateFormat TIME_FORMAT = new SimpleDateFormat("hh:mm:ss.SSS a");
    private final ISharedImages sharedImages;
 
    /**
@@ -39,6 +39,7 @@ public class QueryLogLabelProvider extends XViewerLabelProvider {
       sharedImages = PlatformUI.getWorkbench().getSharedImages();
    }
 
+   @Override
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof QueryRecord) {
          if (((QueryRecord) element).getSqlException() != null) {
@@ -59,6 +60,7 @@ public class QueryLogLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
+   @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       String columnName = xCol.getName();
 

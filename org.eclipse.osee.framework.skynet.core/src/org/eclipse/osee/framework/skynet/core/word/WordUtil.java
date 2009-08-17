@@ -217,7 +217,9 @@ public class WordUtil {
    public final static String getGUIDFromFileInputStream(FileInputStream myFileInputStream) throws IOException {
       String guid = null;
       byte[] myBytes = new byte[4096];
-      myFileInputStream.read(myBytes);
+      if (myFileInputStream.read(myBytes) == -1) {
+         throw new IOException("Buffer underrun");
+      }
       String leadingPartOfFile = new String(myBytes);
       myFileInputStream = null;
       String[] splitsBeforeAndAfter =

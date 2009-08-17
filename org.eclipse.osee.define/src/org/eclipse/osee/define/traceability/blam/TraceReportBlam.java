@@ -443,7 +443,7 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private final class ExcelReport implements IReportDataCollector {
+   private static final class ExcelReport implements IReportDataCollector {
       private final String title;
       private final ISheetWriter sheetWriter;
 

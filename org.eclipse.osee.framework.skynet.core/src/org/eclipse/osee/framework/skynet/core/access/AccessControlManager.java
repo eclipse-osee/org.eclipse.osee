@@ -170,7 +170,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getRelationTypeId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
+                  RelationTypeManager.getType("Users").getRelationTypeId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
@@ -218,7 +219,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       for (PermissionEnum permissionEnum : PermissionEnum.values()) {
          boolean result = hasPermission(subject, object, permissionEnum);
          System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
-         if (result) return permissionEnum;
+         if (result) {
+            return permissionEnum;
+         }
       }
       return PermissionEnum.FULLACCESS;
    }
@@ -234,12 +237,13 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          userPermission = getArtifactPermission(subject, (Artifact) object, permission);
       } else if (object instanceof Branch) {
          branch = (Branch) object;
-      } else
+      } else {
          throw new IllegalStateException("Unhandled object type for access control - " + object);
+      }
 
       branchPermission = getBranchPermission(subject, branch, permission);
 
-      if (branchPermission != null && (branchPermission.equals(PermissionEnum.DENY) || (userPermission == null && userPermission != PermissionEnum.LOCK))) {
+      if (branchPermission != null && (branchPermission.equals(PermissionEnum.DENY) || userPermission == null && userPermission != PermissionEnum.LOCK)) {
          userPermission = branchPermission;
       }
 
@@ -270,7 +274,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       AccessObject accessObject = null;
 
       // The artifact is new and has not been persisted.
-      if (!artifact.isInDb()) return PermissionEnum.FULLACCESS;
+      if (!artifact.isInDb()) {
+         return PermissionEnum.FULLACCESS;
+      }
 
       Integer artId = artifact.getArtId();
       Integer branchId = artifact.getBranch().getBranchId();
@@ -345,14 +351,19 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(), data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
+                        data.getPermission().getPermId(), data.getSubject().getArtId(),
+                        artifactAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), artifactAccessObject.getArtId(),
+                        artifactAccessObject.getBranchId());
                }
 
                if (recurse) {
                   Artifact artifact =
-                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(), BranchManager.getBranch(artifactAccessObject.getBranchId()));
+                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
+                              BranchManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -378,9 +389,11 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(), data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
                }
             }
             cacheAccessControlData(data);
@@ -410,7 +423,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       try {
          accessObject = AccessObject.getAccessObjectFromCache(object);
 
-         if (accessObject == null) return datas;
+         if (accessObject == null) {
+            return datas;
+         }
 
          datas = generateAccessControlList(accessObject);
 
@@ -468,7 +483,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static void deCacheAccessControlData(AccessControlData data) {
-      if (data == null) throw new IllegalArgumentException("Can not remove a null AccessControlData.");
+      if (data == null) {
+         throw new IllegalArgumentException("Can not remove a null AccessControlData.");
+      }
 
       AccessObject accessObject = data.getObject();
       Integer subjectId = data.getSubject().getArtId();
@@ -508,8 +525,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
          try {
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked, new LoadedArtifacts(
-                  object));
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked,
+                  new LoadedArtifacts(object));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -530,8 +547,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked, new LoadedArtifacts(
-                  object));
+            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked,
+                  new LoadedArtifacts(object));
          }
       }
    }
@@ -542,7 +559,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    public static boolean hasLock(Artifact object) {
-      if (!object.isInDb()) return false;
+      if (!object.isInDb()) {
+         return false;
+      }
 
       return objectToBranchLockCache.containsKey(object.getArtId());
    }

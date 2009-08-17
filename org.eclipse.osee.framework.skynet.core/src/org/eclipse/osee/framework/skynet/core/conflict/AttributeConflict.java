@@ -184,7 +184,7 @@ public class AttributeConflict extends Conflict {
       try {
          sourceObject = getSourceAttribute(false).getValue();
       } catch (AttributeDoesNotExist ex) {
-         sourceObject = new String("DELETED");
+         sourceObject = "DELETED";
       }
       return sourceObject;
    }
@@ -196,7 +196,7 @@ public class AttributeConflict extends Conflict {
       try {
          destObject = getDestAttribute().getValue();
       } catch (AttributeDoesNotExist ex) {
-         destObject = new String("DELETED");
+         destObject = "DELETED";
       }
       return destObject;
    }
@@ -275,7 +275,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public Object getMergeObject() throws OseeCoreException {
-      return getAttribute() != null? getAttribute().getValue(): null;
+      return getAttribute() != null ? getAttribute().getValue() : null;
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
@@ -402,14 +402,14 @@ public class AttributeConflict extends Conflict {
          sourceEqualsDest = compareObjects(getSourceObject(), getDestObject());
       }
    }
-   
-   private boolean compareObjects(Object obj1, Object obj2)throws OseeCoreException{
-      if(obj1 instanceof InputStream && obj2 instanceof InputStream){
-         InputStream inputStream1 = (InputStream)(obj1);
-         InputStream inputStream2 = (InputStream)(obj2);
-         
+
+   private boolean compareObjects(Object obj1, Object obj2) throws OseeCoreException {
+      if (obj1 instanceof InputStream && obj2 instanceof InputStream) {
+         InputStream inputStream1 = (InputStream) obj1;
+         InputStream inputStream2 = (InputStream) obj2;
+
          boolean equals = Arrays.equals(Streams.getByteArray(inputStream1), Streams.getByteArray(inputStream2));
-         
+
          try {
             inputStream1.reset();
             inputStream2.reset();

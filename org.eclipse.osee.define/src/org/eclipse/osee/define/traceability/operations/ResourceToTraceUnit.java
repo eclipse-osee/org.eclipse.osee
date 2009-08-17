@@ -105,7 +105,9 @@ public class ResourceToTraceUnit {
             subMonitor = new SubProgressMonitor(monitor, QUARTER_TOTAL);
             subMonitor.beginTask("Processing", collectors.size());
             for (TraceUnitCollector collector : collectors) {
-               if (monitor.isCanceled()) break;
+               if (monitor.isCanceled()) {
+                  break;
+               }
                if (!collector.isEmpty()) {
                   processCollector(subMonitor, collector);
                }
@@ -126,12 +128,16 @@ public class ResourceToTraceUnit {
 
    private void processCollector(IProgressMonitor monitor, TraceUnitCollector testUnitCollector) throws OseeCoreException {
       for (String testUnitType : testUnitCollector.getTraceUnitTypes()) {
-         if (monitor.isCanceled()) break;
+         if (monitor.isCanceled()) {
+            break;
+         }
          Map<String, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
          if (unitToTrace != null) {
             for (String testUnitName : unitToTrace.keySet()) {
                monitor.subTask(String.format("Processing [%s - %s]", testUnitType, testUnitName));
-               if (monitor.isCanceled()) break;
+               if (monitor.isCanceled()) {
+                  break;
+               }
                TraceUnit testUnit = unitToTrace.get(testUnitName);
                if (testUnit != null) {
                   notifyOnProcess(monitor, testUnit);
@@ -165,7 +171,7 @@ public class ResourceToTraceUnit {
       }
    }
 
-   private final class TraceUnitCollector implements IResourceHandler {
+   private static final class TraceUnitCollector implements IResourceHandler {
 
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;

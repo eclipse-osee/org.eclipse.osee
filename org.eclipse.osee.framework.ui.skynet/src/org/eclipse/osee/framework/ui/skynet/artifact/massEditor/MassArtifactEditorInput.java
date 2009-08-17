@@ -26,37 +26,20 @@ public class MassArtifactEditorInput implements IEditorInput {
    private final String name;
    private final SkynetXViewerFactory skynetXViewerFactory;
 
-   /**
-    * @return the skynetXViewerFactory
-    */
    public SkynetXViewerFactory getXViewerFactory() {
       return skynetXViewerFactory;
    }
 
-   /**
-    * @param artifact
-    */
    public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, SkynetXViewerFactory skynetXViewerFactory) {
       this.name = name;
       this.artifacts = artifacts;
       this.skynetXViewerFactory = skynetXViewerFactory;
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      return false;
-   }
-
-   /**
-    * @return the taskArts
-    */
    public Collection<? extends Artifact> getArtifacts() {
       return artifacts;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
       return name;
    }

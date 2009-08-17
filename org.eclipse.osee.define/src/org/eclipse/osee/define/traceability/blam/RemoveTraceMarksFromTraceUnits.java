@@ -64,7 +64,6 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return "Remove Trace Marks from Resource";
    }
 
-   
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Trace");
@@ -135,7 +134,6 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return new File(pathToUse).toURI();
    }
 
-   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
@@ -153,8 +151,8 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               isProcessingAllowed.setValue(isInPlaceStorageAllowed ? MessageDialog.openConfirm(new Shell(), getName(),
-                     "Are you sure you want to remove trace marks from files?") : true);
+               isProcessingAllowed.setValue(isInPlaceStorageAllowed ? MessageDialog.openConfirm(new Shell(),
+                     super.getName(), "Are you sure you want to remove trace marks from files?") : true);
                return Status.OK_STATUS;
             }
          };
@@ -203,7 +201,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return handlers;
    }
 
-   private final class TraceRemover implements IResourceHandler {
+   private static final class TraceRemover implements IResourceHandler {
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;
       private final boolean isStorageAllowed;

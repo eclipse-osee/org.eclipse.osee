@@ -221,11 +221,7 @@ public class XDate extends XWidget {
    public void setDate(Date date) {
       this.date = date;
       if (dateCombo != null && !dateCombo.isDisposed()) {
-         if (dateCombo != null) {
-            dateCombo.setDate(date);
-         } else {
-            dateCombo.setDate((Date) null);
-         }
+         dateCombo.setDate(date);
       }
    }
 

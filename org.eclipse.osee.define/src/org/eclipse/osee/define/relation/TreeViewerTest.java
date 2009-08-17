@@ -42,7 +42,9 @@ public class TreeViewerTest {
       Font font = null;
 
       public String getColumnText(Object element, int columnIndex) {
-         if (!(element instanceof File)) return null;
+         if (!(element instanceof File)) {
+            return null;
+         }
          File file = (File) element;
          switch (columnIndex) {
             case 0:
@@ -56,16 +58,24 @@ public class TreeViewerTest {
       }
 
       public Image getColumnImage(Object element, int columnIndex) {
-         if (columnIndex != 0) return null;
-         if (!(element instanceof File)) return null;
+         if (columnIndex != 0) {
+            return null;
+         }
+         if (!(element instanceof File)) {
+            return null;
+         }
          File file = (File) element;
          Display display = Display.getCurrent();
-         if (file.isDirectory()) return display.getSystemImage(SWT.ICON_WARNING);
+         if (file.isDirectory()) {
+            return display.getSystemImage(SWT.ICON_WARNING);
+         }
          return display.getSystemImage(SWT.ICON_QUESTION);
       }
 
       public void dispose() {
-         if (font != null) font.dispose();
+         if (font != null) {
+            font.dispose();
+         }
          font = null;
       }
 
@@ -91,7 +101,9 @@ public class TreeViewerTest {
          if (columnIndex == 0) {
             File file = (File) element;
             Display display = Display.getCurrent();
-            if (file.isDirectory()) return display.getSystemColor(SWT.COLOR_CYAN);
+            if (file.isDirectory()) {
+               return display.getSystemColor(SWT.COLOR_CYAN);
+            }
             return display.getSystemColor(SWT.COLOR_MAGENTA);
          }
          return null;
@@ -117,20 +129,28 @@ public class TreeViewerTest {
       TreeViewerTestLabelProvider labelProvider1 = new TreeViewerTest().new TreeViewerTestLabelProvider();
       ITreeContentProvider contentProvider = new ITreeContentProvider() {
          public Object[] getChildren(Object parentElement) {
-            if (!(parentElement instanceof File)) return null;
+            if (!(parentElement instanceof File)) {
+               return null;
+            }
             File file = (File) parentElement;
-            if (file.isDirectory()) return file.listFiles();
+            if (file.isDirectory()) {
+               return file.listFiles();
+            }
             return null;
          }
 
          public Object getParent(Object element) {
-            if (!(element instanceof File)) return null;
+            if (!(element instanceof File)) {
+               return null;
+            }
             File file = (File) element;
             return file.getParentFile();
          }
 
          public boolean hasChildren(Object element) {
-            if (!(element instanceof File)) return false;
+            if (!(element instanceof File)) {
+               return false;
+            }
             File file = (File) element;
             return file.isDirectory();
          }
@@ -161,14 +181,20 @@ public class TreeViewerTest {
          }
 
          public Image getImage(Object element) {
-            if (!(element instanceof File)) return null;
+            if (!(element instanceof File)) {
+               return null;
+            }
             File file = (File) element;
-            if (file.isDirectory()) return display.getSystemImage(SWT.ICON_WARNING);
+            if (file.isDirectory()) {
+               return display.getSystemImage(SWT.ICON_WARNING);
+            }
             return display.getSystemImage(SWT.ICON_QUESTION);
          }
 
          public String getText(Object element) {
-            if (!(element instanceof File)) return null;
+            if (!(element instanceof File)) {
+               return null;
+            }
             File file = (File) element;
             return file.getName();
          }
@@ -237,7 +263,9 @@ public class TreeViewerTest {
 
       shell.open();
       while (!shell.isDisposed()) {
-         if (!display.readAndDispatch()) display.sleep();
+         if (!display.readAndDispatch()) {
+            display.sleep();
+         }
       }
       display.dispose();
    }

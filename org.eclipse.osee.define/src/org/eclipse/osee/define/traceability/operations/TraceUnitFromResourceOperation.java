@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
@@ -56,7 +57,9 @@ public class TraceUnitFromResourceOperation {
    public static void printTraceFromTestUnits(IProgressMonitor monitor, URI source, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
       ResourceToTraceUnit operation =
             getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
-      if (monitor == null) monitor = new NullProgressMonitor();
+      if (monitor == null) {
+         monitor = new NullProgressMonitor();
+      }
       operation.addTraceProcessor(new TraceUnitReportProcessor());
       operation.execute(monitor);
    }
@@ -66,7 +69,9 @@ public class TraceUnitFromResourceOperation {
 
       ResourceToTraceUnit operation =
             getResourceToTestUnit(source, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
-      if (monitor == null) monitor = new NullProgressMonitor();
+      if (monitor == null) {
+         monitor = new NullProgressMonitor();
+      }
       operation.addTraceProcessor(new TraceUnitToArtifactProcessor(importToBranch));
       operation.execute(monitor);
    }
@@ -100,7 +105,7 @@ public class TraceUnitFromResourceOperation {
          if (!fileInfo.exists()) {
             throw new OseeArgumentException(String.format("Unable to access source: [%s]", source));
          }
-      } catch (Exception ex) {
+      } catch (CoreException ex) {
          throw new OseeArgumentException(String.format("Unable to access source: [%s]", source));
       }
    }

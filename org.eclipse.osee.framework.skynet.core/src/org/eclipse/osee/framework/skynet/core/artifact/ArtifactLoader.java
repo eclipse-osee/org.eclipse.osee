@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -514,6 +515,6 @@ public final class ArtifactLoader {
    }
 
    public static int getNewQueryId() {
-      return (int) (Math.random() * Integer.MAX_VALUE);
+      return new Random().nextInt(Integer.MAX_VALUE);
    }
 }

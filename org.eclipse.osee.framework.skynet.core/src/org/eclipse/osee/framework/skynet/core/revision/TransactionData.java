@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -37,7 +36,7 @@ public class TransactionData implements IAdaptable {
    private final int associatedArtId;
    private final int commitArtId;
    private final int transactionNumber;
-   private String name;
+   private final String name;
    private final Branch branch;
    private Artifact artifact;
 
@@ -50,19 +49,13 @@ public class TransactionData implements IAdaptable {
       this.commitArtId = commitArtId;
       this.branch = branch;
 
-      try {
-         User user = null;
-         if (authorId == 0) {
-            user = UserManager.getUser(SystemUser.OseeSystem);
-            authorId = user.getArtId();
-         } else {
-            user = UserManager.getUserByArtId(authorId);
-         }
-         name = user.getName();
-      } catch (UserNotInDatabase ex) {
-         name = "Could not resolve artId: " + authorId;
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      User user = null;
+      if (authorId == 0) {
+         user = UserManager.getUser(SystemUser.OseeSystem);
+      } else {
+         user = UserManager.getUserByArtId(authorId);
       }
+      name = user.getName();
    }
 
    /**
@@ -118,7 +111,9 @@ public class TransactionData implements IAdaptable {
 
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter.isInstance(this)) {
          return this;

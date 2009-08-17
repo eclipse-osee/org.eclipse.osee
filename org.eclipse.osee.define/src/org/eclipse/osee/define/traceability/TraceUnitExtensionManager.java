@@ -111,7 +111,7 @@ public class TraceUnitExtensionManager {
                ExtensionPoints.getExtensionElements(DefinePlugin.PLUGIN_ID + "." + TRACE_UNIT_HANDLER,
                      TRACE_UNIT_HANDLER);
          for (IConfigurationElement element : elements) {
-            IExtension extension = ((IExtension) element.getParent());
+            IExtension extension = (IExtension) element.getParent();
             String identifier = extension.getUniqueIdentifier();
             String name = extension.getLabel();
             String bundleName = element.getContributor().getName();
@@ -146,11 +146,11 @@ public class TraceUnitExtensionManager {
       return object;
    }
 
-   public final class TraceHandler {
-      private String name;
-      private String id;
-      private ITraceUnitResourceLocator locator;
-      private ITraceParser parser;
+   public static final class TraceHandler {
+      private final String name;
+      private final String id;
+      private final ITraceUnitResourceLocator locator;
+      private final ITraceParser parser;
 
       private TraceHandler(String id, String name, ITraceUnitResourceLocator locator, ITraceParser parser) {
          super();

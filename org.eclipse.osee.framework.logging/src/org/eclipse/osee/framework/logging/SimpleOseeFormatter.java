@@ -21,13 +21,12 @@ import java.util.logging.LogRecord;
  */
 public class SimpleOseeFormatter extends Formatter {
    Date dat = new Date();
-   private StringBuilder sb = new StringBuilder();
+   private final StringBuilder sb = new StringBuilder();
 
    // Line separator string. This is the value of the line.separator
    // property at the moment that the SimpleFormatter was created.
-   private String lineSeparator =
-         (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction(
-               "line.separator"));
+   private final String lineSeparator =
+         java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
 
    @Override
    public String format(LogRecord record) {
@@ -62,14 +61,11 @@ public class SimpleOseeFormatter extends Formatter {
       sb.append(message);
       sb.append(lineSeparator);
       if (record.getThrown() != null) {
-         try {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            record.getThrown().printStackTrace(pw);
-            pw.close();
-            sb.append(sw.toString());
-         } catch (Exception ex) {
-         }
+         StringWriter sw = new StringWriter();
+         PrintWriter pw = new PrintWriter(sw);
+         record.getThrown().printStackTrace(pw);
+         pw.close();
+         sb.append(sw.toString());
       }
       return sb.toString();
    }

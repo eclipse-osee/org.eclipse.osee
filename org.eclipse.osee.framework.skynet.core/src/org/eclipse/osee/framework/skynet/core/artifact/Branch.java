@@ -121,7 +121,11 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
     * @return Returns the short branch name if provided else returns null.
     */
    public String getShortName() {
-      return Strings.isValid(getName()) ? Strings.truncate(getName(), SHORT_NAME_LIMIT) : Strings.emptyString();
+      if (Strings.isValid(getName())) {
+         return Strings.truncate(getName(), SHORT_NAME_LIMIT);
+      } else {
+         return Strings.emptyString();
+      }
    }
 
    private void kickRenameEvents() throws OseeCoreException {

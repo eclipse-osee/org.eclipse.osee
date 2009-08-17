@@ -55,7 +55,7 @@ public class BranchCreationHandler extends CommandHandler {
             parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
          } else if (backingData instanceof TransactionId) {
 
-            parentTransactionId = ((TransactionId) backingData);
+            parentTransactionId = (TransactionId) backingData;
 
          } else {
             throw new OseeStateException(
@@ -66,7 +66,7 @@ public class BranchCreationHandler extends CommandHandler {
          return null;
       }
       final EntryDialog dialog =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch",
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch:",
                   MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
       int result = dialog.open();
 
@@ -92,7 +92,9 @@ public class BranchCreationHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
+      if (AWorkbench.getActivePage() == null) {
+         return false;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       boolean enabled;

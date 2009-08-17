@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 
 public class DbDescribe {
@@ -86,7 +85,7 @@ public class DbDescribe {
                   Timestamp value = chStmt.getTimestamp(d.name);
                   dbModel.addColumn(x++, value);
                } else {
-                  dbModel.addColumn(x++, new String("Unknown object type"));
+                  dbModel.addColumn(x++, "Unknown object type");
                }
             }
             taskList.addTask(dbModel);
@@ -96,7 +95,7 @@ public class DbDescribe {
       }
       return taskList;
    }
-   public class Describe {
+   public static class Describe {
       public String name = "Unknown";
       public boolean nullable = false;
       public String type = "Unknown";

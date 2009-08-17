@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
@@ -237,12 +238,12 @@ public class InternalEventManager {
                         branch = BranchManager.getBranch(branchId);
                         RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
                               branch.getName(), branch.getShortName()));
-                     } catch (Exception ex) {
+                     } catch (OseeCoreException ex) {
                         // do nothing
                      }
                   }
                }
-            } catch (Exception ex) {
+            } catch (OseeAuthenticationRequiredException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }

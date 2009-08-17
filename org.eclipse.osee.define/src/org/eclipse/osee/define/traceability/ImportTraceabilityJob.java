@@ -123,7 +123,9 @@ public class ImportTraceabilityJob extends Job {
                }
             }
          }
-      } catch (Exception ex) {
+      } catch (IOException ex) {
+         toReturn = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+      } catch (OseeCoreException ex) {
          toReturn = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {
          monitor.done();

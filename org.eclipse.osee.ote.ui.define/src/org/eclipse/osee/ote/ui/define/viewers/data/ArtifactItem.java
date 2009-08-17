@@ -97,7 +97,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
       try {
          if (artifact != null && artifact.isDeleted() != true) {
 
-            if (index <= (xViewer.getTree().getColumns().length - 1)) {
+            if (index <= xViewer.getTree().getColumns().length - 1) {
 
                TreeColumn treeCol = xViewer.getTree().getColumns()[index];
                String colName = treeCol.getText();
@@ -144,7 +144,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
                            // Do Nothing;
                         }
                         if (date != null) {
-                           toReturn = DateAttribute.MMDDYYHHMM.format(date);
+                           toReturn = new DateAttribute().MMDDYYHHMM.format(date);
                         } else {
                            toReturn = "NOT SET";
                         }
@@ -253,12 +253,16 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (artifact.isDeleted()) return;
+      if (artifact.isDeleted()) {
+         return;
+      }
       if (transData.isDeleted(artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               if (!xViewer.getTree().isDisposed()) xViewer.remove(this);
+               if (!xViewer.getTree().isDisposed()) {
+                  xViewer.remove(this);
+               }
                dispose();
             }
          });
@@ -268,10 +272,11 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               if (!xViewer.getTree().isDisposed())
+               if (!xViewer.getTree().isDisposed()) {
                   xViewer.remove(this);
-               else
+               } else {
                   xViewer.update(this, null);
+               }
             }
          });
       }

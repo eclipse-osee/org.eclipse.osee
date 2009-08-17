@@ -131,14 +131,13 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
             currentArtifact = -1;
          } else if (name.equalsIgnoreCase("attr")) {
             currentAttribute = -1;
-         } else if (name.equalsIgnoreCase("location")) {
          }
       } catch (Throwable ex) {
          handleError(ex);
       }
    }
 
-   public final class XmlArtifactSearchResult {
+   public static final class XmlArtifactSearchResult {
       private final ArtifactJoinQuery artifactJoinQuery;
       private int branchId;
       private final Map<Integer, HashCollection<Long, MatchLocation>> attributeMatches;

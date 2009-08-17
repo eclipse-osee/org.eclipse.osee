@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -376,7 +377,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
                   branchSelectComposite.setSelected(branch);
                }
             }
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             // Do Nothing
          }
 

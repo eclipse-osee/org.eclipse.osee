@@ -229,7 +229,7 @@ public class OseeClientsTab {
       //      peopleCheckboxTreeViewer.setAllChecked(isSelectAll);
    }
 
-   private class TreeContentProvider implements ITreeContentProvider {
+   private static class TreeContentProvider implements ITreeContentProvider {
 
       public void dispose() {
          // Nothing to dispose
@@ -257,7 +257,7 @@ public class OseeClientsTab {
       }
    }
 
-   private class PersonLabelProvider extends LabelProvider {
+   private static class PersonLabelProvider extends LabelProvider {
 
       @Override
       public Image getImage(Object arg0) {

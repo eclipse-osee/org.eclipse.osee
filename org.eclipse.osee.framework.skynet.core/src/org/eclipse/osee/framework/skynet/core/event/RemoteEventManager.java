@@ -559,7 +559,7 @@ public class RemoteEventManager {
                         new ArrayList<SkynetAttributeChange>()));
                }
             }
-         } catch (Exception ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }

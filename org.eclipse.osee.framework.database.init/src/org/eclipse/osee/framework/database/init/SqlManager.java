@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.database.init.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.init.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -68,9 +68,9 @@ public abstract class SqlManager {
 
       String toExecute =
             "INSERT INTO " + formatQuotedString(tableMetadata.getFullyQualifiedTableName(), "\\.") + " (\n";
-      toExecute += StringFormat.listToCommaSeparatedString(columnNames);
+      toExecute += StringUtils.join(columnNames, ",");
       toExecute += "\n) VALUES (\n";
-      toExecute += StringFormat.listToCommaSeparatedString(placeHolders);
+      toExecute += StringUtils.join(placeHolders, ",");
       toExecute += ")\n";
 
       Object[] data = new Object[columnNames.size()];
@@ -157,7 +157,7 @@ public abstract class SqlManager {
       }
       StringBuilder toExecute = new StringBuilder();
       toExecute.append((constraintStatements.size() != 0 ? ",\n" : ""));
-      toExecute.append(StringFormat.listToValueSeparatedString(constraintStatements, ",\n"));
+      toExecute.append(StringUtils.join(constraintStatements, ",\n"));
       return toExecute.toString();
    }
 
@@ -166,8 +166,7 @@ public abstract class SqlManager {
       for (int index = 0; index < array.length; index++) {
          array[index] = "\"" + array[index] + "\"";
       }
-      // return value;
-      return StringFormat.separateWith(array, splitAt.replaceAll("\\\\", ""));
+      return StringUtils.join(array, splitAt.replaceAll("\\\\", ""));
    }
 
    public String constraintDataToSQL(ConstraintElement constraint, String tableID) {
@@ -237,9 +236,9 @@ public abstract class SqlManager {
    protected String insertDataToSQL(String fullyQualifiedTableName, List<String> columns, List<String> columnData) {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append("INSERT INTO " + formatQuotedString(fullyQualifiedTableName, "\\.") + " (\n");
-      toExecute.append(StringFormat.listToCommaSeparatedString(columns));
+      toExecute.append(StringUtils.join(columns, ","));
       toExecute.append("\n) VALUES (\n");
-      toExecute.append(StringFormat.listToCommaSeparatedString(columnData));
+      toExecute.append(StringUtils.join(columnData, ","));
       toExecute.append(")\n");
       return toExecute.toString();
    }

@@ -74,7 +74,7 @@ public class UpdateMergeBranch extends DbTransaction {
       int count = 0;
       //Delete any damaged artifacts (from a source revert) on the merge branch
       for (Artifact artifact : goodMergeBranchArtifacts) {
-         allMergeBranchArtifactsCopy.remove(new Integer(artifact.getArtId()));
+         allMergeBranchArtifactsCopy.remove(Integer.valueOf(artifact.getArtId()));
       }
       if (!allMergeBranchArtifactsCopy.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifactsCopy) {
@@ -121,7 +121,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       //Add any artifacts that should be on the merge branch but aren't
       for (Artifact artifact : goodMergeBranchArtifacts) {
-         expectedArtIds.remove(new Integer(artifact.getArtId()));
+         expectedArtIds.remove(Integer.valueOf(artifact.getArtId()));
       }
       if (!expectedArtIds.isEmpty()) {
          BranchCreator.getInstance().addArtifactsToBranch(connection, sourceBranch, destBranch, mergeBranch,
