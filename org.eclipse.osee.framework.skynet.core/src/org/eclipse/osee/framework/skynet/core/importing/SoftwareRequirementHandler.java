@@ -16,12 +16,13 @@ import java.util.regex.Pattern;
 /**
  * @author Robert A. Fisher
  */
-public abstract class SoftwareRequirementHandler extends GeneralWordOutlineHandler {
+public abstract class SoftwareRequirementHandler extends WordOutlineParserDelegate {
    private static final Pattern partitionPattern = Pattern.compile("\\[([\\w\\(|\\)]+)\\]");
 
    private final String attributeName;
 
    public SoftwareRequirementHandler(String attributeName) {
+      super();
       this.attributeName = attributeName;
    }
 

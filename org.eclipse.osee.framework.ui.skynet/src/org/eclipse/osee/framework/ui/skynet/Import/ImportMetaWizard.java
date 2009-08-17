@@ -16,7 +16,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -40,9 +39,9 @@ public class ImportMetaWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       try {
-         Branch branch = mainPage.getSelectedBranch();
+         //         Branch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
-         Jobs.startJob(new ImportMetaJob(file, branch));
+         Jobs.startJob(new ImportMetaJob(file));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "OSEE Import Error", ex);
       }

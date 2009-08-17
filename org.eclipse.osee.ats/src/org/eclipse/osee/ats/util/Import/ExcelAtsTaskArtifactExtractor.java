@@ -11,10 +11,9 @@
 
 package org.eclipse.osee.ats.util.Import;
 
-import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -83,11 +82,12 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
 
          monitor.subTask("Validating...");
          boolean fullRow = false;
-         for (int i = 0; i < row.length; i++)
+         for (int i = 0; i < row.length; i++) {
             if (row[i] != null && !row[i].equals("")) {
                fullRow = true;
                break;
             }
+         }
          if (!fullRow) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
             return;
@@ -99,13 +99,15 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             } else if (headerRow[i].equalsIgnoreCase("Originator")) {
                String userName = row[i];
                User u = null;
-               if (userName == null || userName.equals(""))
+               if (userName == null || userName.equals("")) {
                   u = UserManager.getUser();
-               else
+               } else {
                   u = UserManager.getUserByName(userName);
-               if (u == null)
+               }
+               if (u == null) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
                         "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
+               }
                taskArt.getSmaMgr().getLog().setOriginator(u);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
                Set<User> assignees = new HashSet<User>();
@@ -113,9 +115,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   userName = userName.replaceAll("^\\s+", "");
                   userName = userName.replaceAll("\\+$", "");
                   User user = null;
-                  if (userName == null || userName.equals(""))
+                  if (userName == null || userName.equals("")) {
                      user = UserManager.getUser();
-                  else {
+                  } else {
                      try {
                         user = UserManager.getUserByName(userName);
                      } catch (OseeCoreException ex) {
@@ -164,8 +166,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                if (str != null && !str.equals("")) {
                   try {
                      percent = new Double(str);
-                     if (percent < 1)
+                     if (percent < 1) {
                         percent = percent * 100;
+                     }
                   } catch (Exception ex) {
                      throw new IllegalArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
                            str, rowNum));
@@ -215,12 +218,12 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       }
    }
 
-   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws OseeCoreException {
+   public void process(URI source, Branch branch) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);
          xmlReader.setContentHandler(excelHandler);
-         xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }

@@ -83,8 +83,7 @@ public class AttributeCellModifier implements ICellModifier {
             enumeratedValue.setValue(attribute.getDisplayableString());
 
             String[] choices =
-                  AttributeTypeManager.getEnumerationValues(attribute.getAttributeType()).toArray(
-                        new String[0]);
+                  AttributeTypeManager.getEnumerationValues(attribute.getAttributeType()).toArray(new String[0]);
             enumeratedValue.setChoices(choices);
             return enumeratedValue;
          } else if (attribute instanceof BooleanAttribute) {
@@ -118,7 +117,7 @@ public class AttributeCellModifier implements ICellModifier {
                } else {
                   ((DateAttribute) attribute).setValue((Date) value);
                }
-            } else if (!(attribute instanceof BinaryAttribute)) {
+            } else if (!(attribute instanceof BinaryAttribute<?>)) {
                //binary attributes should not be changed.
                attribute.setFromString((String) value);
             }

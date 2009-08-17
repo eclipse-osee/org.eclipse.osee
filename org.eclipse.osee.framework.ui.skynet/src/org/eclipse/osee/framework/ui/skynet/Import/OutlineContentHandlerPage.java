@@ -10,17 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.importing.IWordOutlineContentHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,6 +27,8 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  */
 public class OutlineContentHandlerPage extends WizardDataTransferPage implements Listener {
    public static final String PAGE_NAME = "osee.define.wizardPage.outlineContentHandlerPage";
+
+   private final ArtifactSourceParserContributionManager contributionManager;
    private List handlerList;
    private boolean hasHandlers;
 
@@ -44,7 +37,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
     */
    public OutlineContentHandlerPage() {
       super(PAGE_NAME);
-
+      contributionManager = new ArtifactSourceParserContributionManager();
       hasHandlers = false;
    }
 
@@ -104,39 +97,14 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
    }
 
    private void initList() {
-      java.util.List<IWordOutlineContentHandler> extensionPointHandlers = new LinkedList<IWordOutlineContentHandler>();
-
-      IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint(
-                  "org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler");
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         for (IConfigurationElement element : elements) {
-            if (element.getName().equals("Handler")) {
-               try {
-                  extensionPointHandlers.add((IWordOutlineContentHandler) element.createExecutableExtension("class"));
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         }
+      hasHandlers = false;
+      for (IArtifactSourceParserDelegate delegate : contributionManager.getArtifactSourceParserDelegate(null)) {
+         hasHandlers = true;
+         handlerList.add(delegate.getName());
+         handlerList.setData(delegate.getName(), delegate);
       }
 
-      hasHandlers = !extensionPointHandlers.isEmpty();
-      if (hasHandlers) {
-         Collections.sort(extensionPointHandlers, new Comparator<IWordOutlineContentHandler>() {
-
-            public int compare(IWordOutlineContentHandler o1, IWordOutlineContentHandler o2) {
-               return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-         });
-
-         for (IWordOutlineContentHandler handler : extensionPointHandlers) {
-            handlerList.add(handler.getName());
-            handlerList.setData(handler.getName(), handler);
-         }
-      } else {
+      if (!hasHandlers) {
          handlerList.add("<No Handlers Installed>");
       }
 
@@ -148,9 +116,9 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
       return false;
    }
 
-   public IWordOutlineContentHandler getSelectedOutlineContentHandler() {
+   public IArtifactSourceParserDelegate getSelectedOutlineContentHandler() {
       if (handlerList.getSelectionCount() == 1) {
-         return (IWordOutlineContentHandler) handlerList.getData(handlerList.getSelection()[0]);
+         return (IArtifactSourceParserDelegate) handlerList.getData(handlerList.getSelection()[0]);
       } else {
          return null;
       }

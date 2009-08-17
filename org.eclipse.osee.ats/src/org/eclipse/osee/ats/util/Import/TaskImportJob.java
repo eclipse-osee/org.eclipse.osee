@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class TaskImportJob extends Job {
    private final File file;
-   private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
+   private final ExcelAtsTaskArtifactExtractor atsTaskExtractor;
 
    public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor) {
       super("Importing Tasks");
@@ -35,13 +35,14 @@ public class TaskImportJob extends Job {
       this.atsTaskExtractor = atsTaskExtractor;
    }
 
+   @Override
    public IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
          atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
          if (file != null && file.isFile()) {
-            atsTaskExtractor.discoverArtifactAndRelationData(file, AtsUtil.getAtsBranch());
+            atsTaskExtractor.process(file.toURI(), AtsUtil.getAtsBranch());
          } else {
             throw new OseeArgumentException("All files passed must be a file");
          }

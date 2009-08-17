@@ -148,13 +148,14 @@ public class AttributesComposite extends Composite {
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Object selected = selection.getFirstElement();
 
-            if (selected instanceof Attribute) {
+            if (selected instanceof Attribute<?>) {
                Attribute<?> attribute = (Attribute<?>) selected;
                String tipText = attribute.getAttributeType().getTipText();
-               if (tipText != null && !tipText.equals("null"))
+               if (tipText != null && !tipText.equals("null")) {
                   helpText.setText(tipText);
-               else
+               } else {
                   helpText.setText("");
+               }
             }
          }
       });
@@ -272,10 +273,11 @@ public class AttributesComposite extends Composite {
 
    private Attribute<?> getSelectedAttribute() {
       TableItem[] items = tableViewer.getTable().getSelection();
-      if (items.length > 0)
-         return (Attribute<?>) (tableViewer.getTable().getSelection()[0]).getData();
-      else
+      if (items.length > 0) {
+         return (Attribute<?>) tableViewer.getTable().getSelection()[0].getData();
+      } else {
          return null;
+      }
    }
 
    public class AttributeMenuListener implements MenuListener {
@@ -316,7 +318,9 @@ public class AttributesComposite extends Composite {
    }
 
    public void addModifyAttributesListener(ModifyAttributesListener listener) {
-      if (!modifyAttrListeners.contains(listener)) modifyAttrListeners.add(listener);
+      if (!modifyAttrListeners.contains(listener)) {
+         modifyAttrListeners.add(listener);
+      }
    }
 
    public void removeModifyAttributesListener(ModifyAttributesListener listener) {
@@ -324,8 +328,9 @@ public class AttributesComposite extends Composite {
    }
 
    public void notifyModifyAttribuesListeners() {
-      for (ModifyAttributesListener listener : modifyAttrListeners)
+      for (ModifyAttributesListener listener : modifyAttrListeners) {
          listener.handleEvent();
+      }
    }
 
    private void setHelpContexts() {

@@ -1,19 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.framework.ui.skynet">
+<schema targetNamespace="org.eclipse.osee.framework.skynet.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.framework.ui.skynet" id="WordOutlineContentHandler" name="WordOutlineContentHandler"/>
+         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactSourceParserDelegate" name="ArtifactSourceParserDelegate"/>
       </appInfo>
       <documentation>
-         Allows plugins to contribute a handler for use when parsing WordML as an outline. This way implementation specific actions can be taken to handle what content comes in as seperate artifacts, and how the content is split among attributes. All extension points available are presented to the user to select from upon import.
+         [Enter description of this extension point.]
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="Handler"/>
+         <sequence>
+            <element ref="ArtifactSourceParserDelegate"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,29 +47,15 @@
       </complexType>
    </element>
 
-   <element name="Handler">
+   <element name="ArtifactSourceParserDelegate">
       <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="class" type="string" use="required">
+         <attribute name="classname" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="osee.skynet.gui.Import.IWordOutlineContentHandler"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -91,7 +82,7 @@
 
    <annotation>
       <appInfo>
-         <meta.section type="apiInfo"/>
+         <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
          [Enter API information here.]
@@ -107,13 +98,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

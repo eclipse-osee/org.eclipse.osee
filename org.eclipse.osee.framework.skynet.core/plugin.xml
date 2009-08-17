@@ -17,6 +17,8 @@
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
    <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
    <extension-point id="OseeValidator" name="OseeValidator" schema="schema/OseeValidator.exsd"/>
+   <extension-point id="ArtifactSourceParser" name="ArtifactSourceParser" schema="schema/ArtifactSourceParser.exsd"/>
+   <extension-point id="ArtifactSourceParserDelegate" name="ArtifactSourceParserDelegate" schema="schema/ArtifactSourceParserDelegate.exsd"/>
 
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
@@ -195,4 +197,41 @@
                  classname="org.eclipse.osee.framework.skynet.core.httpRequests.ClientDashboardRequestHandler">
            </IHttpServerRequest>
         </extension>
+        <extension
+              point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
+           <ArtifactSourceParser
+                 classname="org.eclipse.osee.framework.skynet.core.importing.ExcelArtifactExtractor">
+           </ArtifactSourceParser>
+        </extension>
+ <extension
+        point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
+     <ArtifactSourceParser
+           classname="org.eclipse.osee.framework.skynet.core.importing.NativeDocumentExtractor">
+     </ArtifactSourceParser>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
+     <ArtifactSourceParser
+           classname="org.eclipse.osee.framework.skynet.core.importing.WholeWordDocumentExtractor">
+     </ArtifactSourceParser>
+  </extension>
+  <extension
+       point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
+     <ArtifactSourceParser
+           classname="org.eclipse.osee.framework.skynet.core.importing.WordOutlineExtractor">
+     </ArtifactSourceParser>
+  </extension>
+  <extension
+      point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
+     <ArtifactSourceParser
+           classname="org.eclipse.osee.framework.skynet.core.importing.XmlDataExtractor">
+     </ArtifactSourceParser>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParserDelegate">
+     <ArtifactSourceParserDelegate
+           classname="org.eclipse.osee.framework.skynet.core.importing.WordOutlineParserDelegate">
+     </ArtifactSourceParserDelegate>
+  </extension>        
+        
 </plugin>

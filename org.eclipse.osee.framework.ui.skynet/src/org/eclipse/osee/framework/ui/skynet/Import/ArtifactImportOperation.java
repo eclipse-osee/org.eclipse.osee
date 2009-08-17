@@ -131,7 +131,7 @@ public class ArtifactImportOperation extends AbstractOperation {
          for (File file : files) {
             if (file.isFile()) {
                try {
-                  extractor.discoverArtifactAndRelationData(file, branch);
+                  extractor.process(file.toURI(), branch);
                } catch (OseeCoreException ex) {
                   throw ex;
                } catch (Exception ex) {

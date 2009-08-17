@@ -20,7 +20,7 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
 public class NewArtifactImportWizard extends Wizard implements IImportWizard {
    private File importFile;

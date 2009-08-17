@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -21,18 +22,20 @@ public class WholeWordDocumentExtractor extends WordExtractor {
       return "Extract all the content of each Word XML document as one artifact";
    }
 
-   public void discoverArtifactAndRelationData(File importFile, Branch branch) throws Exception {
-      if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
+   public void process(URI source, Branch branch) throws Exception {
+      if (source == null) {
+         throw new IllegalArgumentException("importFile can not be null");
+      }
       RoughArtifact roughArtifact =
-            new RoughArtifact(RoughArtifactKind.PRIMARY, branch, Lib.removeExtension(importFile.getName()));
+            new RoughArtifact(RoughArtifactKind.PRIMARY, branch, Lib.removeExtension(new File(source).getName()));
       addRoughArtifact(roughArtifact);
-      roughArtifact.addFileAttribute(WordAttribute.WHOLE_WORD_CONTENT, importFile);
+      roughArtifact.addURIAttribute(WordAttribute.WHOLE_WORD_CONTENT, source);
    }
 
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
-            return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
       };
    }

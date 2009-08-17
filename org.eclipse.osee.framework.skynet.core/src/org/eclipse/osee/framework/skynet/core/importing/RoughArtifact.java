@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +40,7 @@ public class RoughArtifact {
    private ReqNumbering number;
    private String guid;
    private String humandReadableId;
-   private HashMap<String, File> fileAttributes;
+   private HashMap<String, URI> uriAttributes;
    private final Branch branch;
    private RoughArtifactKind roughArtifactKind;
    private final List<Pair<String, String>> attributes = new ArrayList<Pair<String, String>>();
@@ -84,11 +86,11 @@ public class RoughArtifact {
       return realArtifact;
    }
 
-   public void addFileAttribute(String name, File file) {
-      if (fileAttributes == null) {
-         fileAttributes = new HashMap<String, File>(2, 1);
+   public void addURIAttribute(String name, URI file) {
+      if (uriAttributes == null) {
+         uriAttributes = new HashMap<String, URI>(2, 1);
       }
-      fileAttributes.put(name, file);
+      uriAttributes.put(name, file);
    }
 
    public void addAttribute(String name, String value) {
@@ -109,11 +111,14 @@ public class RoughArtifact {
    }
 
    private void setFileAttributes(Artifact artifact) throws OseeCoreException {
-      if (fileAttributes != null) {
-         for (Entry<String, File> entry : fileAttributes.entrySet()) {
+      if (uriAttributes != null) {
+         for (Entry<String, URI> entry : uriAttributes.entrySet()) {
             try {
-               artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
-            } catch (FileNotFoundException ex) {
+               artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
+                     entry.getValue().toURL().openStream()));
+            } catch (MalformedURLException ex) {
+               throw new OseeWrappedException(ex);
+            } catch (IOException ex) {
                throw new OseeWrappedException(ex);
             }
          }

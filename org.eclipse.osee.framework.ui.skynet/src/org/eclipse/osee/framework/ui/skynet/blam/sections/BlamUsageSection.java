@@ -70,25 +70,17 @@ public class BlamUsageSection extends BaseBlamSection {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            formText.setText(getUsageDescription(), true, true);
+            String data = getEditorInput().getArtifact().getDescriptionUsage();
+            boolean parseTags = false;
+            if (data.startsWith("<form>")) {
+               parseTags = true;
+            }
+            formText.setText(data, parseTags, parseTags);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }
          getManagedForm().reflow(true);
       }
-   }
-
-   private String getUsageDescription() throws Exception {
-      StringBuilder builder = new StringBuilder();
-      String data = getEditorInput().getArtifact().getDescriptionUsage();
-      if (!data.startsWith("<form>")) {
-         builder.append("<form>");
-      }
-      builder.append(data.replaceAll("\n", "<br/>"));
-      if (!data.endsWith("</form>")) {
-         builder.append("</form>");
-      }
-      return builder.toString();
    }
 
    @Override

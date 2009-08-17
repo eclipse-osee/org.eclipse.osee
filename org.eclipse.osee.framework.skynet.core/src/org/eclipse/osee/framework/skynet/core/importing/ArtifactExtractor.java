@@ -10,32 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.io.File;
 import java.io.FileFilter;
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
-public interface ArtifactExtractor {
-   /**
-    * called before getRoughArtifacts and getRoughRelations to discover the data that they will return
-    * 
-    * @param artifactsFile file from which to extract artifact data
-    * @param branch
-    * @throws Exception
-    */
-   public abstract void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception;
-
-   public abstract List<RoughArtifact> getRoughArtifacts() throws OseeCoreException;
-
-   public abstract List<RoughRelation> getRoughRelations(RoughArtifact potentialParent) throws OseeCoreException;
+public interface ArtifactExtractor extends IArtifactSourceParser {
 
    public abstract FileFilter getFileFilter();
-
-   public abstract String getName();
-
-   public abstract String getDescription();
-
-   public abstract boolean usesTypeList();
 
 }

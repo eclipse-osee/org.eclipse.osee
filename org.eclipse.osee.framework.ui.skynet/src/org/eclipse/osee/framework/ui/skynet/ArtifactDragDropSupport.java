@@ -114,7 +114,7 @@ public class ArtifactDragDropSupport {
 
          if (iFile == null) {
             try {
-               location = new File(fileNames[i]).toURL().toString();
+               location = new File(fileNames[i]).toURI().toURL().toString();
             } catch (MalformedURLException e) {
                window.addInvalid(fileNames[i], "Malformed URL exception: " + e.getMessage());
                continue;

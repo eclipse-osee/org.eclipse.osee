@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
@@ -14,7 +13,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
 import org.eclipse.swt.SWT;
@@ -107,7 +105,6 @@ public class ArtifactImportDestinationPage extends WizardDataTransferPage {
       composite.setFont(parent.getFont());
 
       composite.setText("Where to Import Artifacts");
-
    }
 
    private void handleAttributeTypeSelection() {

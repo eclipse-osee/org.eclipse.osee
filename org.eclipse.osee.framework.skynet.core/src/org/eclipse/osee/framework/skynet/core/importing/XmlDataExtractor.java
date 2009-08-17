@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -27,18 +27,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class XmlDataExtractor extends AbstractArtifactExtractor {
    @Override
-   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception {
-      ArtifactType primaryArtifactType = ArtifactTypeManager.getType(Lib.removeExtension(artifactsFile));
+   public void process(URI source, Branch branch) throws Exception {
+      ArtifactType primaryArtifactType = ArtifactTypeManager.getType(Lib.removeExtension(new File(source).getName()));
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new XmlDataSaxHandler(this, branch, primaryArtifactType));
-      xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+      xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 
    @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
-            return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
       };
    }

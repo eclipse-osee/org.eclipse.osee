@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -22,13 +25,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -56,7 +59,12 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    };
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
+
+   private final Map<IArtifactSourceParser, Button> extractors;
+   private final File importResource;
    private final Artifact destinationArtifact;
+   private final ArtifactSourceParserContributionManager contributionManager;
+
    private List typeList;
    private BranchSelectComposite branchSelectComposite;
 
@@ -67,21 +75,29 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private Text txtImportUnderFolderName;
 
    private DirectoryOrFileSelector directoryFileSelector;
-   private final java.util.List<Pair<ArtifactExtractor, Button>> extractors =
-         new ArrayList<Pair<ArtifactExtractor, Button>>();
-   private File importResource;
-   private boolean built = false;
 
-   /**
-    * Constructor used by the Skynet drag-n-drop
-    */
-   public ArtifactImportPage(File importResource, Artifact reuseRootArtifact) {
+   private boolean built;
+
+   private ArtifactImportPage(Pair<File, Artifact> input) {
       super(PAGE_NAME);
-      Assert.isNotNull(importResource, "importResource can not be null");
-      Assert.isNotNull(reuseRootArtifact, "reuseRootArtifact can not be null");
+      contributionManager = new ArtifactSourceParserContributionManager();
+      File importResource = input.getFirst();
+      Artifact destinationArtifact = input.getSecond();
 
       this.importResource = importResource;
-      this.destinationArtifact = reuseRootArtifact;
+      this.destinationArtifact = destinationArtifact;
+      this.extractors = new HashMap<IArtifactSourceParser, Button>();
+      this.built = false;
+   }
+
+   /**
+    * Constructor used by drag-n-drop
+    */
+   public ArtifactImportPage(File importResource, Artifact reuseRootArtifact) {
+      this(new Pair<File, Artifact>(importResource, reuseRootArtifact));
+
+      Assert.isNotNull(importResource, "importResource can not be null");
+      Assert.isNotNull(destinationArtifact, "destinationArtifact can not be null");
    }
 
    /**
@@ -91,10 +107,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
     * @param selection
     */
    public ArtifactImportPage(IStructuredSelection selection) {
-      super(PAGE_NAME);
+      this(getSelection(selection));
 
-      this.importResource = null;
+   }
+
+   private static Pair<File, Artifact> getSelection(IStructuredSelection selection) {
       Artifact selectedArtifact = null;
+      File importResource = null;
       if (selection != null && selection.size() == 1) {
          Object firstElement = selection.getFirstElement();
          if (firstElement instanceof IAdaptable) {
@@ -107,9 +126,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             selectedArtifact = (Artifact) firstElement;
          }
       }
-
-      this.destinationArtifact = selectedArtifact;
-      this.built = false;
+      return new Pair<File, Artifact>(importResource, selectedArtifact);
    }
 
    @Override
@@ -326,11 +343,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      ExtensionDefinedObjects<ArtifactExtractor> definedObjects =
-            new ExtensionDefinedObjects<ArtifactExtractor>("org.eclipse.osee.framework.ui.skynet.ArtifactExtractor",
-                  "ArtifactExtractor", "class");
-      java.util.List<ArtifactExtractor> artifactExtractors = definedObjects.getObjects();
-      for (ArtifactExtractor artifactExtractor : artifactExtractors) {
+      for (IArtifactSourceParser artifactExtractor : contributionManager.getArtifactSourceParser()) {
          Button extractorButton = new Button(composite, SWT.RADIO);
          extractorButton.setText(artifactExtractor.getName());
          extractorButton.setToolTipText(artifactExtractor.getDescription());
@@ -339,7 +352,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          if (artifactExtractor.getName().equals("Word Outline")) {
             extractorButton.setSelection(true);
          }
-         extractors.add(new Pair<ArtifactExtractor, Button>(artifactExtractor, extractorButton));
+         extractors.put(artifactExtractor, extractorButton);
       }
    }
 
@@ -403,18 +416,18 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          txtImportUnderFolderName.setEnabled(false);// TODO future development
          radImportUnderSelection.setEnabled(destinationArtifact != null);
 
-         for (Pair<ArtifactExtractor, Button> extractor : extractors) {
-            if (extractor.getSecond().getSelection()) {
-               typeList.setEnabled(extractor.getFirst().usesTypeList());
+         for (Entry<IArtifactSourceParser, Button> extractor : extractors.entrySet()) {
+            if (extractor.getValue().getSelection()) {
+               typeList.setEnabled(extractor.getKey().usesTypeList());
             }
          }
       }
    }
 
-   public ArtifactExtractor getExtractor() throws OseeStateException {
-      for (Pair<ArtifactExtractor, Button> extractor : extractors) {
-         if (extractor.getSecond().getSelection()) {
-            return extractor.getFirst();
+   public IArtifactSourceParser getExtractor() throws OseeStateException {
+      for (Entry<IArtifactSourceParser, Button> extractor : extractors.entrySet()) {
+         if (extractor.getValue().getSelection()) {
+            return extractor.getKey();
          }
       }
       throw new OseeStateException("No artifact extractor has been selected");

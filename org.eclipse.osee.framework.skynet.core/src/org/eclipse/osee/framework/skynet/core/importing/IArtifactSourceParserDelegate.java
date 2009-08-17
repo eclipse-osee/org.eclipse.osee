@@ -10,22 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Robert A. Fisher
  */
-public interface IWordOutlineContentHandler extends IExecutableExtension {
+public interface IArtifactSourceParserDelegate {
+
+   public boolean isApplicable(IArtifactSourceParser parser);
 
    /**
-    * Opportunity to setup state data prior to an outline being processed. This method may be called many times on the
-    * same object.
+    * Opportunity to set state data prior to a parser being processed. This method may be called many times on the same
+    * object.
     * 
-    * @param extractor The extractor where RoughArtifacts that are created can be added to
+    * @param parser The extractor where RoughArtifacts that are created can be added to
     */
-   public void init(WordOutlineExtractor extractor);
+   public void setExtractor(IArtifactSourceParser parser);
+
+   /**
+    * Parser to use
+    * 
+    * @return parser
+    */
+   public IArtifactSourceParser getExtractor();
 
    /**
     * Opportunity to release resources. This method may be called many times on the same object.

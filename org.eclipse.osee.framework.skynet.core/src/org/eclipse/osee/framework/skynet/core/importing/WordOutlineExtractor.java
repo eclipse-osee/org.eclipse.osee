@@ -13,15 +13,15 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -64,13 +64,13 @@ public class WordOutlineExtractor extends WordExtractor {
    private boolean forcePrimaryType;
    private String paragraphStyle;
 
-   private final IWordOutlineContentHandler handler;
+   private final IArtifactSourceParserDelegate handler;
 
    public WordOutlineExtractor() throws OseeCoreException {
-      this(0, new GeneralWordOutlineHandler());
+      this(0, new WordOutlineParserDelegate());
    }
 
-   public WordOutlineExtractor(int maxExtractionDepth, IWordOutlineContentHandler handler) throws OseeCoreException {
+   public WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) throws OseeCoreException {
       if (handler == null) {
          throw new IllegalArgumentException("handler can not be null");
       }
@@ -89,15 +89,19 @@ public class WordOutlineExtractor extends WordExtractor {
       return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    }
 
-   public void discoverArtifactAndRelationData(File importFile, Branch branch) throws Exception {
+   private void handleFormatError(URI source, String message) throws OseeCoreException {
+      throw new OseeStateException(String.format("File format error - [%s]: %s", source.toASCIIString(), message));
+   }
 
-      Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));
+   public void process(URI source, Branch branch) throws Exception {
+
+      Reader reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
 
       if (Readers.forward(reader, BODY_START) == null) {
-         throwFileFormatError(importFile, "no start of body tag");
+         handleFormatError(source, "no start of body tag");
       }
 
-      handler.init(this);
+      handler.setExtractor(this);
 
       try {
          CharSequence element;
@@ -118,7 +122,7 @@ public class WordOutlineExtractor extends WordExtractor {
                // If the tag had attributes, check that it isn't empty
                if (element == PARAGRAPH_TAG_WITH_ATTRS || element == TABLE_TAG_WITH_ATTRS) {
                   if (Readers.forward(reader, (Appendable) content, ">") == null) {
-                     throwFileFormatError(importFile, "did not find expected end of tag");
+                     handleFormatError(source, "did not find expected end of tag");
                   }
                   emptyTagWithAttrs = content.toString().endsWith("/>");
                }
@@ -147,8 +151,7 @@ public class WordOutlineExtractor extends WordExtractor {
                   handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
                         content.toString(), element == PARAGRAPH_TAG, branch);
                } catch (OseeCoreException ex) {
-                  throw new OseeWrappedException(String.format("Error processing: [%s]", importFile.getAbsolutePath()),
-                        ex);
+                  throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
                }
             }
          }
@@ -156,7 +159,7 @@ public class WordOutlineExtractor extends WordExtractor {
          handler.dispose();
       }
 
-      throwFileFormatError(importFile, "did not find expected end of body tag");
+      handleFormatError(source, "did not find expected end of body tag");
    }
 
    private void parseContentDetails(CharSequence content, Stack<String> parentElementNames) {
@@ -219,10 +222,6 @@ public class WordOutlineExtractor extends WordExtractor {
          int startIndex = index + attributeName.length();
          return attributeStorage.substring(startIndex, attributeStorage.indexOf('"', startIndex + 1)).trim();
       }
-   }
-
-   private static final void throwFileFormatError(File file, String msg) throws OseeArgumentException {
-      throw new OseeArgumentException("File " + file.getName() + " not of expected format: " + msg);
    }
 
    private boolean isListStyle(Stack<String> parentElementNames) {

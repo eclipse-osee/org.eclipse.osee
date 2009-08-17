@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -21,23 +22,34 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 /**
  * @author Robert A. Fisher
  */
-public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
+public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDelegate {
+
+   private static final String WORD_OUTLINE_PARSER_NAME = "Word Outline";
    private static final Pattern listPrKiller =
          Pattern.compile("<((\\w+:)?listPr)(\\s+.*?)((/>)|(>(.*?)</\\1>))",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private HashMap<String, RoughArtifact> duplicateCatcher;
+   private Map<String, RoughArtifact> duplicateCatcher;
 
    private RoughArtifact previousNamedArtifact;
    private RoughArtifact roughArtifact;
    private StringBuilder wordFormattedContent;
    private String lastHeaderNumber;
 
+   public WordOutlineParserDelegate() {
+      super();
+   }
+
+   @Override
+   public boolean isApplicable(IArtifactSourceParser parser) {
+      return parser != null && WORD_OUTLINE_PARSER_NAME.equals(parser.getName());
+   }
+
    /**
     * Subclasses may extend this method to allocate resources
     */
    @Override
-   public void init(WordOutlineExtractor extractor) {
-      super.init(extractor);
+   public void setExtractor(IArtifactSourceParser extractor) {
+      super.setExtractor(extractor);
 
       duplicateCatcher = new HashMap<String, RoughArtifact>();
       lastHeaderNumber = null;
@@ -80,7 +92,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       }
    }
 
-   public void setContent() {
+   private void setContent() {
       if (roughArtifact != null) {
          roughArtifact.addAttribute(WordAttribute.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
          wordFormattedContent.setLength(0);
@@ -103,7 +115,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
          duplicateCatcher.put(parNumber, roughArtifact);
 
-         extractor.addRoughArtifact(roughArtifact);
+         getExtractor().addRoughArtifact(roughArtifact);
          roughArtifact.setSectionNumber(parNumber);
 
          roughArtifact.addAttribute("Imported Paragraph Number", parNumber);
@@ -114,5 +126,10 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
                "Paragraph %s found more than once following \"%s\" which is a duplicate of %s", parNumber,
                previousNamedArtifact.getName(), duplicateArtifact.getName()));
       }
+   }
+
+   @Override
+   public String getName() {
+      return "General Outline Documents";
    }
 }

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Boeing (BOEING SHARED SERVICES GROUP) -->
 <?eclipse version="3.0"?>
 <plugin
 >
 	<extension-point id="ArtifactRenderer" name="ArtifactRenderer" schema="schema/ArtifactRenderer.exsd"/>
 	<extension-point id="BlamOperation" name="BlamOperation" schema="schema/BlamOperation.exsd"/>
 	<extension-point id="WordMlProducer" name="WordMlProducer" schema="schema/WordMlProducer.exsd"/>
-	<extension-point id="WordOutlineContentHandler" name="WordOutlineContentHandler" schema="schema/WordOutlineContentHandler.exsd"/>
 	<extension-point id="ArtifactRendererTemplate" name="ArtifactRendererTemplate" schema="schema/ArtifactRendererTemplate.exsd"/>
 	<extension-point id="OseeDictionary" name="OseeDictionary" schema="schema/OseeDictionary.exsd"/>
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="schema/XWidgetProvider.exsd"/>
@@ -15,7 +13,6 @@
  <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
- <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
  
@@ -269,9 +266,6 @@
         templateFile="support/templates/PREVIEW_ALL_RECURSE.xml"
         templateName="Preview Recurse">
   </Template>
-	</extension>
-	<extension point="org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler">
-		<Handler class="org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler" id="org.eclipse.osee.framework.ui.skynet.GeneralWordOutlineHandler" name="General Outline Documents"/>
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.OseeDictionary">
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
@@ -1663,36 +1657,7 @@
            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeDeletedAttributes">
      </Operation>
   </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
-     <ArtifactExtractor
-           class="org.eclipse.osee.framework.ui.skynet.Import.ExcelArtifactExtractor">
-     </ArtifactExtractor>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
-     <ArtifactExtractor
-           class="org.eclipse.osee.framework.ui.skynet.Import.NativeDocumentExtractor">
-     </ArtifactExtractor>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
-     <ArtifactExtractor
-           class="org.eclipse.osee.framework.ui.skynet.Import.WholeWordDocumentExtractor">
-     </ArtifactExtractor>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
-     <ArtifactExtractor
-           class="org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor">
-     </ArtifactExtractor>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.ArtifactExtractor">
-     <ArtifactExtractor
-           class="org.eclipse.osee.framework.ui.skynet.Import.XmlDataExtractor">
-     </ArtifactExtractor>
-  </extension>
+
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation

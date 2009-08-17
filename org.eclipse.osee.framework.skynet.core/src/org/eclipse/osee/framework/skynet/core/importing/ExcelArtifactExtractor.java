@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,11 +128,11 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
       return null;
    }
 
-   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws Exception {
+   public void process(URI source, Branch branch) throws Exception {
       this.branch = branch;
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(this, true));
-      xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+      xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 
    public void processEmptyRow() {

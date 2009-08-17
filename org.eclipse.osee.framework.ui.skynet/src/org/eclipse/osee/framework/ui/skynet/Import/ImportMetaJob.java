@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.io.ExtensionFilter;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.importing.DbOseeDataTypeProcessor;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -27,12 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Jeff C. Phillips
  */
 public class ImportMetaJob extends Job {
-   private final Branch branch;
    private final File file;
 
-   public ImportMetaJob(File file, Branch branch) {
+   public ImportMetaJob(File file) {
       super("Importing OSEE Types");
-      this.branch = branch;
       this.file = file;
    }
 

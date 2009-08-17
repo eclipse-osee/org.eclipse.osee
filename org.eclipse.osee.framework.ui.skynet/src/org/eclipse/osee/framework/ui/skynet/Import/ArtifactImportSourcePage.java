@@ -7,9 +7,9 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactImportContributionManager;
-import org.eclipse.osee.framework.skynet.core.importing.IWordOutlineContentHandler;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -35,14 +35,14 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    private File selectedResource;
    private CCombo combo;
    private List handlerList;
-   private final ArtifactImportContributionManager importContributionManager;
+   private final ArtifactSourceParserContributionManager importContributionManager;
 
    protected ArtifactImportSourcePage() {
       super(PAGE_NAME);
       setTitle("Import artifacts into OSEE");
       setDescription("Import artifacts into Define");
 
-      importContributionManager = new ArtifactImportContributionManager();
+      importContributionManager = new ArtifactSourceParserContributionManager();
    }
 
    @Override
@@ -96,10 +96,10 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       handlerList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       handlerList.setVisible(false);
 
-      for (ArtifactExtractor artifactExtractor : importContributionManager.getArtifactSourceParser()) {
-         String extractorName = artifactExtractor.getName();
+      for (IArtifactSourceParser sourceParser : importContributionManager.getArtifactSourceParser()) {
+         String extractorName = sourceParser.getName();
          combo.add(extractorName);
-         combo.setData(extractorName, artifactExtractor);
+         combo.setData(extractorName, sourceParser);
          combo.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -107,29 +107,28 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
                handleComboSelection();
             }
          });
-
-         if ("Word Outline".equals(extractorName)) {
-            combo.select(combo.getItems().length - 1);
-            handleComboSelection();
-         }
       }
+      combo.select(0);
+      handleComboSelection();
    }
 
    private void handleComboSelection() {
       String key = combo.getItem(combo.getSelectionIndex());
       Object object = combo.getData(key);
-      if (object instanceof ArtifactExtractor) {
-         ArtifactExtractor extractor = (ArtifactExtractor) object;
-         // TODO add a floating tip text similar to Java doc
-         combo.setToolTipText(extractor.getDescription());
+      IArtifactSourceParser sourceParser = null;
+      if (object instanceof IArtifactSourceParser) {
+         sourceParser = (IArtifactSourceParser) object;
+         // TODO add a floating tip text similar to Java doc/Content Assist
+         combo.setToolTipText(sourceParser.getDescription());
       } else {
          combo.setToolTipText("Select a source parser");
       }
 
-      Collection<IWordOutlineContentHandler> handlers = importContributionManager.getHandler(key);
-      if (!handlers.isEmpty()) {
+      Collection<IArtifactSourceParserDelegate> delegates =
+            importContributionManager.getArtifactSourceParserDelegate(sourceParser);
+      if (!delegates.isEmpty()) {
          handlerList.removeAll();
-         for (IWordOutlineContentHandler handler : handlers) {
+         for (IArtifactSourceParserDelegate handler : delegates) {
             handlerList.add(handler.getName());
             handlerList.setData(handler.getName(), handler);
          }

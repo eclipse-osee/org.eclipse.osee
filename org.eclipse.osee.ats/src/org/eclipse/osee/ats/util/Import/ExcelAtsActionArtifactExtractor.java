@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.Import;
 
-import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -93,11 +92,12 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       System.out.println("Processing Row " + rowNum);
 
       boolean fullRow = false;
-      for (int i = 0; i < cols.length; i++)
+      for (int i = 0; i < cols.length; i++) {
          if (cols[i] != null && !cols[i].equals("")) {
             fullRow = true;
             break;
          }
+      }
       if (!fullRow) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
          return;
@@ -109,33 +109,38 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          if (headerRow[i] == null) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
          } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
-            if (cols[i].equals(""))
+            if (cols[i].equals("")) {
                return;
+            }
             aData.title = cols[i];
          } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
             aData.priorityStr = cols[i];
          } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
-            aData.version = (cols[i] == null ? "" : cols[i]);
+            aData.version = cols[i] == null ? "" : cols[i];
          } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
             aData.changeType = cols[i];
          } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
-            aData.desc = (cols[i] == null ? "" : cols[i]);
+            aData.desc = cols[i] == null ? "" : cols[i];
          } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
             for (String str : cols[i].split(";")) {
-               if (!str.equals(""))
+               if (!str.equals("")) {
                   aData.userComms.add(str);
+               }
             }
          } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
             for (String str : cols[i].split(";")) {
-               if (!str.equals(""))
+               if (!str.equals("")) {
                   aData.actionableItems.add(str);
+               }
             }
          } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
-            if (cols[i] != null)
+            if (cols[i] != null) {
                for (String str : cols[i].split(";")) {
-                  if (!str.equals(""))
+                  if (!str.equals("")) {
                      aData.assigneeStrs.add(str);
+                  }
                }
+            }
          } else {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
          }
@@ -149,11 +154,12 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       int rowNum = 1; // Header is row 1
       for (ActionData aData : actionDatas) {
          rowNum++;
-         if (aData.title.equals(""))
+         if (aData.title.equals("")) {
             rd.logError("Row " + rowNum + "; Invalid Title");
-         if (aData.actionableItems.size() == 0)
+         }
+         if (aData.actionableItems.size() == 0) {
             rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
-         else {
+         } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
                   if (AtsCacheManager.getArtifactsByName(actionableItemName, ActionableItemArtifact.class).size() > 0) {
@@ -180,10 +186,11 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
                User user = UserManager.getUserByName(assignee);
-               if (user == null)
+               if (user == null) {
                   rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
-               else
+               } else {
                   aData.assignees.add(user);
+               }
             }
          }
       }
@@ -208,8 +215,9 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             if (!aData.version.equals("")) {
                VersionArtifact verArt = AtsCacheManager.getSoleArtifactByName(aData.version, VersionArtifact.class);
 
-               for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
+               for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                   verArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team);
+               }
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -234,12 +242,12 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       }
    }
 
-   public void discoverArtifactAndRelationData(File artifactsFile, Branch branch) throws OseeCoreException {
+   public void process(URI source, Branch branch) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);
          xmlReader.setContentHandler(excelHandler);
-         xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }

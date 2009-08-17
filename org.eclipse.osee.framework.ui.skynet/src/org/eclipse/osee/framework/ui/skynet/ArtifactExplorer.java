@@ -208,8 +208,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
       try {
          ArtifactExplorer explorer =
-               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(), IWorkbenchPage.VIEW_ACTIVATE);
          explorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
       } catch (Exception ex) {
@@ -251,7 +250,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       stackComposite.layout();
       stackComposite.getParent().layout();
    }
-
 
    @Override
    public void createPartControl(Composite parent) {
@@ -874,7 +872,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             while (iterator.hasNext()) {
                try {
                   Artifact object = (Artifact) iterator.next();
-                  if ((new GlobalMenuPermissions(object)).isLocked()) {
+                  if (new GlobalMenuPermissions(object).isLocked()) {
                      AccessControlManager.unLockObject(object, UserManager.getUser());
                   } else {
                      AccessControlManager.lockObject(object, UserManager.getUser());
@@ -1043,10 +1041,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       public void add(MenuItem item) {
          menuItemMap.put(Artifact.class, item);
-      }
-
-      public void add(MenuItem item, Class<? extends Artifact> artifactClass) {
-         menuItemMap.put(artifactClass, item);
       }
 
       public void menuHidden(MenuEvent e) {
