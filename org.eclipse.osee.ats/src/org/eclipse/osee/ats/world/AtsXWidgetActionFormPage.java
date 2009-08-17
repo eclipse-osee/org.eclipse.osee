@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -62,6 +63,8 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       super(editor, id, name);
       this.toolkit = editor.getToolkit();
    }
+
+   public abstract Result isResearchSearchValid() throws OseeCoreException;
 
    public abstract String getXWidgetsXml() throws OseeCoreException;
 

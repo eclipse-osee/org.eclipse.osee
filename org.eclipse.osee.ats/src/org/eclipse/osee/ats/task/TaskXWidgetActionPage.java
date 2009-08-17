@@ -72,7 +72,17 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage {
       return null;
    }
 
+   @Override
+   public Result isResearchSearchValid() throws OseeCoreException {
+      return taskEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
+   }
+
    public void reSearch() throws OseeCoreException {
+      Result result = isResearchSearchValid();
+      if (result.isFalse()) {
+         result.popup();
+         return;
+      }
       taskEditor.handleRefreshAction();
    }
 

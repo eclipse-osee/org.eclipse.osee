@@ -83,7 +83,17 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       return null;
    }
 
+   @Override
+   public Result isResearchSearchValid() throws OseeCoreException {
+      return worldEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
+   }
+
    public void reSearch() throws OseeCoreException {
+      Result result = isResearchSearchValid();
+      if (result.isFalse()) {
+         result.popup();
+         return;
+      }
       reSearch(false);
    }
 
