@@ -320,13 +320,13 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = ArtifactCache.getByTextId(key, branch);
             if (folder == null) {
                folder = ArtifactQuery.getArtifactFromTypeAndName("Folder", folderName, branch);
-               ArtifactCache.putByTextId(key, folder);
+               ArtifactCache.cacheByTextId(key, folder);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(DefinePlugin.class, Level.INFO, "Created " + folderName + " because was not found.");
             folder = ArtifactTypeManager.addArtifact("Folder", branch, folderName);
             folder.persistAttributes(transaction);
-            ArtifactCache.putByTextId(key, folder);
+            ArtifactCache.cacheByTextId(key, folder);
          }
          return folder;
       }
