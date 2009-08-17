@@ -18,15 +18,15 @@ Require-Bundle: org.apache.commons.lang,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
  org.eclipse.ui.forms,
- org.junit4
+ org.junit4,
+ org.eclipse.help;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.views.property,
  org.eclipse.osee.framework.ui.plugin.workspace
-Import-Package: org.eclipse.help,
- org.eclipse.jdt.core,
+Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
