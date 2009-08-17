@@ -12,42 +12,36 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class BlamEditorInput extends BaseArtifactEditorInput {
+public class BlamEditorInput implements IEditorInput {
+
+   private final AbstractBlam blamOperation;
 
    public BlamEditorInput(AbstractBlam blamOperation) throws OseeCoreException {
-      this(BlamWorkflow.getOrCreateBlamWorkflow(blamOperation));
-   }
-
-   public BlamEditorInput(Artifact artifact) {
-      super(artifact);
+      this.blamOperation = blamOperation;
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BlamEditorInput) {
-         return super.equals(obj);
+         return ((BlamEditorInput) obj).getBlamOperation().equals(getBlamOperation());
       }
       return false;
    }
 
    @Override
    public String getName() {
-      if (getArtifact() == null) {
-         return "No Artifact Input Provided";
-      }
-      return getArtifact().getName() + " BLAM";
+      return blamOperation.getName() + " BLAM";
    }
 
-   @Override
    public Image getImage() {
       return ImageManager.getImage(FrameworkImage.BLAM);
    }
@@ -57,18 +51,29 @@ public class BlamEditorInput extends BaseArtifactEditorInput {
       return ImageManager.getImageDescriptor(FrameworkImage.BLAM);
    }
 
+   public AbstractBlam getBlamOperation() {
+      return blamOperation;
+   }
+
    @Override
-   @SuppressWarnings("unchecked")
-   public Object getAdapter(Class adapter) {
-      if (Artifact.class.equals(adapter) || BlamWorkflow.class.equals(adapter)) {
-         return getArtifact();
-      }
+   public boolean exists() {
+      return false;
+   }
+
+   @Override
+   public IPersistableElement getPersistable() {
       return null;
    }
 
    @Override
-   public BlamWorkflow getArtifact() {
-      return (BlamWorkflow) super.getArtifact();
+   public String getToolTipText() {
+      return "";
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Object getAdapter(Class arg0) {
+      return null;
    }
 
 }

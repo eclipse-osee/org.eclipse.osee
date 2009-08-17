@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -23,14 +24,15 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BlamEditor extends AbstractArtifactEditor {
+public class BlamEditor extends FormEditor implements IDirtiableEditor {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.blam.BlamEditor";
 
    private BlamEditorActionBarContributor actionBarContributor;
@@ -68,7 +70,6 @@ public class BlamEditor extends AbstractArtifactEditor {
       try {
          overviewPage = new BlamOverviewPage(this);
          addPage(overviewPage);
-         addPage(new WorkflowDataPage(this, overviewPage));
       } catch (PartInitException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -96,15 +97,11 @@ public class BlamEditor extends AbstractArtifactEditor {
       try {
          IOperation blamOperation =
                new ExecuteBlamOperation(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
-                     getEditorInput().getArtifact().getOperations());
+                     getEditorInput().getBlamOperation());
          Operations.executeAsJob(blamOperation, true, Job.LONG, new BlamEditorExecutionAdapter());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   public static void edit(BlamWorkflow blamWorkflow) {
-      BlamEditor.edit(new BlamEditorInput(blamWorkflow));
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
@@ -147,5 +144,22 @@ public class BlamEditor extends AbstractArtifactEditor {
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
       }
+   }
+
+   @Override
+   public void doSave(IProgressMonitor monitor) {
+   }
+
+   @Override
+   public void doSaveAs() {
+   }
+
+   @Override
+   public boolean isSaveAsAllowed() {
+      return false;
+   }
+
+   @Override
+   public void onDirtied() {
    }
 }

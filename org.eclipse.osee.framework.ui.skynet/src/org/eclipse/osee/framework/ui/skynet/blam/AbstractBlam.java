@@ -13,19 +13,24 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
+import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -78,6 +83,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       if (Strings.isValid(value)) {
          print(value + "\n");
       }
+   }
+
+   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
+      return XWidgetParser.extractWorkAttributes(new DynamicXWidgetLayout(), getXWidgetsXml());
    }
 
    @Override

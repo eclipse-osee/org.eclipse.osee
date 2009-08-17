@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,27 +22,21 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Ryan D. Brooks
  */
 public class ExecuteBlamOperation extends AbstractOperation {
-   private final List<AbstractBlam> operations;
+   private final AbstractBlam blamOperation;
    private final VariableMap variableMap;
    private final Appendable output;
 
-   public ExecuteBlamOperation(String name, Appendable output, VariableMap variableMap, List<AbstractBlam> operations) {
+   public ExecuteBlamOperation(String name, Appendable output, VariableMap variableMap, AbstractBlam blamOperation) {
       super(name, SkynetGuiPlugin.PLUGIN_ID);
       this.variableMap = variableMap;
-      this.operations = operations;
+      this.blamOperation = blamOperation;
       this.output = output;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (operations.isEmpty()) {
-         throw new OseeStateException("No operations were found for this workflow");
-      }
-      double workPercentage = 1 / operations.size();
-      for (AbstractBlam operation : operations) {
-         operation.setOutput(output);
-         doSubWork(new InternalOperationAdapter(operation), monitor, workPercentage);
-      }
+      blamOperation.setOutput(output);
+      doSubWork(new InternalOperationAdapter(blamOperation), monitor, 1);
    }
 
    @Override

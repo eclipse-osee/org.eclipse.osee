@@ -30,12 +30,6 @@ public class BlamUsageSection extends BaseBlamSection {
 
    private FormText formText;
 
-   /**
-    * @param editor
-    * @param parent
-    * @param toolkit
-    * @param style
-    */
    public BlamUsageSection(BlamEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
@@ -70,7 +64,7 @@ public class BlamUsageSection extends BaseBlamSection {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            String data = getEditorInput().getArtifact().getDescriptionUsage();
+            String data = getEditorInput().getBlamOperation().getDescriptionUsage();
             boolean parseTags = false;
             if (data.startsWith("<form>")) {
                parseTags = true;
@@ -81,6 +75,7 @@ public class BlamUsageSection extends BaseBlamSection {
          }
          getManagedForm().reflow(true);
       }
+
    }
 
    @Override

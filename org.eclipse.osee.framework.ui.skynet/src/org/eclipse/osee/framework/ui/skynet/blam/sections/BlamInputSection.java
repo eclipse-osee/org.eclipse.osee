@@ -99,8 +99,7 @@ public class BlamInputSection extends BaseBlamSection {
       try {
          List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
          WorkPage workPage =
-               new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(),
-                     getEditorInput().getArtifact().getSoleOperation());
+               new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(), getEditorInput().getBlamOperation());
          workPage.createBody(getManagedForm(), parent, null, new XModifiedListener() {
 
             @Override
@@ -116,7 +115,7 @@ public class BlamInputSection extends BaseBlamSection {
 
    private List<DynamicXWidgetLayoutData> getDynamicXWidgetLayouts() throws Exception {
       List<DynamicXWidgetLayoutData> itemsToReturn = new ArrayList<DynamicXWidgetLayoutData>();
-      itemsToReturn.addAll(getEditorInput().getArtifact().getLayoutDatas());
+      itemsToReturn.addAll(getEditorInput().getBlamOperation().getLayoutDatas());
       itemsToReturn.addAll(dynamicInputLayouts);
       return itemsToReturn;
    }
