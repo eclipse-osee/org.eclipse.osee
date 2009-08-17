@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.Import;
+package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -40,7 +40,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    private ArtifactType primaryDescriptor;
    private boolean importingRelations;
    private int rowCount;
-   private DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
+   private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
          new DoubleKeyHashMap<String, Integer, RoughArtifact>();
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
    private final Matcher guidMatcher = guidPattern.matcher("");
@@ -78,15 +78,19 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          }
 
          if (guida == null || guidb == null) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+            OseeLog.log(Activator.class, Level.WARNING,
                   "we failed to add a relation because at least on of its guids are null");
          }
-         addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
-               Integer.parseInt(row[4])));
+         // TODO Add relation order
+         //         int aOrder = Integer.parseInt(row[3]);
+         //         int bOrder = Integer.parseInt(row[4]);
+         addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
       } else {
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
          for (int i = 0; i < row.length; i++) {
-            if (headerRow[i] == null) continue;
+            if (headerRow[i] == null) {
+               continue;
+            }
             if (headerRow[i].equalsIgnoreCase("Outline Number")) {
                if (row[i] == null) {
                   throw new IllegalArgumentException("Outline Number must not be blank");
@@ -164,7 +168,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
    public FileFilter getFileFilter() {
       return new FileFilter() {
          public boolean accept(File file) {
-            return file.isDirectory() || (file.isFile() && file.getName().endsWith(".xml"));
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
          }
       };
    }

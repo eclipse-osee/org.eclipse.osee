@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.Import;
+package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
-   private final ArrayList<RoughArtifact> roughArtifacts = new ArrayList<RoughArtifact>();
-   private final ArrayList<RoughRelation> roughRelations = new ArrayList<RoughRelation>();
+
+   private final ArrayList<RoughArtifact> roughArtifacts;
+   private final ArrayList<RoughRelation> roughRelations;
+
+   protected AbstractArtifactExtractor() {
+      roughArtifacts = new ArrayList<RoughArtifact>();
+      roughRelations = new ArrayList<RoughRelation>();
+   }
 
    public List<RoughArtifact> getRoughArtifacts() {
       return roughArtifacts;

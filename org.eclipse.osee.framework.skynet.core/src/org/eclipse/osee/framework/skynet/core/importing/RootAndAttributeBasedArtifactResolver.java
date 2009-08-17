@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.Import;
+package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,15 +17,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -118,7 +118,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
                realArtifact = candidates.iterator().next();
                roughArtifact.updateValues(realArtifact);
             } else {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+               OseeLog.log(Activator.class, Level.INFO,
                      "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
                if (createNewIfNotExist) {
                   realArtifact = super.resolve(roughArtifact);
@@ -128,7 +128,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
          return realArtifact;
       } catch (FileNotFoundException ex) {
-         throw new WrappedException(ex);
+         throw new OseeWrappedException(ex);
       }
    }
 }

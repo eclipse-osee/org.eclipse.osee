@@ -93,7 +93,6 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
       GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
       gridData.heightHint = 300;
       typeList.setLayoutData(gridData);
-
    }
 
    /**

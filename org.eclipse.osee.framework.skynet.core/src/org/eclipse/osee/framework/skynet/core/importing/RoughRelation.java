@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.Import;
+package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,30 +16,26 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Robert A. Fisher
  */
 public class RoughRelation {
-   private String relTypeName;
-   private String aGuid;
-   private String bGuid;
-   private String rationale;
-   private int aOrderValue;
-   private int bOrderValue;
+   private final String relTypeName;
+   private final String aGuid;
+   private final String bGuid;
+   private final String rationale;
 
-   public RoughRelation(String relTypeName, String aGuid, String bGuid, String rationale, int aOrderValue, int bOrderValue) {
+   public RoughRelation(String relTypeName, String aGuid, String bGuid, String rationale) {
       this.relTypeName = relTypeName;
       this.aGuid = aGuid;
       this.bGuid = bGuid;
       this.rationale = rationale;
-      this.aOrderValue = aOrderValue;
-      this.bOrderValue = bOrderValue;
    }
 
    public void makeReal(SkynetTransaction transaction, IProgressMonitor monitor) throws OseeCoreException {
@@ -48,13 +44,12 @@ public class RoughRelation {
       Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, transaction.getBranch());
 
       if (aArt == null || bArt == null) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-               "The relation of type " + relTypeName + " could not be created.");
+         OseeLog.log(Activator.class, Level.WARNING, "The relation of type " + relTypeName + " could not be created.");
          if (aArt == null) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "The artifact with guid: " + aGuid + " does not exist.");
+            OseeLog.log(Activator.class, Level.WARNING, "The artifact with guid: " + aGuid + " does not exist.");
          }
          if (bArt == null) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "The artifact with guid: " + bGuid + " does not exist.");
+            OseeLog.log(Activator.class, Level.WARNING, "The artifact with guid: " + bGuid + " does not exist.");
          }
       } else {
          try {
@@ -63,7 +58,7 @@ public class RoughRelation {
             RelationManager.addRelation(relationType, aArt, bArt, rationale);
             aArt.persistRelations(transaction);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, ex.getLocalizedMessage());
+            OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());
          }
       }
    }

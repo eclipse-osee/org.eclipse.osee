@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.handler;
+package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -17,10 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
-import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifactKind;
-import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineContentHandler;
-import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
 
 /**
  * @author Robert A. Fisher

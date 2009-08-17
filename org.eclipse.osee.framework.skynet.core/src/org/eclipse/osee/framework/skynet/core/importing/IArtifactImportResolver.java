@@ -8,13 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.Import;
+package org.eclipse.osee.framework.skynet.core.importing;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author Ryan D. Brooks
+ * Used during imports that ask for artifact re-use to resolve the Artifact to be used for a particular RoughArtifact
+ * 
+ * @author Robert A. Fisher
  */
-public abstract class WordExtractor extends AbstractArtifactExtractor {
-   protected static final String BODY_START = "<w:body>";
-   protected static final String BODY_END = "</w:body>";
+public interface IArtifactImportResolver {
+
+   public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException;
 }
