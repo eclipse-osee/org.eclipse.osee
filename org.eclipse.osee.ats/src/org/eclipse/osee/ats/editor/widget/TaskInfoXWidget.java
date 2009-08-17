@@ -107,6 +107,9 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
     */
    @Override
    public void refresh() {
+      if (managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
+         return;
+      }
       try {
          if (smaMgr.getTaskMgr().getTaskArtifacts(forStateName).size() > 0) {
             setValueText(smaMgr.getTaskMgr().getStatus(forStateName));
