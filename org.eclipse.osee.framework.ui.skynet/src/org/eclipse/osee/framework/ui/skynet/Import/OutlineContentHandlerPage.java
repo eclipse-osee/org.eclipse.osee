@@ -104,6 +104,8 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
             hasHandlers = true;
             handlerList.add(delegate.getName());
             handlerList.setData(delegate.getName(), delegate);
+         }
+         if (hasHandlers) {
             break;
          }
       }
