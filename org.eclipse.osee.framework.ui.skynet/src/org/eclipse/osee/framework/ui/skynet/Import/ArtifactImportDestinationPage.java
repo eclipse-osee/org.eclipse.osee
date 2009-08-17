@@ -80,7 +80,7 @@ public class ArtifactImportDestinationPage extends WizardDataTransferPage {
 
    private void createImportAsArtifactTypeArea(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
-      composite.setLayout(new GridLayout(1, false));
+      composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       composite.setFont(parent.getFont());
 
@@ -90,6 +90,7 @@ public class ArtifactImportDestinationPage extends WizardDataTransferPage {
       attributeTypeList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Button selectTypes = new Button(composite, SWT.PUSH);
+      selectTypes.setText("Select Type");
       selectTypes.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -118,15 +119,15 @@ public class ArtifactImportDestinationPage extends WizardDataTransferPage {
       String title = "Import as Artifact Type";
       String message = "Select what artifact type data should be imported as.";
       ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog(title, message, artifactTypes);
-      Object lastSelected = attributeTypeList.getData(attributeTypeList.getItem(0));
-      if (lastSelected != null) {
-         try {
-            dialog.setInitialSelections(ArtifactTypeManager.getType(lastSelected.toString()));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-                  "Dialog could not be initialized to the last Artifact Type selected", ex);
-         }
-      }
+      //      Object lastSelected = attributeTypeList.getData(attributeTypeList.getSItem(0));
+      //      if (lastSelected != null) {
+      //         try {
+      //            dialog.setInitialSelections(ArtifactTypeManager.getType(lastSelected.toString()));
+      //         } catch (OseeCoreException ex) {
+      //            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+      //                  "Dialog could not be initialized to the last Artifact Type selected", ex);
+      //         }
+      //      }
       int result = dialog.open();
       if (result == Window.OK) {
          ArtifactType artifactType = dialog.getSelection();

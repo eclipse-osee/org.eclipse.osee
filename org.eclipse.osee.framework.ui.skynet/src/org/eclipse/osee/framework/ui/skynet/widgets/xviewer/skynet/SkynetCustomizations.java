@@ -42,7 +42,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) throws OseeCoreException {
       this.skynetXViewerFactory = skynetXViewerFactory;
       this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserManager.getUser());
-      globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
+      globalCustomizationsArtifact = GlobalXViewerSettings.getAtsCustArtifact();
    }
 
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {

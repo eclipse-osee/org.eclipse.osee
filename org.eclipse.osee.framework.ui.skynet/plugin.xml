@@ -50,17 +50,28 @@
 	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
 			<description>
-            Import WordML documents into an existing Define project.
+            Import artifact data into OSEE.
          </description>
 		</wizard>
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ImportMetaWizard" icon="images/gears.gif" id="osee.define.artifact.Import.ImportMetaWizard" name="OSEE Types">
 			<description>
-            Import Skynet configuration information.
+            Import OSEE configuration information.
          </description>
 		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
   	</extension>
+  		<extension point="org.eclipse.ui.importWizards">
+		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.NewArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.NewImportWizard" name="New OSEE Artifacts">
+			<description>
+            Import artifact data into OSEE.
+         </description>
+		</wizard>
+		<category id="org.eclipse.osee.define.import.category" name="OSEE">
+      </category>
+  	</extension>
+  	
+  	
   <extension
         point="org.eclipse.ui.exportWizards">
      <wizard
@@ -197,9 +208,6 @@
 	<extension point="org.eclipse.ui.newWizards">
 		<wizard class="org.eclipse.osee.framework.ui.skynet.branch.RootBranchWizard" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.rootBranchWizard" name="Root Branch">
          </wizard>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-		<ArtifactFactory classname="org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory"/>
 	</extension>
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>

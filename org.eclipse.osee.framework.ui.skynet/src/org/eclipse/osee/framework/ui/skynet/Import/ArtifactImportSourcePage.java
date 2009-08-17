@@ -7,20 +7,20 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.Collection;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
 import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
@@ -33,8 +33,8 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private DirectoryOrFileSelector directoryFileSelector;
    private File selectedResource;
-   private CCombo combo;
-   private List handlerList;
+   private Combo parserCombo;
+   private Combo parserComboDelegate;
    private final ArtifactSourceParserContributionManager importContributionManager;
 
    protected ArtifactImportSourcePage() {
@@ -52,6 +52,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    @Override
    public void handleEvent(Event arg0) {
+      System.out.println(arg0);
    }
 
    @Override
@@ -89,18 +90,20 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      combo = new CCombo(composite, SWT.SINGLE | SWT.BORDER | SWT.FLAT | SWT.DROP_DOWN);
-      combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      parserCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
+      parserCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      parserCombo.addListener(SWT.Selection, this);
 
-      handlerList = new List(composite, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE);
-      handlerList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      handlerList.setVisible(false);
+      parserComboDelegate = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
+      parserComboDelegate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      parserComboDelegate.setVisible(false);
+      parserComboDelegate.addListener(SWT.Selection, this);
 
       for (IArtifactSourceParser sourceParser : importContributionManager.getArtifactSourceParser()) {
          String extractorName = sourceParser.getName();
-         combo.add(extractorName);
-         combo.setData(extractorName, sourceParser);
-         combo.addSelectionListener(new SelectionAdapter() {
+         parserCombo.add(extractorName);
+         parserCombo.setData(extractorName, sourceParser);
+         parserCombo.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -108,34 +111,65 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
             }
          });
       }
-      combo.select(0);
+      parserCombo.select(parserCombo.getItemCount() - 1);
       handleComboSelection();
    }
 
    private void handleComboSelection() {
-      String key = combo.getItem(combo.getSelectionIndex());
-      Object object = combo.getData(key);
+      String key = parserCombo.getItem(parserCombo.getSelectionIndex());
+      Object object = parserCombo.getData(key);
       IArtifactSourceParser sourceParser = null;
       if (object instanceof IArtifactSourceParser) {
          sourceParser = (IArtifactSourceParser) object;
          // TODO add a floating tip text similar to Java doc/Content Assist
-         combo.setToolTipText(sourceParser.getDescription());
+         parserCombo.setToolTipText(sourceParser.getDescription());
       } else {
-         combo.setToolTipText("Select a source parser");
+         parserCombo.setToolTipText("Select a source parser");
       }
 
       Collection<IArtifactSourceParserDelegate> delegates =
             importContributionManager.getArtifactSourceParserDelegate(sourceParser);
       if (!delegates.isEmpty()) {
-         handlerList.removeAll();
+         parserComboDelegate.removeAll();
          for (IArtifactSourceParserDelegate handler : delegates) {
-            handlerList.add(handler.getName());
-            handlerList.setData(handler.getName(), handler);
+            parserComboDelegate.add(handler.getName());
+            parserComboDelegate.setData(handler.getName(), handler);
          }
-         handlerList.setVisible(true);
+         parserComboDelegate.setVisible(true);
       } else {
-         handlerList.setVisible(false);
+         parserComboDelegate.setVisible(false);
       }
-      handlerList.getParent().layout();
+      parserComboDelegate.getParent().layout();
+   }
+
+   @Override
+   protected void restoreWidgetValues() {
+      super.restoreWidgetValues();
+      IDialogSettings settings = getDialogSettings();
+      if (settings != null) {
+         //         settings.get(arg0)
+      }
+   }
+
+   @Override
+   protected void saveWidgetValues() {
+      super.saveWidgetValues();
+      IDialogSettings settings = getDialogSettings();
+      if (settings != null) {
+
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
+    */
+   @Override
+   public boolean isPageComplete() {
+      boolean result = directoryFileSelector.getFile() != null;
+      result &= parserCombo.getSelectionIndex() != -1;
+      if (parserComboDelegate.isVisible()) {
+         result &= parserComboDelegate.getSelectionIndex() != -1;
+      }
+      return result && super.isPageComplete();
    }
 }

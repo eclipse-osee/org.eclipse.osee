@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.GlobalXViewerSettings;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +39,7 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
       GlobalPreferences.createGlobalPreferencesArtifact(transaction);
 
       // Create XViewer Customization artifact that lives on common branch
-      XViewerCustomizationArtifact.getAtsCustArtifactOrCreate(true, transaction);
+      GlobalXViewerSettings.getAtsCustArtifactOrCreate(true, transaction);
       transaction.execute();
    }
 
