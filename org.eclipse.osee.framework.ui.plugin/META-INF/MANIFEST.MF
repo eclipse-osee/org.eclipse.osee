@@ -18,7 +18,8 @@ Require-Bundle: org.apache.commons.lang,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
  org.eclipse.ui.forms,
- org.junit4
+ org.junit4,
+ org.eclipse.help;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
