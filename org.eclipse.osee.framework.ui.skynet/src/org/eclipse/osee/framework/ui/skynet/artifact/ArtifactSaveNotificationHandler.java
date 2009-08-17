@@ -30,12 +30,15 @@ import org.eclipse.ui.IWorkbenchListener;
  */
 public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
 
+   public static boolean noPopUp = false;
+
    @Override
    public void postShutdown(IWorkbench arg0) {
    }
 
    @Override
    public boolean preShutdown(IWorkbench arg0, boolean arg1) {
+      if (noPopUp) return true;
       OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Verifying Artifact Persistence");
       try {
          Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
@@ -71,5 +74,10 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       }
 
       return false;
+   }
+
+   public static void setNoPopUp(boolean noPopUp) {
+      // mainly for testing purposes
+      ArtifactSaveNotificationHandler.noPopUp = noPopUp;
    }
 }
