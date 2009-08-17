@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.GeneralWordOutlineHandler;
+import org.eclipse.osee.framework.skynet.core.importing.WordOutlineParserDelegate;
 import org.eclipse.osee.framework.skynet.core.importing.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.WordOutlineExtractor;
@@ -452,7 +452,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       IArtifactImportResolver artifactResolver =
             new NewArtifactImportResolver(ArtifactTypeManager.getType(requirementArtifactName),
                   ArtifactTypeManager.getType("Heading"));
-      ArtifactExtractor extractor = new WordOutlineExtractor(0, new GeneralWordOutlineHandler());
+      ArtifactExtractor extractor = new WordOutlineExtractor(0, new WordOutlineParserDelegate());
       new ArtifactImportOperation(file, systemReq, extractor, branch, artifactResolver).run(new NullProgressMonitor());
 
       // Validate that something was imported
