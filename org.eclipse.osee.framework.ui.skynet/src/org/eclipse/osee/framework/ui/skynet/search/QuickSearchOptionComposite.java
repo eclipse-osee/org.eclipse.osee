@@ -33,11 +33,11 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.HidingComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -183,7 +183,7 @@ public class QuickSearchOptionComposite extends Composite {
          mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       } else if (option.equals(SearchOption.All_Match_Locations.asLabel()) || option.equals(SearchOption.Case_Sensitive.asLabel())) {
          if (wordOrderComposite == null) {
-            wordOrderComposite = new InvisibleComposite(parent, SWT.NONE);
+            wordOrderComposite = new HidingComposite(parent, SWT.NONE);
             GridLayout layout = new GridLayout();
             layout.marginLeft = 15;
             wordOrderComposite.setLayout(layout);
@@ -524,19 +524,4 @@ public class QuickSearchOptionComposite extends Composite {
       }
    }
 
-   private final class InvisibleComposite extends Composite {
-
-      public InvisibleComposite(Composite parent, int style) {
-         super(parent, style);
-      }
-
-      @Override
-      public Point computeSize(int wHint, int hHint, boolean changed) {
-         if (!isVisible()) {
-            return new Point(0, 0);
-         } else {
-            return super.computeSize(wHint, hHint, changed);
-         }
-      }
-   }
 }
