@@ -53,7 +53,7 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
    }
 
    private void determineParentChildRelationsFor(RoughArtifact roughReq) {
-      // find all children and then save then by their order
+      // find all children and then save them in order
       for (RoughArtifact otherRoughReq : roughArtifacts) {
          if (roughReq != otherRoughReq) { // don't compare to self
             if (roughReq.isChild(otherRoughReq)) {
