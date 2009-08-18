@@ -51,7 +51,7 @@ import org.eclipse.ui.PlatformUI;
 public class OseeClientsTab {
 
    private final User whoAmI;
-   private final ArrayList<User> users;
+   private final List<User> users;
    private CheckboxTreeViewer peopleCheckboxTreeViewer;
    private Composite mainComposite;
    private Text text;

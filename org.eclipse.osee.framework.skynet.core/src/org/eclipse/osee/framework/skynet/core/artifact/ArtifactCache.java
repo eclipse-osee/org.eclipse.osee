@@ -16,14 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Ryan D. Brooks
@@ -55,30 +53,11 @@ public class ArtifactCache {
    private ArtifactCache() {
    }
 
-   @SuppressWarnings("unchecked")
-   public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
-      List<A> arts = new ArrayList<A>();
-      for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
-         Artifact art = entry.getValue();
-         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getName().equals(name)) {
-            arts.add((A) art);
-         }
-      }
-      return arts;
-   }
-
-   @SuppressWarnings("unchecked")
-   public static <A> List<A> getArtifactsByActive(Active active, Class<A> clazz) {
-      List<A> arts = new ArrayList<A>();
-      for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
-         Artifact art = entry.getValue();
-         try {
-            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid("ats.Active") && art.getSoleAttributeValue(
-                  "ats.Active", false)) {
-               arts.add((A) art);
-            }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
+      List<Artifact> arts = new ArrayList<Artifact>();
+      for (Artifact artifact : getArtifactsByType(artifactType)) {
+         if (artifact.getName().equals(name)) {
+            arts.add(artifact);
          }
       }
       return arts;
@@ -192,6 +171,10 @@ public class ArtifactCache {
          items.addAll(cachedItems);
       }
       return items;
+   }
+
+   public static List<Artifact> getArtifactsByType(ArtifactType artifactType, Active active) throws OseeCoreException {
+      return Artifacts.getActive(getArtifactsByType(artifactType), active, null);
    }
 
    /**

@@ -21,12 +21,13 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -65,10 +66,8 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
-      if (teamDef == null)
-         return;
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName()))
-         return;
+      if (teamDef == null) return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       PublishReportJob job = new PublishReportJob(teamDef);
       job.setUser(true);
       job.setPriority(Job.LONG);
@@ -76,14 +75,14 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
-      if (teamDef != null)
-         return teamDef;
+      if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
             TeamDefinitionArtifact teamDef =
-                  AtsCacheManager.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
-            if (teamDef != null)
-               return teamDef;
+                  (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
+                        ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName);
+
+            if (teamDef != null) return teamDef;
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }

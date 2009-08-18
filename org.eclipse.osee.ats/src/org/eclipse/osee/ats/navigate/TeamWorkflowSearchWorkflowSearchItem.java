@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -213,7 +212,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
+   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedUsers) {
       if (teamCombo != null) {
          teamCombo.setSelectedTeamDefs(selectedUsers);
          teamCombo.notifyXModifiedListeners();

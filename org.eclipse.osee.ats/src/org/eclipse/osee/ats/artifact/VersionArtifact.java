@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -176,6 +177,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
     * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
-      return AtsCacheManager.getArtifactsByName(name, VersionArtifact.class).iterator().next();
+      return (VersionArtifact) AtsCacheManager.getArtifactsByName(
+            ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME), name).iterator().next();
    }
 }

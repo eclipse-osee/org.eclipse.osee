@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.importing.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -162,7 +163,8 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  if (AtsCacheManager.getArtifactsByName(actionableItemName, ActionableItemArtifact.class).size() > 0) {
+                  if (AtsCacheManager.getArtifactsByName(
+                        ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionableItemName).size() > 0) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   }
                } catch (Exception ex) {
@@ -173,7 +175,8 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          }
          if (!aData.version.equals("")) {
             try {
-               if (AtsCacheManager.getSoleArtifactByName(aData.version, VersionArtifact.class) == null) {
+               if (AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME),
+                     aData.version) == null) {
                   rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
                }
             } catch (Exception ex) {
@@ -213,7 +216,9 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                         ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
-               VersionArtifact verArt = AtsCacheManager.getSoleArtifactByName(aData.version, VersionArtifact.class);
+               VersionArtifact verArt =
+                     (VersionArtifact) AtsCacheManager.getSoleArtifactByName(
+                           ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME), aData.version);
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                   verArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team);

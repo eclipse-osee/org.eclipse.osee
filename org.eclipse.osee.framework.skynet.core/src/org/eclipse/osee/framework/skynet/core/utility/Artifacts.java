@@ -14,9 +14,12 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -66,6 +69,43 @@ public final class Artifacts {
 
    public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws OseeCoreException {
       persistInTransaction(artifacts.toArray(new Artifact[artifacts.size()]));
+   }
+
+   /**
+    * @param <A>
+    * @param artifacts to iterate through
+    * @param active state to validate against; Both will return all artifacts matching type
+    * @param clazz type of artifacts to consider; null for all
+    * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
+    *         value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" ==
+    *         false.
+    */
+   @SuppressWarnings("unchecked")
+   public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
+      List<A> results = new ArrayList<A>();
+      Collection<? extends Artifact> artsOfClass =
+            clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
+      for (Artifact art : artsOfClass) {
+         if (art.isAttributeTypeValid("Active") || art.isAttributeTypeValid("ats.Active")) {
+            if (active == Active.Both) {
+               results.add((A) art);
+            } else {
+               // Is Active unless otherwise specified
+               boolean attributeActive = false;
+               if (art.isAttributeTypeValid("Active")) {
+                  attributeActive = ((A) art).getSoleAttributeValue("Active", false);
+               } else {
+                  attributeActive = ((A) art).getSoleAttributeValue("ats.Active", false);
+               }
+               if (active == Active.Active && attributeActive) {
+                  results.add((A) art);
+               } else if (active == Active.InActive && !attributeActive) {
+                  results.add((A) art);
+               }
+            }
+         }
+      }
+      return results;
    }
 
    public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {

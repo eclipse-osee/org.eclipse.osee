@@ -25,10 +25,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
@@ -83,8 +84,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          return actionItemNames;
       else if (actionItems != null)
          return Artifacts.artNames(actionItems);
-      else if (selectedActionItems != null)
-         return Artifacts.artNames(selectedActionItems);
+      else if (selectedActionItems != null) return Artifacts.artNames(selectedActionItems);
       return new ArrayList<String>();
    }
 
@@ -98,7 +98,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia =
-                  AtsCacheManager.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
+                  (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(
+                        ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionItemName);
             if (aia != null) {
                actionItems.add(aia);
             }
@@ -163,12 +164,9 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (actionItemNames != null)
-         return;
-      if (actionItems != null)
-         return;
-      if (searchType == SearchType.ReSearch && selectedActionItems != null)
-         return;
+      if (actionItemNames != null) return;
+      if (actionItems != null) return;
+      if (searchType == SearchType.ReSearch && selectedActionItems != null) return;
       ActionActionableItemListDialog diag = new ActionActionableItemListDialog(Active.Both);
       diag.setShowFinished(showFinished);
       diag.setRecurseChildren(recurseChildren);

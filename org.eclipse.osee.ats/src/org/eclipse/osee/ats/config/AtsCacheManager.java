@@ -16,13 +16,14 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -62,9 +63,9 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       ArtifactCache.deCache(artifact);
    }
 
-   public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
+   public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
       AtsBulkLoadCache.run(true);
-      return ArtifactCache.getArtifactsByName(name, clazz);
+      return ArtifactCache.getArtifactsByName(artifactType, name);
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
@@ -77,14 +78,14 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getBranchId());
    }
 
-   public static <A> List<A> getArtifactsByActive(Active active, Class<A> clazz) {
+   public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
-      return ArtifactCache.getArtifactsByActive(active, clazz);
+      return ArtifactCache.getArtifactsByType(artifactType, active);
    }
 
-   public static <A> A getSoleArtifactByName(String name, Class<A> clazz) throws MultipleArtifactsExist, ArtifactDoesNotExist {
+   public static Artifact getSoleArtifactByName(ArtifactType artifactType, String name) throws MultipleArtifactsExist, ArtifactDoesNotExist {
       AtsBulkLoadCache.run(true);
-      List<A> arts = ArtifactCache.getArtifactsByName(name, clazz);
+      List<Artifact> arts = ArtifactCache.getArtifactsByName(artifactType, name);
       if (arts.size() == 1) {
          return arts.iterator().next();
       }

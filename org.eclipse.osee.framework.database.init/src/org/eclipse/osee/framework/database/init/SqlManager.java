@@ -278,7 +278,7 @@ public abstract class SqlManager {
                String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                      appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute + "\n");
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute);
          ConnectionHandler.runPreparedUpdate(toExecute);
       }
    }

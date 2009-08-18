@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -116,11 +116,11 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       }
    }
 
-   public static Set<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
+   public static List<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
-      if (topTeamDef == null) return EMPTY_SET;
-      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
-            active, TeamDefinitionArtifact.class);
+      if (topTeamDef == null) return java.util.Collections.emptyList();
+      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
+            TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
    }
 
    public Branch getParentBranch() throws OseeCoreException {
@@ -188,14 +188,15 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
-      return AtsCacheManager.getArtifactsByActive(active, TeamDefinitionArtifact.class);
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
+            ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), active));
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
+   public static List<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
-      if (topTeamDef == null) return EMPTY_SET;
-      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
-            active, TeamDefinitionArtifact.class);
+      if (topTeamDef == null) return java.util.Collections.emptyList();
+      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
+            TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
    }
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
@@ -471,7 +472,10 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
-         teamDefs.addAll(AtsCacheManager.getArtifactsByName(teamDefName, TeamDefinitionArtifact.class));
+         for (Artifact artifact : AtsCacheManager.getArtifactsByName(
+               ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName)) {
+            teamDefs.add((TeamDefinitionArtifact) artifact);
+         }
       }
       return teamDefs;
    }

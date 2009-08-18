@@ -9,10 +9,11 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
@@ -25,14 +26,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class AtsQueryPerformanceTests  {
+public class AtsQueryPerformanceTests {
 
    public AtsQueryPerformanceTests() {
       AtsBulkLoadCache.run(true);
    }
 
    @org.junit.Test
-public void testUserWorldSearch() throws Exception {
+   public void testUserWorldSearch() throws Exception {
       User usr = getAUser();
       assertNotNull("User does not exist", usr);
       MyWorldSearchItem search = new MyWorldSearchItem();
@@ -45,7 +46,7 @@ public void testUserWorldSearch() throws Exception {
    }
 
    @org.junit.Test
-public void testTeamWorldSearchItem() throws Exception {
+   public void testTeamWorldSearchItem() throws Exception {
       TeamWorldSearchItem searchItem =
             new TeamWorldSearchItem("Show Open OSEE Actions", new String[] {"ATS", "Define", "OTE"}, false, true,
                   false, null, null, null, null);
@@ -59,7 +60,7 @@ public void testTeamWorldSearchItem() throws Exception {
    }
 
    private User getAUser() throws OseeCoreException {
-      ArrayList<User> users = UserManager.getUsers();
+      List<User> users = UserManager.getUsers();
       User andy = null;
       for (User usr : users) {
          if (usr.getSoleAttributeValueAsString("Name", "unknown").contains("Finkbeiner")) {

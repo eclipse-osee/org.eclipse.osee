@@ -16,11 +16,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 public class AITreeContentProvider implements ITreeContentProvider {
@@ -39,8 +38,8 @@ public class AITreeContentProvider implements ITreeContentProvider {
       else if (parentElement instanceof ActionableItemArtifact) {
          try {
             ActionableItemArtifact ai = ((ActionableItemArtifact) parentElement);
-            return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
-                  ActionableItemArtifact.class).toArray();
+            return Artifacts.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false),
+                  active, ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
          }
       }

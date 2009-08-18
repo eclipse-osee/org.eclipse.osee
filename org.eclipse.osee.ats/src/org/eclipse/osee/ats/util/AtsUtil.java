@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
@@ -53,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
@@ -205,36 +203,6 @@ public class AtsUtil implements IAtsLib {
       return toolBar;
    }
 
-   /**
-    * @param <A>
-    * @param artifacts to iterate through
-    * @param active state to validate against; Both will return all artifacts matching type
-    * @param clazz type of artifacts to consider
-    * @return set of Artifacts of type clazz that match the given active state of the "Active" attribute value. If no
-    *         attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
-    */
-   @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
-      Set<A> results = new HashSet<A>();
-      for (Artifact art : artifacts) {
-         if (art.getClass().equals(clazz) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
-            if (active == Active.Both) {
-               results.add((A) art);
-            } else {
-               // Ats config Artifact is Active unless otherwise specified
-               boolean attributeActive =
-                     ((A) art).getSoleAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false);
-               if (active == Active.Active && attributeActive) {
-                  results.add((A) art);
-               } else if (active == Active.InActive && !attributeActive) {
-                  results.add((A) art);
-               }
-            }
-         }
-      }
-      return results;
-   }
-
    public static String doubleToI18nString(double d) {
       return doubleToI18nString(d, false);
    }
@@ -316,7 +284,8 @@ public class AtsUtil implements IAtsLib {
    public void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         AtsCacheManager.getSoleArtifactByName(actionableItemName, ActionableItemArtifact.class);
+         AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME),
+               actionableItemName);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
                "Configuration Error",

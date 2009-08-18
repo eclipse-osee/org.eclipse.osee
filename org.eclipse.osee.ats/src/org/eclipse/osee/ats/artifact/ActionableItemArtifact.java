@@ -19,16 +19,17 @@ import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class ActionableItemArtifact extends Artifact {
 
    public static String ARTIFACT_NAME = "Actionable Item";
-   public static Set<ActionableItemArtifact> EMPTY_SET = new HashSet<ActionableItemArtifact>();
 
    /**
     * @param parentFactory
@@ -51,18 +51,19 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static List<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
-      return AtsCacheManager.getArtifactsByActive(active, ActionableItemArtifact.class);
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
+            ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), active));
    }
 
    public static String getNotActionableItemError(Artifact aia) {
       return "Action can not be written against " + aia.getArtifactTypeName() + " \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
-   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
+   public static List<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
       ActionableItemArtifact topAi = getTopActionableItem();
-      if (topAi == null) return EMPTY_SET;
-      return AtsUtil.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
-            ActionableItemArtifact.class);
+      if (topAi == null) return java.util.Collections.emptyList();
+      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topAi,
+            ActionableItemArtifact.class, false), active, ActionableItemArtifact.class));
    }
 
    public Collection<User> getLeads() throws OseeCoreException {
@@ -74,7 +75,8 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
-      return AtsCacheManager.getArtifactsByActive(Active.Both, ActionableItemArtifact.class);
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
+            ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), Active.Both));
    }
 
    public boolean isActionable() throws OseeCoreException {
@@ -84,7 +86,10 @@ public class ActionableItemArtifact extends Artifact {
    public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
-         aias.addAll(AtsCacheManager.getArtifactsByName(actionableItemName, ActionableItemArtifact.class));
+         for (Artifact artifact : AtsCacheManager.getArtifactsByName(
+               ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionableItemName)) {
+            aias.add((ActionableItemArtifact) artifact);
+         }
       }
       return aias;
    }

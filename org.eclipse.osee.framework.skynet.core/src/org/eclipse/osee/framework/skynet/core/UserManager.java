@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -39,10 +39,6 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Roberto E. Escobar
  */
 public final class UserManager {
-
-   private static enum UserStatusEnum {
-      Active, InActive, Both
-   }
 
    private static final String CACHE_PREFIX = "userManager.";
    private static boolean userCacheIsLoaded = false;
@@ -67,20 +63,20 @@ public final class UserManager {
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
-   public static ArrayList<User> getUsers() throws OseeCoreException {
-      return getUsers(UserStatusEnum.Active);
+   public static List<User> getUsers() throws OseeCoreException {
+      return getUsers(Active.Active);
    }
 
-   public static ArrayList<User> getActiveAndInactiveUsers() throws OseeCoreException {
-      return getUsers(UserStatusEnum.Both);
+   public static List<User> getActiveAndInactiveUsers() throws OseeCoreException {
+      return getUsers(Active.Both);
    }
 
-   public static ArrayList<User> getInactiveUsers() throws OseeCoreException {
-      return getUsers(UserStatusEnum.InActive);
+   public static List<User> getInactiveUsers() throws OseeCoreException {
+      return getUsers(Active.InActive);
    }
 
-   public static ArrayList<User> getUsersSortedByName() throws OseeCoreException {
-      ArrayList<User> users = getUsers();
+   public static List<User> getUsersSortedByName() throws OseeCoreException {
+      List<User> users = getUsers();
       Collections.sort(users);
       return users;
    }
@@ -89,22 +85,10 @@ public final class UserManager {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(ArtifactTypeManager.getType(User.ARTIFACT_NAME)));
    }
 
-   private static ArrayList<User> getUsers(UserStatusEnum userStatus) throws OseeCoreException {
+   private static List<User> getUsers(Active userStatus) throws OseeCoreException {
       ensurePopulated();
-
-      List<User> allUsers = getFromCache();
-      if (userStatus == UserStatusEnum.Both) {
-         return new ArrayList<User>(allUsers);
-      }
-      ArrayList<User> users = new ArrayList<User>(allUsers.size());
-      for (User user : allUsers) {
-         if (userStatus == UserStatusEnum.Active && user.isActive()) {
-            users.add(user);
-         } else if (userStatus == UserStatusEnum.InActive && !user.isActive()) {
-            users.add(user);
-         }
-      }
-      return users;
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(
+            ArtifactTypeManager.getType(User.ARTIFACT_NAME), userStatus));
    }
 
    /**

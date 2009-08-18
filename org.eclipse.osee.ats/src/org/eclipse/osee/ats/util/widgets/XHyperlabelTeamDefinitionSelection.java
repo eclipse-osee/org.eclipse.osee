@@ -12,12 +12,11 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
@@ -28,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
-   Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
+   Collection<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
    Collection<TeamDefinitionArtifact> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
@@ -39,7 +38,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       super(label, true);
    }
 
-   public Set<TeamDefinitionArtifact> getSelectedTeamDefintions() {
+   public Collection<TeamDefinitionArtifact> getSelectedTeamDefintions() {
       return selectedTeamDefs;
    }
 
@@ -48,7 +47,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return Artifacts.commaArts(selectedTeamDefs);
    }
 
-   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
+   public void setSelectedTeamDefs(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
       notifyXModifiedListeners();
    }

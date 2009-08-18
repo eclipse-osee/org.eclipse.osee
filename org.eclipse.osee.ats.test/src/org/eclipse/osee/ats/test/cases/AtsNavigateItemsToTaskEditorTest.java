@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,11 +26,11 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -38,15 +39,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class AtsNavigateItemsToTaskEditorTest  {
+public class AtsNavigateItemsToTaskEditorTest {
 
    @org.junit.Test
-public void testDemoDatabase() throws Exception {
+   public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
    }
 
    @org.junit.Test
-public void testMyTasksEditor() throws Exception {
+   public void testMyTasksEditor() throws Exception {
       TaskEditor.closeAll();
       // Place holder for future navigate items opening TaskEditor
       //      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
@@ -54,8 +55,9 @@ public void testMyTasksEditor() throws Exception {
    }
 
    @org.junit.Test
-public void testTaskSearch() throws Exception {
-      Set<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
+   public void testTaskSearch() throws Exception {
+      Collection<TeamDefinitionArtifact> selectedUsers =
+            TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
@@ -91,7 +93,7 @@ public void testTaskSearch() throws Exception {
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
-   public void runGeneralTaskSearchOnTeamTest(XNavigateItem item, Set<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
+   public void runGeneralTaskSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
       // need to set team selected users
       TaskEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getTaskActionPage().getDynamicWidgetLayoutListener();
