@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -37,8 +38,19 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if ((artifact instanceof IATSArtifact || artifact.getArtifactTypeName().equals("Universal Group")) && (!artifact.isHistorical())) {
+      if (artifact.isHistorical()) return NO_MATCH;
+      if (artifact instanceof IATSArtifact) {
          return PRESENTATION_SUBTYPE_MATCH;
+      }
+      if (artifact.getArtifactTypeName().equals("Universal Group")) {
+         if (artifact.getRelatedArtifactsCount(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS) == 0) {
+            return NO_MATCH;
+         }
+         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
+            if (childArt instanceof IATSArtifact) {
+               return PRESENTATION_SUBTYPE_MATCH;
+            }
+         }
       }
       return NO_MATCH;
    }
