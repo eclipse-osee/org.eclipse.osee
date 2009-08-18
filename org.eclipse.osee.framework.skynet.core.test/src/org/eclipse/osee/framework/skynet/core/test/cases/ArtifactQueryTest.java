@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -29,7 +30,7 @@ public class ArtifactQueryTest {
    @org.junit.Test
    public void testGetArtifactFromHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getHumanReadableId(), common);
       assertEquals(root.getHumanReadableId(), artifact.getHumanReadableId());
    }
@@ -37,7 +38,7 @@ public class ArtifactQueryTest {
    @org.junit.Test
    public void testGetArtifactFromGUID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getGuid(), common);
       assertEquals(root.getGuid(), artifact.getGuid());
    }

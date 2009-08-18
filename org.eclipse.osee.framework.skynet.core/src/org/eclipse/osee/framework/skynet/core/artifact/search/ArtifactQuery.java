@@ -486,19 +486,4 @@ public class ArtifactQuery {
       OseeEventManager.kickArtifactReloadEvent(new ArtifactQuery(), artifacts);
       return reloadedArts;
    }
-
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
-      Artifact root = ArtifactCache.getByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
-      if (root == null) {
-         root =
-               getArtifactFromTypeAndName(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME,
-                     ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, branch);
-         ArtifactCache.cacheByTextId(ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME, root);
-      }
-      return root;
-   }
-
-   public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
-   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
-
 }

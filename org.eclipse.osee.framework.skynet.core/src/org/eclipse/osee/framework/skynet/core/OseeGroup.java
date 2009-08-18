@@ -106,7 +106,7 @@ public class OseeGroup {
          usersGroupFolder =
                ArtifactQuery.checkArtifactFromTypeAndName(FOLDER_ARTIFACT_TYPE, USERS_GROUP_FOLDER_NAME, branch);
          if (usersGroupFolder == null) {
-            Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(branch);
+            Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
             if (root.hasChild(USERS_GROUP_FOLDER_NAME)) {
                usersGroupFolder = root.getChild(USERS_GROUP_FOLDER_NAME);
             } else {

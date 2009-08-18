@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -209,7 +210,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       try {
          ArtifactExplorer explorer =
                (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(), IWorkbenchPage.VIEW_ACTIVATE);
-         explorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(inputBranch));
+         explorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(inputBranch));
          return explorer;
       } catch (Exception ex) {
          throw new RuntimeException(ex);
@@ -277,7 +278,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   Branch selectedBranch = branchSelect.getData();
                   if (selectedBranch != null) {
                      branch = selectedBranch;
-                     explore(ArtifactQuery.getDefaultHierarchyRootArtifact(branch));
+                     explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                   }
                } catch (Exception ex) {
                   OseeLog.log(getClass(), Level.SEVERE, ex);
@@ -498,7 +499,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
                            IWorkbenchPage.VIEW_ACTIVATE);
-               artifactExplorer.explore(ArtifactQuery.getDefaultHierarchyRootArtifact(branch));
+               artifactExplorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);

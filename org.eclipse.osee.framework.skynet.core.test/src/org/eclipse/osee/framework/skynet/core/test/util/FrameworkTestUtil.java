@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -50,7 +51,7 @@ public class FrameworkTestUtil {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
       softArt.setDescriptiveName(name);
       softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
-      Artifact rootArtifact = ArtifactQuery.getDefaultHierarchyRootArtifact(branch);
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, softArt);
       return softArt;
    }

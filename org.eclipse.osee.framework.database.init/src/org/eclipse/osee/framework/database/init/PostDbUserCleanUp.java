@@ -17,11 +17,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +37,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
       boolean isUserAuthenticationAllowed = false;
       try {
          // Check that this is a normal initialization
-         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
          if (root != null) {
             isUserAuthenticationAllowed = true;
          }

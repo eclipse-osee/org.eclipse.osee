@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
@@ -93,7 +93,9 @@ public class LoadAIsAndTeamsAction {
 
    private void run() {
       if (prompt && !MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Import ATS Config?",
-            "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) return;
+            "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) {
+         return;
+      }
 
       for (Entry<String, String> entry : loadResources().entrySet()) {
          Diagram workFlow = DiagramFactory.getInstance().getWorkFlowFromFileContents(entry.getKey(), entry.getValue());
@@ -136,7 +138,9 @@ public class LoadAIsAndTeamsAction {
    }
 
    private void processWorkflow(final Diagram workFlow) {
-      if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
+      if (workFlow == null) {
+         throw new IllegalArgumentException("ATS config items can't be loaded.");
+      }
 
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
@@ -183,23 +187,23 @@ public class LoadAIsAndTeamsAction {
          List<TeamDefinitionOptions> teamDefinitionOptions = new ArrayList<TeamDefinitionOptions>();
          for (String line : page.getInstructionStr().replaceAll("\r", "\n").split("\n")) {
             if (!line.equals("")) {
-               if (line.startsWith(DESCRIPTION))
+               if (line.startsWith(DESCRIPTION)) {
                   desc = line.replaceFirst(DESCRIPTION, "");
-               else if (line.startsWith(WORKFLOW_ID)) {
+               } else if (line.startsWith(WORKFLOW_ID)) {
                   workflowId = line.replaceFirst(WORKFLOW_ID, "");
                } else if (line.startsWith(STATIC_ID)) {
                   staticIds.add(line.replaceFirst(STATIC_ID, ""));
-               } else if (line.startsWith(GET_OR_CREATE))
+               } else if (line.startsWith(GET_OR_CREATE)) {
                   getOrCreate = true;
-               else if (line.startsWith(NOT_ACTIONABLE))
+               } else if (line.startsWith(NOT_ACTIONABLE)) {
                   actionable = false;
-               else if (line.startsWith(FULL_NAME))
+               } else if (line.startsWith(FULL_NAME)) {
                   fullName = line.replaceFirst(FULL_NAME, "");
-               else if (line.contains(TeamDefinitionOptions.TeamUsesVersions.name()))
+               } else if (line.contains(TeamDefinitionOptions.TeamUsesVersions.name())) {
                   teamDefinitionOptions.add(TeamDefinitionOptions.TeamUsesVersions);
-               else if (line.contains(TeamDefinitionOptions.RequireTargetedVersion.name()))
+               } else if (line.contains(TeamDefinitionOptions.RequireTargetedVersion.name())) {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
-               else if (line.startsWith(LEAD)) {
+               } else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
                   User u = getUserByName(name, allowUserCreation, transaction);
                   leads.add(u);
@@ -207,9 +211,10 @@ public class LoadAIsAndTeamsAction {
                   String name = line.replaceFirst(MEMBER, "");
                   User u = getUserByName(name, allowUserCreation, transaction);
                   members.add(u);
-               } else
+               } else {
                   throw new IllegalArgumentException(
                         "Unhandled AtsConfig Line\"" + line + "\" in diagram page \"" + page.getName() + "\"");
+               }
             }
          }
 
@@ -220,16 +225,17 @@ public class LoadAIsAndTeamsAction {
                ActionableItemArtifact actItem = idToActionItem.get(childPage.getId());
                if (actItem != null) {
                   actionableItems.add(actItem);
-               } else
+               } else {
                   throw new IllegalArgumentException(
                         "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
+               }
             }
          }
 
          if (getOrCreate) {
             teamDefArt =
-                  (TeamDefinitionArtifact) Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(),
-                        TeamDefinitionArtifact.ARTIFACT_NAME, page.getName());
+                  (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(
+                        TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
          } else {
             teamDefArt =
                   (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
@@ -257,10 +263,11 @@ public class LoadAIsAndTeamsAction {
                Artifact workflowArt =
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
                            AtsUtil.getAtsBranch());
-               if (workflowArt != null)
+               if (workflowArt != null) {
                   teamDefArt.addRelation(AtsRelation.WorkItem__Child, workflowArt);
-               else
+               } else {
                   System.err.println("Can't find workflow with id \"" + workflowId + "\"");
+               }
             } catch (Exception ex) {
                System.err.println(ex.getLocalizedMessage());
             }
@@ -286,15 +293,17 @@ public class LoadAIsAndTeamsAction {
       Set<User> leads = new HashSet<User>();
       for (String line : page.getInstructionStr().replaceAll("\r", "\n").split("\n")) {
          if (!line.equals("")) {
-            if (line.startsWith(GET_OR_CREATE))
+            if (line.startsWith(GET_OR_CREATE)) {
                getOrCreate = true;
-            else if (line.startsWith(NOT_ACTIONABLE))
+            } else if (line.startsWith(NOT_ACTIONABLE)) {
                actionable = false;
-            else if (line.startsWith(LEAD)) {
+            } else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
                User u = getUserByName(name, allowUserCreation, transaction);
                leads.add(u);
-            } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
+            } else if (line.startsWith(STATIC_ID)) {
+               staticIds.add(line.replaceFirst(STATIC_ID, ""));
+            }
          }
       }
       if (page.getName().equals(AtsFolder.ActionableItem.getDisplayName())) {

@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -62,6 +63,6 @@ public class UniversalGroup {
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, branch);
+            OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 }

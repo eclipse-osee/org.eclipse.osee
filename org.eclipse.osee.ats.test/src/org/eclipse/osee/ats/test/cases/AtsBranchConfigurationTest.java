@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -173,7 +174,7 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            ArtifactQuery.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
                   teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
@@ -275,7 +276,7 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            ArtifactQuery.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
                   teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),

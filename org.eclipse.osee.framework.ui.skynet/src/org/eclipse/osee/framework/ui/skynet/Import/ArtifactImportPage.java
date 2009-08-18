@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
@@ -382,10 +382,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       Artifact importRoot;
 
       if (radImportUnderDhRoot.getSelection()) {
-         importRoot = ArtifactQuery.getDefaultHierarchyRootArtifact(getSelectedBranch());
+         importRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getSelectedBranch());
       } else if (radImportUnderNamedRootFolder.getSelection()) {
          importRoot =
-               ArtifactQuery.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
+               OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
                      txtImportUnderFolderName.getText());
       } else if (radImportUnderSelection.getSelection()) {
          importRoot = destinationArtifact;

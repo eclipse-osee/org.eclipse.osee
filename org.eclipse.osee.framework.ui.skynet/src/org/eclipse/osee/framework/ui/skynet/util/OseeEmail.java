@@ -30,14 +30,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -61,8 +58,10 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Default constructor
+    * 
+    * @throws OseeCoreException
     */
-   public OseeEmail() {
+   public OseeEmail() throws OseeCoreException {
       super(getSession());
       mainMessage = new MimeMultipart();
    }
@@ -75,8 +74,9 @@ public class OseeEmail extends MimeMessage {
     * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
+    * @throws OseeCoreException
     */
-   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
       this();
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
@@ -88,8 +88,9 @@ public class OseeEmail extends MimeMessage {
             setBody(body);
          } else if (bodyType == BodyType.Html) {
             setHTMLBody(body);
-         } else
+         } else {
             throw new IllegalArgumentException("Unhandled body type " + bodyType);
+         }
 
       } catch (MessagingException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -103,8 +104,9 @@ public class OseeEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param body - the text/html of the body
     * @param bodyType - Html or Text
+    * @throws OseeCoreException
     */
-   public OseeEmail(String fromToReplyEmail, String subject, String body, BodyType bodyType) {
+   public OseeEmail(String fromToReplyEmail, String subject, String body, BodyType bodyType) throws OseeCoreException {
       this(Arrays.asList(fromToReplyEmail), fromToReplyEmail, fromToReplyEmail, subject, body, bodyType);
    }
 
@@ -238,9 +240,11 @@ public class OseeEmail extends MimeMessage {
     * @param text - the text to add to the body
     */
    public void addBody(String text) {
-      if (bodyType == null)
+      if (bodyType == null) {
          setBody(text);
-      else if (bodyType.equals(plainText)) body += text;
+      } else if (bodyType.equals(plainText)) {
+         body += text;
+      }
    }
 
    /**
@@ -260,9 +264,11 @@ public class OseeEmail extends MimeMessage {
     * @param htmlText - the text to add to the HTML body
     */
    public void addHTMLBody(String htmlText) {
-      if (bodyType == null)
+      if (bodyType == null) {
          setHTMLBody(htmlText);
-      else if (bodyType.equals(HTMLText)) body += htmlText;
+      } else if (bodyType.equals(HTMLText)) {
+         body += htmlText;
+      }
 
    }
 
@@ -322,38 +328,16 @@ public class OseeEmail extends MimeMessage {
       }
    }
 
-   private static String getMailServer() {
-      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-
-      if (extensionRegistry == null) {
-         throw new IllegalStateException("The extension registry is unavailable");
-      }
-
-      String extensionPointId = "org.eclipse.osee.framework.jdk.core.DefaultMailServer";
-      IExtensionPoint point = extensionRegistry.getExtensionPoint(extensionPointId);
-      if (point == null) {
-         throw new IllegalArgumentException("The extension point " + extensionPointId + " does not exist");
-      }
-
-      for (IExtension extension : point.getExtensions()) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-
-         for (IConfigurationElement element : elements) {
-            return element.getAttribute("serverAddress");
-         }
-      }
-      throw new IllegalStateException(
-            "No mail server defined.  Use the extension point " + extensionPointId + " to define one.");
-   }
-
    /**
     * Gets the current session
     * 
     * @return the Current SMTP Session
+    * @throws OseeCoreException
     */
-   private static Session getSession() {
+   private static Session getSession() throws OseeCoreException {
       Properties props = System.getProperties();
-      props.put(emailType, getMailServer());
+      props.put(emailType, OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
+            "osee.config.Default Mail Server"));
 
       return Session.getDefaultInstance(props, null);
    }

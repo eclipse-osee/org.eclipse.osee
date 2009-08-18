@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -84,7 +85,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
       monitor.worked(30);
 
-      Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(branch);
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       orderSubsystemReqs(root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS));
 
       generateLowLevelToSubsystemTrace();

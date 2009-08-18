@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -74,7 +75,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
       Artifact templateFolder =
             ArtifactQuery.checkArtifactFromTypeAndName("Folder", "Document Templates", BranchManager.getCommonBranch());
       if (templateFolder == null) {
-         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
 
          templateFolder =
                ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(), "Document Templates");

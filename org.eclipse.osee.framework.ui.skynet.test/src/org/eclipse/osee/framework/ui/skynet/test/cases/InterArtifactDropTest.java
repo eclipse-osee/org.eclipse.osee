@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -77,7 +78,7 @@ public class InterArtifactDropTest {
       OseeLog.registerLoggerListener(monitorLog);
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(ArtifactQuery.getDefaultHierarchyRootArtifact(destinationBranch),
+      dropHandler.dropArtifactIntoDifferentBranch(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch),
             new Artifact[] {sourceArtifact}, false);
 
       sleep(5000);

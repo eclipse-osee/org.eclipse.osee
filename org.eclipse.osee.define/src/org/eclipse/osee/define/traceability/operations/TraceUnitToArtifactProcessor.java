@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,11 +30,10 @@ import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -64,9 +62,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private final Branch importIntoBranch;
    private SkynetTransaction transaction;
 
-   private HashCollection<TraceUnit, TraceMark> reportTraceNotFound;
-   private HashCollection<String, String> unknownRelationError;
-   private Set<String> unRelatedUnits;
+   private final HashCollection<TraceUnit, TraceMark> reportTraceNotFound;
+   private final HashCollection<String, String> unknownRelationError;
+   private final Set<String> unRelatedUnits;
 
    public TraceUnitToArtifactProcessor(Branch importIntoBranch) {
       this.importIntoBranch = importIntoBranch;
@@ -141,7 +139,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       for (TraceMark traceMark : traceUnit.getTraceMarks()) {
-         if (monitor.isCanceled()) break;
+         if (monitor.isCanceled()) {
+            break;
+         }
 
          Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
          if (requirementArtifact != null) {
@@ -284,7 +284,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
-         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
             root.persistAttributesAndRelations(transaction);
@@ -304,7 +304,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
-         Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(transaction.getBranch());
+         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnitFolder)) {
             root.addChild(testUnitFolder);
             root.persistAttributesAndRelations(transaction);
@@ -313,22 +313,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       private static Artifact getOrCreateFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
-         Artifact folder = null;
-         String key = "Folder:" + folderName;
-         Branch branch = transaction.getBranch();
-         try {
-            folder = ArtifactCache.getByTextId(key, branch);
-            if (folder == null) {
-               folder = ArtifactQuery.getArtifactFromTypeAndName("Folder", folderName, branch);
-               ArtifactCache.cacheByTextId(key, folder);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(DefinePlugin.class, Level.INFO, "Created " + folderName + " because was not found.");
-            folder = ArtifactTypeManager.addArtifact("Folder", branch, folderName);
-            folder.persistAttributes(transaction);
-            ArtifactCache.cacheByTextId(key, folder);
-         }
-         return folder;
+         return OseeSystemArtifacts.getOrCreateArtifact("Folder", folderName, transaction.getBranch());
       }
    }
 

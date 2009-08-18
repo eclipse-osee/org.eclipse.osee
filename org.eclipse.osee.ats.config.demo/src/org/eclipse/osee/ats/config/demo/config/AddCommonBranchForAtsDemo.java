@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.GlobalXViewerSettings;
 
@@ -36,10 +36,10 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
          UserManager.createUser(userEnum, transaction);
       }
       // Create Global Preferences artifact that lives on common branch
-      GlobalPreferences.createGlobalPreferencesArtifact(transaction);
+      OseeSystemArtifacts.createGlobalPreferenceArtifact().persistAttributesAndRelations(transaction);
 
       // Create XViewer Customization artifact that lives on common branch
-      GlobalXViewerSettings.getAtsCustArtifactOrCreate(true, transaction);
+      GlobalXViewerSettings.createAtsCustomArtifact().persistAttributesAndRelations(transaction);
       transaction.execute();
    }
 

@@ -14,11 +14,11 @@ package org.eclipse.osee.framework.database.init;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.OseeTypesImport;
 
 /**
@@ -43,10 +43,10 @@ public class AddCommonBranch implements IDbInitializationTask {
       OseeTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
 
       if (initializeRootArtifacts) {
-         ArtifactTypeManager.addArtifact(ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
-               ArtifactQuery.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
+         ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
+               OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
-               ArtifactQuery.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
+               OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
       }
 
       BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID);

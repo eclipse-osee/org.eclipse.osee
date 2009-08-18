@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -65,7 +66,7 @@ public class ArtifactQueryPerformanceTests {
    @org.junit.Test
    public void testGetArtifactByHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact art = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       ArtifactQueryBuilder builder = new ArtifactQueryBuilder(art.getHumanReadableId(), common, true, FULL);
       long startTime = System.currentTimeMillis();
       Artifact result = builder.getOrCheckArtifact(QueryType.GET);
@@ -79,7 +80,7 @@ public class ArtifactQueryPerformanceTests {
    @org.junit.Test
    public void testGetArtifactsByHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact art = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       List<String> hrids = new ArrayList<String>();
       List<Artifact> children = art.getChildren();
       for (Artifact child : children) {
@@ -98,7 +99,7 @@ public class ArtifactQueryPerformanceTests {
    @org.junit.Test
    public void testGetArtifactsByHRIDNoDeleted() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      Artifact art = ArtifactQuery.getDefaultHierarchyRootArtifact(common);
+      Artifact art = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       List<String> hrids = new ArrayList<String>();
       List<Artifact> children = art.getChildren();
       for (Artifact child : children) {

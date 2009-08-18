@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Jeff C. Phillips
@@ -43,7 +43,7 @@ public class DefaultHierSorter {
          orginalList.add(artifact);
       }
 
-      orderChildren(ArtifactQuery.getDefaultHierarchyRootArtifact(artifacts.iterator().next().getBranch()));
+      orderChildren(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifacts.iterator().next().getBranch()));
       addDeletedArtifacts();
 
       if (artifacts.size() != orderedList.size()) {

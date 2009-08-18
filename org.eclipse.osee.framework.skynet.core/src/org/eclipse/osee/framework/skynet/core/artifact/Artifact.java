@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -342,7 +343,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public boolean isOrphan() throws OseeCoreException {
-      Artifact root = ArtifactQuery.getDefaultHierarchyRootArtifact(getBranch());
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
       for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
          if (parent.equals(root)) {
             return false;

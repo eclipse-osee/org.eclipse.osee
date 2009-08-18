@@ -11,11 +11,10 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
@@ -75,20 +74,22 @@ public class AtsFolderUtil {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
 
       Artifact headingArt =
-            Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(), AtsFolderUtil.FOLDER_ARTIFACT,
-                  AtsFolder.Ats_Heading.displayName);
+            OseeSystemArtifacts.getOrCreateArtifact(AtsFolderUtil.FOLDER_ARTIFACT, AtsFolder.Ats_Heading.displayName,
+                  AtsUtil.getAtsBranch());
       if (!headingArt.hasParent()) {
-         Artifact rootArt = ArtifactQuery.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
+         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
          rootArt.addChild(headingArt);
          StaticIdManager.setSingletonAttributeValue(headingArt, AtsFolder.Ats_Heading.staticId);
          headingArt.persistAttributesAndRelations(transaction);
       }
 
       for (AtsFolder atsFolder : AtsFolder.values()) {
-         if (atsFolder == AtsFolder.Ats_Heading) continue;
+         if (atsFolder == AtsFolder.Ats_Heading) {
+            continue;
+         }
          Artifact art =
-               Artifacts.getOrCreateArtifact(AtsUtil.getAtsBranch(), atsFolder.artifactTypeName,
-                     atsFolder.displayName);
+               OseeSystemArtifacts.getOrCreateArtifact(atsFolder.artifactTypeName, atsFolder.displayName,
+                     AtsUtil.getAtsBranch());
          StaticIdManager.setSingletonAttributeValue(art, atsFolder.staticId);
          headingArt.addChild(art);
          art.persistAttributesAndRelations(transaction);
