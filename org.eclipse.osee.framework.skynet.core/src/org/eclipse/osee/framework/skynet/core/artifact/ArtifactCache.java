@@ -16,10 +16,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -49,6 +53,35 @@ public class ArtifactCache {
    private static final ArtifactCache instance = new ArtifactCache();
 
    private ArtifactCache() {
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
+      List<A> arts = new ArrayList<A>();
+      for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
+         Artifact art = entry.getValue();
+         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getName().equals(name)) {
+            arts.add((A) art);
+         }
+      }
+      return arts;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <A> List<A> getArtifactsByActive(Active active, Class<A> clazz) {
+      List<A> arts = new ArrayList<A>();
+      for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
+         Artifact art = entry.getValue();
+         try {
+            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid("Active") && art.getSoleAttributeValue(
+                  "Active", false)) {
+               arts.add((A) art);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return arts;
    }
 
    public static Collection<Artifact> getDirtyArtifacts() throws OseeCoreException {
@@ -107,7 +140,7 @@ public class ArtifactCache {
       }
    }
 
-   synchronized static void deCache(Artifact artifact) throws OseeCoreException {
+   public synchronized static void deCache(Artifact artifact) throws OseeCoreException {
       instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());

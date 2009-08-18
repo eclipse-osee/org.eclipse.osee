@@ -10,19 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -32,7 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
@@ -59,93 +49,42 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  */
 public class AtsCacheManager implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
-   private final Set<Artifact> cache = new HashSet<Artifact>();
-   private final Map<String, ActionableItemArtifact> guidToActionableItem =
-         new HashMap<String, ActionableItemArtifact>();
-   private final Map<String, TeamDefinitionArtifact> guidToTeamDefinition =
-         new HashMap<String, TeamDefinitionArtifact>();
-   private static final AtsCacheManager instance = new AtsCacheManager();
-   private static List<String> cacheTypes =
-         Arrays.asList(ActionableItemArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME,
-               VersionArtifact.ARTIFACT_NAME);
+   public static void start() {
+      new AtsCacheManager();
+   }
 
-   public AtsCacheManager() {
+   private AtsCacheManager() {
       OseeEventManager.addListener(this);
    }
 
-   public static void cache(Artifact artifact) throws OseeCoreException {
-      if (cacheTypes.contains(artifact.getArtifactTypeName())) {
-         instance.cache.add(artifact);
-         if (artifact instanceof TeamDefinitionArtifact) {
-            instance.guidToTeamDefinition.put(artifact.getGuid(), (TeamDefinitionArtifact) artifact);
-         }
-         if (artifact instanceof ActionableItemArtifact) {
-            instance.guidToActionableItem.put(artifact.getGuid(), (ActionableItemArtifact) artifact);
-         }
-      }
+   public static void deCache(Artifact artifact) throws OseeCoreException {
+      ArtifactCache.deCacheStaticIds(artifact);
+      ArtifactCache.deCache(artifact);
    }
 
-   public static void deCache(Artifact artifact) throws OseeCoreException {
-      instance.cache.remove(artifact);
-      ArtifactCache.deCacheStaticIds(artifact);
+   public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
+      AtsBulkLoadCache.run(true);
+      return ArtifactCache.getArtifactsByName(name, clazz);
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
-      ActionableItemArtifact aia = instance.guidToActionableItem.get(guid);
-      if (aia != null) return aia;
-      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranch(), false);
-      if (art != null) {
-         cache(art);
-         return (ActionableItemArtifact) art;
-      }
-      return null;
+      return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getBranchId());
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
-      TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
-      if (teamDef != null) return teamDef;
-      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranch(), false);
-      if (art != null) {
-         cache(art);
-         return (TeamDefinitionArtifact) art;
-      }
-      return null;
+      return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getBranchId());
    }
 
-   @SuppressWarnings("unchecked")
    public static <A> List<A> getArtifactsByActive(Active active, Class<A> clazz) {
       AtsBulkLoadCache.run(true);
-      List<A> arts = new ArrayList<A>();
-      for (Artifact art : instance.cache) {
-         try {
-            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName()) && art.getSoleAttributeValue(
-                  ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false)) {
-               arts.add((A) art);
-            }
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-      }
-      return arts;
-   }
-
-   @SuppressWarnings("unchecked")
-   public static <A> List<A> getArtifactsByName(String name, Class<A> clazz) {
-      AtsBulkLoadCache.run(true);
-      List<A> arts = new ArrayList<A>();
-      for (Artifact art : instance.cache) {
-         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getName().equals(name)) {
-            arts.add((A) art);
-         }
-      }
-      return arts;
+      return ArtifactCache.getArtifactsByActive(active, clazz);
    }
 
    public static <A> A getSoleArtifactByName(String name, Class<A> clazz) throws MultipleArtifactsExist, ArtifactDoesNotExist {
       AtsBulkLoadCache.run(true);
-      List<A> arts = getArtifactsByName(name, clazz);
+      List<A> arts = ArtifactCache.getArtifactsByName(name, clazz);
       if (arts.size() == 1) {
          return arts.iterator().next();
       }
@@ -156,7 +95,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            deCache(artifact);
+            ArtifactCache.deCache(artifact);
             if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                   WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                   WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
@@ -182,7 +121,6 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          }
       }
       for (Artifact artifact : transData.cacheAddedArtifacts) {
-         cache(artifact);
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);

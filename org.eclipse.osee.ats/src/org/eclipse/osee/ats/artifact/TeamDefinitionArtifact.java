@@ -114,7 +114,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       for (ActionableItemArtifact aia : actionableItems) {
          addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
       }
-      AtsCacheManager.cache(this);
    }
 
    public static Set<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
@@ -400,7 +399,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
                   name);
       addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
-      AtsCacheManager.cache(versionArt);
       return versionArt;
    }
 

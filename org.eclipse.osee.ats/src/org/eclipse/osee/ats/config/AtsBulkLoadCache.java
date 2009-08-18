@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,12 +64,10 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
       OseeLog.log(AtsPlugin.class, Level.INFO, getName());
       try {
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
-         Collection<Artifact> artifacts =
-               RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version);
-         for (Artifact artifact : artifacts) {
-            AtsCacheManager.cache(artifact);
-         }
+         // Loading artifacts will cache them in ArtifactCache
+         RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version);
+         // Load Work Definitions
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
