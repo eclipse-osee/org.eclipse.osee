@@ -332,14 +332,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    public boolean hasParent() throws OseeCoreException {
       int parentCount = getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
-      if (parentCount == 0) {
-         return false;
-      }
-      if (parentCount == 1) {
-         return true;
-      } else {
+      if (parentCount > 1) {
          throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
       }
+
+      return parentCount == 1;
    }
 
    public boolean isOrphan() throws OseeCoreException {
