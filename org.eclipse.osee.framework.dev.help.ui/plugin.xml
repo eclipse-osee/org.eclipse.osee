@@ -3,7 +3,7 @@
 <plugin>
 	<extension
 	         id="org.eclipse.osee.define.help.ui.docs"
-	         name="OSEE OTE"
+	         name="OSEE Developers' Help"
 	         point="org.eclipse.help.toc">
 	      <toc
 	            file="toc.xml"
