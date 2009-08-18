@@ -73,8 +73,8 @@ public class ArtifactCache {
       for (Entry<Pair<Integer, Integer>, Artifact> entry : instance.artifactIdCache.entrySet()) {
          Artifact art = entry.getValue();
          try {
-            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid("Active") && art.getSoleAttributeValue(
-                  "Active", false)) {
+            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid("ats.Active") && art.getSoleAttributeValue(
+                  "ats.Active", false)) {
                arts.add((A) art);
             }
          } catch (Exception ex) {

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -31,21 +32,25 @@ public class ActionManager {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
-      if (monitor != null) monitor.subTask("Creating Action");
+      if (monitor != null) {
+         monitor.subTask("Creating Action");
+      }
       ActionArtifact actionArt =
             (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
-      if (monitor != null) monitor.subTask("Creating WorkFlows");
+      if (monitor != null) {
+         monitor.subTask("Creating WorkFlows");
+      }
       Collection<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
       if (teams == null || teams.size() == 0) {
-         StringBuffer sb = new StringBuffer();
-         for (ActionableItemArtifact aia : actionableItems)
+         StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
+         for (ActionableItemArtifact aia : actionableItems) {
             sb.append("Selected AI \"" + aia + "\" " + aia.getHumanReadableId() + "\n");
-         throw new IllegalArgumentException(
-               "No teams returned for Action's selected Actionable Items\n" + sb.toString());
+         }
+         throw new OseeStateException(sb.toString());
       }
 
       // Create team workflow artifacts
