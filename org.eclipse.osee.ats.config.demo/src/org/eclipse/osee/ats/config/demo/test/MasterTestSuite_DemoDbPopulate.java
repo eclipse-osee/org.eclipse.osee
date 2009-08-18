@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.junit.Before;
 
 /**
@@ -52,7 +51,6 @@ public class MasterTestSuite_DemoDbPopulate {
          System.err.println(OseeLog.getStatusReport() + ". \nExiting.");
          return;
       }
-      ArtifactSaveNotificationHandler.setNoPopUp(true);
    }
 
    /**
