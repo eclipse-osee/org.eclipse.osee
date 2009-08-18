@@ -119,6 +119,8 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
             TransitionType.ToPageAsDefault);
 
       // Add return transitions
+      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Analyze.name(), DefaultTeamState.Endorse.name(),
+            TransitionType.ToPageAsReturn);
       teamWorkflowDefinition.addPageTransition(DefaultTeamState.Authorize.name(), DefaultTeamState.Analyze.name(),
             TransitionType.ToPageAsReturn);
       teamWorkflowDefinition.addPageTransition(DefaultTeamState.Implement.name(), DefaultTeamState.Analyze.name(),
