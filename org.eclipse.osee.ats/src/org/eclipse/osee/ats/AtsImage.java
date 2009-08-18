@@ -62,7 +62,7 @@ public enum AtsImage implements OseeImage {
    T("T.gif"),
    ZOOM("zoom_in.gif"),
    ZOOM_IN("zoom_in.gif"),
-   ZOOM_OUT("zoom_in.gif");
+   ZOOM_OUT("zoom_out.gif");
 
    private final String fileName;
 
