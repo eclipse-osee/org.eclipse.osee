@@ -157,6 +157,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       getSite().setSelectionProvider(treeViewer);
       parent.layout();
       createActions();
+      getViewSite().getActionBars().updateActionBars();
       setupPopupMenu();
       refresh();
    }

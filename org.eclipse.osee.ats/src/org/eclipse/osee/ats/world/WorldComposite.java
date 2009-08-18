@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -96,6 +98,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
    private final ToolBar toolBar;
    private final IWorldEditor iWorldEditor;
    private final Composite mainComp;
+   private Map<Action, MenuItem> actionToMenuItem = new HashMap<Action, MenuItem>();
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
@@ -162,23 +165,30 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
                   }
                } else if (event.keyCode == 'z') {
                   releaseMetricsAction.setChecked(!releaseMetricsAction.isChecked());
+                  actionToMenuItem.get(releaseMetricsAction).setSelection(releaseMetricsAction.isChecked());
                   releaseMetricsAction.run();
                } else if (event.keyCode == 'x') {
                   selectionMetricsAction.setChecked(!selectionMetricsAction.isChecked());
+                  actionToMenuItem.get(selectionMetricsAction).setSelection(selectionMetricsAction.isChecked());
                   selectionMetricsAction.run();
                } else if (event.keyCode == 'f') {
                   filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
+                  actionToMenuItem.get(filterCompletedAction).setSelection(filterCompletedAction.isChecked());
                   filterCompletedAction.run();
                } else if (event.keyCode == 'g') {
                   filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
+                  actionToMenuItem.get(filterMyAssigneeAction).setSelection(filterMyAssigneeAction.isChecked());
                   filterMyAssigneeAction.run();
                } else if (event.keyCode == 'd') {
                   filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
                   filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
+                  actionToMenuItem.get(filterMyAssigneeAction).setSelection(filterMyAssigneeAction.isChecked());
+                  actionToMenuItem.get(filterCompletedAction).setSelection(filterCompletedAction.isChecked());
                   filterCompletedAction.run();
                   filterMyAssigneeAction.run();
                }
             }
+
          }
       });
 
@@ -590,6 +600,7 @@ public class WorldComposite extends ScrolledComposite implements IFrameworkTrans
             fAction.run();
          }
       });
+      actionToMenuItem.put(action, item);
       return item;
    }
 

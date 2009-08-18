@@ -109,6 +109,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       createActions();
+      getViewSite().getActionBars().updateActionBars();
 
       // add search text box      
       createSearchInputPart(xNavComp);
