@@ -68,7 +68,7 @@ public class BaseImage implements OseeImage {
       }
       try {
          if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_EXTENSION.getName())) {
-            String extension = artifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName());
+            String extension = artifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "");
             if (Strings.isValid(extension)) {
                return new ProgramImage(extension);
             }
