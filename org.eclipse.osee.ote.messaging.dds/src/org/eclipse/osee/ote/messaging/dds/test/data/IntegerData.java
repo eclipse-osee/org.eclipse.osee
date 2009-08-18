@@ -9,8 +9,8 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ote.messaging.dds.test.data;
-
 import java.nio.ByteBuffer;
+
 import org.eclipse.osee.ote.messaging.dds.Data;
 
 /**
@@ -18,76 +18,90 @@ import org.eclipse.osee.ote.messaging.dds.Data;
  * @author David Diepenbrock
  */
 public class IntegerData implements Data {
-   private int theInt;
-
-   /**
+	private int theInt;
+	/**
 	 * 
 	 */
-   public IntegerData(int theInt) {
-      super();
-      this.theInt = theInt;
-   }
+	public IntegerData(int theInt) {
+		super();
+		this.theInt = theInt;
+	}
 
-   /**
-    * @return Returns the theInt.
-    */
-   public int getTheInt() {
-      return theInt;
-   }
 
-   /**
-    * @param theInt The theInt to set.
-    */
-   public void setTheInt(int theInt) {
-      this.theInt = theInt;
-   }
 
-   public byte[] toByteArray() {
-      int x = theInt;
+	/**
+	 * @return Returns the theInt.
+	 */
+	public int getTheInt() {
+		return theInt;
+	}
 
-      return new byte[] {byteOf(x, 3), byteOf(x, 2), byteOf(x, 1), byteOf(x, 0)};
-   }
 
-   private byte byteOf(int x, int index) {
-      return (byte) (x >> index * 4 & 0xff);
-   }
+	/**
+	 * @param theInt The theInt to set.
+	 */
+	public void setTheInt(int theInt) {
+		this.theInt = theInt;
+	}
 
-   public void setFromByteArray(byte[] input) {
+	public byte[] toByteArray() {
+		int x = theInt;
 
-      int value = 0;
+		return new byte[]{byteOf(x,3), byteOf(x,2), byteOf(x,1), byteOf(x,0)};
+	}
 
-      if (input.length > 4) {
-         value = Integer.MAX_VALUE;
-      } else {
-         for (int x = input.length - 1; x > -1; x--) {
-            value += input[x] << (input.length - (x + 1)) * 4;
-         }
-      }
-      theInt = value;
-   }
+	private byte byteOf(int x, int index) {
+		return (byte)(x>>(index*4) & 0xff);
+	}
+	public void setFromByteArray(byte[] input) {
 
-   public Object getKeyValue() {
-      return new Integer(theInt);
-   }
+		int value=0;
 
-   @Override
-   public void copyFrom(Data buffer) {
+		if (input.length > 4) {
+			value = Integer.MAX_VALUE;
+		} else {
+			for (int x = input.length-1;x>-1;x--) {
+				value += input[x]<<((input.length-(x+1))*4);
+			}
+		}
+		theInt = value;
+	}
 
-   }
+	public Object getKeyValue() {
+		return new Integer(theInt);
+	}
 
-   @Override
-   public void setFromByteBuffer(ByteBuffer buffer) {
 
-   }
 
-   @Override
-   public ByteBuffer toByteBuffer() {
-      return null;
-   }
+	@Override
+	public void copyFrom(Data buffer) {
+		// TODO Auto-generated method stub
 
-   @Override
-   public int getOffset() {
-      return 0;
-   }
+	}
+
+
+
+	@Override
+	public void setFromByteBuffer(ByteBuffer buffer) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+
+	@Override
+	public ByteBuffer toByteBuffer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public int getOffset() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }
