@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
 	<extension
-	         id="org.eclipse.osee.define.help.ui.docs"
+	         id="org.eclipse.osee.framework.dev.help.ui.docs"
 	         name="OSEE Developers' Help"
 	         point="org.eclipse.help.toc">
 	      <toc
@@ -13,12 +13,6 @@
 	            file="userguide/OSEE Developers Guide-toc.xml"
 	            primary="false">
 	      </toc>
-	</extension>
-	<extension
-	      point="org.eclipse.help.contexts">
-	   <contexts
-	         file="contexts/contexts.xml">
-	   </contexts>
 	</extension>
 </plugin>
       
