@@ -42,24 +42,15 @@ public class ArtifactImportDestinationPage extends WizardDataTransferPage {
       setDescription("Select destination for imported artifacts.");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.dialogs.WizardDataTransferPage#allowNewContainerName()
-    */
    @Override
    protected boolean allowNewContainerName() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-    */
    @Override
    public void handleEvent(Event arg0) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
