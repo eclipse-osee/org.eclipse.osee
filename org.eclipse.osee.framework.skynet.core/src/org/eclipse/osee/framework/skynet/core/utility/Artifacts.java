@@ -72,6 +72,8 @@ public final class Artifacts {
    }
 
    /**
+    * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
+    * 
     * @param <A>
     * @param artifacts to iterate through
     * @param active state to validate against; Both will return all artifacts matching type
