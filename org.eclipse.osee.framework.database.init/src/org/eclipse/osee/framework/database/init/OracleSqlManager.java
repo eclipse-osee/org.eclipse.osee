@@ -54,7 +54,7 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(" tablespace ");
       toExecute.append(tableDef.getTablespace());
       toExecute.append("\n");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
@@ -72,7 +72,7 @@ public class OracleSqlManager extends SqlManager {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " cascade constraints purge");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }

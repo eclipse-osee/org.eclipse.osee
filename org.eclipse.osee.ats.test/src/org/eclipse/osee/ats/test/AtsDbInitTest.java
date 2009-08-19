@@ -20,9 +20,6 @@ import org.junit.Before;
  */
 public class AtsDbInitTest {
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    protected void setUp() throws Exception {
       // This test should only be run on test db
@@ -31,9 +28,7 @@ public class AtsDbInitTest {
 
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
-      System.out.println("Begin Database Initialization...");
       DatabaseInitializationOperation.executeWithoutPrompting("ATS - Developer");
-      System.out.println("Database Initialization Complete.");
    }
 
 }

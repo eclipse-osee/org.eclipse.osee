@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertTrue;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -23,15 +25,16 @@ public class MasterTestSuite_DemoDbInit {
 
    @org.junit.Test
    public void testDemoDbInit() throws Exception {
+      OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
+
       assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
             "demo"));
-      System.out.println("Begin Database Initialization...");
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
 
       TestUtil.severeLoggingEnd(monitorLog);
-      System.out.println("Database Initialization Complete.");
+      OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Complete Database ");
    }
 
 }

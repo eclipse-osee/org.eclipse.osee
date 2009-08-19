@@ -278,7 +278,7 @@ public abstract class SqlManager {
                String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                      appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute);
+         OseeLog.log(DatabaseInitActivator.class, Level.FINE, toExecute);
          ConnectionHandler.runPreparedUpdate(toExecute);
       }
    }
@@ -291,7 +291,7 @@ public abstract class SqlManager {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n",
+         OseeLog.log(DatabaseInitActivator.class, Level.FINE, String.format("Dropping Index: [%s] FROM [%s]\n",
                iData.getId(), tableName));
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }

@@ -54,7 +54,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       toExecute +=
             handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(connection, toExecute);
    }
@@ -62,7 +62,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
    @Override
    public void dropTable(TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " CASCADE";
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute);
    }
@@ -83,7 +83,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
          if (iData.ignoreMySql()) {
             continue;
          }
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n",
+         OseeLog.log(DatabaseInitActivator.class, Level.FINE, String.format("Dropping Index: [%s] FROM [%s]\n",
                iData.getId(), tableName));
          if (iData.getId().equals("PRIMARY")) {
             ConnectionHandler.runPreparedUpdate(connection,
@@ -186,7 +186,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
          String toExecute =
                String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId, tableName,
                      appliesTo);
-         OseeLog.log(DatabaseInitActivator.class, Level.INFO, toExecute);
+         OseeLog.log(DatabaseInitActivator.class, Level.FINE, toExecute);
          ConnectionHandler.runPreparedUpdate(connection, toExecute);
       }
    }

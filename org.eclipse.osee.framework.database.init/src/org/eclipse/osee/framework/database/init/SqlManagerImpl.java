@@ -51,7 +51,7 @@ public class SqlManagerImpl extends SqlManager {
       toExecute.append(handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
             tableDef.getFullyQualifiedTableName()));
       toExecute.append(" \n)\n");
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
@@ -61,7 +61,7 @@ public class SqlManagerImpl extends SqlManager {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\."));
-      OseeLog.log(DatabaseInitActivator.class, Level.INFO,
+      OseeLog.log(DatabaseInitActivator.class, Level.FINE,
             "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute.toString());
    }
