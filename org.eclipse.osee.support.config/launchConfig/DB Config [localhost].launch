@@ -20,7 +20,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-nosplash"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.authentication.protocol=trustAll"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx768M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dequinox.ds.debug=true&#13;&#10;-DNequinox.ds.print=true&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.authentication.protocol=trustAll"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="lba.ote.server.LbaTestServerProduct"/>
 <booleanAttribute key="restart" value="false"/>
