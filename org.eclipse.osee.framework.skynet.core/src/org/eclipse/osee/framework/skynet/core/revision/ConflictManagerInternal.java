@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
@@ -129,7 +130,7 @@ public class ConflictManagerInternal {
          monitor = new EmptyMonitor();
       }
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
-      if (commitTransactionId != -1) {
+      if (commitTransactionId != 0) {
          try {
             return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId), monitor);
          } catch (TransactionDoesNotExist ex) {
@@ -333,7 +334,7 @@ public class ConflictManagerInternal {
                String sourceValue =
                      chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
-               if (attrId != nextAttrId) {
+               if (attrId != nextAttrId && validAttributeConflcit(destGamma, sourceBranch)) {
                   attrId = nextAttrId;
                   attributeConflictBuilder =
                         new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
@@ -351,6 +352,33 @@ public class ConflictManagerInternal {
          System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
       }
       monitor.updateWork(30);
+   }
+   
+   private static boolean validAttributeConflcit(int destinationGammaId, Branch sourceBranch) throws OseeCoreException{
+      boolean isValidConflict = true;
+      int parentTransactionNumber = Integer.MAX_VALUE;
+
+      for(Branch branch : sourceBranch.getBranchHierarchy()){
+         isValidConflict &= conflcitIsValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
+         parentTransactionNumber = branch.getParentTransactionNumber();
+         
+         if(!isValidConflict){
+            break;
+         }
+      }
+      return isValidConflict;
+   }
+   
+   private static boolean conflcitIsValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException{
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      boolean isValidConflcit;
+      try{
+         chStmt.runPreparedQuery("select 'x' from osee_tx_details t1, osee_txs t2 where t2.transaction_id = t1.transaction_id and t2.gamma_id = ? and t1.branch_id =? and t1.transaction_id <=?",destinationGammaId, branch.getBranchId(), endTransactionNumber);
+         isValidConflcit = !chStmt.next();
+      }finally{
+         chStmt.close();
+      }
+      return isValidConflcit;
    }
 
    private static void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
