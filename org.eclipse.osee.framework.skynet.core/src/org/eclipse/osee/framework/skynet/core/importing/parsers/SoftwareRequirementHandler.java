@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
 /**
  * @author Robert A. Fisher

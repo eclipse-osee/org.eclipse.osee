@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,7 +24,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -99,7 +101,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException {
       try {
          Artifact realArtifact = null;
          RoughArtifact roughParent = roughArtifact.getRoughParent();
@@ -121,7 +123,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
                OseeLog.log(Activator.class, Level.INFO,
                      "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
                if (createNewIfNotExist) {
-                  realArtifact = super.resolve(roughArtifact);
+                  realArtifact = super.resolve(roughArtifact, branch);
                }
             }
          }

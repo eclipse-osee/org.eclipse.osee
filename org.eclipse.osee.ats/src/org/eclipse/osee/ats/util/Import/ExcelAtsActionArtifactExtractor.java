@@ -35,8 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.importing.AbstractArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -47,106 +46,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Donald G. Dunne
  */
-public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private ExcelSaxHandler excelHandler;
-   private String[] headerRow;
-   private int rowNum = 0;
-   private final boolean emailPOCs;
-   private enum Columns {
-      Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
-   };
+public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor {
 
-   public String getDescription() {
-      return "Extract each row as an Action";
-   }
-   private final Set<ActionData> actionDatas = new HashSet<ActionData>();
-   private final Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   private final Set<ActionData> actionDatas;
+   private final Set<ActionArtifact> actionArts;
+   private final boolean emailPOCs;
 
    public ExcelAtsActionArtifactExtractor(boolean emailPOCs) {
       this.emailPOCs = emailPOCs;
-   }
-
-   public void processHeaderRow(String[] headerRow) {
-      this.headerRow = headerRow.clone();
-   }
-
-   private static class ActionData {
-      public String title = "";
-      public String desc = "";
-      public String priorityStr = "";
-      public Set<String> userComms = new HashSet<String>();
-      public String changeType = "";
-      public Set<String> assigneeStrs = new HashSet<String>();
-      public Set<User> assignees = new HashSet<User>();
-      public Set<String> actionableItems = new HashSet<String>();
-      public String version = "";
-   }
-
-   /**
-    * import Artifacts
-    * 
-    * @param cols
-    */
-   public void processRow(String[] cols) {
-
-      rowNum++;
-      System.out.println("Processing Row " + rowNum);
-
-      boolean fullRow = false;
-      for (int i = 0; i < cols.length; i++) {
-         if (cols[i] != null && !cols[i].equals("")) {
-            fullRow = true;
-            break;
-         }
-      }
-      if (!fullRow) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
-         return;
-      }
-
-      System.out.println("Reading rows...");
-      ActionData aData = new ActionData();
-      for (int i = 0; i < cols.length; i++) {
-         if (headerRow[i] == null) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
-         } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
-            if (cols[i].equals("")) {
-               return;
-            }
-            aData.title = cols[i];
-         } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
-            aData.priorityStr = cols[i];
-         } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
-            aData.version = cols[i] == null ? "" : cols[i];
-         } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
-            aData.changeType = cols[i];
-         } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
-            aData.desc = cols[i] == null ? "" : cols[i];
-         } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
-            for (String str : cols[i].split(";")) {
-               if (!str.equals("")) {
-                  aData.userComms.add(str);
-               }
-            }
-         } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
-            for (String str : cols[i].split(";")) {
-               if (!str.equals("")) {
-                  aData.actionableItems.add(str);
-               }
-            }
-         } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
-            if (cols[i] != null) {
-               for (String str : cols[i].split(";")) {
-                  if (!str.equals("")) {
-                     aData.assigneeStrs.add(str);
-                  }
-               }
-            }
-         } else {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
-         }
-      }
-      actionDatas.add(aData);
+      this.actionDatas = new HashSet<ActionData>();
+      this.actionArts = new HashSet<ActionArtifact>();
    }
 
    public boolean dataIsValid() throws OseeCoreException {
@@ -247,30 +156,18 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       }
    }
 
-   public void process(URI source, Branch branch) throws OseeCoreException {
+   public void process(URI source) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-         excelHandler = new ExcelSaxHandler(this, true);
-         xmlReader.setContentHandler(excelHandler);
+         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(actionDatas), true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
    }
 
-   public void processEmptyRow() {
-   }
-
-   public void processCommentRow(String[] row) {
-   }
-
-   public void reachedEndOfWorksheet() {
-   }
-
-   public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
-   }
-
-   public void foundStartOfWorksheet(String sheetName) {
+   public String getDescription() {
+      return "Extract each row as an Action";
    }
 
    /**
@@ -292,5 +189,119 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
    @Override
    public boolean usesTypeList() {
       return false;
+   }
+
+   private final static class ActionData {
+      protected String title = "";
+      protected String desc = "";
+      protected String priorityStr = "";
+      protected Set<String> userComms = new HashSet<String>();
+      protected String changeType = "";
+      protected Set<String> assigneeStrs = new HashSet<String>();
+      protected Set<User> assignees = new HashSet<User>();
+      protected Set<String> actionableItems = new HashSet<String>();
+      protected String version = "";
+   }
+
+   private final static class InternalRowProcessor implements RowProcessor {
+
+      private static enum Columns {
+         Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
+      };
+
+      private String[] headerRow;
+      private int rowNum = 0;
+      private final Set<ActionData> actionDatas;
+
+      protected InternalRowProcessor(Set<ActionData> actionDatas) {
+         this.actionDatas = actionDatas;
+      }
+
+      @Override
+      public void processEmptyRow() {
+      }
+
+      @Override
+      public void processCommentRow(String[] row) {
+      }
+
+      @Override
+      public void reachedEndOfWorksheet() {
+      }
+
+      @Override
+      public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
+      }
+
+      @Override
+      public void foundStartOfWorksheet(String sheetName) {
+      }
+
+      @Override
+      public void processHeaderRow(String[] headerRow) {
+         this.headerRow = headerRow.clone();
+      }
+
+      @Override
+      public void processRow(String[] cols) {
+         rowNum++;
+         System.out.println("Processing Row " + rowNum);
+
+         boolean fullRow = false;
+         for (int i = 0; i < cols.length; i++) {
+            if (cols[i] != null && !cols[i].equals("")) {
+               fullRow = true;
+               break;
+            }
+         }
+         if (!fullRow) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
+            return;
+         }
+
+         System.out.println("Reading rows...");
+         ActionData aData = new ActionData();
+         for (int i = 0; i < cols.length; i++) {
+            if (headerRow[i] == null) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
+            } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
+               if (cols[i].equals("")) {
+                  return;
+               }
+               aData.title = cols[i];
+            } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
+               aData.priorityStr = cols[i];
+            } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
+               aData.version = cols[i] == null ? "" : cols[i];
+            } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
+               aData.changeType = cols[i];
+            } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
+               aData.desc = cols[i] == null ? "" : cols[i];
+            } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
+               for (String str : cols[i].split(";")) {
+                  if (!str.equals("")) {
+                     aData.userComms.add(str);
+                  }
+               }
+            } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
+               for (String str : cols[i].split(";")) {
+                  if (!str.equals("")) {
+                     aData.actionableItems.add(str);
+                  }
+               }
+            } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
+               if (cols[i] != null) {
+                  for (String str : cols[i].split(";")) {
+                     if (!str.equals("")) {
+                        aData.assigneeStrs.add(str);
+                     }
+                  }
+               }
+            } else {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
+            }
+         }
+         actionDatas.add(aData);
+      }
    }
 }

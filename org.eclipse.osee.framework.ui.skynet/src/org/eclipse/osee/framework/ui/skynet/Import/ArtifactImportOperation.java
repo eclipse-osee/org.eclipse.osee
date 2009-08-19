@@ -13,20 +13,16 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -38,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class ArtifactImportOperation extends AbstractOperation {
    private final File file;
    private final IArtifactImportResolver artifactResolver;
-   private final ArtifactExtractor extractor;
+   private final IArtifactSourceParser extractor;
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;
@@ -46,7 +42,7 @@ public class ArtifactImportOperation extends AbstractOperation {
    private final RoughArtifact rootRoughArtifact;
    private final boolean stopOnError = false;
 
-   public ArtifactImportOperation(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
+   public ArtifactImportOperation(File file, Artifact importRoot, IArtifactSourceParser extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       super("Importing Artifacts", SkynetGuiPlugin.PLUGIN_ID);
       this.file = file;
       this.extractor = extractor;
@@ -55,18 +51,20 @@ public class ArtifactImportOperation extends AbstractOperation {
       this.roughRelations = new ArrayList<RoughRelation>();
       this.branch = branch;
       this.importRoot = importRoot;
-      this.rootRoughArtifact = new RoughArtifact(importRoot);
+      this.rootRoughArtifact = null;
+      //      new RoughArtifact(importRoot); 
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      IOperation subOperation = new FindRoughArtifactsOperation("Convert File(s) to Rough Artifact");
-      doSubWork(subOperation, monitor, 0.10);
+      IOperation subOperation = null;
+      //      new FindRoughArtifactsOperation("Convert File(s) to Rough Artifact");
+      //      doSubWork(subOperation, monitor, 0.10);
 
       SkynetTransaction transaction = new SkynetTransaction(branch);
 
-      subOperation = new ConvertToRealArtifacts("Rough to Real Artifact(s)", transaction);
-      doSubWork(subOperation, monitor, 0.50);
+      //      subOperation = new ConvertToRealArtifacts("Rough to Real Artifact(s)", transaction);
+      //      doSubWork(subOperation, monitor, 0.50);
 
       subOperation = new ArtifactValidationCheckOperation(importRoot.getDescendants(), stopOnError);
       doSubWork(subOperation, monitor, 0.20);
@@ -75,88 +73,5 @@ public class ArtifactImportOperation extends AbstractOperation {
       monitor.subTask("Committing Transaction");
       transaction.execute();
       monitor.worked(calculateWork(0.20));
-   }
-
-   private final class ConvertToRealArtifacts extends AbstractOperation {
-      private final SkynetTransaction transaction;
-
-      public ConvertToRealArtifacts(String operationName, SkynetTransaction transaction) {
-         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
-         this.transaction = transaction;
-      }
-
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         monitor.setTaskName("Creating Artifacts");
-         int totalItems = roughArtifacts.size() + roughRelations.size();
-         int unitOfWork = calculateWork(totalItems / getTotalWorkUnits());
-
-         for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-            // the getReal call will recursively call get real on all descendants of roughArtifact
-            Artifact child = roughArtifact.getReal(transaction, monitor, artifactResolver);
-            if (child != null) {
-               importRoot.addChild(child);
-            }
-            monitor.worked(unitOfWork);
-         }
-
-         monitor.setTaskName("Creating Relations");
-         for (RoughRelation roughRelation : roughRelations) {
-            roughRelation.makeReal(transaction, monitor);
-            monitor.worked(unitOfWork);
-         }
-      }
-   }
-
-   private final class FindRoughArtifactsOperation extends AbstractOperation {
-
-      public FindRoughArtifactsOperation(String operationName) {
-         super(operationName, SkynetGuiPlugin.PLUGIN_ID);
-      }
-
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         File[] files = file.isDirectory() ? file.listFiles(extractor.getFileFilter()) : new File[] {file};
-         extractArtifacts(files, rootRoughArtifact);
-      }
-
-      /**
-       * used recursively when originally passed a directory, thus an array of files is accepted
-       * 
-       * @param files
-       * @param parentArtifact
-       * @throws Exception
-       */
-      private void extractArtifacts(File[] files, RoughArtifact parentArtifact) throws OseeCoreException {
-         for (File file : files) {
-            if (file.isFile()) {
-               try {
-                  extractor.process(file.toURI(), branch);
-               } catch (OseeCoreException ex) {
-                  throw ex;
-               } catch (Exception ex) {
-                  throw new OseeWrappedException(ex);
-               }
-               List<RoughArtifact> tempArtifacts = extractor.getRoughArtifacts();
-               roughArtifacts.addAll(tempArtifacts);
-               roughRelations.addAll(extractor.getRoughRelations(parentArtifact));
-
-               for (RoughArtifact roughArtifact : tempArtifacts) {
-                  if (roughArtifact.getRoughParent() == null) {
-                     parentArtifact.addChild(roughArtifact);
-                  }
-               }
-            } else if (file.isDirectory()) {
-               RoughArtifact directoryArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, branch, file.getName());
-               roughArtifacts.add(directoryArtifact);
-               parentArtifact.addChild(directoryArtifact);
-
-               extractArtifacts(file.listFiles(extractor.getFileFilter()), directoryArtifact);
-            } else {
-               throw new OseeStateException(file + " is not a file or directory");
-            }
-         }
-      }
-
    }
 }

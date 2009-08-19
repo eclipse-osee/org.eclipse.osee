@@ -8,16 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
+public abstract class AbstractArtifactExtractor implements IArtifactSourceParser {
 
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;

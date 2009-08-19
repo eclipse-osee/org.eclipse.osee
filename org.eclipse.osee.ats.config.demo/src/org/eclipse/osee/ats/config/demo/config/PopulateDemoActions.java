@@ -48,11 +48,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.WordOutlineParserDelegate;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.NewArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.WordOutlineExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineParserDelegate;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -100,10 +100,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    public void run(boolean prompt) throws Exception {
       AtsUtil.setEmailEnabled(false);
-      if (AtsUtil.isProductionDb()) throw new IllegalStateException(
-            "PopulateDemoActions should not be run on production DB");
-      if (DbUtil.isDbInit() || (!prompt || (prompt && MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
-            getName(), getName())))) {
+      if (AtsUtil.isProductionDb()) {
+         throw new IllegalStateException("PopulateDemoActions should not be run on production DB");
+      }
+      if (DbUtil.isDbInit() || !prompt || prompt && MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+            getName(), getName())) {
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
@@ -210,21 +211,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) {
+            reqTeam = team;
+         }
       }
 
-      if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
+      if (reqTeam == null) {
+         throw new IllegalArgumentException("Can't locate Req team.");
+      }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
-      if (result.isFalse()) throw new IllegalArgumentException(
-            (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
+      if (result.isFalse()) {
+         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
+               result.getText()).toString());
+      }
 
       DemoDbUtil.sleep(5000);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
+               art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "A");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Navigation.name());
@@ -237,8 +244,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
+               art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
@@ -252,7 +259,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       // Delete two artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.daVinci,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Deleting artifact => ")).append(
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(
                art).toString());
          art.deleteAndPersist();
       }
@@ -285,14 +292,20 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void makeAction3ReqChanges(ActionArtifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) {
+            reqTeam = team;
+         }
       }
 
-      if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
+      if (reqTeam == null) {
+         throw new IllegalArgumentException("Can't locate Req team.");
+      }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
-      if (result.isFalse()) throw new IllegalArgumentException(
-            (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
+      if (result.isFalse()) {
+         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
+               result.getText()).toString());
+      }
 
       DemoDbUtil.sleep(5000);
 
@@ -300,7 +313,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
                   reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            (new StringBuilder("Modifying branch artifact => ")).append(branchArtifact).toString());
+            new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "D");
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
@@ -314,7 +327,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
                   reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            (new StringBuilder("Modifying parent artifact => ")).append(parentArtifact).toString());
+            new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "E");
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(),
@@ -326,21 +339,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void makeAction2ReqChanges(ActionArtifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-         if (team.getTeamDefinition().getName().contains("Req")) reqTeam = team;
+         if (team.getTeamDefinition().getName().contains("Req")) {
+            reqTeam = team;
+         }
       }
 
-      if (reqTeam == null) throw new IllegalArgumentException("Can't locate Req team.");
+      if (reqTeam == null) {
+         throw new IllegalArgumentException("Can't locate Req team.");
+      }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getSmaMgr().getBranchMgr().createWorkingBranch(null, false);
-      if (result.isFalse()) throw new IllegalArgumentException(
-            (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
+      if (result.isFalse()) {
+         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
+               result.getText()).toString());
+      }
 
       DemoDbUtil.sleep(5000);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Functional,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-               (new StringBuilder("Modifying artifact => ")).append(art).toString());
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
+               art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
@@ -355,7 +374,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       // Delete one artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST,
             reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch())) {
-         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, (new StringBuilder("Deleting artifact => ")).append(
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(
                art).toString());
          art.deleteAndPersist();
       }
@@ -408,8 +427,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
-                     if (createReview == CreateReview.Decision) teamWf.setSoleAttributeValue(
-                           ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
+                     if (createReview == CreateReview.Decision) {
+                        teamWf.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
+                     }
                   }
                }
                // Transition to desired state
@@ -452,11 +472,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       IArtifactImportResolver artifactResolver =
             new NewArtifactImportResolver(ArtifactTypeManager.getType(requirementArtifactName),
                   ArtifactTypeManager.getType("Heading"));
-      ArtifactExtractor extractor = new WordOutlineExtractor(0, new WordOutlineParserDelegate());
+      IArtifactSourceParser extractor = new WordOutlineExtractor(0, new WordOutlineParserDelegate());
       new ArtifactImportOperation(file, systemReq, extractor, branch, artifactResolver).run(new NullProgressMonitor());
 
       // Validate that something was imported
-      if (systemReq.getChildren().size() == 0) throw new IllegalStateException("Artifacts were not imported");
+      if (systemReq.getChildren().size() == 0) {
+         throw new IllegalStateException("Artifacts were not imported");
+      }
 
    }
 
@@ -511,7 +533,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Test Script Artifacts
          Set<Artifact> verificationTests = new HashSet<Artifact>();
          Artifact verificationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests", branch);
-         if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
+         if (verificationHeader == null) {
+            throw new IllegalStateException("Could not find Verification Tests header");
+         }
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =
                   ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, verificationHeader.getBranch(),
@@ -525,7 +549,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Validation Test Procedure Artifacts
          Set<Artifact> validationTests = new HashSet<Artifact>();
          Artifact validationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests", branch);
-         if (validationHeader == null) throw new IllegalStateException("Could not find Validation Tests header");
+         if (validationHeader == null) {
+            throw new IllegalStateException("Could not find Validation Tests header");
+         }
          for (String str : new String[] {"1", "2", "3"}) {
             Artifact newArt =
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
@@ -539,7 +565,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create Integration Test Procedure Artifacts
          Set<Artifact> integrationTests = new HashSet<Artifact>();
          Artifact integrationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests", branch);
-         if (integrationHeader == null) throw new IllegalStateException("Could not find integration Tests header");
+         if (integrationHeader == null) {
+            throw new IllegalStateException("Could not find integration Tests header");
+         }
          for (String str : new String[] {"X", "Y", "Z"}) {
             Artifact newArt =
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),

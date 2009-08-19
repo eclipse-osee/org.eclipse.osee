@@ -27,11 +27,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
-import org.eclipse.osee.framework.skynet.core.importing.NewArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.RootAndAttributeBasedArtifactResolver;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.RootAndAttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -83,8 +82,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          }
 
          Artifact importRoot = mainPage.getImportRoot();
-         Jobs.runInJob(new ArtifactImportOperation(file, importRoot, (ArtifactExtractor) extractor, branch,
-               artifactResolver), true);
+         Jobs.runInJob(new ArtifactImportOperation(file, importRoot, extractor, branch, artifactResolver), true);
       } catch (OseeCoreException ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
          return false;

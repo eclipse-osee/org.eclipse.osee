@@ -8,26 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
-public class WholeWordDocumentExtractor extends WordExtractor {
+public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    public String getDescription() {
       return "Extract all the content of each Word XML document as one artifact";
    }
 
-   public void process(URI source, Branch branch) throws Exception {
+   public void process(URI source) throws Exception {
       if (source == null) {
-         throw new IllegalArgumentException("importFile can not be null");
+         throw new OseeArgumentException("importFile can not be null");
       }
       RoughArtifact roughArtifact =
-            new RoughArtifact(RoughArtifactKind.PRIMARY, branch, Lib.removeExtension(new File(source).getName()));
+            new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
       addRoughArtifact(roughArtifact);
       roughArtifact.addURIAttribute(WordAttribute.WHOLE_WORD_CONTENT, source);
    }

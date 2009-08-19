@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,7 +17,6 @@ import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -27,10 +26,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class XmlDataExtractor extends AbstractArtifactExtractor {
    @Override
-   public void process(URI source, Branch branch) throws Exception {
+   public void process(URI source) throws Exception {
       ArtifactType primaryArtifactType = ArtifactTypeManager.getType(Lib.removeExtension(new File(source).getName()));
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new XmlDataSaxHandler(this, branch, primaryArtifactType));
+      xmlReader.setContentHandler(new XmlDataSaxHandler(this, primaryArtifactType));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 

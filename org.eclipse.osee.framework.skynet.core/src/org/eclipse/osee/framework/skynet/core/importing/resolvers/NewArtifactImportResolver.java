@@ -8,27 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
 /**
  * @author Ryan D. Brooks
  */
 public class NewArtifactImportResolver implements IArtifactImportResolver {
-   private ArtifactType primaryArtifactType;
-   private ArtifactType secondaryArtifactType;
+   private final ArtifactType primaryArtifactType;
+   private final ArtifactType secondaryArtifactType;
 
    public NewArtifactImportResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
-   public Artifact resolve(final RoughArtifact roughArtifact) throws OseeCoreException {
+   public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch) throws OseeCoreException {
       ArtifactType artifactType = null;
       if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.PRIMARY) {
          artifactType = primaryArtifactType;
@@ -39,7 +42,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       }
 
       Artifact realArtifact =
-            artifactType.getFactory().makeNewArtifact(roughArtifact.getBranch(), artifactType, roughArtifact.getGuid(),
+            artifactType.getFactory().makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
                   roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
                      @Override
                      public void run(Artifact artifact) throws OseeCoreException {

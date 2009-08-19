@@ -38,7 +38,7 @@ public class RoughRelation {
       this.rationale = rationale;
    }
 
-   public void makeReal(SkynetTransaction transaction, IProgressMonitor monitor) throws OseeCoreException {
+   public void createRelation(SkynetTransaction transaction, IProgressMonitor monitor) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relTypeName);
       Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, transaction.getBranch());
       Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, transaction.getBranch());

@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -42,7 +41,7 @@ public class TaskImportJob extends Job {
          atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
          if (file != null && file.isFile()) {
-            atsTaskExtractor.process(file.toURI(), AtsUtil.getAtsBranch());
+            atsTaskExtractor.process(file.toURI());
          } else {
             throw new OseeArgumentException("All files passed must be a file");
          }

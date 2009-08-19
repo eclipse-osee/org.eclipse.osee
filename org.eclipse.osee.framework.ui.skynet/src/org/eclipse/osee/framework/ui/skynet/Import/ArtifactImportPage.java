@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -108,7 +108,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
     */
    public ArtifactImportPage(IStructuredSelection selection) {
       this(getSelection(selection));
-
    }
 
    private static Pair<File, Artifact> getSelection(IStructuredSelection selection) {

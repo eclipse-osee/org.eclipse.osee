@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
 /**
  * Used during imports that ask for artifact re-use to resolve the Artifact to be used for a particular RoughArtifact
@@ -20,5 +22,5 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IArtifactImportResolver {
 
-   public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException;
+   public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException;
 }

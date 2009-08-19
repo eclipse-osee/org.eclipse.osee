@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParser;
-import org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParserDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

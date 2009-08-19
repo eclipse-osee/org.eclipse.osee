@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -26,7 +26,9 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -43,9 +45,9 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    }
 
-   public void process(URI source, Branch branch) throws Exception {
+   public void process(URI source) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(branch), true));
+      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(), true));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 
@@ -73,22 +75,21 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             new DoubleKeyHashMap<String, Integer, RoughArtifact>();
 
       private final Matcher guidMatcher;
-      private final Branch branch;
 
       private int rowCount;
       private String[] headerRow;
       private ArtifactType primaryDescriptor;
       private boolean importingRelations;
 
-      public ExcelRowProcessor(Branch branch) {
-         this.branch = branch;
+      public ExcelRowProcessor() {
          this.guidMatcher = guidPattern.matcher("");
 
          rowCount = 0;
          importingRelations = false;
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#detectedRowAndColumnCounts(int, int)
        */
       @Override
@@ -156,22 +157,21 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             //         int bOrder = Integer.parseInt(row[4]);
             addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
-            RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
+            RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
             for (int i = 0; i < row.length; i++) {
-               if (headerRow[i] == null) {
-                  continue;
-               }
-               if (headerRow[i].equalsIgnoreCase("Outline Number")) {
-                  if (row[i] == null) {
-                     throw new IllegalArgumentException("Outline Number must not be blank");
+               if (headerRow[i] != null) {
+                  if (headerRow[i].equalsIgnoreCase("Outline Number")) {
+                     if (row[i] == null) {
+                        throw new IllegalArgumentException("Outline Number must not be blank");
+                     }
+                     roughArtifact.setSectionNumber(row[i]);
+                  } else if (headerRow[i].equalsIgnoreCase("GUID")) {
+                     roughArtifact.setGuid(row[i]);
+                  } else if (headerRow[i].equalsIgnoreCase("Human Readable Id")) {
+                     roughArtifact.setHumandReadableId(row[i]);
+                  } else {
+                     roughArtifact.addAttribute(headerRow[i], row[i]);
                   }
-                  roughArtifact.setSectionNumber(row[i]);
-               } else if (headerRow[i].equalsIgnoreCase("GUID")) {
-                  roughArtifact.setGuid(row[i]);
-               } else if (headerRow[i].equalsIgnoreCase("Human Readable Id")) {
-                  roughArtifact.setHumandReadableId(row[i]);
-               } else {
-                  roughArtifact.addAttribute(headerRow[i], row[i]);
                }
             }
             addRoughArtifact(roughArtifact);

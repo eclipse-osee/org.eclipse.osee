@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -22,16 +23,14 @@ import org.xml.sax.SAXException;
 public class XmlDataSaxHandler extends AbstractSaxHandler {
    private int level = 0;
    private RoughArtifact roughArtifact;
-   private final Branch branch;
    private final AbstractArtifactExtractor extractor;
    private final ArtifactType primaryArtifactType;
 
    /**
     * @param branch
     */
-   public XmlDataSaxHandler(AbstractArtifactExtractor extractor, Branch branch, ArtifactType primaryArtifactType) {
+   public XmlDataSaxHandler(AbstractArtifactExtractor extractor, ArtifactType primaryArtifactType) {
       super();
-      this.branch = branch;
       this.extractor = extractor;
       this.primaryArtifactType = primaryArtifactType;
    }
@@ -49,7 +48,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
       level++;
 
       if (level == 2) {
-         roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
+         roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
          roughArtifact.setPrimaryArtifactType(primaryArtifactType);
          extractor.addRoughArtifact(roughArtifact);
       }

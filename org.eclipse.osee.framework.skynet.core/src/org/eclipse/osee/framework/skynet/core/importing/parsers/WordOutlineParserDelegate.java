@@ -8,15 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -71,14 +72,14 @@ public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDeleg
       roughArtifact = null;
    }
 
-   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) throws OseeCoreException {
+   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
       if (!headerNumber.equals("")) {
          lastHeaderNumber = headerNumber;
       }
 
       if (!headerNumber.equals("") && WordUtil.isHeadingStyle(paragraphStyle) && !WordUtil.textOnly(content).equals("")) {
          setContent();
-         roughArtifact = setUpNewArtifact(headerNumber, branch);
+         roughArtifact = setUpNewArtifact(headerNumber);
          previousNamedArtifact = roughArtifact;
 
          processHeadingText(roughArtifact, WordUtil.textOnly(content));
@@ -109,10 +110,10 @@ public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDeleg
       roughArtifact.addAttribute("Name", headingText.trim());
    }
 
-   private RoughArtifact setUpNewArtifact(String parNumber, Branch branch) throws OseeCoreException {
+   private RoughArtifact setUpNewArtifact(String parNumber) throws OseeCoreException {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
-         RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, branch);
+         RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
          duplicateCatcher.put(parNumber, roughArtifact);
 
          getExtractor().addRoughArtifact(roughArtifact);

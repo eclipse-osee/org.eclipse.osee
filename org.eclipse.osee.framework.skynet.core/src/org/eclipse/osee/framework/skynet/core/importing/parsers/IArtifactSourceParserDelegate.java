@@ -8,16 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Robert A. Fisher
  */
 public interface IArtifactSourceParserDelegate {
 
+   /**
+    * Determines whether this delegate can operate with the selected parser
+    * 
+    * @param parser
+    * @return whether this delegate is compatible with the parser
+    */
    public boolean isApplicable(IArtifactSourceParser parser);
 
    /**
@@ -58,8 +63,7 @@ public interface IArtifactSourceParserDelegate {
     * @param paragraphStyle
     * @param content
     * @param isParagraph
-    * @param branch
     * @throws OseeCoreException
     */
-   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph, Branch branch) throws OseeCoreException;
+   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
 }

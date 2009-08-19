@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -58,7 +58,7 @@ public class BranchSelectComposite extends Composite implements Listener {
    }
 
    private void createControl(Composite parent) {
-      parent.setLayout(new GridLayout(2, false));
+      parent.setLayout(ALayout.getZeroMarginLayout(2, false));
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       branchSelectTextWidget = new Text(parent, SWT.BORDER | SWT.READ_ONLY);

@@ -143,7 +143,7 @@ public class ActionImportPage extends WizardDataTransferPage {
 
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
-         extractor.process(file.toURI(), AtsUtil.getAtsBranch());
+         extractor.process(file.toURI());
          if (extractor.dataIsValid()) {
             extractor.createArtifactsAndNotify(transaction);
          }

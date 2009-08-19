@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -41,24 +40,22 @@ public class RoughArtifact {
    private String guid;
    private String humandReadableId;
    private HashMap<String, URI> uriAttributes;
-   private final Branch branch;
    private RoughArtifactKind roughArtifactKind;
    private final List<Pair<String, String>> attributes = new ArrayList<Pair<String, String>>();
    private final Collection<RoughArtifact> children = new ArrayList<RoughArtifact>();
    private ArtifactType primaryArtifactType;
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch) {
-      this.branch = branch;
+   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
       this.roughArtifactKind = roughArtifactKind;
    }
 
-   public RoughArtifact(Artifact associatedArtifact) {
-      this(RoughArtifactKind.PRIMARY, associatedArtifact.getBranch());
-      realArtifact = associatedArtifact;
-   }
+   //   public RoughArtifact(Artifact associatedArtifact) {
+   //      this(RoughArtifactKind.PRIMARY, associatedArtifact.getBranch());
+   //      realArtifact = associatedArtifact;
+   //   }
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, Branch branch, String name) {
-      this(roughArtifactKind, branch);
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
+      this(roughArtifactKind);
       addAttribute("Name", name);
    }
 
@@ -148,34 +145,35 @@ public class RoughArtifact {
       return children;
    }
 
-   public Artifact getReal(SkynetTransaction transaction, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException {
-      if (realArtifact != null) {
-         return realArtifact;
-      }
-
-      realArtifact = artifactResolver.resolve(this);
-
-      if (monitor != null) {
-         monitor.subTask(getName());
-         monitor.worked(1);
-      }
-
-      for (RoughArtifact childRoughArtifact : children) {
-         Artifact childArtifact = childRoughArtifact.getReal(transaction, monitor, artifactResolver);
-         if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
-            if (!childArtifact.hasParent()) {
-               realArtifact.addChild(childArtifact);
-            } else if (!childArtifact.getParent().equals(realArtifact)) {
-               throw new OseeStateException(
-                     childArtifact.getName() + " already has a parent that differs from the imported parent");
-            }
-         }
-      }
-
-      if (realArtifact != null) {
-         realArtifact.persistAttributesAndRelations(transaction);
-      }
-      return realArtifact;
+   public Artifact createArtifact(SkynetTransaction transaction, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException {
+      //      if (realArtifact != null) {
+      //         return realArtifact;
+      //      }
+      //
+      //      realArtifact = artifactResolver.resolve(this);
+      //
+      //      if (monitor != null) {
+      //         monitor.subTask(getName());
+      //         monitor.worked(1);
+      //      }
+      //
+      //      for (RoughArtifact childRoughArtifact : children) {
+      //         Artifact childArtifact = childRoughArtifact.createArtifact(transaction, monitor, artifactResolver);
+      //         if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
+      //            if (!childArtifact.hasParent()) {
+      //               realArtifact.addChild(childArtifact);
+      //            } else if (!childArtifact.getParent().equals(realArtifact)) {
+      //               throw new OseeStateException(
+      //                     childArtifact.getName() + " already has a parent that differs from the imported parent");
+      //            }
+      //         }
+      //      }
+      //
+      //      if (realArtifact != null) {
+      //         realArtifact.persistAttributesAndRelations(transaction);
+      //      }
+      //      return realArtifact;
+      return null;
    }
 
    public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
@@ -246,23 +244,10 @@ public class RoughArtifact {
       return null;
    }
 
-   /**
-    * @return the branch
-    */
-   public Branch getBranch() {
-      return branch;
-   }
-
-   /**
-    * @return the primaryArtifactType
-    */
    public ArtifactType getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 
-   /**
-    * @param primaryArtifactType the primaryArtifactType to set
-    */
    public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }

@@ -200,37 +200,37 @@
         <extension
               point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
            <ArtifactSourceParser
-                 classname="org.eclipse.osee.framework.skynet.core.importing.ExcelArtifactExtractor">
+                 classname="org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor">
            </ArtifactSourceParser>
         </extension>
  <extension
         point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
      <ArtifactSourceParser
-           classname="org.eclipse.osee.framework.skynet.core.importing.NativeDocumentExtractor">
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor">
      </ArtifactSourceParser>
   </extension>
   <extension
         point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
      <ArtifactSourceParser
-           classname="org.eclipse.osee.framework.skynet.core.importing.WholeWordDocumentExtractor">
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor">
      </ArtifactSourceParser>
   </extension>
   <extension
        point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
      <ArtifactSourceParser
-           classname="org.eclipse.osee.framework.skynet.core.importing.WordOutlineExtractor">
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor">
      </ArtifactSourceParser>
   </extension>
   <extension
       point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParser">
      <ArtifactSourceParser
-           classname="org.eclipse.osee.framework.skynet.core.importing.XmlDataExtractor">
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.XmlDataExtractor">
      </ArtifactSourceParser>
   </extension>
   <extension
         point="org.eclipse.osee.framework.skynet.core.ArtifactSourceParserDelegate">
      <ArtifactSourceParserDelegate
-           classname="org.eclipse.osee.framework.skynet.core.importing.WordOutlineParserDelegate">
+           classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineParserDelegate">
      </ArtifactSourceParserDelegate>
   </extension>        
         

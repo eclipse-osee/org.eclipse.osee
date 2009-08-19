@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,14 +24,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Robert A. Fisher
  */
-public class WordOutlineExtractor extends WordExtractor {
+public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
@@ -40,7 +39,7 @@ public class WordOutlineExtractor extends WordExtractor {
    private static final String TABLE_TAG = "<w:tbl>";
    private static final CharSequence[] BODY_TAGS =
          new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY, PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY,
-               TABLE_TAG_WITH_ATTRS, BODY_END};
+               TABLE_TAG_WITH_ATTRS, WordUtil.BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
    private static final Pattern internalAttributeElementsPattern =
@@ -93,11 +92,11 @@ public class WordOutlineExtractor extends WordExtractor {
       throw new OseeStateException(String.format("File format error - [%s]: %s", source.toASCIIString(), message));
    }
 
-   public void process(URI source, Branch branch) throws Exception {
+   public void process(URI source) throws Exception {
 
       Reader reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
 
-      if (Readers.forward(reader, BODY_START) == null) {
+      if (Readers.forward(reader, WordUtil.BODY_START) == null) {
          handleFormatError(source, "no start of body tag");
       }
 
@@ -110,7 +109,7 @@ public class WordOutlineExtractor extends WordExtractor {
          // Process the next available body tag
          while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
-            if (element == BODY_END) {
+            if (element == WordUtil.BODY_END) {
                return;
             } else {
                // Get the next parsable chunk from the stream. This will throttle the amount of the file read in to
@@ -149,7 +148,7 @@ public class WordOutlineExtractor extends WordExtractor {
                parseContentDetails(content, new Stack<String>());
                try {
                   handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
-                        content.toString(), element == PARAGRAPH_TAG, branch);
+                        content.toString(), element == PARAGRAPH_TAG);
                } catch (OseeCoreException ex) {
                   throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
                }

@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParserDelegate;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**

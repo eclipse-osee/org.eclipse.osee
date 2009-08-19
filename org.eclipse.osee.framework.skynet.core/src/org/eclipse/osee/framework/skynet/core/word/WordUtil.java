@@ -48,6 +48,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
  * @author Paul K. Waldfogel
  */
 public class WordUtil {
+   public static final String BODY_START = "<w:body>";
+   public static final String BODY_END = "</w:body>";
+
    private static final String SELECT_WORD_VALUES =
          "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,

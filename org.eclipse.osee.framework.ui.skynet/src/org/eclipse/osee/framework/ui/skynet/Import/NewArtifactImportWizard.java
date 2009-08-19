@@ -11,9 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -25,6 +28,8 @@ import org.eclipse.ui.IWorkbench;
 public class NewArtifactImportWizard extends Wizard implements IImportWizard {
    private File importFile;
    private Artifact reuseRootArtifact;
+   private ArtifactImportSourcePage mainPage;
+   private IStructuredSelection selection;
 
    public NewArtifactImportWizard() {
       super();
@@ -71,17 +76,37 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
    }
 
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      if (importFile != null && reuseRootArtifact != null) {
-         //         this.mainPage = new ArtifactImportPage(importFile, reuseRootArtifact);
-      } else {
-         //         this.mainPage = new ArtifactImportPage(selection);
+      mainPage = new ArtifactImportSourcePage();
+      if (importFile == null && reuseRootArtifact == null) {
+         Pair<File, Artifact> items = getSelection(selection);
+         importFile = items.getFirst();
+         reuseRootArtifact = items.getSecond();
       }
+      mainPage.setDefaultDestinationArtifact(reuseRootArtifact);
+      mainPage.setDefaultResource(importFile);
+   }
+
+   private Pair<File, Artifact> getSelection(IStructuredSelection selection) {
+      Artifact selectedArtifact = null;
+      File importResource = null;
+      if (selection != null && selection.size() == 1) {
+         Object firstElement = selection.getFirstElement();
+         if (firstElement instanceof IAdaptable) {
+            Object resource = ((IAdaptable) firstElement).getAdapter(IResource.class);
+            if (resource instanceof IResource) {
+               importResource = ((IResource) resource).getLocation().toFile();
+            }
+         }
+         if (firstElement instanceof Artifact) {
+            selectedArtifact = (Artifact) firstElement;
+         }
+      }
+      return new Pair<File, Artifact>(importResource, selectedArtifact);
    }
 
    @Override
    public void addPages() {
-      addPage(new ArtifactImportSourcePage());
-      addPage(new ArtifactImportDestinationPage());
+      addPage(mainPage);
    }
 
    //   @Override

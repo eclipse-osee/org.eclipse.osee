@@ -8,15 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.importing;
+package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import java.io.FileFilter;
 import java.net.URI;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 
 /**
- * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
 public interface IArtifactSourceParser {
 
@@ -25,13 +27,12 @@ public interface IArtifactSourceParser {
    public abstract String getDescription();
 
    /**
-    * called before getRoughArtifacts and getRoughRelations to discover the data that they will return
+    * Creates rough artifacts and relations from the source provided
     * 
     * @param source input from which to extract artifact data
-    * @param branch
     * @throws Exception
     */
-   public abstract void process(URI source, Branch branch) throws Exception;
+   public abstract void process(URI source) throws Exception;
 
    public abstract List<RoughArtifact> getRoughArtifacts() throws OseeCoreException;
 
@@ -40,6 +41,8 @@ public interface IArtifactSourceParser {
    public abstract void addRoughArtifact(RoughArtifact roughArtifact) throws OseeCoreException;
 
    public abstract void addRoughRelation(RoughRelation roughRelation) throws OseeCoreException;
+
+   public abstract FileFilter getFileFilter();;
 
    public abstract boolean usesTypeList();
 
