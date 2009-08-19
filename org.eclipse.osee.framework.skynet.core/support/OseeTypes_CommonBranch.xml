@@ -10,7 +10,7 @@
   <LastAuthor>Ryan Brooks</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2008-11-29T20:07:41Z</LastSaved>
+  <LastSaved>2009-08-18T22:45:23Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -651,7 +651,7 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:StyleID="Default">
     <Cell ss:StyleID="s26"><Data ss:Type="String">Work Rule Definition</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">osee.wi.Work Type</Data></Cell>
-    <Cell ss:Index="7" ss:StyleID="s39"><Data ss:Type="String">, &quot;</Data></Cell>
+    <Cell ss:Index="7" ss:StyleID="s39"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:StyleID="Default">
     <Cell ss:StyleID="s26"><Data ss:Type="String">Work Rule Definition</Data></Cell>
@@ -1001,10 +1001,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
+   <TopRowVisible>45</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>39</ActiveRow>
+     <ActiveRow>91</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
