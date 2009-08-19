@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -40,6 +41,10 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
 
       // Create XViewer Customization artifact that lives on common branch
       GlobalXViewerSettings.createAtsCustomArtifact().persistAttributesAndRelations(transaction);
+
+      // cause Osee Admin group to be created
+      SystemGroup.OseeAdmin.getArtifact().persistAttributesAndRelations(transaction);
+
       transaction.execute();
    }
 
