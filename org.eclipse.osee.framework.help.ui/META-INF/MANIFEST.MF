@@ -4,15 +4,6 @@ Bundle-Name: org.eclipse.osee.framework.help.ui
 Bundle-SymbolicName: org.eclipse.osee.framework.help.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui;resolution:=optional,
- org.eclipse.ui.forms;resolution:=optional,
- org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)";resolution:=optional,
- org.eclipse.mylyn.tasks.ui;bundle-version="[3.0.0,4.0.0)";resolution:=optional,
- org.eclipse.mylyn.commons.ui;bundle-version="[3.0.0,4.0.0)";resolution:=optional,
- org.apache.ant;bundle-version="1.7.0";resolution:=optional,
- org.eclipse.mylyn.wikitext.core;bundle-version="1.0.1";resolution:=optional,
- org.eclipse.mylyn.wikitext.mediawiki.core;bundle-version="1.0.1";resolution:=optional,
- org.eclipse.help.ui;bundle-version="3.3.102"
+Require-Bundle: org.apache.ant;bundle-version="1.7.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
