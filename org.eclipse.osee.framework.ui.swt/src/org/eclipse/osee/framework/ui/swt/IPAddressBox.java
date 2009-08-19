@@ -36,11 +36,10 @@ public class IPAddressBox extends Composite {
 		this(parent, true, SWT.BORDER);
 	}
 
-	public IPAddressBox(final Composite parent, boolean useDash, int style) {
+	public IPAddressBox(final Composite parent, int style, String separator) {
 		super(parent, style);
 		Widgets.setFormLayout(this, 0, 0);
 
-		String separator = (useDash ? DASH_SEPARATOR : PERIOD_SEPARATOR);
 		if ((style & SWT.READ_ONLY) > 0) {
 			background = parent.getBackground();
 		} else {
@@ -121,6 +120,10 @@ public class IPAddressBox extends Composite {
 		Widgets.attachToParent(box[3], SWT.RIGHT, 100, 0);
 		Widgets.attachToControl(box[3], sep3, SWT.LEFT, SWT.RIGHT, 0);
 		Widgets.attachToControl(box[3], sep1, SWT.TOP, SWT.CENTER, 0);
+	}
+	
+	public IPAddressBox(final Composite parent, boolean useDash, int style) {
+		this(parent, style, useDash ? DASH_SEPARATOR : PERIOD_SEPARATOR);
 	}
 
 	/**
