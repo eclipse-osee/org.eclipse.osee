@@ -54,6 +54,8 @@ public abstract class ImageManagerTest {
    @org.junit.BeforeClass
    public static void testSetup() throws Exception {
       monitorLog = new SevereLoggingMonitor();
+      // Clear db image
+      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
       OseeLog.registerLoggerListener(monitorLog);
    }
 
