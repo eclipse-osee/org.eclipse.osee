@@ -416,7 +416,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
       item.setToolTipText("&Access Control");
-      item.setText("&Access Control");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
