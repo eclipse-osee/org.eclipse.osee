@@ -17,8 +17,8 @@ public class DemoArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage("Demo Code Team Workflow", DemoImage.DEMO_WORKFLOW);
-      ImageManager.registerBaseImage("Demo Req Team Workflow", DemoImage.DEMO_WORKFLOW);
-      ImageManager.registerBaseImage("Demo Test Team Workflow", DemoImage.DEMO_WORKFLOW);
+      ImageManager.registerBaseImage("Demo Code Team Workflow", DemoImage.DEMO_WORKFLOW, this);
+      ImageManager.registerBaseImage("Demo Req Team Workflow", DemoImage.DEMO_WORKFLOW, this);
+      ImageManager.registerBaseImage("Demo Test Team Workflow", DemoImage.DEMO_WORKFLOW, this);
    }
 }

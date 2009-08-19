@@ -31,15 +31,15 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage(DecisionReviewArtifact.ARTIFACT_NAME, AtsImage.REVIEW);
-      ImageManager.registerBaseImage("Action", AtsImage.ACTION);
-      ImageManager.registerBaseImage("Version", FrameworkImage.VERSION);
-      ImageManager.registerBaseImage("Task", AtsImage.TASK);
-      ImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM);
-      ImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW);
-      ImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION);
-      ImageManager.registerBaseImage("Goal", AtsImage.GOAL);
-      ImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW);
+      ImageManager.registerBaseImage(DecisionReviewArtifact.ARTIFACT_NAME, AtsImage.REVIEW, this);
+      ImageManager.registerBaseImage("Action", AtsImage.ACTION, this);
+      ImageManager.registerBaseImage("Version", FrameworkImage.VERSION, this);
+      ImageManager.registerBaseImage("Task", AtsImage.TASK, this);
+      ImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM, this);
+      ImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW, this);
+      ImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION, this);
+      ImageManager.registerBaseImage("Goal", AtsImage.GOAL, this);
+      ImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
 
       ImageManager.registerOverrideImageProvider(this, VersionArtifact.ARTIFACT_NAME);
       ImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);

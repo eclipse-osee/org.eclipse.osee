@@ -16,10 +16,10 @@ public class OteArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage("Test Procedure", OteImage.TEST_PROCEDURE);
-      ImageManager.registerBaseImage("Test Configuration", OteImage.TEST_CONFIG);
-      ImageManager.registerBaseImage("Test Run", OteImage.TEST_RUN);
-      ImageManager.registerBaseImage("Test Case", OteImage.TEST_CASE);
-      ImageManager.registerBaseImage("Test Support", OteImage.TEST_SUPPORT);
+      ImageManager.registerBaseImage("Test Procedure", OteImage.TEST_PROCEDURE, this);
+      ImageManager.registerBaseImage("Test Configuration", OteImage.TEST_CONFIG, this);
+      ImageManager.registerBaseImage("Test Run", OteImage.TEST_RUN, this);
+      ImageManager.registerBaseImage("Test Case", OteImage.TEST_CASE, this);
+      ImageManager.registerBaseImage("Test Support", OteImage.TEST_SUPPORT, this);
    }
 }

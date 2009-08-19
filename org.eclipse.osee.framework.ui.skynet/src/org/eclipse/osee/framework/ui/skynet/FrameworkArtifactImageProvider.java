@@ -19,18 +19,18 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage("Heading", FrameworkImage.HEADING);
-      ImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE);
-      ImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM);
-      ImageManager.registerBaseImage("Folder", FrameworkImage.FOLDER);
-      ImageManager.registerBaseImage("User", FrameworkImage.USER);
-      ImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR);
-      ImageManager.registerBaseImage("User Group", FrameworkImage.USERS);
-      ImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW);
-      ImageManager.registerBaseImage("Work Page Definition", FrameworkImage.PAGE);
-      ImageManager.registerBaseImage("Work Rule Definition", FrameworkImage.RULE);
-      ImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET);
-      ImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP);
+      ImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
+      ImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
+      ImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
+      ImageManager.registerBaseImage("Folder", FrameworkImage.FOLDER, this);
+      ImageManager.registerBaseImage("User", FrameworkImage.USER, this);
+      ImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR, this);
+      ImageManager.registerBaseImage("User Group", FrameworkImage.USERS, this);
+      ImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW, this);
+      ImageManager.registerBaseImage("Work Page Definition", FrameworkImage.PAGE, this);
+      ImageManager.registerBaseImage("Work Rule Definition", FrameworkImage.RULE, this);
+      ImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET, this);
+      ImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP, this);
 
       ImageManager.registerOverrideImageProvider(this, "User");
    }
