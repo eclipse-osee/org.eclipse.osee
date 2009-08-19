@@ -13,7 +13,6 @@ package org.eclipse.osee.support.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_TestDb_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
@@ -36,7 +35,6 @@ public class MasterTestSuite_TestDbTests {
       assertTrue("Should be run on production datbase.", TestUtil.isTestDb());
       assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
             "lba"));
-      ArtifactSaveNotificationHandler.setNoPopUp(true);
    }
 
 }
