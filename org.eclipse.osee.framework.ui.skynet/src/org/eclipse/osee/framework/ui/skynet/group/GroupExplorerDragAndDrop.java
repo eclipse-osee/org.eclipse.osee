@@ -274,6 +274,13 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    public void copyArtifactsToGroup(DropTargetEvent event, final GroupExplorerItem dragOverExplorerItem) {
       // Items dropped on Group; simply add items to group
       final Artifact[] artsToRelate = ((ArtifactData) event.data).getArtifacts();
+      for (Artifact artifact : artsToRelate) {
+         if (!artifact.getBranch().equals(branch)) {
+            AWorkbench.popup("ERROR",
+                  "Cross-branch grouping not supported.\n\nGroup and Artifacts must belong to same branch.");
+            return;
+         }
+      }
       boolean alreadyRelated = true;
       for (Artifact artifact : artsToRelate) {
          if (!dragOverExplorerItem.contains(artifact)) {
@@ -300,7 +307,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-   
+
    public void setBranch(Branch branch) {
       this.branch = branch;
    }
