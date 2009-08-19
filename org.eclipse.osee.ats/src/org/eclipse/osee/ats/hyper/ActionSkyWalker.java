@@ -92,11 +92,10 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void explore(Artifact artifact) {
-      if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact)))
-         clear();
+      if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact))) clear();
       try {
          getOptions().setArtifact(artifact);
-         getOptions().setLayout(getOptions().getLayout(SkyWalkerOptions.SPRING_LAYOUT));
+         getOptions().setLayout(getOptions().getLayout(SkyWalkerOptions.RADIAL_DOWN_LAYOUT));
          if (artifact instanceof User)
             super.explore(artifact);
          else if (artifact instanceof ATSArtifact)
@@ -128,16 +127,14 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    public boolean activeEditorIsActionEditor() {
       IWorkbenchPage page = getSite().getWorkbenchWindow().getActivePage();
-      if (page == null)
-         return false;
+      if (page == null) return false;
       IEditorPart editorPart = page.getActiveEditor();
       boolean result = (editorPart != null && (editorPart instanceof SMAEditor));
       return result;
    }
 
    public void processWindowActivated() {
-      if (!this.getSite().getPage().isPartVisible(this))
-         return;
+      if (!this.getSite().getPage().isPartVisible(this)) return;
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
@@ -177,9 +174,8 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public String getActionDescription() {
-      if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted())
-         return String.format("Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
-               getOptions().getArtifact().getName());
+      if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted()) return String.format(
+            "Current Artifact - %s - %s", getOptions().getArtifact().getGuid(), getOptions().getArtifact().getName());
       return "";
    }
 
@@ -189,12 +185,9 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote())
-         return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
-         return;
-      if (getOptions().getArtifact() == null)
-         return;
+      if (sender.isRemote()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (getOptions().getArtifact() == null) return;
       if (transData.isDeleted(getOptions().getArtifact())) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
