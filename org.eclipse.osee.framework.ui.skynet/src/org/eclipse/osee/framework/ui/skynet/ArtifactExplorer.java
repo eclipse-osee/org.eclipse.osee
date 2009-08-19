@@ -333,18 +333,19 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          myTreeEditor.minimumWidth = 50;
 
          new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
-         parent.layout();
+         getViewSite().getActionBars().updateActionBars();
 
          OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
 
          OseeContributionItem.addTo(this, false);
-         getViewSite().getActionBars().updateActionBars();
 
          updateEnablementsEtAl();
          trees.add(tree);
          setHelpContexts();
 
          checkBranchReadable();
+         getViewSite().getActionBars().updateActionBars();
+
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -102,6 +102,8 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
       OseeContributionItem.addTo(this, true);
+      getViewSite().getActionBars().updateActionBars();
+
    }
 
    public String getActionDescription() {
