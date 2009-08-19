@@ -59,6 +59,7 @@ public class SkyWalkerOptions {
    private boolean filterEnabled = true;
    private final Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
    public static String RADIAL_DOWN_LAYOUT = "Radial - Down";
+   public static String RADIAL_RIGHT_LAYOUT = "Radial - Right";
    public static String SPRING_LAYOUT = "Spring";
    public static enum LinkName {
       None, Link_Name, Full_Link_Name, Phrasing_A_to_B, Phrasing_B_to_A, Other_Side_Name
