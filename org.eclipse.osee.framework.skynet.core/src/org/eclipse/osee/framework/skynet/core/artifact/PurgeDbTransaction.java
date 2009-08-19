@@ -162,6 +162,7 @@ public class PurgeDbTransaction extends DbTransaction {
             for (Attribute<?> attr : art.internalGetAttributes()) {
                attr.markAsPurged();
             }
+            ArtifactCache.deCache(art);
          }
 
          // Kick Local and Remote Events

@@ -154,6 +154,9 @@ public abstract class ImageManagerTest {
       // Test that folder image is back
       assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
             ImageManager.getImage(FrameworkImage.FOLDER)));
+
+      // Cleanup folder artifact
+      folder.purgeFromBranch();
    }
 
    public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {

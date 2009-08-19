@@ -120,8 +120,10 @@ public class ArtifactCache {
    }
 
    public synchronized static void deCache(Artifact artifact) throws OseeCoreException {
-      instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
-      instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      if (artifact.isInDb()) {
+         instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+         instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      }
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
       instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
       instance.byArtifactTypeCache.removeValue(artifact.getArtifactType(), artifact);
