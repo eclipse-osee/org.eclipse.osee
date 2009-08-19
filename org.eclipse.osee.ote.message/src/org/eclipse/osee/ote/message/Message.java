@@ -56,7 +56,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private String name;
    private final MessageSystemListener listenerHandler;
    protected final ArrayList<IMessageScheduleChangeListener> schedulingChangeListeners =
-         new ArrayList<IMessageScheduleChangeListener>(10);
+      new ArrayList<IMessageScheduleChangeListener>(10);
    private boolean destroyed = false;
 
    private MemType currentMemType;
@@ -144,8 +144,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-	 * 
-	 */
+    * 
+    */
    private void notifyPostDestroyListeners() {
       for (IMessageDisposeListener listener : postMessageDisposeListeners) {
          listener.onPostDispose(this);
@@ -153,8 +153,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-	 * 
-	 */
+    * 
+    */
    private void notifyPreDestroyListeners() {
       for (IMessageDisposeListener listener : preMessageDisposeListeners) {
          try {
@@ -270,7 +270,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
    }
 
- 
+
 
    public void addSendListener(IMessageSendListener listener) {
       getActiveDataSource().addSendListener(listener);
@@ -289,11 +289,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       if (!isTurnedOff) {
          Collection<T> dataList = memToDataMap.get(type);
          if (dataList != null) {
-            
+
             for (T data : dataList) {
                data.send();
             }
-           
+
          } else {
             throw new MessageSystemException(
                   "Message: " + name + " does not have a physical type available for this environment!!!!!",
@@ -504,7 +504,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
       return el;
    }
-  
+
 
    public Element getElement(List<Object> elementPath, MemType type) {
       return getElement(elementPath).switchMessages(this.getMessageTypeAssociation(type));
@@ -520,11 +520,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public Element getElement(String elementName, MemType type) {
       checkState();
       Element retVal = elementMap.get(elementName);
-      if( retVal == null )
-      {
-         throw new IllegalArgumentException(String.format("Element %s not found in message %s.", elementName, getName() ));
+      if(retVal != null ) {
+         return retVal.switchMessages(this.getMessageTypeAssociation(type));
       }
-      return retVal.switchMessages(this.getMessageTypeAssociation(type));
+      return null;
+
    }
 
    public Element getBodyOrHeaderElement(String elementName) {
@@ -782,8 +782,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       TransmissionCountCondition c = new TransmissionCountCondition(numTransmissions);
       MsgWaitResult result = waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
-            new CheckPoint(this.name, Integer.toString(numTransmissions), Integer.toString(result.getXmitCount()),
-                  result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+         new CheckPoint(this.name, Integer.toString(numTransmissions), Integer.toString(result.getXmitCount()),
+               result.isPassed(), result.getXmitCount(), result.getElapsedTime());
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
@@ -805,7 +805,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
       long time = accessor.getEnvTime();
       org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
-            accessor.setTimerFor(listenerHandler, milliseconds);
+         accessor.setTimerFor(listenerHandler, milliseconds);
 
       boolean result;
       listenerHandler.waitForData(); // will also return if the timer (set above)
@@ -1009,8 +1009,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-	 * 
-	 */
+    * 
+    */
    private void notifyPostMemSourceChangeListeners(MemType old, MemType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : postMemSourceChangeListeners) {
@@ -1023,8 +1023,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-	 * 
-	 */
+    * 
+    */
    private void notifyPreMemSourceChangeListeners(MemType old, MemType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : preMemSourceChangeListeners) {
@@ -1169,7 +1169,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public boolean isValidElement(Element currentElement, Element proposedElement) {
       return true;
    }
-   
+
    public IMessageHeader[] getHeaders() {
       final Collection<T> dataSources = getMemSource(getMemType());
       if (dataSources.size() > 0) {
