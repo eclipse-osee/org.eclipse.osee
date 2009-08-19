@@ -23,6 +23,9 @@ public class Requirements {
    public static String HARDWARE_REQUIREMENT = "Hardware Requirement";
    public static String HARDWARE_REQUIREMENTS = "Hardware Requirements";
    public static String SOFTWARE_REQUIREMENT = "Software Requirement";
+   public static String SOFTWARE_REQUIREMENT_DRAWING = "Software Requirement Drawing";
+   public static String SOFTWARE_REQUIREMENT_FUNCTION = "Software Requirement Function";
+   public static String SOFTWARE_REQUIREMENT_PROCEDURE = "Software Requirement Procedure";
    public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
    public static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
    public static String SYSTEM_REQUIREMENT = "System Requirement";
@@ -65,12 +68,14 @@ public class Requirements {
    }
 
    public final static List<String> DIRECT_SOFTWARE_REQUIREMENT_TYPES =
-         Arrays.asList(SOFTWARE_REQUIREMENT, "Button Requirement", "UIG Artifact", "Stand Alone Local Data");
+         Arrays.asList(SOFTWARE_REQUIREMENT, SOFTWARE_REQUIREMENT_FUNCTION, SOFTWARE_REQUIREMENT_PROCEDURE,
+               "Button Requirement", "UIG Artifact", "Stand Alone Local Data");
 
    public final static List<String> ALL_SOFTWARES_REQUIREMENT_TYPES = new ArrayList<String>();
    static {
       ALL_SOFTWARES_REQUIREMENT_TYPES.addAll(DIRECT_SOFTWARE_REQUIREMENT_TYPES);
       ALL_SOFTWARES_REQUIREMENT_TYPES.add(INDIRECT_SOFTWARE_REQUIREMENT);
+      ALL_SOFTWARES_REQUIREMENT_TYPES.add(SOFTWARE_REQUIREMENT_DRAWING);
    }
 
    public static List<String> ALL_TEST_UNIT_TYPES = Arrays.asList(TEST_CASE, TEST_SUPPORT);
