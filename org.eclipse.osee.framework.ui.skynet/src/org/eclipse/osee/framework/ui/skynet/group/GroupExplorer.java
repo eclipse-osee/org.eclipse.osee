@@ -179,7 +179,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
       MenuItem item = new MenuItem(popupMenu, SWT.PUSH);
       item.setText("&Remove from Group");
-      item.setEnabled(isOnlyGroupItemsSelected());
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -189,7 +188,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
       item = new MenuItem(popupMenu, SWT.PUSH);
       item.setText("&Delete Group");
-      item.setEnabled(isOnlyGroupsSelected());
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -199,7 +197,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
       item = new MenuItem(popupMenu, SWT.PUSH);
       item.setText("&New Group");
-      item.setEnabled(true);
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -314,6 +311,10 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    }
 
    private void handleRemoveFromGroup() {
+      if (getSelectedUniversalGroupItems().size() > 0) {
+         AWorkbench.popup("ERROR", "Can't remove Group, use \"Delete Group\".");
+         return;
+      }
       final List<GroupExplorerItem> items = getSelectedItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No Items Selected");
@@ -338,7 +339,11 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    private void handleDeleteGroup() {
       final ArrayList<GroupExplorerItem> items = getSelectedUniversalGroupItems();
       if (items.size() == 0) {
-         AWorkbench.popup("ERROR", "No Groups Selected");
+         AWorkbench.popup("ERROR", "No groups selected.");
+         return;
+      }
+      if (getSelectedItems().size() != items.size()) {
+         AWorkbench.popup("ERROR", "Only select groups to be deleted.");
          return;
       }
       String names = "";
@@ -434,15 +439,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    }
 
    private boolean isOnlyGroupItemsSelected() {
-      if (getSelectedItems().size() == 0) {
-         return false;
-      }
-      for (GroupExplorerItem item : getSelectedItems()) {
-         if (item.isUniversalGroup()) {
-            return false;
-         }
-      }
-      return true;
+      return getSelectedUniversalGroupItems().size() == 0 && getSelectedItems().size() > 0;
    }
 
    private void expandAll(IStructuredSelection selection) {
