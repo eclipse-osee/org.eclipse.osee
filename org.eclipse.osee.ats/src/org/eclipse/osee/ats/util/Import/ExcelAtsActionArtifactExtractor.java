@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -46,7 +45,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Donald G. Dunne
  */
-public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor {
+public class ExcelAtsActionArtifactExtractor {
 
    private final Set<ActionData> actionDatas;
    private final Set<ActionArtifact> actionArts;
@@ -181,14 +180,8 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor {
       return null;
    }
 
-   @Override
    public String getName() {
       return "Excel Ats Actions";
-   }
-
-   @Override
-   public boolean usesTypeList() {
-      return false;
    }
 
    private final static class ActionData {

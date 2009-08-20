@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -43,7 +42,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Donald G. Dunne
  */
-public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor {
+public class ExcelAtsTaskArtifactExtractor {
 
    private final StateMachineArtifact sma;
    private final boolean emailPOCs;
@@ -88,14 +87,8 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor {
       return null;
    }
 
-   @Override
    public String getName() {
       return "Excel Ats Tasks";
-   }
-
-   @Override
-   public boolean usesTypeList() {
-      return false;
    }
 
    private final static class InternalRowProcessor implements RowProcessor {
