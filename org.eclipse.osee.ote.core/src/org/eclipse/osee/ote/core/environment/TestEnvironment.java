@@ -107,9 +107,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
    private OteServerSideEndpointSender oteServerSideEndpointSender;
    private final ServiceTracker messagingServiceTracker;
-   ExecutorService execInitializationTasks;
-   LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
+   private ExecutorService execInitializationTasks;
+   private final LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
 
+   private volatile boolean isShutdown = false;
+   
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
       execInitializationTasks = Executors.newCachedThreadPool();
@@ -397,6 +399,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    }
 
    public void shutdown() {
+      if (isShutdown) {
+         return;
+      }
+      isShutdown = true;
       runtimeManager.cleanup();
       Activator.getInstance().unregisterTestEnvironment();
       // here we remove all environment tasks (emulators)
@@ -420,6 +426,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          getRunManager().clearAllListeners();
       }
       users.clear();
+      
    }
 
    protected abstract void loadExternalDrivers();

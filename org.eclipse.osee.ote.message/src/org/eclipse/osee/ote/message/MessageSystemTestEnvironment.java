@@ -95,10 +95,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       return getRuntimeManager().isBundleAvailable(symbolicName, version, md5Digest);
    }
 
-   public void shutdown() {
-      super.shutdown();
-   }
-
    /**
     * provides a way for sub classes to instantiate test scripts in their own way.
     * 

@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import javax.security.auth.Destroyable;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -40,6 +39,7 @@ public class ModelManager implements IModelManager, DestroyableService {
    private Map<ModelKey, Integer> referenceCountOfModels;
    private WeakReference<TestEnvironment> testEnvironment;
 
+   private boolean isDestroyed = false;
    private final class ModelInfoCmd extends ConsoleCommand {
 
       protected ModelInfoCmd() {
@@ -341,7 +341,10 @@ public class ModelManager implements IModelManager, DestroyableService {
          return ModelState.DISPOSED;
    }
    
-   public void destroy(){
+   public synchronized void destroy(){
+      if (isDestroyed) {
+         return;
+      }
       for(ModelKey modelKey :registeredModels){
          releaseAllReferences(modelKey);
       }
@@ -350,6 +353,7 @@ public class ModelManager implements IModelManager, DestroyableService {
       models.clear();
       registeredModels.clear();
       referenceCountOfModels.clear();
+      isDestroyed = true;
    }
 
 }
