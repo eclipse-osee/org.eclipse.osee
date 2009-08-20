@@ -29,7 +29,7 @@ public class OseeActivator extends Plugin {
    }
 
    /**
-    * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regualar file
+    * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regular file
     * 
     * @param path
     * @return Return plugin file reference
@@ -42,6 +42,7 @@ public class OseeActivator extends Plugin {
    /**
     * This method is called upon plug-in activation
     */
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
       helper = new ActivatorHelper(context, this);
