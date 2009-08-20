@@ -51,6 +51,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.osee.ote.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.osee.ats.feature.source"
          version="0.0.0"/>
 
@@ -61,7 +65,7 @@
    <includes
          id="org.eclipse.osee.framework.ui.feature.source"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.osee.ote.feature.source"
          version="0.0.0"/>
