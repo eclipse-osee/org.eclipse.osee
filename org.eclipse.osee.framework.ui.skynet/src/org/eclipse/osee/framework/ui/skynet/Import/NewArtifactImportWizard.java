@@ -126,18 +126,17 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
 
          List<IOperation> subOps = new ArrayList<IOperation>();
          subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
-         subOps.add(new CompleteImportOperation("Commit & Verify import", transaction, destinationArtifact));
+         subOps.add(new CompleteImportOperation(transaction, destinationArtifact));
          Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
       }
       return true;
    }
-
    private final class CompleteImportOperation extends AbstractOperation {
       private final Artifact destinationArtifact;
       private final SkynetTransaction transaction;
 
-      public CompleteImportOperation(String opName, SkynetTransaction transaction, Artifact destinationArtifact) {
-         super(opName, SkynetGuiPlugin.PLUGIN_ID);
+      public CompleteImportOperation(SkynetTransaction transaction, Artifact destinationArtifact) {
+         super("Commit & Verify import", SkynetGuiPlugin.PLUGIN_ID);
          this.destinationArtifact = destinationArtifact;
          this.transaction = transaction;
       }
