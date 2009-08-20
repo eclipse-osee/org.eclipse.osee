@@ -24,6 +24,11 @@ public abstract class AbstractArtifactExtractor implements IArtifactSourceParser
 
    protected abstract void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception;
 
+   @Override
+   public String toString() {
+      return getName();
+   }
+
    public final void process(URI source, RoughArtifactCollector collector) throws Exception {
       extractFromSource(source, collector);
       connectParentChildRelations(collector);

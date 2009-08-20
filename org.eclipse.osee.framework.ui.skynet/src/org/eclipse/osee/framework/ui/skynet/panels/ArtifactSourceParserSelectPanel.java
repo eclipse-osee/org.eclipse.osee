@@ -111,7 +111,7 @@ public class ArtifactSourceParserSelectPanel {
       return selectedParser;
    }
 
-   private void setArtifactParser(IArtifactSourceParser selectedParser) {
+   public void setArtifactParser(IArtifactSourceParser selectedParser) {
       this.selectedParser = selectedParser;
    }
 
@@ -152,8 +152,7 @@ public class ArtifactSourceParserSelectPanel {
             parserCombo.setToolTipText("Select a source parser");
          }
 
-         Collection<IArtifactSourceParserDelegate> delegates =
-               importContributionManager.getArtifactSourceParserDelegate(sourceParser);
+         Collection<IArtifactSourceParserDelegate> delegates = importContributionManager.getDelegates(sourceParser);
          if (!delegates.isEmpty()) {
             parserComboDelegate.removeAll();
             for (IArtifactSourceParserDelegate handler : delegates) {

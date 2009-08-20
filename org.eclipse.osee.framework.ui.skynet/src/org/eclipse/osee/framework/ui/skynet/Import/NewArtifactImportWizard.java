@@ -34,6 +34,8 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
       setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
       setWindowTitle("Artifact Import Wizard");
       setNeedsProgressMonitor(true);
+
+      setHelpAvailable(true);
    }
 
    public void setImportResourceAndArtifactDestination(File importResource, Artifact defaultDestinationArtifact) {
@@ -66,7 +68,7 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
    public void addPages() {
       mainPage = new ArtifactImportSourcePage();
       mainPage.setDefaultDestinationArtifact(defaultDestinationArtifact);
-      mainPage.setDefaultResource(importResource);
+      mainPage.setDefaultSourceFile(importResource);
       addPage(mainPage);
    }
 

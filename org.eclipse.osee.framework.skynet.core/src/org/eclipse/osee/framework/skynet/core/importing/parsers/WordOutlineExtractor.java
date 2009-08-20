@@ -66,15 +66,11 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
 
    private final IArtifactSourceParserDelegate handler;
 
-   public WordOutlineExtractor() throws OseeCoreException {
+   public WordOutlineExtractor() {
       this(0, new WordOutlineParserDelegate());
    }
 
-   private WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) throws OseeCoreException {
-      if (handler == null) {
-         throw new IllegalArgumentException("handler can not be null");
-      }
-
+   private WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) {
       this.handler = handler;
       this.headerNumber = "";
       this.listIdentifier = "";

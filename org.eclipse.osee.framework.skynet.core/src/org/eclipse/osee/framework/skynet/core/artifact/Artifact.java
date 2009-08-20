@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -48,6 +47,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -106,7 +106,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       }
 
       if (humanReadableId == null) {
-         this.humanReadableId = generateHumanReadableId();
+         populateHumanReadableID();
       } else {
          this.humanReadableId = humanReadableId;
       }
@@ -1411,46 +1411,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return humanReadableId;
    }
 
-   public void generateHumanReadableID() throws OseeDataStoreException {
-      humanReadableId = generateHumanReadableId();
-   }
-
-   private static final char[][] chars =
-         new char[][] {
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-                     'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
-               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-                     'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
-   private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
-
-   /**
-    * 5 character human readable identifier where the first and last characters are in the range [A-Z0-9] except 'I' and
-    * 'O' and the middle three characters have the same range as above with the additional restrictions of 'A', 'E', 'U'
-    * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
-    */
-   private static String generateHumanReadableId() throws OseeDataStoreException {
-      //      int seed = (int) (Math.random() * 34438396);
-      int seed = new Random().nextInt(34438396);
-      char id[] = new char[charsIndexLookup.length];
-
-      for (int i = 0; i < id.length; i++) {
-         int radix = chars[charsIndexLookup[i]].length;
-         id[i] = chars[charsIndexLookup[i]][seed % radix];
-         seed = seed / radix;
-      }
-
-      String id_string = new String(id);
-
-      if (isUniqueHRID(id_string)) {
-         return id_string;
-      } else {
-         return generateHumanReadableId();
-      }
+   private void populateHumanReadableID() throws OseeDataStoreException {
+      String hrid = HumanReadableId.generate();
+      humanReadableId = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
    }
 
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
       String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
-
       return ConnectionHandler.runPreparedQueryFetchInt(-1, DUPLICATE_HRID_SEARCH, id) == 0;
    }
 

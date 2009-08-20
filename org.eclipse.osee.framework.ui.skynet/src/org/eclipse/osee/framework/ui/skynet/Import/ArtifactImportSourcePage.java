@@ -9,6 +9,8 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -21,10 +23,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -61,7 +66,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    private static final String PAGE_NAME = "osee.define.wizardPage.artifactImportSourcePage";
 
    private DirectoryOrFileSelector directoryFileSelector;
-   private File defaultResource;
+   private File defaultSourceFile;
 
    private final ArtifactSelectPanel artifactSelectPanel;
    private final ArtifactSourceParserSelectPanel parserSelectPanel;
@@ -81,12 +86,20 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       parserSelectPanel = new ArtifactSourceParserSelectPanel(importContributionManager);
    }
 
-   public void setDefaultResource(File resource) {
-      this.defaultResource = resource;
+   public void setDefaultSourceFile(File resource) {
+      this.defaultSourceFile = resource;
    }
 
    public void setDefaultDestinationArtifact(Artifact destinationArtifact) {
-      this.artifactSelectPanel.setDefaultArtifact(destinationArtifact);
+      artifactSelectPanel.setDefaultArtifact(destinationArtifact);
+   }
+
+   public Artifact getDefaultDestinationArtifact() {
+      return artifactSelectPanel.getDefaultArtifact();
+   }
+
+   public File getDefaultSourceFile() {
+      return defaultSourceFile;
    }
 
    @Override
@@ -131,7 +144,6 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       artifactSelectPanel.addListener(this);
 
       reuseChildArtifacts = new Button(composite, SWT.CHECK);
-      reuseChildArtifacts.setEnabled(true);
       reuseChildArtifacts.setText("Re-use Artifacts");
       reuseChildArtifacts.setToolTipText("All imported artifacts will be checked against the root\n" + "import artifact and the content will be placed on the artifact\n" + "that has the same identifying attributes and level from the root");
       reuseChildArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false, 2, 1));
@@ -141,11 +153,11 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private void createSourceFileArea(Composite parent) {
       directoryFileSelector = new DirectoryOrFileSelector(parent, SWT.NONE, "Import Source", this);
-      if (defaultResource == null) {
+      if (defaultSourceFile == null) {
          directoryFileSelector.setDirectorySelected(true);
       } else {
-         directoryFileSelector.setDirectorySelected(!defaultResource.isFile());
-         directoryFileSelector.setText(defaultResource.getAbsolutePath());
+         directoryFileSelector.setDirectorySelected(!defaultSourceFile.isFile());
+         directoryFileSelector.setText(defaultSourceFile.getAbsolutePath());
       }
       directoryFileSelector.addListener(SWT.Selection, this);
    }
@@ -225,7 +237,19 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       }
    }
 
-   private File getSourceFile() {
+   public boolean isReUseSelected() {
+      return reuseChildArtifacts.getSelection();
+   }
+
+   public boolean isDirectory() {
+      boolean result = false;
+      if (Widgets.isAccessible(directoryFileSelector)) {
+         result = directoryFileSelector.isDirectorySelected();
+      }
+      return result;
+   }
+
+   public File getSourceFile() {
       File sourceFile = null;
       if (Widgets.isAccessible(directoryFileSelector)) {
          sourceFile = directoryFileSelector.getFile();
@@ -241,7 +265,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       return parserSelectPanel.getArtifactParserDelegate();
    }
 
-   private Artifact getDestinationArtifact() {
+   public Artifact getDestinationArtifact() {
       return artifactSelectPanel.getArtifact();
    }
 
@@ -251,7 +275,14 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
          IOperation operation =
                new SourceToRoughArtifactOperation("Extracting data from source", getArtifactParser(), getSourceFile(),
                      mockArtifactCollector);
-         executeOperation(operation);
+         if (executeOperation(operation)) {
+            Set<String> names = new HashSet<String>();
+            for (RoughArtifact artifact : mockArtifactCollector.getRoughArtifacts()) {
+               names.addAll(artifact.getURIAttributes().keySet());
+               names.addAll(artifact.getAttributes().keySet());
+            }
+            System.out.println(names);
+         }
       }
    }
 
@@ -285,7 +316,37 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       super.restoreWidgetValues();
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
-         //         settings.get(arg0)
+         if (getDefaultSourceFile() == null) {
+            directoryFileSelector.setDirectorySelected(settings.getBoolean("isDirectory"));
+            String file = settings.get("source.file");
+            if (Strings.isValid(file)) {
+               directoryFileSelector.setText(file);
+            }
+         }
+
+         String parser = settings.get("selected.parser");
+         if (Strings.isValid(parser)) {
+            for (IArtifactSourceParser item : importContributionManager.getArtifactSourceParser()) {
+               if (parser.equals(item.getClass().getSimpleName())) {
+                  parserSelectPanel.setArtifactParser(item);
+               }
+            }
+         }
+         if (getDefaultDestinationArtifact() == null) {
+            String guid = settings.get("destination.artifact.guid");
+            String branch = settings.get("destination.branch.guid");
+
+            if (Strings.isValid(guid) && Strings.isValid(branch)) {
+               try {
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
+                  artifactSelectPanel.setDefaultArtifact(artifact);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+                        "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
+               }
+            }
+         }
+         reuseChildArtifacts.setSelection(settings.getBoolean("is.reuse.selected"));
       }
    }
 
@@ -295,6 +356,24 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
 
+         settings.put("isDirectory", isDirectory());
+
+         File file = getSourceFile();
+         if (file != null) {
+            settings.put("source.file", getSourceFile().getAbsolutePath());
+         }
+
+         IArtifactSourceParser parser = getArtifactParser();
+         if (parser != null) {
+            settings.put("selected.parser", parser.getClass().getSimpleName());
+         }
+
+         Artifact artifact = getDestinationArtifact();
+         if (artifact != null) {
+            settings.put("destination.artifact.guid", artifact.getGuid());
+            settings.put("destination.branch.guid", artifact.getBranch().getGuid());
+         }
+         settings.put("is.reuse.selected", isReUseSelected());
       }
    }
 

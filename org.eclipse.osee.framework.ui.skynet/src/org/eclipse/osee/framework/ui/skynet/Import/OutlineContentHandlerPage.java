@@ -100,7 +100,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
    private void initList() {
       hasHandlers = false;
       for (IArtifactSourceParser parser : contributionManager.getArtifactSourceParser()) {
-         for (IArtifactSourceParserDelegate delegate : contributionManager.getArtifactSourceParserDelegate(parser)) {
+         for (IArtifactSourceParserDelegate delegate : contributionManager.getDelegates(parser)) {
             hasHandlers = true;
             handlerList.add(delegate.getName());
             handlerList.setData(delegate.getName(), delegate);

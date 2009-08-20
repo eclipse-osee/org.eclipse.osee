@@ -42,13 +42,21 @@ public class ArtifactSourceParserContributionManager {
       return items;
    }
 
-   public List<IArtifactSourceParserDelegate> getArtifactSourceParserDelegate(IArtifactSourceParser parser) {
+   public List<IArtifactSourceParserDelegate> getAllDelegates() {
+      List<IArtifactSourceParserDelegate> contentHandlers = new ArrayList<IArtifactSourceParserDelegate>();
+      ExtensionDefinedObjects<IArtifactSourceParserDelegate> contributions =
+            new ExtensionDefinedObjects<IArtifactSourceParserDelegate>(PARSER_DELEGATE_EXTENSION,
+                  PARSER_DELEGATE_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
+      for (IArtifactSourceParserDelegate delegate : contributions.getObjects()) {
+         contentHandlers.add(delegate);
+      }
+      return contentHandlers;
+   }
+
+   public List<IArtifactSourceParserDelegate> getDelegates(IArtifactSourceParser parser) {
       List<IArtifactSourceParserDelegate> contentHandlers = new ArrayList<IArtifactSourceParserDelegate>();
       if (parser != null) {
-         ExtensionDefinedObjects<IArtifactSourceParserDelegate> contributions =
-               new ExtensionDefinedObjects<IArtifactSourceParserDelegate>(PARSER_DELEGATE_EXTENSION,
-                     PARSER_DELEGATE_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
-         for (IArtifactSourceParserDelegate delegate : contributions.getObjects()) {
+         for (IArtifactSourceParserDelegate delegate : getAllDelegates()) {
             if (delegate.isApplicable(parser)) {
                contentHandlers.add(delegate);
             }
