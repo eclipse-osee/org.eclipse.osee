@@ -154,7 +154,8 @@ public class PropertyStoreTest extends TestCase {
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
 
       Set<String> set1 = new TreeSet<String>(store1.keySet());
-      checkArrays(new String[] {"key1", "key2", "key3", "key4", "key5", "key6"}, set1.toArray(new String[set1.size()]));
+      checkArrays(new String[] {"key1", "key2", "key3", "key4", "key5", "key6", "key6.5"},
+            set1.toArray(new String[set1.size()]));
       Set<String> set2 = new TreeSet<String>(store1.arrayKeySet());
       checkArrays(new String[] {"key7", "key8"}, set2.toArray(new String[set2.size()]));
 
