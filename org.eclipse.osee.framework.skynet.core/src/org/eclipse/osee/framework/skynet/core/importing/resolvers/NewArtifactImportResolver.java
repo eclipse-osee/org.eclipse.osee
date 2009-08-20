@@ -17,7 +17,6 @@ import java.net.URI;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -61,9 +60,9 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      for (Pair<String, String> roughtAttribute : roughArtifact.getAttributes()) {
-         if (roughtAttribute.getSecond() != null) {
-            artifact.addAttributeFromString(roughtAttribute.getFirst(), roughtAttribute.getSecond());
+      for (Entry<String, String> roughtAttribute : roughArtifact.getAttributes().entrySet()) {
+         if (roughtAttribute.getKey() != null) {
+            artifact.addAttributeFromString(roughtAttribute.getKey(), roughtAttribute.getValue());
          }
       }
       transferBinaryAttributes(roughArtifact, artifact);

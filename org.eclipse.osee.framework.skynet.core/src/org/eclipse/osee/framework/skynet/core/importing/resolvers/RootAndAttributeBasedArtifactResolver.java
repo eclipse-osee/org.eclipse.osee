@@ -15,10 +15,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -51,10 +52,10 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      Collection<Pair<String, String>> roughAttributeCollection = roughArtifact.getAttributes();
+      Map<String, String> roughAttributeCollection = roughArtifact.getAttributes();
       HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();
-      for (Pair<String, String> roughAttribute : roughAttributeCollection) {
-         roughAttributeMap.put(roughAttribute.getFirst(), roughAttribute.getSecond());
+      for (Entry<String, String> roughAttribute : roughAttributeCollection.entrySet()) {
+         roughAttributeMap.put(roughAttribute.getKey(), roughAttribute.getValue());
       }
 
       for (AttributeType attributeType : identifyingAttributeDescriptors) {
