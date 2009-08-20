@@ -30,7 +30,6 @@
 	<target name="all" 
 		description="Generate Eclipse help content for the OSEE user guide">
 		<sequential>
-			<echo message="basedir=${basedir}" />
 			<delete>
 				<fileset dir="userguide" />
 			</delete>
