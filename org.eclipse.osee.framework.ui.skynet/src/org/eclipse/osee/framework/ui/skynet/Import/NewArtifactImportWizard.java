@@ -90,22 +90,6 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-
-      //  mainPage.isReUseSelected();
-      //  mainPage.getResolver();
-      //      try {
-      //         ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
-      //         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
-      //
-      //         if (reuseArtifactRoot == null) {
-      //            artifactResolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
-      //         } else { // only non-null when reuse artifacts is checked
-      //            Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
-      //            artifactResolver =
-      //                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-      //                        identifyingAttributes, false);
-      //         }
-
       Artifact destinationArtifact = mainPage.getDestinationArtifact();
       String opName = "Importing Artifacts onto: " + destinationArtifact;
 
@@ -131,7 +115,8 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
       }
       return true;
    }
-   private final class CompleteImportOperation extends AbstractOperation {
+
+   private final static class CompleteImportOperation extends AbstractOperation {
       private final Artifact destinationArtifact;
       private final SkynetTransaction transaction;
 

@@ -393,4 +393,19 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       result &= getDestinationArtifact() != null;
       return result && super.isPageComplete();
    }
+
+   //  mainPage.isReUseSelected();
+   //  mainPage.getResolver();
+   //      try {
+   //         ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
+   //         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
+   //
+   //         if (reuseArtifactRoot == null) {
+   //            artifactResolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
+   //         } else { // only non-null when reuse artifacts is checked
+   //            Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
+   //            artifactResolver =
+   //                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
+   //                        identifyingAttributes, false);
+   //         }
 }
