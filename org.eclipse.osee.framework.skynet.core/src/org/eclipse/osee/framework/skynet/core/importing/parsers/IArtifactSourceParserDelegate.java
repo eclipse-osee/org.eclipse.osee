@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
  * @author Robert A. Fisher
@@ -31,14 +32,7 @@ public interface IArtifactSourceParserDelegate {
     * 
     * @param parser The extractor where RoughArtifacts that are created can be added to
     */
-   public void setExtractor(IArtifactSourceParser parser);
-
-   /**
-    * Parser to use
-    * 
-    * @return parser
-    */
-   public IArtifactSourceParser getExtractor();
+   public void initialize();
 
    /**
     * Opportunity to release resources. This method may be called many times on the same object.
@@ -65,5 +59,5 @@ public interface IArtifactSourceParserDelegate {
     * @param isParagraph
     * @throws OseeCoreException
     */
-   public void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
+   public void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
 }

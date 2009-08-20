@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -43,12 +44,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
    public String getDescription() {
       return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
-   }
-
-   public void process(URI source) throws Exception {
-      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(), true));
-      xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 
    public FileFilter getFileFilter() {
@@ -69,21 +64,29 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       return false;
    }
 
+   @Override
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+      xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(collector), true));
+      xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+   }
+
    private final class ExcelRowProcessor implements RowProcessor {
 
       private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
             new DoubleKeyHashMap<String, Integer, RoughArtifact>();
 
       private final Matcher guidMatcher;
+      private final RoughArtifactCollector collector;
 
       private int rowCount;
       private String[] headerRow;
       private ArtifactType primaryDescriptor;
       private boolean importingRelations;
 
-      public ExcelRowProcessor() {
+      public ExcelRowProcessor(RoughArtifactCollector collector) {
          this.guidMatcher = guidPattern.matcher("");
-
+         this.collector = collector;
          rowCount = 0;
          importingRelations = false;
       }
@@ -155,7 +158,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             // TODO Add relation order
             //         int aOrder = Integer.parseInt(row[3]);
             //         int bOrder = Integer.parseInt(row[4]);
-            addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
+            collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
             RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
             for (int i = 0; i < row.length; i++) {
@@ -174,7 +177,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                   }
                }
             }
-            addRoughArtifact(roughArtifact);
+            collector.addRoughArtifact(roughArtifact);
 
             relationHelper.put(primaryDescriptor.getName(), new Integer(rowCount), roughArtifact);
          }
@@ -199,4 +202,5 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
    }
+
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
 import java.io.File;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -46,7 +45,8 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       } else {
          files = new File[] {sourceFile};
       }
-      extractArtifacts(files, collector.getRootRoughArtifact());
+      double workPercentage = 1.0 / files.length;
+      extractArtifacts(monitor, workPercentage, files, collector, collector.getParentRoughArtifact());
    }
 
    /**
@@ -56,35 +56,38 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
     * @param parentArtifact
     * @throws Exception
     */
-   private void extractArtifacts(File[] files, RoughArtifact parentArtifact) throws OseeCoreException {
+   private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) throws OseeCoreException {
+      int workAmount = calculateWork(workPercentage);
       for (File file : files) {
          if (file.isFile()) {
-            try {
-               extractor.process(file.toURI());
-            } catch (OseeCoreException ex) {
-               throw ex;
-            } catch (Exception ex) {
-               throw new OseeWrappedException(ex);
-            }
-            List<RoughArtifact> tempArtifacts = extractor.getRoughArtifacts();
-            collector.addAllRoughArtifacts(tempArtifacts);
-            collector.addAllRoughRelations(extractor.getRoughRelations(parentArtifact));
-
-            for (RoughArtifact roughArtifact : tempArtifacts) {
-               if (roughArtifact.getRoughParent() == null) {
-                  parentArtifact.addChild(roughArtifact);
-               }
-            }
+            processFile(file, collector, parentArtifact);
          } else if (file.isDirectory()) {
             RoughArtifact directoryArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, file.getName());
             collector.addRoughArtifact(directoryArtifact);
-            parentArtifact.addChild(directoryArtifact);
-
-            extractArtifacts(file.listFiles(extractor.getFileFilter()), directoryArtifact);
+            File[] subFiles = file.listFiles(extractor.getFileFilter());
+            if (files.length > 0) {
+               double subPercentage = workPercentage / subFiles.length;
+               extractArtifacts(monitor, subPercentage, subFiles, collector, directoryArtifact);
+            }
          } else {
             throw new OseeStateException(file + " is not a file or directory");
          }
+         monitor.worked(workAmount);
       }
+   }
+
+   private void processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) throws OseeCoreException {
+      RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
+      try {
+         extractor.process(file.toURI(), tempCollector);
+      } catch (OseeCoreException ex) {
+         throw ex;
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      // pass through all the collected items
+      collector.addAllRoughArtifacts(tempCollector.getRoughArtifacts());
+      collector.addAllRoughRelations(tempCollector.getRoughRelations());
    }
 
 }

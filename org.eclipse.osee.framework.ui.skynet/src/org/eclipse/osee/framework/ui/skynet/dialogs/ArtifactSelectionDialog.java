@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dialogs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -160,7 +161,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
                }
 
                @Override
-               public Iterator iterator() {
+               public Iterator<?> iterator() {
                   return getInitialElementSelections().iterator();
                }
 
@@ -175,7 +176,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
                }
 
                @Override
-               public List toList() {
+               public List<?> toList() {
                   return getInitialElementSelections();
                }
 
@@ -217,7 +218,9 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
             updateOKStatus();
          }
       });
-      treeViewer.setInput(input);
+      List<Object> data = new ArrayList<Object>(1);
+      data.add(input);
+      treeViewer.setInput(data);
       return treeViewer;
    }
 
@@ -241,10 +244,13 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
       return results;
    }
 
+   @SuppressWarnings("unchecked")
    private void refreshItems() {
       Branch branch = getBranch();
       if (branch != null) {
-         treeViewer.setInput(getBaseArtifact(branch));
+         List<Object> data = (List<Object>) treeViewer.getInput();
+         data.clear();
+         data.add(getBaseArtifact(branch));
          treeViewer.refresh();
       }
    }

@@ -10,66 +10,53 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import java.net.URI;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactExtractor implements IArtifactSourceParser {
 
-   private final ArrayList<RoughArtifact> roughArtifacts;
-   private final ArrayList<RoughRelation> roughRelations;
-
    protected AbstractArtifactExtractor() {
-      roughArtifacts = new ArrayList<RoughArtifact>();
-      roughRelations = new ArrayList<RoughRelation>();
    }
 
-   public List<RoughArtifact> getRoughArtifacts() {
-      return roughArtifacts;
+   protected abstract void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception;
+
+   public final void process(URI source, RoughArtifactCollector collector) throws Exception {
+      extractFromSource(source, collector);
+      connectParentChildRelations(collector);
+      connectCollectorParent(collector);
    }
 
-   public List<RoughRelation> getRoughRelations(RoughArtifact parent) throws OseeCoreException {
-      determineParentChildRelations();
-
+   private void connectCollectorParent(RoughArtifactCollector collector) {
+      RoughArtifact parent = collector.getParentRoughArtifact();
       if (parent != null) {
-         for (RoughArtifact roughArtifact : roughArtifacts) {
+         for (RoughArtifact roughArtifact : collector.getRoughArtifacts()) {
             if (!roughArtifact.hasParent()) {
                parent.addChild(roughArtifact);
             }
          }
       }
-      return roughRelations;
    }
 
-   private void determineParentChildRelations() {
-      for (RoughArtifact roughArtifact : roughArtifacts) {
+   private void connectParentChildRelations(RoughArtifactCollector collector) {
+      for (RoughArtifact roughArtifact : collector.getRoughArtifacts()) {
          if (roughArtifact.hasHierarchicalRelation()) {
-            determineParentChildRelationsFor(roughArtifact);
+            connectParentChildRelationsFor(collector, roughArtifact);
          }
       }
    }
 
-   private void determineParentChildRelationsFor(RoughArtifact roughReq) {
+   private void connectParentChildRelationsFor(RoughArtifactCollector collector, RoughArtifact parent) {
       // find all children and then save them in order
-      for (RoughArtifact otherRoughReq : roughArtifacts) {
-         if (roughReq != otherRoughReq) { // don't compare to self
-            if (roughReq.isChild(otherRoughReq)) {
-               roughReq.addChild(otherRoughReq);
+      for (RoughArtifact otherRoughArtifact : collector.getRoughArtifacts()) {
+         if (parent != otherRoughArtifact) { // don't compare to self
+            if (parent.isChild(otherRoughArtifact)) {
+               parent.addChild(otherRoughArtifact);
             }
          }
       }
-   }
-
-   public void addRoughArtifact(RoughArtifact roughArtifact) {
-      roughArtifacts.add(roughArtifact);
-   }
-
-   public void addRoughRelation(RoughRelation roughRelation) {
-      roughRelations.add(roughRelation);
    }
 }

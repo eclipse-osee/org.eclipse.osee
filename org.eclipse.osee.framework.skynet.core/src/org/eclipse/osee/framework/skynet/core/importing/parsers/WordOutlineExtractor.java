@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -69,7 +70,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       this(0, new WordOutlineParserDelegate());
    }
 
-   public WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) throws OseeCoreException {
+   private WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) throws OseeCoreException {
       if (handler == null) {
          throw new IllegalArgumentException("handler can not be null");
       }
@@ -92,73 +93,78 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       throw new OseeStateException(String.format("File format error - [%s]: %s", source.toASCIIString(), message));
    }
 
-   public void process(URI source) throws Exception {
-
-      Reader reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
-
-      if (Readers.forward(reader, WordUtil.BODY_START) == null) {
-         handleFormatError(source, "no start of body tag");
-      }
-
-      handler.setExtractor(this);
-
+   @Override
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+      Reader reader = null;
       try {
-         CharSequence element;
-         StringBuilder content = new StringBuilder(2000);
+         reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
 
-         // Process the next available body tag
-         while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
+         if (Readers.forward(reader, WordUtil.BODY_START) == null) {
+            handleFormatError(source, "no start of body tag");
+         }
+         handler.initialize();
+         try {
+            CharSequence element;
+            StringBuilder content = new StringBuilder(2000);
 
-            if (element == WordUtil.BODY_END) {
-               return;
-            } else {
-               // Get the next parsable chunk from the stream. This will throttle the amount of the file read in to
-               // memory at one time to the smallest area that will provide all the necessary context.
-               content.setLength(0);
-               content.append(element);
+            // Process the next available body tag
+            while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
-               boolean emptyTagWithAttrs = false;
-               // If the tag had attributes, check that it isn't empty
-               if (element == PARAGRAPH_TAG_WITH_ATTRS || element == TABLE_TAG_WITH_ATTRS) {
-                  if (Readers.forward(reader, (Appendable) content, ">") == null) {
-                     handleFormatError(source, "did not find expected end of tag");
+               if (element == WordUtil.BODY_END) {
+                  return;
+               } else {
+                  // Get the next parsable chunk from the stream. This will throttle the amount of the file read in to
+                  // memory at one time to the smallest area that will provide all the necessary context.
+                  content.setLength(0);
+                  content.append(element);
+
+                  boolean emptyTagWithAttrs = false;
+                  // If the tag had attributes, check that it isn't empty
+                  if (element == PARAGRAPH_TAG_WITH_ATTRS || element == TABLE_TAG_WITH_ATTRS) {
+                     if (Readers.forward(reader, (Appendable) content, ">") == null) {
+                        handleFormatError(source, "did not find expected end of tag");
+                     }
+                     emptyTagWithAttrs = content.toString().endsWith("/>");
                   }
-                  emptyTagWithAttrs = content.toString().endsWith("/>");
-               }
 
-               if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
-                  Readers.xmlForward(reader, content, "w:p");
-               } else if (element == TABLE_TAG || !emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS) {
-                  Readers.xmlForward(reader, content, "w:tbl");
-               } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != TABLE_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY && element != TABLE_TAG_EMPTY) {
-                  throw new IllegalStateException("Unexpected element returned");
-               }
+                  if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
+                     Readers.xmlForward(reader, content, "w:p");
+                  } else if (element == TABLE_TAG || !emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS) {
+                     Readers.xmlForward(reader, content, "w:tbl");
+                  } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != TABLE_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY && element != TABLE_TAG_EMPTY) {
+                     throw new IllegalStateException("Unexpected element returned");
+                  }
 
-               // Word places proofErr tags in manners discontigous with the standard XML tree so only some
-               // of them get picked up causing a misbalance from what Word expects, and effectively corrupting
-               // the content as far as Word is concerned, so just remove all of them and let word recompute
-               // them if it is really that concerned about our grammar
-               content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
+                  // Word places proofErr tags in manners discontigous with the standard XML tree so only some
+                  // of them get picked up causing a misbalance from what Word expects, and effectively corrupting
+                  // the content as far as Word is concerned, so just remove all of them and let word recompute
+                  // them if it is really that concerned about our grammar
+                  content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
 
-               // forceBody doesn't reset per paragraph
-               forcePrimaryType = false;
-               headerNumber = "";
-               listIdentifier = "";
-               paragraphStyle = null;
-               parseContentDetails(content, new Stack<String>());
-               try {
-                  handler.processContent(forceBody, forcePrimaryType, headerNumber, listIdentifier, paragraphStyle,
-                        content.toString(), element == PARAGRAPH_TAG);
-               } catch (OseeCoreException ex) {
-                  throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
+                  // forceBody doesn't reset per paragraph
+                  forcePrimaryType = false;
+                  headerNumber = "";
+                  listIdentifier = "";
+                  paragraphStyle = null;
+                  parseContentDetails(content, new Stack<String>());
+                  try {
+                     handler.processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+                           paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
+                  } catch (OseeCoreException ex) {
+                     throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
+                  }
                }
             }
+         } finally {
+            handler.dispose();
          }
-      } finally {
-         handler.dispose();
-      }
 
-      handleFormatError(source, "did not find expected end of body tag");
+         handleFormatError(source, "did not find expected end of body tag");
+      } finally {
+         if (reader != null) {
+            reader.close();
+         }
+      }
    }
 
    private void parseContentDetails(CharSequence content, Stack<String> parentElementNames) {

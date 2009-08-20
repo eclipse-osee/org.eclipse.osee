@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.panels;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -19,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -31,8 +36,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
@@ -44,9 +50,29 @@ public class ArtifactSelectPanel {
 
    private Artifact defaultArtifact;
    private Artifact lastSelectedArtifact;
-   private Text destinationArtifactText;
+   private TableViewer currentArtifact;
+   private final Set<Listener> listeners;
 
    public ArtifactSelectPanel() {
+      listeners = new HashSet<Listener>();
+   }
+
+   public void addListener(Listener listener) {
+      synchronized (listeners) {
+         listeners.add(listener);
+      }
+   }
+
+   public void removeListener(Listener listener) {
+      synchronized (listeners) {
+         listeners.remove(listener);
+      }
+   }
+
+   private void fireSelectionEvent(Event event) {
+      for (Listener listener : listeners) {
+         listener.handleEvent(event);
+      }
    }
 
    public void createControl(Composite parent) {
@@ -54,8 +80,10 @@ public class ArtifactSelectPanel {
       composite.setLayout(ALayout.getZeroMarginLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      destinationArtifactText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-      destinationArtifactText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      currentArtifact = new TableViewer(composite, SWT.BORDER | SWT.READ_ONLY);
+      currentArtifact.setLabelProvider(new ArtifactLabelProvider());
+      currentArtifact.setContentProvider(new ArrayContentProvider());
+      currentArtifact.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Button button = new Button(composite, SWT.PUSH);
       button.setText("Browse");
@@ -74,12 +102,15 @@ public class ArtifactSelectPanel {
    }
 
    private void updateArtifactText() {
-      if (Widgets.isAccessible(destinationArtifactText)) {
+      if (currentArtifact != null && Widgets.isAccessible(currentArtifact.getControl())) {
          Artifact artifact = getArtifact();
          if (artifact == null) {
             artifact = getDefaultArtifact();
          }
-         destinationArtifactText.setText(artifact != null ? artifact.toString() : "");
+         if (artifact != null) {
+            currentArtifact.setInput(new Object[] {artifact});
+            currentArtifact.getTable().layout();
+         }
       }
    }
 
@@ -127,6 +158,9 @@ public class ArtifactSelectPanel {
          if (selected != null) {
             setArtifact(selected);
             updateArtifactText();
+            Event event = new Event();
+            event.widget = currentArtifact.getControl();
+            fireSelectionEvent(event);
          }
       }
    }

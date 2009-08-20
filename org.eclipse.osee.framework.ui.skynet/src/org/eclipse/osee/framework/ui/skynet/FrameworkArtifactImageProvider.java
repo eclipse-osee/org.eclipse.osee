@@ -19,6 +19,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
+      ImageManager.registerBaseImage("Root Artifact", FrameworkImage.ROOT_HIERARCHY, this);
       ImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
       ImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
       ImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
@@ -58,8 +59,9 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
             return ImageManager.getImage(FrameworkImage.USER_YELLOW);
          } else if (UserManager.isUserCurrentUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_RED);
-         } else
+         } else {
             return ImageManager.getImage(ArtifactTypeManager.getType("User"));
+         }
       }
       return null;
    }

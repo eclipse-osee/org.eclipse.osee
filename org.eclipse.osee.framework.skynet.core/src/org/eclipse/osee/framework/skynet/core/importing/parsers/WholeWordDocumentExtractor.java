@@ -18,19 +18,21 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    public String getDescription() {
       return "Extract all the content of each Word XML document as one artifact";
    }
 
-   public void process(URI source) throws Exception {
+   @Override
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
       if (source == null) {
          throw new OseeArgumentException("importFile can not be null");
       }
       RoughArtifact roughArtifact =
             new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
-      addRoughArtifact(roughArtifact);
+      collector.addRoughArtifact(roughArtifact);
       roughArtifact.addURIAttribute(WordAttribute.WHOLE_WORD_CONTENT, source);
    }
 

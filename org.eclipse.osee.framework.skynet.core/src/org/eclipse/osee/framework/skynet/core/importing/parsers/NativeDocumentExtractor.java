@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
@@ -24,12 +25,13 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       return "Extract the content of each native document as one artifact";
    }
 
-   public void process(URI source) throws Exception {
+   @Override
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
       String extension = Lib.getExtension(source.toASCIIString());
       String name = Lib.removeExtension(new File(source).getName());
 
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, name);
-      addRoughArtifact(roughArtifact);
+      collector.addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute(CoreAttributes.NATIVE_EXTENSION.getName(), extension);
       roughArtifact.addURIAttribute(CoreAttributes.NATIVE_CONTENT.getName(), source);
    }

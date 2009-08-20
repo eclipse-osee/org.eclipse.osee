@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
  */
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   protected TreeViewer viewer;
 
    /*
     * @see IContentProvider#dispose()
@@ -69,7 +67,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
-
          try {
             if (AccessControlManager.hasPermission(parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
@@ -83,7 +80,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       } else if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-
       return EMPTY_ARRAY;
    }
 
@@ -117,7 +113,9 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact artifact = (Artifact) element;
          try {
             if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-               if (artifact.isDeleted()) return false;
+               if (artifact.isDeleted()) {
+                  return false;
+               }
                return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
             } else {
                return false;
@@ -142,7 +140,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * 
     * @see IStructuredContentProvider#getElements(Object)
     */
-   public Object[] getElements(Object inputElement) {
-      return getChildren(inputElement);
+   public Object[] getElements(Object element) {
+      return getChildren(element);
    }
 }

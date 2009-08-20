@@ -10,7 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -46,10 +53,32 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
                   roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
                      @Override
                      public void run(Artifact artifact) throws OseeCoreException {
-                        roughArtifact.conferAttributesUpon(artifact);
+                        translateAttributes(roughArtifact, artifact);
                      }
                   });
 
       return realArtifact;
+   }
+
+   protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
+      for (Pair<String, String> roughtAttribute : roughArtifact.getAttributes()) {
+         if (roughtAttribute.getSecond() != null) {
+            artifact.addAttributeFromString(roughtAttribute.getFirst(), roughtAttribute.getSecond());
+         }
+      }
+      transferBinaryAttributes(roughArtifact, artifact);
+   }
+
+   private void transferBinaryAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
+      for (Entry<String, URI> entry : roughArtifact.getURIAttributes().entrySet()) {
+         try {
+            artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
+                  entry.getValue().toURL().openStream()));
+         } catch (MalformedURLException ex) {
+            throw new OseeWrappedException(ex);
+         } catch (IOException ex) {
+            throw new OseeWrappedException(ex);
+         }
+      }
    }
 }

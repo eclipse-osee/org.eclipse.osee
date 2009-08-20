@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParserDelegate;
@@ -23,7 +25,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Roberto E. Escobar
@@ -34,9 +38,30 @@ public class ArtifactSourceParserSelectPanel {
    private Combo parserCombo;
    private Combo parserComboDelegate;
    private final ArtifactSourceParserContributionManager importContributionManager;
+   private final Set<Listener> listeners;
+   private IArtifactSourceParser selectedParser;
 
    public ArtifactSourceParserSelectPanel(ArtifactSourceParserContributionManager importContributionManager) {
+      this.listeners = new HashSet<Listener>();
       this.importContributionManager = importContributionManager;
+   }
+
+   public void addListener(Listener listener) {
+      synchronized (listeners) {
+         listeners.add(listener);
+      }
+   }
+
+   public void removeListener(Listener listener) {
+      synchronized (listeners) {
+         listeners.remove(listener);
+      }
+   }
+
+   private void fireSelectionEvent(Event event) {
+      for (Listener listener : listeners) {
+         listener.handleEvent(event);
+      }
    }
 
    public void createControl(Composite parent) {
@@ -48,7 +73,7 @@ public class ArtifactSourceParserSelectPanel {
       parserCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Composite delegateGroup =
-            createHidingGroup(parent, 1, "Select additional parse option", "Select additional parse option");
+            createHidingGroup(parent.getParent(), 1, "Select additional parse option", "Select additional parse option");
 
       parserComboDelegate = new Combo(delegateGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       parserComboDelegate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -83,22 +108,23 @@ public class ArtifactSourceParserSelectPanel {
    }
 
    public IArtifactSourceParser getArtifactParser() {
-      String key = parserCombo.getItem(parserCombo.getSelectionIndex());
-      Object object = parserCombo.getData(key);
-      IArtifactSourceParser sourceParser = null;
-      if (object instanceof IArtifactSourceParser) {
-         sourceParser = (IArtifactSourceParser) object;
-      }
-      return sourceParser;
+      return selectedParser;
+   }
+
+   private void setArtifactParser(IArtifactSourceParser selectedParser) {
+      this.selectedParser = selectedParser;
    }
 
    public IArtifactSourceParserDelegate getArtifactParserDelegate() {
       IArtifactSourceParserDelegate parserDelegate = null;
       if (parserComboDelegate.isVisible()) {
-         String key = parserComboDelegate.getItem(parserComboDelegate.getSelectionIndex());
-         Object object = parserComboDelegate.getData(key);
-         if (object instanceof IArtifactSourceParserDelegate) {
-            parserDelegate = (IArtifactSourceParserDelegate) object;
+         int index = parserComboDelegate.getSelectionIndex();
+         if (index >= 0) {
+            String key = parserComboDelegate.getItem(index);
+            Object object = parserComboDelegate.getData(key);
+            if (object instanceof IArtifactSourceParserDelegate) {
+               parserDelegate = (IArtifactSourceParserDelegate) object;
+            }
          }
       }
       return parserDelegate;
@@ -108,10 +134,20 @@ public class ArtifactSourceParserSelectPanel {
 
       @Override
       public void widgetSelected(SelectionEvent e) {
-         IArtifactSourceParser sourceParser = getArtifactParser();
+         IArtifactSourceParser sourceParser = null;
+         int index = parserCombo.getSelectionIndex();
+         if (index >= 0) {
+            String key = parserCombo.getItem(index);
+            Object object = parserCombo.getData(key);
+            if (object instanceof IArtifactSourceParser) {
+               sourceParser = (IArtifactSourceParser) object;
+            }
+         }
+
          if (sourceParser != null) {
             // TODO add a floating tip text similar to Java doc/Content Assist
             parserCombo.setToolTipText(sourceParser.getDescription());
+            setArtifactParser(sourceParser);
          } else {
             parserCombo.setToolTipText("Select a source parser");
          }
@@ -128,6 +164,9 @@ public class ArtifactSourceParserSelectPanel {
          }
          parserComboDelegate.getParent().getParent().setVisible(!delegates.isEmpty());
          parserCombo.getParent().getParent().getParent().layout();
+         Event event = new Event();
+         event.widget = e.widget;
+         fireSelectionEvent(event);
       }
    }
 }

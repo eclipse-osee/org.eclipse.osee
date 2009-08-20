@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -19,12 +21,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.SourceToRoughArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
@@ -64,12 +67,15 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    private final ArtifactSourceParserSelectPanel parserSelectPanel;
    private ListViewer artifactTypeList;
    private Button reuseChildArtifacts;
+
+   private final RoughArtifactCollector mockArtifactCollector;
    private final ArtifactSourceParserContributionManager importContributionManager;
 
    protected ArtifactImportSourcePage() {
       super(PAGE_NAME);
       setTitle("Import artifacts into OSEE");
       setDescription("Import artifacts into Define");
+      mockArtifactCollector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();
       importContributionManager = new ArtifactSourceParserContributionManager();
       parserSelectPanel = new ArtifactSourceParserSelectPanel(importContributionManager);
@@ -91,6 +97,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    @Override
    public void handleEvent(Event arg0) {
       updateWidgetEnablements();
+      handleParsing();
    }
 
    @Override
@@ -121,6 +128,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       artifactSelectPanel.createControl(composite);
+      artifactSelectPanel.addListener(this);
 
       reuseChildArtifacts = new Button(composite, SWT.CHECK);
       reuseChildArtifacts.setEnabled(true);
@@ -139,6 +147,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
          directoryFileSelector.setDirectorySelected(!defaultResource.isFile());
          directoryFileSelector.setText(defaultResource.getAbsolutePath());
       }
+      directoryFileSelector.addListener(SWT.Selection, this);
    }
 
    private void createParserSelectionArea(Composite parent) {
@@ -149,6 +158,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       parserSelectPanel.createControl(composite);
+      parserSelectPanel.addListener(this);
    }
 
    private void createArtifactTypeSelectArea(Composite parent) {
@@ -156,7 +166,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
             createHidingGroup(parent, 2, "Select artifact type to import data as",
                   "Select artifact type to import data as");
 
-      artifactTypeList = new ListViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+      artifactTypeList = new ListViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
       artifactTypeList.setLabelProvider(new ArtifactTypeLabelProvider());
       artifactTypeList.setContentProvider(new ArrayContentProvider());
       artifactTypeList.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -236,20 +246,38 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    }
 
    private void handleParsing() {
+      if (isPageComplete()) {
+         mockArtifactCollector.reset();
+         IOperation operation =
+               new SourceToRoughArtifactOperation("Extracting data from source", getArtifactParser(), getSourceFile(),
+                     mockArtifactCollector);
+         executeOperation(operation);
+      }
+   }
+
+   protected boolean executeOperation(final IOperation operation) {
       try {
          getContainer().run(true, true, new IRunnableWithProgress() {
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-               IOperation operation =
-                     new SourceToRoughArtifactOperation("Extracting data from source", getArtifactParser(),
-                           getSourceFile(), new RoughArtifactCollector(getDestinationArtifact()));
                Operations.executeWork(operation, monitor, -1);
             }
          });
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      } catch (InterruptedException e) {
+         return false;
+      } catch (InvocationTargetException e) {
+         displayErrorDialog(e.getTargetException());
+         return false;
       }
+
+      IStatus status = operation.getStatus();
+      if (!status.isOK()) {
+         ErrorDialog.openError(getContainer().getShell(), operation.getName(), null, // no special message
+               status);
+         return false;
+      }
+      return true;
    }
 
    @Override

@@ -10,18 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-
 /**
  * @author Robert A. Fisher
  */
@@ -38,35 +26,32 @@ public class RoughRelation {
       this.rationale = rationale;
    }
 
-   public void createRelation(SkynetTransaction transaction, IProgressMonitor monitor) throws OseeCoreException {
-      RelationType relationType = RelationTypeManager.getType(relTypeName);
-      Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, transaction.getBranch());
-      Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, transaction.getBranch());
-
-      if (aArt == null || bArt == null) {
-         OseeLog.log(Activator.class, Level.WARNING, "The relation of type " + relTypeName + " could not be created.");
-         if (aArt == null) {
-            OseeLog.log(Activator.class, Level.WARNING, "The artifact with guid: " + aGuid + " does not exist.");
-         }
-         if (bArt == null) {
-            OseeLog.log(Activator.class, Level.WARNING, "The artifact with guid: " + bGuid + " does not exist.");
-         }
-      } else {
-         try {
-            monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
-            monitor.worked(1);
-            RelationManager.addRelation(relationType, aArt, bArt, rationale);
-            aArt.persistRelations(transaction);
-         } catch (IllegalArgumentException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());
-         }
-      }
-   }
-
    /**
     * @return Returns the relTypeName.
     */
-   public String getRelTypeName() {
+   public String getRelationTypeName() {
       return relTypeName;
    }
+
+   /**
+    * @return the aGuid
+    */
+   public String getAartifactGuid() {
+      return aGuid;
+   }
+
+   /**
+    * @return the bGuid
+    */
+   public String getBartifactGuid() {
+      return bGuid;
+   }
+
+   /**
+    * @return the rationale
+    */
+   public String getRationale() {
+      return rationale;
+   }
+
 }

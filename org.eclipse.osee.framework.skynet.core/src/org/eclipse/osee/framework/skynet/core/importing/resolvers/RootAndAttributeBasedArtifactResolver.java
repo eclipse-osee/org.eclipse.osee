@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportResolver {
    private final LinkedList<AttributeType> identifyingAttributeDescriptors;
-   private final Collection<String> EMPTY = new ArrayList<String>(0);
    private final boolean createNewIfNotExist;
 
    /**
@@ -54,7 +51,6 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-
       Collection<Pair<String, String>> roughAttributeCollection = roughArtifact.getAttributes();
       HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();
       for (Pair<String, String> roughAttribute : roughAttributeCollection) {
@@ -66,7 +62,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          Collection<String> roughAttributes = roughAttributeMap.getValues(attributeType.getName());
 
          if (roughAttributes == null) {
-            roughAttributes = EMPTY;
+            roughAttributes = Collections.emptyList();
          }
 
          if (attributeValues.size() == roughAttributes.size()) {
@@ -102,35 +98,34 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    @Override
    public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException {
-      try {
-         Artifact realArtifact = null;
-         RoughArtifact roughParent = roughArtifact.getRoughParent();
+      Artifact realArtifact = null;
+      RoughArtifact roughParent = roughArtifact.getRoughParent();
 
-         if (roughParent != null) {
-            List<Artifact> siblings = roughParent.getAssociatedArtifact().getChildren();
-            Collection<Artifact> candidates = new LinkedList<Artifact>();
+      if (roughParent != null) {
+         Artifact real = null;
+         //            toRealArtifact(roughParent);
 
-            for (Artifact artifact : siblings) {
-               if (attributeValuesMatch(roughArtifact, artifact)) {
-                  candidates.add(artifact);
-               }
-            }
+         List<Artifact> siblings = real.getChildren();
+         Collection<Artifact> candidates = new LinkedList<Artifact>();
 
-            if (candidates.size() == 1) {
-               realArtifact = candidates.iterator().next();
-               roughArtifact.updateValues(realArtifact);
-            } else {
-               OseeLog.log(Activator.class, Level.INFO,
-                     "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
-               if (createNewIfNotExist) {
-                  realArtifact = super.resolve(roughArtifact, branch);
-               }
+         for (Artifact artifact : siblings) {
+            if (attributeValuesMatch(roughArtifact, artifact)) {
+               candidates.add(artifact);
             }
          }
 
-         return realArtifact;
-      } catch (FileNotFoundException ex) {
-         throw new OseeWrappedException(ex);
+         if (candidates.size() == 1) {
+            realArtifact = candidates.iterator().next();
+            translateAttributes(roughArtifact, realArtifact);
+         } else {
+            OseeLog.log(Activator.class, Level.INFO,
+                  "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
+            if (createNewIfNotExist) {
+               realArtifact = super.resolve(roughArtifact, branch);
+            }
+         }
       }
+
+      return realArtifact;
    }
 }

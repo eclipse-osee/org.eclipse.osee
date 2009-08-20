@@ -10,13 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -26,11 +36,15 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final SkynetTransaction transaction;
    private final RoughArtifactCollector rawData;
    private IArtifactImportResolver artifactResolver;
+   private final Map<RoughArtifact, Artifact> roughToRealArtifact;
+   private Artifact destinationArtifact;
 
-   public RoughToRealArtifactOperation(String operationName, RoughArtifactCollector rawData, SkynetTransaction transaction) {
+   public RoughToRealArtifactOperation(String operationName, RoughArtifactCollector rawData, Artifact destinationArtifact, SkynetTransaction transaction) {
       super(operationName, Activator.PLUGIN_ID);
       this.rawData = rawData;
       this.transaction = transaction;
+      this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
+      roughToRealArtifact.put(rawData.getParentRoughArtifact(), destinationArtifact);
    }
 
    @Override
@@ -39,19 +53,72 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       int totalItems = rawData.getRoughArtifacts().size() + rawData.getRoughRelations().size();
       int unitOfWork = calculateWork(totalItems / getTotalWorkUnits());
 
-      for (RoughArtifact roughArtifact : rawData.getRootRoughArtifact().getChildren()) {
-         // the getReal call will recursively call get real on all descendants of roughArtifact
-         Artifact child = roughArtifact.createArtifact(transaction, monitor, artifactResolver);
+      for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
+         Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact);
          if (child != null) {
-            rawData.getDestinationArtifact().addChild(child);
+            destinationArtifact.addChild(child);
          }
          monitor.worked(unitOfWork);
       }
 
       monitor.setTaskName("Creating Relations");
       for (RoughRelation roughRelation : rawData.getRoughRelations()) {
-         roughRelation.createRelation(transaction, monitor);
+         createRelation(monitor, roughRelation);
          monitor.worked(unitOfWork);
+      }
+   }
+
+   private Artifact createArtifact(IProgressMonitor monitor, Map<RoughArtifact, Artifact> roughToRealArtifact, RoughArtifact roughArtifact) throws OseeCoreException {
+      Artifact realArtifact = roughToRealArtifact.get(roughArtifact);
+      if (realArtifact != null) {
+         return realArtifact;
+      }
+
+      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch());
+
+      for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
+         Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact);
+         if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
+            if (!childArtifact.hasParent()) {
+               realArtifact.addChild(childArtifact);
+            } else if (!childArtifact.getParent().equals(realArtifact)) {
+               throw new OseeStateException(
+                     childArtifact.getName() + " already has a parent that differs from the imported parent");
+            }
+         }
+      }
+
+      if (realArtifact != null) {
+         realArtifact.persistAttributesAndRelations(transaction);
+      }
+      return realArtifact;
+   }
+
+   private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation) throws OseeCoreException {
+      RelationType relationType = RelationTypeManager.getType(roughRelation.getRelationTypeName());
+      Artifact aArt = ArtifactQuery.getArtifactFromId(roughRelation.getAartifactGuid(), transaction.getBranch());
+      Artifact bArt = ArtifactQuery.getArtifactFromId(roughRelation.getBartifactGuid(), transaction.getBranch());
+
+      if (aArt == null || bArt == null) {
+         OseeLog.log(Activator.class, Level.WARNING,
+               "The relation of type " + roughRelation.getRelationTypeName() + " could not be created.");
+         if (aArt == null) {
+            OseeLog.log(Activator.class, Level.WARNING,
+                  "The artifact with guid: " + roughRelation.getAartifactGuid() + " does not exist.");
+         }
+         if (bArt == null) {
+            OseeLog.log(Activator.class, Level.WARNING,
+                  "The artifact with guid: " + roughRelation.getBartifactGuid() + " does not exist.");
+         }
+      } else {
+         try {
+            monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
+            monitor.worked(1);
+            RelationManager.addRelation(relationType, aArt, bArt, roughRelation.getRationale());
+            aArt.persistRelations(transaction);
+         } catch (IllegalArgumentException ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());
+         }
       }
    }
 }

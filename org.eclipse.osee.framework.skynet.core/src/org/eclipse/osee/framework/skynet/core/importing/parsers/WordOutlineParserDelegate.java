@@ -18,12 +18,13 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Robert A. Fisher
  */
-public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDelegate {
+public class WordOutlineParserDelegate implements IArtifactSourceParserDelegate {
 
    private static final String WORD_OUTLINE_PARSER_NAME = "Word Outline";
    private static final Pattern listPrKiller =
@@ -49,9 +50,7 @@ public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDeleg
     * Subclasses may extend this method to allocate resources
     */
    @Override
-   public void setExtractor(IArtifactSourceParser extractor) {
-      super.setExtractor(extractor);
-
+   public void initialize() {
       duplicateCatcher = new HashMap<String, RoughArtifact>();
       lastHeaderNumber = null;
       previousNamedArtifact = null;
@@ -64,22 +63,20 @@ public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDeleg
     */
    @Override
    public void dispose() {
-      super.dispose();
-
       duplicateCatcher = null;
       lastHeaderNumber = null;
       previousNamedArtifact = null;
       roughArtifact = null;
    }
 
-   public final void processContent(boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
+   public final void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
       if (!headerNumber.equals("")) {
          lastHeaderNumber = headerNumber;
       }
 
       if (!headerNumber.equals("") && WordUtil.isHeadingStyle(paragraphStyle) && !WordUtil.textOnly(content).equals("")) {
          setContent();
-         roughArtifact = setUpNewArtifact(headerNumber);
+         roughArtifact = setUpNewArtifact(collector, headerNumber);
          previousNamedArtifact = roughArtifact;
 
          processHeadingText(roughArtifact, WordUtil.textOnly(content));
@@ -110,13 +107,13 @@ public class WordOutlineParserDelegate extends AbstractArtifactSourceParserDeleg
       roughArtifact.addAttribute("Name", headingText.trim());
    }
 
-   private RoughArtifact setUpNewArtifact(String parNumber) throws OseeCoreException {
+   private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String parNumber) throws OseeCoreException {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
          RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
          duplicateCatcher.put(parNumber, roughArtifact);
 
-         getExtractor().addRoughArtifact(roughArtifact);
+         collector.addRoughArtifact(roughArtifact);
          roughArtifact.setSectionNumber(parNumber);
 
          roughArtifact.addAttribute("Imported Paragraph Number", parNumber);

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 
@@ -22,25 +21,19 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
  */
 public class RoughArtifactCollector {
 
-   private final RoughArtifact rootRoughArtifact;
    private final List<RoughArtifact> roughArtifacts;
    private final List<RoughRelation> roughRelations;
-   private final Artifact destinationArtifact;
+   private final RoughArtifact parentRoughArtifact;
 
-   public RoughArtifactCollector(Artifact destinationArtifact) {
-      this.destinationArtifact = destinationArtifact;
-      this.rootRoughArtifact = null; // TODO fix this
-      //      new RoughArtifact(destinationArtifact);
-      this.roughArtifacts = new ArrayList<RoughArtifact>();
-      this.roughRelations = new ArrayList<RoughRelation>();
+   public RoughArtifactCollector(RoughArtifact parentRoughArtifact) {
+      this.parentRoughArtifact = parentRoughArtifact;
+      roughArtifacts = new ArrayList<RoughArtifact>();
+      roughRelations = new ArrayList<RoughRelation>();
    }
 
-   public Artifact getDestinationArtifact() {
-      return destinationArtifact;
-   }
-
-   public RoughArtifact getRootRoughArtifact() {
-      return rootRoughArtifact;
+   public void reset() {
+      roughArtifacts.clear();
+      roughRelations.clear();
    }
 
    public void addRoughArtifact(RoughArtifact roughArtifact) {
@@ -51,12 +44,16 @@ public class RoughArtifactCollector {
       roughRelations.add(roughRelation);
    }
 
-   public void addAllRoughArtifacts(Collection<RoughArtifact> artifacts) {
-      roughArtifacts.addAll(artifacts);
+   public RoughArtifact getParentRoughArtifact() {
+      return parentRoughArtifact;
    }
 
-   public void addAllRoughRelations(Collection<RoughRelation> relations) {
-      roughRelations.addAll(relations);
+   public void addAllRoughArtifacts(Collection<RoughArtifact> roughArtifact) {
+      roughArtifacts.addAll(roughArtifact);
+   }
+
+   public void addAllRoughRelations(Collection<RoughRelation> roughRelation) {
+      roughRelations.addAll(roughRelation);
    }
 
    public List<RoughArtifact> getRoughArtifacts() {
@@ -66,4 +63,5 @@ public class RoughArtifactCollector {
    public List<RoughRelation> getRoughRelations() {
       return roughRelations;
    }
+
 }

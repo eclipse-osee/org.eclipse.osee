@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -26,23 +25,49 @@ import org.eclipse.ui.IWorkbench;
  * @author Roberto E. Escobar
  */
 public class NewArtifactImportWizard extends Wizard implements IImportWizard {
-   private File importFile;
-   private Artifact reuseRootArtifact;
+   private File importResource;
+   private Artifact defaultDestinationArtifact;
    private ArtifactImportSourcePage mainPage;
-   private IStructuredSelection selection;
 
    public NewArtifactImportWizard() {
       super();
       setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
       setWindowTitle("Artifact Import Wizard");
+      setNeedsProgressMonitor(true);
    }
 
-   public void setImportResourceAndArtifactDestination(File importFile, Artifact reuseRootArtifact) {
-      Assert.isNotNull(importFile);
-      Assert.isNotNull(reuseRootArtifact);
+   public void setImportResourceAndArtifactDestination(File importResource, Artifact defaultDestinationArtifact) {
+      Assert.isNotNull(importResource);
+      Assert.isNotNull(defaultDestinationArtifact);
 
-      this.importFile = importFile;
-      this.reuseRootArtifact = reuseRootArtifact;
+      this.importResource = importResource;
+      this.defaultDestinationArtifact = defaultDestinationArtifact;
+   }
+
+   @Override
+   public void init(IWorkbench workbench, IStructuredSelection selection) {
+      if (importResource == null && defaultDestinationArtifact == null) {
+         if (selection != null && selection.size() == 1) {
+            Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof IAdaptable) {
+               Object resource = ((IAdaptable) firstElement).getAdapter(IResource.class);
+               if (resource instanceof IResource) {
+                  importResource = ((IResource) resource).getLocation().toFile();
+               }
+            }
+            if (firstElement instanceof Artifact) {
+               defaultDestinationArtifact = (Artifact) firstElement;
+            }
+         }
+      }
+   }
+
+   @Override
+   public void addPages() {
+      mainPage = new ArtifactImportSourcePage();
+      mainPage.setDefaultDestinationArtifact(defaultDestinationArtifact);
+      mainPage.setDefaultResource(importResource);
+      addPage(mainPage);
    }
 
    @Override
@@ -73,40 +98,6 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
       //         return false;
       //      }
       return true;
-   }
-
-   public void init(IWorkbench workbench, IStructuredSelection selection) {
-      mainPage = new ArtifactImportSourcePage();
-      if (importFile == null && reuseRootArtifact == null) {
-         Pair<File, Artifact> items = getSelection(selection);
-         importFile = items.getFirst();
-         reuseRootArtifact = items.getSecond();
-      }
-      mainPage.setDefaultDestinationArtifact(reuseRootArtifact);
-      mainPage.setDefaultResource(importFile);
-   }
-
-   private Pair<File, Artifact> getSelection(IStructuredSelection selection) {
-      Artifact selectedArtifact = null;
-      File importResource = null;
-      if (selection != null && selection.size() == 1) {
-         Object firstElement = selection.getFirstElement();
-         if (firstElement instanceof IAdaptable) {
-            Object resource = ((IAdaptable) firstElement).getAdapter(IResource.class);
-            if (resource instanceof IResource) {
-               importResource = ((IResource) resource).getLocation().toFile();
-            }
-         }
-         if (firstElement instanceof Artifact) {
-            selectedArtifact = (Artifact) firstElement;
-         }
-      }
-      return new Pair<File, Artifact>(importResource, selectedArtifact);
-   }
-
-   @Override
-   public void addPages() {
-      addPage(mainPage);
    }
 
    //   @Override
@@ -140,15 +131,6 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
    //      } catch (OseeCoreException ex) {
    //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
    //      }
-   //      return null;
-   //   }
-
-   //   @Override
-   //   public IWizardPage getPreviousPage(IWizardPage page) {
-   //      if (page == attributeTypePage || mainPage.getReuseArtifactRoot() == null) {
-   //         return mainPage;
-   //      }
-   //
    //      return null;
    //   }
 }
