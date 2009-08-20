@@ -86,6 +86,10 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       parserSelectPanel = new ArtifactSourceParserSelectPanel(importContributionManager);
    }
 
+   public RoughArtifactCollector getCollectedArtifacts() {
+      return mockArtifactCollector;
+   }
+
    public void setDefaultSourceFile(File resource) {
       this.defaultSourceFile = resource;
    }

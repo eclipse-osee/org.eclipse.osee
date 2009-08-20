@@ -11,12 +11,28 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -74,13 +90,10 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      //      File file = mainPage.getImportFile();
-      //      Branch branch = mainPage.getSelectedBranch();
-      //      IArtifactImportResolver artifactResolver = null;
-      //
+
+      //  mainPage.isReUseSelected();
+      //  mainPage.getResolver();
       //      try {
-      //         Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
-      //         ArtifactExtractor extractor = mainPage.getExtractor();
       //         ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
       //         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
       //
@@ -92,47 +105,53 @@ public class NewArtifactImportWizard extends Wizard implements IImportWizard {
       //                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
       //                        identifyingAttributes, false);
       //         }
-      //
-      //         Artifact importRoot = mainPage.getImportRoot();
-      //         Jobs.runInJob(new ArtifactImportOperation(file, importRoot, extractor, branch, artifactResolver), true);
-      //      } catch (OseeCoreException ex) {
-      //         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
-      //         return false;
-      //      }
+
+      Artifact destinationArtifact = mainPage.getDestinationArtifact();
+      String opName = "Importing Artifacts onto: " + destinationArtifact;
+
+      SkynetTransaction transaction = null;
+      try {
+         transaction = new SkynetTransaction(destinationArtifact.getBranch());
+      } catch (OseeCoreException ex) {
+         String msg =
+               String.format("Unable to create transaction for: artifact:[%s] branch:[%s]",
+                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid());
+         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
+               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
+      }
+
+      if (transaction != null) {
+         RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
+         IArtifactImportResolver resolver = null;
+
+         List<IOperation> subOps = new ArrayList<IOperation>();
+         subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
+         subOps.add(new CompleteImportOperation("Commit & Verify import", transaction, destinationArtifact));
+         Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
+      }
       return true;
    }
 
-   //   @Override
-   //   public IWizardPage getNextPage(IWizardPage page) {
-   //      try {
-   //         if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
-   //
-   //            ArtifactType rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
-   //            ArtifactType importDescriptor = mainPage.getSelectedType();
-   //
-   //            HashSet<AttributeType> rootAttributes =
-   //                  new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(rootDescriptor,
-   //                        mainPage.getSelectedBranch()));
-   //
-   //            if (rootDescriptor == importDescriptor) {
-   //               attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
-   //               attributeTypePage.setDescriptors(rootAttributes);
-   //            } else {
-   //               HashSet<AttributeType> importAttributes =
-   //                     new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(importDescriptor,
-   //                           mainPage.getSelectedBranch()));
-   //
-   //               attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
-   //
-   //               importAttributes.addAll(rootAttributes);
-   //               attributeTypePage.setDescriptors(importAttributes);
-   //            }
-   //
-   //            return attributeTypePage;
-   //         }
-   //      } catch (OseeCoreException ex) {
-   //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-   //      }
-   //      return null;
-   //   }
+   private final class CompleteImportOperation extends AbstractOperation {
+      private final Artifact destinationArtifact;
+      private final SkynetTransaction transaction;
+
+      public CompleteImportOperation(String opName, SkynetTransaction transaction, Artifact destinationArtifact) {
+         super(opName, SkynetGuiPlugin.PLUGIN_ID);
+         this.destinationArtifact = destinationArtifact;
+         this.transaction = transaction;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         monitor.setTaskName("Validate artifacts");
+         IOperation subOperation = new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), false);
+         doSubWork(subOperation, monitor, 0.50);
+
+         monitor.setTaskName("Commit transaction");
+         destinationArtifact.persistAttributesAndRelations(transaction);
+         transaction.execute();
+         monitor.worked(calculateWork(0.50));
+      }
+   }
 }

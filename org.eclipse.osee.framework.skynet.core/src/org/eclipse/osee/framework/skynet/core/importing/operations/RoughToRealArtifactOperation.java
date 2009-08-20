@@ -35,16 +35,19 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class RoughToRealArtifactOperation extends AbstractOperation {
    private final SkynetTransaction transaction;
    private final RoughArtifactCollector rawData;
-   private IArtifactImportResolver artifactResolver;
+   private final IArtifactImportResolver artifactResolver;
    private final Map<RoughArtifact, Artifact> roughToRealArtifact;
-   private Artifact destinationArtifact;
+   private final Artifact destinationArtifact;
 
-   public RoughToRealArtifactOperation(String operationName, RoughArtifactCollector rawData, Artifact destinationArtifact, SkynetTransaction transaction) {
-      super(operationName, Activator.PLUGIN_ID);
+   public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver) {
+      super("Materialize Artifacts", Activator.PLUGIN_ID);
       this.rawData = rawData;
       this.transaction = transaction;
+      this.artifactResolver = artifactResolver;
+      this.destinationArtifact = destinationArtifact;
+
       this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
-      roughToRealArtifact.put(rawData.getParentRoughArtifact(), destinationArtifact);
+      roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
 
    @Override
