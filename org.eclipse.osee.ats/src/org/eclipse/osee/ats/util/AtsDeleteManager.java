@@ -48,8 +48,10 @@ public class AtsDeleteManager {
       for (Artifact art : selectedArts) {
          if (art instanceof ATSArtifact) {
             delArts.add(art);
-            if (selectedArts.size() < 30) artBuilder.append(String.format("Name: %s  Type: %s\n",
-                  art.getHumanReadableId(), art.getArtifactTypeName()));
+            if (selectedArts.size() < 30) {
+               artBuilder.append(String.format("Name: %s  Type: %s\n",
+                     art.getHumanReadableId(), art.getArtifactTypeName()));
+            }
          }
       }
       if (selectedArts.size() >= 5) {
@@ -62,12 +64,16 @@ public class AtsDeleteManager {
                MessageDialogWithToggle.openOkCancelConfirm(
                      Display.getCurrent().getActiveShell(),
                      "Delete/Purge ATS Object",
-                     "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL it's ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
+                     "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
                      "Purge", false, null, null);
-         confirmDelete = (md.getReturnCode() == 0);
-         if (md.getToggleState()) deleteOptions.add(DeleteOption.Purge);
+         confirmDelete = md.getReturnCode() == 0;
+         if (md.getToggleState()) {
+            deleteOptions.add(DeleteOption.Purge);
+         }
       }
-      if (!confirmDelete) return;
+      if (!confirmDelete) {
+         return;
+      }
       // Build list of related artifacts that will be deleted
       StringBuilder delBuilder = new StringBuilder();
       final Set<Artifact> allDeleteArts = new HashSet<Artifact>(30);
@@ -107,7 +113,9 @@ public class AtsDeleteManager {
                new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
                      AHTML.simplePage(results));
          dialog.open();
-         if (dialog.getReturnCode() != 0) return;
+         if (dialog.getReturnCode() != 0) {
+            return;
+         }
       }
       // perform the delete/purge
       if (purge) {

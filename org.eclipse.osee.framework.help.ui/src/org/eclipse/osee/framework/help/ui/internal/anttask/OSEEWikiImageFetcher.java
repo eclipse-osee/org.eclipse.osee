@@ -78,7 +78,6 @@ public class OSEEWikiImageFetcher extends Task {
       int fileCount = 0;
       Matcher imagePatternMatcher = imagePattern.matcher(htmlSrc);
       while (imagePatternMatcher.find()) {
-         String alt = imagePatternMatcher.group(1);
          String imageFragment = imagePatternMatcher.group(2);
 
          if (imageFragment != null) {
@@ -96,28 +95,11 @@ public class OSEEWikiImageFetcher extends Task {
                   log("Skipping " + url + ": " + e.getMessage(), Project.MSG_WARN); //$NON-NLS-1$ //$NON-NLS-2$
                   continue;
                }
-               // note: we use the alt text for the name since for some files there is a case-difference between
-               //       the server URL and the text used in the image src of the markup
-               // note that the alt= text of floated images will be empty
-               String name;
-               //               if (alt == null || alt.isEmpty()) {
-                  name = url.substring(url.lastIndexOf('/') + 1);
-               //               name = qualifiedUrl.substring(url.lastIndexOf('/') + 1);
-               //             } else {
-               //              name = alt;
-               //         }
-               //               name = qualifiedUrl.substring(url.lastIndexOf('/') + 1);
-               //             System.out.println(name);
-               //               String properName = url.substring(url.lastIndexOf('/') + 1);
-               try {
-                  Matcher m = Pattern.compile("(\\d)+px-(.*)").matcher(name);
-                  if (m.find()) {
-                     System.out.println(String.format("%s (from %s)", m.group(2), name));
-                     name = m.group(2);
-                  } else {
-                     System.out.println(String.format("%s not matched", name));
-                  }
-               } catch (IllegalStateException ex) {
+
+               String name = url.substring(url.lastIndexOf('/') + 1);
+               Matcher m = Pattern.compile("(\\d)+px-(.*)").matcher(name);
+               if (m.find()) {
+                  name = m.group(2);
                }
                get.setDest(new File(dest, name));
                get.execute();
