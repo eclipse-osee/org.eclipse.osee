@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -17,35 +18,63 @@ import java.util.regex.Pattern;
  * @author Ryan D. Brooks
  */
 public class HumanReadableId {
-   private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
-   private static final Pattern pattern = Pattern.compile("[0-9A-Z]{" + charsIndexLookup.length + "}");
-
+   /**
+    * 5 character human readable identifier where the first and last characters are in the range [A-Z0-9] except 'I' and
+    * 'O' and the middle three characters have the same range as above with the additional restrictions of 'A', 'E', 'U'
+    * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
+    */
    private static final char[][] chars =
          new char[][] {
                {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
                      'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
                {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
                      'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
+   private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
+   private static final int SEARCH_SPACE_SIZE = 34 * 31 * 31 * 31 * 34;
+   private static final Pattern HRID_PATTERN = Pattern.compile(constructHridPattern());
+   private static int randomSeed;
 
-   /**
-    * 5 character human readable identifier where the first and last characters are in the range [A-Z0-9] except 'I' and
-    * 'O' and the middle three characters have the same range as above with the additional restrictions of 'A', 'E', 'U'
-    * thus the total number of unique values is: 34 * 31 * 31 *31 * 34 = 34,438,396
-    */
    public static String generate() {
-      //      int seed = (int) (Math.random() * 34438396);
-      int seed = new Random().nextInt(34438396);
-      char id[] = new char[charsIndexLookup.length];
+      StringBuffer hrid = new StringBuffer();
 
-      for (int i = 0; i < id.length; i++) {
-         int radix = chars[charsIndexLookup[i]].length;
-         id[i] = chars[charsIndexLookup[i]][seed % radix];
-         seed = seed / radix;
+      randomSeed = new Random().nextInt(SEARCH_SPACE_SIZE);
+      for (int i = 0; i < getHridLength(); i++) {
+         hrid.append(generateCharForPos(i));
       }
-      return new String(id);
+      return hrid.toString();
+   }
+
+   private static int getHridLength() {
+      return charsIndexLookup.length;
+   }
+
+   private static char generateCharForPos(int pos) {
+      char[] possibleChars = getCharsValidForPos(pos);
+      int radix = possibleChars.length;
+
+      char return_char = possibleChars[randomSeed % radix];
+      randomSeed = randomSeed / radix;
+
+      return return_char;
+   }
+
+   private static char[] getCharsValidForPos(int pos) {
+      return chars[charsIndexLookup[pos]];
    }
 
    public static boolean isValid(String hrid) {
-      return pattern.matcher(hrid).matches();
+      return HRID_PATTERN.matcher(hrid).matches();
+   }
+
+   private static String constructHridPattern() {
+      StringBuilder pattern = new StringBuilder();
+      for (int i = 0; i < getHridLength(); i++) {
+         pattern.append(getRegexForPosition(i));
+      }
+      return pattern.toString();
+   }
+
+   private static String getRegexForPosition(int pos) {
+      return "[" + Arrays.toString(getCharsValidForPos(pos)) + "]";
    }
 }
