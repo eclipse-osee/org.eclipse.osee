@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class ArtifactImportOperation extends AbstractOperation {
    private final File file;
    private final IArtifactImportResolver artifactResolver;
-   private final IArtifactSourceParser extractor;
+   private final IArtifactExtractor extractor;
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;
@@ -42,7 +42,7 @@ public class ArtifactImportOperation extends AbstractOperation {
    private final RoughArtifact rootRoughArtifact;
    private final boolean stopOnError = false;
 
-   public ArtifactImportOperation(File file, Artifact importRoot, IArtifactSourceParser extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
+   public ArtifactImportOperation(File file, Artifact importRoot, IArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       super("Importing Artifacts", SkynetGuiPlugin.PLUGIN_ID);
       this.file = file;
       this.extractor = extractor;

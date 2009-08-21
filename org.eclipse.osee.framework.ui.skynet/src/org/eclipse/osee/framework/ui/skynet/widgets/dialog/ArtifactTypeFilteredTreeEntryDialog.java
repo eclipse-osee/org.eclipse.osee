@@ -5,8 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -27,8 +25,8 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
     * @param message
     * @param artifactTypes
     */
-   public ArtifactTypeFilteredTreeEntryDialog(String title, String message, String entryName, Collection<ArtifactType> artifactTypes) {
-      super(title, message, artifactTypes);
+   public ArtifactTypeFilteredTreeEntryDialog(String title, String message, String entryName) {
+      super(title, message);
       this.entryName = entryName;
    }
 

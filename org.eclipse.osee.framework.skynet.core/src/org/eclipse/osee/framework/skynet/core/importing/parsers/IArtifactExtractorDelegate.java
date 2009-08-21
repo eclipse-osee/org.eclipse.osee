@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 /**
  * @author Robert A. Fisher
  */
-public interface IArtifactSourceParserDelegate {
+public interface IArtifactExtractorDelegate {
 
    /**
     * Determines whether this delegate can operate with the selected parser
@@ -24,7 +24,7 @@ public interface IArtifactSourceParserDelegate {
     * @param parser
     * @return whether this delegate is compatible with the parser
     */
-   public boolean isApplicable(IArtifactSourceParser parser);
+   public boolean isApplicable(IArtifactExtractor parser);
 
    /**
     * Opportunity to set state data prior to a parser being processed. This method may be called many times on the same

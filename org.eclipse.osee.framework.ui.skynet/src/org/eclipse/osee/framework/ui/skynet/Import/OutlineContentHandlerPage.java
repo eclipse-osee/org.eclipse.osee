@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParserDelegate;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,7 +29,7 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
 public class OutlineContentHandlerPage extends WizardDataTransferPage implements Listener {
    public static final String PAGE_NAME = "osee.define.wizardPage.outlineContentHandlerPage";
 
-   private final ArtifactSourceParserContributionManager contributionManager;
+   private final ArtifactExtractorContributionManager contributionManager;
    private List handlerList;
    private boolean hasHandlers;
 
@@ -38,7 +38,7 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
     */
    public OutlineContentHandlerPage() {
       super(PAGE_NAME);
-      contributionManager = new ArtifactSourceParserContributionManager();
+      contributionManager = new ArtifactExtractorContributionManager();
       hasHandlers = false;
    }
 
@@ -99,8 +99,8 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
 
    private void initList() {
       hasHandlers = false;
-      for (IArtifactSourceParser parser : contributionManager.getArtifactSourceParser()) {
-         for (IArtifactSourceParserDelegate delegate : contributionManager.getDelegates(parser)) {
+      for (IArtifactExtractor parser : contributionManager.getExtractors()) {
+         for (IArtifactExtractorDelegate delegate : contributionManager.getDelegates(parser)) {
             hasHandlers = true;
             handlerList.add(delegate.getName());
             handlerList.setData(delegate.getName(), delegate);
@@ -122,9 +122,9 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
       return false;
    }
 
-   public IArtifactSourceParserDelegate getSelectedOutlineContentHandler() {
+   public IArtifactExtractorDelegate getSelectedOutlineContentHandler() {
       if (handlerList.getSelectionCount() == 1) {
-         return (IArtifactSourceParserDelegate) handlerList.getData(handlerList.getSelection()[0]);
+         return (IArtifactExtractorDelegate) handlerList.getData(handlerList.getSelection()[0]);
       } else {
          return null;
       }

@@ -3,6 +3,7 @@
 	<item key="expected.name" value="General Documents (Any Format)"/>
 	<item key="expected.toString" value="General Documents (Any Format)"/>
 	<item key="expected.description" value="Extract the content of each native document as one artifact"/>
+	<item key="expected.isDelegateRequired" value="false" />
 	<item key="list.entry.separator" value=";"/>
 	<list key="fileTestData">
 		<item value="directory/;true"/>

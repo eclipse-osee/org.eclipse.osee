@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -26,12 +26,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class SourceToRoughArtifactOperation extends AbstractOperation {
 
-   private final IArtifactSourceParser extractor;
+   private final IArtifactExtractor extractor;
    private final File sourceFile;
    private final RoughArtifactCollector collector;
 
-   public SourceToRoughArtifactOperation(String operationName, IArtifactSourceParser extractor, File sourceFile, RoughArtifactCollector collector) {
-      super(operationName, Activator.PLUGIN_ID);
+   public SourceToRoughArtifactOperation(IArtifactExtractor extractor, File sourceFile, RoughArtifactCollector collector) {
+      super("Extract artifact data from source", Activator.PLUGIN_ID);
       this.extractor = extractor;
       this.sourceFile = sourceFile;
       this.collector = collector;

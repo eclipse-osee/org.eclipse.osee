@@ -55,34 +55,53 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private final Matcher reqNumberMatcher;
    private final Matcher reqListMatcher;
    private final Stack<String> currentListStack;
+   private final int maxExtractionDepth;
+
    private Stack<String> clonedCurrentListStack;
    private int lastDepthNumber;
    private String headerNumber;
    private String listIdentifier;
-   private final int maxExtractionDepth;
    private boolean forceBody;
    private boolean forcePrimaryType;
    private String paragraphStyle;
 
-   private final IArtifactSourceParserDelegate handler;
-
    public WordOutlineExtractor() {
-      this(0, new WordOutlineParserDelegate());
-   }
-
-   private WordOutlineExtractor(int maxExtractionDepth, IArtifactSourceParserDelegate handler) {
-      this.handler = handler;
       this.headerNumber = "";
       this.listIdentifier = "";
       this.reqNumberMatcher = Pattern.compile("(\\d+\\.)*(\\d+\\.?)\\s*").matcher("");
       this.reqListMatcher = Pattern.compile("\\w+\\)", Pattern.CASE_INSENSITIVE).matcher("");
       this.currentListStack = new Stack<String>();
       this.clonedCurrentListStack = new Stack<String>();
-      this.maxExtractionDepth = maxExtractionDepth;
+      this.maxExtractionDepth = 0;
    }
 
+   @Override
+   public String getName() {
+      return "Word Outline";
+   }
+
+   @Override
    public String getDescription() {
       return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
+   }
+
+   @Override
+   public boolean isDelegateRequired() {
+      return true;
+   }
+
+   @Override
+   public boolean usesTypeList() {
+      return true;
+   }
+
+   @Override
+   public FileFilter getFileFilter() {
+      return new FileFilter() {
+         public boolean accept(File file) {
+            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
+         }
+      };
    }
 
    private void handleFormatError(URI source, String message) throws OseeCoreException {
@@ -98,61 +117,56 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          if (Readers.forward(reader, WordUtil.BODY_START) == null) {
             handleFormatError(source, "no start of body tag");
          }
-         handler.initialize();
-         try {
-            CharSequence element;
-            StringBuilder content = new StringBuilder(2000);
+         CharSequence element;
+         StringBuilder content = new StringBuilder(2000);
 
-            // Process the next available body tag
-            while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
+         // Process the next available body tag
+         while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
-               if (element == WordUtil.BODY_END) {
-                  return;
-               } else {
-                  // Get the next parsable chunk from the stream. This will throttle the amount of the file read in to
-                  // memory at one time to the smallest area that will provide all the necessary context.
-                  content.setLength(0);
-                  content.append(element);
+            if (element == WordUtil.BODY_END) {
+               return;
+            } else {
+               // Get the next parse-able chunk from the stream. This will throttle the amount of the file read in to
+               // memory at one time to the smallest area that will provide all the necessary context.
+               content.setLength(0);
+               content.append(element);
 
-                  boolean emptyTagWithAttrs = false;
-                  // If the tag had attributes, check that it isn't empty
-                  if (element == PARAGRAPH_TAG_WITH_ATTRS || element == TABLE_TAG_WITH_ATTRS) {
-                     if (Readers.forward(reader, (Appendable) content, ">") == null) {
-                        handleFormatError(source, "did not find expected end of tag");
-                     }
-                     emptyTagWithAttrs = content.toString().endsWith("/>");
+               boolean emptyTagWithAttrs = false;
+               // If the tag had attributes, check that it isn't empty
+               if (element == PARAGRAPH_TAG_WITH_ATTRS || element == TABLE_TAG_WITH_ATTRS) {
+                  if (Readers.forward(reader, (Appendable) content, ">") == null) {
+                     handleFormatError(source, "did not find expected end of tag");
                   }
+                  emptyTagWithAttrs = content.toString().endsWith("/>");
+               }
 
-                  if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
-                     Readers.xmlForward(reader, content, "w:p");
-                  } else if (element == TABLE_TAG || !emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS) {
-                     Readers.xmlForward(reader, content, "w:tbl");
-                  } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != TABLE_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY && element != TABLE_TAG_EMPTY) {
-                     throw new IllegalStateException("Unexpected element returned");
-                  }
+               if (element == PARAGRAPH_TAG || !emptyTagWithAttrs && element == PARAGRAPH_TAG_WITH_ATTRS) {
+                  Readers.xmlForward(reader, content, "w:p");
+               } else if (element == TABLE_TAG || !emptyTagWithAttrs && element == TABLE_TAG_WITH_ATTRS) {
+                  Readers.xmlForward(reader, content, "w:tbl");
+               } else if (element != PARAGRAPH_TAG_WITH_ATTRS && element != TABLE_TAG_WITH_ATTRS && element != PARAGRAPH_TAG_EMPTY && element != TABLE_TAG_EMPTY) {
+                  throw new IllegalStateException("Unexpected element returned");
+               }
 
-                  // Word places proofErr tags in manners discontigous with the standard XML tree so only some
-                  // of them get picked up causing a misbalance from what Word expects, and effectively corrupting
-                  // the content as far as Word is concerned, so just remove all of them and let word recompute
-                  // them if it is really that concerned about our grammar
-                  content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
+               // Word places proofErr tags in manners discontigous with the standard XML tree so only some
+               // of them get picked up causing a misbalance from what Word expects, and effectively corrupting
+               // the content as far as Word is concerned, so just remove all of them and let word recompute
+               // them if it is really that concerned about our grammar
+               content = new StringBuilder(proofErrTagKiller.matcher(content).replaceAll(""));
 
-                  // forceBody doesn't reset per paragraph
-                  forcePrimaryType = false;
-                  headerNumber = "";
-                  listIdentifier = "";
-                  paragraphStyle = null;
-                  parseContentDetails(content, new Stack<String>());
-                  try {
-                     handler.processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
-                           paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
-                  } catch (OseeCoreException ex) {
-                     throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
-                  }
+               // forceBody doesn't reset per paragraph
+               forcePrimaryType = false;
+               headerNumber = "";
+               listIdentifier = "";
+               paragraphStyle = null;
+               parseContentDetails(content, new Stack<String>());
+               try {
+                  getDelegate().processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+                        paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
+               } catch (OseeCoreException ex) {
+                  throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
                }
             }
-         } finally {
-            handler.dispose();
          }
 
          handleFormatError(source, "did not find expected end of body tag");
@@ -239,7 +253,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          currentListStack.clear();
 
          currentListStack.push(numberCandidate);
-         clonedCurrentListStack = (Stack) currentListStack.clone();
+         clonedCurrentListStack = (Stack<String>) currentListStack.clone();
          lastDepthNumber = currentDepthNumber;
       } else {
 
@@ -249,7 +263,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
 
          lastDepthNumber = currentDepthNumber;
          currentListStack.push(numberCandidate);
-         clonedCurrentListStack = (Stack) currentListStack.clone();
+         clonedCurrentListStack = (Stack<String>) currentListStack.clone();
       }
       while (!clonedCurrentListStack.empty()) {
          id = clonedCurrentListStack.pop() + id;
@@ -261,21 +275,4 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       return id.replaceAll("\\)", ".");
    }
 
-   public FileFilter getFileFilter() {
-      return new FileFilter() {
-         public boolean accept(File file) {
-            return file.isDirectory() || file.isFile() && file.getName().endsWith(".xml");
-         }
-      };
-   }
-
-   @Override
-   public String getName() {
-      return "Word Outline";
-   }
-
-   @Override
-   public boolean usesTypeList() {
-      return true;
-   }
 }

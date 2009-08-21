@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.junit.After;
 import org.junit.Before;
@@ -41,12 +41,12 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ArtifactExtractorTest {
    private static final String TEST_DATA_PATH = "support/ArtifactExtractorTests/";
-   private final AbstractArtifactExtractor extractor;
+   private final IArtifactExtractor extractor;
    private final String testDataFileName;
    private final PropertyStore propertyStore;
    private static String BASE_DATA_PATH;
 
-   public ArtifactExtractorTest(AbstractArtifactExtractor extractor, String testDataFileName) {
+   public ArtifactExtractorTest(IArtifactExtractor extractor, String testDataFileName) {
       this.extractor = extractor;
       this.testDataFileName = testDataFileName;
       this.propertyStore = new PropertyStore();
@@ -90,6 +90,8 @@ public class ArtifactExtractorTest {
       Assert.assertEquals(propertyStore.get("expected.name"), extractor.getName());
       Assert.assertEquals(propertyStore.get("expected.toString"), extractor.toString());
       Assert.assertEquals(propertyStore.get("expected.description"), extractor.getDescription());
+      Assert.assertEquals(propertyStore.getBoolean("expected.isDelegateRequired"), extractor.isDelegateRequired());
+      Assert.assertFalse(extractor.hasDelegate());
    }
 
    private List<TestData> getFileTestData() {

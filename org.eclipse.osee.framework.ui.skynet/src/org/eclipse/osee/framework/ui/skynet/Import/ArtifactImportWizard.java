@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.RootAndAttributeBasedArtifactResolver;
@@ -68,7 +68,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
       try {
          Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
-         IArtifactSourceParser extractor = mainPage.getExtractor();
+         IArtifactExtractor extractor = mainPage.getExtractor();
          ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
          ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
 

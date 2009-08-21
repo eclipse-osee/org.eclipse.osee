@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 /**
  * @author Robert A. Fisher
  */
-public class WordOutlineParserDelegate implements IArtifactSourceParserDelegate {
+public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate {
 
    private static final String WORD_OUTLINE_PARSER_NAME = "Word Outline";
    private static final Pattern listPrKiller =
@@ -37,12 +37,12 @@ public class WordOutlineParserDelegate implements IArtifactSourceParserDelegate 
    private StringBuilder wordFormattedContent;
    private String lastHeaderNumber;
 
-   public WordOutlineParserDelegate() {
+   public WordOutlineExtractorDelegate() {
       super();
    }
 
    @Override
-   public boolean isApplicable(IArtifactSourceParser parser) {
+   public boolean isApplicable(IArtifactExtractor parser) {
       return parser != null && WORD_OUTLINE_PARSER_NAME.equals(parser.getName());
    }
 

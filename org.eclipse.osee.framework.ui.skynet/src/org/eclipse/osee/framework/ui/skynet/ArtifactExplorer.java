@@ -575,8 +575,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                ArtifactTypeFilteredTreeEntryDialog dialog =
                      new ArtifactTypeFilteredTreeEntryDialog("New Child",
-                           "Enter name and select Artifact type to create", "Artifact Name", descriptors);
-
+                           "Enter name and select Artifact type to create", "Artifact Name");
+               dialog.setInput(descriptors);
                if (dialog.open() == 0) {
 
                   ArtifactType descriptor = dialog.getSelection();
@@ -1160,8 +1160,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   explore(previousArtifact);
                } else {
                   /*
-                   * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
-                   * because it was deleted or this workspace was last used with a different branch or database, so let the logic
+                   * simply means that the previous artifact that was used as the root for the artiactExplorer does not
+                   * exist
+                   * because it was deleted or this workspace was last used with a different branch or database, so let
+                   * the logic
                    * below get the default hierarchy root artifact
                    */
                }

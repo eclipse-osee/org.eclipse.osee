@@ -11,15 +11,20 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractArtifactExtractor implements IArtifactSourceParser {
+public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
+
+   private IArtifactExtractorDelegate delegate;
 
    protected AbstractArtifactExtractor() {
+      this.delegate = null;
    }
 
    protected abstract void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception;
@@ -29,10 +34,46 @@ public abstract class AbstractArtifactExtractor implements IArtifactSourceParser
       return getName();
    }
 
+   @Override
+   public boolean isDelegateRequired() {
+      return false;
+   }
+
+   @Override
+   public void setDelegate(IArtifactExtractorDelegate delegate) {
+      this.delegate = delegate;
+   }
+
+   @Override
+   public IArtifactExtractorDelegate getDelegate() {
+      return delegate;
+   }
+
+   @Override
+   public boolean hasDelegate() {
+      return getDelegate() != null;
+   }
+
+   private void checkDelegate() throws OseeCoreException {
+      if (isDelegateRequired() && !hasDelegate()) {
+         throw new OseeStateException("Delegate is required but is null");
+      }
+   }
+
    public final void process(URI source, RoughArtifactCollector collector) throws Exception {
-      extractFromSource(source, collector);
-      connectParentChildRelations(collector);
-      connectCollectorParent(collector);
+      checkDelegate();
+      if (hasDelegate()) {
+         getDelegate().initialize();
+      }
+      try {
+         extractFromSource(source, collector);
+         connectParentChildRelations(collector);
+         connectCollectorParent(collector);
+      } finally {
+         if (hasDelegate()) {
+            getDelegate().dispose();
+         }
+      }
    }
 
    private void connectCollectorParent(RoughArtifactCollector collector) {

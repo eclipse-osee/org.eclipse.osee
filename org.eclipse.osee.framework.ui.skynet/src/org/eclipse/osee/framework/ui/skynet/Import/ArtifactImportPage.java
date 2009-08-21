@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -60,10 +60,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
 
-   private final Map<IArtifactSourceParser, Button> extractors;
+   private final Map<IArtifactExtractor, Button> extractors;
    private final File importResource;
    private final Artifact destinationArtifact;
-   private final ArtifactSourceParserContributionManager contributionManager;
+   private final ArtifactExtractorContributionManager contributionManager;
 
    private List typeList;
    private BranchSelectComposite branchSelectComposite;
@@ -80,13 +80,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    private ArtifactImportPage(Pair<File, Artifact> input) {
       super(PAGE_NAME);
-      contributionManager = new ArtifactSourceParserContributionManager();
+      contributionManager = new ArtifactExtractorContributionManager();
       File importResource = input.getFirst();
       Artifact destinationArtifact = input.getSecond();
 
       this.importResource = importResource;
       this.destinationArtifact = destinationArtifact;
-      this.extractors = new HashMap<IArtifactSourceParser, Button>();
+      this.extractors = new HashMap<IArtifactExtractor, Button>();
       this.built = false;
    }
 
@@ -342,7 +342,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      for (IArtifactSourceParser artifactExtractor : contributionManager.getArtifactSourceParser()) {
+      for (IArtifactExtractor artifactExtractor : contributionManager.getExtractors()) {
          Button extractorButton = new Button(composite, SWT.RADIO);
          extractorButton.setText(artifactExtractor.getName());
          extractorButton.setToolTipText(artifactExtractor.getDescription());
@@ -415,7 +415,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          txtImportUnderFolderName.setEnabled(false);// TODO future development
          radImportUnderSelection.setEnabled(destinationArtifact != null);
 
-         for (Entry<IArtifactSourceParser, Button> extractor : extractors.entrySet()) {
+         for (Entry<IArtifactExtractor, Button> extractor : extractors.entrySet()) {
             if (extractor.getValue().getSelection()) {
                typeList.setEnabled(extractor.getKey().usesTypeList());
             }
@@ -423,8 +423,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   public IArtifactSourceParser getExtractor() throws OseeStateException {
-      for (Entry<IArtifactSourceParser, Button> extractor : extractors.entrySet()) {
+   public IArtifactExtractor getExtractor() throws OseeStateException {
+      for (Entry<IArtifactExtractor, Button> extractor : extractors.entrySet()) {
          if (extractor.getValue().getSelection()) {
             return extractor.getKey();
          }

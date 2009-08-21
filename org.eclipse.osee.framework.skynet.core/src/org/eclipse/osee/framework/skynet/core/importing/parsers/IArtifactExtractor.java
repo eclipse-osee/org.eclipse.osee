@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactSourceParser {
+public interface IArtifactExtractor {
 
    public abstract String getName();
 
@@ -29,4 +29,11 @@ public interface IArtifactSourceParser {
 
    public abstract boolean usesTypeList();
 
+   public boolean isDelegateRequired();
+
+   public void setDelegate(IArtifactExtractorDelegate delegate);
+
+   public IArtifactExtractorDelegate getDelegate();
+
+   public boolean hasDelegate();
 }

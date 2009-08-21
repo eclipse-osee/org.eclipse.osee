@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 /**
  * @author Robert A. Fisher
  */
-public abstract class SoftwareRequirementHandler extends WordOutlineParserDelegate {
+public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDelegate {
    private static final Pattern partitionPattern = Pattern.compile("\\[([\\w\\(|\\)]+)\\]");
 
    private final String attributeName;
 
-   public SoftwareRequirementHandler(String attributeName) {
+   protected SoftwareRequirementHandler(String attributeName) {
       super();
       this.attributeName = attributeName;
    }

@@ -7,8 +7,8 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -17,38 +17,38 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.importing.ArtifactSourceParserContributionManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.SourceToRoughArtifactOperation;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParser;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactSourceParserDelegate;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSelectPanel;
-import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSourceParserSelectPanel;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.panels.ArtifactTypeSelectPanel;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.HidingComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -67,23 +67,29 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private DirectoryOrFileSelector directoryFileSelector;
    private File defaultSourceFile;
-
-   private final ArtifactSelectPanel artifactSelectPanel;
-   private final ArtifactSourceParserSelectPanel parserSelectPanel;
-   private ListViewer artifactTypeList;
    private Button reuseChildArtifacts;
 
+   private final ArtifactSelectPanel artifactSelectPanel;
+   private final ArtifactExtractorSelectPanel parserSelectPanel;
+   private final ArtifactTypeSelectPanel artifactTypeSelectPanel;
+
    private final RoughArtifactCollector mockArtifactCollector;
-   private final ArtifactSourceParserContributionManager importContributionManager;
+   private final ArtifactExtractorContributionManager importContributionManager;
+   private final SelectionLatch selectionLatch;
+   private final Collection<ArtifactType> selectedArtifactTypes;
 
    protected ArtifactImportSourcePage() {
       super(PAGE_NAME);
-      setTitle("Import artifacts into OSEE");
-      setDescription("Import artifacts into Define");
+      selectedArtifactTypes = new ArrayList<ArtifactType>();
+      selectionLatch = new SelectionLatch();
       mockArtifactCollector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();
-      importContributionManager = new ArtifactSourceParserContributionManager();
-      parserSelectPanel = new ArtifactSourceParserSelectPanel(importContributionManager);
+      artifactTypeSelectPanel = new ArtifactTypeSelectPanel();
+      importContributionManager = new ArtifactExtractorContributionManager();
+      parserSelectPanel = new ArtifactExtractorSelectPanel(importContributionManager);
+
+      setTitle("Import artifacts into OSEE");
+      setDescription("Import artifacts into Define");
    }
 
    public RoughArtifactCollector getCollectedArtifacts() {
@@ -95,11 +101,11 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    }
 
    public void setDefaultDestinationArtifact(Artifact destinationArtifact) {
-      artifactSelectPanel.setDefaultArtifact(destinationArtifact);
+      artifactSelectPanel.setDefaultItem(destinationArtifact);
    }
 
    public Artifact getDefaultDestinationArtifact() {
-      return artifactSelectPanel.getDefaultArtifact();
+      return artifactSelectPanel.getDefaultItem();
    }
 
    public File getDefaultSourceFile() {
@@ -113,8 +119,9 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    @Override
    public void handleEvent(Event arg0) {
+      System.out.println("Event: " + arg0.widget);
       updateWidgetEnablements();
-      handleParsing();
+      updateExtractedElements();
    }
 
    @Override
@@ -135,6 +142,8 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       updateWidgetEnablements();
       setPageComplete(determinePageCompletion());
       setControl(composite);
+      selectionLatch.setCurrentValues(getDestinationArtifact(), getSourceFile(), getArtifactParser());
+      selectionLatch.latch();
    }
 
    private void createDestinationArtifactSelectArea(Composite parent) {
@@ -181,21 +190,8 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       Composite composite =
             createHidingGroup(parent, 2, "Select artifact type to import data as",
                   "Select artifact type to import data as");
-
-      artifactTypeList = new ListViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
-      artifactTypeList.setLabelProvider(new ArtifactTypeLabelProvider());
-      artifactTypeList.setContentProvider(new ArrayContentProvider());
-      artifactTypeList.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      Button selectTypes = new Button(composite, SWT.PUSH);
-      selectTypes.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
-      selectTypes.setText("Select Artifact Type");
-      selectTypes.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleAttributeTypeSelection();
-         }
-      });
+      artifactTypeSelectPanel.createControl(composite);
+      artifactTypeSelectPanel.addListener(this);
    }
 
    private Composite createHidingGroup(Composite parent, int numberOfColumns, String text, String toolTip) {
@@ -209,36 +205,6 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       delegateGroup.setLayout(new GridLayout(numberOfColumns, false));
       delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       return delegateGroup;
-   }
-
-   private void handleAttributeTypeSelection() {
-      Collection<ArtifactType> artifactTypes = null;
-      try {
-         artifactTypes = ArtifactTypeManager.getAllTypes();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         artifactTypes = Collections.emptyList();
-      }
-      String title = "Import as Artifact Type";
-      String message = "Select what artifact type data should be imported as.";
-      ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog(title, message, artifactTypes);
-      //      Object lastSelected = attributeTypeList.getData(attributeTypeList.getSItem(0));
-      //      if (lastSelected != null) {
-      //         try {
-      //            dialog.setInitialSelections(ArtifactTypeManager.getType(lastSelected.toString()));
-      //         } catch (OseeCoreException ex) {
-      //            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
-      //                  "Dialog could not be initialized to the last Artifact Type selected", ex);
-      //         }
-      //      }
-
-      int result = dialog.open();
-      if (result == Window.OK) {
-         ArtifactType artifactType = dialog.getSelection();
-         String key = artifactType.getName();
-         artifactTypeList.add(key);
-         artifactTypeList.setData(key, artifactType);
-      }
    }
 
    public boolean isReUseSelected() {
@@ -261,33 +227,115 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       return sourceFile;
    }
 
-   private IArtifactSourceParser getArtifactParser() {
-      return parserSelectPanel.getArtifactParser();
-   }
-
-   private IArtifactSourceParserDelegate getArtifactParserDelegate() {
-      return parserSelectPanel.getArtifactParserDelegate();
+   private IArtifactExtractor getArtifactParser() {
+      return parserSelectPanel.getArtifactExtractor();
    }
 
    public Artifact getDestinationArtifact() {
-      return artifactSelectPanel.getArtifact();
+      return artifactSelectPanel.getSelected();
    }
 
-   private void handleParsing() {
-      if (isPageComplete()) {
-         mockArtifactCollector.reset();
-         IOperation operation =
-               new SourceToRoughArtifactOperation("Extracting data from source", getArtifactParser(), getSourceFile(),
-                     mockArtifactCollector);
-         if (executeOperation(operation)) {
-            Set<String> names = new HashSet<String>();
-            for (RoughArtifact artifact : mockArtifactCollector.getRoughArtifacts()) {
-               names.addAll(artifact.getURIAttributes().keySet());
-               names.addAll(artifact.getAttributes().keySet());
+   public ArtifactType getArtifactType() {
+      return artifactTypeSelectPanel.getSelected();
+   }
+
+   @Override
+   public boolean isPageComplete() {
+      boolean result = getSourceFile() != null;
+      result &= getArtifactParser() != null;
+      result &= getDestinationArtifact() != null;
+      result &= selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged();
+      return result && super.isPageComplete();
+   }
+
+   @Override
+   protected void restoreWidgetValues() {
+      super.restoreWidgetValues();
+      IDialogSettings settings = getDialogSettings();
+      if (settings != null) {
+         if (getDefaultSourceFile() == null) {
+            directoryFileSelector.setDirectorySelected(settings.getBoolean("isDirectory"));
+            String file = settings.get("source.file");
+            if (Strings.isValid(file)) {
+               directoryFileSelector.setText(file);
             }
-            System.out.println(names);
+         }
+
+         String parser = settings.get("selected.parser");
+         if (Strings.isValid(parser)) {
+            for (IArtifactExtractor item : importContributionManager.getExtractors()) {
+               if (parser.equals(item.getClass().getSimpleName())) {
+                  parserSelectPanel.setArtifactExtractor(item);
+               }
+            }
+         }
+         if (getDefaultDestinationArtifact() == null) {
+            String guid = settings.get("destination.artifact.guid");
+            String branch = settings.get("destination.branch.guid");
+
+            if (Strings.isValid(guid) && Strings.isValid(branch)) {
+               try {
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
+                  artifactSelectPanel.setDefaultItem(artifact);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
+                        "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
+               }
+            }
+         }
+         reuseChildArtifacts.setSelection(settings.getBoolean("is.reuse.selected"));
+      }
+   }
+
+   @Override
+   protected void saveWidgetValues() {
+      super.saveWidgetValues();
+      IDialogSettings settings = getDialogSettings();
+      if (settings != null) {
+
+         settings.put("isDirectory", isDirectory());
+
+         File file = getSourceFile();
+         if (file != null) {
+            settings.put("source.file", getSourceFile().getAbsolutePath());
+         }
+
+         IArtifactExtractor parser = getArtifactParser();
+         if (parser != null) {
+            settings.put("selected.parser", parser.getClass().getSimpleName());
+         }
+
+         Artifact artifact = getDestinationArtifact();
+         if (artifact != null) {
+            settings.put("destination.artifact.guid", artifact.getGuid());
+            settings.put("destination.branch.guid", artifact.getBranch().getGuid());
+         }
+         settings.put("is.reuse.selected", isReUseSelected());
+      }
+   }
+
+   private synchronized void updateExtractedElements() {
+      selectionLatch.setCurrentValues(getDestinationArtifact(), getSourceFile(), getArtifactParser());
+      if (selectionLatch.areSelectionsValid()) {
+         //         && selectionLatch.hasChanged()) {
+         //      }
+         selectionLatch.latch();
+         System.out.println("Will Parse");
+         mockArtifactCollector.reset();
+
+         final Artifact destinationArtifact = selectionLatch.currentSelected.destinationArtifact;
+         final File sourceFile = selectionLatch.currentSelected.sourceFile;
+         final IArtifactExtractor extractor = selectionLatch.currentSelected.extractor;
+
+         Collection<IOperation> ops = new ArrayList<IOperation>();
+         ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, mockArtifactCollector));
+         ops.add(new FilterArtifactTypesByAllowedAttributes(destinationArtifact.getBranch(), selectedArtifactTypes));
+         if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
+            System.out.println("Will Parsed");
+            artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
          }
       }
+
    }
 
    protected boolean executeOperation(final IOperation operation) {
@@ -315,83 +363,100 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       return true;
    }
 
-   @Override
-   protected void restoreWidgetValues() {
-      super.restoreWidgetValues();
-      IDialogSettings settings = getDialogSettings();
-      if (settings != null) {
-         if (getDefaultSourceFile() == null) {
-            directoryFileSelector.setDirectorySelected(settings.getBoolean("isDirectory"));
-            String file = settings.get("source.file");
-            if (Strings.isValid(file)) {
-               directoryFileSelector.setText(file);
-            }
-         }
+   private final class SelectionLatch {
+      protected final SelectionData lastSelected;
+      protected final SelectionData currentSelected;
 
-         String parser = settings.get("selected.parser");
-         if (Strings.isValid(parser)) {
-            for (IArtifactSourceParser item : importContributionManager.getArtifactSourceParser()) {
-               if (parser.equals(item.getClass().getSimpleName())) {
-                  parserSelectPanel.setArtifactParser(item);
-               }
-            }
-         }
-         if (getDefaultDestinationArtifact() == null) {
-            String guid = settings.get("destination.artifact.guid");
-            String branch = settings.get("destination.branch.guid");
+      public SelectionLatch() {
+         lastSelected = new SelectionData();
+         currentSelected = new SelectionData();
+      }
 
-            if (Strings.isValid(guid) && Strings.isValid(branch)) {
-               try {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
-                  artifactSelectPanel.setDefaultArtifact(artifact);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, String.format(
-                        "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch));
-               }
-            }
-         }
-         reuseChildArtifacts.setSelection(settings.getBoolean("is.reuse.selected"));
+      public void setCurrentValues(Artifact destinationArtifact, File sourceFile, IArtifactExtractor extractor) {
+         this.currentSelected.setValues(destinationArtifact, sourceFile, extractor);
+      }
+
+      public void latch() {
+         lastSelected.setValues(currentSelected.destinationArtifact, currentSelected.sourceFile,
+               currentSelected.extractor);
+      }
+
+      public boolean areSelectionsValid() {
+         return currentSelected.isValid();
+      }
+
+      public boolean hasChanged() {
+         return lastSelected.destinationArtifact != currentSelected.destinationArtifact && //
+         lastSelected.sourceFile != currentSelected.sourceFile && //
+         lastSelected.extractor != currentSelected.extractor && //
+         lastSelected.delegate != currentSelected.delegate;
       }
    }
 
-   @Override
-   protected void saveWidgetValues() {
-      super.saveWidgetValues();
-      IDialogSettings settings = getDialogSettings();
-      if (settings != null) {
+   private final class SelectionData {
+      protected Artifact destinationArtifact;
+      protected File sourceFile;
+      protected IArtifactExtractor extractor;
+      protected IArtifactExtractorDelegate delegate;
 
-         settings.put("isDirectory", isDirectory());
+      private SelectionData() {
+      }
 
-         File file = getSourceFile();
-         if (file != null) {
-            settings.put("source.file", getSourceFile().getAbsolutePath());
-         }
+      public void setValues(Artifact destinationArtifact, File sourceFile, IArtifactExtractor extractor) {
+         this.destinationArtifact = destinationArtifact;
+         this.sourceFile = sourceFile;
+         this.extractor = extractor;
+         this.delegate = extractor != null ? extractor.getDelegate() : null;
+      }
 
-         IArtifactSourceParser parser = getArtifactParser();
-         if (parser != null) {
-            settings.put("selected.parser", parser.getClass().getSimpleName());
-         }
-
-         Artifact artifact = getDestinationArtifact();
-         if (artifact != null) {
-            settings.put("destination.artifact.guid", artifact.getGuid());
-            settings.put("destination.branch.guid", artifact.getBranch().getGuid());
-         }
-         settings.put("is.reuse.selected", isReUseSelected());
+      public boolean isValid() {
+         return destinationArtifact != null && sourceFile != null && extractor != null && extractor.isDelegateRequired() ? extractor.hasDelegate() : true;
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
-    */
-   @Override
-   public boolean isPageComplete() {
-      boolean result = getSourceFile() != null;
-      result &= getArtifactParser() != null;
-      result &= getArtifactParserDelegate() != null;
-      result &= getDestinationArtifact() != null;
-      return result && super.isPageComplete();
+   private final class FilterArtifactTypesByAllowedAttributes extends AbstractOperation {
+      private final Branch branch;
+      private final Collection<ArtifactType> selectedArtifactTypes;
+
+      public FilterArtifactTypesByAllowedAttributes(Branch branch, Collection<ArtifactType> selectedArtifactTypes) {
+         super("Filter Artifact Types", SkynetGuiPlugin.PLUGIN_ID);
+         this.branch = branch;
+         this.selectedArtifactTypes = selectedArtifactTypes;
+      }
+
+      /*
+       * (non-Javadoc)
+       * @see
+       * org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
+       */
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         Set<String> names = new HashSet<String>();
+         for (RoughArtifact artifact : mockArtifactCollector.getRoughArtifacts()) {
+            names.addAll(artifact.getURIAttributes().keySet());
+            names.addAll(artifact.getAttributes().keySet());
+         }
+         selectedArtifactTypes.clear();
+         Set<AttributeType> requiredTypes = new HashSet<AttributeType>();
+         for (String name : names) {
+            AttributeType type = AttributeTypeManager.getType(name);
+            if (type != null) {
+               requiredTypes.add(type);
+            }
+         }
+         for (ArtifactType artifactType : TypeValidityManager.getValidArtifactTypes(branch)) {
+            Collection<AttributeType> attributeType =
+                  TypeValidityManager.getAttributeTypesFromArtifactType(artifactType, branch);
+            if (Collections.setComplement(requiredTypes, attributeType).isEmpty()) {
+               selectedArtifactTypes.add(artifactType);
+            }
+         }
+         //         System.out.println("Required: " + requiredTypes);
+         //         for (ArtifactType type : selectedArtifactTypes) {
+         //            System.out.println("Artifact: " + type.getName() + " Attributes: " + TypeValidityManager.getAttributeTypesFromArtifactType(
+         //                  type, branch));
+         //         }
+      }
    }
 
    //  mainPage.isReUseSelected();

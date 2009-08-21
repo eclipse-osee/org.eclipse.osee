@@ -34,14 +34,12 @@ import org.eclipse.ui.dialogs.PatternFilter;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog {
+public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<ArtifactType>> {
 
-   private final Collection<ArtifactType> artifactTypes;
    private ArtifactType selection;
 
-   public ArtifactTypeFilteredTreeDialog(String title, String message, Collection<ArtifactType> artifactTypes) {
-      super(title, message, new PatternFilter());
-      this.artifactTypes = artifactTypes;
+   public ArtifactTypeFilteredTreeDialog(String title, String message) {
+      super(title, message, new ArtifactTypeLabelProvider(), new ArrayTreeContentProvider(), new PatternFilter());
       setCheckTree(false);
       setMultiSelect(false);
    }
@@ -50,13 +48,10 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setContentProvider(new ArrayTreeContentProvider());
-         getTreeViewer().getViewer().setLabelProvider(new ArtifactTypeLabelProvider());
          getTreeViewer().getViewer().setSorter(new ArtifactTypeNameSorter());
-         getTreeViewer().getViewer().setInput(artifactTypes);
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-               IStructuredSelection sel = ((IStructuredSelection) getTreeViewer().getViewer().getSelection());
+               IStructuredSelection sel = (IStructuredSelection) getTreeViewer().getViewer().getSelection();
                if (sel.isEmpty()) {
                   selection = null;
                } else {

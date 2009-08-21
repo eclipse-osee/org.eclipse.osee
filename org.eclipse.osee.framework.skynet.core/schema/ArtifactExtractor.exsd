@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.osee.framework.skynet.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactSourceParserDelegate" name="ArtifactSourceParserDelegate"/>
+         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="ArtifactExtractor" name="ArtifactExtractor"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ArtifactSourceParserDelegate"/>
+            <element ref="ArtifactExtractor"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="ArtifactSourceParserDelegate">
+   <element name="ArtifactExtractor">
       <complexType>
          <attribute name="classname" type="string" use="required">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.importing.IArtifactSourceParserDelegate"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor"/>
                </appInfo>
             </annotation>
          </attribute>

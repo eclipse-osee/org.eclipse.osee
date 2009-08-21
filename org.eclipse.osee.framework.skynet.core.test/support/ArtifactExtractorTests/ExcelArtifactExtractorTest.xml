@@ -3,6 +3,7 @@
 	<item key="expected.name" value="Excel XML Artifacts"/>
 	<item key="expected.toString" value="Excel XML Artifacts"/>
 	<item key="expected.description" value="Extract each row as an artifact - header &lt;section #, atrribute1, atrribute2 ...&gt;"/>
+	<item key="expected.isDelegateRequired" value="false" />
 	<item key="list.entry.separator" value=";"/>
 	<list key="fileTestData">
 		<item value="directory/;true"/>
