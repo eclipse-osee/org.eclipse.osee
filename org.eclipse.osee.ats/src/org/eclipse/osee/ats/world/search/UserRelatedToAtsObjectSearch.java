@@ -47,25 +47,15 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
 
-      /*
-      List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", DeprecatedOperator.CONTAINS));
-      if (!activeObjectsOnly) {
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", DeprecatedOperator.CONTAINS));
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-               "userId=\"" + user.getUserId() + "\"", DeprecatedOperator.CONTAINS));
-      }
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "userId>" + user.getUserId() + "</userId", DeprecatedOperator.CONTAINS));
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "user>" + user.getUserId() + "</user", DeprecatedOperator.CONTAINS));*/
-
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(), false,
-            false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
+      if (activeObjectsOnly) {
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
+               false, false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName()));
+      } else {
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
+               false, false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+               ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
+      }
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));
