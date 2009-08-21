@@ -72,4 +72,8 @@ public class GUID {
       writeBuffer[14] = (byte) (low >>> 0);
       return writeBuffer;
    }
+   
+   public static void main(String[] args){
+      System.out.println(GUID.create());
+   }
 }

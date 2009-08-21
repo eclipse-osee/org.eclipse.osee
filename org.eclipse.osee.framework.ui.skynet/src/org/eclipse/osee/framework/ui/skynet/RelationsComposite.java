@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -35,7 +33,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,13 +48,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -74,6 +69,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -102,7 +98,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    private static int COLUMN_ORDER = 1;
 
    private MenuItem openMenuItem;
-   private MenuItem openWithMenuItem;
+   //   private MenuItem openWithMenuItem;
    private MenuItem editMenuItem;
    private MenuItem viewRelationTreeItem;
    private MenuItem orderRelationMenuItem;
@@ -113,8 +109,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    private final Artifact artifact;
    private final RelationLabelProvider relationLabelProvider;
    private final ToolBar toolBar;
-
-   private final Map<Integer, RelationLink> artifactToLinkMap;
 
    public RelationsComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
       this(editor, parent, style, artifact, null);
@@ -130,7 +124,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       this.artifact = artifact;
       this.editor = editor;
       this.relationLabelProvider = new RelationLabelProvider(artifact);
-      this.artifactToLinkMap = new HashMap<Integer, RelationLink>();
 
       createPartControl();
       OseeEventManager.addListener(this);
@@ -170,14 +163,14 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       treeViewer.setSorter(new LabelSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            if (e1 instanceof RelationLink && e2 instanceof RelationLink) {
+            if (e1 instanceof WrapperForRelationLink && e2 instanceof WrapperForRelationLink) {
                return 0;
             }
             return super.compare(viewer, e1, e2);
          }
       });
       treeViewer.setUseHashlookup(true);
-      treeViewer.setInput(artifact);
+      treeViewer.setInput(new ArtifactRoot(artifact));
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
       tree.addKeyListener(new keySelectedListener());
@@ -272,85 +265,65 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    private void createOrderRelationTreeMenuItem(final Menu parentMenu) {
-      orderRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      orderRelationMenuItem.setText("&Order Relation");
-      needSelectedArtifactListener.add(orderRelationMenuItem);
-      orderRelationMenuItem.addSelectionListener(new SelectionAdapter() {
 
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            performOrderRelation();
-         }
-      });
+      orderRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      orderRelationMenuItem.setText("&Order Relations");
+      needSelectedArtifactListener.add(orderRelationMenuItem);
+
+      //subMenu = new Menu(clearContents);
+      Menu subMenu = new Menu(parentMenu);
+      orderRelationMenuItem.setMenu(subMenu);
+
+      List<RelationOrderId> orderTypes = RelationManager.getRelationOrderTypes();
+      for (RelationOrderId id : orderTypes) {
+         MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE);
+         idMenu.setText(id.prettyName());
+         idMenu.addSelectionListener(new SelectionId(id));
+      }
       parentMenu.addListener(SWT.Show, new Listener() {
 
          @Override
          public void handleEvent(Event event) {
-            String errorMessage = checkSelectionForOrderRelation();
-            orderRelationMenuItem.setEnabled(!Strings.isValid(errorMessage));
-            if (errorMessage.length() > 0) {
-               errorMessage = ": " + errorMessage;
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+            Object[] objects = selection.toArray();
+            if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
+               orderRelationMenuItem.setEnabled(true);
+            } else {
+               orderRelationMenuItem.setEnabled(false);
             }
-            orderRelationMenuItem.setText(String.format("&Order Relation%s", errorMessage));
          }
 
       });
       orderRelationMenuItem.setEnabled(true);
    }
 
-   private Set<RelationLink> getSelectionForOrderRelation() {
-      Set<RelationLink> selectedItems = new HashSet<RelationLink>();
-      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      Iterator<?> iter = selection.iterator();
-      while (iter.hasNext()) {
-         Object object = iter.next();
-         if (object instanceof RelationLink) {
-            selectedItems.add((RelationLink) object);
-         }
-      }
-      return selectedItems;
-   }
+   private class SelectionId implements SelectionListener {
 
-   private String checkSelectionForOrderRelation() {
-      String errorMessage = "";
-      IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      if (selection.isEmpty()) {
-         errorMessage = "None Selected";
-      } else {
-         Set<RelationLink> selectedItems = getSelectionForOrderRelation();
-         if (selectedItems.isEmpty()) {
-            errorMessage = "No Artifacts Selected";
-         } else if (selectedItems.size() == 1) {
-            RelationLink link = selectedItems.iterator().next();
-            errorMessage = String.format("Select more than 1 artifact for [%s]", link.getRelationType().getTypeName());
-         } else {
-            Artifact aArtifact = null;
-            for (RelationLink link : selectedItems) {
-               RelationType type = link.getRelationType();
-               if (!type.isOrdered()) {
-                  errorMessage = String.format("Item with static order selected [%s]", type.getTypeName());
-                  break;
-               }
-               try {
-                  Artifact aSide = link.getArtifactA();
-                  if (aArtifact == null) {
-                     aArtifact = aSide;
-                  } else {
-                     if (!aSide.equals(aArtifact)) {
-                        errorMessage =
-                              String.format("Item from different link sides selected [%s]", aSide.getName());
-                        break;
-                     }
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+      private RelationOrderId id;
+      
+      SelectionId(RelationOrderId id){
+         this.id = id;
+      }
+      
+      @Override
+      public void widgetDefaultSelected(SelectionEvent e) {
+      }
+
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+         Object[] objects = selection.toArray();
+         if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
+            RelationTypeSide typeSide = (RelationTypeSide)objects[0];
+            try {
+               typeSide.getArtifact().setRelationOrder(typeSide, id);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       }
-      return errorMessage;
    }
-
+   
    private void createDeleteRelationMenuItem(final Menu parentMenu) {
       deleteRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       deleteRelationMenuItem.setText("&Delete Relation");
@@ -435,67 +408,31 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       });
    }
 
-   private void createOpenWithMenuItem(Menu parentMenu) {
-      openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openWithMenuItem.setText("&Open With");
-      final Menu submenu = new Menu(openWithMenuItem);
-      openWithMenuItem.setMenu(submenu);
-      needSelectedArtifactListener.addArtifactEnabled(openWithMenuItem);
-      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, new IRebuildMenuListener() {
-
-         @Override
-         public void rebuildMenu() {
-            createPopupMenu();
-         }
-
-      }));
-   }
-
    private void openViewer(IStructuredSelection selection) {
       Object object = selection.getFirstElement();
-      Artifact selectedArtifact = null;
 
-      if (object instanceof RelationLink) {
-         RelationLink link = (RelationLink) object;
-         try {
-            selectedArtifact = link.getArtifactOnOtherSide(artifact);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-         ArtifactEditor.editArtifact(selectedArtifact);
-      }
-   }
-
-   private void performOrderRelation() {
-      try {
-         Set<RelationLink> selectedItems = getSelectionForOrderRelation();
-         List<RelationLink> items = new ArrayList<RelationLink>(selectedItems);
-
-         RelationLink link = items.iterator().next();
-         RelationSide side = link.getSide(link.getArtifactB());
-         java.util.Collections.sort(items, new AlphabeticalRelationComparator(side));
-         System.out.println(items);
-         AWorkbench.popup("This feature is not yet supported");
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (object instanceof WrapperForRelationLink) {
+         WrapperForRelationLink link = (WrapperForRelationLink) object;
+         ArtifactEditor.editArtifact(link.getOther());
       }
    }
 
    private void performMassEdit(IStructuredSelection selection) {
+      Set<Artifact> selectedArtifacts = getSelectedArtifacts(selection);
+      MassArtifactEditor.editArtifacts("Mass Edit", selectedArtifacts);
+   }
+
+   private Set<Artifact> getSelectedArtifacts(IStructuredSelection selection) {
       Set<Artifact> selectedArtifacts = new HashSet<Artifact>();
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          Object object = iter.next();
-         if (object instanceof RelationLink) {
-            RelationLink link = (RelationLink) object;
-            try {
-               selectedArtifacts.add(link.getArtifactB());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
+         if (object instanceof WrapperForRelationLink) {
+            WrapperForRelationLink wrapped = (WrapperForRelationLink) object;
+            selectedArtifacts.add(wrapped.getOther());
          }
       }
-      MassArtifactEditor.editArtifacts("Mass Edit", selectedArtifacts);
+      return selectedArtifacts;
    }
 
    private void createEditMenuItem(Menu parentMenu) {
@@ -509,8 +446,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object object = selection.getFirstElement();
 
-            if (object instanceof Artifact) {
-               RendererManager.openInJob((Artifact) object, PresentationType.SPECIALIZED_EDIT);
+            if (object instanceof WrapperForRelationLink) {
+               RendererManager.openInJob(((WrapperForRelationLink) object).getOther(),
+                     PresentationType.SPECIALIZED_EDIT);
             }
          }
       });
@@ -557,7 +495,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
       public void menuShown(MenuEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         boolean valid = selection.getFirstElement() instanceof RelationLink;
+         boolean valid = selection.getFirstElement() instanceof WrapperForRelationLink;
 
          for (MenuItem item : accessControlitems) {
             item.setEnabled(valid && !artifact.isReadOnly());
@@ -599,20 +537,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     * @param selection
     */
    private void performDeleteArtifact(IStructuredSelection selection) {
-      ArrayList<Artifact> artifactsToBeDeleted = new ArrayList<Artifact>(selection.size());
-
       try {
-         //Add all of the artifacts to a list first
-         for (Object object : selection.toList()) {
-            if (object instanceof RelationLink) {
-               RelationLink relLink = (RelationLink) object;
-               if (relLink.getArtifactA() == artifact) {
-                  artifactsToBeDeleted.add(relLink.getArtifactB());
-               } else {
-                  artifactsToBeDeleted.add(relLink.getArtifactA());
-               }
-            }
-         }
+         Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts(selection);
 
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
@@ -650,34 +576,37 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
       Object[] objects = selection.toArray();
       for (Object object : objects) {
-         if (object instanceof RelationLink) {
-            ((RelationLink) object).delete(true);
-
-            RelationType relationType = ((RelationLink) object).getRelationType();
-            int sideAMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
-            int sideBMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_B);
-            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact);
-            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact);
-            boolean onSideA = sideBMax > 0;
-            boolean onSideB = sideAMax > 0;
-            if (onSideA && onSideB) {
-               treeViewer.refresh(sideA);
-            } else if (onSideA) {
-               treeViewer.refresh(sideA);
-               treeViewer.refresh(sideB);
-            } else if (onSideB) {
-               treeViewer.refresh(sideB);
+         if (object instanceof WrapperForRelationLink) {
+            WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
+            try {
+               wrapper.getArtifactA().deleteRelation(
+                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B, wrapper.getArtifactA()),
+                     wrapper.getArtifactB());
+               Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
+               if (parent != null) {
+                  treeViewer.refresh(parent);
+               } else {
+                  treeViewer.refresh();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          } else if (object instanceof RelationType) {
             RelationType relationType = (RelationType) object;
-            RelationManager.deleteRelations(artifact, relationType, null);
-            treeViewer.refresh(relationType);
+            try {
+               RelationManager.deleteRelations(artifact, relationType, null);
+               treeViewer.refresh(relationType);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          } else if (object instanceof RelationTypeSide) {
             RelationTypeSide group = (RelationTypeSide) object;
-            RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-            treeViewer.refresh(group);
+            try {
+               RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
+               treeViewer.refresh(group);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       }
    }
@@ -737,19 +666,12 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          Object[] objects = selection.toArray();
          Artifact[] artifacts = null;
 
-         if (objects.length > 0 && objects[0] instanceof RelationLink) {
+         if (objects.length > 0 && objects[0] instanceof WrapperForRelationLink) {
             artifacts = new Artifact[objects.length];
 
             for (int index = 0; index < objects.length; index++) {
-               RelationLink link = (RelationLink) objects[index];
-               Artifact selectedArtifact = null;
-               try {
-                  selectedArtifact = link.getArtifactOnOtherSide(artifact);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-               artifacts[index] = selectedArtifact;
-               artifactToLinkMap.put(selectedArtifact.getArtId(), link);
+               WrapperForRelationLink link = (WrapperForRelationLink) objects[index];
+               artifacts[index] = link.getOther();
             }
          }
          return artifacts;
@@ -776,16 +698,15 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                event.detail = DND.DROP_COPY;
                tree.setInsertMark(null, false);
             }
-         } else if (selected != null && selected.getData() instanceof RelationLink) {
-            RelationLink targetLink = (RelationLink) selected.getData();
+         } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
+            WrapperForRelationLink targetLink = (WrapperForRelationLink) selected.getData();
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object obj = selection.getFirstElement();
-            if (obj instanceof RelationLink) {
-               RelationLink dropTarget = (RelationLink) obj;
+            if (obj instanceof WrapperForRelationLink) {
+               WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
 
                if (artifact.isReadOnly()) {
                   event.detail = DND.DROP_NONE;
-
                   MessageDialog.openError(
                         Display.getCurrent().getActiveShell(),
                         "Create Relation Error",
@@ -793,9 +714,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                   return;
                }
                // the links must be in the same group
-
-               if (targetLink.getSide(artifact).equals(dropTarget.getSide(artifact)) && targetLink.getRelationType().equals(
-                     dropTarget.getRelationType())) {
+               if (relationLinkIsInSameGroup(targetLink, dropTarget)) {
                   if (isFeedbackAfter) {
                      event.feedback = DND.FEEDBACK_INSERT_AFTER;
                   } else {
@@ -807,6 +726,17 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          } else {
             tree.setInsertMark(null, false);
          }
+      }
+
+      /**
+       * @param targetLink
+       * @param dropTarget
+       * @return
+       */
+      private boolean relationLinkIsInSameGroup(WrapperForRelationLink targetLink, WrapperForRelationLink dropTarget) {
+         return targetLink.getRelationType().equals(dropTarget.getRelationType()) && //same type
+         (targetLink.getArtifactA().equals(dropTarget.getArtifactA()) || //either the A or B side is equal, meaning they are on the same side
+         targetLink.getArtifactB().equals(dropTarget.getArtifactB()));
       }
 
       @Override
@@ -830,19 +760,12 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
          Object object = selected.getData();
          try {
-
-            System.out.println(event.getSource());
-
-            if (object instanceof RelationLink) {//used for ordering
-               RelationLink targetLink = (RelationLink) object;
-               //               RelationManager.addRelationAndModifyOrder(artifact, targetLink.getArtifactOnOtherSide(artifact),
-               //                     ((ArtifactData) event.data).getArtifacts(), targetLink.getRelationType(), true);
-
-               Artifact target = targetLink.getArtifactOnOtherSide(artifact);
-               for (Artifact art : ((ArtifactData) event.data).getArtifacts()) {
-                  artifact.setRelationOrder(target, isFeedbackAfter, new RelationTypeSide(targetLink.getRelationType(),
-                        targetLink.getSide(artifact).oppositeSide(), artifact), art);
-                  target = art;
+            if (object instanceof WrapperForRelationLink) {//used for ordering
+               WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
+               Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
+               for (Artifact artifactToMove : artifactsToMove) {
+                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
+                        targetLink.getRelationType(), targetLink.getRelationSide(), null), artifactToMove);
                }
                treeViewer.refresh();
                editor.onDirtied();
@@ -864,7 +787,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "relation_page_tree_viewer", "org.eclipse.osee.framework.help.ui");
+      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "relation_page_tree_viewer",
+            "org.eclipse.osee.framework.help.ui");
    }
 
    /**

@@ -22,7 +22,7 @@ public interface IOseeDataTypeProcessor {
 
    public void onArtifactType(String namespace, String artifactTypeName) throws OseeCoreException;
 
-   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException;
+   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException;
 
    public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException;
 

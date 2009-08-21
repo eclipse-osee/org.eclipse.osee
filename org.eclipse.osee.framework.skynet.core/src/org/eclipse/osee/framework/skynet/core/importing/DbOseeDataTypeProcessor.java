@@ -59,9 +59,9 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
+   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderIdGuid) throws OseeCoreException {
       RelationTypeManager.createRelationType(namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-            shortName, ordered);
+            shortName, ordered, defaultOrderIdGuid);
    }
 
    @Override

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.swt.widgets.Item;
 
@@ -41,17 +44,27 @@ public class RelationCellModifier implements ICellModifier {
    }
 
    public Object getValue(Object element, String property) {
-      RelationLink relLink = (RelationLink) element;
-      return relLink.getRationale();
+      WrapperForRelationLink relLink = (WrapperForRelationLink) element;
+      String rationale = "";
+      try {
+         rationale = RelationManager.getRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(), relLink.getRelationType());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return rationale;
    }
 
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
       if (element instanceof Item) {
          element = ((Item) element).getData();
+      } 
+      WrapperForRelationLink relLink = (WrapperForRelationLink) element;
+      try {
+         RelationManager.setRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(), relLink.getRelationType(), value.toString());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      RelationLink relLink = (RelationLink) element;
-      relLink.setRationale((String) value, true);
       treeViewer.update(element, null);
    }
 }

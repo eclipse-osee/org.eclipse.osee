@@ -61,7 +61,8 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       toolkit.adapt(dragDropLabel, true, true);
 
       relationComposite =
-            new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
+            new RelationsComposite(getEditor(),sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
+   
       relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       section.setClient(sectionBody);

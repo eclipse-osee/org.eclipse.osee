@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.DuplicateHridTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.NativeArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.OseeEnumTypeManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.junit.BeforeClass;
@@ -33,7 +34,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {ArtifactPurgeTest.class, BranchPurgeTest.class, Artifact_setAttributeValues.class,
       CsvArtifactTest.class, NativeArtifactTest.class, OseeEnumTypeManagerTest.class, ConflictTest.class,
       ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
-      BranchStateTest.class, DuplicateHridTest.class})
+      BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */

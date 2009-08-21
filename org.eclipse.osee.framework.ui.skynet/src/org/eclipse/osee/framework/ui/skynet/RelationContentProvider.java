@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -20,7 +21,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -34,7 +34,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
  */
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private Artifact artifact;
+   private ArtifactRoot artifact;
+   private Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
 
    /*
     * @see IContentProvider#dispose()
@@ -56,7 +57,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      this.artifact = (Artifact) newInput;
+      this.artifact = (ArtifactRoot) newInput;
    }
 
    /**
@@ -68,21 +69,28 @@ public class RelationContentProvider implements ITreeContentProvider {
     */
    public Object[] getChildren(Object parentElement) {
       try {
-         if (parentElement instanceof Artifact) {
-            Artifact artifact = (Artifact) parentElement;
+         if (parentElement instanceof ArtifactRoot) {
+            Artifact artifact = ((ArtifactRoot) parentElement).getArtifact();
             List<RelationType> relationTypes =
                   RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+            for(RelationType type :relationTypes){
+               childToParentMap.put(type, parentElement);
+            }
             return relationTypes.toArray();
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
             int sideAMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(), RelationSide.SIDE_A);
             int sideBMax =
-                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_B);
-            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact);
-            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact);
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(), RelationSide.SIDE_B);
+            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact.getArtifact());
+            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact.getArtifact());
             boolean onSideA = sideBMax > 0;
             boolean onSideB = sideAMax > 0;
+            
+            childToParentMap.put(sideA, parentElement);
+            childToParentMap.put(sideB, parentElement);
+            
             if (onSideA && onSideB) {
                return new Object[] {sideA, sideB};
             } else if (onSideA) {
@@ -92,12 +100,17 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSide) {
             RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
-            artifact.getRelatedArtifacts(relationTypeSide); // ensure the artifacts are bulk loaded; otherwise the sort will be slower
-            List<RelationLink> relations = artifact.getRelations(relationTypeSide);
-            if (!relationTypeSide.getRelationType().isOrdered()) {
-               Collections.sort(relations, new AlphabeticalRelationComparator(relationTypeSide.getSide()));
+            List<Artifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationTypeSide);
+            WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
+            for(int i = 0; i < artifacts.size(); i++){
+               if(relationTypeSide.isSideA()){
+                  wrapper[i]=new WrapperForRelationLink(relationTypeSide.getRelationType(), artifacts.get(i), artifacts.get(i), relationTypeSide.getArtifact());   
+               } else {
+                  wrapper[i]=new WrapperForRelationLink(relationTypeSide.getRelationType(), artifacts.get(i), relationTypeSide.getArtifact(), artifacts.get(i));
+               }
+               childToParentMap.put(wrapper[i], parentElement);
             }
-            return relations.toArray();
+            return wrapper;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -110,7 +123,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#getParent(Object)
     */
    public Object getParent(Object element) {
-      return null;
+      return childToParentMap.get(element);
    }
 
    /**
@@ -123,7 +136,7 @@ public class RelationContentProvider implements ITreeContentProvider {
    public boolean hasChildren(Object element) {
       if (element instanceof RelationTypeSide) {
          try {
-            return artifact.getRelatedArtifactsCount((RelationTypeSide) element) > 0;
+            return artifact.getArtifact().getRelatedArtifactsCount((RelationTypeSide) element) > 0;
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;

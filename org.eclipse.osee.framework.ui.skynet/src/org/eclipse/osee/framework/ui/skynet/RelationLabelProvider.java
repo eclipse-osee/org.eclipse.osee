@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.swt.graphics.Image;
@@ -35,10 +36,10 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof RelationType && columnIndex == 0) {
          return ImageManager.getImage(FrameworkImage.RELATION);
-      } else if (element instanceof RelationLink && columnIndex == 0) {
-         RelationLink relation = (RelationLink) element;
+      } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
+         WrapperForRelationLink artifact = (WrapperForRelationLink) element;
          try {
-            return ImageManager.getImage(relation.getArtifactOnOtherSide(artifact));
+            return ImageManager.getImage(artifact.getOther());
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -64,6 +65,19 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
             }
          } else if (columnIndex == 1) {
             return link.getRationale();
+         }
+      } else if (element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
+         if (columnIndex == 0) {
+               return wrapper.getOther().getName();
+         } else if (columnIndex == 1) {
+            String rationale = "";
+            try{
+               rationale = RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(), wrapper.getRelationType());
+            } catch (OseeCoreException ex){
+               
+            }
+            return rationale;
          }
       }
       return "";

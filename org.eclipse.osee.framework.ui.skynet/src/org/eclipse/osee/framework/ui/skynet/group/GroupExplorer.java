@@ -473,7 +473,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       } else {
          rootArt = topArt;
          rootItem = new GroupExplorerItem(treeViewer, rootArt, null, this);
-         rootItem.getGroupItems();
+//         rootItem.getGroupItems();
       }
 
       if (treeViewer != null) {

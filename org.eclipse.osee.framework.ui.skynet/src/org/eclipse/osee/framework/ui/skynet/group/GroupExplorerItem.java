@@ -45,10 +45,17 @@ public class GroupExplorerItem implements IAdaptable {
    }
 
    public boolean contains(Artifact artifact) {
-      for (GroupExplorerItem item : getGroupItems()) {
+      for (GroupExplorerItem item : getGroupItemsCached()) {
          if (item.getArtifact() != null && item.getArtifact().equals(artifact)) return true;
       }
       return false;
+   }
+
+   /**
+    * @return
+    */
+   private List<GroupExplorerItem> getGroupItemsCached() {
+      return groupItems;
    }
 
    /**
@@ -57,7 +64,7 @@ public class GroupExplorerItem implements IAdaptable {
     */
    public GroupExplorerItem getItem(Artifact artifact) {
       if (this.artifact != null && this.artifact.equals(artifact)) return this;
-      for (GroupExplorerItem item : getGroupItems()) {
+      for (GroupExplorerItem item : getGroupItemsCached()) {
          GroupExplorerItem ugi = item.getItem(artifact);
          if (ugi != null) return ugi;
       }
@@ -94,28 +101,41 @@ public class GroupExplorerItem implements IAdaptable {
       // Light loading; load the first time getChildren is called
       if (groupItems == null) {
          groupItems = new ArrayList<GroupExplorerItem>();
-         populateUpdateCategory();
+//         populateUpdateCategory();
+      }
+//      populateUpdateCategory();
+//      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
+//      if (groupItems != null) items.addAll(groupItems);
+//      return items;
+      
+      try {
+         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
+         for (Artifact art : related) {
+          addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
       if (groupItems != null) items.addAll(groupItems);
       return items;
    }
 
-   /**
-    * Populate/Update this category with it's necessary children items
-    */
-   public void populateUpdateCategory() {
-      try {
-         for (GroupExplorerItem item : getGroupItems()) {
-            removeGroupItem(item);
-         }
-         for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
-            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
+//   /**
+//    * Populate/Update this category with it's necessary children items
+//    */
+//   public void populateUpdateCategory() {
+//      try {
+//         for (GroupExplorerItem item : getGroupItems()) {
+//            removeGroupItem(item);
+//         }
+//         for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
+//            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
+//         }
+//      } catch (OseeCoreException ex) {
+//         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+//      }
+//   }
 
    public void addGroupItem(GroupExplorerItem item) {
       if (!groupItems.contains(item)) {

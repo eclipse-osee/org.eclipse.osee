@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.junit.Before;
 
 /**
@@ -72,14 +69,6 @@ public class RelationDeletionTest {
       assertTrue("The deleted child was not successfully removed.", children.size() == 2);
 
       assertTrue("Child2 is not the first in the list and it should be.", children.get(0) == child2);
-
-      List<RelationLink> relations =
-            RelationManager.getRelations(parent, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType(),
-                  CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getSide());
-
-      assertTrue("The order should point to the head '-1'", relations.get(0).getOrder(RelationSide.SIDE_B) == -1);
-      assertTrue("The second item in the list is not pointing to the first.", relations.get(1).getOrder(
-            RelationSide.SIDE_B) == relations.get(0).getArtifactId(RelationSide.SIDE_B));
 
       assertTrue(monitor.toString(), monitor.getAllLogs().size() == 0);
    }

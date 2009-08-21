@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -218,9 +219,17 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       String baPhrasing = row[4];
       String shortName = row[5];
       String ordered = row[6];
+      String defaultOrderTypeGuid = row[7];
+      if(defaultOrderTypeGuid == null){
+         if(ordered.equalsIgnoreCase("Yes")){
+            defaultOrderTypeGuid = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid();
+         } else {
+            defaultOrderTypeGuid = RelationOrderBaseTypes.UNORDERED.getGuid();
+         }
+      }
 
       dataTypeProcessor.onRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
-            ordered);
+            ordered, defaultOrderTypeGuid);
    }
 
    private void addArtifactType(String[] row) throws Exception {

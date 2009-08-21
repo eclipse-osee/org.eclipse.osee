@@ -252,6 +252,7 @@
 		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
 		<Column id="USER_ORDERED" defaultValue="not null" limits="5" type="VARCHAR" />
+		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
 	</Table>
 	

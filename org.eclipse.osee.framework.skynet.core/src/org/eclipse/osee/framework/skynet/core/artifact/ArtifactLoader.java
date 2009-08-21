@@ -422,7 +422,6 @@ public final class ArtifactLoader {
       Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
       for (Artifact artifact : artifacts) {
          artifact.setLinksLoaded();
-         RelationManager.sortRelations(artifact, sideA, sideB);
       }
    }
 

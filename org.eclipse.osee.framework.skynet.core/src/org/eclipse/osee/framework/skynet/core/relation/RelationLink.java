@@ -135,21 +135,8 @@ public class RelationLink {
 
    private void internalDelete(boolean reorderRelations, boolean setDirty) {
       if (!isDeleted()) {
-         Artifact aArt = null;
-         Artifact bArt = null;
-         if (reorderRelations) {
-            aArt = preloadArtifactForDelete(RelationSide.SIDE_A);
-            bArt = preloadArtifactForDelete(RelationSide.SIDE_B);
-         }
 
          markAsDeleted(setDirty);
-
-         if (aArt != null) {
-            RelationManager.setOrderValues(aArt, getRelationType(), RelationSide.SIDE_B, setDirty);
-         }
-         if (bArt != null) {
-            RelationManager.setOrderValues(bArt, getRelationType(), RelationSide.SIDE_A, setDirty);
-         }
 
          if (setDirty) {
             try {
@@ -160,16 +147,6 @@ public class RelationLink {
             }
          }
       }
-   }
-
-   private Artifact preloadArtifactForDelete(RelationSide side) {
-      Artifact artifact = null;
-      try {
-         artifact = ArtifactQuery.getArtifactFromId(getArtifactId(side), getBranch(side), false);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(RelationManager.class, Level.SEVERE, ex);
-      }
-      return artifact;
    }
 
    public void markAsDeleted() {

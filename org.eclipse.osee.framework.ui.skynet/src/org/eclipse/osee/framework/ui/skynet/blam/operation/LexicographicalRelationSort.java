@@ -15,10 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -38,9 +36,9 @@ public class LexicographicalRelationSort extends AbstractBlam {
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
 
       for (Artifact parent : artifacts) {
-         RelationManager.sortRelatedArtifacts(parent, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD,
-               nameComparator);
-         parent.persistAttributesAndRelations(transaction);
+//         RelationManager.sortRelatedArtifacts(parent, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD,
+//               nameComparator);
+//         parent.persistAttributesAndRelations(transaction);
       }
       transaction.execute();
       /*  OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
