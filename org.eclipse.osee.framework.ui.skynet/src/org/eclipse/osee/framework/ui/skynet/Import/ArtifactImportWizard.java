@@ -11,162 +11,131 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
+import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.RootAndAttributeBasedArtifactResolver;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
 public class ArtifactImportWizard extends Wizard implements IImportWizard {
-   private static final String TITLE = "Import artifacts into OSEE";
-   private ArtifactImportPage mainPage;
-   private AttributeTypePage attributeTypePage;
-   private OutlineContentHandlerPage handlerPage;
-   private File importFile;
-   private Artifact reuseRootArtifact;
+   private File importResource;
+   private Artifact defaultDestinationArtifact;
+   private ArtifactImportSourcePage mainPage;
 
    public ArtifactImportWizard() {
       super();
       setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
-      setWindowTitle("Artifact Import Wizard");
+      setWindowTitle("OSEE Artifact Import Wizard");
+      setNeedsProgressMonitor(true);
+
+      setHelpAvailable(true);
    }
 
-   public void setImportResourceAndArtifactDestination(File importFile, Artifact reuseRootArtifact) {
-      Assert.isNotNull(importFile);
-      Assert.isNotNull(reuseRootArtifact);
+   public void setImportResourceAndArtifactDestination(File importResource, Artifact defaultDestinationArtifact) {
+      Assert.isNotNull(importResource);
+      Assert.isNotNull(defaultDestinationArtifact);
 
-      this.importFile = importFile;
-      this.reuseRootArtifact = reuseRootArtifact;
+      this.importResource = importResource;
+      this.defaultDestinationArtifact = defaultDestinationArtifact;
    }
 
    @Override
-   public boolean performFinish() {
-      File file = mainPage.getImportFile();
-      Branch branch = mainPage.getSelectedBranch();
-      IArtifactImportResolver artifactResolver = null;
-
-      try {
-         Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
-         IArtifactExtractor extractor = mainPage.getExtractor();
-         ArtifactType primaryArtifactType = extractor.usesTypeList() ? mainPage.getSelectedType() : null;
-         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
-
-         if (reuseArtifactRoot == null) {
-            artifactResolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
-         } else { // only non-null when reuse artifacts is checked
-            Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
-            artifactResolver =
-                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-                        identifyingAttributes, false);
-         }
-
-         Artifact importRoot = mainPage.getImportRoot();
-         Jobs.runInJob(new ArtifactImportOperation(file, importRoot, extractor, branch, artifactResolver), true);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, "Exception occured during artifact import", ex);
-         return false;
-      }
-      return true;
-   }
-
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      if (importFile != null && reuseRootArtifact != null) {
-         this.mainPage = new ArtifactImportPage(importFile, reuseRootArtifact);
-      } else {
-         this.mainPage = new ArtifactImportPage(selection);
+      if (importResource == null && defaultDestinationArtifact == null) {
+         if (selection != null && selection.size() == 1) {
+            Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof IAdaptable) {
+               Object resource = ((IAdaptable) firstElement).getAdapter(IResource.class);
+               if (resource instanceof IResource) {
+                  importResource = ((IResource) resource).getLocation().toFile();
+               }
+            }
+            if (firstElement instanceof Artifact) {
+               defaultDestinationArtifact = (Artifact) firstElement;
+            }
+         }
       }
-      this.attributeTypePage = new AttributeTypePage();
-      this.handlerPage = new OutlineContentHandlerPage();
-
-      mainPage.setTitle(TITLE);
-      mainPage.setDescription("Import artifacts into Define");
-      attributeTypePage.setTitle(TITLE);
-      handlerPage.setTitle(TITLE);
-      handlerPage.setDescription("Handler to use for getting Artifacts from the outline");
    }
 
    @Override
    public void addPages() {
+      mainPage = new ArtifactImportSourcePage();
+      mainPage.setDefaultDestinationArtifact(defaultDestinationArtifact);
+      mainPage.setDefaultSourceFile(importResource);
       addPage(mainPage);
-      addPage(attributeTypePage);
-      addPage(handlerPage);
    }
 
    @Override
-   public IWizardPage getNextPage(IWizardPage page) {
+   public boolean performFinish() {
+      Artifact destinationArtifact = mainPage.getDestinationArtifact();
+      String opName = "Importing Artifacts onto: " + destinationArtifact;
+
+      SkynetTransaction transaction = null;
       try {
-         if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
-
-            ArtifactType rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
-            ArtifactType importDescriptor = mainPage.getSelectedType();
-
-            HashSet<AttributeType> rootAttributes =
-                  new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(rootDescriptor,
-                        mainPage.getSelectedBranch()));
-
-            if (rootDescriptor == importDescriptor) {
-               attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
-               attributeTypePage.setDescriptors(rootAttributes);
-            } else {
-               HashSet<AttributeType> importAttributes =
-                     new HashSet<AttributeType>(TypeValidityManager.getAttributeTypesFromArtifactType(importDescriptor,
-                           mainPage.getSelectedBranch()));
-
-               attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
-
-               importAttributes.addAll(rootAttributes);
-               attributeTypePage.setDescriptors(importAttributes);
-            }
-
-            return attributeTypePage;
-         } else if (mainPage.needsSecondaryPage() && page != handlerPage) {
-            return handlerPage;
-         }
+         transaction = new SkynetTransaction(destinationArtifact.getBranch());
       } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return null;
-   }
-
-   @Override
-   public IWizardPage getPreviousPage(IWizardPage page) {
-      if (page == attributeTypePage || page == handlerPage && mainPage.getReuseArtifactRoot() == null) {
-         return mainPage;
-      } else if (page == handlerPage) {
-         return attributeTypePage;
+         String msg =
+               String.format("Unable to create transaction for: artifact:[%s] branch:[%s]",
+                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid());
+         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
+               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }
 
-      return null;
+      if (transaction != null) {
+         RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
+         IArtifactImportResolver resolver = null;
+
+         List<IOperation> subOps = new ArrayList<IOperation>();
+         subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
+         subOps.add(new CompleteImportOperation(transaction, destinationArtifact));
+         Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
+      }
+      return true;
    }
 
-   @Override
-   public boolean canFinish() {
-      try {
-         return mainPage.isPageComplete() && (mainPage.getReuseArtifactRoot() == null || attributeTypePage.isPageComplete()) && (!mainPage.needsSecondaryPage() || handlerPage.isPageComplete());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
+   private final static class CompleteImportOperation extends AbstractOperation {
+      private final Artifact destinationArtifact;
+      private final SkynetTransaction transaction;
+
+      public CompleteImportOperation(SkynetTransaction transaction, Artifact destinationArtifact) {
+         super("Commit & Verify import", SkynetGuiPlugin.PLUGIN_ID);
+         this.destinationArtifact = destinationArtifact;
+         this.transaction = transaction;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         monitor.setTaskName("Validate artifacts");
+         IOperation subOperation = new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), false);
+         doSubWork(subOperation, monitor, 0.50);
+
+         monitor.setTaskName("Commit transaction");
+         destinationArtifact.persistAttributesAndRelations(transaction);
+         transaction.execute();
+         monitor.worked(calculateWork(0.50));
       }
    }
 }

@@ -60,18 +60,7 @@
 		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
-  	</extension>
-  		<extension point="org.eclipse.ui.importWizards">
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.NewArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.NewImportWizard" name="New OSEE Artifacts">
-			<description>
-            Import artifact data into OSEE.
-         </description>
-		</wizard>
-		<category id="org.eclipse.osee.define.import.category" name="OSEE">
-      </category>
-  	</extension>
-  	
-  	
+  	</extension>  	
   <extension
         point="org.eclipse.ui.exportWizards">
      <wizard
@@ -93,7 +82,7 @@
   <editor
         class="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor"
         default="false"
-        icon="images/results.gif"
+        icon="images/file.gif"
         id="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor"
         name="Results Editor">
   </editor>

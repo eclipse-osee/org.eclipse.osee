@@ -35,7 +35,7 @@ public class OSEEFilteredTree extends FilteredTree {
     * @param filter
     */
    public OSEEFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-      super(parent, treeStyle, filter);
+      super(parent, treeStyle, filter, true);
       setInitialText("");
    }
 
@@ -45,7 +45,7 @@ public class OSEEFilteredTree extends FilteredTree {
       comp.setLayout(ALayout.getZeroMarginLayout(3, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      (new Label(comp, SWT.NONE)).setText("Filter: ");
+      new Label(comp, SWT.NONE).setText("Filter: ");
       super.createFilterControls(comp);
 
       return comp;
