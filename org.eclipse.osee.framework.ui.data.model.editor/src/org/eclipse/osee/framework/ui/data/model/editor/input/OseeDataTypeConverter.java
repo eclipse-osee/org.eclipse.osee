@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.Collection;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
@@ -61,7 +62,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
+   public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationDataType relationDataType =
             new RelationDataType(namespace, name, abPhrasing, baPhrasing, Boolean.valueOf(ordered), shortName,
                   sideAName, sideBName);
