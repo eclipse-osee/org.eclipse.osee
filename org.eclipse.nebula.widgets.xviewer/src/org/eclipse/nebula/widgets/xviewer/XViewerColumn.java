@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.nebula.widgets.xviewer;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.util.internal.CollectionsUtil;
+import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XmlUtil;
 import org.eclipse.swt.SWT;
 
@@ -241,4 +246,41 @@ public class XViewerColumn {
       this.width = width;
    }
 
+   public boolean isSummable() {
+      if (sortDataType == SortDataType.Float || sortDataType == SortDataType.Integer) {
+         return true;
+      }
+      return false;
+   }
+
+   public String sumValues(Collection<String> values) {
+      if (sortDataType == SortDataType.Float) {
+         double sum = 0.0;
+         Set<String> exceptions = new HashSet<String>();
+         for (String value : values) {
+            if (value == null || value.equals("")) continue;
+            try {
+               sum += new Double(value);
+            } catch (Exception ex) {
+               exceptions.add(ex.getLocalizedMessage());
+            }
+         }
+         return "Sum: " + XViewerLib.doubleToI18nString(sum) + "\n\nNum Items: " + values.size() + (exceptions.size() > 0 ? "\n\nErrors: " + CollectionsUtil.toString(
+               ";", exceptions) : "");
+      } else if (sortDataType == SortDataType.Integer) {
+         int sum = 0;
+         Set<String> exceptions = new HashSet<String>();
+         for (String value : values) {
+            if (value == null || value.equals("")) continue;
+            try {
+               sum += new Integer(value);
+            } catch (Exception ex) {
+               exceptions.add(ex.getLocalizedMessage());
+            }
+         }
+         return "Sum: " + sum + "\n\nNum Items: " + values.size() + (exceptions.size() > 0 ? "\n\nErrors: " + CollectionsUtil.toString(
+               ";", exceptions) : "");
+      }
+      return "Unhandled column type";
+   }
 }

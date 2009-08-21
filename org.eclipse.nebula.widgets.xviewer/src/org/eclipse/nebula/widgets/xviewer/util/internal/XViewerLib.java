@@ -194,4 +194,16 @@ public class XViewerLib {
    public static ImageDescriptor getImageDescriptor(String imageName) {
       return XViewerImageCache.getImageDescriptor(imageName);
    }
+
+   public static String doubleToI18nString(double d) {
+      return doubleToI18nString(d, false);
+   }
+
+   public static String doubleToI18nString(double d, boolean blankIfZero) {
+      if (blankIfZero && d == 0) {
+         return "";
+      } else {
+         return String.format("%4.2f", d);
+      }
+   }
 }

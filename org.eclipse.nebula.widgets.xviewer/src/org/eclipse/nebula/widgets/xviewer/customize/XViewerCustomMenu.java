@@ -79,18 +79,9 @@ public class XViewerCustomMenu {
    protected XViewer xViewer;
    private final Clipboard clipboard = new Clipboard(null);
 
-   protected Action filterByColumn;
-   protected Action clearAllSorting;
-   protected Action clearAllFilters;
-   protected Action tableProperties;
-   protected Action viewTableReport;
-   protected Action columnMultiEdit;
-   protected Action removeSelected;
-   protected Action removeNonSelected;
-   protected Action copySelected;
-   protected Action showColumn, addComputedColumn, hideColumn;
-   protected Action copySelectedCell;
-   protected Action viewSelectedCell;
+   protected Action filterByColumn, clearAllSorting, clearAllFilters, tableProperties, viewTableReport,
+         columnMultiEdit, removeSelected, removeNonSelected, copySelected, showColumn, addComputedColumn, sumColumn,
+         hideColumn, copySelectedCell, viewSelectedCell, uniqueValues;
    private Boolean headerMouseClick = false;
 
    public XViewerCustomMenu() {
@@ -130,6 +121,9 @@ public class XViewerCustomMenu {
    }
 
    protected void setupMenuForHeader() {
+      TreeColumn selTreeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn selXCol = (XViewerColumn) selTreeCol.getData();
+
       MenuManager mm = xViewer.getMenuManager();
       mm.add(showColumn);
       mm.add(hideColumn);
@@ -139,6 +133,9 @@ public class XViewerCustomMenu {
       mm.add(filterByColumn);
       mm.add(clearAllFilters);
       mm.add(clearAllSorting);
+      mm.add(new Separator());
+      mm.add(sumColumn);
+      mm.add(uniqueValues);
    }
 
    protected void setupMenuForTable() {
@@ -331,6 +328,54 @@ public class XViewerCustomMenu {
       }
    }
 
+   protected void handleUniqeValuesColumn() {
+      TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+
+      TreeItem[] items = xViewer.getTree().getSelection();
+      if (items.length == 0) {
+         items = xViewer.getTree().getItems();
+      }
+      if (items.length == 0) {
+         XViewerLib.popup("ERROR", "No items to sum");
+         return;
+      }
+      Set<String> values = new HashSet<String>();
+      for (TreeItem item : items) {
+         for (int x = 0; x < xViewer.getTree().getColumnCount(); x++) {
+            if (xViewer.getTree().getColumn(x).equals(treeCol)) {
+               values.add(((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(item.getData(), x));
+            }
+         }
+      }
+      String html = HtmlUtil.simplePage(HtmlUtil.textToHtml(CollectionsUtil.toString("\n", values)));
+      new HtmlDialog("Unique Values", String.format("Unique Values for column [%s]", xCol.getName()), html).open();
+   }
+
+   protected void handleSumColumn() {
+      TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
+      XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+      if (!xCol.isSummable()) return;
+
+      TreeItem[] items = xViewer.getTree().getSelection();
+      if (items.length == 0) {
+         items = xViewer.getTree().getItems();
+      }
+      if (items.length == 0) {
+         XViewerLib.popup("ERROR", "No items to sum");
+         return;
+      }
+      List<String> values = new ArrayList<String>();
+      for (TreeItem item : items) {
+         for (int x = 0; x < xViewer.getTree().getColumnCount(); x++) {
+            if (xViewer.getTree().getColumn(x).equals(treeCol)) {
+               values.add(((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(item.getData(), x));
+            }
+         }
+      }
+      XViewerLib.popup("Sum", xCol.sumValues(values));
+   }
+
    protected void handleHideColumn() {
       TreeColumn insertTreeCol = xViewer.getRightClickSelectedColumn();
       XViewerColumn insertXCol = (XViewerColumn) insertTreeCol.getData();
@@ -360,6 +405,18 @@ public class XViewerCustomMenu {
          @Override
          public void run() {
             handleAddComputedColumn();
+         };
+      };
+      sumColumn = new Action("Sum Selected for Column") {
+         @Override
+         public void run() {
+            handleSumColumn();
+         };
+      };
+      uniqueValues = new Action("Unique Values") {
+         @Override
+         public void run() {
+            handleUniqeValuesColumn();
          };
       };
       hideColumn = new Action("Hide Column") {
