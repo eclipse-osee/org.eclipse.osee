@@ -47,7 +47,7 @@ public class GUIDTest {
    }
 
    @org.junit.Test
-   public void testValidHrids() {
+   public void testValidGuids() {
       final String[] validGuids =
             {"AAABDBYPet4AGJyrc9dY1w", "AAABGumk_y8AFBnQMxZ58g", "AAABGyedHw8AphA8L4XexQ", "AAABDBYtCDsAVk2xBsTGzQ",
                   "AAABF_Ss2Q0AR8+yEx51WQ", "AAABHUWIY34B7y_TEmEslg", "AAABHZzkLCgBebkFSon4wA",
