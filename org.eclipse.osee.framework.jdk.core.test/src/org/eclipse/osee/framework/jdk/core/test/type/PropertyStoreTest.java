@@ -19,13 +19,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public class PropertyStoreTest extends TestCase {
+public class PropertyStoreTest {
 
    @org.junit.Test
    public void testCreateWithProperties() {

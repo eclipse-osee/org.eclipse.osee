@@ -8,10 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.test;
+package org.eclipse.osee.framework.jdk.core.test.util;
 
-import org.eclipse.osee.framework.jdk.core.test.type.JdkCoreTypeTestSuite;
-import org.eclipse.osee.framework.jdk.core.test.util.JdkCoreUtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {JdkCoreTypeTestSuite.class, JdkCoreUtilTestSuite.class})
-public class JdkCoreTestSuite {
+@Suite.SuiteClasses( {HumanReadableIdTest.class, GUIDTest.class})
+public class JdkCoreUtilTestSuite {
 
 }

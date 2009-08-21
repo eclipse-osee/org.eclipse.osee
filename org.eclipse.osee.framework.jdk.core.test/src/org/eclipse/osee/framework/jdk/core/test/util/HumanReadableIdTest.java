@@ -10,27 +10,42 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
-import static org.eclipse.osee.framework.jdk.core.util.HumanReadableId.generate;
-import static org.eclipse.osee.framework.jdk.core.util.HumanReadableId.isValid;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**
  * @author Ryan Schmitt
  */
 public class HumanReadableIdTest extends TestCase {
+
    @org.junit.Test
    public void testInvalidHrids() {
-      final String[] invalidHrids = {"", "QRZH", "QRZHMT", "AEIOU", "CIIIU", "4CHAN"};
+      final String[] invalidHrids = {"", // short
+            "QRZH", // short
+            "QRZHMT", // long
+            "QRZHm", // small caps
+            "QRZH_", // invalid char
+            "CAAAX", // A in middle
+            "CEEEX", // E in middle
+            "CIIIX", // I in middle
+            "COOOX", // O in middle
+            "CUUUX", // U in middle
+            "IZZZZ", // starts with I 
+            "OZZZZ", // starts with O 
+            "ZZZZI", // ends with I
+            "ZZZZO" // ends with O
+      };
+
       for (String invalid : invalidHrids) {
-         assertFalse("Invalid HRID " + invalid + " passes validity test", isValid(invalid));
+         assertFalse("Invalid HRID " + invalid + " passes validity test", HumanReadableId.isValid(invalid));
       }
    }
 
    @org.junit.Test
    public void testValidGeneration() {
       for (int i = 0; i < 500000; i++) {
-         String hrid = generate();
-         assertTrue("Generated HRID " + hrid + " fails validity test", isValid(hrid));
+         String hrid = HumanReadableId.generate();
+         assertTrue("Generated HRID " + hrid + " fails validity test", HumanReadableId.isValid(hrid));
       }
    }
 
@@ -41,7 +56,7 @@ public class HumanReadableIdTest extends TestCase {
                   "9ZD0A", "1J037", "X30J9", "02T23", "MMV3A", "YRNT0", "ZKBY2", "LYC1M", "RW3N9", "JTRCU", "MCVGX",
                   "KTJ5P", "FBNC4", "57M55", "WY1VG", "UX49X", "E7YF2", "7BWL4", "QQ138"};
       for (String hrid : validHrids) {
-         assertTrue(isValid(hrid));
+         assertTrue(HumanReadableId.isValid(hrid));
       }
    }
 }
