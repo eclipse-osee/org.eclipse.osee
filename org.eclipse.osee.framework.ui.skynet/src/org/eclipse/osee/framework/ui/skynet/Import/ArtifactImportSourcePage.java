@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactTypeSelectPanel;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.HidingComposite;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -177,7 +176,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private void createParserSelectionArea(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
-      composite.setText("Select source parser");
+      composite.setText("Select an source artifact extractor");
       composite.setToolTipText("Select the method to be used for importing the selected file or directory");
       composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -187,24 +186,18 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    }
 
    private void createArtifactTypeSelectArea(Composite parent) {
-      Composite composite =
-            createHidingGroup(parent, 2, "Select artifact type to import data as",
-                  "Select artifact type to import data as");
-      artifactTypeSelectPanel.createControl(composite);
-      artifactTypeSelectPanel.addListener(this);
-   }
-
-   private Composite createHidingGroup(Composite parent, int numberOfColumns, String text, String toolTip) {
-      Composite composite = new HidingComposite(parent, SWT.NONE);
+      Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Group delegateGroup = new Group(composite, SWT.NONE);
-      delegateGroup.setText(text);
-      delegateGroup.setToolTipText(toolTip);
-      delegateGroup.setLayout(new GridLayout(numberOfColumns, false));
+      delegateGroup.setText("Select artifact type to import data as");
+      delegateGroup.setToolTipText("Select artifact type to import data as");
+      delegateGroup.setLayout(new GridLayout(1, false));
       delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      return delegateGroup;
+
+      artifactTypeSelectPanel.createControl(composite);
+      artifactTypeSelectPanel.addListener(this);
    }
 
    public boolean isReUseSelected() {

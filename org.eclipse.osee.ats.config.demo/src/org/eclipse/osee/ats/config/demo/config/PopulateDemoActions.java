@@ -481,7 +481,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (systemReq.getChildren().size() == 0) {
          throw new IllegalStateException("Artifacts were not imported");
       }
-
    }
 
    private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.panels;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
@@ -70,19 +69,6 @@ public class ArtifactExtractorSelectPanel {
       }
    }
 
-   private Composite createGroup(Composite parent, int numberOfColumns, String text, String toolTip) {
-      Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      Group delegateGroup = new Group(composite, SWT.NONE);
-      delegateGroup.setText(text);
-      delegateGroup.setToolTipText(toolTip);
-      delegateGroup.setLayout(new GridLayout(numberOfColumns, false));
-      delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      return delegateGroup;
-   }
-
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -91,8 +77,11 @@ public class ArtifactExtractorSelectPanel {
       extractorCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       extractorCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Composite delegateGroup =
-            createGroup(parent.getParent(), 1, "Select additional parse option", "Select additional parse option");
+      Group delegateGroup = new Group(composite, SWT.NONE);
+      delegateGroup.setText("Select additional extractor option");
+      delegateGroup.setToolTipText("Select an additional extractor option");
+      delegateGroup.setLayout(new GridLayout(1, false));
+      delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       delegateCombo = new Combo(delegateGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       delegateCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -126,33 +115,37 @@ public class ArtifactExtractorSelectPanel {
 
    private void handleExtractorSelection() {
       IArtifactExtractor extractor = null;
-      int index = extractorCombo.getSelectionIndex();
-      if (index >= 0) {
-         String key = extractorCombo.getItem(index);
+      int selected = extractorCombo.getSelectionIndex();
+      if (selected >= 0) {
+         String key = extractorCombo.getItem(selected);
          Object object = extractorCombo.getData(key);
          if (object instanceof IArtifactExtractor) {
             extractor = (IArtifactExtractor) object;
          }
       }
       if (extractor != null) {
-         // TODO add a floating tip text similar to Java doc/Content Assist
          extractorCombo.setToolTipText(extractor.getDescription());
          setArtifactExtractor(extractor);
       } else {
-         extractorCombo.setToolTipText("Select a source parser");
+         extractorCombo.setToolTipText("Select an source artifact extractor");
       }
 
-      Collection<IArtifactExtractorDelegate> delegates = importContributionManager.getDelegates(extractor);
+      java.util.List<IArtifactExtractorDelegate> delegates = importContributionManager.getDelegates(extractor);
       if (!delegates.isEmpty()) {
          delegateCombo.removeAll();
-         for (IArtifactExtractorDelegate handler : delegates) {
-            delegateCombo.add(handler.getName());
-            delegateCombo.setData(handler.getName(), handler);
+         for (int index = 0; index < delegates.size(); index++) {
+            IArtifactExtractorDelegate delegate = delegates.get(index);
+
+            delegateCombo.add(delegate.getName());
+            delegateCombo.setData(delegate.getName(), delegate);
+
+            if (extractor != null && extractor.isDelegateRequired()) {
+               extractor.setDelegate(delegate);
+            }
          }
          delegateCombo.select(0);
       }
-      delegateCombo.getParent().getParent().setVisible(!delegates.isEmpty());
-      extractorCombo.getParent().getParent().getParent().layout();
+      delegateCombo.setEnabled(!delegates.isEmpty());
 
       Event event = new Event();
       event.widget = extractorCombo;
