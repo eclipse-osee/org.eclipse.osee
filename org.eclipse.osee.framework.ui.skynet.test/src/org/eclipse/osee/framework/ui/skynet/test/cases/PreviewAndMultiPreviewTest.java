@@ -77,6 +77,7 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                   ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
@@ -99,6 +100,7 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                   ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
@@ -123,6 +125,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
@@ -147,6 +150,7 @@ public class PreviewAndMultiPreviewTest {
             Artifact childArt =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
             // should get one warning since the child is a general document
@@ -168,6 +172,7 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                   ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
@@ -197,6 +202,7 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
                   ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName() + "1");
+            childArt.persistAttributesAndRelations();
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
             // should get one warning since the child is a general document
@@ -223,12 +229,15 @@ public class PreviewAndMultiPreviewTest {
             Artifact multiArt1 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "3");
+            multiArt1.persistAttributesAndRelations();
             Artifact multiArt2 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "2");
+            multiArt2.persistAttributesAndRelations();
             Artifact multiArt3 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "1");
+            multiArt3.persistAttributesAndRelations();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
@@ -253,12 +262,15 @@ public class PreviewAndMultiPreviewTest {
             Artifact multiArt1 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "3");
+            multiArt1.persistAttributesAndRelations();
             Artifact multiArt2 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "2");
+            multiArt2.persistAttributesAndRelations();
             Artifact multiArt3 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "1");
+            multiArt3.persistAttributesAndRelations();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
             RendererManager.previewInJob(artifacts);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
@@ -283,6 +295,7 @@ public class PreviewAndMultiPreviewTest {
             List<Artifact> arts = new ArrayList<Artifact>();
             Artifact art =
                   ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
+            art.persistAttributesAndRelations();
             arts = Arrays.asList(art);
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
             renderer.setOptions(null);
@@ -306,6 +319,7 @@ public class PreviewAndMultiPreviewTest {
             List<Artifact> arts = new ArrayList<Artifact>();
             Artifact art =
                   ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
+            art.persistAttributesAndRelations();
             arts = Arrays.asList(art);
             RendererManager.previewInJob(artifacts);
             assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);

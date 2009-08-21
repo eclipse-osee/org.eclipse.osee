@@ -138,6 +138,7 @@ public class WordTrackedChangesTest {
          if (ex.getLocalizedMessage().equals("Cannot save - Detected tracked changes on this artifact. ")) {
             assertTrue("Did not Detect Tracked Changes", WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
                   "Cannot save - Detected tracked changes on this artifact. ") == true);
+            newArt.purgeFromBranch();
          } else {
             throw ex;
          }
