@@ -423,8 +423,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    public void getAllElements(Collection<Element> elements) {
       checkState();
-      elements.addAll(elementMap.values());
       elements.addAll(Arrays.asList(getActiveDataSource().getMsgHeader().getElements()));
+      elements.addAll(elementMap.values());
+      
    }
 
    public Collection<Element> getElements(MemType type) {
