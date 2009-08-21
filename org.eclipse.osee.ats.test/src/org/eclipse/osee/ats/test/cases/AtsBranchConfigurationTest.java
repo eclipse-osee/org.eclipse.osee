@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.importing.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -148,25 +147,22 @@ public class AtsBranchConfigurationTest {
 
       // Transition to desired state
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
+
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persistAttributesAndRelations(transaction);
       transaction.execute();
 
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            SMAEditor.editArtifact(teamWf, true);
+      setupWorkPageToHaveCreateCommitWorkItems(teamWf);
 
-            // Verify XWorkingBranch and XCommitManger widgets exist in editor
-            try {
-               verifyXWidgetsExistInEditor(teamWf);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               fail(ex.getLocalizedMessage());
-            }
-         }
-      }, true);
+      SMAEditor.editArtifact(teamWf, true);
+      // Verify XWorkingBranch and XCommitManger widgets exist in editor
+      try {
+         verifyXWidgetsExistInEditor(teamWf);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         fail(ex.getLocalizedMessage());
+      }
 
       // create branch
       createBranch(namespace, teamWf);
@@ -254,21 +250,16 @@ public class AtsBranchConfigurationTest {
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persistAttributesAndRelations(transaction);
       transaction.execute();
+      setupWorkPageToHaveCreateCommitWorkItems(teamWf);
 
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            SMAEditor.editArtifact(teamWf, true);
-
-            // Verify XWorkingBranch and XCommitManger widgets exist in editor
-            try {
-               verifyXWidgetsExistInEditor(teamWf);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               fail(ex.getLocalizedMessage());
-            }
-         }
-      }, true);
+      SMAEditor.editArtifact(teamWf, true);
+      // Verify XWorkingBranch and XCommitManger widgets exist in editor
+      try {
+         verifyXWidgetsExistInEditor(teamWf);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         fail(ex.getLocalizedMessage());
+      }
 
       // create branch
       createBranch(namespace, teamWf);
@@ -426,12 +417,17 @@ public class AtsBranchConfigurationTest {
    private void setupWorkflowPageToHaveCreateCommitBranchWidgets(String namespace) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Setup new workflow page to have create/commit branch widgets");
       String implementPageId = namespace + ".Implement";
-      Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
-      implementPageDef.addRelation(AtsRelation.WorkItem__Child,
-            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
-      implementPageDef.addRelation(AtsRelation.WorkItem__Child,
-            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
-      implementPageDef.persistAttributesAndRelations();
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(implementPageId, XWorkingBranch.WIDGET_ID);
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(implementPageId, XCommitManager.WIDGET_ID);
+   }
+
+   private void setupWorkPageToHaveCreateCommitWorkItems(TeamWorkFlowArtifact teamWf) throws Exception {
+      // need to add the newly configured work items to the implement page....
+      WorkPageDefinition wpd = teamWf.getSmaMgr().getWorkPageDefinition();
+      if (wpd != null) {
+         wpd.addWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName());
+         wpd.addWorkItem(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName());
+      }
    }
 
    @After
