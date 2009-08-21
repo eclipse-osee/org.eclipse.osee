@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.test;
 
 import org.eclipse.osee.framework.jdk.core.test.type.PropertyStoreTest;
+import org.eclipse.osee.framework.jdk.core.test.util.HumanReadableIdTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {PropertyStoreTest.class})
+@Suite.SuiteClasses( {PropertyStoreTest.class, HumanReadableIdTest.class})
 public class JdkCoreTestSuite {
 
 }
