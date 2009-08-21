@@ -334,7 +334,7 @@ public class ConflictManagerInternal {
                String sourceValue =
                      chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
-               if (attrId != nextAttrId && validAttributeConflcit(destGamma, sourceBranch)) {
+               if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
                   attrId = nextAttrId;
                   attributeConflictBuilder =
                         new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
@@ -354,12 +354,18 @@ public class ConflictManagerInternal {
       monitor.updateWork(30);
    }
    
-   private static boolean validAttributeConflcit(int destinationGammaId, Branch sourceBranch) throws OseeCoreException{
+   /**
+    * Checks source branch hierarchy to see if the conflict gamma exists. If it does, its not a real conflict because the source branch has already seen this change.
+    * @return Returns True if the AttributeConflict candidate is really a conflict.
+    * @throws OseeCoreException
+    */
+   private static boolean isAttributeConflictValid(int destinationGammaId, Branch sourceBranch) throws OseeCoreException{
       boolean isValidConflict = true;
+      //We just need the largest value at first so the complete source branch will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
 
       for(Branch branch : sourceBranch.getBranchHierarchy()){
-         isValidConflict &= conflcitIsValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
+         isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
          parentTransactionNumber = branch.getParentTransactionNumber();
          
          if(!isValidConflict){
@@ -369,16 +375,20 @@ public class ConflictManagerInternal {
       return isValidConflict;
    }
    
-   private static boolean conflcitIsValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException{
+   /**
+    * @return Returns True if the destination gamma does not exists on a branch else false if it does.
+    * @throws OseeDataStoreException
+    */
+   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException{
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      boolean isValidConflcit;
+      boolean isValidConflict;
       try{
          chStmt.runPreparedQuery("select 'x' from osee_tx_details t1, osee_txs t2 where t2.transaction_id = t1.transaction_id and t2.gamma_id = ? and t1.branch_id =? and t1.transaction_id <=?",destinationGammaId, branch.getBranchId(), endTransactionNumber);
-         isValidConflcit = !chStmt.next();
+         isValidConflict = !chStmt.next();
       }finally{
          chStmt.close();
       }
-      return isValidConflcit;
+      return isValidConflict;
    }
 
    private static void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
