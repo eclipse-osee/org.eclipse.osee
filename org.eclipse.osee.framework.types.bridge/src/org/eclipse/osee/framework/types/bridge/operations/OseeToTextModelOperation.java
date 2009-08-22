@@ -1,7 +1,13 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.osee.framework.OseeTypesStandaloneSetup;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.oseeTypes.Model;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -21,9 +27,22 @@ public class OseeToTextModelOperation extends AbstractOperation {
 		AttributeTypeManager.getAllTypes();
 		RelationTypeManager.getAllTypes();
 		ArtifactTypeManager.getAllTypes();
+		// TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
+		// branch);
+
+		OseeTypesStandaloneSetup.doSetup();
 		
-//		TypeValidityManager.getAttributeTypesFromArtifactType(artifactType, branch);
-		
+		// Create Model from OSEE Data
+		Model model = null;
+
+		URI uri = URI.createURI(resource.toASCIIString());
+		ResourceSet resourceSet = new ResourceSetImpl();
+		Resource resource = resourceSet.createResource(uri);
+		// Write Model to File;
+
+		// model.
+		// resource.save(outputStream, options);
+
 	}
 
 }
