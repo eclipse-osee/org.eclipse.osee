@@ -41,21 +41,21 @@ public class ResourceSelectionPage extends WizardDataTransferPage {
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		composite.setFont(parent.getFont());
 
-		fileSelector = new DirectoryOrFileSelector(composite, SWT.BORDER,
-				"File", this);
+		fileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "File",
+				this);
 		fileSelector.addListener(SWT.Selection, this);
-	     
+
 		restoreWidgetValues();
 		updateWidgetEnablements();
 		setPageComplete(determinePageCompletion());
 		setControl(composite);
 	}
 
-	   @Override
-	   public boolean isPageComplete() {
-	      return getFile() != null && super.isPageComplete();
-	   }
-	   
+	@Override
+	public boolean isPageComplete() {
+		return getFile() != null && super.isPageComplete();
+	}
+
 	public File getFile() {
 		return fileSelector.getFile();
 	}
