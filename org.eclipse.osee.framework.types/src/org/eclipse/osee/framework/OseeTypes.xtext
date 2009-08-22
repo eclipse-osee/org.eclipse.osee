@@ -1,0 +1,52 @@
+grammar org.eclipse.osee.framework.OseeTypes with org.eclipse.xtext.common.Terminals
+
+generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
+
+Model :
+	(imports+=Import)*
+	(elements+=Type)*;
+	
+Import :
+	'import' importURI=STRING;
+	
+Type:
+  ArtifactType | RelationType | AttributeType;
+
+ArtifactType:
+	'artifactType' name=ID ('extends' superEntity=[ArtifactType])? '{'
+	    (attributes+=XRef)*
+	'}';
+
+XRef: 
+	RelationTypeRef |AttributeTypeRef;
+
+RelationTypeRef: 
+	'relation' type=[RelationType];
+	
+AttributeTypeRef:
+	'attribute' type=[AttributeType];
+
+
+AttributeType:
+	'attributeType' name=ID ('extends' superEntity=[AttributeType])? '{'
+	 	attributes+=XAttribute
+	'}';
+
+XAttribute:
+		'dataProvider' name=ID 
+		'taggerId' name=ID
+		('defaultValue' name=STRING)?;
+
+RelationType:
+	'relationType' name=ID '{'
+	attributes+=XRelation
+		
+	'}';
+
+XRelation:
+		'sideAName' name=STRING
+		'sideAArtifactType' type=[ArtifactType]
+		'sideBName' name=STRING
+		'sideBArtifactType' type=[ArtifactType]
+		'defaultOrderType' name=STRING 
+		'multiplicity' name=('one-to-many' | 'many-to-many' | 'many-to-one');
