@@ -8,6 +8,8 @@
             id="org.eclipse.osee.framework.types.bridge.osee.types.import"
             name="Osee Types Import">
       </wizard>
+      <category id="org.eclipse.osee.define.import.category" name="OSEE">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.exportWizards">
@@ -16,5 +18,7 @@
             id="org.eclipse.osee.framework.types.bridge.osee.types.export"
             name="Osee Types Export">
       </wizard>
+           <category id="org.eclipse.osee.framework.ui.skynet.export" name="OSEE">
+     </category>
    </extension>
 </plugin>
