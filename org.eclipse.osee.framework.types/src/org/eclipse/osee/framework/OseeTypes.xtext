@@ -4,49 +4,56 @@ generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
 
 Model :
 	(imports+=Import)*
-	(elements+=Type)*;
-	
+	(types+=OseeType)*;
+
 Import :
 	'import' importURI=STRING;
-	
-Type:
-  ArtifactType | RelationType | AttributeType;
+
+QUALIFIED_NAME : ID ('.' ID)*;
+DIGITS : ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9')+;
+
+OseeType:
+	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	'artifactType' name=ID ('extends' superEntity=[ArtifactType])? '{'
-	    (attributes+=XRef)*
+	'abstract'? 'artifactType' name=QUALIFIED_NAME ('extends' superArtifactType=[ArtifactType])? '{'
+	    (validTypes+=(AttributeTypeRef | RelationTypeRef))*
 	'}';
 
-XRef: 
-	RelationTypeRef |AttributeTypeRef;
-
-RelationTypeRef: 
-	'relation' type=[RelationType];
-	
 AttributeTypeRef:
-	'attribute' type=[AttributeType];
-
+	'attribute' validAttributeType=[AttributeType];
+	
+RelationTypeRef:
+	'relation' validRelationType=[RelationType];
 
 AttributeType:
-	'attributeType' name=ID ('extends' superEntity=[AttributeType])? '{'
-	 	attributes+=XAttribute
+		'attributeType' name=QUALIFIED_NAME ('extends' baseAttributeType=AttributeBaseType) '{'
+		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
+		'multiplicity' min=DIGITS ',' max=(DIGITS | 'many')
+		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
+		('enumType' enumType = [OseeEnumType])?
+		('description' description = STRING)?
+		('defaultValue' defaultValue = STRING)?
+		('fileExtension' fileExtension = STRING)?
 	'}';
 
-XAttribute:
-		'dataProvider' name=ID 
-		'taggerId' name=ID
-		('defaultValue' name=STRING)?;
+AttributeBaseType:
+	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
+
+OseeEnumType:
+	'oseeEnumType' name=QUALIFIED_NAME '{' 
+		(enums+=OseeEnum)*
+	'}';
+
+OseeEnum:
+	name=STRING (ordinal=DIGITS)?;
 
 RelationType:
-	'relationType' name=ID '{'
-	attributes+=XRelation
-		
+	'relationType' name=QUALIFIED_NAME '{'
+		'sideAName' sideAName=STRING
+		'sideAArtifactType' sideAArtifactType=[ArtifactType]
+		'sideBName' sideBName=STRING
+		'sideBArtifactType' sideBArtifactType=[ArtifactType]
+		'defaultOrderType' defaultOrderType=ID 
+		'multiplicity' multiplicity=('one-to-many' | 'many-to-many' | 'many-to-one')
 	'}';
-
-XRelation:
-		'sideAName' name=STRING
-		'sideAArtifactType' type=[ArtifactType]
-		'sideBName' name=STRING
-		'sideBArtifactType' type=[ArtifactType]
-		'defaultOrderType' name=STRING 
-		'multiplicity' name=('one-to-many' | 'many-to-many' | 'many-to-one');
