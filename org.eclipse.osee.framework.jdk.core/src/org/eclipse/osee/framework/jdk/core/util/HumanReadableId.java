@@ -52,10 +52,10 @@ public class HumanReadableId {
       char[] possibleChars = getCharsValidForPos(pos);
       int radix = possibleChars.length;
 
-      char return_char = possibleChars[randomSeed % radix];
+      char returnChar = possibleChars[randomSeed % radix];
       randomSeed = randomSeed / radix;
 
-      return return_char;
+      return returnChar;
    }
 
    private static char[] getCharsValidForPos(int pos) {
