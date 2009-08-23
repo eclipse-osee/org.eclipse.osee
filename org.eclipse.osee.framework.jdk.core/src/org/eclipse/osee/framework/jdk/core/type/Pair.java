@@ -54,7 +54,9 @@ public class Pair<T, K> implements Serializable {
 
    @Override
    public String toString() {
-      return String.format("[%s, %s]", first.toString(), second.toString());
+      String firstString = String.valueOf(first);
+      String secondString = String.valueOf(second);
+      return String.format("[%s, %s]", firstString, secondString);
    }
 
    @Override
