@@ -27,7 +27,7 @@ public class RelationOrdering {
    public RelationOrdering() {
       orderMap = new ConcurrentHashMap<String, RelationOrder>();
       registerOrderType(new Lexicographical(false, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC));
-      registerOrderType(new Lexicographical(true, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC));    
+      registerOrderType(new Lexicographical(true, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC));
       registerOrderType(new Unordered());
       registerOrderType(new UserDefinedOrder());
    }
@@ -37,9 +37,12 @@ public class RelationOrdering {
    }
 
    public void sort(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
+      if (type == null) {
+         return;
+      }
       String orderGuid = getOrderGuid(artifact, type, side);
       RelationOrder order = getRelationOrder(orderGuid);
-      if(order == null){
+      if (order == null) {
          return;
       }
       order.sort(artifact, type, side, relatives);
@@ -77,7 +80,7 @@ public class RelationOrdering {
          String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getTypeName(), side);
          if (relationOrderGuid != null) {
             RelationOrder order = getRelationOrder(relationOrderGuid);
-            if(order != null){
+            if (order != null) {
                order.setOrder(artifact, type, side, relatives);
             }
          }
@@ -87,10 +90,10 @@ public class RelationOrdering {
    public List<RelationOrderId> getRegisteredRelationOrderIds() {
       Collection<RelationOrder> relationOrder = orderMap.values();
       List<RelationOrderId> ids = new ArrayList<RelationOrderId>();
-      for(RelationOrder order:relationOrder){
+      for (RelationOrder order : relationOrder) {
          ids.add(order.getOrderId());
       }
       Collections.sort(ids, new RelationOrderIdComparator());
-      return ids; 
+      return ids;
    }
 }
