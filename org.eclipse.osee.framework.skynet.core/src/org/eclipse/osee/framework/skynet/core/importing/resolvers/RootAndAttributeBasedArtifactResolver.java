@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,22 +33,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Robert A. Fisher
  */
 public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportResolver {
-   private final LinkedList<AttributeType> identifyingAttributeDescriptors;
+   private final Collection<AttributeType> noneChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   /**
-    * @param identifyingAttributeDescriptors
-    */
-   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
+   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> noneChangingAttributes, boolean createNewIfNotExist) {
       super(primaryArtifactType, secondaryArtifactType);
-      if (identifyingAttributeDescriptors == null) {
-         throw new IllegalArgumentException("identifyingAttributeDescriptors can not be null");
-      }
-      if (identifyingAttributeDescriptors.isEmpty()) {
-         throw new IllegalArgumentException("identifyingAttributeDescriptors can not be empty");
-      }
-
-      this.identifyingAttributeDescriptors = new LinkedList<AttributeType>(identifyingAttributeDescriptors);
+      this.noneChangingAttributes = noneChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -58,7 +49,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          roughAttributeMap.put(roughAttribute.getKey(), roughAttribute.getValue());
       }
 
-      for (AttributeType attributeType : identifyingAttributeDescriptors) {
+      for (AttributeType attributeType : noneChangingAttributes) {
          Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType.getName());
          Collection<String> roughAttributes = roughAttributeMap.getValues(attributeType.getName());
 
@@ -89,7 +80,6 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
             }
          }
       }
-
       return true;
    }
 
@@ -99,6 +89,9 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    @Override
    public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException {
+      if (noneChangingAttributes == null || noneChangingAttributes.isEmpty()) {
+         throw new OseeArgumentException("noneChangingAttributes cannot be null or empty");
+      }
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
