@@ -14,8 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
@@ -60,16 +64,24 @@ public class SMARelationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
-      dragDropLabel.setText("Click here to drag this \"" + editor.getSmaMgr().getSma().getArtifactTypeName() + "\"");
-      GridData gd = new GridData(GridData.FILL_BOTH);
-      gd.heightHint = 25;
-      dragDropLabel.setLayoutData(gd);
-      new SMADragAndDrop(dragDropLabel, editor.getSmaMgr().getSma(), SMAEditor.EDITOR_ID);
-      toolkit.adapt(dragDropLabel, true, true);
+      try {
+         Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
+         dragDropLabel.setText("Click here to drag this \"" + editor.getSmaMgr().getSma().getArtifactTypeName() + "\"");
+         GridData gd = new GridData(GridData.FILL_BOTH);
+         gd.heightHint = 25;
+         dragDropLabel.setLayoutData(gd);
+         new SMADragAndDrop(dragDropLabel, editor.getSmaMgr().getSma(), SMAEditor.EDITOR_ID);
+         toolkit.adapt(dragDropLabel, true, true);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
 
-      relationComposite = new RelationsComposite(editor, sectionBody, SWT.NONE, editor.getSmaMgr().getSma());
-      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      try {
+         relationComposite = new RelationsComposite(editor, sectionBody, SWT.NONE, editor.getSmaMgr().getSma());
+         relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
 
       // Don't allow users to see all relations
       if (!AtsUtil.isAtsAdmin()) {

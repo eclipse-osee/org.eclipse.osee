@@ -74,8 +74,12 @@ public class SMAWorkFlowDebugSection extends SectionPart {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            Result result = smaMgr.getEditor().isDirtyResult();
-            AWorkbench.popup("Success", Strings.isValid(result.getText()) ? result.getText() : "Success");
+            try {
+               Result result = smaMgr.getEditor().isDirtyResult();
+               AWorkbench.popup("Success", Strings.isValid(result.getText()) ? result.getText() : "Success");
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
 
       });

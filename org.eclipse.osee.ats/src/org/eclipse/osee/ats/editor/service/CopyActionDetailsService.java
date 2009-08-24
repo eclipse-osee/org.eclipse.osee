@@ -11,9 +11,13 @@
 
 package org.eclipse.osee.ats.editor.service;
 
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -31,10 +35,14 @@ public class CopyActionDetailsService extends WorkPageService {
    }
 
    private void performCopy() {
-      if (clipboard == null) this.clipboard = new Clipboard(null);
-      clipboard.setContents(
-            new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getName() + "\""},
-            new Transfer[] {TextTransfer.getInstance()});
+      try {
+         if (clipboard == null) this.clipboard = new Clipboard(null);
+         clipboard.setContents(
+               new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getName() + "\""},
+               new Transfer[] {TextTransfer.getInstance()});
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    @Override
@@ -52,7 +60,12 @@ public class CopyActionDetailsService extends WorkPageService {
 
    @Override
    public String getName() {
-      return "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
+      try {
+         return "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return "Copy";
    }
 
 }

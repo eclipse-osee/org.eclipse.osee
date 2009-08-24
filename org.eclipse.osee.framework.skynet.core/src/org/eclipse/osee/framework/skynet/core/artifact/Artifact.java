@@ -1256,8 +1256,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return modType == ModificationType.DELETED;
    }
 
-   public void setLinksLoaded() {
-      linksLoaded = true;
+   public void setLinksLoaded(boolean loaded) {
+      linksLoaded = loaded;
    }
 
    public void addRelation(IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {

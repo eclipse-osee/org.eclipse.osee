@@ -176,7 +176,7 @@ public class ArtifactPersistenceManager {
          }
       }
       Branch branch = artifacts[0].getBranch();
-      ArtifactQuery.getArtifactListFromIds(artIds, branch, true);
+      ArtifactQuery.getArtifactListFromIds(artIds, branch);
 
       for (Artifact artifact : artifacts) {
          deleteTrace(artifact, transaction, true);
@@ -208,7 +208,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-    public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
+   public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
       if (attribute == null) return;
       revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
             attribute.getArtifact().getArtId(), attribute.getAttrId());
@@ -278,7 +278,7 @@ public class ArtifactPersistenceManager {
          chStmt.close();
       }
    }
-  
+
    public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeDataStoreException {
       return (ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH,
             artifact.getBranch().getBranchId(), artifact.getArtId()) == -1);

@@ -37,7 +37,12 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
          addXModifiedListener(xModListener);
       }
       setFillHorizontally(false);
-      setEditable(!smaMgr.getSma().isReadOnly());
+      try {
+         setEditable(!smaMgr.getSma().isReadOnly());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         setEditable(false);
+      }
       super.createWidgets(managedForm, composite, horizontalSpan);
    }
 

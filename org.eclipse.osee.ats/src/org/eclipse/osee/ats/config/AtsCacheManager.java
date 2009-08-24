@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -49,6 +50,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * @author Donald G. Dunne
  */
 public class AtsCacheManager implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
+
+   public static List<String> CommonCachedArtifacts = new ArrayList<String>();
 
    public static void start() {
       new AtsCacheManager();

@@ -281,7 +281,12 @@ public class SMAWorkFlowSection extends SectionPart {
 
    @Override
    public String toString() {
-      return atsWorkPage + " for " + getSmaMgr().getSma();
+      try {
+         return atsWorkPage + " for " + getSmaMgr().getSma();
+      } catch (OseeStateException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return String.valueOf(atsWorkPage);
    }
 
    public Result isXWidgetDirty() throws OseeCoreException {
@@ -363,11 +368,11 @@ public class SMAWorkFlowSection extends SectionPart {
    final SMAWorkFlowSection fSection = this;
    final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget xWidget) {
-         if (smaMgr.getSma().isDeleted()) {
-            return;
-         }
-         // Notify extensions of widget modified
          try {
+            if (smaMgr.getSma().isDeleted()) {
+               return;
+            }
+            // Notify extensions of widget modified
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
                try {
                   item.widgetModified(fSection, xWidget);
@@ -397,12 +402,12 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             transitionAssigneesLabel.getParent().layout();
          }
+         refreshStateServices();
+         for (XWidget xWidget : allXWidgets) {
+            xWidget.refresh();
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      refreshStateServices();
-      for (XWidget xWidget : allXWidgets) {
-         xWidget.refresh();
       }
    }
 
@@ -749,7 +754,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   public void refreshStateServices() {
+   public void refreshStateServices() throws OseeCoreException {
       if (servicesArea != null) {
          servicesArea.refresh();
       }

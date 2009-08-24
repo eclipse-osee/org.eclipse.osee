@@ -48,14 +48,14 @@ public abstract class WorkPageService {
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws OseeCoreException {
    }
 
-   public Action createToolbarService() {
+   public Action createToolbarService() throws OseeCoreException {
       return null;
    }
 
    public void dispose() {
    }
 
-   public void refresh() {
+   public void refresh() throws OseeCoreException {
    }
 
    public String getSidebarCategory() {

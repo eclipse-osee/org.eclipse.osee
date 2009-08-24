@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -56,6 +57,12 @@ public class EmailActionService extends WorkPageService {
 
    @Override
    public String getName() {
-      return "Email " + smaMgr.getSma().getArtifactSuperTypeName();
+      try {
+         return "Email " + smaMgr.getSma().getArtifactSuperTypeName();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return "Email";
+
    }
 }

@@ -11,8 +11,12 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -26,17 +30,17 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
       super(smaMgr);
    }
 
-   private void performOpen() {
-      ArtifactEditor.editArtifact(smaMgr.getSma());
-   }
-
    @Override
    public Action createToolbarService() {
       if (!AtsUtil.isAtsAdmin()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            performOpen();
+            try {
+               ArtifactEditor.editArtifact(smaMgr.getSma());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       };
       action.setToolTipText(getName());

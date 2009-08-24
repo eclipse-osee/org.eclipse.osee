@@ -421,7 +421,7 @@ public final class ArtifactLoader {
       Map<Integer, RelationLink> sideB = new HashMap<Integer, RelationLink>();
       Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
       for (Artifact artifact : artifacts) {
-         artifact.setLinksLoaded();
+         artifact.setLinksLoaded(true);
       }
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -185,8 +186,8 @@ public class ArtifactQuery {
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted, FULL).getArtifacts(50, null);
+   public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, Branch branch) throws OseeCoreException {
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, false);
    }
 
    /**
@@ -271,6 +272,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactListFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
+   }
+
+   public static List<Integer> selectArtifactListFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).selectArtifacts(10000);
    }
 
    public static List<Artifact> getArtifactListFromBranch(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) throws OseeCoreException {

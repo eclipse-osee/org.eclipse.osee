@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class DefectManager {
 
-   private final Artifact artifact;
+   private WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
@@ -42,7 +44,14 @@ public class DefectManager {
                Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public DefectManager(Artifact artifact) {
-      this.artifact = artifact;
+      this.artifactRef = new WeakReference<Artifact>(artifact);
+   }
+
+   public Artifact getArtifact() throws OseeStateException {
+      if (artifactRef.get() == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return artifactRef.get();
    }
 
    public String getHtml() throws OseeCoreException {
@@ -57,7 +66,7 @@ public class DefectManager {
 
    public Set<DefectItem> getDefectItems() throws OseeCoreException {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
-      for (String xml : artifact.getAttributesToStringList(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+      for (String xml : getArtifact().getAttributesToStringList(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
          defectMatcher.reset(xml);
          while (defectMatcher.find()) {
             DefectItem item = new DefectItem(defectMatcher.group());
@@ -100,7 +109,7 @@ public class DefectManager {
    private void saveDefectItems(Set<DefectItem> defectItems, boolean persist, SkynetTransaction transaction) {
       try {
          // Change existing ones
-         for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+         for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
             DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
             for (DefectItem pItem : defectItems) {
                if (pItem.equals(dbPromoteItem)) {
@@ -112,7 +121,7 @@ public class DefectManager {
          // Remove deleted ones; items in dbPromoteItems that are not in promoteItems
          for (DefectItem delPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
                dbPromoteItems, defectItems)) {
-            for (Attribute<?> attr : artifact.getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
+            for (Attribute<?> attr : getArtifact().getAttributes(REVIEW_DEFECT_ATTRIBUTE_NAME)) {
                DefectItem dbPromoteItem = new DefectItem((String) attr.getValue());
                if (dbPromoteItem.equals(delPromoteItem)) {
                   attr.delete();
@@ -122,11 +131,11 @@ public class DefectManager {
          // Add new ones: items in promoteItems that are not in dbPromoteItems
          for (DefectItem newPromoteItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
                defectItems, dbPromoteItems)) {
-            artifact.addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME, AXml.addTagData(DEFECT_ITEM_TAG,
-                  newPromoteItem.toXml()));
+            getArtifact().addAttributeFromString(REVIEW_DEFECT_ATTRIBUTE_NAME,
+                  AXml.addTagData(DEFECT_ITEM_TAG, newPromoteItem.toXml()));
          }
          if (persist) {
-            artifact.persistAttributes(transaction);
+            getArtifact().persistAttributes(transaction);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);

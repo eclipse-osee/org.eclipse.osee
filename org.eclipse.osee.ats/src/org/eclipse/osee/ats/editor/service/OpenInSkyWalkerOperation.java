@@ -11,7 +11,11 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
@@ -25,16 +29,16 @@ public class OpenInSkyWalkerOperation extends WorkPageService {
       super(smaMgr);
    }
 
-   private void performOpen() {
-      SkyWalkerView.exploreArtifact(smaMgr.getSma());
-   }
-
    @Override
    public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            performOpen();
+            try {
+               SkyWalkerView.exploreArtifact(smaMgr.getSma());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       };
       action.setToolTipText(getName());

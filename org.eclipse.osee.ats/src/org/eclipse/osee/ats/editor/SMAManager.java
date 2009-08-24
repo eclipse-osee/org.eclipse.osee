@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -74,7 +76,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SMAManager {
 
-   private final StateMachineArtifact sma;
+   private WeakReference<StateMachineArtifact> smaRef;
    private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
    private final TaskManager taskMgr;
@@ -95,9 +97,9 @@ public class SMAManager {
       OverrideAssigneeCheck
    };
 
-   public SMAManager(StateMachineArtifact sma, SMAEditor editor) {
+   public SMAManager(StateMachineArtifact sma, SMAEditor editor) throws OseeStateException {
       super();
-      this.sma = sma;
+      this.smaRef = new WeakReference<StateMachineArtifact>(sma);
       this.editor = editor;
       stateMgr = new StateManager(this);
       reviewMgr = new ReviewManager(this);
@@ -108,16 +110,23 @@ public class SMAManager {
       atsNote = new ATSNote(sma);
    }
 
-   public SMAManager(StateMachineArtifact sma) {
+   public StateMachineArtifact getSma() throws OseeStateException {
+      if (smaRef.get() == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return smaRef.get();
+   }
+
+   public SMAManager(StateMachineArtifact sma) throws OseeStateException {
       this(sma, null);
    }
 
-   public void closeEditors(boolean save) {
-      SMAEditor.close(java.util.Collections.singleton(sma), save);
+   public void closeEditors(boolean save) throws OseeStateException {
+      SMAEditor.close(java.util.Collections.singleton(getSma()), save);
    }
 
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
-      return sma.getPrivilegedUsers();
+      return getSma().getPrivilegedUsers();
    }
 
    public ATSLog getLog() {
@@ -136,19 +145,19 @@ public class SMAManager {
       if (getStateMgr().getCurrentStateName() == null) {
          return null;
       }
-      return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
+      return getSma().getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
    }
 
    public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException {
-      return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(name);
+      return getSma().getWorkFlowDefinition().getWorkPageDefinitionByName(name);
    }
 
    public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException {
-      return sma.getWorkFlowDefinition().getWorkPageDefinitionById(id);
+      return getSma().getWorkFlowDefinition().getWorkPageDefinitionById(id);
    }
 
-   public boolean isHistoricalVersion() {
-      return sma.isHistorical();
+   public boolean isHistoricalVersion() throws OseeStateException {
+      return getSma().isHistorical();
    }
 
    public List<WorkPageDefinition> getToWorkPages() throws OseeCoreException {
@@ -164,7 +173,7 @@ public class SMAManager {
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
-      return AccessControlManager.hasPermission(sma, PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(getSma(), PermissionEnum.WRITE);
    }
 
    public User getOriginator() throws OseeCoreException {
@@ -177,8 +186,9 @@ public class SMAManager {
 
    /**
     * @return true if this is a TeamWorkflow and it uses versions
+    * @throws OseeStateException
     */
-   public boolean isTeamUsesVersions() {
+   public boolean isTeamUsesVersions() throws OseeStateException {
       if (!(getSma() instanceof TeamWorkFlowArtifact)) {
          return false;
       }
@@ -254,11 +264,11 @@ public class SMAManager {
    }
 
    public VersionArtifact getTargetedForVersion() throws OseeCoreException {
-      return sma.getWorldViewTargetedVersion();
+      return getSma().getWorldViewTargetedVersion();
    }
 
    public boolean promptChangeAssignees(boolean persist) throws OseeCoreException {
-      return promptChangeAssignees(Arrays.asList(sma), persist);
+      return promptChangeAssignees(Arrays.asList(getSma()), persist);
    }
 
    public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
@@ -302,7 +312,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeOriginator() throws OseeCoreException {
-      return promptChangeOriginator(Arrays.asList(sma));
+      return promptChangeOriginator(Arrays.asList(getSma()));
    }
 
    public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
@@ -320,7 +330,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
-      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, persist);
+      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) getSma()), versionReleaseType, persist);
    }
 
    public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws OseeCoreException {
@@ -382,14 +392,14 @@ public class SMAManager {
       return true;
    }
 
-   public boolean promptChangeType(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) {
-         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
+   public boolean promptChangeType(boolean persist) throws OseeStateException {
+      if (getSma() instanceof TeamWorkFlowArtifact) {
+         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) getSma()), persist);
       }
       return false;
    }
 
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
+   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
 
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
@@ -422,9 +432,9 @@ public class SMAManager {
       }
    }
 
-   public boolean promptChangePriority(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) {
-         return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
+   public boolean promptChangePriority(boolean persist) throws OseeStateException {
+      if (getSma() instanceof TeamWorkFlowArtifact) {
+         return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) getSma()), persist);
       }
       return false;
    }
@@ -432,8 +442,7 @@ public class SMAManager {
    public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
       for (TeamWorkFlowArtifact team : teams) {
-         SMAManager smaMgr = new SMAManager(team);
-         if (smaMgr.isReleased()) {
+         if (team.getSmaMgr().isReleased()) {
             AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getName() + "\"\n is already released.");
             return false;
          }
@@ -464,7 +473,7 @@ public class SMAManager {
    public boolean promptChangeFloatAttribute(ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist);
+               Arrays.asList(getSma()), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -474,7 +483,7 @@ public class SMAManager {
    public boolean promptChangeIntegerAttribute(ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist);
+               Arrays.asList(getSma()), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -484,7 +493,7 @@ public class SMAManager {
    public boolean promptChangePercentAttribute(ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+               Arrays.asList(new Artifact[] {getSma()}), persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -494,7 +503,7 @@ public class SMAManager {
    public boolean promptChangeBoolean(ATSAttributes atsAttr, String toggleMessage, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), toggleMessage, persist);
+               Arrays.asList(getSma()), toggleMessage, persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -519,26 +528,27 @@ public class SMAManager {
    public boolean promptChangeAttribute(ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(sma), persist, multiLine);
+               Arrays.asList(getSma()), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
    }
 
-   public boolean promptChangeDate(ATSAttributes atsAttr, boolean persist) {
+   public boolean promptChangeDate(ATSAttributes atsAttr, boolean persist) throws OseeStateException {
       try {
-         return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
+         return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), getSma(),
+               persist);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex);
+               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + getSma().getHumanReadableId(), ex);
       }
       return false;
    }
 
-   public boolean promptChangeReleaseDate() {
+   public boolean promptChangeReleaseDate() throws OseeStateException {
       if (isReleased()) {
-         AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getName() + "\"\n is already released.");
+         AWorkbench.popup("ERROR", "Team Workflow\n \"" + getSma().getName() + "\"\n is already released.");
          return false;
       }
       try {
@@ -549,7 +559,7 @@ public class SMAManager {
             DateSelectionDialog diag =
                   new DateSelectionDialog(
                         "Select Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        "Warning: " + getSma().getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) {
                diag.setSelectedDate(verArt.getReleaseDate());
@@ -562,23 +572,26 @@ public class SMAManager {
          } else {
             // prompt that current release is (get from attribute) - want to change?
             DateSelectionDialog diag =
-                  new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
+                  new DateSelectionDialog("Select Release Date", "Select Release Date",
+                        getSma().getWorldViewReleaseDate());
             if (getSma().getWorldViewReleaseDate() != null) {
-               diag.setSelectedDate(sma.getWorldViewReleaseDate());
+               diag.setSelectedDate(getSma().getWorldViewReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
-               sma.persistAttributes();
+               getSma().setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               getSma().persistAttributes();
                return true;
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save release date " + sma.getHumanReadableId(), ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Can't save release date " + getSma().getHumanReadableId(), ex);
       }
       return false;
    }
 
-   public boolean promptChangeEstimatedReleaseDate() {
+   public boolean promptChangeEstimatedReleaseDate() throws OseeStateException {
       try {
          VersionArtifact verArt = getTargetedForVersion();
          if (verArt != null) {
@@ -587,7 +600,7 @@ public class SMAManager {
             DateSelectionDialog diag =
                   new DateSelectionDialog(
                         "Select Estimated Release Date Date",
-                        "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        "Warning: " + getSma().getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
                         verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) {
                diag.setSelectedDate(verArt.getEstimatedReleaseDate());
@@ -603,26 +616,26 @@ public class SMAManager {
             // change
             DateSelectionDialog diag =
                   new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
-                        sma.getWorldViewEstimatedReleaseDate());
+                        getSma().getWorldViewEstimatedReleaseDate());
             if (getSma().getWorldViewEstimatedReleaseDate() != null) {
-               diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
+               diag.setSelectedDate(getSma().getWorldViewEstimatedReleaseDate());
             }
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+               getSma().setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
-               sma.persistAttributes();
+               getSma().persistAttributes();
                return true;
             }
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-               "Can't save est release date " + sma.getHumanReadableId(), ex);
+               "Can't save est release date " + getSma().getHumanReadableId(), ex);
       }
       return false;
    }
 
    public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException {
-      return sma.getWorkFlowDefinition();
+      return getSma().getWorkFlowDefinition();
    }
 
    public boolean isCompleted() throws OseeCoreException {
@@ -638,7 +651,7 @@ public class SMAManager {
    }
 
    public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
-      return sma.isCurrentSectionExpanded(stateName);
+      return getSma().isCurrentSectionExpanded(stateName);
    }
 
    public boolean isCurrentState(String stateName) throws OseeCoreException {
@@ -684,22 +697,15 @@ public class SMAManager {
    }
 
    /**
-    * @return Returns the sma.
-    */
-   public StateMachineArtifact getSma() {
-      return sma;
-   }
-
-   /**
     * @return true if SMA is allowed to have tasks
     * @throws OseeCoreException
     */
    public boolean isTaskable() throws OseeCoreException {
-      return sma.isTaskable();
+      return getSma().isTaskable();
    }
 
    public boolean showTaskTab() throws OseeCoreException {
-      return sma.showTaskTab();
+      return getSma().showTaskTab();
    }
 
    /**
@@ -836,7 +842,7 @@ public class SMAManager {
          getReviewManager().createValidateReview(false, transaction);
       }
 
-      AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
+      AtsNotifyUsers.notify(getSma(), AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
             AtsNotifyUsers.NotifyType.Completed);
 
       // Persist

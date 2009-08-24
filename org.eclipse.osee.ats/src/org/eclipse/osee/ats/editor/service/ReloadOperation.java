@@ -68,7 +68,12 @@ public class ReloadOperation extends WorkPageService {
 
    @Override
    public String getName() {
-      return "Reload \"" + smaMgr.getSma().getArtifactTypeName() + "\"";
+      try {
+         return "Reload \"" + smaMgr.getSma().getArtifactTypeName() + "\"";
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return "Reload";
    }
 
 }

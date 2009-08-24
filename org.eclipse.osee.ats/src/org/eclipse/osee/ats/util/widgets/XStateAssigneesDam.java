@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +20,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -30,17 +33,24 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 public abstract class XStateAssigneesDam extends XTextDam {
 
    protected final String attributeTypeName;
-   protected final StateMachineArtifact sma;
+   private WeakReference<StateMachineArtifact> smaRef;
 
    public XStateAssigneesDam(StateMachineArtifact sma, String attributeName) {
       super(attributeName);
-      this.sma = sma;
+      this.smaRef = new WeakReference<StateMachineArtifact>(sma);
       this.attributeTypeName = attributeName;
+   }
+
+   public StateMachineArtifact getSma() throws OseeStateException {
+      if (smaRef == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return smaRef.get();
    }
 
    public SMAState getState(String stateName, boolean create) {
       try {
-         for (String stateXml : sma.getAttributesToStringList(attributeTypeName)) {
+         for (String stateXml : getSma().getAttributesToStringList(attributeTypeName)) {
             if (stateXml.startsWith(stateName + ";")) {
                SMAState state = new SMAState();
                state.setFromXml(stateXml);
@@ -51,7 +61,11 @@ public abstract class XStateAssigneesDam extends XTextDam {
             return new SMAState(stateName);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + sma.getGuid(), ex);
+         try {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + getSma().getGuid(), ex);
+         } catch (OseeStateException ex1) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
       }
       return null;
    }
@@ -62,8 +76,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
+         XCurrentStateDam.logMetrics(getSma(), getSma().getPercentCompleteSMATotal() + "",
+               AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(),
+               new Date());
       }
    }
 
@@ -73,21 +88,26 @@ public abstract class XStateAssigneesDam extends XTextDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-               AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal()), stateName, UserManager.getUser(), new Date());
+         XCurrentStateDam.logMetrics(getSma(), getSma().getPercentCompleteSMATotal() + "",
+               AtsUtil.doubleToI18nString(getSma().getHoursSpentSMATotal()), stateName, UserManager.getUser(),
+               new Date());
       }
    }
 
    public Set<SMAState> getStates() {
       Set<SMAState> states = new HashSet<SMAState>();
       try {
-         for (String stateXml : sma.getAttributesToStringList(attributeTypeName)) {
+         for (String stateXml : getSma().getAttributesToStringList(attributeTypeName)) {
             SMAState state = new SMAState();
             state.setFromXml(stateXml);
             states.add(state);
          }
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + sma.getGuid(), ex);
+         try {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error parsing state data for " + getSma().getGuid(), ex);
+         } catch (OseeStateException ex1) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
       }
       return states;
    }
@@ -95,7 +115,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
    public void setState(SMAState state) throws OseeCoreException {
       // Update attribute if it already exists
       try {
-         Collection<Attribute<String>> attrs = sma.getAttributes(attributeTypeName);
+         Collection<Attribute<String>> attrs = getSma().getAttributes(attributeTypeName);
          for (Attribute<String> attr : attrs) {
             SMAState storedState = new SMAState();
             storedState.setFromXml(attr.getValue());
@@ -105,9 +125,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
             }
          }
          // Else, doesn't exist yet, create
-         sma.addAttribute(attributeTypeName, state.toXml());
+         getSma().addAttribute(attributeTypeName, state.toXml());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + sma.getGuid(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + getSma().getGuid(), ex);
       }
    }
 }

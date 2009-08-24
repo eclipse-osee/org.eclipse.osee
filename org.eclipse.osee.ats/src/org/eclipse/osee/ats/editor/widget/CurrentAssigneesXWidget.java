@@ -9,6 +9,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -26,7 +27,7 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
    private final SMAManager smaMgr;
    private final boolean isEditable;
 
-   public CurrentAssigneesXWidget(IManagedForm managedForm, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isEditable) {
+   public CurrentAssigneesXWidget(IManagedForm managedForm, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isEditable) throws OseeStateException {
       super("Assignee(s)");
       this.smaMgr = smaMgr;
       this.isEditable = isEditable;

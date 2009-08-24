@@ -77,8 +77,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
 
-      if (isCancelled())
-         return EMPTY_SET;
+      if (isCancelled()) return EMPTY_SET;
 
       Set<Artifact> resultAtsArts = new HashSet<Artifact>();
       Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
@@ -94,7 +93,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
       // This does artId search
       if (includeArtIds && branch != null) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(enteredIds), branch, false)) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(enteredIds), branch)) {
             artifacts.add(art);
          }
       }
@@ -111,8 +110,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
       }
 
-      if (isCancelled())
-         return EMPTY_SET;
+      if (isCancelled()) return EMPTY_SET;
 
       if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,

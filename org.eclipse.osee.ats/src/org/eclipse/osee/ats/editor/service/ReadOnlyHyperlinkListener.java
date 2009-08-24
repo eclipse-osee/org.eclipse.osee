@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -28,14 +32,20 @@ public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
 
    @Override
    public void linkActivated(HyperlinkEvent e) {
-      if (smaMgr.isHistoricalVersion())
-         AWorkbench.popup(
-               "Historical Error",
-               "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
+      try {
+         if (smaMgr.isHistoricalVersion())
+            AWorkbench.popup(
+                  "Historical Error",
+                  "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
 
-      else
-         AWorkbench.popup("Authentication Error",
-               "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
+         else
+            AWorkbench.popup(
+                  "Authentication Error",
+                  "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
    }
 
    @Override

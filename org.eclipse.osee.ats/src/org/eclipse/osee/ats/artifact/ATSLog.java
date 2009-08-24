@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -40,7 +42,7 @@ import org.w3c.dom.Element;
  */
 public class ATSLog {
 
-   private final Artifact artifact;
+   private WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private static String ATS_LOG_TAG = "AtsLog";
    private static String LOG_ITEM_TAG = "Item";
@@ -51,8 +53,7 @@ public class ATSLog {
 
       public static LogType getType(String type) throws OseeArgumentException {
          for (Enum<LogType> e : LogType.values()) {
-            if (e.name().equals(type))
-               return (LogType) e;
+            if (e.name().equals(type)) return (LogType) e;
          }
          throw new OseeArgumentException("Unhandled LogType: \"" + type + "\"");
       }
@@ -60,7 +61,7 @@ public class ATSLog {
    };
 
    public ATSLog(Artifact artifact) {
-      this.artifact = artifact;
+      this.artifactRef = new WeakReference<Artifact>(artifact);
    }
 
    @Override
@@ -78,15 +79,20 @@ public class ATSLog {
    }
 
    public String getHtml(boolean showLog) throws OseeCoreException {
-      if (getLogItems().size() == 0)
-         return "";
+      if (getLogItems().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
-      if (showLog)
-         sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
-               AHTML.LABEL_FONT,
-               "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getName() + "\""));
+      if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
+            AHTML.LABEL_FONT,
+            "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getArtifact().getHumanReadableId() + " - titled \"" + getArtifact().getName() + "\""));
       sb.append(getTable());
       return sb.toString();
+   }
+
+   public Artifact getArtifact() throws OseeStateException {
+      if (artifactRef == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return artifactRef.get();
    }
 
    private static Pattern LOG_ITEM_PATTERN =
@@ -97,7 +103,7 @@ public class ATSLog {
    public List<LogItem> getLogItems() throws OseeCoreException {
       //      System.out.println("getLogItems " + artifact.getHumanReadableId());
       List<LogItem> logItems = new ArrayList<LogItem>();
-      String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
+      String xml = getArtifact().getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
       if (!xml.equals("")) {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
@@ -112,7 +118,7 @@ public class ATSLog {
          if (logItems.size() != openTagsFound) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
                   "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound,
-                  logItems.size(), artifact.getHumanReadableId()));
+                  logItems.size(), getArtifact().getHumanReadableId()));
          }
       }
       return logItems;
@@ -120,8 +126,7 @@ public class ATSLog {
 
    public Date getLastStatusedDate() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Metrics);
-      if (logItem == null)
-         return null;
+      if (logItem == null) return null;
       return logItem.getDate();
    }
 
@@ -139,7 +144,7 @@ public class ATSLog {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         getArtifact().setSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
       }
@@ -169,8 +174,7 @@ public class ATSLog {
     */
    public Date getCreationDate() throws OseeCoreException {
       LogItem logItem = getEvent(LogType.Originated);
-      if (logItem == null)
-         return null;
+      if (logItem == null) return null;
       return logItem.getDate();
    }
 
@@ -181,8 +185,7 @@ public class ATSLog {
     */
    public User getOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
-      if (logItem == null)
-         return null;
+      if (logItem == null) return null;
       return logItem.getUser();
    }
 
@@ -261,8 +264,7 @@ public class ATSLog {
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
-      if (!enabled)
-         return;
+      if (!enabled) return;
       LogItem logItem = new LogItem(type, date, user, state, msg);
       List<LogItem> logItems = getLogItems();
       logItems.add(logItem);
@@ -306,29 +308,25 @@ public class ATSLog {
 
    public LogItem getEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItems())
-         if (item.getType() == type)
-            return item;
+         if (item.getType() == type) return item;
       return null;
    }
 
    public LogItem getLastEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type)
-            return item;
+         if (item.getType() == type) return item;
       return null;
    }
 
    public LogItem getStateEvent(LogType type, String stateName) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type && item.getState().equals(stateName))
-            return item;
+         if (item.getType() == type && item.getState().equals(stateName)) return item;
       return null;
    }
 
    public LogItem getStateEvent(LogType type) throws OseeCoreException {
       for (LogItem item : getLogItemsReversed())
-         if (item.getType() == type)
-            return item;
+         if (item.getType() == type) return item;
       return null;
    }
 

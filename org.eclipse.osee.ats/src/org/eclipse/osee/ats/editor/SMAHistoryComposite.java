@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.swt.SWT;
@@ -49,7 +52,11 @@ public class SMAHistoryComposite extends Composite {
       button.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            ArtifactEditor.editArtifact(fSmaMgr.getSma());
+            try {
+               ArtifactEditor.editArtifact(fSmaMgr.getSma());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
    }

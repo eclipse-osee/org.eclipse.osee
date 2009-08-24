@@ -106,13 +106,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    protected void initializeSMA() {
-      smaMgr = new SMAManager(this);
+      try {
+         smaMgr = new SMAManager(this);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
       initalizePreSaveCache();
    }
 
    public void initalizePreSaveCache() {
-      smaMgr = new SMAManager(this);
       try {
+         smaMgr = new SMAManager(this);
          preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
          if (smaMgr.getOriginator() == null) {
             preSaveOriginator = UserManager.getUser();
@@ -138,7 +142,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       Collection<User> assignees = getSmaMgr().getStateMgr().getAssignees();
       assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
       setRelations(CoreRelationEnumeration.Users_User, assignees);
-      persistRelations(transaction);
+      persistAttributesAndRelations(transaction);
    }
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {
@@ -963,9 +967,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
-   /**
-    * @return the smaMgr
-    */
    public SMAManager getSmaMgr() {
       return smaMgr;
    }

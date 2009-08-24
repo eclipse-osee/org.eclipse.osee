@@ -268,8 +268,12 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       editChangeTypeAction = new Action("Edit Change Type", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
-               update(getSelectedArtifactItems().toArray(), null);
+            try {
+               if (SMAManager.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
+                  update(getSelectedArtifactItems().toArray(), null);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

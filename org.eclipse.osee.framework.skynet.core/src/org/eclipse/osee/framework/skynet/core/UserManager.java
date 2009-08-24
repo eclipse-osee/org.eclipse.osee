@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -45,6 +46,7 @@ public final class UserManager {
    private static boolean duringMainUserCreation = false;
 
    private UserManager() {
+
    }
 
    /**
@@ -194,6 +196,11 @@ public final class UserManager {
 
    private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
+         try {
+            ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType("User"));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         }
          List<Artifact> artifactsFound =
                ArtifactQuery.getArtifactListFromType(User.ARTIFACT_NAME, BranchManager.getCommonBranch());
          for (Artifact artifact : artifactsFound) {

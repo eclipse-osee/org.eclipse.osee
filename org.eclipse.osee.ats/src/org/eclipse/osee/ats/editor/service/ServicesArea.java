@@ -155,7 +155,7 @@ public class ServicesArea {
 
    }
 
-   public void refresh() {
+   public void refresh() throws OseeCoreException {
       for (WorkPageService stat : sideBarServices)
          stat.refresh();
       for (WorkPageService stat : toolBarServices)

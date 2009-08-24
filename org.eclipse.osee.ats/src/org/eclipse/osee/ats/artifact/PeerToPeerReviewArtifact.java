@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,7 +53,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -59,7 +61,12 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    public static String getDefaultReviewTitle(SMAManager smaMgr) {
-      return "Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getName() + "\"";
+      try {
+         return "Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getName() + "\"";
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return "Review";
    }
 
    @Override

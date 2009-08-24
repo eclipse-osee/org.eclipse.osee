@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
@@ -38,7 +39,12 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      setEditable(!smaMgr.getSma().isReadOnly());
+      try {
+         setEditable(!smaMgr.getSma().isReadOnly());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         setEditable(false);
+      }
       setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);

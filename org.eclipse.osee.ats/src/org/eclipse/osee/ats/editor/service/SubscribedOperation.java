@@ -12,9 +12,13 @@ package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -33,7 +37,11 @@ public class SubscribedOperation extends WorkPageService {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            (new SubscribeManager(smaMgr.getSma())).toggleSubscribe();
+            try {
+               (new SubscribeManager(smaMgr.getSma())).toggleSubscribe();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       };
       action.setToolTipText(getName());
@@ -43,7 +51,13 @@ public class SubscribedOperation extends WorkPageService {
 
    @Override
    public void refresh() {
-      if (action != null) action.setToolTipText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Remove Subscribed" : "Add Subscribed");
+      try {
+         if (action != null) {
+            action.setToolTipText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Remove Subscribed" : "Add Subscribed");
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
    }
 
    @Override

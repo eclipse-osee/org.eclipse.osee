@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -255,9 +255,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
-      if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) {
-         smaMgr.getSma().revertSMA();
+      try {
+         if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) {
+            smaMgr.getSma().revertSMA();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
+
       workFlowTab.dispose();
       if (taskComposite != null) {
          taskComposite.disposeTaskComposite();
@@ -271,10 +276,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public boolean isDirty() {
-      return isDirtyResult().isTrue();
+      try {
+         return isDirtyResult().isTrue();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return false;
    }
 
-   public Result isDirtyResult() {
+   public Result isDirtyResult() throws OseeStateException {
       if (smaMgr.getSma().isDeleted()) {
          return Result.FalseResult;
       }
@@ -309,7 +319,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public String toString() {
-      return "SMAEditor - " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " named \"" + smaMgr.getSma().getName() + "\"";
+      try {
+         return "SMAEditor - " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " named \"" + smaMgr.getSma().getName() + "\"";
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return "SMAEditor";
    }
 
    @Override
@@ -405,7 +420,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          public void widgetSelected(SelectionEvent e) {
             try {
                HistoryView.open(smaMgr.getSma());
-            } catch (OseeArgumentException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
@@ -419,8 +434,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
-            pd.open();
+            try {
+               PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
+               pd.open();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 
@@ -430,8 +449,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
-            Result result = smaMgr.getEditor().isDirtyResult();
-            AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
+            try {
+               Result result = smaMgr.getEditor().isDirtyResult();
+               AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 
@@ -439,7 +462,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + smaMgr.getSma().getArtifactTypeName() + "\"   HRID: " + smaMgr.getSma().getHumanReadableId());
+      try {
+         artifactInfoLabel.setText("Type: \"" + smaMgr.getSma().getArtifactTypeName() + "\"   HRID: " + smaMgr.getSma().getHumanReadableId());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
@@ -512,30 +539,38 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            IEditorReference editors[] = page.getEditorReferences();
-            for (int j = 0; j < editors.length; j++) {
-               IEditorReference editor = editors[j];
-               if (editor.getPart(false) instanceof SMAEditor) {
-                  if (artifacts.contains(((SMAEditor) editor.getPart(false)).getSmaMgr().getSma())) {
-                     ((SMAEditor) editor.getPart(false)).closeEditor();
+            try {
+               IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+               IEditorReference editors[] = page.getEditorReferences();
+               for (int j = 0; j < editors.length; j++) {
+                  IEditorReference editor = editors[j];
+                  if (editor.getPart(false) instanceof SMAEditor) {
+                     if (artifacts.contains(((SMAEditor) editor.getPart(false)).getSmaMgr().getSma())) {
+                        ((SMAEditor) editor.getPart(false)).closeEditor();
+                     }
                   }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
       });
    }
 
    public static SMAEditor getSmaEditor(StateMachineArtifact artifact) {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      IEditorReference editors[] = page.getEditorReferences();
-      for (int j = 0; j < editors.length; j++) {
-         IEditorReference editor = editors[j];
-         if (editor.getPart(false) instanceof SMAEditor) {
-            if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
-               return (SMAEditor) editor.getPart(false);
+      try {
+         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+         IEditorReference editors[] = page.getEditorReferences();
+         for (int j = 0; j < editors.length; j++) {
+            IEditorReference editor = editors[j];
+            if (editor.getPart(false) instanceof SMAEditor) {
+               if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
+                  return (SMAEditor) editor.getPart(false);
+               }
             }
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
       return null;
    }

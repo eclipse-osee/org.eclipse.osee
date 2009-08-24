@@ -54,7 +54,7 @@ public abstract class ArtifactFactory {
       }
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
-      artifact.setLinksLoaded();
+      artifact.setLinksLoaded(true);
       artifact.onBirth();
       artifact.onInitializationComplete();
 

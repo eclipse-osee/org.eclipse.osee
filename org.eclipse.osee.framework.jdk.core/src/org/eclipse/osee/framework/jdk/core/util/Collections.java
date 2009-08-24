@@ -72,6 +72,24 @@ public class Collections {
       return toString(separator, c);
    }
 
+   @SuppressWarnings("unchecked")
+   public static <A> List<Collection<A>> subDivide(List<A> collection, int size) {
+      List<Collection<A>> result = new ArrayList<Collection<A>>();
+      for (int i = 0; i < collection.size() / size + 1; i++) {
+         int maxLength;
+         if (i * size + size > collection.size())
+            maxLength = collection.size();
+         else
+            maxLength = i * size + size;
+         List sublist = new ArrayList();
+         for (int j = i * size; j < maxLength; j++) {
+            sublist.add(collection.get(j));
+         }
+         result.add(sublist);
+      }
+      return result;
+   }
+
    /**
     * The resultant set is those elements in superSet which are not in the subSet
     * 

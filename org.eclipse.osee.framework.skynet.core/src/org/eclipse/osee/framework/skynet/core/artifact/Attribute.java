@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public abstract class Attribute<T> {
    private AttributeType attributeType;
-   private Artifact artifact;
+   private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;
    private int gammaId;
@@ -43,7 +44,7 @@ public abstract class Attribute<T> {
 
    void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeType = attributeType;
-      this.artifact = artifact;
+      this.artifactRef = new WeakReference<Artifact>(artifact);
       this.modificationType = modificationType;
 
       try {
@@ -88,7 +89,7 @@ public abstract class Attribute<T> {
       if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isRenamable(Arrays.asList(artifact));
+            IStatus result = check.isRenamable(Arrays.asList(getArtifact()));
             if (!result.isOK()) {
                throw new OseeCoreException(result.getMessage());
             }
@@ -104,7 +105,7 @@ public abstract class Attribute<T> {
       if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isRenamable(Arrays.asList(artifact));
+            IStatus result = check.isRenamable(Arrays.asList(getArtifact()));
             if (!result.isOK()) {
                throw new OseeCoreException(result.getMessage());
             }
@@ -184,12 +185,12 @@ public abstract class Attribute<T> {
       this.modificationType = modificationType;
 
       if (modificationType != ModificationType.ARTIFACT_DELETED) {
-         artifact.onAttributeModify();
+         getArtifact().onAttributeModify();
       }
 
       // Kick Local Event
       try {
-         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
+         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, getArtifact());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -199,8 +200,11 @@ public abstract class Attribute<T> {
       dirty = false;
    }
 
-   public Artifact getArtifact() {
-      return artifact;
+   public Artifact getArtifact() throws OseeStateException {
+      if (artifactRef == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return artifactRef.get();
    }
 
    /**
@@ -265,7 +269,7 @@ public abstract class Attribute<T> {
 
    public boolean canDelete() {
       try {
-         return artifact.getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
+         return getArtifact().getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -311,8 +315,9 @@ public abstract class Attribute<T> {
 
    /**
     * @return the deleted
+    * @throws OseeStateException
     */
-   public boolean isDeleted() {
+   public boolean isDeleted() throws OseeStateException {
       try {
          return modificationType.isDeleted();
       } catch (NullPointerException ex) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,13 +34,20 @@ import org.w3c.dom.NodeList;
  * @author Donald G. Dunne
  */
 public class ATSNote {
-   private final Artifact artifact;
+   private WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private static String ATS_NOTE_TAG = "AtsNote";
    private static String LOG_ITEM_TAG = "Item";
 
    public ATSNote(Artifact artifact) {
-      this.artifact = artifact;
+      this.artifactRef = new WeakReference<Artifact>(artifact);
+   }
+
+   public Artifact getArtifact() throws OseeStateException {
+      if (artifactRef == null) {
+         throw new OseeStateException("Artifact has been garbage collected");
+      }
+      return artifactRef.get();
    }
 
    public void addNote(NoteType type, String state, String msg, User user) {
@@ -50,8 +59,7 @@ public class ATSNote {
    }
 
    public void addNote(NoteType type, String state, String msg, Date date, User user) {
-      if (!enabled)
-         return;
+      if (!enabled) return;
       NoteItem logItem = new NoteItem(type, state, date.getTime() + "", user, msg);
       List<NoteItem> logItems = getNoteItems();
       logItems.add(logItem);
@@ -61,7 +69,7 @@ public class ATSNote {
    public List<NoteItem> getNoteItems() {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
       try {
-         String xml = artifact.getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
+         String xml = getArtifact().getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
          if (!xml.equals("")) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
@@ -93,7 +101,8 @@ public class ATSNote {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         getArtifact().setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
+               Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats note document", ex);
       }
@@ -109,7 +118,7 @@ public class ATSNote {
       ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();
       List<NoteItem> noteItems = getNoteItems();
       try {
-         if (!artifact.isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) {
+         if (!getArtifact().isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) {
             return "";
          }
       } catch (OseeCoreException ex) {
@@ -119,14 +128,12 @@ public class ATSNote {
 
       for (NoteItem li : noteItems) {
          if (state == null) {
-            if (li.getState().equals(""))
-               showNotes.add(li);
+            if (li.getState().equals("")) showNotes.add(li);
          } else if ((state.equals("ALL")) || li.getState().equals(state)) {
             showNotes.add(li);
          }
       }
-      if (showNotes.size() == 0)
-         return "";
+      if (showNotes.size() == 0) return "";
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Type</TH><TH>State</TH>" + "<TH>Message</TH><TH>User</TH><TH>Date</TH></THEAD></TR>");
       for (NoteItem note : showNotes) {
@@ -143,10 +150,10 @@ public class ATSNote {
          builder.append("<TD>" + (note.getState().equals("") ? "," : note.getState()) + "</TD>");
          builder.append("<TD>" + (note.getMsg().equals("") ? "," : note.getMsg()) + "</TD>");
 
-            if (user != null && user.isMe())
-               builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
-            else
-               builder.append("<TD>" + name + "</TD>");
+         if (user != null && user.isMe())
+            builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
+         else
+            builder.append("<TD>" + name + "</TD>");
 
          builder.append("<TD>" + (new SimpleDateFormat("MM/dd/yyyy h:mm a")).format(note.getDate()) + "</TD>");
          builder.append("</TR>");

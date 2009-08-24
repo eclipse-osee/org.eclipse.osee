@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -40,7 +40,7 @@ public class HistoryOperation extends WorkPageService {
          public void run() {
             try {
                HistoryView.open(smaMgr.getSma());
-            } catch (OseeArgumentException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }

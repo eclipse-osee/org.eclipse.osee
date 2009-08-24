@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -80,7 +81,7 @@ public class AddNoteOperation extends WorkPageService {
    }
 
    @Override
-   public void refresh() {
+   public void refresh() throws OseeStateException {
       if (action != null) action.setEnabled(smaMgr.getSma().isReadOnly());
    }
 }

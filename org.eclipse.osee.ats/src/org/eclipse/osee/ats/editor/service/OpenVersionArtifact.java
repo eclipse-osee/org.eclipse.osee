@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -47,7 +48,7 @@ public class OpenVersionArtifact extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() {
+   public Action createToolbarService() throws OseeStateException {
       if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return null;
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {

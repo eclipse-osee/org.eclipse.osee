@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -421,7 +422,7 @@ public class DeletionTest {
       }
    }
 
-   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException {
+   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeStateException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          System.out.println("  Attribute Dump");

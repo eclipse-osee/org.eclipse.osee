@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -27,12 +26,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class TeamWorkflowManager {
 
-   private final SMAManager smaMgr;
    private final TeamWorkFlowArtifact teamArt;
 
    public TeamWorkflowManager(TeamWorkFlowArtifact teamArt) {
       this.teamArt = teamArt;
-      smaMgr = new SMAManager(teamArt);
    }
 
    /**
@@ -53,9 +50,9 @@ public class TeamWorkflowManager {
          return result;
       }
       result =
-            smaMgr.transition(DefaultTeamState.Analyze.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+            teamArt.getSmaMgr().transition(DefaultTeamState.Analyze.name(),
+                  (user != null ? user : teamArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -68,9 +65,9 @@ public class TeamWorkflowManager {
          return result;
       }
       result =
-            smaMgr.transition(DefaultTeamState.Authorize.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+            teamArt.getSmaMgr().transition(DefaultTeamState.Authorize.name(),
+                  (user != null ? user : teamArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -84,9 +81,9 @@ public class TeamWorkflowManager {
       }
 
       result =
-            smaMgr.transition(DefaultTeamState.Implement.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+            teamArt.getSmaMgr().transition(DefaultTeamState.Implement.name(),
+                  (user != null ? user : teamArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -94,9 +91,9 @@ public class TeamWorkflowManager {
       if (toState == DefaultTeamState.Implement) return Result.TrueResult;
 
       result =
-            smaMgr.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), transaction,
-                  TransitionOption.None);
+            teamArt.getSmaMgr().transition(DefaultTeamState.Completed.name(),
+                  (user != null ? user : teamArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+                  transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -106,31 +103,31 @@ public class TeamWorkflowManager {
    }
 
    public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
+      if (!teamArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
-      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
+      if (!teamArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
       teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
-      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
+      if (!teamArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
             "Action not in Authorize state");
-      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
+      if (!teamArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
-      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

@@ -356,9 +356,10 @@ public class TaskXViewer extends WorldXViewer {
          return false;
       }
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      SMAManager taskSmaMgr = new SMAManager((TaskArtifact) treeItem.getData());
-      boolean modified = false;
       try {
+         SMAManager taskSmaMgr = new SMAManager((TaskArtifact) treeItem.getData());
+         boolean modified = false;
+
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified = taskSmaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {

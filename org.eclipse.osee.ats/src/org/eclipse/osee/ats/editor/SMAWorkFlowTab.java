@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -190,7 +191,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          scrolledForm = managedForm.getForm();
          scrolledForm.addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
-               storeScrollLocation();
+               try {
+                  storeScrollLocation();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               }
             }
          });
 
@@ -337,7 +342,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private Control control = null;
 
-   private void storeScrollLocation() {
+   private void storeScrollLocation() throws OseeStateException {
       if (scrolledForm != null) {
          Integer selection = scrolledForm.getVerticalBar().getSelection();
          // System.out.println("Storing selection => " + selection);
@@ -354,23 +359,27 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       protected IStatus run(IProgressMonitor monitor) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
-               Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
-               // System.out.println("Restoring selection => " + selection);
+               try {
+                  Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
+                  // System.out.println("Restoring selection => " + selection);
 
-               // Find the ScrolledComposite operating on the control.
-               ScrolledComposite sComp = null;
-               if (control == null || control.isDisposed()) return;
-               Composite parent = control.getParent();
-               while (parent != null) {
-                  if (parent instanceof ScrolledComposite) {
-                     sComp = (ScrolledComposite) parent;
-                     break;
+                  // Find the ScrolledComposite operating on the control.
+                  ScrolledComposite sComp = null;
+                  if (control == null || control.isDisposed()) return;
+                  Composite parent = control.getParent();
+                  while (parent != null) {
+                     if (parent instanceof ScrolledComposite) {
+                        sComp = (ScrolledComposite) parent;
+                        break;
+                     }
+                     parent = parent.getParent();
                   }
-                  parent = parent.getParent();
-               }
 
-               if (sComp != null) {
-                  sComp.setOrigin(0, selection);
+                  if (sComp != null) {
+                     sComp.setOrigin(0, selection);
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
                }
             }
          });
@@ -425,7 +434,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
+   private void createLatestHeader(Composite comp, XFormToolkit toolkit) throws OseeStateException {
       if (smaMgr.isHistoricalVersion()) {
          Label label =
                toolkit.createLabel(

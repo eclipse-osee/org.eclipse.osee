@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -39,7 +40,7 @@ public class StateManager {
    private final XStateDam stateDam;
    private final SMAManager smaMgr;
 
-   public StateManager(SMAManager smaMgr) {
+   public StateManager(SMAManager smaMgr) throws OseeStateException {
       super();
       this.smaMgr = smaMgr;
       currentStateDam = new XCurrentStateDam(smaMgr.getSma());
@@ -95,8 +96,7 @@ public class StateManager {
     */
    public double getHoursSpent(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state == null)
-         return 0.0;
+      if (state == null) return 0.0;
       return state.getHoursSpent();
    }
 
@@ -111,11 +111,9 @@ public class StateManager {
     * @return percent complete or 0 if none
     */
    public int getPercentComplete(String stateName) throws OseeCoreException {
-      if (stateName.equals(DefaultTeamState.Completed.name()) || stateName.equals(DefaultTeamState.Cancelled.name()))
-         return 100;
+      if (stateName.equals(DefaultTeamState.Completed.name()) || stateName.equals(DefaultTeamState.Cancelled.name())) return 100;
       SMAState state = getSMAState(stateName, false);
-      if (state == null)
-         return 0;
+      if (state == null) return 0;
       return state.getPercentComplete();
 
    }
@@ -186,8 +184,7 @@ public class StateManager {
     * @throws Exception
     */
    public void setAssignee(String stateName, User assignee) throws OseeCoreException {
-      if (!isStateVisited(stateName))
-         throw new IllegalArgumentException("State " + stateName + " does not exist.");
+      if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
       putState(state);
@@ -213,8 +210,7 @@ public class StateManager {
     * @throws Exception
     */
    public void removeAssignee(String stateName, User assignee) throws OseeCoreException {
-      if (!isStateVisited(stateName))
-         return;
+      if (!isStateVisited(stateName)) return;
       SMAState state = getSMAState(stateName, false);
       state.removeAssignee(assignee);
       putState(state);
@@ -267,8 +263,7 @@ public class StateManager {
       // Set XCurrentState; If been to this state, copy state info from prev state; else create new
       SMAState previousState = stateDam.getState(toStateName, false);
       if (previousState != null) {
-         if (toAssignees.size() > 0)
-            previousState.setAssignees(toAssignees);
+         if (toAssignees.size() > 0) previousState.setAssignees(toAssignees);
          currentStateDam.setState(previousState);
       } else {
          currentStateDam.setState(new SMAState(toStateName, toAssignees));
@@ -328,11 +323,9 @@ public class StateManager {
 
    public long getTimeInState(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state == null)
-         return 0;
+      if (state == null) return 0;
       LogItem logItem = smaMgr.getLog().getLastEvent(LogType.StateEntered);
-      if (logItem == null)
-         return 0;
+      if (logItem == null) return 0;
       return (new Date()).getTime() - logItem.getDate().getTime();
    }
 }
