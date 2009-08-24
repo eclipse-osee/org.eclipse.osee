@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -557,7 +558,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
                   if (fixAssignees) {
                      try {
-                        ((StateMachineArtifact) art).updateAssigneeRelations(null);
+                        StateManager.updateAssigneeRelations(smaMgr);
                         art.persistAttributesAndRelations();
                      } catch (OseeCoreException ex) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -570,7 +571,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {
-                           ((StateMachineArtifact) art).updateAssigneeRelations(null);
+                           StateManager.updateAssigneeRelations(smaMgr);
                            art.persistAttributesAndRelations();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

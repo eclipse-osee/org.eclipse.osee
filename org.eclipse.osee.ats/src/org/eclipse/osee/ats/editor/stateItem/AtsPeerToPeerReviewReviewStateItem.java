@@ -31,7 +31,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees,  SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
       if (!toState.equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) return;
       // Set Assignees to all user roles users
@@ -42,7 +42,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
       smaMgr.getStateMgr().setAssignees(assignees);
-      smaMgr.getSma().persistAttributes(transaction);
+      smaMgr.getSma().persistAttributesAndRelations(transaction);
    }
 
    public String getDescription() throws OseeCoreException {

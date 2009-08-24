@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -128,23 +127,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
-   /**
-    * This method will create an assignee relation for each current assignee. Assignees are related to user artifacts to
-    * speed up ATS searching. This does not persist the artifact.<br>
-    * <br>
-    * The "UnAssigned" user is no longer related due to the performance and event service issues with having a single
-    * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
-    * "UnAssigned".
-    * 
-    * @throws OseeCoreException
-    */
-   public void updateAssigneeRelations(SkynetTransaction transaction) throws OseeCoreException {
-      Collection<User> assignees = getSmaMgr().getStateMgr().getAssignees();
-      assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
-      setRelations(CoreRelationEnumeration.Users_User, assignees);
-      persistAttributesAndRelations(transaction);
-   }
-
    public boolean hasAtsWorldChildren() throws OseeCoreException {
       for (IRelationEnumeration iRelationEnumeration : atsWorldRelations) {
          if (getRelatedArtifactsCount(iRelationEnumeration) > 0) {
@@ -222,7 +204,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       try {
          notifyNewAssigneesAndReset();
          notifyOriginatorAndReset();
-         updateAssigneeRelations(transaction);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -74,6 +75,22 @@ public class StateManager {
       }
       SMAState smaState = getSMAState(name, true);
       putState(smaState);
+   }
+
+   /**
+    * This method will create an assignee relation for each current assignee. Assignees are related to user artifacts to
+    * speed up ATS searching. This does not persist the artifact.<br>
+    * <br>
+    * The "UnAssigned" user is no longer related due to the performance and event service issues with having a single
+    * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
+    * "UnAssigned".
+    * 
+    * @throws OseeCoreException
+    */
+   public static void updateAssigneeRelations(SMAManager smaMgr) throws OseeCoreException {
+      Collection<User> assignees = smaMgr.getStateMgr().getAssignees();
+      assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
+      smaMgr.getSma().setRelations(CoreRelationEnumeration.Users_User, assignees);
    }
 
    /**
@@ -166,7 +183,7 @@ public class StateManager {
    }
 
    /**
-    * Sets the assignees AND writes to SMA. Does not persist.
+    * Sets the assignees as attributes and relations AND writes to SMA. Does not persist.
     * 
     * @param assignees
     * @throws Exception
@@ -175,6 +192,7 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignees(assignees);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -188,6 +206,7 @@ public class StateManager {
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -200,6 +219,7 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignee(assignee);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -214,6 +234,7 @@ public class StateManager {
       SMAState state = getSMAState(stateName, false);
       state.removeAssignee(assignee);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -226,6 +247,7 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.removeAssignee(assignee);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -238,6 +260,7 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.addAssignee(assignee);
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -250,6 +273,7 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.clearAssignees();
       putState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    public boolean isStateVisited(String name) throws OseeCoreException {
@@ -299,6 +323,7 @@ public class StateManager {
          }
       }
       currentStateDam.setState(smaState);
+      updateAssigneeRelations(smaMgr);
    }
 
    private void putState(SMAState state) throws OseeCoreException {
@@ -306,6 +331,7 @@ public class StateManager {
          currentStateDam.setState(state);
       else
          stateDam.setState(state);
+      updateAssigneeRelations(smaMgr);
    }
 
    public Collection<String> getVisitedStateNames() throws OseeCoreException {
