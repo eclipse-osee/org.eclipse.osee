@@ -35,7 +35,7 @@ public class OSEEFilteredTree extends FilteredTree {
     * @param filter
     */
    public OSEEFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-      super(parent, treeStyle, filter, true);
+      super(parent, treeStyle, filter, false);
       setInitialText("");
    }
 
