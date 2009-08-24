@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
+import org.eclipse.osee.framework.jdk.core.test.type.PairTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {HumanReadableIdTest.class, GUIDTest.class})
+@Suite.SuiteClasses( {HumanReadableIdTest.class, GUIDTest.class, PairTest.class})
 public class JdkCoreUtilTestSuite {
 
 }
