@@ -55,6 +55,6 @@ RelationType:
 		'sideAArtifactType' sideAArtifactType=[ArtifactType]
 		'sideBName' sideBName=STRING
 		'sideBArtifactType' sideBArtifactType=[ArtifactType]
-		'defaultOrderType' defaultOrderType=ID 
+		'defaultOrderType' defaultOrderType=('Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID )
 		'multiplicity' multiplicity=('one-to-many' | 'many-to-many' | 'many-to-one')
 	'}';

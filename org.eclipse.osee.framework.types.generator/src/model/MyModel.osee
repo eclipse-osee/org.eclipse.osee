@@ -1,15 +1,81 @@
-/*
- * This is an example model
- */
-type String
-
-entity Leaf extends Composable {
-  property name: String
+artifactType Artifact {
+	attribute Name
+	attribute StaticId
+	relation DefaultHierarchical
 }
 
-entity Composite extends Composable {
-  property content: Composable[]
+abstract artifactType Native_Artifact extends Artifact {
+	attribute Extension
+	attribute Description
+	attribute Native_Content
 }
 
-entity Composable {
+artifactType General_Document extends Native_Artifact {}
+
+relationType DefaultHierarchical {
+	sideAName "parent"
+	sideAArtifactType Artifact
+	sideBName "child"
+	sideBArtifactType Artifact
+	defaultOrderType Lexicographical_Ascending
+	multiplicity one-to-many
+}
+
+relationType UniversalGrouping {
+	sideAName "parent"
+	sideAArtifactType Artifact
+	sideBName "child"
+	sideBArtifactType Artifact
+	defaultOrderType Lexicographical_Ascending
+	multiplicity many-to-many
+}
+
+attributeType Name extends StringAttribute {
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType StaticId extends StringAttribute {
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+}
+
+
+attributeType Extension extends StringAttribute {
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType Description extends StringAttribute {
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType Native_Content extends CompressedContentAttribute {
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+}
+
+attributeType Page_Type extends EnumeratedAttribute {
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType PageTypeEnum
+	defaultValue "Portrait"
+}
+
+oseeEnumType PageTypeEnum {
+	"Portrait" 3
+	"Landscape" 5
+	"pick me" 9
 }
