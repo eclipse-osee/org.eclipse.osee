@@ -29,7 +29,8 @@ RelationTypeRef:
 AttributeType:
 		'attributeType' name=QUALIFIED_NAME ('extends' baseAttributeType=AttributeBaseType) '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
-		'multiplicity' min=DIGITS ',' max=(DIGITS | 'many')
+		'min' min=DIGITS
+		'max' max=(DIGITS | 'unlimited')
 		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
 		('enumType' enumType = [OseeEnumType])?
 		('description' description = STRING)?
