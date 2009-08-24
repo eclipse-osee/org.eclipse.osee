@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
@@ -28,9 +29,14 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.RootAndAttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -104,9 +110,12 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }
 
-      if (transaction != null) {
+      IArtifactImportResolver resolver =
+            getResolver(opName, mainPage.getArtifactType(), mainPage.isUpdateExistingSelected(),
+                  mainPage.getNoneChangingAttributes());
+
+      if (transaction != null && resolver != null) {
          RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
-         IArtifactImportResolver resolver = null;
 
          List<IOperation> subOps = new ArrayList<IOperation>();
          subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
@@ -116,6 +125,28 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       return true;
    }
 
+   private IArtifactImportResolver getResolver(String opName, ArtifactType primaryArtifactType, boolean isUpdateExistingArtifactsSelected, Collection<AttributeType> noneChangingAttributes) {
+      IArtifactImportResolver resolver = null;
+      try {
+         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
+         // only non-null when reuse artifacts is checked
+         if (isUpdateExistingArtifactsSelected) {
+            resolver =
+                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
+                        noneChangingAttributes, false);
+         } else {
+            resolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
+         }
+      } catch (OseeCoreException ex) {
+         String msg =
+               String.format("Unable to create an artifact resolver for [%s]", primaryArtifactType,
+                     isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers",
+                           noneChangingAttributes) : "");
+         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
+               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
+      }
+      return resolver;
+   }
    private final static class CompleteImportOperation extends AbstractOperation {
       private final Artifact destinationArtifact;
       private final SkynetTransaction transaction;

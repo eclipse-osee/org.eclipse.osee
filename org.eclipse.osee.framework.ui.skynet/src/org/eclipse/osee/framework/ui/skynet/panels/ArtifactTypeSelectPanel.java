@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Shell;
 public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactType> {
 
    private Collection<ArtifactType> artifactTypes;
+   private final String title = "Import as Artifact Type";
+   private final String message = "Select what artifact type data should be imported as.";
 
    public ArtifactTypeSelectPanel() {
       super(new ArtifactTypeLabelProvider(), new ArrayContentProvider());
@@ -41,8 +43,6 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTyp
 
    @Override
    protected Dialog createSelectDialog(Shell shell, ArtifactType lastSelected) throws OseeCoreException {
-      String title = "Import as Artifact Type";
-      String message = "Select what artifact type data should be imported as.";
       ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog(title, message);
       dialog.setMultiSelect(false);
       if (lastSelected != null) {

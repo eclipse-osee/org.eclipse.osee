@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.panels;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.Dialog;
@@ -81,6 +82,7 @@ public abstract class AbstractItemSelectPanel<T> {
       currentItemWidget.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Button button = new Button(composite, SWT.PUSH);
+      button.setLayoutData(new GridData(SWT.END, SWT.TOP, false, false));
       button.setText("Select");
       button.addSelectionListener(new SelectionAdapter() {
 
@@ -103,7 +105,13 @@ public abstract class AbstractItemSelectPanel<T> {
             object = getDefaultItem();
          }
          if (object != null) {
-            currentItemWidget.setInput(new Object[] {object});
+            Object input;
+            if (object instanceof Collection<?>) {
+               input = object;
+            } else {
+               input = new Object[] {object};
+            }
+            currentItemWidget.setInput(input);
             currentItemWidget.getTable().layout();
          }
       }

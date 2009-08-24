@@ -48,7 +48,7 @@
    </extension>
 	
 	<extension point="org.eclipse.ui.importWizards">
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/WordMlImport.bmp" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
+		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">
 			<description>
             Import artifact data into OSEE.
          </description>

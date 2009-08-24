@@ -71,14 +71,14 @@ public class ArtifactExtractorSelectPanel {
 
    public void createControl(Composite parent) {
       Composite composite = new Composite(parent, SWT.NONE);
-      composite.setLayout(ALayout.getZeroMarginLayout(2, false));
+      composite.setLayout(ALayout.getZeroMarginLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       extractorCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       extractorCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Group delegateGroup = new Group(composite, SWT.NONE);
-      delegateGroup.setText("Select additional extractor option");
+      Group delegateGroup = new Group(parent.getParent(), SWT.NONE);
+      delegateGroup.setText("Select an additional extractor option");
       delegateGroup.setToolTipText("Select an additional extractor option");
       delegateGroup.setLayout(new GridLayout(1, false));
       delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -111,6 +111,7 @@ public class ArtifactExtractorSelectPanel {
          extractorCombo.setData(extractorName, extractor);
       }
       extractorCombo.select(extractorCombo.getItemCount() - 1);
+      handleExtractorSelection();
    }
 
    private void handleExtractorSelection() {
