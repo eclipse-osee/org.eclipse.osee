@@ -17,15 +17,12 @@ OseeType:
 
 ArtifactType:
 	'abstract'? 'artifactType' name=QUALIFIED_NAME ('extends' superArtifactType=[ArtifactType])? '{'
-	    (validTypes+=(AttributeTypeRef | RelationTypeRef))*
+	    (validTypes+=AttributeTypeRef)*
 	'}';
 
 AttributeTypeRef:
 	'attribute' validAttributeType=[AttributeType];
 	
-RelationTypeRef:
-	'relation' validRelationType=[RelationType];
-
 AttributeType:
 		'attributeType' name=QUALIFIED_NAME ('extends' baseAttributeType=AttributeBaseType) '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
