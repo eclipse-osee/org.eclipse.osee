@@ -6,48 +6,53 @@
  */
 package org.eclipse.osee.framework.oseeTypes.impl;
 
-import org.eclipse.emf.common.notify.Notification;
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
-import org.eclipse.osee.framework.oseeTypes.RelationTypeRef;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Relation Type Ref</b></em>'.
+ * An implementation of the model object '<em><b>Osee Enum Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeRefImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnums <em>Enums</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
+public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
 {
   /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' reference.
+   * The cached value of the '{@link #getEnums() <em>Enums</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getEnums()
    * @generated
    * @ordered
    */
-  protected RelationType type;
+  protected EList<OseeEnum> enums;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected RelationTypeRefImpl()
+  protected OseeEnumTypeImpl()
   {
     super();
   }
@@ -60,7 +65,7 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.RELATION_TYPE_REF;
+    return OseeTypesPackage.Literals.OSEE_ENUM_TYPE;
   }
 
   /**
@@ -68,19 +73,13 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
-  public RelationType getType()
+  public EList<OseeEnum> getEnums()
   {
-    if (type != null && type.eIsProxy())
+    if (enums == null)
     {
-      InternalEObject oldType = (InternalEObject)type;
-      type = (RelationType)eResolveProxy(oldType);
-      if (type != oldType)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE_REF__TYPE, oldType, type));
-      }
+      enums = new EObjectContainmentEList<OseeEnum>(OseeEnum.class, this, OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS);
     }
-    return type;
+    return enums;
   }
 
   /**
@@ -88,22 +87,15 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
-  public RelationType basicGetType()
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setType(RelationType newType)
-  {
-    RelationType oldType = type;
-    type = newType;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE_REF__TYPE, oldType, type));
+    switch (featureID)
+    {
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+        return ((InternalEList<?>)getEnums()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -116,9 +108,8 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE_REF__TYPE:
-        if (resolve) return getType();
-        return basicGetType();
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+        return getEnums();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -128,13 +119,15 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE_REF__TYPE:
-        setType((RelationType)newValue);
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+        getEnums().clear();
+        getEnums().addAll((Collection<? extends OseeEnum>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -150,8 +143,8 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE_REF__TYPE:
-        setType((RelationType)null);
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+        getEnums().clear();
         return;
     }
     super.eUnset(featureID);
@@ -167,10 +160,10 @@ public class RelationTypeRefImpl extends XRefImpl implements RelationTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE_REF__TYPE:
-        return type != null;
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+        return enums != null && !enums.isEmpty();
     }
     return super.eIsSet(featureID);
   }
 
-} //RelationTypeRefImpl
+} //OseeEnumTypeImpl

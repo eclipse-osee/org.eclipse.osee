@@ -13,23 +13,24 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.osee.framework.oseeTypes.OseeEnum;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.XAttribute;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>XAttribute</b></em>'.
+ * An implementation of the model object '<em><b>Osee Enum</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl#getOrdinal <em>Ordinal</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAttribute
+public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEnum
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -52,11 +53,31 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   protected String name = NAME_EDEFAULT;
 
   /**
+   * The default value of the '{@link #getOrdinal() <em>Ordinal</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOrdinal()
+   * @generated
+   * @ordered
+   */
+  protected static final String ORDINAL_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getOrdinal() <em>Ordinal</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOrdinal()
+   * @generated
+   * @ordered
+   */
+  protected String ordinal = ORDINAL_EDEFAULT;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected XAttributeImpl()
+  protected OseeEnumImpl()
   {
     super();
   }
@@ -69,7 +90,7 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.XATTRIBUTE;
+    return OseeTypesPackage.Literals.OSEE_ENUM;
   }
 
   /**
@@ -92,7 +113,30 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM__NAME, oldName, name));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getOrdinal()
+  {
+    return ordinal;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOrdinal(String newOrdinal)
+  {
+    String oldOrdinal = ordinal;
+    ordinal = newOrdinal;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM__ORDINAL, oldOrdinal, ordinal));
   }
 
   /**
@@ -105,8 +149,10 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   {
     switch (featureID)
     {
-      case OseeTypesPackage.XATTRIBUTE__NAME:
+      case OseeTypesPackage.OSEE_ENUM__NAME:
         return getName();
+      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+        return getOrdinal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -121,8 +167,11 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   {
     switch (featureID)
     {
-      case OseeTypesPackage.XATTRIBUTE__NAME:
+      case OseeTypesPackage.OSEE_ENUM__NAME:
         setName((String)newValue);
+        return;
+      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+        setOrdinal((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -138,8 +187,11 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   {
     switch (featureID)
     {
-      case OseeTypesPackage.XATTRIBUTE__NAME:
+      case OseeTypesPackage.OSEE_ENUM__NAME:
         setName(NAME_EDEFAULT);
+        return;
+      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+        setOrdinal(ORDINAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -155,8 +207,10 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
   {
     switch (featureID)
     {
-      case OseeTypesPackage.XATTRIBUTE__NAME:
+      case OseeTypesPackage.OSEE_ENUM__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+        return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
     }
     return super.eIsSet(featureID);
   }
@@ -174,8 +228,10 @@ public class XAttributeImpl extends MinimalEObjectImpl.Container implements XAtt
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", ordinal: ");
+    result.append(ordinal);
     result.append(')');
     return result.toString();
   }
 
-} //XAttributeImpl
+} //OseeEnumImpl

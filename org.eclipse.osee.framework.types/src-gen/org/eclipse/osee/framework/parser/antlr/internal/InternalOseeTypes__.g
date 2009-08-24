@@ -8,46 +8,80 @@ import org.eclipse.xtext.parser.antlr.Lexer;
 }
 
 T11 : 'import' ;
-T12 : 'artifactType' ;
-T13 : 'extends' ;
-T14 : '{' ;
-T15 : '}' ;
-T16 : 'relation' ;
-T17 : 'attribute' ;
-T18 : 'attributeType' ;
-T19 : 'dataProvider' ;
-T20 : 'taggerId' ;
-T21 : 'defaultValue' ;
-T22 : 'relationType' ;
-T23 : 'sideAName' ;
-T24 : 'sideAArtifactType' ;
-T25 : 'sideBName' ;
-T26 : 'sideBArtifactType' ;
-T27 : 'defaultOrderType' ;
-T28 : 'multiplicity' ;
-T29 : 'one-to-many' ;
-T30 : 'many-to-many' ;
-T31 : 'many-to-one' ;
+T12 : '.' ;
+T13 : '0' ;
+T14 : '1' ;
+T15 : '2' ;
+T16 : '3' ;
+T17 : '4' ;
+T18 : '5' ;
+T19 : '6' ;
+T20 : '7' ;
+T21 : '8' ;
+T22 : '9' ;
+T23 : 'abstract' ;
+T24 : 'artifactType' ;
+T25 : 'extends' ;
+T26 : '{' ;
+T27 : '}' ;
+T28 : 'attribute' ;
+T29 : 'attributeType' ;
+T30 : 'dataProvider' ;
+T31 : 'DefaultAttributeDataProvider' ;
+T32 : 'UriAttributeDataProvider' ;
+T33 : 'MappedAttributeDataProvider' ;
+T34 : 'min' ;
+T35 : 'max' ;
+T36 : 'unlimited' ;
+T37 : 'taggerId' ;
+T38 : 'DefaultAttributeTaggerProvider' ;
+T39 : 'enumType' ;
+T40 : 'description' ;
+T41 : 'defaultValue' ;
+T42 : 'fileExtension' ;
+T43 : 'BooleanAttribute' ;
+T44 : 'CompressedContentAttribute' ;
+T45 : 'DateAttribute' ;
+T46 : 'EnumeratedAttribute' ;
+T47 : 'FloatingPointAttribute' ;
+T48 : 'IntegerAttribute' ;
+T49 : 'JavaObjectAttribute' ;
+T50 : 'StringAttribute' ;
+T51 : 'WordAttribute' ;
+T52 : 'oseeEnumType' ;
+T53 : 'relationType' ;
+T54 : 'sideAName' ;
+T55 : 'sideAArtifactType' ;
+T56 : 'sideBName' ;
+T57 : 'sideBArtifactType' ;
+T58 : 'defaultOrderType' ;
+T59 : 'Lexicographical_Ascending' ;
+T60 : 'Lexicographical_Descending' ;
+T61 : 'Unordered' ;
+T62 : 'multiplicity' ;
+T63 : 'one-to-many' ;
+T64 : 'many-to-many' ;
+T65 : 'many-to-one' ;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 877
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1278
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 879
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1280
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 881
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1282
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 883
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1284
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 885
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1286
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 887
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1288
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 889
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1290
 RULE_ANY_OTHER : .;
 
 

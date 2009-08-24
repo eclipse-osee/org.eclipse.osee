@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.Model#getImports <em>Imports</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.Model#getElements <em>Elements</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.Model#getTypes <em>Types</em>}</li>
  * </ul>
  * </p>
  *
@@ -46,19 +46,19 @@ public interface Model extends EObject
   EList<Import> getImports();
 
   /**
-   * Returns the value of the '<em><b>Elements</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.Type}.
+   * Returns the value of the '<em><b>Types</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeType}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Elements</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Types</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Elements</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getModel_Elements()
+   * @return the value of the '<em>Types</em>' containment reference list.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getModel_Types()
    * @model containment="true"
    * @generated
    */
-  EList<Type> getElements();
+  EList<OseeType> getTypes();
 
 } // Model

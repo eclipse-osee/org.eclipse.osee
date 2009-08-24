@@ -45,13 +45,13 @@ public interface OseeTypesFactory extends EFactory
   Import createImport();
 
   /**
-   * Returns a new object of class '<em>Type</em>'.
+   * Returns a new object of class '<em>Osee Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Type</em>'.
+   * @return a new object of class '<em>Osee Type</em>'.
    * @generated
    */
-  Type createType();
+  OseeType createOseeType();
 
   /**
    * Returns a new object of class '<em>Artifact Type</em>'.
@@ -61,24 +61,6 @@ public interface OseeTypesFactory extends EFactory
    * @generated
    */
   ArtifactType createArtifactType();
-
-  /**
-   * Returns a new object of class '<em>XRef</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>XRef</em>'.
-   * @generated
-   */
-  XRef createXRef();
-
-  /**
-   * Returns a new object of class '<em>Relation Type Ref</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Relation Type Ref</em>'.
-   * @generated
-   */
-  RelationTypeRef createRelationTypeRef();
 
   /**
    * Returns a new object of class '<em>Attribute Type Ref</em>'.
@@ -99,13 +81,22 @@ public interface OseeTypesFactory extends EFactory
   AttributeType createAttributeType();
 
   /**
-   * Returns a new object of class '<em>XAttribute</em>'.
+   * Returns a new object of class '<em>Osee Enum Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>XAttribute</em>'.
+   * @return a new object of class '<em>Osee Enum Type</em>'.
    * @generated
    */
-  XAttribute createXAttribute();
+  OseeEnumType createOseeEnumType();
+
+  /**
+   * Returns a new object of class '<em>Osee Enum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Osee Enum</em>'.
+   * @generated
+   */
+  OseeEnum createOseeEnum();
 
   /**
    * Returns a new object of class '<em>Relation Type</em>'.
@@ -115,15 +106,6 @@ public interface OseeTypesFactory extends EFactory
    * @generated
    */
   RelationType createRelationType();
-
-  /**
-   * Returns a new object of class '<em>XRelation</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>XRelation</em>'.
-   * @generated
-   */
-  XRelation createXRelation();
 
   /**
    * Returns the package supported by this factory.

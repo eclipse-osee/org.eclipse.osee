@@ -10,22 +10,22 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>XRelation</b></em>'.
+ * A representation of the model object '<em><b>Osee Enum</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelation#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelation#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal <em>Ordinal</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelation()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnum()
  * @model
  * @generated
  */
-public interface XRelation extends EObject
+public interface OseeEnum extends EObject
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -37,14 +37,14 @@ public interface XRelation extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelation_Name()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnum_Name()
    * @model
    * @generated
    */
   String getName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelation#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getName <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Name</em>' attribute.
@@ -54,29 +54,29 @@ public interface XRelation extends EObject
   void setName(String value);
 
   /**
-   * Returns the value of the '<em><b>Type</b></em>' reference.
+   * Returns the value of the '<em><b>Ordinal</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Type</em>' reference isn't clear,
+   * If the meaning of the '<em>Ordinal</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Type</em>' reference.
-   * @see #setType(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelation_Type()
+   * @return the value of the '<em>Ordinal</em>' attribute.
+   * @see #setOrdinal(String)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnum_Ordinal()
    * @model
    * @generated
    */
-  ArtifactType getType();
+  String getOrdinal();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelation#getType <em>Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal <em>Ordinal</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Type</em>' reference.
-   * @see #getType()
+   * @param value the new value of the '<em>Ordinal</em>' attribute.
+   * @see #getOrdinal()
    * @generated
    */
-  void setType(ArtifactType value);
+  void setOrdinal(String value);
 
-} // XRelation
+} // OseeEnum

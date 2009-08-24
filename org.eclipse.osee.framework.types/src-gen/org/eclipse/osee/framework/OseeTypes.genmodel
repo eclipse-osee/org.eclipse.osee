@@ -11,38 +11,46 @@
       ecorePackage="OseeTypes.ecore#/">
     <genClasses ecoreClass="OseeTypes.ecore#//Model">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//Model/imports"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//Model/elements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//Model/types"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//Import/importURI"/>
     </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//Type">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//Type/name"/>
+    <genClasses ecoreClass="OseeTypes.ecore#//OseeType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superEntity"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/attributes"/>
-    </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//XRef"/>
-    <genClasses ecoreClass="OseeTypes.ecore#//RelationTypeRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationTypeRef/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/validTypes"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeTypeRef">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeTypeRef/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeTypeRef/validAttributeType"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeType">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeType/superEntity"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeType/attributes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/baseAttributeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/dataProvider"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/min"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/max"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/taggerId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeType/enumType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/fileExtension"/>
     </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//XAttribute">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//XAttribute/name"/>
+    <genClasses ecoreClass="OseeTypes.ecore#//OseeEnumType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumType/enums"/>
+    </genClasses>
+    <genClasses ecoreClass="OseeTypes.ecore#//OseeEnum">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnum/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnum/ordinal"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//RelationType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationType/attributes"/>
-    </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//XRelation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//XRelation/name"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//XRelation/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/sideAName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationType/sideAArtifactType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/sideBName"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationType/sideBArtifactType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/defaultOrderType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/multiplicity"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

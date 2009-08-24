@@ -13,23 +13,23 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.Type;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Type</b></em>'.
+ * An implementation of the model object '<em><b>Osee Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.TypeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class TypeImpl extends MinimalEObjectImpl.Container implements Type
+public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeType
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -56,7 +56,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
    * <!-- end-user-doc -->
    * @generated
    */
-  protected TypeImpl()
+  protected OseeTypeImpl()
   {
     super();
   }
@@ -69,7 +69,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.TYPE;
+    return OseeTypesPackage.Literals.OSEE_TYPE;
   }
 
   /**
@@ -92,7 +92,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.TYPE__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_TYPE__NAME, oldName, name));
   }
 
   /**
@@ -105,7 +105,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
   {
     switch (featureID)
     {
-      case OseeTypesPackage.TYPE__NAME:
+      case OseeTypesPackage.OSEE_TYPE__NAME:
         return getName();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -121,7 +121,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
   {
     switch (featureID)
     {
-      case OseeTypesPackage.TYPE__NAME:
+      case OseeTypesPackage.OSEE_TYPE__NAME:
         setName((String)newValue);
         return;
     }
@@ -138,7 +138,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
   {
     switch (featureID)
     {
-      case OseeTypesPackage.TYPE__NAME:
+      case OseeTypesPackage.OSEE_TYPE__NAME:
         setName(NAME_EDEFAULT);
         return;
     }
@@ -155,7 +155,7 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
   {
     switch (featureID)
     {
-      case OseeTypesPackage.TYPE__NAME:
+      case OseeTypesPackage.OSEE_TYPE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     }
     return super.eIsSet(featureID);
@@ -178,4 +178,4 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type
     return result.toString();
   }
 
-} //TypeImpl
+} //OseeTypeImpl

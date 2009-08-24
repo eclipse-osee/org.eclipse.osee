@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
@@ -24,23 +25,23 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getValidAttributeType <em>Valid Attribute Type</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
+public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implements AttributeTypeRef
 {
   /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' reference.
+   * The cached value of the '{@link #getValidAttributeType() <em>Valid Attribute Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getType()
+   * @see #getValidAttributeType()
    * @generated
    * @ordered
    */
-  protected AttributeType type;
+  protected AttributeType validAttributeType;
 
   /**
    * <!-- begin-user-doc -->
@@ -68,19 +69,19 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType getType()
+  public AttributeType getValidAttributeType()
   {
-    if (type != null && type.eIsProxy())
+    if (validAttributeType != null && validAttributeType.eIsProxy())
     {
-      InternalEObject oldType = (InternalEObject)type;
-      type = (AttributeType)eResolveProxy(oldType);
-      if (type != oldType)
+      InternalEObject oldValidAttributeType = (InternalEObject)validAttributeType;
+      validAttributeType = (AttributeType)eResolveProxy(oldValidAttributeType);
+      if (validAttributeType != oldValidAttributeType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE, oldType, type));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
       }
     }
-    return type;
+    return validAttributeType;
   }
 
   /**
@@ -88,9 +89,9 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType basicGetType()
+  public AttributeType basicGetValidAttributeType()
   {
-    return type;
+    return validAttributeType;
   }
 
   /**
@@ -98,12 +99,12 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setType(AttributeType newType)
+  public void setValidAttributeType(AttributeType newValidAttributeType)
   {
-    AttributeType oldType = type;
-    type = newType;
+    AttributeType oldValidAttributeType = validAttributeType;
+    validAttributeType = newValidAttributeType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE, oldType, type));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
   }
 
   /**
@@ -116,9 +117,9 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE:
-        if (resolve) return getType();
-        return basicGetType();
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        if (resolve) return getValidAttributeType();
+        return basicGetValidAttributeType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -133,8 +134,8 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE:
-        setType((AttributeType)newValue);
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        setValidAttributeType((AttributeType)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -150,8 +151,8 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE:
-        setType((AttributeType)null);
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        setValidAttributeType((AttributeType)null);
         return;
     }
     super.eUnset(featureID);
@@ -167,8 +168,8 @@ public class AttributeTypeRefImpl extends XRefImpl implements AttributeTypeRef
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__TYPE:
-        return type != null;
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        return validAttributeType != null;
     }
     return super.eIsSet(featureID);
   }

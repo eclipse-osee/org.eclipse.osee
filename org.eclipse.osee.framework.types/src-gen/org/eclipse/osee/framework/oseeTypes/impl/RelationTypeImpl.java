@@ -6,21 +6,16 @@
  */
 package org.eclipse.osee.framework.oseeTypes.impl;
 
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
-import org.eclipse.osee.framework.oseeTypes.XRelation;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,23 +24,118 @@ import org.eclipse.osee.framework.oseeTypes.XRelation;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAName <em>Side AName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideBName <em>Side BName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideBArtifactType <em>Side BArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getDefaultOrderType <em>Default Order Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getMultiplicity <em>Multiplicity</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class RelationTypeImpl extends TypeImpl implements RelationType
+public class RelationTypeImpl extends OseeTypeImpl implements RelationType
 {
   /**
-   * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
+   * The default value of the '{@link #getSideAName() <em>Side AName</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAttributes()
+   * @see #getSideAName()
    * @generated
    * @ordered
    */
-  protected EList<XRelation> attributes;
+  protected static final String SIDE_ANAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSideAName() <em>Side AName</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSideAName()
+   * @generated
+   * @ordered
+   */
+  protected String sideAName = SIDE_ANAME_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getSideAArtifactType() <em>Side AArtifact Type</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSideAArtifactType()
+   * @generated
+   * @ordered
+   */
+  protected ArtifactType sideAArtifactType;
+
+  /**
+   * The default value of the '{@link #getSideBName() <em>Side BName</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSideBName()
+   * @generated
+   * @ordered
+   */
+  protected static final String SIDE_BNAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getSideBName() <em>Side BName</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSideBName()
+   * @generated
+   * @ordered
+   */
+  protected String sideBName = SIDE_BNAME_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getSideBArtifactType() <em>Side BArtifact Type</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getSideBArtifactType()
+   * @generated
+   * @ordered
+   */
+  protected ArtifactType sideBArtifactType;
+
+  /**
+   * The default value of the '{@link #getDefaultOrderType() <em>Default Order Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDefaultOrderType()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEFAULT_ORDER_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDefaultOrderType() <em>Default Order Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDefaultOrderType()
+   * @generated
+   * @ordered
+   */
+  protected String defaultOrderType = DEFAULT_ORDER_TYPE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMultiplicity() <em>Multiplicity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMultiplicity()
+   * @generated
+   * @ordered
+   */
+  protected static final String MULTIPLICITY_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMultiplicity() <em>Multiplicity</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMultiplicity()
+   * @generated
+   * @ordered
+   */
+  protected String multiplicity = MULTIPLICITY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,13 +163,9 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<XRelation> getAttributes()
+  public String getSideAName()
   {
-    if (attributes == null)
-    {
-      attributes = new EObjectContainmentEList<XRelation>(XRelation.class, this, OseeTypesPackage.RELATION_TYPE__ATTRIBUTES);
-    }
-    return attributes;
+    return sideAName;
   }
 
   /**
@@ -87,15 +173,167 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  public void setSideAName(String newSideAName)
   {
-    switch (featureID)
+    String oldSideAName = sideAName;
+    sideAName = newSideAName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_ANAME, oldSideAName, sideAName));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ArtifactType getSideAArtifactType()
+  {
+    if (sideAArtifactType != null && sideAArtifactType.eIsProxy())
     {
-      case OseeTypesPackage.RELATION_TYPE__ATTRIBUTES:
-        return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
+      InternalEObject oldSideAArtifactType = (InternalEObject)sideAArtifactType;
+      sideAArtifactType = (ArtifactType)eResolveProxy(oldSideAArtifactType);
+      if (sideAArtifactType != oldSideAArtifactType)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
+      }
     }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
+    return sideAArtifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ArtifactType basicGetSideAArtifactType()
+  {
+    return sideAArtifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSideAArtifactType(ArtifactType newSideAArtifactType)
+  {
+    ArtifactType oldSideAArtifactType = sideAArtifactType;
+    sideAArtifactType = newSideAArtifactType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getSideBName()
+  {
+    return sideBName;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSideBName(String newSideBName)
+  {
+    String oldSideBName = sideBName;
+    sideBName = newSideBName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_BNAME, oldSideBName, sideBName));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ArtifactType getSideBArtifactType()
+  {
+    if (sideBArtifactType != null && sideBArtifactType.eIsProxy())
+    {
+      InternalEObject oldSideBArtifactType = (InternalEObject)sideBArtifactType;
+      sideBArtifactType = (ArtifactType)eResolveProxy(oldSideBArtifactType);
+      if (sideBArtifactType != oldSideBArtifactType)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
+      }
+    }
+    return sideBArtifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ArtifactType basicGetSideBArtifactType()
+  {
+    return sideBArtifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setSideBArtifactType(ArtifactType newSideBArtifactType)
+  {
+    ArtifactType oldSideBArtifactType = sideBArtifactType;
+    sideBArtifactType = newSideBArtifactType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDefaultOrderType()
+  {
+    return defaultOrderType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDefaultOrderType(String newDefaultOrderType)
+  {
+    String oldDefaultOrderType = defaultOrderType;
+    defaultOrderType = newDefaultOrderType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE, oldDefaultOrderType, defaultOrderType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getMultiplicity()
+  {
+    return multiplicity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMultiplicity(String newMultiplicity)
+  {
+    String oldMultiplicity = multiplicity;
+    multiplicity = newMultiplicity;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__MULTIPLICITY, oldMultiplicity, multiplicity));
   }
 
   /**
@@ -108,8 +346,20 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__ATTRIBUTES:
-        return getAttributes();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+        return getSideAName();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        if (resolve) return getSideAArtifactType();
+        return basicGetSideAArtifactType();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+        return getSideBName();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        if (resolve) return getSideBArtifactType();
+        return basicGetSideBArtifactType();
+      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+        return getDefaultOrderType();
+      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+        return getMultiplicity();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,15 +369,28 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__ATTRIBUTES:
-        getAttributes().clear();
-        getAttributes().addAll((Collection<? extends XRelation>)newValue);
+      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+        setSideAName((String)newValue);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        setSideAArtifactType((ArtifactType)newValue);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+        setSideBName((String)newValue);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        setSideBArtifactType((ArtifactType)newValue);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+        setDefaultOrderType((String)newValue);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+        setMultiplicity((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +406,23 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__ATTRIBUTES:
-        getAttributes().clear();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+        setSideAName(SIDE_ANAME_EDEFAULT);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        setSideAArtifactType((ArtifactType)null);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+        setSideBName(SIDE_BNAME_EDEFAULT);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        setSideBArtifactType((ArtifactType)null);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+        setDefaultOrderType(DEFAULT_ORDER_TYPE_EDEFAULT);
+        return;
+      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+        setMultiplicity(MULTIPLICITY_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -160,10 +438,43 @@ public class RelationTypeImpl extends TypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__ATTRIBUTES:
-        return attributes != null && !attributes.isEmpty();
+      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+        return SIDE_ANAME_EDEFAULT == null ? sideAName != null : !SIDE_ANAME_EDEFAULT.equals(sideAName);
+      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        return sideAArtifactType != null;
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+        return SIDE_BNAME_EDEFAULT == null ? sideBName != null : !SIDE_BNAME_EDEFAULT.equals(sideBName);
+      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        return sideBArtifactType != null;
+      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+        return DEFAULT_ORDER_TYPE_EDEFAULT == null ? defaultOrderType != null : !DEFAULT_ORDER_TYPE_EDEFAULT.equals(defaultOrderType);
+      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+        return MULTIPLICITY_EDEFAULT == null ? multiplicity != null : !MULTIPLICITY_EDEFAULT.equals(multiplicity);
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (sideAName: ");
+    result.append(sideAName);
+    result.append(", sideBName: ");
+    result.append(sideBName);
+    result.append(", defaultOrderType: ");
+    result.append(defaultOrderType);
+    result.append(", multiplicity: ");
+    result.append(multiplicity);
+    result.append(')');
+    return result.toString();
   }
 
 } //RelationTypeImpl

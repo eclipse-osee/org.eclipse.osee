@@ -110,10 +110,10 @@ public class OseeTypesSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.TYPE:
+      case OseeTypesPackage.OSEE_TYPE:
       {
-        Type type = (Type)theEObject;
-        T result = caseType(type);
+        OseeType oseeType = (OseeType)theEObject;
+        T result = caseOseeType(oseeType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -121,22 +121,7 @@ public class OseeTypesSwitch<T>
       {
         ArtifactType artifactType = (ArtifactType)theEObject;
         T result = caseArtifactType(artifactType);
-        if (result == null) result = caseType(artifactType);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case OseeTypesPackage.XREF:
-      {
-        XRef xRef = (XRef)theEObject;
-        T result = caseXRef(xRef);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case OseeTypesPackage.RELATION_TYPE_REF:
-      {
-        RelationTypeRef relationTypeRef = (RelationTypeRef)theEObject;
-        T result = caseRelationTypeRef(relationTypeRef);
-        if (result == null) result = caseXRef(relationTypeRef);
+        if (result == null) result = caseOseeType(artifactType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -144,7 +129,6 @@ public class OseeTypesSwitch<T>
       {
         AttributeTypeRef attributeTypeRef = (AttributeTypeRef)theEObject;
         T result = caseAttributeTypeRef(attributeTypeRef);
-        if (result == null) result = caseXRef(attributeTypeRef);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -152,14 +136,22 @@ public class OseeTypesSwitch<T>
       {
         AttributeType attributeType = (AttributeType)theEObject;
         T result = caseAttributeType(attributeType);
-        if (result == null) result = caseType(attributeType);
+        if (result == null) result = caseOseeType(attributeType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.XATTRIBUTE:
+      case OseeTypesPackage.OSEE_ENUM_TYPE:
       {
-        XAttribute xAttribute = (XAttribute)theEObject;
-        T result = caseXAttribute(xAttribute);
+        OseeEnumType oseeEnumType = (OseeEnumType)theEObject;
+        T result = caseOseeEnumType(oseeEnumType);
+        if (result == null) result = caseOseeType(oseeEnumType);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeTypesPackage.OSEE_ENUM:
+      {
+        OseeEnum oseeEnum = (OseeEnum)theEObject;
+        T result = caseOseeEnum(oseeEnum);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -167,14 +159,7 @@ public class OseeTypesSwitch<T>
       {
         RelationType relationType = (RelationType)theEObject;
         T result = caseRelationType(relationType);
-        if (result == null) result = caseType(relationType);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case OseeTypesPackage.XRELATION:
-      {
-        XRelation xRelation = (XRelation)theEObject;
-        T result = caseXRelation(xRelation);
+        if (result == null) result = caseOseeType(relationType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -215,17 +200,17 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Type</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Osee Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Type</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Osee Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseType(Type object)
+  public T caseOseeType(OseeType object)
   {
     return null;
   }
@@ -242,38 +227,6 @@ public class OseeTypesSwitch<T>
    * @generated
    */
   public T caseArtifactType(ArtifactType object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>XRef</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>XRef</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseXRef(XRef object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Relation Type Ref</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Relation Type Ref</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseRelationTypeRef(RelationTypeRef object)
   {
     return null;
   }
@@ -311,17 +264,33 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>XAttribute</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Osee Enum Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>XAttribute</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Osee Enum Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseXAttribute(XAttribute object)
+  public T caseOseeEnumType(OseeEnumType object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Osee Enum</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Osee Enum</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseOseeEnum(OseeEnum object)
   {
     return null;
   }
@@ -338,22 +307,6 @@ public class OseeTypesSwitch<T>
    * @generated
    */
   public T caseRelationType(RelationType object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>XRelation</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>XRelation</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseXRelation(XRelation object)
   {
     return null;
   }

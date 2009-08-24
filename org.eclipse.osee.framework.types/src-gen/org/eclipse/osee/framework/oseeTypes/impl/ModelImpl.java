@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.osee.framework.oseeTypes.Import;
 import org.eclipse.osee.framework.oseeTypes.Model;
+import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.Type;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.oseeTypes.Type;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ModelImpl#getImports <em>Imports</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ModelImpl#getElements <em>Elements</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ModelImpl#getTypes <em>Types</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,14 +52,14 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   protected EList<Import> imports;
 
   /**
-   * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
+   * The cached value of the '{@link #getTypes() <em>Types</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getElements()
+   * @see #getTypes()
    * @generated
    * @ordered
    */
-  protected EList<Type> elements;
+  protected EList<OseeType> types;
 
   /**
    * <!-- begin-user-doc -->
@@ -101,13 +101,13 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Type> getElements()
+  public EList<OseeType> getTypes()
   {
-    if (elements == null)
+    if (types == null)
     {
-      elements = new EObjectContainmentEList<Type>(Type.class, this, OseeTypesPackage.MODEL__ELEMENTS);
+      types = new EObjectContainmentEList<OseeType>(OseeType.class, this, OseeTypesPackage.MODEL__TYPES);
     }
-    return elements;
+    return types;
   }
 
   /**
@@ -122,8 +122,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
     {
       case OseeTypesPackage.MODEL__IMPORTS:
         return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
-      case OseeTypesPackage.MODEL__ELEMENTS:
-        return ((InternalEList<?>)getElements()).basicRemove(otherEnd, msgs);
+      case OseeTypesPackage.MODEL__TYPES:
+        return ((InternalEList<?>)getTypes()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -140,8 +140,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
     {
       case OseeTypesPackage.MODEL__IMPORTS:
         return getImports();
-      case OseeTypesPackage.MODEL__ELEMENTS:
-        return getElements();
+      case OseeTypesPackage.MODEL__TYPES:
+        return getTypes();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -161,9 +161,9 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
         getImports().clear();
         getImports().addAll((Collection<? extends Import>)newValue);
         return;
-      case OseeTypesPackage.MODEL__ELEMENTS:
-        getElements().clear();
-        getElements().addAll((Collection<? extends Type>)newValue);
+      case OseeTypesPackage.MODEL__TYPES:
+        getTypes().clear();
+        getTypes().addAll((Collection<? extends OseeType>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -182,8 +182,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
       case OseeTypesPackage.MODEL__IMPORTS:
         getImports().clear();
         return;
-      case OseeTypesPackage.MODEL__ELEMENTS:
-        getElements().clear();
+      case OseeTypesPackage.MODEL__TYPES:
+        getTypes().clear();
         return;
     }
     super.eUnset(featureID);
@@ -201,8 +201,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
     {
       case OseeTypesPackage.MODEL__IMPORTS:
         return imports != null && !imports.isEmpty();
-      case OseeTypesPackage.MODEL__ELEMENTS:
-        return elements != null && !elements.isEmpty();
+      case OseeTypesPackage.MODEL__TYPES:
+        return types != null && !types.isEmpty();
     }
     return super.eIsSet(featureID);
   }

@@ -16,8 +16,8 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperEntity <em>Super Entity</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes <em>Valid Types</em>}</li>
  * </ul>
  * </p>
  *
@@ -25,48 +25,48 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface ArtifactType extends Type
+public interface ArtifactType extends OseeType
 {
   /**
-   * Returns the value of the '<em><b>Super Entity</b></em>' reference.
+   * Returns the value of the '<em><b>Super Artifact Type</b></em>' reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Super Entity</em>' reference isn't clear,
+   * If the meaning of the '<em>Super Artifact Type</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Super Entity</em>' reference.
-   * @see #setSuperEntity(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_SuperEntity()
+   * @return the value of the '<em>Super Artifact Type</em>' reference.
+   * @see #setSuperArtifactType(ArtifactType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_SuperArtifactType()
    * @model
    * @generated
    */
-  ArtifactType getSuperEntity();
+  ArtifactType getSuperArtifactType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperEntity <em>Super Entity</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Super Entity</em>' reference.
-   * @see #getSuperEntity()
+   * @param value the new value of the '<em>Super Artifact Type</em>' reference.
+   * @see #getSuperArtifactType()
    * @generated
    */
-  void setSuperEntity(ArtifactType value);
+  void setSuperArtifactType(ArtifactType value);
 
   /**
-   * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XRef}.
+   * Returns the value of the '<em><b>Valid Types</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Attributes</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Valid Types</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Attributes</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_Attributes()
+   * @return the value of the '<em>Valid Types</em>' containment reference list.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_ValidTypes()
    * @model containment="true"
    * @generated
    */
-  EList<XRef> getAttributes();
+  EList<AttributeTypeRef> getValidTypes();
 
 } // ArtifactType

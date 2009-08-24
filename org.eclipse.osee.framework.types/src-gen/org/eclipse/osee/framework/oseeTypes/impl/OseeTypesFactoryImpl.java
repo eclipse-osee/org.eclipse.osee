@@ -70,15 +70,13 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
     {
       case OseeTypesPackage.MODEL: return createModel();
       case OseeTypesPackage.IMPORT: return createImport();
-      case OseeTypesPackage.TYPE: return createType();
+      case OseeTypesPackage.OSEE_TYPE: return createOseeType();
       case OseeTypesPackage.ARTIFACT_TYPE: return createArtifactType();
-      case OseeTypesPackage.XREF: return createXRef();
-      case OseeTypesPackage.RELATION_TYPE_REF: return createRelationTypeRef();
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF: return createAttributeTypeRef();
       case OseeTypesPackage.ATTRIBUTE_TYPE: return createAttributeType();
-      case OseeTypesPackage.XATTRIBUTE: return createXAttribute();
+      case OseeTypesPackage.OSEE_ENUM_TYPE: return createOseeEnumType();
+      case OseeTypesPackage.OSEE_ENUM: return createOseeEnum();
       case OseeTypesPackage.RELATION_TYPE: return createRelationType();
-      case OseeTypesPackage.XRELATION: return createXRelation();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -111,10 +109,10 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
    * <!-- end-user-doc -->
    * @generated
    */
-  public Type createType()
+  public OseeType createOseeType()
   {
-    TypeImpl type = new TypeImpl();
-    return type;
+    OseeTypeImpl oseeType = new OseeTypeImpl();
+    return oseeType;
   }
 
   /**
@@ -126,28 +124,6 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
   {
     ArtifactTypeImpl artifactType = new ArtifactTypeImpl();
     return artifactType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public XRef createXRef()
-  {
-    XRefImpl xRef = new XRefImpl();
-    return xRef;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RelationTypeRef createRelationTypeRef()
-  {
-    RelationTypeRefImpl relationTypeRef = new RelationTypeRefImpl();
-    return relationTypeRef;
   }
 
   /**
@@ -177,10 +153,21 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
    * <!-- end-user-doc -->
    * @generated
    */
-  public XAttribute createXAttribute()
+  public OseeEnumType createOseeEnumType()
   {
-    XAttributeImpl xAttribute = new XAttributeImpl();
-    return xAttribute;
+    OseeEnumTypeImpl oseeEnumType = new OseeEnumTypeImpl();
+    return oseeEnumType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OseeEnum createOseeEnum()
+  {
+    OseeEnumImpl oseeEnum = new OseeEnumImpl();
+    return oseeEnum;
   }
 
   /**
@@ -192,17 +179,6 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
   {
     RelationTypeImpl relationType = new RelationTypeImpl();
     return relationType;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public XRelation createXRelation()
-  {
-    XRelationImpl xRelation = new XRelationImpl();
-    return xRelation;
   }
 
   /**

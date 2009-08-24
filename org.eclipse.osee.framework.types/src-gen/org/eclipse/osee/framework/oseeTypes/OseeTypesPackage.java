@@ -80,13 +80,13 @@ public interface OseeTypesPackage extends EPackage
   int MODEL__IMPORTS = 0;
 
   /**
-   * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+   * The feature id for the '<em><b>Types</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODEL__ELEMENTS = 1;
+  int MODEL__TYPES = 1;
 
   /**
    * The number of structural features of the '<em>Model</em>' class.
@@ -126,14 +126,14 @@ public interface OseeTypesPackage extends EPackage
   int IMPORT_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.TypeImpl <em>Type</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl <em>Osee Type</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.TypeImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getType()
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeType()
    * @generated
    */
-  int TYPE = 2;
+  int OSEE_TYPE = 2;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -142,16 +142,16 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TYPE__NAME = 0;
+  int OSEE_TYPE__NAME = 0;
 
   /**
-   * The number of structural features of the '<em>Type</em>' class.
+   * The number of structural features of the '<em>Osee Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TYPE_FEATURE_COUNT = 1;
+  int OSEE_TYPE_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl <em>Artifact Type</em>}' class.
@@ -170,25 +170,25 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_TYPE__NAME = TYPE__NAME;
+  int ARTIFACT_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
-   * The feature id for the '<em><b>Super Entity</b></em>' reference.
+   * The feature id for the '<em><b>Super Artifact Type</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_TYPE__SUPER_ENTITY = TYPE_FEATURE_COUNT + 0;
+  int ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE = OSEE_TYPE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * The feature id for the '<em><b>Valid Types</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_TYPE__ATTRIBUTES = TYPE_FEATURE_COUNT + 1;
+  int ARTIFACT_TYPE__VALID_TYPES = OSEE_TYPE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Artifact Type</em>' class.
@@ -197,54 +197,7 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XRefImpl <em>XRef</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.XRefImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXRef()
-   * @generated
-   */
-  int XREF = 4;
-
-  /**
-   * The number of structural features of the '<em>XRef</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XREF_FEATURE_COUNT = 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeRefImpl <em>Relation Type Ref</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.RelationTypeRefImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationTypeRef()
-   * @generated
-   */
-  int RELATION_TYPE_REF = 5;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RELATION_TYPE_REF__TYPE = XREF_FEATURE_COUNT + 0;
-
-  /**
-   * The number of structural features of the '<em>Relation Type Ref</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RELATION_TYPE_REF_FEATURE_COUNT = XREF_FEATURE_COUNT + 1;
+  int ARTIFACT_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl <em>Attribute Type Ref</em>}' class.
@@ -254,16 +207,16 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getAttributeTypeRef()
    * @generated
    */
-  int ATTRIBUTE_TYPE_REF = 6;
+  int ATTRIBUTE_TYPE_REF = 4;
 
   /**
-   * The feature id for the '<em><b>Type</b></em>' reference.
+   * The feature id for the '<em><b>Valid Attribute Type</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE_REF__TYPE = XREF_FEATURE_COUNT + 0;
+  int ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE = 0;
 
   /**
    * The number of structural features of the '<em>Attribute Type Ref</em>' class.
@@ -272,7 +225,7 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE_REF_FEATURE_COUNT = XREF_FEATURE_COUNT + 1;
+  int ATTRIBUTE_TYPE_REF_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl <em>Attribute Type</em>}' class.
@@ -282,7 +235,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getAttributeType()
    * @generated
    */
-  int ATTRIBUTE_TYPE = 7;
+  int ATTRIBUTE_TYPE = 5;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -291,25 +244,88 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE__NAME = TYPE__NAME;
+  int ATTRIBUTE_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
-   * The feature id for the '<em><b>Super Entity</b></em>' reference.
+   * The feature id for the '<em><b>Base Attribute Type</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE__SUPER_ENTITY = TYPE_FEATURE_COUNT + 0;
+  int ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE = OSEE_TYPE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * The feature id for the '<em><b>Data Provider</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE__ATTRIBUTES = TYPE_FEATURE_COUNT + 1;
+  int ATTRIBUTE_TYPE__DATA_PROVIDER = OSEE_TYPE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Min</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__MIN = OSEE_TYPE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Max</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__MAX = OSEE_TYPE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Tagger Id</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__TAGGER_ID = OSEE_TYPE_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Enum Type</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__ENUM_TYPE = OSEE_TYPE_FEATURE_COUNT + 5;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__DESCRIPTION = OSEE_TYPE_FEATURE_COUNT + 6;
+
+  /**
+   * The feature id for the '<em><b>Default Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__DEFAULT_VALUE = OSEE_TYPE_FEATURE_COUNT + 7;
+
+  /**
+   * The feature id for the '<em><b>File Extension</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__FILE_EXTENSION = OSEE_TYPE_FEATURE_COUNT + 8;
 
   /**
    * The number of structural features of the '<em>Attribute Type</em>' class.
@@ -318,17 +334,17 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ATTRIBUTE_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 2;
+  int ATTRIBUTE_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 9;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeImpl <em>XAttribute</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl <em>Osee Enum Type</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.XAttributeImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXAttribute()
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumType()
    * @generated
    */
-  int XATTRIBUTE = 8;
+  int OSEE_ENUM_TYPE = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -337,16 +353,62 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int XATTRIBUTE__NAME = 0;
+  int OSEE_ENUM_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
-   * The number of structural features of the '<em>XAttribute</em>' class.
+   * The feature id for the '<em><b>Enums</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XATTRIBUTE_FEATURE_COUNT = 1;
+  int OSEE_ENUM_TYPE__ENUMS = OSEE_TYPE_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Osee Enum Type</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl <em>Osee Enum</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnum()
+   * @generated
+   */
+  int OSEE_ENUM = 7;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Ordinal</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM__ORDINAL = 1;
+
+  /**
+   * The number of structural features of the '<em>Osee Enum</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl <em>Relation Type</em>}' class.
@@ -356,7 +418,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationType()
    * @generated
    */
-  int RELATION_TYPE = 9;
+  int RELATION_TYPE = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -365,16 +427,61 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RELATION_TYPE__NAME = TYPE__NAME;
+  int RELATION_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
-   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * The feature id for the '<em><b>Side AName</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int RELATION_TYPE__ATTRIBUTES = TYPE_FEATURE_COUNT + 0;
+  int RELATION_TYPE__SIDE_ANAME = OSEE_TYPE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Side AArtifact Type</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__SIDE_AARTIFACT_TYPE = OSEE_TYPE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Side BName</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__SIDE_BNAME = OSEE_TYPE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>Side BArtifact Type</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__SIDE_BARTIFACT_TYPE = OSEE_TYPE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Default Order Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__DEFAULT_ORDER_TYPE = OSEE_TYPE_FEATURE_COUNT + 4;
+
+  /**
+   * The feature id for the '<em><b>Multiplicity</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__MULTIPLICITY = OSEE_TYPE_FEATURE_COUNT + 5;
 
   /**
    * The number of structural features of the '<em>Relation Type</em>' class.
@@ -383,44 +490,7 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int RELATION_TYPE_FEATURE_COUNT = TYPE_FEATURE_COUNT + 1;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationImpl <em>XRelation</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.XRelationImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXRelation()
-   * @generated
-   */
-  int XRELATION = 10;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XRELATION__NAME = 0;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XRELATION__TYPE = 1;
-
-  /**
-   * The number of structural features of the '<em>XRelation</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XRELATION_FEATURE_COUNT = 2;
+  int RELATION_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 6;
 
 
   /**
@@ -445,15 +515,15 @@ public interface OseeTypesPackage extends EPackage
   EReference getModel_Imports();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.Model#getElements <em>Elements</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.Model#getTypes <em>Types</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Elements</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Model#getElements()
+   * @return the meta object for the containment reference list '<em>Types</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.Model#getTypes()
    * @see #getModel()
    * @generated
    */
-  EReference getModel_Elements();
+  EReference getModel_Types();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.Import <em>Import</em>}'.
@@ -477,25 +547,25 @@ public interface OseeTypesPackage extends EPackage
   EAttribute getImport_ImportURI();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.Type <em>Type</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeType <em>Osee Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Type</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Type
+   * @return the meta object for class '<em>Osee Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeType
    * @generated
    */
-  EClass getType();
+  EClass getOseeType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.Type#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeType#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Type#getName()
-   * @see #getType()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeType#getName()
+   * @see #getOseeType()
    * @generated
    */
-  EAttribute getType_Name();
+  EAttribute getOseeType_Name();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType <em>Artifact Type</em>}'.
@@ -508,57 +578,26 @@ public interface OseeTypesPackage extends EPackage
   EClass getArtifactType();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperEntity <em>Super Entity</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Super Entity</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperEntity()
+   * @return the meta object for the reference '<em>Super Artifact Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType()
    * @see #getArtifactType()
    * @generated
    */
-  EReference getArtifactType_SuperEntity();
+  EReference getArtifactType_SuperArtifactType();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getAttributes <em>Attributes</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes <em>Valid Types</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Attributes</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getAttributes()
+   * @return the meta object for the containment reference list '<em>Valid Types</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes()
    * @see #getArtifactType()
    * @generated
    */
-  EReference getArtifactType_Attributes();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.XRef <em>XRef</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>XRef</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XRef
-   * @generated
-   */
-  EClass getXRef();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.RelationTypeRef <em>Relation Type Ref</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Relation Type Ref</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.RelationTypeRef
-   * @generated
-   */
-  EClass getRelationTypeRef();
-
-  /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.RelationTypeRef#getType <em>Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Type</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.RelationTypeRef#getType()
-   * @see #getRelationTypeRef()
-   * @generated
-   */
-  EReference getRelationTypeRef_Type();
+  EReference getArtifactType_ValidTypes();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef <em>Attribute Type Ref</em>}'.
@@ -571,15 +610,15 @@ public interface OseeTypesPackage extends EPackage
   EClass getAttributeTypeRef();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getType <em>Type</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Type</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getType()
+   * @return the meta object for the reference '<em>Valid Attribute Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getValidAttributeType()
    * @see #getAttributeTypeRef()
    * @generated
    */
-  EReference getAttributeTypeRef_Type();
+  EReference getAttributeTypeRef_ValidAttributeType();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.AttributeType <em>Attribute Type</em>}'.
@@ -592,47 +631,156 @@ public interface OseeTypesPackage extends EPackage
   EClass getAttributeType();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getSuperEntity <em>Super Entity</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getBaseAttributeType <em>Base Attribute Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Super Entity</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getSuperEntity()
+   * @return the meta object for the attribute '<em>Base Attribute Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getBaseAttributeType()
    * @see #getAttributeType()
    * @generated
    */
-  EReference getAttributeType_SuperEntity();
+  EAttribute getAttributeType_BaseAttributeType();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getAttributes <em>Attributes</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getDataProvider <em>Data Provider</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Attributes</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getAttributes()
+   * @return the meta object for the attribute '<em>Data Provider</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getDataProvider()
    * @see #getAttributeType()
    * @generated
    */
-  EReference getAttributeType_Attributes();
+  EAttribute getAttributeType_DataProvider();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.XAttribute <em>XAttribute</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getMin <em>Min</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>XAttribute</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XAttribute
+   * @return the meta object for the attribute '<em>Min</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getMin()
+   * @see #getAttributeType()
    * @generated
    */
-  EClass getXAttribute();
+  EAttribute getAttributeType_Min();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.XAttribute#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getMax <em>Max</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Max</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getMax()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EAttribute getAttributeType_Max();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getTaggerId <em>Tagger Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Tagger Id</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getTaggerId()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EAttribute getAttributeType_TaggerId();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getEnumType <em>Enum Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Enum Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getEnumType()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EReference getAttributeType_EnumType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Description</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getDescription()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EAttribute getAttributeType_Description();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getDefaultValue <em>Default Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Default Value</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getDefaultValue()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EAttribute getAttributeType_DefaultValue();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getFileExtension <em>File Extension</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>File Extension</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AttributeType#getFileExtension()
+   * @see #getAttributeType()
+   * @generated
+   */
+  EAttribute getAttributeType_FileExtension();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType <em>Osee Enum Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Osee Enum Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumType
+   * @generated
+   */
+  EClass getOseeEnumType();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnums <em>Enums</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Enums</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnums()
+   * @see #getOseeEnumType()
+   * @generated
+   */
+  EReference getOseeEnumType_Enums();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum <em>Osee Enum</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Osee Enum</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum
+   * @generated
+   */
+  EClass getOseeEnum();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XAttribute#getName()
-   * @see #getXAttribute()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum#getName()
+   * @see #getOseeEnum()
    * @generated
    */
-  EAttribute getXAttribute_Name();
+  EAttribute getOseeEnum_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal <em>Ordinal</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Ordinal</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal()
+   * @see #getOseeEnum()
+   * @generated
+   */
+  EAttribute getOseeEnum_Ordinal();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.RelationType <em>Relation Type</em>}'.
@@ -645,47 +793,70 @@ public interface OseeTypesPackage extends EPackage
   EClass getRelationType();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getAttributes <em>Attributes</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAName <em>Side AName</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Attributes</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getAttributes()
+   * @return the meta object for the attribute '<em>Side AName</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getSideAName()
    * @see #getRelationType()
    * @generated
    */
-  EReference getRelationType_Attributes();
+  EAttribute getRelationType_SideAName();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.XRelation <em>XRelation</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAArtifactType <em>Side AArtifact Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>XRelation</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XRelation
+   * @return the meta object for the reference '<em>Side AArtifact Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getSideAArtifactType()
+   * @see #getRelationType()
    * @generated
    */
-  EClass getXRelation();
+  EReference getRelationType_SideAArtifactType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.XRelation#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBName <em>Side BName</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XRelation#getName()
-   * @see #getXRelation()
+   * @return the meta object for the attribute '<em>Side BName</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getSideBName()
+   * @see #getRelationType()
    * @generated
    */
-  EAttribute getXRelation_Name();
+  EAttribute getRelationType_SideBName();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.XRelation#getType <em>Type</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBArtifactType <em>Side BArtifact Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Type</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.XRelation#getType()
-   * @see #getXRelation()
+   * @return the meta object for the reference '<em>Side BArtifact Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getSideBArtifactType()
+   * @see #getRelationType()
    * @generated
    */
-  EReference getXRelation_Type();
+  EReference getRelationType_SideBArtifactType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getDefaultOrderType <em>Default Order Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Default Order Type</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getDefaultOrderType()
+   * @see #getRelationType()
+   * @generated
+   */
+  EAttribute getRelationType_DefaultOrderType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getMultiplicity <em>Multiplicity</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Multiplicity</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationType#getMultiplicity()
+   * @see #getRelationType()
+   * @generated
+   */
+  EAttribute getRelationType_Multiplicity();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -729,12 +900,12 @@ public interface OseeTypesPackage extends EPackage
     EReference MODEL__IMPORTS = eINSTANCE.getModel_Imports();
 
     /**
-     * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Types</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODEL__ELEMENTS = eINSTANCE.getModel_Elements();
+    EReference MODEL__TYPES = eINSTANCE.getModel_Types();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ImportImpl <em>Import</em>}' class.
@@ -755,14 +926,14 @@ public interface OseeTypesPackage extends EPackage
     EAttribute IMPORT__IMPORT_URI = eINSTANCE.getImport_ImportURI();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.TypeImpl <em>Type</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl <em>Osee Type</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.TypeImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getType()
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeType()
      * @generated
      */
-    EClass TYPE = eINSTANCE.getType();
+    EClass OSEE_TYPE = eINSTANCE.getOseeType();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -770,7 +941,7 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute TYPE__NAME = eINSTANCE.getType_Name();
+    EAttribute OSEE_TYPE__NAME = eINSTANCE.getOseeType_Name();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl <em>Artifact Type</em>}' class.
@@ -783,48 +954,20 @@ public interface OseeTypesPackage extends EPackage
     EClass ARTIFACT_TYPE = eINSTANCE.getArtifactType();
 
     /**
-     * The meta object literal for the '<em><b>Super Entity</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Super Artifact Type</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ARTIFACT_TYPE__SUPER_ENTITY = eINSTANCE.getArtifactType_SuperEntity();
+    EReference ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE = eINSTANCE.getArtifactType_SuperArtifactType();
 
     /**
-     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Valid Types</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ARTIFACT_TYPE__ATTRIBUTES = eINSTANCE.getArtifactType_Attributes();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XRefImpl <em>XRef</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.XRefImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXRef()
-     * @generated
-     */
-    EClass XREF = eINSTANCE.getXRef();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeRefImpl <em>Relation Type Ref</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.RelationTypeRefImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationTypeRef()
-     * @generated
-     */
-    EClass RELATION_TYPE_REF = eINSTANCE.getRelationTypeRef();
-
-    /**
-     * The meta object literal for the '<em><b>Type</b></em>' reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference RELATION_TYPE_REF__TYPE = eINSTANCE.getRelationTypeRef_Type();
+    EReference ARTIFACT_TYPE__VALID_TYPES = eINSTANCE.getArtifactType_ValidTypes();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl <em>Attribute Type Ref</em>}' class.
@@ -837,12 +980,12 @@ public interface OseeTypesPackage extends EPackage
     EClass ATTRIBUTE_TYPE_REF = eINSTANCE.getAttributeTypeRef();
 
     /**
-     * The meta object literal for the '<em><b>Type</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Valid Attribute Type</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ATTRIBUTE_TYPE_REF__TYPE = eINSTANCE.getAttributeTypeRef_Type();
+    EReference ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE = eINSTANCE.getAttributeTypeRef_ValidAttributeType();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl <em>Attribute Type</em>}' class.
@@ -855,30 +998,104 @@ public interface OseeTypesPackage extends EPackage
     EClass ATTRIBUTE_TYPE = eINSTANCE.getAttributeType();
 
     /**
-     * The meta object literal for the '<em><b>Super Entity</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Base Attribute Type</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ATTRIBUTE_TYPE__SUPER_ENTITY = eINSTANCE.getAttributeType_SuperEntity();
+    EAttribute ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE = eINSTANCE.getAttributeType_BaseAttributeType();
 
     /**
-     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Data Provider</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ATTRIBUTE_TYPE__ATTRIBUTES = eINSTANCE.getAttributeType_Attributes();
+    EAttribute ATTRIBUTE_TYPE__DATA_PROVIDER = eINSTANCE.getAttributeType_DataProvider();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeImpl <em>XAttribute</em>}' class.
+     * The meta object literal for the '<em><b>Min</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.XAttributeImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXAttribute()
      * @generated
      */
-    EClass XATTRIBUTE = eINSTANCE.getXAttribute();
+    EAttribute ATTRIBUTE_TYPE__MIN = eINSTANCE.getAttributeType_Min();
+
+    /**
+     * The meta object literal for the '<em><b>Max</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTRIBUTE_TYPE__MAX = eINSTANCE.getAttributeType_Max();
+
+    /**
+     * The meta object literal for the '<em><b>Tagger Id</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTRIBUTE_TYPE__TAGGER_ID = eINSTANCE.getAttributeType_TaggerId();
+
+    /**
+     * The meta object literal for the '<em><b>Enum Type</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATTRIBUTE_TYPE__ENUM_TYPE = eINSTANCE.getAttributeType_EnumType();
+
+    /**
+     * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTRIBUTE_TYPE__DESCRIPTION = eINSTANCE.getAttributeType_Description();
+
+    /**
+     * The meta object literal for the '<em><b>Default Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTRIBUTE_TYPE__DEFAULT_VALUE = eINSTANCE.getAttributeType_DefaultValue();
+
+    /**
+     * The meta object literal for the '<em><b>File Extension</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTRIBUTE_TYPE__FILE_EXTENSION = eINSTANCE.getAttributeType_FileExtension();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl <em>Osee Enum Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumType()
+     * @generated
+     */
+    EClass OSEE_ENUM_TYPE = eINSTANCE.getOseeEnumType();
+
+    /**
+     * The meta object literal for the '<em><b>Enums</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OSEE_ENUM_TYPE__ENUMS = eINSTANCE.getOseeEnumType_Enums();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl <em>Osee Enum</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnum()
+     * @generated
+     */
+    EClass OSEE_ENUM = eINSTANCE.getOseeEnum();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -886,7 +1103,15 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XATTRIBUTE__NAME = eINSTANCE.getXAttribute_Name();
+    EAttribute OSEE_ENUM__NAME = eINSTANCE.getOseeEnum_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Ordinal</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute OSEE_ENUM__ORDINAL = eINSTANCE.getOseeEnum_Ordinal();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl <em>Relation Type</em>}' class.
@@ -899,38 +1124,52 @@ public interface OseeTypesPackage extends EPackage
     EClass RELATION_TYPE = eINSTANCE.getRelationType();
 
     /**
-     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Side AName</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference RELATION_TYPE__ATTRIBUTES = eINSTANCE.getRelationType_Attributes();
+    EAttribute RELATION_TYPE__SIDE_ANAME = eINSTANCE.getRelationType_SideAName();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationImpl <em>XRelation</em>}' class.
+     * The meta object literal for the '<em><b>Side AArtifact Type</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.XRelationImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getXRelation()
      * @generated
      */
-    EClass XRELATION = eINSTANCE.getXRelation();
+    EReference RELATION_TYPE__SIDE_AARTIFACT_TYPE = eINSTANCE.getRelationType_SideAArtifactType();
 
     /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Side BName</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XRELATION__NAME = eINSTANCE.getXRelation_Name();
+    EAttribute RELATION_TYPE__SIDE_BNAME = eINSTANCE.getRelationType_SideBName();
 
     /**
-     * The meta object literal for the '<em><b>Type</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Side BArtifact Type</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference XRELATION__TYPE = eINSTANCE.getXRelation_Type();
+    EReference RELATION_TYPE__SIDE_BARTIFACT_TYPE = eINSTANCE.getRelationType_SideBArtifactType();
+
+    /**
+     * The meta object literal for the '<em><b>Default Order Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RELATION_TYPE__DEFAULT_ORDER_TYPE = eINSTANCE.getRelationType_DefaultOrderType();
+
+    /**
+     * The meta object literal for the '<em><b>Multiplicity</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RELATION_TYPE__MULTIPLICITY = eINSTANCE.getRelationType_Multiplicity();
 
   }
 

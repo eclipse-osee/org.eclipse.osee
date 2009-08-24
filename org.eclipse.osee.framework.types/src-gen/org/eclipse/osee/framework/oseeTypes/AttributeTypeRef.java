@@ -6,6 +6,7 @@
  */
 package org.eclipse.osee.framework.oseeTypes;
 
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,7 +16,7 @@ package org.eclipse.osee.framework.oseeTypes;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -23,32 +24,32 @@ package org.eclipse.osee.framework.oseeTypes;
  * @model
  * @generated
  */
-public interface AttributeTypeRef extends XRef
+public interface AttributeTypeRef extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Type</b></em>' reference.
+   * Returns the value of the '<em><b>Valid Attribute Type</b></em>' reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Type</em>' reference isn't clear,
+   * If the meaning of the '<em>Valid Attribute Type</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Type</em>' reference.
-   * @see #setType(AttributeType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getAttributeTypeRef_Type()
+   * @return the value of the '<em>Valid Attribute Type</em>' reference.
+   * @see #setValidAttributeType(AttributeType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getAttributeTypeRef_ValidAttributeType()
    * @model
    * @generated
    */
-  AttributeType getType();
+  AttributeType getValidAttributeType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getType <em>Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Type</em>' reference.
-   * @see #getType()
+   * @param value the new value of the '<em>Valid Attribute Type</em>' reference.
+   * @see #getValidAttributeType()
    * @generated
    */
-  void setType(AttributeType value);
+  void setValidAttributeType(AttributeType value);
 
 } // AttributeTypeRef

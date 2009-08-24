@@ -18,14 +18,12 @@ import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.Import;
 import org.eclipse.osee.framework.oseeTypes.Model;
+import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
+import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
-import org.eclipse.osee.framework.oseeTypes.RelationTypeRef;
-import org.eclipse.osee.framework.oseeTypes.Type;
-import org.eclipse.osee.framework.oseeTypes.XAttribute;
-import org.eclipse.osee.framework.oseeTypes.XRef;
-import org.eclipse.osee.framework.oseeTypes.XRelation;
 
 /**
  * <!-- begin-user-doc -->
@@ -54,7 +52,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass typeEClass = null;
+  private EClass oseeTypeEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -62,20 +60,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * @generated
    */
   private EClass artifactTypeEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass xRefEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass relationTypeRefEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -96,7 +80,14 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass xAttributeEClass = null;
+  private EClass oseeEnumTypeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass oseeEnumEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -104,13 +95,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * @generated
    */
   private EClass relationTypeEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass xRelationEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -200,7 +184,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModel_Elements()
+  public EReference getModel_Types()
   {
     return (EReference)modelEClass.getEStructuralFeatures().get(1);
   }
@@ -230,9 +214,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getType()
+  public EClass getOseeType()
   {
-    return typeEClass;
+    return oseeTypeEClass;
   }
 
   /**
@@ -240,9 +224,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getType_Name()
+  public EAttribute getOseeType_Name()
   {
-    return (EAttribute)typeEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -260,7 +244,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getArtifactType_SuperEntity()
+  public EReference getArtifactType_SuperArtifactType()
   {
     return (EReference)artifactTypeEClass.getEStructuralFeatures().get(0);
   }
@@ -270,39 +254,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getArtifactType_Attributes()
+  public EReference getArtifactType_ValidTypes()
   {
     return (EReference)artifactTypeEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getXRef()
-  {
-    return xRefEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getRelationTypeRef()
-  {
-    return relationTypeRefEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getRelationTypeRef_Type()
-  {
-    return (EReference)relationTypeRefEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -320,7 +274,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAttributeTypeRef_Type()
+  public EReference getAttributeTypeRef_ValidAttributeType()
   {
     return (EReference)attributeTypeRefEClass.getEStructuralFeatures().get(0);
   }
@@ -340,9 +294,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAttributeType_SuperEntity()
+  public EAttribute getAttributeType_BaseAttributeType()
   {
-    return (EReference)attributeTypeEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -350,9 +304,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAttributeType_Attributes()
+  public EAttribute getAttributeType_DataProvider()
   {
-    return (EReference)attributeTypeEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -360,9 +314,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getXAttribute()
+  public EAttribute getAttributeType_Min()
   {
-    return xAttributeEClass;
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -370,9 +324,109 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXAttribute_Name()
+  public EAttribute getAttributeType_Max()
   {
-    return (EAttribute)xAttributeEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttributeType_TaggerId()
+  {
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getAttributeType_EnumType()
+  {
+    return (EReference)attributeTypeEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttributeType_Description()
+  {
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttributeType_DefaultValue()
+  {
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttributeType_FileExtension()
+  {
+    return (EAttribute)attributeTypeEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getOseeEnumType()
+  {
+    return oseeEnumTypeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOseeEnumType_Enums()
+  {
+    return (EReference)oseeEnumTypeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getOseeEnum()
+  {
+    return oseeEnumEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getOseeEnum_Name()
+  {
+    return (EAttribute)oseeEnumEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getOseeEnum_Ordinal()
+  {
+    return (EAttribute)oseeEnumEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -390,9 +444,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getRelationType_Attributes()
+  public EAttribute getRelationType_SideAName()
   {
-    return (EReference)relationTypeEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)relationTypeEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -400,9 +454,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getXRelation()
+  public EReference getRelationType_SideAArtifactType()
   {
-    return xRelationEClass;
+    return (EReference)relationTypeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -410,9 +464,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXRelation_Name()
+  public EAttribute getRelationType_SideBName()
   {
-    return (EAttribute)xRelationEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)relationTypeEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -420,9 +474,29 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getXRelation_Type()
+  public EReference getRelationType_SideBArtifactType()
   {
-    return (EReference)xRelationEClass.getEStructuralFeatures().get(1);
+    return (EReference)relationTypeEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRelationType_DefaultOrderType()
+  {
+    return (EAttribute)relationTypeEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRelationType_Multiplicity()
+  {
+    return (EAttribute)relationTypeEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -457,39 +531,46 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     // Create classes and their features
     modelEClass = createEClass(MODEL);
     createEReference(modelEClass, MODEL__IMPORTS);
-    createEReference(modelEClass, MODEL__ELEMENTS);
+    createEReference(modelEClass, MODEL__TYPES);
 
     importEClass = createEClass(IMPORT);
     createEAttribute(importEClass, IMPORT__IMPORT_URI);
 
-    typeEClass = createEClass(TYPE);
-    createEAttribute(typeEClass, TYPE__NAME);
+    oseeTypeEClass = createEClass(OSEE_TYPE);
+    createEAttribute(oseeTypeEClass, OSEE_TYPE__NAME);
 
     artifactTypeEClass = createEClass(ARTIFACT_TYPE);
-    createEReference(artifactTypeEClass, ARTIFACT_TYPE__SUPER_ENTITY);
-    createEReference(artifactTypeEClass, ARTIFACT_TYPE__ATTRIBUTES);
-
-    xRefEClass = createEClass(XREF);
-
-    relationTypeRefEClass = createEClass(RELATION_TYPE_REF);
-    createEReference(relationTypeRefEClass, RELATION_TYPE_REF__TYPE);
+    createEReference(artifactTypeEClass, ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE);
+    createEReference(artifactTypeEClass, ARTIFACT_TYPE__VALID_TYPES);
 
     attributeTypeRefEClass = createEClass(ATTRIBUTE_TYPE_REF);
-    createEReference(attributeTypeRefEClass, ATTRIBUTE_TYPE_REF__TYPE);
+    createEReference(attributeTypeRefEClass, ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE);
 
     attributeTypeEClass = createEClass(ATTRIBUTE_TYPE);
-    createEReference(attributeTypeEClass, ATTRIBUTE_TYPE__SUPER_ENTITY);
-    createEReference(attributeTypeEClass, ATTRIBUTE_TYPE__ATTRIBUTES);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__DATA_PROVIDER);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__MIN);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__MAX);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__TAGGER_ID);
+    createEReference(attributeTypeEClass, ATTRIBUTE_TYPE__ENUM_TYPE);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__DESCRIPTION);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__DEFAULT_VALUE);
+    createEAttribute(attributeTypeEClass, ATTRIBUTE_TYPE__FILE_EXTENSION);
 
-    xAttributeEClass = createEClass(XATTRIBUTE);
-    createEAttribute(xAttributeEClass, XATTRIBUTE__NAME);
+    oseeEnumTypeEClass = createEClass(OSEE_ENUM_TYPE);
+    createEReference(oseeEnumTypeEClass, OSEE_ENUM_TYPE__ENUMS);
+
+    oseeEnumEClass = createEClass(OSEE_ENUM);
+    createEAttribute(oseeEnumEClass, OSEE_ENUM__NAME);
+    createEAttribute(oseeEnumEClass, OSEE_ENUM__ORDINAL);
 
     relationTypeEClass = createEClass(RELATION_TYPE);
-    createEReference(relationTypeEClass, RELATION_TYPE__ATTRIBUTES);
-
-    xRelationEClass = createEClass(XRELATION);
-    createEAttribute(xRelationEClass, XRELATION__NAME);
-    createEReference(xRelationEClass, XRELATION__TYPE);
+    createEAttribute(relationTypeEClass, RELATION_TYPE__SIDE_ANAME);
+    createEReference(relationTypeEClass, RELATION_TYPE__SIDE_AARTIFACT_TYPE);
+    createEAttribute(relationTypeEClass, RELATION_TYPE__SIDE_BNAME);
+    createEReference(relationTypeEClass, RELATION_TYPE__SIDE_BARTIFACT_TYPE);
+    createEAttribute(relationTypeEClass, RELATION_TYPE__DEFAULT_ORDER_TYPE);
+    createEAttribute(relationTypeEClass, RELATION_TYPE__MULTIPLICITY);
   }
 
   /**
@@ -521,48 +602,54 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    artifactTypeEClass.getESuperTypes().add(this.getType());
-    relationTypeRefEClass.getESuperTypes().add(this.getXRef());
-    attributeTypeRefEClass.getESuperTypes().add(this.getXRef());
-    attributeTypeEClass.getESuperTypes().add(this.getType());
-    relationTypeEClass.getESuperTypes().add(this.getType());
+    artifactTypeEClass.getESuperTypes().add(this.getOseeType());
+    attributeTypeEClass.getESuperTypes().add(this.getOseeType());
+    oseeEnumTypeEClass.getESuperTypes().add(this.getOseeType());
+    relationTypeEClass.getESuperTypes().add(this.getOseeType());
 
     // Initialize classes and features; add operations and parameters
     initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getModel_Imports(), this.getImport(), null, "imports", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModel_Elements(), this.getType(), null, "elements", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModel_Types(), this.getOseeType(), null, "types", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImport_ImportURI(), ecorePackage.getEString(), "importURI", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(typeEClass, Type.class, "Type", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getType_Name(), ecorePackage.getEString(), "name", null, 0, 1, Type.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(oseeTypeEClass, OseeType.class, "OseeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getOseeType_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(artifactTypeEClass, ArtifactType.class, "ArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getArtifactType_SuperEntity(), this.getArtifactType(), null, "superEntity", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactType_Attributes(), this.getXRef(), null, "attributes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(xRefEClass, XRef.class, "XRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(relationTypeRefEClass, RelationTypeRef.class, "RelationTypeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRelationTypeRef_Type(), this.getRelationType(), null, "type", null, 0, 1, RelationTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getArtifactType_SuperArtifactType(), this.getArtifactType(), null, "superArtifactType", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getArtifactType_ValidTypes(), this.getAttributeTypeRef(), null, "validTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeTypeRefEClass, AttributeTypeRef.class, "AttributeTypeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAttributeTypeRef_Type(), this.getAttributeType(), null, "type", null, 0, 1, AttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttributeTypeRef_ValidAttributeType(), this.getAttributeType(), null, "validAttributeType", null, 0, 1, AttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeTypeEClass, AttributeType.class, "AttributeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAttributeType_SuperEntity(), this.getAttributeType(), null, "superEntity", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getAttributeType_Attributes(), this.getXAttribute(), null, "attributes", null, 0, -1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_BaseAttributeType(), ecorePackage.getEString(), "baseAttributeType", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_DataProvider(), ecorePackage.getEString(), "dataProvider", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_Min(), ecorePackage.getEString(), "min", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_Max(), ecorePackage.getEString(), "max", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_TaggerId(), ecorePackage.getEString(), "taggerId", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttributeType_EnumType(), this.getOseeEnumType(), null, "enumType", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_Description(), ecorePackage.getEString(), "description", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttributeType_FileExtension(), ecorePackage.getEString(), "fileExtension", null, 0, 1, AttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(xAttributeEClass, XAttribute.class, "XAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getXAttribute_Name(), ecorePackage.getEString(), "name", null, 0, 1, XAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(oseeEnumTypeEClass, OseeEnumType.class, "OseeEnumType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getOseeEnumType_Enums(), this.getOseeEnum(), null, "enums", null, 0, -1, OseeEnumType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(oseeEnumEClass, OseeEnum.class, "OseeEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getOseeEnum_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOseeEnum_Ordinal(), ecorePackage.getEString(), "ordinal", null, 0, 1, OseeEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(relationTypeEClass, RelationType.class, "RelationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRelationType_Attributes(), this.getXRelation(), null, "attributes", null, 0, -1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(xRelationEClass, XRelation.class, "XRelation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getXRelation_Name(), ecorePackage.getEString(), "name", null, 0, 1, XRelation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getXRelation_Type(), this.getArtifactType(), null, "type", null, 0, 1, XRelation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationType_SideAName(), ecorePackage.getEString(), "sideAName", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRelationType_SideAArtifactType(), this.getArtifactType(), null, "sideAArtifactType", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationType_SideBName(), ecorePackage.getEString(), "sideBName", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRelationType_SideBArtifactType(), this.getArtifactType(), null, "sideBArtifactType", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationType_DefaultOrderType(), ecorePackage.getEString(), "defaultOrderType", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationType_Multiplicity(), ecorePackage.getEString(), "multiplicity", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

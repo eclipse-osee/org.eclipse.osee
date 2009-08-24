@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
+import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.XRef;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,34 +32,34 @@ import org.eclipse.osee.framework.oseeTypes.XRef;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getSuperEntity <em>Super Entity</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getSuperArtifactType <em>Super Artifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getValidTypes <em>Valid Types</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
+public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
 {
   /**
-   * The cached value of the '{@link #getSuperEntity() <em>Super Entity</em>}' reference.
+   * The cached value of the '{@link #getSuperArtifactType() <em>Super Artifact Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSuperEntity()
+   * @see #getSuperArtifactType()
    * @generated
    * @ordered
    */
-  protected ArtifactType superEntity;
+  protected ArtifactType superArtifactType;
 
   /**
-   * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
+   * The cached value of the '{@link #getValidTypes() <em>Valid Types</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAttributes()
+   * @see #getValidTypes()
    * @generated
    * @ordered
    */
-  protected EList<XRef> attributes;
+  protected EList<AttributeTypeRef> validTypes;
 
   /**
    * <!-- begin-user-doc -->
@@ -87,19 +87,19 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType getSuperEntity()
+  public ArtifactType getSuperArtifactType()
   {
-    if (superEntity != null && superEntity.eIsProxy())
+    if (superArtifactType != null && superArtifactType.eIsProxy())
     {
-      InternalEObject oldSuperEntity = (InternalEObject)superEntity;
-      superEntity = (ArtifactType)eResolveProxy(oldSuperEntity);
-      if (superEntity != oldSuperEntity)
+      InternalEObject oldSuperArtifactType = (InternalEObject)superArtifactType;
+      superArtifactType = (ArtifactType)eResolveProxy(oldSuperArtifactType);
+      if (superArtifactType != oldSuperArtifactType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY, oldSuperEntity, superEntity));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE, oldSuperArtifactType, superArtifactType));
       }
     }
-    return superEntity;
+    return superArtifactType;
   }
 
   /**
@@ -107,9 +107,9 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType basicGetSuperEntity()
+  public ArtifactType basicGetSuperArtifactType()
   {
-    return superEntity;
+    return superArtifactType;
   }
 
   /**
@@ -117,12 +117,12 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSuperEntity(ArtifactType newSuperEntity)
+  public void setSuperArtifactType(ArtifactType newSuperArtifactType)
   {
-    ArtifactType oldSuperEntity = superEntity;
-    superEntity = newSuperEntity;
+    ArtifactType oldSuperArtifactType = superArtifactType;
+    superArtifactType = newSuperArtifactType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY, oldSuperEntity, superEntity));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE, oldSuperArtifactType, superArtifactType));
   }
 
   /**
@@ -130,13 +130,13 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<XRef> getAttributes()
+  public EList<AttributeTypeRef> getValidTypes()
   {
-    if (attributes == null)
+    if (validTypes == null)
     {
-      attributes = new EObjectContainmentEList<XRef>(XRef.class, this, OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES);
+      validTypes = new EObjectContainmentEList<AttributeTypeRef>(AttributeTypeRef.class, this, OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES);
     }
-    return attributes;
+    return validTypes;
   }
 
   /**
@@ -149,8 +149,8 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES:
-        return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
+        return ((InternalEList<?>)getValidTypes()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -165,11 +165,11 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY:
-        if (resolve) return getSuperEntity();
-        return basicGetSuperEntity();
-      case OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES:
-        return getAttributes();
+      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
+        if (resolve) return getSuperArtifactType();
+        return basicGetSuperArtifactType();
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
+        return getValidTypes();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -185,12 +185,12 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY:
-        setSuperEntity((ArtifactType)newValue);
+      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
+        setSuperArtifactType((ArtifactType)newValue);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES:
-        getAttributes().clear();
-        getAttributes().addAll((Collection<? extends XRef>)newValue);
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
+        getValidTypes().clear();
+        getValidTypes().addAll((Collection<? extends AttributeTypeRef>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -206,11 +206,11 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY:
-        setSuperEntity((ArtifactType)null);
+      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
+        setSuperArtifactType((ArtifactType)null);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES:
-        getAttributes().clear();
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
+        getValidTypes().clear();
         return;
     }
     super.eUnset(featureID);
@@ -226,10 +226,10 @@ public class ArtifactTypeImpl extends TypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ENTITY:
-        return superEntity != null;
-      case OseeTypesPackage.ARTIFACT_TYPE__ATTRIBUTES:
-        return attributes != null && !attributes.isEmpty();
+      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
+        return superArtifactType != null;
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
+        return validTypes != null && !validTypes.isEmpty();
     }
     return super.eIsSet(featureID);
   }
