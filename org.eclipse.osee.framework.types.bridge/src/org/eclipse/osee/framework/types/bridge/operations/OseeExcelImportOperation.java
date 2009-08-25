@@ -39,7 +39,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       ExcelToEMFModel converter = new ExcelToEMFModel(models);
-      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(converter);
+      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(converter, false);
       converter.createModel(destinationFile.getName());
 
       if (sourceFile.isFile()) {
