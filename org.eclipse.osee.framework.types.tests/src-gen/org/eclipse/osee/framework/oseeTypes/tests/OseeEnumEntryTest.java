@@ -10,24 +10,24 @@ import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Osee Enum</b></em>'.
+ * A test case for the model object '<em><b>Osee Enum Entry</b></em>'.
  * <!-- end-user-doc -->
  * @generated
  */
-public class OseeEnumTest extends TestCase {
+public class OseeEnumEntryTest extends TestCase {
 
    /**
-    * The fixture for this Osee Enum test case.
+    * The fixture for this Osee Enum Entry test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnum fixture = null;
+   protected OseeEnumEntry fixture = null;
 
    /**
     * <!-- begin-user-doc -->
@@ -35,36 +35,36 @@ public class OseeEnumTest extends TestCase {
     * @generated
     */
    public static void main(String[] args) {
-      TestRunner.run(OseeEnumTest.class);
+      TestRunner.run(OseeEnumEntryTest.class);
    }
 
    /**
-    * Constructs a new Osee Enum test case with the given name.
+    * Constructs a new Osee Enum Entry test case with the given name.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   public OseeEnumTest(String name) {
+   public OseeEnumEntryTest(String name) {
       super(name);
    }
 
    /**
-    * Sets the fixture for this Osee Enum test case.
+    * Sets the fixture for this Osee Enum Entry test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void setFixture(OseeEnum fixture) {
+   protected void setFixture(OseeEnumEntry fixture) {
       this.fixture = fixture;
    }
 
    /**
-    * Returns the fixture for this Osee Enum test case.
+    * Returns the fixture for this Osee Enum Entry test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnum getFixture() {
+   protected OseeEnumEntry getFixture() {
       return fixture;
    }
 
@@ -76,7 +76,7 @@ public class OseeEnumTest extends TestCase {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createOseeEnum());
+      setFixture(OseeTypesFactory.eINSTANCE.createOseeEnumEntry());
    }
 
    /**
@@ -90,4 +90,4 @@ public class OseeEnumTest extends TestCase {
       setFixture(null);
    }
 
-} //OseeEnumTest
+} //OseeEnumEntryTest

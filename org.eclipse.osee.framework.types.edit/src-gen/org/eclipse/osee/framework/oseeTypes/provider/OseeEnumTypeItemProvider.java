@@ -78,7 +78,7 @@ public class OseeEnumTypeItemProvider
    public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
       if (childrenFeatures == null) {
          super.getChildrenFeatures(object);
-         childrenFeatures.add(OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUMS);
+         childrenFeatures.add(OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUM_ENTRIES);
       }
       return childrenFeatures;
    }
@@ -133,7 +133,7 @@ public class OseeEnumTypeItemProvider
       updateChildren(notification);
 
       switch (notification.getFeatureID(OseeEnumType.class)) {
-         case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
+         case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
@@ -153,8 +153,8 @@ public class OseeEnumTypeItemProvider
 
       newChildDescriptors.add
          (createChildParameter
-            (OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUMS,
-             OseeTypesFactory.eINSTANCE.createOseeEnum()));
+            (OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUM_ENTRIES,
+             OseeTypesFactory.eINSTANCE.createOseeEnumEntry()));
    }
 
 }

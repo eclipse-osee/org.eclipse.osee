@@ -35,10 +35,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OseeEnumType" eSuperTypes="#//OseeType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enums" upperBound="-1"
-        eType="#//OseeEnum" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumEntries" upperBound="-1"
+        eType="#//OseeEnumEntry" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OseeEnum">
+  <eClassifiers xsi:type="ecore:EClass" name="OseeEnumEntry">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordinal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>

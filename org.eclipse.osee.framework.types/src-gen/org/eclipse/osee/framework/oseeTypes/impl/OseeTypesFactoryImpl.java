@@ -76,7 +76,7 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF: return createAttributeTypeRef();
       case OseeTypesPackage.ATTRIBUTE_TYPE: return createAttributeType();
       case OseeTypesPackage.OSEE_ENUM_TYPE: return createOseeEnumType();
-      case OseeTypesPackage.OSEE_ENUM: return createOseeEnum();
+      case OseeTypesPackage.OSEE_ENUM_ENTRY: return createOseeEnumEntry();
       case OseeTypesPackage.RELATION_TYPE: return createRelationType();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -199,10 +199,10 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnum createOseeEnum()
+  public OseeEnumEntry createOseeEnumEntry()
   {
-    OseeEnumImpl oseeEnum = new OseeEnumImpl();
-    return oseeEnum;
+    OseeEnumEntryImpl oseeEnumEntry = new OseeEnumEntryImpl();
+    return oseeEnumEntry;
   }
 
   /**

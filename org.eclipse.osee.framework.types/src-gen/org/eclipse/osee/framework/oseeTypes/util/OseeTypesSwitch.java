@@ -148,10 +148,10 @@ public class OseeTypesSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.OSEE_ENUM:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY:
       {
-        OseeEnum oseeEnum = (OseeEnum)theEObject;
-        T result = caseOseeEnum(oseeEnum);
+        OseeEnumEntry oseeEnumEntry = (OseeEnumEntry)theEObject;
+        T result = caseOseeEnumEntry(oseeEnumEntry);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -280,17 +280,17 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Osee Enum</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Osee Enum Entry</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Osee Enum</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Osee Enum Entry</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseOseeEnum(OseeEnum object)
+  public T caseOseeEnumEntry(OseeEnumEntry object)
   {
     return null;
   }

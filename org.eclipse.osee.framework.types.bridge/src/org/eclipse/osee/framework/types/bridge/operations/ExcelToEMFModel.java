@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
-import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
@@ -296,10 +296,10 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
          oseeEnumType.setName(enumTypeName);
 
          for (Pair<String, Integer> entry : entries) {
-            OseeEnum oseeEnum = factory.createOseeEnum();
+            OseeEnumEntry oseeEnum = factory.createOseeEnumEntry();
             oseeEnum.setName(entry.getFirst());
             oseeEnum.setOrdinal(String.valueOf(entry.getSecond()));
-            oseeEnumType.getEnums().add(oseeEnum);
+            oseeEnumType.getEnumEntries().add(oseeEnum);
          }
          getCurrentModel().getTypes().add(oseeEnumType);
       } else {

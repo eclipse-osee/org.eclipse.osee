@@ -21,7 +21,7 @@ public class OseeTypesFormatter extends AbstractDeclarativeFormatter {
    private final List<String> KEYWORDS =
          Arrays.asList(new String[] {"attribute", "sideAName", "sideAArtifactType", "sideBName", "sideBArtifactType",
                "defaultOrderType", "multiplicity", "dataProvider", "min", "max", "taggerId", "enumType",
-               "defaultValue",});
+               "defaultValue","entry"});
 
    private boolean isKeywordEntry(String current) {
       return KEYWORDS.contains(current);
@@ -34,7 +34,6 @@ public class OseeTypesFormatter extends AbstractDeclarativeFormatter {
 
       c.setIndentationSpace("   ");
 
-      c.setLinewrap(3).before(f.getOseeEnumRule().getAlternatives());
       Iterable<Keyword> keywords = GrammarUtil.containedKeywords(f.getGrammar());
       Stack<Keyword> openBraceStack = new Stack<Keyword>();
       for (Keyword currentKeyword : keywords) {

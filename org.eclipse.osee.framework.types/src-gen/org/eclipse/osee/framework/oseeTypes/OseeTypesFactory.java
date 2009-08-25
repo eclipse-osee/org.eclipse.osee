@@ -90,13 +90,13 @@ public interface OseeTypesFactory extends EFactory
   OseeEnumType createOseeEnumType();
 
   /**
-   * Returns a new object of class '<em>Osee Enum</em>'.
+   * Returns a new object of class '<em>Osee Enum Entry</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Osee Enum</em>'.
+   * @return a new object of class '<em>Osee Enum Entry</em>'.
    * @generated
    */
-  OseeEnum createOseeEnum();
+  OseeEnumEntry createOseeEnumEntry();
 
   /**
    * Returns a new object of class '<em>Relation Type</em>'.

@@ -26,16 +26,16 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnum} object.
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class OseeEnumItemProvider
+public class OseeEnumEntryItemProvider
    extends ItemProviderAdapter
    implements
       IEditingDomainItemProvider,
@@ -49,7 +49,7 @@ public class OseeEnumItemProvider
     * <!-- end-user-doc -->
     * @generated
     */
-   public OseeEnumItemProvider(AdapterFactory adapterFactory) {
+   public OseeEnumEntryItemProvider(AdapterFactory adapterFactory) {
       super(adapterFactory);
    }
 
@@ -81,9 +81,9 @@ public class OseeEnumItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_OseeEnum_name_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnum_name_feature", "_UI_OseeEnum_type"),
-             OseeTypesPackage.Literals.OSEE_ENUM__NAME,
+             getString("_UI_OseeEnumEntry_name_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumEntry_name_feature", "_UI_OseeEnumEntry_type"),
+             OseeTypesPackage.Literals.OSEE_ENUM_ENTRY__NAME,
              true,
              false,
              false,
@@ -103,9 +103,9 @@ public class OseeEnumItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_OseeEnum_ordinal_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnum_ordinal_feature", "_UI_OseeEnum_type"),
-             OseeTypesPackage.Literals.OSEE_ENUM__ORDINAL,
+             getString("_UI_OseeEnumEntry_ordinal_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumEntry_ordinal_feature", "_UI_OseeEnumEntry_type"),
+             OseeTypesPackage.Literals.OSEE_ENUM_ENTRY__ORDINAL,
              true,
              false,
              false,
@@ -115,14 +115,14 @@ public class OseeEnumItemProvider
    }
 
    /**
-    * This returns OseeEnum.gif.
+    * This returns OseeEnumEntry.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Object getImage(Object object) {
-      return overlayImage(object, getResourceLocator().getImage("full/obj16/OseeEnum"));
+      return overlayImage(object, getResourceLocator().getImage("full/obj16/OseeEnumEntry"));
    }
 
    /**
@@ -133,10 +133,10 @@ public class OseeEnumItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((OseeEnum)object).getName();
+      String label = ((OseeEnumEntry)object).getName();
       return label == null || label.length() == 0 ?
-         getString("_UI_OseeEnum_type") :
-         getString("_UI_OseeEnum_type") + " " + label;
+         getString("_UI_OseeEnumEntry_type") :
+         getString("_UI_OseeEnumEntry_type") + " " + label;
    }
 
    /**
@@ -150,9 +150,9 @@ public class OseeEnumItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(OseeEnum.class)) {
-         case OseeTypesPackage.OSEE_ENUM__NAME:
-         case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+      switch (notification.getFeatureID(OseeEnumEntry.class)) {
+         case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
+         case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

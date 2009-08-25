@@ -357,13 +357,13 @@ public interface OseeTypesPackage extends EPackage
   int OSEE_ENUM_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
-   * The feature id for the '<em><b>Enums</b></em>' containment reference list.
+   * The feature id for the '<em><b>Enum Entries</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_ENUM_TYPE__ENUMS = OSEE_TYPE_FEATURE_COUNT + 0;
+  int OSEE_ENUM_TYPE__ENUM_ENTRIES = OSEE_TYPE_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Osee Enum Type</em>' class.
@@ -375,14 +375,14 @@ public interface OseeTypesPackage extends EPackage
   int OSEE_ENUM_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl <em>Osee Enum</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl <em>Osee Enum Entry</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnum()
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumEntry()
    * @generated
    */
-  int OSEE_ENUM = 7;
+  int OSEE_ENUM_ENTRY = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -391,7 +391,7 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_ENUM__NAME = 0;
+  int OSEE_ENUM_ENTRY__NAME = 0;
 
   /**
    * The feature id for the '<em><b>Ordinal</b></em>' attribute.
@@ -400,16 +400,16 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_ENUM__ORDINAL = 1;
+  int OSEE_ENUM_ENTRY__ORDINAL = 1;
 
   /**
-   * The number of structural features of the '<em>Osee Enum</em>' class.
+   * The number of structural features of the '<em>Osee Enum Entry</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_ENUM_FEATURE_COUNT = 2;
+  int OSEE_ENUM_ENTRY_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl <em>Relation Type</em>}' class.
@@ -751,47 +751,47 @@ public interface OseeTypesPackage extends EPackage
   EClass getOseeEnumType();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnums <em>Enums</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnumEntries <em>Enum Entries</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Enums</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnums()
+   * @return the meta object for the containment reference list '<em>Enum Entries</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnumEntries()
    * @see #getOseeEnumType()
    * @generated
    */
-  EReference getOseeEnumType_Enums();
+  EReference getOseeEnumType_EnumEntries();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum <em>Osee Enum</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry <em>Osee Enum Entry</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Osee Enum</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum
+   * @return the meta object for class '<em>Osee Enum Entry</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry
    * @generated
    */
-  EClass getOseeEnum();
+  EClass getOseeEnumEntry();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum#getName()
-   * @see #getOseeEnum()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getName()
+   * @see #getOseeEnumEntry()
    * @generated
    */
-  EAttribute getOseeEnum_Name();
+  EAttribute getOseeEnumEntry_Name();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal <em>Ordinal</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getOrdinal <em>Ordinal</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Ordinal</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum#getOrdinal()
-   * @see #getOseeEnum()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getOrdinal()
+   * @see #getOseeEnumEntry()
    * @generated
    */
-  EAttribute getOseeEnum_Ordinal();
+  EAttribute getOseeEnumEntry_Ordinal();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.RelationType <em>Relation Type</em>}'.
@@ -1101,22 +1101,22 @@ public interface OseeTypesPackage extends EPackage
     EClass OSEE_ENUM_TYPE = eINSTANCE.getOseeEnumType();
 
     /**
-     * The meta object literal for the '<em><b>Enums</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Enum Entries</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference OSEE_ENUM_TYPE__ENUMS = eINSTANCE.getOseeEnumType_Enums();
+    EReference OSEE_ENUM_TYPE__ENUM_ENTRIES = eINSTANCE.getOseeEnumType_EnumEntries();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl <em>Osee Enum</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl <em>Osee Enum Entry</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnum()
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumEntry()
      * @generated
      */
-    EClass OSEE_ENUM = eINSTANCE.getOseeEnum();
+    EClass OSEE_ENUM_ENTRY = eINSTANCE.getOseeEnumEntry();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -1124,7 +1124,7 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute OSEE_ENUM__NAME = eINSTANCE.getOseeEnum_Name();
+    EAttribute OSEE_ENUM_ENTRY__NAME = eINSTANCE.getOseeEnumEntry_Name();
 
     /**
      * The meta object literal for the '<em><b>Ordinal</b></em>' attribute feature.
@@ -1132,7 +1132,7 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute OSEE_ENUM__ORDINAL = eINSTANCE.getOseeEnum_Ordinal();
+    EAttribute OSEE_ENUM_ENTRY__ORDINAL = eINSTANCE.getOseeEnumEntry_Ordinal();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl <em>Relation Type</em>}' class.

@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnums <em>Enums</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnumEntries <em>Enum Entries</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,19 +27,19 @@ import org.eclipse.emf.common.util.EList;
 public interface OseeEnumType extends OseeType
 {
   /**
-   * Returns the value of the '<em><b>Enums</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeEnum}.
+   * Returns the value of the '<em><b>Enum Entries</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Enums</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Enum Entries</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Enums</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumType_Enums()
+   * @return the value of the '<em>Enum Entries</em>' containment reference list.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumType_EnumEntries()
    * @model containment="true"
    * @generated
    */
-  EList<OseeEnum> getEnums();
+  EList<OseeEnumEntry> getEnumEntries();
 
 } // OseeEnumType

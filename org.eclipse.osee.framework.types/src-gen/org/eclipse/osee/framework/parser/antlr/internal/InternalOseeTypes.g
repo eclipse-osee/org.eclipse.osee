@@ -964,9 +964,9 @@ ruleOseeEnumType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getEnumsOseeEnumParserRuleCall_3_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_3_0(), currentNode); 
 	    }
-	    lv_enums_3=ruleOseeEnum 
+	    lv_enumEntries_3=ruleOseeEnumEntry 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getOseeEnumTypeRule().getType().getClassifier());
@@ -974,7 +974,7 @@ ruleOseeEnumType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		add($current, "enums", lv_enums_3, "OseeEnum", currentNode);
+	       		add($current, "enumEntries", lv_enumEntries_3, "OseeEnumEntry", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -991,36 +991,40 @@ ruleOseeEnumType returns [EObject current=null]
 
 
 
-// Entry rule entryRuleOseeEnum
-entryRuleOseeEnum returns [EObject current=null] :
-	{ currentNode = createCompositeNode(grammarAccess.getOseeEnumRule(), currentNode); }
-	 iv_ruleOseeEnum=ruleOseeEnum 
-	 { $current=$iv_ruleOseeEnum.current; } 
+// Entry rule entryRuleOseeEnumEntry
+entryRuleOseeEnumEntry returns [EObject current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getOseeEnumEntryRule(), currentNode); }
+	 iv_ruleOseeEnumEntry=ruleOseeEnumEntry 
+	 { $current=$iv_ruleOseeEnumEntry.current; } 
 	 EOF 
 ;
 
-// Rule OseeEnum
-ruleOseeEnum returns [EObject current=null] 
+// Rule OseeEnumEntry
+ruleOseeEnumEntry returns [EObject current=null] 
     @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-((	
+('entry' 
+    {
+        createLeafNode(grammarAccess.getOseeEnumEntryAccess().getEntryKeyword_0(), null); 
+    }
+(	
 	
-	    lv_name_0=	RULE_STRING
+	    lv_name_1=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getOseeEnumAccess().getNameSTRINGTerminalRuleCall_0_0(), "name"); 
+		createLeafNode(grammarAccess.getOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0(), "name"); 
 	}
  
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getOseeEnumRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getOseeEnumEntryRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_0, "STRING", lastConsumedNode);
+	       		set($current, "name", lv_name_1, "STRING", lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -1030,17 +1034,17 @@ ruleOseeEnum returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getOseeEnumAccess().getOrdinalDIGITSParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0(), currentNode); 
 	    }
-	    lv_ordinal_1=ruleDIGITS 
+	    lv_ordinal_2=ruleDIGITS 
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getOseeEnumRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getOseeEnumEntryRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode.getParent(), $current);
 	        }
 	        
 	        try {
-	       		set($current, "ordinal", lv_ordinal_1, "DIGITS", currentNode);
+	       		set($current, "ordinal", lv_ordinal_2, "DIGITS", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }

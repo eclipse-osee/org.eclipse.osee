@@ -548,15 +548,15 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cNameQUALIFIED_NAMEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cEnumsAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cEnumsOseeEnumParserRuleCall_3_0 = (RuleCall)cEnumsAssignment_3.eContents().get(0);
+		private final Assignment cEnumEntriesAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cEnumEntriesOseeEnumEntryParserRuleCall_3_0 = (RuleCall)cEnumEntriesAssignment_3.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//OseeEnumType:
-		//  "oseeEnumType" name=QUALIFIED_NAME "{" enums+=OseeEnum* "}";
+		//  "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}";
 		public ParserRule getRule() { return rule; }
 
-		//"oseeEnumType" name=QUALIFIED_NAME "{" enums+=OseeEnum* "}"
+		//"oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}"
 		public Group getGroup() { return cGroup; }
 
 		//"oseeEnumType"
@@ -571,42 +571,46 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
 
-		//enums+=OseeEnum*
-		public Assignment getEnumsAssignment_3() { return cEnumsAssignment_3; }
+		//enumEntries+=OseeEnumEntry*
+		public Assignment getEnumEntriesAssignment_3() { return cEnumEntriesAssignment_3; }
 
-		//OseeEnum
-		public RuleCall getEnumsOseeEnumParserRuleCall_3_0() { return cEnumsOseeEnumParserRuleCall_3_0; }
+		//OseeEnumEntry
+		public RuleCall getEnumEntriesOseeEnumEntryParserRuleCall_3_0() { return cEnumEntriesOseeEnumEntryParserRuleCall_3_0; }
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_4() { return cRightCurlyBracketKeyword_4; }
 	}
 
-	public class OseeEnumElements implements IParserRuleAccess {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeEnum");
+	public class OseeEnumEntryElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeEnumEntry");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameSTRINGTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
-		private final Assignment cOrdinalAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cOrdinalDIGITSParserRuleCall_1_0 = (RuleCall)cOrdinalAssignment_1.eContents().get(0);
+		private final Keyword cEntryKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cOrdinalDIGITSParserRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
 		
-		//OseeEnum:
-		//  name=STRING ordinal=DIGITS?;
+		//OseeEnumEntry:
+		//  "entry" name=STRING ordinal=DIGITS?;
 		public ParserRule getRule() { return rule; }
 
-		//name=STRING ordinal=DIGITS?
+		//"entry" name=STRING ordinal=DIGITS?
 		public Group getGroup() { return cGroup; }
 
+		//"entry"
+		public Keyword getEntryKeyword_0() { return cEntryKeyword_0; }
+
 		//name=STRING
-		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
 		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_0_0() { return cNameSTRINGTerminalRuleCall_0_0; }
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
 		//ordinal=DIGITS?
-		public Assignment getOrdinalAssignment_1() { return cOrdinalAssignment_1; }
+		public Assignment getOrdinalAssignment_2() { return cOrdinalAssignment_2; }
 
 		//DIGITS
-		public RuleCall getOrdinalDIGITSParserRuleCall_1_0() { return cOrdinalDIGITSParserRuleCall_1_0; }
+		public RuleCall getOrdinalDIGITSParserRuleCall_2_0() { return cOrdinalDIGITSParserRuleCall_2_0; }
 	}
 
 	public class RelationTypeElements implements IParserRuleAccess {
@@ -793,7 +797,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	private AttributeTypeElements pAttributeType;
 	private AttributeBaseTypeElements pAttributeBaseType;
 	private OseeEnumTypeElements pOseeEnumType;
-	private OseeEnumElements pOseeEnum;
+	private OseeEnumEntryElements pOseeEnumEntry;
 	private RelationMultiplicityEnumElements unknownRuleRelationMultiplicityEnum;
 	private RelationTypeElements pRelationType;
 	
@@ -918,7 +922,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	}
 
 	//OseeEnumType:
-	//  "oseeEnumType" name=QUALIFIED_NAME "{" enums+=OseeEnum* "}";
+	//  "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}";
 	public OseeEnumTypeElements getOseeEnumTypeAccess() {
 		return (pOseeEnumType != null) ? pOseeEnumType : (pOseeEnumType = new OseeEnumTypeElements());
 	}
@@ -927,14 +931,14 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		return getOseeEnumTypeAccess().getRule();
 	}
 
-	//OseeEnum:
-	//  name=STRING ordinal=DIGITS?;
-	public OseeEnumElements getOseeEnumAccess() {
-		return (pOseeEnum != null) ? pOseeEnum : (pOseeEnum = new OseeEnumElements());
+	//OseeEnumEntry:
+	//  "entry" name=STRING ordinal=DIGITS?;
+	public OseeEnumEntryElements getOseeEnumEntryAccess() {
+		return (pOseeEnumEntry != null) ? pOseeEnumEntry : (pOseeEnumEntry = new OseeEnumEntryElements());
 	}
 	
-	public ParserRule getOseeEnumRule() {
-		return getOseeEnumAccess().getRule();
+	public ParserRule getOseeEnumEntryRule() {
+		return getOseeEnumEntryAccess().getRule();
 	}
 
 	//enum RelationMultiplicityEnum:

@@ -114,9 +114,9 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
         return createOseeEnumTypeAdapter();
       }
       @Override
-      public Adapter caseOseeEnum(OseeEnum object)
+      public Adapter caseOseeEnumEntry(OseeEnumEntry object)
       {
-        return createOseeEnumAdapter();
+        return createOseeEnumEntryAdapter();
       }
       @Override
       public Adapter caseRelationType(RelationType object)
@@ -251,16 +251,16 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnum <em>Osee Enum</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry <em>Osee Enum Entry</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnum
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry
    * @generated
    */
-  public Adapter createOseeEnumAdapter()
+  public Adapter createOseeEnumEntryAdapter()
   {
     return null;
   }

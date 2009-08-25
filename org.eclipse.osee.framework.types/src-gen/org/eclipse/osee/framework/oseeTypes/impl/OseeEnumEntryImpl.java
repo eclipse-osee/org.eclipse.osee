@@ -13,24 +13,24 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Enum</b></em>'.
+ * An implementation of the model object '<em><b>Osee Enum Entry</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumImpl#getOrdinal <em>Ordinal</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl#getOrdinal <em>Ordinal</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEnum
+public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements OseeEnumEntry
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -77,7 +77,7 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeEnumImpl()
+  protected OseeEnumEntryImpl()
   {
     super();
   }
@@ -90,7 +90,7 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_ENUM;
+    return OseeTypesPackage.Literals.OSEE_ENUM_ENTRY;
   }
 
   /**
@@ -113,7 +113,7 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_ENTRY__NAME, oldName, name));
   }
 
   /**
@@ -136,7 +136,7 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
     String oldOrdinal = ordinal;
     ordinal = newOrdinal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM__ORDINAL, oldOrdinal, ordinal));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL, oldOrdinal, ordinal));
   }
 
   /**
@@ -149,9 +149,9 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM__NAME:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
         return getName();
-      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
         return getOrdinal();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -167,10 +167,10 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM__NAME:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
         setName((String)newValue);
         return;
-      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
         setOrdinal((String)newValue);
         return;
     }
@@ -187,10 +187,10 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM__NAME:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
         setOrdinal(ORDINAL_EDEFAULT);
         return;
     }
@@ -207,9 +207,9 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM__NAME:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeTypesPackage.OSEE_ENUM__ORDINAL:
+      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
         return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
     }
     return super.eIsSet(featureID);
@@ -234,4 +234,4 @@ public class OseeEnumImpl extends MinimalEObjectImpl.Container implements OseeEn
     return result.toString();
   }
 
-} //OseeEnumImpl
+} //OseeEnumEntryImpl

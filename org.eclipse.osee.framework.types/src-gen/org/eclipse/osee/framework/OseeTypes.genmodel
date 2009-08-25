@@ -8,7 +8,7 @@
     testsDirectory="/org.eclipse.osee.framework.types.tests/src-gen" complianceLevel="5.0"
     copyrightFields="false" editPluginID="org.eclipse.osee.framework.types.edit" editorPluginID="org.eclipse.osee.framework.types.editor">
   <genPackages prefix="OseeTypes" basePackage="org.eclipse.osee.framework" disposableProviderFactory="true"
-      contentTypeIdentifier="" ecorePackage="OseeTypes.ecore#/">
+      ecorePackage="OseeTypes.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeTypes.ecore#//RelationMultiplicityEnum">
       <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/ONE_TO_MANY"/>
       <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_MANY"/>
@@ -43,11 +43,11 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/fileExtension"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeEnumType">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumType/enums"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumType/enumEntries"/>
     </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//OseeEnum">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnum/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnum/ordinal"/>
+    <genClasses ecoreClass="OseeTypes.ecore#//OseeEnumEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnumEntry/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnumEntry/ordinal"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//RelationType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/sideAName"/>

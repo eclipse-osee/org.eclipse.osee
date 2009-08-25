@@ -39,7 +39,7 @@ protected class ThisRootNode extends RootToken {
 			case 4: return new AttributeTypeRef_Group(this, this, 4, inst);
 			case 5: return new AttributeType_Group(this, this, 5, inst);
 			case 6: return new OseeEnumType_Group(this, this, 6, inst);
-			case 7: return new OseeEnum_Group(this, this, 7, inst);
+			case 7: return new OseeEnumEntry_Group(this, this, 7, inst);
 			case 8: return new RelationType_Group(this, this, 8, inst);
 			default: return null;
 		}	
@@ -1522,11 +1522,11 @@ protected class AttributeType_RightCurlyBracketKeyword_15 extends KeywordToken  
 /************ begin Rule OseeEnumType ****************
  *
  * OseeEnumType:
- *   "oseeEnumType" name=QUALIFIED_NAME "{" enums+=OseeEnum* "}";
+ *   "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}";
  *
  **/
 
-// "oseeEnumType" name=QUALIFIED_NAME "{" enums+=OseeEnum* "}"
+// "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}"
 protected class OseeEnumType_Group extends GroupToken {
 	
 	public OseeEnumType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1620,32 +1620,32 @@ protected class OseeEnumType_LeftCurlyBracketKeyword_2 extends KeywordToken  {
 		
 }
 
-// enums+=OseeEnum*
-protected class OseeEnumType_EnumsAssignment_3 extends AssignmentToken  {
+// enumEntries+=OseeEnumEntry*
+protected class OseeEnumType_EnumEntriesAssignment_3 extends AssignmentToken  {
 	
-	public OseeEnumType_EnumsAssignment_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumType_EnumEntriesAssignment_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getEnumsAssignment_3();
+		return grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_3();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnum_Group(this, this, 0, inst);
+			case 0: return new OseeEnumEntry_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("enums",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("enums");
+		if((value = current.getConsumable("enumEntries",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("enumEntries");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getOseeEnumRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getOseeEnumEntryRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getOseeEnumTypeAccess().getEnumsOseeEnumParserRuleCall_3_0(); 
+				element = grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_3_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -1656,7 +1656,7 @@ protected class OseeEnumType_EnumsAssignment_3 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new OseeEnumType_EnumsAssignment_3(parent, next, actIndex, consumed);
+			case 0: return new OseeEnumType_EnumEntriesAssignment_3(parent, next, actIndex, consumed);
 			case 1: return new OseeEnumType_LeftCurlyBracketKeyword_2(parent, next, actIndex, consumed);
 			default: return null;
 		}	
@@ -1676,7 +1676,7 @@ protected class OseeEnumType_RightCurlyBracketKeyword_4 extends KeywordToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnumType_EnumsAssignment_3(parent, this, 0, inst);
+			case 0: return new OseeEnumType_EnumEntriesAssignment_3(parent, this, 0, inst);
 			case 1: return new OseeEnumType_LeftCurlyBracketKeyword_2(parent, this, 1, inst);
 			default: return null;
 		}	
@@ -1688,47 +1688,47 @@ protected class OseeEnumType_RightCurlyBracketKeyword_4 extends KeywordToken  {
 /************ end Rule OseeEnumType ****************/
 
 
-/************ begin Rule OseeEnum ****************
+/************ begin Rule OseeEnumEntry ****************
  *
- * OseeEnum:
- *   name=STRING ordinal=DIGITS?;
+ * OseeEnumEntry:
+ *   "entry" name=STRING ordinal=DIGITS?;
  *
  **/
 
-// name=STRING ordinal=DIGITS?
-protected class OseeEnum_Group extends GroupToken {
+// "entry" name=STRING ordinal=DIGITS?
+protected class OseeEnumEntry_Group extends GroupToken {
 	
-	public OseeEnum_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumEntry_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Group getGrammarElement() {
-		return grammarAccess.getOseeEnumAccess().getGroup();
+		return grammarAccess.getOseeEnumEntryAccess().getGroup();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnum_OrdinalAssignment_1(parent, this, 0, inst);
-			case 1: return new OseeEnum_NameAssignment_0(parent, this, 1, inst);
+			case 0: return new OseeEnumEntry_OrdinalAssignment_2(parent, this, 0, inst);
+			case 1: return new OseeEnumEntry_NameAssignment_1(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
 		
 	public IInstanceDescription tryConsume() {
-		if(!current.isInstanceOf(grammarAccess.getOseeEnumRule().getType().getClassifier())) return null;
+		if(!current.isInstanceOf(grammarAccess.getOseeEnumEntryRule().getType().getClassifier())) return null;
 		return tryConsumeVal();
 	}
 }
 
-// name=STRING
-protected class OseeEnum_NameAssignment_0 extends AssignmentToken  {
+// "entry"
+protected class OseeEnumEntry_EntryKeyword_0 extends KeywordToken  {
 	
-	public OseeEnum_NameAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumEntry_EntryKeyword_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumAccess().getNameAssignment_0();
+	public Keyword getGrammarElement() {
+		return grammarAccess.getOseeEnumEntryAccess().getEntryKeyword_0();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -1737,12 +1737,32 @@ protected class OseeEnum_NameAssignment_0 extends AssignmentToken  {
 		}	
 	}	
 		
+}
+
+// name=STRING
+protected class OseeEnumEntry_NameAssignment_1 extends AssignmentToken  {
+	
+	public OseeEnumEntry_NameAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumEntry_EntryKeyword_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("name",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getOseeEnumAccess().getNameSTRINGTerminalRuleCall_0_0();
+			element = grammarAccess.getOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -1751,19 +1771,19 @@ protected class OseeEnum_NameAssignment_0 extends AssignmentToken  {
 }
 
 // ordinal=DIGITS?
-protected class OseeEnum_OrdinalAssignment_1 extends AssignmentToken  {
+protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 	
-	public OseeEnum_OrdinalAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumEntry_OrdinalAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumAccess().getOrdinalAssignment_1();
+		return grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnum_NameAssignment_0(parent, this, 0, inst);
+			case 0: return new OseeEnumEntry_NameAssignment_1(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -1773,7 +1793,7 @@ protected class OseeEnum_OrdinalAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("ordinal");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getOseeEnumAccess().getOrdinalDIGITSParserRuleCall_1_0();
+			element = grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0();
 			return obj;
 		}
 		return null;
@@ -1782,7 +1802,7 @@ protected class OseeEnum_OrdinalAssignment_1 extends AssignmentToken  {
 }
 
 
-/************ end Rule OseeEnum ****************/
+/************ end Rule OseeEnumEntry ****************/
 
 
 /************ begin Rule RelationType ****************

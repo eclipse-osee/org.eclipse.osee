@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnums <em>Enums</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnumEntries <em>Enum Entries</em>}</li>
  * </ul>
  * </p>
  *
@@ -38,14 +38,14 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
 {
   /**
-   * The cached value of the '{@link #getEnums() <em>Enums</em>}' containment reference list.
+   * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getEnums()
+   * @see #getEnumEntries()
    * @generated
    * @ordered
    */
-  protected EList<OseeEnum> enums;
+  protected EList<OseeEnumEntry> enumEntries;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,13 +73,13 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OseeEnum> getEnums()
+  public EList<OseeEnumEntry> getEnumEntries()
   {
-    if (enums == null)
+    if (enumEntries == null)
     {
-      enums = new EObjectContainmentEList<OseeEnum>(OseeEnum.class, this, OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS);
+      enumEntries = new EObjectContainmentEList<OseeEnumEntry>(OseeEnumEntry.class, this, OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES);
     }
-    return enums;
+    return enumEntries;
   }
 
   /**
@@ -92,8 +92,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
-        return ((InternalEList<?>)getEnums()).basicRemove(otherEnd, msgs);
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return ((InternalEList<?>)getEnumEntries()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -108,8 +108,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
-        return getEnums();
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return getEnumEntries();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -125,9 +125,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
-        getEnums().clear();
-        getEnums().addAll((Collection<? extends OseeEnum>)newValue);
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+        getEnumEntries().clear();
+        getEnumEntries().addAll((Collection<? extends OseeEnumEntry>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +143,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
-        getEnums().clear();
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+        getEnumEntries().clear();
         return;
     }
     super.eUnset(featureID);
@@ -160,8 +160,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUMS:
-        return enums != null && !enums.isEmpty();
+      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return enumEntries != null && !enumEntries.isEmpty();
     }
     return super.eIsSet(featureID);
   }

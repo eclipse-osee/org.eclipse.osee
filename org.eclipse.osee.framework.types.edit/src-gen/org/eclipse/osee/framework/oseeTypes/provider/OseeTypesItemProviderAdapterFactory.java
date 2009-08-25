@@ -237,26 +237,26 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnum} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumItemProvider oseeEnumItemProvider;
+   protected OseeEnumEntryItemProvider oseeEnumEntryItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnum}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
-   public Adapter createOseeEnumAdapter() {
-      if (oseeEnumItemProvider == null) {
-         oseeEnumItemProvider = new OseeEnumItemProvider(this);
+   public Adapter createOseeEnumEntryAdapter() {
+      if (oseeEnumEntryItemProvider == null) {
+         oseeEnumEntryItemProvider = new OseeEnumEntryItemProvider(this);
       }
 
-      return oseeEnumItemProvider;
+      return oseeEnumEntryItemProvider;
    }
 
    /**
@@ -388,7 +388,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
       if (attributeTypeRefItemProvider != null) attributeTypeRefItemProvider.dispose();
       if (attributeTypeItemProvider != null) attributeTypeItemProvider.dispose();
       if (oseeEnumTypeItemProvider != null) oseeEnumTypeItemProvider.dispose();
-      if (oseeEnumItemProvider != null) oseeEnumItemProvider.dispose();
+      if (oseeEnumEntryItemProvider != null) oseeEnumEntryItemProvider.dispose();
       if (relationTypeItemProvider != null) relationTypeItemProvider.dispose();
    }
 
