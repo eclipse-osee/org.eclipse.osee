@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -156,10 +155,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          testVersionArtifacts(artifacts);
          testStateMachineAssignees(artifacts);
          testAtsLogs(artifacts);
-         // Decache processed artifacts so don't run out of memory
-         for (Artifact artifact : artifacts) {
-            ArtifactCache.deCache(artifact);
-         }
+
+         artifacts.clear();
+         // Garbage collect so don't run out of memory
          System.gc();
          if (monitor != null) {
             monitor.worked(1);
@@ -281,7 +279,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          xResultData.logError("Artifact load returned 0 artifacts to check");
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
-      return Collections.subDivide(artIds, 999);
+      return Collections.subDivide(artIds, 5000);
    }
 
    private void testAtsAttributeValues(Collection<Artifact> artifacts) throws OseeCoreException {
