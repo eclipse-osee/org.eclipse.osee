@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.io.File;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -72,7 +73,8 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             File directory = selectDirectory();
-            if (directory != null && directory.isDirectory()) txtDirectory.setText(directory.getPath());
+            if (directory != null && directory.isDirectory())
+               txtDirectory.setText(directory.getPath());
          }
 
       });
@@ -92,7 +94,8 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             File file = selectFile();
-            if (file != null && file.isFile()) txtSingleFile.setText(file.getPath());
+            if (file != null && file.isFile())
+               txtSingleFile.setText(file.getPath());
          }
 
       });
@@ -139,7 +142,8 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    }
 
    public boolean validate(WizardDataTransferPage wizardPage) {
-      if ((isDirectorySelected() && getFile().isDirectory()) || (!isDirectorySelected() && getFile().isFile())) return true;
+      if ((isDirectorySelected() && getFile().isDirectory()) || (!isDirectorySelected() && getFile().isFile()))
+         return true;
 
       wizardPage.setErrorMessage(getText() + " is not a " + (isDirectorySelected() ? "directory" : "file"));
       return false;
@@ -147,8 +151,12 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
 
    private File selectFile() {
       FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SINGLE);
-      dialog.setFilterPath(AWorkspace.getWorkspacePath());
-
+      File file = getFile();
+      if (file != null && Strings.isValid(file.getAbsolutePath())) {
+         dialog.setFilterPath(file.getAbsolutePath());
+      } else {
+         dialog.setFilterPath(AWorkspace.getWorkspacePath());
+      }
       String path = dialog.open();
 
       if (path != null) {
@@ -160,8 +168,12 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
 
    private File selectDirectory() {
       DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN);
-      dialog.setFilterPath(AWorkspace.getWorkspacePath());
-
+      File file = getFile();
+      if (file != null && Strings.isValid(file.getAbsolutePath())) {
+         dialog.setFilterPath(file.getAbsolutePath());
+      } else {
+         dialog.setFilterPath(AWorkspace.getWorkspacePath());
+      }
       String path = dialog.open();
 
       if (path != null) {

@@ -1,6 +1,10 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+import java.util.Iterator;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -34,11 +38,19 @@ public class NewOseeTypesFileWizard extends Wizard implements INewWizard {
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
+      IContainer parent = null;
+      Object object = selection.getFirstElement();
+      if (object instanceof IFile) {
+         IFile iFile = (IFile) object;
+         parent = iFile.getParent();
+      } else if (object instanceof IContainer) {
+         parent = (IContainer) object;
+      }
+      mainPage = new NewOseeTypesFilePage(getWindowTitle(), parent);
    }
 
    @Override
    public void addPages() {
-      mainPage = new NewOseeTypesFilePage(getWindowTitle());
       addPage(mainPage);
    }
 

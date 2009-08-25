@@ -39,7 +39,7 @@ public class ImportMetaJob extends Job {
          ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
          if (file.isFile()) {
             monitor.beginTask("Importing " + file.getName(), 2);
-            importer.extractTypesFromSheet(new FileInputStream(file));
+            importer.extractTypesFromSheet(file.getName(), new FileInputStream(file));
             monitor.worked(1);
          } else if (file.isDirectory()) {
             File[] children = file.listFiles(new ExtensionFilter(".xml"));
@@ -51,7 +51,7 @@ public class ImportMetaJob extends Job {
                }
 
                monitor.subTask(childFile.getName());
-               importer.extractTypesFromSheet(new FileInputStream(childFile));
+               importer.extractTypesFromSheet(file.getName(), new FileInputStream(childFile));
                monitor.worked(1);
             }
          }

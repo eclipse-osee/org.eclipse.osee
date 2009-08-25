@@ -44,7 +44,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
 
       if (sourceFile.isFile()) {
          monitor.setTaskName("Importing " + sourceFile.getName());
-         importer.extractTypesFromSheet(new FileInputStream(sourceFile));
+         importer.extractTypesFromSheet(sourceFile.getName(), new FileInputStream(sourceFile));
       } else if (sourceFile.isDirectory()) {
          File[] children = sourceFile.listFiles(new ExcelFilter());
          monitor.beginTask("Importing files", children.length + 1);
@@ -52,7 +52,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
 
             monitor.subTask(childFile.getName());
-            importer.extractTypesFromSheet(new FileInputStream(childFile));
+            importer.extractTypesFromSheet(childFile.getName(), new FileInputStream(childFile));
          }
       }
       checkForCancelledStatus(monitor);
@@ -71,7 +71,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
             target = destinationFile.toURI();
          }
 
-         OseeModelUtil.saveModel(target, entry.getValue());
+         OseeTypeModelUtil.saveModel(target, entry.getValue());
       }
    }
    private final class ExcelFilter implements FilenameFilter {

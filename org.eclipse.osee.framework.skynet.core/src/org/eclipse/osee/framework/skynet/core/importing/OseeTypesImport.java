@@ -89,7 +89,7 @@ public class OseeTypesImport {
                   InputStream inputStream = null;
                   try {
                      inputStream = url.openStream();
-                     importer.extractTypesFromSheet(inputStream);
+                     importer.extractTypesFromSheet(url.getPath(), inputStream);
                   } finally {
                      if (inputStream != null) {
                         inputStream.close();

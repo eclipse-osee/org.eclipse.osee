@@ -80,10 +80,12 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
    }
 
-   private OseeType getObject(String name) {
+   private OseeType getObject(String name, Class<? extends OseeType> classToLookFor) {
       for (OseeType oseeTypes : getCurrentModel().getTypes()) {
-         if (name.equals(oseeTypes.getName())) {
-            return oseeTypes;
+         if (classToLookFor.isAssignableFrom(oseeTypes.getClass())) {
+            if (name.equals(oseeTypes.getName())) {
+               return classToLookFor.cast(oseeTypes);
+            }
          }
       }
       return null;
@@ -92,17 +94,17 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    @Override
    public void onArtifactType(String namespace, String name, String superArtifactTypeName) throws OseeCoreException {
       String id = toQualifiedName(namespace, name);
-      OseeType types = getObject(id);
+      OseeType types = getObject(id, ArtifactType.class);
       if (types == null) {
          ArtifactType artifactType = factory.createArtifactType();
          artifactType.setName(id);
          getCurrentModel().getTypes().add(artifactType);
 
          if (superArtifactTypeName != null) {
-            ArtifactType superArtifactType = (ArtifactType) getObject(superArtifactTypeName);
+            ArtifactType superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
             if (superArtifactType == null) {
                onArtifactType(namespace, superArtifactTypeName, null);
-               superArtifactType = (ArtifactType) getObject(superArtifactTypeName);
+               superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
             }
             artifactType.setSuperArtifactType(superArtifactType);
          }
@@ -112,7 +114,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    @Override
    public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
       String id = toQualifiedName(namespace, name);
-      OseeType types = getObject(id);
+      OseeType types = getObject(id, AttributeType.class);
       if (types == null) {
          AttributeType attributeType = factory.createAttributeType();
          attributeType.setName(id);
@@ -152,13 +154,21 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
    @Override
    public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException {
-      return getObject(artifactSuperTypeName) != null;
+      return getObject(artifactSuperTypeName, ArtifactType.class) != null;
    }
 
    @Override
    public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
-      ArtifactType superArtifactType = (ArtifactType) getObject(toQualifiedName("", artifactSuperTypeName));
-      AttributeType attributeType = (AttributeType) getObject(toQualifiedName("", attributeName));
+      ArtifactType superArtifactType =
+            (ArtifactType) getObject(toQualifiedName("", artifactSuperTypeName), ArtifactType.class);
+      AttributeType attributeType = (AttributeType) getObject(toQualifiedName("", attributeName), AttributeType.class);
+
+      if (superArtifactType == null && "Artifact".equals(artifactSuperTypeName)) {
+         onArtifactType("", "Artifact", null);
+         superArtifactType = (ArtifactType) getObject(toQualifiedName("", artifactSuperTypeName), ArtifactType.class);
+         System.out.println();
+         System.out.println(superArtifactType);
+      }
 
       if (superArtifactType == null || attributeType == null) {
          throw new OseeStateException(String.format("Type Missing: %s - %s", artifactSuperTypeName, attributeName));
@@ -171,7 +181,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    @Override
    public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       String id = toQualifiedName(namespace, name);
-      OseeType types = getObject(id);
+      OseeType types = getObject(id, RelationType.class);
       if (types == null) {
          RelationType relationType = factory.createRelationType();
          relationType.setName(id);
@@ -191,8 +201,8 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
    @Override
    public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException {
-      RelationType relationType = (RelationType) getObject(toQualifiedName("", relationTypeName));
-      ArtifactType artifactType = (ArtifactType) getObject(toQualifiedName("", artifactTypeName));
+      RelationType relationType = (RelationType) getObject(toQualifiedName("", relationTypeName), RelationType.class);
+      ArtifactType artifactType = (ArtifactType) getObject(toQualifiedName("", artifactTypeName), ArtifactType.class);
 
       if (sideAMax > 0) {
          relationType.setSideAArtifactType(artifactType);
@@ -280,7 +290,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
       OseeEnumType oseeEnumType = null;
 
-      OseeType types = getObject(enumTypeName);
+      OseeType types = getObject(enumTypeName, OseeEnumType.class);
       if (types == null) {
          oseeEnumType = factory.createOseeEnumType();
          oseeEnumType.setName(enumTypeName);

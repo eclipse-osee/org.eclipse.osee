@@ -35,7 +35,7 @@ public class ExcelXmlODMFileHandler implements IOseeDataTypeHandler {
          inputStream = new BufferedInputStream(FileLocator.openStream(null, file, false));
 
          ExcelOseeTypeDataParser parser = new ExcelOseeTypeDataParser(converter);
-         parser.extractTypesFromSheet(inputStream);
+         parser.extractTypesFromSheet(file.toPortableString(), inputStream);
 
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);

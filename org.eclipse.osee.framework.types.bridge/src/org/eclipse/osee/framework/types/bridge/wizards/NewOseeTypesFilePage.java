@@ -1,6 +1,7 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
@@ -20,9 +21,11 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
    private DirectoryOrFileSelector sourceFileSelector;
    private DirectoryOrFileSelector destinationFileSelector;
    private Button fromExcel;
+   private final IResource defaultDestination;
 
-   protected NewOseeTypesFilePage(String title) {
+   protected NewOseeTypesFilePage(String title, IResource destination) {
       super(PAGE_NAME);
+      this.defaultDestination = destination;
       setTitle(title);
       setDescription(title);
    }
@@ -49,13 +52,15 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
 
       destinationFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Destination File", this);
       destinationFileSelector.addListener(SWT.Selection, this);
+      destinationFileSelector.setDirectorySelected(false);
 
-      fromExcel = new Button(composite, SWT.PUSH);
+      fromExcel = new Button(composite, SWT.CHECK);
       fromExcel.setText("Based on Excel Osee Types");
       fromExcel.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
 
       sourceFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Excel Source File(s)", this);
       sourceFileSelector.addListener(SWT.Selection, this);
+      sourceFileSelector.setDirectorySelected(false);
 
       fromExcel.addSelectionListener(new SelectionAdapter() {
 
@@ -75,8 +80,14 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
    protected void restoreWidgetValues() {
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
+         if (defaultDestination != null) {
+            destinationFileSelector.setDirectorySelected(true);
+            destinationFileSelector.setText(new File(defaultDestination.getLocationURI()).getAbsolutePath());
+         } else {
+            restoreSelector(settings, "new.osee.types.destination", destinationFileSelector);
+         }
+
          restoreSelector(settings, "new.osee.types.source", sourceFileSelector);
-         restoreSelector(settings, "new.osee.types.destination", destinationFileSelector);
       }
    }
 

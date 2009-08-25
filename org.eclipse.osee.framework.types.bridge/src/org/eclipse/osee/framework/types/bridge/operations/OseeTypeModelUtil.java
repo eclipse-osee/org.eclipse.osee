@@ -12,9 +12,9 @@ import org.eclipse.osee.framework.OseeTypesStandaloneSetup;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.xtext.resource.XtextResource;
 
-public final class OseeModelUtil {
+public final class OseeTypeModelUtil {
 
-   private OseeModelUtil() {
+   private OseeTypeModelUtil() {
    }
 
    public static OseeTypeModel loadModel(java.net.URI target) {

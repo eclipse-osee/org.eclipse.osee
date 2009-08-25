@@ -19,10 +19,10 @@ public class TextModelToOseeOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      OseeTypeModel model = OseeModelUtil.loadModel(resource);
+      OseeTypeModel model = OseeTypeModelUtil.loadModel(resource);
       for (Import importEntry : model.getImports()) {
          System.out.println("Import: " + importEntry.getImportURI());
-         OseeTypeModel importedModel = OseeModelUtil.loadModel(new URI(importEntry.getImportURI()));
+         OseeTypeModel importedModel = OseeTypeModelUtil.loadModel(new URI(importEntry.getImportURI()));
       }
       
       for (OseeType type : model.getTypes()) {
