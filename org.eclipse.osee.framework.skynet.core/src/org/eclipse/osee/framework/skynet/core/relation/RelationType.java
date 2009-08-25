@@ -125,11 +125,15 @@ public class RelationType implements Comparable<RelationType> {
       return relationTypeId;
    }
 
+   public RelationTypeSide getRelationTypeSide(RelationSide relationSide) {
+      return new RelationTypeSide(this, relationSide);
+   }
+
    public boolean isOrdered() {
       return ordered.equalsIgnoreCase("Yes");
    }
-   
-   public String getDefaultOrderTypeGuid(){
+
+   public String getDefaultOrderTypeGuid() {
       return defaultOrderTypeGuid;
    }
 }

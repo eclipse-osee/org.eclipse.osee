@@ -230,8 +230,11 @@ public class RelationManager {
             new CompositeKeyHashMap<Integer, Integer, Object[]>((int) (selectedRelations.size() * 1.25) + 1);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
-      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
-            relationType == null ? RelationSide.OPPOSITE : relationSide);
+      if (relationSide == null) {
+         relationSide = RelationSide.OPPOSITE;
+      }
+
+      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations, relationSide);
 
       if (insertParameters.size() > 0) {
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
@@ -817,5 +820,4 @@ public class RelationManager {
       }
 
    }
-
 }

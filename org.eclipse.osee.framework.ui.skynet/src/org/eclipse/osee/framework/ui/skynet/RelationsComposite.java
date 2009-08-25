@@ -299,12 +299,12 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    private class SelectionId implements SelectionListener {
 
-      private RelationOrderId id;
-      
-      SelectionId(RelationOrderId id){
+      private final RelationOrderId id;
+
+      SelectionId(RelationOrderId id) {
          this.id = id;
       }
-      
+
       @Override
       public void widgetDefaultSelected(SelectionEvent e) {
       }
@@ -314,7 +314,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Object[] objects = selection.toArray();
          if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
-            RelationTypeSide typeSide = (RelationTypeSide)objects[0];
+            RelationTypeSide typeSide = (RelationTypeSide) objects[0];
             try {
                typeSide.getArtifact().setRelationOrder(typeSide, id);
             } catch (OseeCoreException ex) {
@@ -323,7 +323,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          }
       }
    }
-   
+
    private void createDeleteRelationMenuItem(final Menu parentMenu) {
       deleteRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       deleteRelationMenuItem.setText("&Delete Relation");
@@ -764,8 +764,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
-                        targetLink.getRelationType(), targetLink.getRelationSide(), null), artifactToMove);
+                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter,
+                        targetLink.getRelationType().getRelationTypeSide(targetLink.getRelationSide()), artifactToMove);
                }
                treeViewer.refresh();
                editor.onDirtied();

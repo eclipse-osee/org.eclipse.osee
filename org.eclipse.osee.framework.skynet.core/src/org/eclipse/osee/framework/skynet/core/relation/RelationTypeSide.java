@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class RelationTypeSide implements IRelationEnumeration {
 
-   private RelationType type;
-   private RelationSide side;
-   private Artifact artifact;
+   private final RelationType type;
+   private final RelationSide side;
+   private final Artifact artifact;
 
    public RelationTypeSide(RelationType type, RelationSide side, Artifact artifact) {
       this.type = type;
@@ -31,10 +31,14 @@ public class RelationTypeSide implements IRelationEnumeration {
       this.artifact = artifact;
    }
 
-   public RelationTypeSide(String typeName, String sideName, Artifact artifact) throws OseeTypeDoesNotExist, OseeDataStoreException, OseeArgumentException {
+   public RelationTypeSide(RelationType type, RelationSide side) {
+      this(type, side, null);
+   }
+
+   public RelationTypeSide(String typeName, String sideName) throws OseeTypeDoesNotExist, OseeDataStoreException, OseeArgumentException {
       this.type = RelationTypeManager.getType(typeName);
       this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-      this.artifact = artifact;
+      this.artifact = null;
    }
 
    @Override
