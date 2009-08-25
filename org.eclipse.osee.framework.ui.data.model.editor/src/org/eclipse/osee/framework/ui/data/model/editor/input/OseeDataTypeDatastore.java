@@ -47,12 +47,11 @@ public class OseeDataTypeDatastore {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          AttributeDataType attributeDataType =
-               new AttributeDataType(String.valueOf(attributeType.getAttrTypeId()), attributeType.getNamespace(),
-                     attributeType.getName(), attributeType.getBaseAttributeClass().getCanonicalName(),
-                     attributeType.getDefaultValue(), attributeType.getFileTypeExtension(),
-                     attributeType.getMaxOccurrences(), attributeType.getMinOccurrences(),
-                     attributeType.getProviderAttributeClass().getCanonicalName(), attributeType.getTaggerId(),
-                     attributeType.getTipText(), attributeType.getOseeEnumTypeId());
+               new AttributeDataType(String.valueOf(attributeType.getAttrTypeId()), attributeType.getName(),
+                     attributeType.getBaseAttributeClass().getCanonicalName(), attributeType.getDefaultValue(),
+                     attributeType.getFileTypeExtension(), attributeType.getMaxOccurrences(),
+                     attributeType.getMinOccurrences(), attributeType.getProviderAttributeClass().getCanonicalName(),
+                     attributeType.getTaggerId(), attributeType.getTipText(), attributeType.getOseeEnumTypeId());
          attributeDataTypes.add(attributeDataType);
       }
       return attributeDataTypes;
@@ -62,10 +61,9 @@ public class OseeDataTypeDatastore {
       List<RelationDataType> relationDataTypes = new ArrayList<RelationDataType>();
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          RelationDataType relationDataType =
-               new RelationDataType(String.valueOf(relationType.getRelationTypeId()), relationType.getNamespace(),
-                     relationType.getTypeName(), relationType.getAToBPhrasing(), relationType.getBToAPhrasing(),
-                     relationType.isOrdered(), relationType.getShortName(), relationType.getSideAName(),
-                     relationType.getSideBName());
+               new RelationDataType(String.valueOf(relationType.getRelationTypeId()), relationType.getTypeName(),
+                     relationType.getAToBPhrasing(), relationType.getBToAPhrasing(), relationType.isOrdered(),
+                     relationType.getShortName(), relationType.getSideAName(), relationType.getSideBName());
          relationDataTypes.add(relationDataType);
       }
       return relationDataTypes;
@@ -75,8 +73,8 @@ public class OseeDataTypeDatastore {
       List<ArtifactDataType> artifactDataTypes = new ArrayList<ArtifactDataType>();
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          ArtifactDataType artifactDataType =
-               new ArtifactDataType(String.valueOf(artifactType.getArtTypeId()), artifactType.getNamespace(),
-                     artifactType.getName(), ImageManager.getImage(artifactType));
+               new ArtifactDataType(String.valueOf(artifactType.getArtTypeId()), artifactType.getName(),
+                     ImageManager.getImage(artifactType));
          artifactDataTypes.add(artifactDataType);
       }
       return artifactDataTypes;
