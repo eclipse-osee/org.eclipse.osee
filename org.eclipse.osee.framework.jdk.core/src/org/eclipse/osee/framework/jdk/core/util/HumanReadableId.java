@@ -32,16 +32,16 @@ public class HumanReadableId {
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
    private static final int SEARCH_SPACE_SIZE = 34 * 31 * 31 * 31 * 34;
    private static final Pattern HRID_PATTERN = Pattern.compile(constructHridPattern());
-   private static int randomSeed;
+   private static int rawHrid;
 
    public static String generate() {
-      StringBuffer hrid = new StringBuffer();
+      StringBuffer textHrid = new StringBuffer();
 
-      randomSeed = new Random().nextInt(SEARCH_SPACE_SIZE);
+      rawHrid = new Random().nextInt(SEARCH_SPACE_SIZE);
       for (int i = 0; i < getHridLength(); i++) {
-         hrid.append(generateCharForPos(i));
+         textHrid.append(generateCharForPos(i));
       }
-      return hrid.toString();
+      return textHrid.toString();
    }
 
    private static int getHridLength() {
@@ -52,8 +52,8 @@ public class HumanReadableId {
       char[] possibleChars = getCharsValidForPos(pos);
       int radix = possibleChars.length;
 
-      char returnChar = possibleChars[randomSeed % radix];
-      randomSeed = randomSeed / radix;
+      char returnChar = possibleChars[rawHrid % radix];
+      rawHrid = rawHrid / radix;
 
       return returnChar;
    }
