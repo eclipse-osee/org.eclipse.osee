@@ -80,6 +80,19 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       }
    }
 
+   private Collection<String> determineConcreteTypes(String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
+      if (dataTypeProcessor.doesArtifactSuperTypeExist(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
+         concreteTypes.add(artifactSuperTypeName);
+      }
+      Collection<String> subTypeNames = superTypeMap.getValues(artifactSuperTypeName);
+      if (subTypeNames != null) {
+         for (String subTypeName : subTypeNames) {
+            determineConcreteTypes(subTypeName, concreteTypes);
+         }
+      }
+      return concreteTypes;
+   }
+
    public void finish() throws OseeCoreException {
       ensureAllSuperTypesInheritFromArtifact();
       Collection<String> concreteTypes = new ArrayList<String>();
@@ -92,35 +105,40 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    }
 
    private void processRelationValidity() throws OseeCoreException {
-      Collection<String> concreteTypes = new ArrayList<String>();
-      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
-            new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
+      //      Collection<String> concreteTypes = new ArrayList<String>();
+      //      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
+      //            new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
       for (ValidityRow row : validityArray) {
-         concreteTypes.clear();
-         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
-            String relationType = row.relationTypeName;
-            int sideAMax = row.sideAmax;
-            int sideBMax = row.sideBmax;
+         // TODO:
 
-            Pair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
-            if (sideDefinition == null) {
-               sideDefinition = new Pair<Integer, Integer>(sideAMax, sideBMax);
-               keyMap.put(artifactTypeName, relationType, sideDefinition);
-            } else {
-               sideDefinition.setFirst(Math.max(sideDefinition.getFirst(), sideAMax));
-               sideDefinition.setSecond(Math.max(sideDefinition.getSecond(), sideBMax));
-            }
-         }
+         dataTypeProcessor.onRelationValidity(row.artifactSuperTypeName, row.relationTypeName, row.sideAmax,
+               row.sideBmax);
+
+         //         concreteTypes.clear();
+         //         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
+         //            String relationType = row.relationTypeName;
+         //            int sideAMax = row.sideAmax;
+         //            int sideBMax = row.sideBmax;
+         //
+         //            Pair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
+         //            if (sideDefinition == null) {
+         //               sideDefinition = new Pair<Integer, Integer>(sideAMax, sideBMax);
+         //               keyMap.put(artifactTypeName, relationType, sideDefinition);
+         //            } else {
+         //               sideDefinition.setFirst(Math.max(sideDefinition.getFirst(), sideAMax));
+         //               sideDefinition.setSecond(Math.max(sideDefinition.getSecond(), sideBMax));
+         //            }
+         //         }
       }
 
-      for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
-         String artifactTypeName = entry.getKey().getFirst();
-         String relationTypeName = entry.getKey().getSecond();
-         Pair<Integer, Integer> sideDefinition = entry.getValue();
-         int sideAMax = sideDefinition.getFirst();
-         int sideBMax = sideDefinition.getSecond();
-         dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
-      }
+      //      for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
+      //         String artifactTypeName = entry.getKey().getFirst();
+      //         String relationTypeName = entry.getKey().getSecond();
+      //         Pair<Integer, Integer> sideDefinition = entry.getValue();
+      //         int sideAMax = sideDefinition.getFirst();
+      //         int sideBMax = sideDefinition.getSecond();
+      //         dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
+      //      }
    }
 
    public static String getDescription() {
@@ -220,8 +238,8 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       String shortName = row[5];
       String ordered = row[6];
       String defaultOrderTypeGuid = row[7];
-      if(defaultOrderTypeGuid == null){
-         if(ordered.equalsIgnoreCase("Yes")){
+      if (defaultOrderTypeGuid == null) {
+         if (ordered.equalsIgnoreCase("Yes")) {
             defaultOrderTypeGuid = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid();
          } else {
             defaultOrderTypeGuid = RelationOrderBaseTypes.UNORDERED.getGuid();
@@ -242,7 +260,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
       if (!artifactTypeName.equals("Artifact")) {
          superTypeMap.put(superTypeName, artifactTypeName);
       }
-      dataTypeProcessor.onArtifactType("", artifactTypeName);
+      dataTypeProcessor.onArtifactType("", artifactTypeName, superTypeName);
    }
 
    public void processEmptyRow() {
@@ -266,19 +284,6 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
          return Integer.MAX_VALUE;
       }
       return Integer.parseInt(quantity);
-   }
-
-   private Collection<String> determineConcreteTypes(String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
-      if (dataTypeProcessor.doesArtifactSuperTypeExist(artifactSuperTypeName)) { // artifactSuperTypeName might also be a concrete type
-         concreteTypes.add(artifactSuperTypeName);
-      }
-      Collection<String> subTypeNames = superTypeMap.getValues(artifactSuperTypeName);
-      if (subTypeNames != null) {
-         for (String subTypeName : subTypeNames) {
-            determineConcreteTypes(subTypeName, concreteTypes);
-         }
-      }
-      return concreteTypes;
    }
 
    private static class ValidityRow {
