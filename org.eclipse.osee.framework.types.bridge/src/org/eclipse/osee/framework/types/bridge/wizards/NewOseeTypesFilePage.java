@@ -43,10 +43,10 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       composite.setFont(parent.getFont());
 
-      sourceFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "File", this);
+      sourceFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Excel Source File(s)", this);
       sourceFileSelector.addListener(SWT.Selection, this);
 
-      destinationFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "File", this);
+      destinationFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Destination File", this);
       destinationFileSelector.addListener(SWT.Selection, this);
 
       restoreWidgetValues();
