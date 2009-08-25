@@ -376,7 +376,7 @@ public class ConflictManagerInternal {
    }
    
    /**
-    * @return Returns True if the destination gamma does not exists on a branch else false if it does.
+    * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     * @throws OseeDataStoreException
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException{
