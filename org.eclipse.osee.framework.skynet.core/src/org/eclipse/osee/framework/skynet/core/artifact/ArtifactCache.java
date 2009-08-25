@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -62,7 +61,6 @@ public class ArtifactCache {
       artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
       artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
       byArtifactTypeCache.removeValue(artifact.getArtifactType(), artifact);
-      RelationManager.deCache(artifact);
       deCacheStaticIds(artifact);
    }
 
