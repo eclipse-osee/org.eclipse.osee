@@ -12,22 +12,22 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Model</b></em>'.
+ * A representation of the model object '<em><b>Osee Type Model</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.Model#getImports <em>Imports</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.Model#getTypes <em>Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getImports <em>Imports</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getTypes <em>Types</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getModel()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeTypeModel()
  * @model
  * @generated
  */
-public interface Model extends EObject
+public interface OseeTypeModel extends EObject
 {
   /**
    * Returns the value of the '<em><b>Imports</b></em>' containment reference list.
@@ -39,7 +39,7 @@ public interface Model extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Imports</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getModel_Imports()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeTypeModel_Imports()
    * @model containment="true"
    * @generated
    */
@@ -55,10 +55,10 @@ public interface Model extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Types</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getModel_Types()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeTypeModel_Types()
    * @model containment="true"
    * @generated
    */
   EList<OseeType> getTypes();
 
-} // Model
+} // OseeTypeModel

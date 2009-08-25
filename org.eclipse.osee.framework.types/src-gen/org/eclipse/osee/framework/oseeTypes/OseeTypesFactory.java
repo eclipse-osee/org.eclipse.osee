@@ -27,13 +27,13 @@ public interface OseeTypesFactory extends EFactory
   OseeTypesFactory eINSTANCE = org.eclipse.osee.framework.oseeTypes.impl.OseeTypesFactoryImpl.init();
 
   /**
-   * Returns a new object of class '<em>Model</em>'.
+   * Returns a new object of class '<em>Osee Type Model</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Model</em>'.
+   * @return a new object of class '<em>Osee Type Model</em>'.
    * @generated
    */
-  Model createModel();
+  OseeTypeModel createOseeTypeModel();
 
   /**
    * Returns a new object of class '<em>Import</em>'.

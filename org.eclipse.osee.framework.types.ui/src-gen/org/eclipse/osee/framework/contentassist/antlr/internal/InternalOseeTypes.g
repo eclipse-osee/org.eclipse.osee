@@ -56,24 +56,24 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 
 
-// Entry rule entryRuleModel
-entryRuleModel :
-{ before(grammarAccess.getModelRule()); }
-	 ruleModel
-{ after(grammarAccess.getModelRule()); } 
+// Entry rule entryRuleOseeTypeModel
+entryRuleOseeTypeModel :
+{ before(grammarAccess.getOseeTypeModelRule()); }
+	 ruleOseeTypeModel
+{ after(grammarAccess.getOseeTypeModelRule()); } 
 	 EOF 
 ;
 
-// Rule Model
-ruleModel 
+// Rule OseeTypeModel
+ruleOseeTypeModel 
     @init {
 		int stackSize = keepStackSize();
     }
  :
 (
-{ before(grammarAccess.getModelAccess().getGroup()); }
-(rule__Model__Group__0)
-{ after(grammarAccess.getModelAccess().getGroup()); }
+{ before(grammarAccess.getOseeTypeModelAccess().getGroup()); }
+(rule__OseeTypeModel__Group__0)
+{ after(grammarAccess.getOseeTypeModelAccess().getGroup()); }
 )
 
 ;
@@ -780,33 +780,33 @@ finally {
 
 
 
-rule__Model__Group__0
+rule__OseeTypeModel__Group__0
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getImportsAssignment_0()); }
-(rule__Model__ImportsAssignment_0)*
-{ after(grammarAccess.getModelAccess().getImportsAssignment_0()); }
+{ before(grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0()); }
+(rule__OseeTypeModel__ImportsAssignment_0)*
+{ after(grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0()); }
 )
 
-	rule__Model__Group__1
+	rule__OseeTypeModel__Group__1
 ;
 finally {
 	restoreStackSize(stackSize);
 }
 
 
-rule__Model__Group__1
+rule__OseeTypeModel__Group__1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getTypesAssignment_1()); }
-(rule__Model__TypesAssignment_1)*
-{ after(grammarAccess.getModelAccess().getTypesAssignment_1()); }
+{ before(grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1()); }
+(rule__OseeTypeModel__TypesAssignment_1)*
+{ after(grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1()); }
 )
 
 ;
@@ -2227,14 +2227,14 @@ finally {
 
 
 
-rule__Model__ImportsAssignment_0
+rule__OseeTypeModel__ImportsAssignment_0
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getImportsImportParserRuleCall_0_0()); }
-	ruleImport{ after(grammarAccess.getModelAccess().getImportsImportParserRuleCall_0_0()); }
+{ before(grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0()); }
+	ruleImport{ after(grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0()); }
 )
 
 ;
@@ -2242,14 +2242,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__Model__TypesAssignment_1
+rule__OseeTypeModel__TypesAssignment_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getModelAccess().getTypesOseeTypeParserRuleCall_1_0()); }
-	ruleOseeType{ after(grammarAccess.getModelAccess().getTypesOseeTypeParserRuleCall_1_0()); }
+{ before(grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0()); }
+	ruleOseeType{ after(grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0()); }
 )
 
 ;

@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
     
     @Override
     protected String getFirstRuleName() {
-    	return "Model";	
+    	return "OseeTypeModel";	
    	} 
 }
 
@@ -69,16 +69,16 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 
 
-// Entry rule entryRuleModel
-entryRuleModel returns [EObject current=null] :
-	{ currentNode = createCompositeNode(grammarAccess.getModelRule(), currentNode); }
-	 iv_ruleModel=ruleModel 
-	 { $current=$iv_ruleModel.current; } 
+// Entry rule entryRuleOseeTypeModel
+entryRuleOseeTypeModel returns [EObject current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getOseeTypeModelRule(), currentNode); }
+	 iv_ruleOseeTypeModel=ruleOseeTypeModel 
+	 { $current=$iv_ruleOseeTypeModel.current; } 
 	 EOF 
 ;
 
-// Rule Model
-ruleModel returns [EObject current=null] 
+// Rule OseeTypeModel
+ruleOseeTypeModel returns [EObject current=null] 
     @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
@@ -88,12 +88,12 @@ ruleModel returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getModelAccess().getImportsImportParserRuleCall_0_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0(), currentNode); 
 	    }
 	    lv_imports_0=ruleImport 
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getModelRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getOseeTypeModelRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode.getParent(), $current);
 	        }
 	        
@@ -109,12 +109,12 @@ ruleModel returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getModelAccess().getTypesOseeTypeParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0(), currentNode); 
 	    }
 	    lv_types_1=ruleOseeType 
 	    {
 	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getModelRule().getType().getClassifier());
+	            $current = factory.create(grammarAccess.getOseeTypeModelRule().getType().getClassifier());
 	            associateNodeWithAstElement(currentNode.getParent(), $current);
 	        }
 	        

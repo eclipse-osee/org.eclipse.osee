@@ -40,7 +40,7 @@ public class OseeTypesParser extends org.eclipse.xtext.parser.antlr.AbstractAntl
 	
 	@Override 
 	protected String getDefaultRuleName() {
-		return "Model";
+		return "OseeTypeModel";
 	}
 	
 	public OseeTypesGrammarAccess getGrammarAccess() {

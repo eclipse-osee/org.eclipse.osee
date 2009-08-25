@@ -62,14 +62,14 @@ public interface OseeTypesPackage extends EPackage
   OseeTypesPackage eINSTANCE = org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl.init();
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ModelImpl <em>Model</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeModelImpl <em>Osee Type Model</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.ModelImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getModel()
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypeModelImpl
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeTypeModel()
    * @generated
    */
-  int MODEL = 0;
+  int OSEE_TYPE_MODEL = 0;
 
   /**
    * The feature id for the '<em><b>Imports</b></em>' containment reference list.
@@ -78,7 +78,7 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODEL__IMPORTS = 0;
+  int OSEE_TYPE_MODEL__IMPORTS = 0;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -87,16 +87,16 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    * @ordered
    */
-  int MODEL__TYPES = 1;
+  int OSEE_TYPE_MODEL__TYPES = 1;
 
   /**
-   * The number of structural features of the '<em>Model</em>' class.
+   * The number of structural features of the '<em>Osee Type Model</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int MODEL_FEATURE_COUNT = 2;
+  int OSEE_TYPE_MODEL_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ImportImpl <em>Import</em>}' class.
@@ -505,36 +505,36 @@ public interface OseeTypesPackage extends EPackage
 
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.Model <em>Model</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel <em>Osee Type Model</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Model</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Model
+   * @return the meta object for class '<em>Osee Type Model</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypeModel
    * @generated
    */
-  EClass getModel();
+  EClass getOseeTypeModel();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.Model#getImports <em>Imports</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getImports <em>Imports</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Imports</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Model#getImports()
-   * @see #getModel()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getImports()
+   * @see #getOseeTypeModel()
    * @generated
    */
-  EReference getModel_Imports();
+  EReference getOseeTypeModel_Imports();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.Model#getTypes <em>Types</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getTypes <em>Types</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Types</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.Model#getTypes()
-   * @see #getModel()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypeModel#getTypes()
+   * @see #getOseeTypeModel()
    * @generated
    */
-  EReference getModel_Types();
+  EReference getOseeTypeModel_Types();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.Import <em>Import</em>}'.
@@ -903,14 +903,14 @@ public interface OseeTypesPackage extends EPackage
   interface Literals
   {
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ModelImpl <em>Model</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeModelImpl <em>Osee Type Model</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.ModelImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getModel()
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypeModelImpl
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeTypeModel()
      * @generated
      */
-    EClass MODEL = eINSTANCE.getModel();
+    EClass OSEE_TYPE_MODEL = eINSTANCE.getOseeTypeModel();
 
     /**
      * The meta object literal for the '<em><b>Imports</b></em>' containment reference list feature.
@@ -918,7 +918,7 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODEL__IMPORTS = eINSTANCE.getModel_Imports();
+    EReference OSEE_TYPE_MODEL__IMPORTS = eINSTANCE.getOseeTypeModel_Imports();
 
     /**
      * The meta object literal for the '<em><b>Types</b></em>' containment reference list feature.
@@ -926,7 +926,7 @@ public interface OseeTypesPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference MODEL__TYPES = eINSTANCE.getModel_Types();
+    EReference OSEE_TYPE_MODEL__TYPES = eINSTANCE.getOseeTypeModel_Types();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ImportImpl <em>Import</em>}' class.

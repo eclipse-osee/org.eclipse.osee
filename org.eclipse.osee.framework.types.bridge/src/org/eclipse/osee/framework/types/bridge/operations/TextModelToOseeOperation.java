@@ -5,8 +5,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.oseeTypes.Import;
-import org.eclipse.osee.framework.oseeTypes.Model;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 public class TextModelToOseeOperation extends AbstractOperation {
@@ -19,12 +19,15 @@ public class TextModelToOseeOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Model model = OseeModelUtil.loadModel(resource);
+      OseeTypeModel model = OseeModelUtil.loadModel(resource);
       for (Import importEntry : model.getImports()) {
          System.out.println("Import: " + importEntry.getImportURI());
-         Model importedModel = OseeModelUtil.loadModel(new URI(importEntry.getImportURI()));
+         OseeTypeModel importedModel = OseeModelUtil.loadModel(new URI(importEntry.getImportURI()));
       }
+      
       for (OseeType type : model.getTypes()) {
+         
+         
          System.out.println(type.getName());
          for (EObject eObject : type.eContents()) {
             System.out.println(eObject.toString());

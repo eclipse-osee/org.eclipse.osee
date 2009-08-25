@@ -96,10 +96,10 @@ public class OseeTypesSwitch<T>
   {
     switch (classifierID)
     {
-      case OseeTypesPackage.MODEL:
+      case OseeTypesPackage.OSEE_TYPE_MODEL:
       {
-        Model model = (Model)theEObject;
-        T result = caseModel(model);
+        OseeTypeModel oseeTypeModel = (OseeTypeModel)theEObject;
+        T result = caseOseeTypeModel(oseeTypeModel);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -168,17 +168,17 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Model</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Osee Type Model</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Model</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Osee Type Model</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseModel(Model object)
+  public T caseOseeTypeModel(OseeTypeModel object)
   {
     return null;
   }

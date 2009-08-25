@@ -5,8 +5,11 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
@@ -16,6 +19,7 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
 
    private DirectoryOrFileSelector sourceFileSelector;
    private DirectoryOrFileSelector destinationFileSelector;
+   private Button fromExcel;
 
    protected NewOseeTypesFilePage(String title) {
       super(PAGE_NAME);
@@ -43,11 +47,23 @@ public class NewOseeTypesFilePage extends WizardDataTransferPage {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       composite.setFont(parent.getFont());
 
+      destinationFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Destination File", this);
+      destinationFileSelector.addListener(SWT.Selection, this);
+
+      fromExcel = new Button(composite, SWT.PUSH);
+      fromExcel.setText("Based on Excel Osee Types");
+      fromExcel.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, false, false));
+
       sourceFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Excel Source File(s)", this);
       sourceFileSelector.addListener(SWT.Selection, this);
 
-      destinationFileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "Destination File", this);
-      destinationFileSelector.addListener(SWT.Selection, this);
+      fromExcel.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            sourceFileSelector.setEnabled(fromExcel.getSelection());
+         }
+      });
 
       restoreWidgetValues();
       updateWidgetEnablements();

@@ -32,7 +32,7 @@ protected class ThisRootNode extends RootToken {
 	
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new Model_Group(this, this, 0, inst);
+			case 0: return new OseeTypeModel_Group(this, this, 0, inst);
 			case 1: return new Import_Group(this, this, 1, inst);
 			case 2: return new OseeType_Alternatives(this, this, 2, inst);
 			case 3: return new ArtifactType_Group(this, this, 3, inst);
@@ -47,47 +47,47 @@ protected class ThisRootNode extends RootToken {
 }
 	
 
-/************ begin Rule Model ****************
+/************ begin Rule OseeTypeModel ****************
  *
- * Model:
+ * OseeTypeModel:
  *   imports+=Import* types+=OseeType*;
  *
  **/
 
 // imports+=Import* types+=OseeType*
-protected class Model_Group extends GroupToken {
+protected class OseeTypeModel_Group extends GroupToken {
 	
-	public Model_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeTypeModel_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Group getGrammarElement() {
-		return grammarAccess.getModelAccess().getGroup();
+		return grammarAccess.getOseeTypeModelAccess().getGroup();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new Model_TypesAssignment_1(parent, this, 0, inst);
-			case 1: return new Model_ImportsAssignment_0(parent, this, 1, inst);
+			case 0: return new OseeTypeModel_TypesAssignment_1(parent, this, 0, inst);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
 		
 	public IInstanceDescription tryConsume() {
-		if(!current.isInstanceOf(grammarAccess.getModelRule().getType().getClassifier())) return null;
+		if(!current.isInstanceOf(grammarAccess.getOseeTypeModelRule().getType().getClassifier())) return null;
 		return tryConsumeVal();
 	}
 }
 
 // imports+=Import*
-protected class Model_ImportsAssignment_0 extends AssignmentToken  {
+protected class OseeTypeModel_ImportsAssignment_0 extends AssignmentToken  {
 	
-	public Model_ImportsAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeTypeModel_ImportsAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getModelAccess().getImportsAssignment_0();
+		return grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -104,7 +104,7 @@ protected class Model_ImportsAssignment_0 extends AssignmentToken  {
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getImportRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getModelAccess().getImportsImportParserRuleCall_0_0(); 
+				element = grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -115,21 +115,21 @@ protected class Model_ImportsAssignment_0 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new Model_ImportsAssignment_0(parent, next, actIndex, consumed);
+			case 0: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
 			default: return parent.createParentFollower(next, actIndex , index - 1, consumed);
 		}	
 	}	
 }
 
 // types+=OseeType*
-protected class Model_TypesAssignment_1 extends AssignmentToken  {
+protected class OseeTypeModel_TypesAssignment_1 extends AssignmentToken  {
 	
-	public Model_TypesAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeTypeModel_TypesAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getModelAccess().getTypesAssignment_1();
+		return grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -146,7 +146,7 @@ protected class Model_TypesAssignment_1 extends AssignmentToken  {
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getOseeTypeRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getModelAccess().getTypesOseeTypeParserRuleCall_1_0(); 
+				element = grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -157,15 +157,15 @@ protected class Model_TypesAssignment_1 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new Model_TypesAssignment_1(parent, next, actIndex, consumed);
-			case 1: return new Model_ImportsAssignment_0(parent, next, actIndex, consumed);
+			case 0: return new OseeTypeModel_TypesAssignment_1(parent, next, actIndex, consumed);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
 			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
 		}	
 	}	
 }
 
 
-/************ end Rule Model ****************/
+/************ end Rule OseeTypeModel ****************/
 
 
 /************ begin Rule Import ****************

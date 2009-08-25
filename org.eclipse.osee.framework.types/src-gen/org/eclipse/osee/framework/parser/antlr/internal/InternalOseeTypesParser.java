@@ -62,30 +62,30 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
         
         @Override
         protected String getFirstRuleName() {
-        	return "Model";	
+        	return "OseeTypeModel";	
        	} 
 
 
 
-    // $ANTLR start entryRuleModel
-    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:73:1: entryRuleModel returns [EObject current=null] : iv_ruleModel= ruleModel EOF ;
-    public final EObject entryRuleModel() throws RecognitionException {
+    // $ANTLR start entryRuleOseeTypeModel
+    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:73:1: entryRuleOseeTypeModel returns [EObject current=null] : iv_ruleOseeTypeModel= ruleOseeTypeModel EOF ;
+    public final EObject entryRuleOseeTypeModel() throws RecognitionException {
         EObject current = null;
 
-        EObject iv_ruleModel = null;
+        EObject iv_ruleOseeTypeModel = null;
 
 
         try {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:73:47: (iv_ruleModel= ruleModel EOF )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:74:2: iv_ruleModel= ruleModel EOF
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:73:55: (iv_ruleOseeTypeModel= ruleOseeTypeModel EOF )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:74:2: iv_ruleOseeTypeModel= ruleOseeTypeModel EOF
             {
-             currentNode = createCompositeNode(grammarAccess.getModelRule(), currentNode); 
-            pushFollow(FOLLOW_ruleModel_in_entryRuleModel73);
-            iv_ruleModel=ruleModel();
+             currentNode = createCompositeNode(grammarAccess.getOseeTypeModelRule(), currentNode); 
+            pushFollow(FOLLOW_ruleOseeTypeModel_in_entryRuleOseeTypeModel73);
+            iv_ruleOseeTypeModel=ruleOseeTypeModel();
             _fsp--;
 
-             current =iv_ruleModel; 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleModel83); 
+             current =iv_ruleOseeTypeModel; 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleOseeTypeModel83); 
 
             }
 
@@ -99,12 +99,12 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
         }
         return current;
     }
-    // $ANTLR end entryRuleModel
+    // $ANTLR end entryRuleOseeTypeModel
 
 
-    // $ANTLR start ruleModel
-    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:81:1: ruleModel returns [EObject current=null] : ( (lv_imports_0= ruleImport )* (lv_types_1= ruleOseeType )* ) ;
-    public final EObject ruleModel() throws RecognitionException {
+    // $ANTLR start ruleOseeTypeModel
+    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:81:1: ruleOseeTypeModel returns [EObject current=null] : ( (lv_imports_0= ruleImport )* (lv_types_1= ruleOseeType )* ) ;
+    public final EObject ruleOseeTypeModel() throws RecognitionException {
         EObject current = null;
 
         EObject lv_imports_0 = null;
@@ -137,15 +137,15 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
             	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:90:6: lv_imports_0= ruleImport
             	    {
             	     
-            	    	        currentNode=createCompositeNode(grammarAccess.getModelAccess().getImportsImportParserRuleCall_0_0(), currentNode); 
+            	    	        currentNode=createCompositeNode(grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0(), currentNode); 
             	    	    
-            	    pushFollow(FOLLOW_ruleImport_in_ruleModel142);
+            	    pushFollow(FOLLOW_ruleImport_in_ruleOseeTypeModel142);
             	    lv_imports_0=ruleImport();
             	    _fsp--;
 
 
             	    	        if (current==null) {
-            	    	            current = factory.create(grammarAccess.getModelRule().getType().getClassifier());
+            	    	            current = factory.create(grammarAccess.getOseeTypeModelRule().getType().getClassifier());
             	    	            associateNodeWithAstElement(currentNode.getParent(), current);
             	    	        }
             	    	        
@@ -181,15 +181,15 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
             	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:111:6: lv_types_1= ruleOseeType
             	    {
             	     
-            	    	        currentNode=createCompositeNode(grammarAccess.getModelAccess().getTypesOseeTypeParserRuleCall_1_0(), currentNode); 
+            	    	        currentNode=createCompositeNode(grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0(), currentNode); 
             	    	    
-            	    pushFollow(FOLLOW_ruleOseeType_in_ruleModel181);
+            	    pushFollow(FOLLOW_ruleOseeType_in_ruleOseeTypeModel181);
             	    lv_types_1=ruleOseeType();
             	    _fsp--;
 
 
             	    	        if (current==null) {
-            	    	            current = factory.create(grammarAccess.getModelRule().getType().getClassifier());
+            	    	            current = factory.create(grammarAccess.getOseeTypeModelRule().getType().getClassifier());
             	    	            associateNodeWithAstElement(currentNode.getParent(), current);
             	    	        }
             	    	        
@@ -228,7 +228,7 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
         }
         return current;
     }
-    // $ANTLR end ruleModel
+    // $ANTLR end ruleOseeTypeModel
 
 
     // $ANTLR start entryRuleImport
@@ -2809,10 +2809,10 @@ public class InternalOseeTypesParser extends AbstractInternalAntlrParser {
 
  
 
-    public static final BitSet FOLLOW_ruleModel_in_entryRuleModel73 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleModel83 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleImport_in_ruleModel142 = new BitSet(new long[]{0x0030000021800802L});
-    public static final BitSet FOLLOW_ruleOseeType_in_ruleModel181 = new BitSet(new long[]{0x0030000021800002L});
+    public static final BitSet FOLLOW_ruleOseeTypeModel_in_entryRuleOseeTypeModel73 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleOseeTypeModel83 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleImport_in_ruleOseeTypeModel142 = new BitSet(new long[]{0x0030000021800802L});
+    public static final BitSet FOLLOW_ruleOseeType_in_ruleOseeTypeModel181 = new BitSet(new long[]{0x0030000021800002L});
     public static final BitSet FOLLOW_ruleImport_in_entryRuleImport219 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleImport229 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_11_in_ruleImport263 = new BitSet(new long[]{0x0000000000000010L});

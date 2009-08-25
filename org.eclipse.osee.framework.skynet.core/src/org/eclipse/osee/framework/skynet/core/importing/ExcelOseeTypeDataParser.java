@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -53,8 +54,13 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
    private final boolean debugRows = false;
    private final XMLReader xmlReader;
    private final IOseeDataTypeProcessor dataTypeProcessor;
+   private final boolean isFlattenHierarchyEnabled;
 
    public ExcelOseeTypeDataParser(IOseeDataTypeProcessor dataTypeProcessor) throws SAXException, IOException {
+      this(dataTypeProcessor, true);
+   }
+
+   public ExcelOseeTypeDataParser(IOseeDataTypeProcessor dataTypeProcessor, boolean isFlattenHierarchyEnabled) throws SAXException, IOException {
       this.dataTypeProcessor = dataTypeProcessor;
       excelHandler = new ExcelSaxHandler(this, true, true);
       superTypeMap = new HashCollection<String, String>(false, HashSet.class);
@@ -63,6 +69,7 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
 
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);
+      this.isFlattenHierarchyEnabled = isFlattenHierarchyEnabled;
    }
 
    public void extractTypesFromSheet(InputStream importFile) throws IOException, SAXException {
@@ -95,50 +102,66 @@ public class ExcelOseeTypeDataParser implements RowProcessor {
 
    public void finish() throws OseeCoreException {
       ensureAllSuperTypesInheritFromArtifact();
-      Collection<String> concreteTypes = new ArrayList<String>();
-      for (AttributeRow attributeRow : attributeMapRows) {
-         concreteTypes.clear();
-         dataTypeProcessor.onAttributeValidity(attributeRow.attributeName, attributeRow.artifactSuperTypeName,
-               determineConcreteTypes(attributeRow.artifactSuperTypeName, concreteTypes));
+      if (isFlattenHierarchyEnabled) {
+         Collection<String> concreteTypes = new ArrayList<String>();
+         for (AttributeRow attributeRow : attributeMapRows) {
+            concreteTypes.clear();
+            dataTypeProcessor.onAttributeValidity(attributeRow.attributeName, attributeRow.artifactSuperTypeName,
+                  determineConcreteTypes(attributeRow.artifactSuperTypeName, concreteTypes));
+         }
+      } else {
+         for (AttributeRow attributeRow : attributeMapRows) {
+            Collection<String> childTypes = superTypeMap.getValues(attributeRow.artifactSuperTypeName);
+            if (childTypes == null) {
+               childTypes = Collections.emptyList();
+            }
+            dataTypeProcessor.onAttributeValidity(attributeRow.attributeName, attributeRow.artifactSuperTypeName,
+                  childTypes);
+         }
       }
       processRelationValidity();
    }
 
    private void processRelationValidity() throws OseeCoreException {
-      //      Collection<String> concreteTypes = new ArrayList<String>();
-      //      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
-      //            new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
-      for (ValidityRow row : validityArray) {
-         // TODO:
+      if (isFlattenHierarchyEnabled) {
+         Collection<String> concreteTypes = new ArrayList<String>();
+         CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
+               new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
+         for (ValidityRow row : validityArray) {
+            dataTypeProcessor.onRelationValidity(row.artifactSuperTypeName, row.relationTypeName, row.sideAmax,
+                  row.sideBmax);
 
-         dataTypeProcessor.onRelationValidity(row.artifactSuperTypeName, row.relationTypeName, row.sideAmax,
-               row.sideBmax);
+            concreteTypes.clear();
+            for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
+               String relationType = row.relationTypeName;
+               int sideAMax = row.sideAmax;
+               int sideBMax = row.sideBmax;
 
-         //         concreteTypes.clear();
-         //         for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
-         //            String relationType = row.relationTypeName;
-         //            int sideAMax = row.sideAmax;
-         //            int sideBMax = row.sideBmax;
-         //
-         //            Pair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
-         //            if (sideDefinition == null) {
-         //               sideDefinition = new Pair<Integer, Integer>(sideAMax, sideBMax);
-         //               keyMap.put(artifactTypeName, relationType, sideDefinition);
-         //            } else {
-         //               sideDefinition.setFirst(Math.max(sideDefinition.getFirst(), sideAMax));
-         //               sideDefinition.setSecond(Math.max(sideDefinition.getSecond(), sideBMax));
-         //            }
-         //         }
+               Pair<Integer, Integer> sideDefinition = keyMap.get(artifactTypeName, relationType);
+               if (sideDefinition == null) {
+                  sideDefinition = new Pair<Integer, Integer>(sideAMax, sideBMax);
+                  keyMap.put(artifactTypeName, relationType, sideDefinition);
+               } else {
+                  sideDefinition.setFirst(Math.max(sideDefinition.getFirst(), sideAMax));
+                  sideDefinition.setSecond(Math.max(sideDefinition.getSecond(), sideBMax));
+               }
+            }
+         }
+
+         for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
+            String artifactTypeName = entry.getKey().getFirst();
+            String relationTypeName = entry.getKey().getSecond();
+            Pair<Integer, Integer> sideDefinition = entry.getValue();
+            int sideAMax = sideDefinition.getFirst();
+            int sideBMax = sideDefinition.getSecond();
+            dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
+         }
+      } else {
+         for (ValidityRow row : validityArray) {
+            dataTypeProcessor.onRelationValidity(row.artifactSuperTypeName, row.relationTypeName, row.sideAmax,
+                  row.sideBmax);
+         }
       }
-
-      //      for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
-      //         String artifactTypeName = entry.getKey().getFirst();
-      //         String relationTypeName = entry.getKey().getSecond();
-      //         Pair<Integer, Integer> sideDefinition = entry.getValue();
-      //         int sideAMax = sideDefinition.getFirst();
-      //         int sideBMax = sideDefinition.getSecond();
-      //         dataTypeProcessor.onRelationValidity(artifactTypeName, relationTypeName, sideAMax, sideBMax);
-      //      }
    }
 
    public static String getDescription() {

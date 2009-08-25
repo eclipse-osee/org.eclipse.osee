@@ -4,9 +4,9 @@
     <metamodelDeclarations xsi:type="xtext:GeneratedMetamodel" name="oseeTypes">
       <ePackage href="http://www.eclipse.org/osee/framework/OseeTypes#/"/>
     </metamodelDeclarations>
-    <rules xsi:type="xtext:ParserRule" name="Model">
+    <rules xsi:type="xtext:ParserRule" name="OseeTypeModel">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//Model"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeTypeModel"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="imports" operator="+=">

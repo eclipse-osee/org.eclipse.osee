@@ -17,15 +17,15 @@ import org.eclipse.xtext.common.services.TerminalsGrammarAccess;
 public class OseeTypesGrammarAccess implements IGrammarAccess {
 	
 	
-	public class ModelElements implements IParserRuleAccess {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Model");
+	public class OseeTypeModelElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeTypeModel");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cImportsAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cImportsImportParserRuleCall_0_0 = (RuleCall)cImportsAssignment_0.eContents().get(0);
 		private final Assignment cTypesAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cTypesOseeTypeParserRuleCall_1_0 = (RuleCall)cTypesAssignment_1.eContents().get(0);
 		
-		//Model:
+		//OseeTypeModel:
 		//  imports+=Import* types+=OseeType*;
 		public ParserRule getRule() { return rule; }
 
@@ -783,7 +783,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getMANY_TO_ONEMANY_TO_ONEKeyword_2_0() { return cMANY_TO_ONEMANY_TO_ONEKeyword_2_0; }
 	}
 	
-	private ModelElements pModel;
+	private OseeTypeModelElements pOseeTypeModel;
 	private ImportElements pImport;
 	private QUALIFIED_NAMEElements pQUALIFIED_NAME;
 	private DIGITSElements pDIGITS;
@@ -818,14 +818,14 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	}
 
 	
-	//Model:
+	//OseeTypeModel:
 	//  imports+=Import* types+=OseeType*;
-	public ModelElements getModelAccess() {
-		return (pModel != null) ? pModel : (pModel = new ModelElements());
+	public OseeTypeModelElements getOseeTypeModelAccess() {
+		return (pOseeTypeModel != null) ? pOseeTypeModel : (pOseeTypeModel = new OseeTypeModelElements());
 	}
 	
-	public ParserRule getModelRule() {
-		return getModelAccess().getRule();
+	public ParserRule getOseeTypeModelRule() {
+		return getOseeTypeModelAccess().getRule();
 	}
 
 	//Import:

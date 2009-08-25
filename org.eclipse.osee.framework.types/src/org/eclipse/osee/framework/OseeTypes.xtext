@@ -2,7 +2,7 @@ grammar org.eclipse.osee.framework.OseeTypes with org.eclipse.xtext.common.Termi
 
 generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
 
-Model :
+OseeTypeModel :
 	(imports+=Import)*
 	(types+=OseeType)*;
 

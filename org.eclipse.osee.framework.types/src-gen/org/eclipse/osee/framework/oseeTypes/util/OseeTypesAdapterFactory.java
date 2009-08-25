@@ -79,9 +79,9 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
     new OseeTypesSwitch<Adapter>()
     {
       @Override
-      public Adapter caseModel(Model object)
+      public Adapter caseOseeTypeModel(OseeTypeModel object)
       {
-        return createModelAdapter();
+        return createOseeTypeModelAdapter();
       }
       @Override
       public Adapter caseImport(Import object)
@@ -146,16 +146,16 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
 
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.Model <em>Model</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeTypeModel <em>Osee Type Model</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.Model
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypeModel
    * @generated
    */
-  public Adapter createModelAdapter()
+  public Adapter createOseeTypeModelAdapter()
   {
     return null;
   }

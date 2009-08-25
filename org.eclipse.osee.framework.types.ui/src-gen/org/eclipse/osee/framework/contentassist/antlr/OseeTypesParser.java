@@ -50,7 +50,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeBaseTypeAccess().getAlternatives(), "rule__AttributeBaseType__Alternatives");
 					put(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_12_0(), "rule__RelationType__DefaultOrderTypeAlternatives_12_0");
 					put(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives(), "rule__RelationMultiplicityEnum__Alternatives");
-					put(grammarAccess.getModelAccess().getGroup(), "rule__Model__Group__0");
+					put(grammarAccess.getOseeTypeModelAccess().getGroup(), "rule__OseeTypeModel__Group__0");
 					put(grammarAccess.getImportAccess().getGroup(), "rule__Import__Group__0");
 					put(grammarAccess.getQUALIFIED_NAMEAccess().getGroup(), "rule__QUALIFIED_NAME__Group__0");
 					put(grammarAccess.getQUALIFIED_NAMEAccess().getGroup_1(), "rule__QUALIFIED_NAME__Group_1__0");
@@ -67,8 +67,8 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOseeEnumTypeAccess().getGroup(), "rule__OseeEnumType__Group__0");
 					put(grammarAccess.getOseeEnumAccess().getGroup(), "rule__OseeEnum__Group__0");
 					put(grammarAccess.getRelationTypeAccess().getGroup(), "rule__RelationType__Group__0");
-					put(grammarAccess.getModelAccess().getImportsAssignment_0(), "rule__Model__ImportsAssignment_0");
-					put(grammarAccess.getModelAccess().getTypesAssignment_1(), "rule__Model__TypesAssignment_1");
+					put(grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0(), "rule__OseeTypeModel__ImportsAssignment_0");
+					put(grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1(), "rule__OseeTypeModel__TypesAssignment_1");
 					put(grammarAccess.getImportAccess().getImportURIAssignment_1(), "rule__Import__ImportURIAssignment_1");
 					put(grammarAccess.getArtifactTypeAccess().getNameAssignment_2(), "rule__ArtifactType__NameAssignment_2");
 					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeAssignment_3_1(), "rule__ArtifactType__SuperArtifactTypeAssignment_3_1");
@@ -105,7 +105,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 	protected Collection<FollowElement> getFollowElements(AbstractInternalContentAssistParser parser) {
 		try {
 			org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesParser typedParser = (org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesParser) parser;
-			typedParser.entryRuleModel();
+			typedParser.entryRuleOseeTypeModel();
 			return typedParser.getFollowElements();
 		} catch(RecognitionException ex) {
 			throw new RuntimeException(ex);

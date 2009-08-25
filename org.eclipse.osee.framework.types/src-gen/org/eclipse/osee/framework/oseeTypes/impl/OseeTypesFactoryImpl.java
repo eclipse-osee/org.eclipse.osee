@@ -69,7 +69,7 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
   {
     switch (eClass.getClassifierID())
     {
-      case OseeTypesPackage.MODEL: return createModel();
+      case OseeTypesPackage.OSEE_TYPE_MODEL: return createOseeTypeModel();
       case OseeTypesPackage.IMPORT: return createImport();
       case OseeTypesPackage.OSEE_TYPE: return createOseeType();
       case OseeTypesPackage.ARTIFACT_TYPE: return createArtifactType();
@@ -122,10 +122,10 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
    * <!-- end-user-doc -->
    * @generated
    */
-  public Model createModel()
+  public OseeTypeModel createOseeTypeModel()
   {
-    ModelImpl model = new ModelImpl();
-    return model;
+    OseeTypeModelImpl oseeTypeModel = new OseeTypeModelImpl();
+    return oseeTypeModel;
   }
 
   /**

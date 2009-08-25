@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.Import;
-import org.eclipse.osee.framework.oseeTypes.Model;
 import org.eclipse.osee.framework.oseeTypes.OseeEnum;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
@@ -40,7 +40,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass modelEClass = null;
+  private EClass oseeTypeModelEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -173,9 +173,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getModel()
+  public EClass getOseeTypeModel()
   {
-    return modelEClass;
+    return oseeTypeModelEClass;
   }
 
   /**
@@ -183,9 +183,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModel_Imports()
+  public EReference getOseeTypeModel_Imports()
   {
-    return (EReference)modelEClass.getEStructuralFeatures().get(0);
+    return (EReference)oseeTypeModelEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -193,9 +193,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModel_Types()
+  public EReference getOseeTypeModel_Types()
   {
-    return (EReference)modelEClass.getEStructuralFeatures().get(1);
+    return (EReference)oseeTypeModelEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -548,9 +548,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     isCreated = true;
 
     // Create classes and their features
-    modelEClass = createEClass(MODEL);
-    createEReference(modelEClass, MODEL__IMPORTS);
-    createEReference(modelEClass, MODEL__TYPES);
+    oseeTypeModelEClass = createEClass(OSEE_TYPE_MODEL);
+    createEReference(oseeTypeModelEClass, OSEE_TYPE_MODEL__IMPORTS);
+    createEReference(oseeTypeModelEClass, OSEE_TYPE_MODEL__TYPES);
 
     importEClass = createEClass(IMPORT);
     createEAttribute(importEClass, IMPORT__IMPORT_URI);
@@ -630,9 +630,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     relationTypeEClass.getESuperTypes().add(this.getOseeType());
 
     // Initialize classes and features; add operations and parameters
-    initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getModel_Imports(), this.getImport(), null, "imports", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getModel_Types(), this.getOseeType(), null, "types", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(oseeTypeModelEClass, OseeTypeModel.class, "OseeTypeModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getOseeTypeModel_Imports(), this.getImport(), null, "imports", null, 0, -1, OseeTypeModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOseeTypeModel_Types(), this.getOseeType(), null, "types", null, 0, -1, OseeTypeModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getImport_ImportURI(), ecorePackage.getEString(), "importURI", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

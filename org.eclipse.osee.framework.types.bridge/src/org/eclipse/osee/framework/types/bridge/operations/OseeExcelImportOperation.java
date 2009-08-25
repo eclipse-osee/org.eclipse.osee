@@ -20,21 +20,20 @@ import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.oseeTypes.Model;
+import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 public class OseeExcelImportOperation extends AbstractOperation {
    private final File sourceFile;
-   private final Map<String, Model> models;
+   private final Map<String, OseeTypeModel> models;
    private final File destinationFile;
 
    public OseeExcelImportOperation(File sourceFile, File destinationFile) {
       super("Importing OSEE Types", Activator.PLUGIN_ID);
       this.sourceFile = sourceFile;
       this.destinationFile = destinationFile;
-      this.models = new HashMap<String, Model>();
+      this.models = new HashMap<String, OseeTypeModel>();
    }
 
    @Override
@@ -64,7 +63,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
          destinationFile.mkdirs();
       }
 
-      for (Entry<String, Model> entry : models.entrySet()) {
+      for (Entry<String, OseeTypeModel> entry : models.entrySet()) {
          URI target;
          if (destinationFile.isDirectory()) {
             target = new File(destinationFile, entry.getKey() + ".osee").toURI();

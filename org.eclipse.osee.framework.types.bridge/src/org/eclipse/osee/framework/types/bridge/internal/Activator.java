@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.types.bridge.internal;
 
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 

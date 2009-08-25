@@ -28,12 +28,11 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
-import org.eclipse.osee.framework.oseeTypes.Model;
 import org.eclipse.osee.framework.oseeTypes.OseeEnum;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
-import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -50,22 +49,20 @@ import org.w3c.dom.NodeList;
  */
 public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    private final OseeTypesFactory factory;
-   private final Map<String, Model> oseeModels;
-   private Model currentModel;
-   private final OseeTypesPackage oseeTypesPackage;
+   private final Map<String, OseeTypeModel> oseeModels;
+   private OseeTypeModel currentModel;
 
-   public ExcelToEMFModel(Map<String, Model> oseeModels) {
+   public ExcelToEMFModel(Map<String, OseeTypeModel> oseeModels) {
       this.factory = OseeTypesFactory.eINSTANCE;
-      this.oseeTypesPackage = OseeTypesPackage.eINSTANCE;
       this.oseeModels = oseeModels;
    }
 
    public void createModel(String name) {
-      currentModel = factory.createModel();
+      currentModel = factory.createOseeTypeModel();
       oseeModels.put(name, currentModel);
    }
 
-   private Model getCurrentModel() {
+   private OseeTypeModel getCurrentModel() {
       return currentModel;
    }
 
